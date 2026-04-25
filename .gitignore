@@ -3,17 +3,8 @@
 Thumbs.db
 
 # Obsidian
-.obsidian/workspace.json
-.obsidian/workspace-mobile.json
-.obsidian/plugins/
+.obsidian/
 .trash/
-
-# Build artifacts
-dashboard/data.json
-query-log.jsonl
-.dashboard-settings.json
-__pycache__/
-*.pyc
 
 # Claude Code
 .claude/
