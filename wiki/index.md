@@ -45,6 +45,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-dpm-solver]] — DPM-Solver: Fast ODE solver for diffusion models (NeurIPS 2022)
 - [[source-consistency-models]] — Consistency Models: one-step generation (ICML 2023)
 - [[source-glow]] — Glow: Generative Flow with Invertible 1×1 Convolutions (NeurIPS 2018)
+- [[source-flow-matching]] — Flow Matching: simulation-free CNF training (NeurIPS 2023)
 - [[source-alibi]] — ALiBi: attention with linear biases enables input length extrapolation (ICLR 2022)
 - [[source-yarn]] — YaRN: efficient context window extension of large language models (2023)
 - [[source-paperbench]] — Long Context, Less Focus: A Scaling Gap in LLMs (Gu et al., 2026)
@@ -62,10 +63,12 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[autoformer]] — Autoformer, decomposition transformer with auto-correlation (NeurIPS 2021)
 - [[cyclenet]] — CycleNet, periodicity modeling with residual cycle forecasting (NeurIPS 2024)
 - [[ddpm]] — DDPM, denoising diffusion probabilistic models (NeurIPS 2020)
-- [[dpm-solver]] — DPM-Solver, fast ODE solver for diffusion models (NeurIPS 2022)
+- [[dpm-solver]] — DPM-Solver, fast ODE solver for diffusion model (NeurIPS 2022)
 - [[consistency-models]] — Consistency Models, one-step generation (ICML 2023)
 - [[glow]] — Glow, normalizing flow with invertible 1x1 convolutions (NeurIPS 2018)
 - [[normalizing-flow]] — Normalizing Flow, invertible transformation based generative models
+- [[flow-matching]] — Flow Matching, simulation-free CNF training with OT paths (NeurIPS 2023)
+- [[optimal-transport]] — Optimal Transport, mathematical theory for probability distribution transformation
 - [[dualsformer]] — Dualformer, time-frequency dual domain learning with hierarchical frequency sampling (2026)
 - [[alibi]] — ALiBi, attention with linear biases for position extrapolation (ICLR 2022)
 - [[yarn]] — YaRN, efficient context window extension for RoPE models (2023)

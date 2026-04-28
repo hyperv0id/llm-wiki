@@ -161,3 +161,8 @@ Pages updated: [[index]], [[log]]
 归一化流生成模型，引入可逆 1×1 卷积层替代 RealNVP 的固定通道置换。ActNorm 层解决小批量训练问题。首个高效生成 256×256 高分辨率图像的似然模型。CIFAR-10 bits/dim 3.35, ImageNet 64×64 3.81。
 Pages created: [[source-glow]], [[glow]], [[normalizing-flow]]
 Pages updated: [[index]], [[log]]
+
+## [2026-04-28] ingest | Flow Matching (NeurIPS 2023)
+Flow Matching 提出无需模拟的训练 CNF 框架，通过条件概率路径构造和条件流匹配 (CFM) 目标实现。核心贡献：1) FM 目标直接回归向量场；2) CFM 目标与 FM 梯度等价；3) 高斯条件路径的解析向量场公式；4) OT 路径比扩散路径更简单高效。OT 路径：直线轨迹、恒定方向。CIFAR-10 FID 6.35 (OT) vs 7.48 (DDPM)，采样 NFE 142 vs 274。
+Pages created: [[source-flow-matching]], [[flow-matching]], [[optimal-transport]]
+Pages updated: [[index]], [[log]]

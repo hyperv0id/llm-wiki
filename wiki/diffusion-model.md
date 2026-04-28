@@ -109,8 +109,8 @@ $$
 - **[[score-based-sde|Score-Based SDE]]**：2021 年 ICLR 论文，用 SDE 统一了 NCSN (SMLD) 和 DDPM，引入 PC 采样和概率流 ODE[^src-sde]
 - **[[dpm-solver|DPM-Solver]]**：2022 年 NeurIPS，专用快速 ODE 求解器，利用半线性结构在约 10 步内生成高质量样本[^src-dpm-solver]
 - **[[consistency-models|Consistency Models]]**：2023 年 ICML，单步生成模型，通过学习 PF ODE 轨迹映射实现快速生成[^src-consistency-models]
+- **[[flow-matching|Flow Matching]]**：2023 年 NeurIPS，统一框架，将扩散模型视为 Flow Matching 的特例，支持 OT 等更优概率路径[^src-flow-matching]
 - **[[edm|EDM]]**：2022 年 NeurIPS 论文，系统梳理扩散模型设计空间，提出 Heun 二阶采样器、预处理技术和对数正态噪声分布[^src-edm]
-- **[[latent-diffusion-models|LDM]]**：2022 年 CVPR 论文，将扩散模型应用于潜空间，大幅降低训练和推理成本[^src-rombach-ldm-2022]
 
 ## 引用
 
@@ -118,6 +118,7 @@ $$
 [^src-sde]: [[source-sde]]
 [^src-dpm-solver]: [[source-dpm-solver]]
 [^src-consistency-models]: [[source-consistency-models]]
+[^src-flow-matching]: [[source-flow-matching]]
 [^src-edm]: [[source-edm]]
 [^src-rombach-ldm-2022]: [[source-rombach-ldm-2022]]
 [^src-understanding-diffusion-models]: [[source-understanding-diffusion-models]]
