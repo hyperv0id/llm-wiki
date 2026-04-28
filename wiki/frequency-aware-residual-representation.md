@@ -6,8 +6,8 @@ tags:
   - signal-decomposition
   - traffic-forecasting
 created: 2026-04-27
-last_updated: 2026-04-27
-source_count: 1
+last_updated: 2026-04-28
+source_count: 4
 confidence: high
 status: active
 ---
@@ -41,4 +41,15 @@ Ablation studies show removing the FR module causes the largest performance drop
 
 The learned frequency thresholds align with interpretable real-world periods: daily cycle at 288 steps/day (5-min sampling), weekly cycle at 2016 steps/week[^src-hyperd-hybrid-periodicity-decoupling].
 
+## Related Frequency-Domain Methods
+
+The FR module's frequency-band separation principle relates to other frequency-domain techniques:
+
+- **[[source-fedformer|FEDformer]]** (ICML 2022) uses Fourier-enhanced and Wavelet-enhanced attention blocks to capture frequency patterns, though it processes all frequency components uniformly without explicit band separation[^src-fedformer].
+- **[[source-frets|FreTS]]** (NeurIPS 2023) applies MLPs in the frequency domain to all components uniformly, in contrast to FR's targeted embedding per frequency band[^src-frets].
+- **[[source-afe-tfnet|AFE-TFNet]]** combines wavelet transform (WT) and FFT for adaptive multi-scale feature extraction, sharing FR's motivation of multi-resolution frequency analysis for time-series modeling[^src-afe-tfnet].
+
 [^src-hyperd-hybrid-periodicity-decoupling]: [[source-hyperd-hybrid-periodicity-decoupling]]
+[^src-fedformer]: [[source-fedformer]]
+[^src-frets]: [[source-frets]]
+[^src-afe-tfnet]: [[source-afe-tfnet]]

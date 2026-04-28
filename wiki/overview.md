@@ -1,9 +1,8 @@
 ---
 title: Overview
-type: overview
+type: concept
 created: 2026-04-26
-last_updated: 2026-04-26
-sources: []
+last_updated: 2026-04-28
 tags:
   - meta
 ---
@@ -12,13 +11,12 @@ tags:
 
 ## Current state
 
-- **Sources**: 0
-- **Entity pages**: 0
-- **Concept pages**: 0
-- **Technique pages**: 0
-- **Total wiki pages**: 0
-
-_The vault is empty. Add a source to get started._
+- **Sources**: 47 source files ingested
+- **Entity pages**: 19
+- **Concept pages**: 10
+- **Technique pages**: 44
+- **Analysis pages**: 3
+- **Total wiki pages**: ~120
 
 ## Getting started
 

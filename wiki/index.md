@@ -1,8 +1,8 @@
 ---
 title: Index
-type: overview
+type: concept
 created: 2026-04-26
-last_updated: 2026-04-27
+last_updated: 2026-04-28
 tags:
   - meta
 ---
@@ -15,35 +15,79 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[overview]] — wiki scope and current state
 
 ## Sources
-- [[source-hyperd-hybrid-periodicity-decoupling]] — "HyperD: Hybrid Periodicity Decoupling Framework for Traffic Forecasting" (Wen & Feng, 2025)
-- [[source-math-foundation-rl-readme]] — "Mathematical Foundations of Reinforcement Learning" 配套 Readme（Zhao, 2025）
-- [[source-grid-world-code-readme]] — 网格世界环境官方代码说明（Zhao, Mi & Li）
+- [[source-afe-tfnet]] — AFE-TFNet: adaptive feature extraction time-frequency network for wave height
+- [[source-astgcn]] — ASTGCN: attention spatial-temporal graph convolutional networks for traffic (AAAI 2019)
+- [[source-autoformer]] — Autoformer: decomposition transformers with auto-correlation (NeurIPS 2021)
 - [[source-chapter-1-basic-concepts]] — 第 1 章：强化学习基础概念与 MDP 形式化
 - [[source-chapter-2-state-values-and-bellman-equation]] — 第 2 章：状态值、动作值与贝尔曼方程
-- [[source-chapter-7-temporal-difference-methods]] — 第 7 章：TD 方法、Sarsa 与 Q-learning
 - [[source-chapter-3-optimal-state-values-and-bellman-optimality-equation]] — 第 3 章：最优状态值与贝尔曼最优方程
 - [[source-chapter-4-value-iteration-and-policy-iteration]] — 第 4 章：值迭代与策略迭代
 - [[source-chapter-5-monte-carlo-methods]] — 第 5 章：蒙特卡洛方法与 ε-greedy
+- [[source-chapter-7-temporal-difference-methods]] — 第 7 章：TD 方法、Sarsa 与 Q-learning
+- [[source-deep-time-series-survey]] — Deep Time Series Models: comprehensive survey and benchmark (TSLib)
+- [[source-dualformer]] — Dualformer: time-frequency dual domain learning for long-term forecasting
+- [[source-fedformer]] — FEDformer: frequency enhanced decomposed transformer (ICML 2022)
+- [[source-frets]] — FreTS: frequency-domain MLPs for time series forecasting (NeurIPS 2023)
+- [[source-grid-world-code-readme]] — 网格世界环境官方代码说明（Zhao, Mi & Li）
+- [[source-hyperd-hybrid-periodicity-decoupling]] — "HyperD: Hybrid Periodicity Decoupling Framework for Traffic Forecasting" (Wen & Feng, 2025)
+- [[source-math-foundation-rl-readme]] — "Mathematical Foundations of Reinforcement Learning" 配套 Readme（Zhao, 2025）
+- [[source-penguin]] — PENGUIN: periodic-nested group attention for long-term forecasting (AISTATS 2026)
+- [[source-prnet]] — PRNet: periodic residual learning for crowd flow forecasting
+- [[source-simdiff]] — SimDiff: simpler yet better diffusion model for time series point forecasting (AAAI 2026)
+- [[source-st-resnet]] — ST-ResNet: deep spatio-temporal residual networks for crowd flow (AAAI 2017)
+- [[source-timesnet]] — TimesNet: temporal 2D-variation modeling for general time series analysis (ICLR 2023)
+- [[source-tips]] — TIPS: transformer with inductive prior synthesis for financial forecasting
+- [[source-tqn]] — TQNet: Temporal Query Network for efficient multivariate forecasting (ICML 2025)
+- [[source-sparsetsf]] — SparseTSF: lightweight LTSF with <1k parameters via sparse modeling (TPAMI 2026 & ICML 2024 Oral)
+- [[source-cyclenet]] — CycleNet: modeling periodic patterns for time series forecasting (NeurIPS 2024)
+- [[source-alibi]] — ALiBi: attention with linear biases enables input length extrapolation (ICLR 2022)
+- [[source-yarn]] — YaRN: efficient context window extension of large language models (2023)
+- [[source-paperbench]] — Long Context, Less Focus: A Scaling Gap in LLMs (Gu et al., 2026)
+- [[source-vetcha-2026-towards-infinite-length-extrapolation]] — Vetcha 2026: Towards Infinite Length Extrapolation - A Unified Approach
+- [[source-conformer]] — ConFormer: Conditional Transformer for accident-informed traffic forecasting (KDD 2026)
 
 ## Entities
+- [[adaptive-positional-encoding]] — APE, adaptive positional encoding for infinite length extrapolation (2026)
+- [[long-tiny-stories-dataset]] — LongTinyStories, synthetic dataset for long-context evaluation (2026)
+- [[autoformer]] — Autoformer, decomposition transformer with auto-correlation (NeurIPS 2021)
+- [[cyclenet]] — CycleNet, periodicity modeling with residual cycle forecasting (NeurIPS 2024)
+- [[dualsformer]] — Dualformer, time-frequency dual domain learning with hierarchical frequency sampling (2026)
+- [[alibi]] — ALiBi, attention with linear biases for position extrapolation (ICLR 2022)
+- [[yarn]] — YaRN, efficient context window extension for RoPE models (2023)
+- [[paperbench]] — PAPerBench, benchmark for privacy and personalization under long context (2026)
+- [[long-context-scaling-gap]] — Long-Context Scaling Gap, fundamental limitation of LLMs under extended context (2026)
+- [[fedformer]] — FEDformer, frequency enhanced decomposed transformer (ICML 2022)
+- [[grid-world-environment]] — 网格世界环境，强化学习教学示例
 - [[hyperd]] — Hybrid Periodicity Decoupling framework for traffic forecasting
+- [[conformer]] — ConFormer, conditional transformer for accident-aware traffic forecasting (KDD 2026)
 - [[math-foundation-of-reinforcement-learning]] — 《Mathematical Foundations of Reinforcement Learning》教材（Springer, 2025）
 - [[shiyu-zhao]] — 赵世钰，强化学习教材作者，西湖大学教授
-- [[grid-world-environment]] — 网格世界环境，强化学习教学示例
+- [[simdiff]] — SimDiff, end-to-end diffusion model for time series point forecasting (AAAI 2026)
+- [[timesnet]] — TimesNet, task-general time series foundation model (ICLR 2023)
+- [[tqn]] — TQNet, temporal query network for multivariate forecasting (ICML 2025)
+- [[sparsetsf]] — SparseTSF, lightweight LTSF with <1k parameters (TPAMI 2026)
+- [[tslib]] — Time Series Library (TSLib), benchmark for deep time series models
 
 ## Concepts
 - [[hybrid-periodicity-decoupling]] — explicitly separating short-term and long-term periodicity in time-series signals
 - [[traffic-forecasting]] — predicting future traffic states from historical sensor data
+- [[accident-aware-traffic-forecasting]] — modeling disruptive impact of accidents on traffic prediction
 - [[mdp-formal-definition]] — 马尔可夫决策过程的六要素与马尔可夫性质
 - [[action-value-function]] — 动作值函数 q(s,a) 及其与状态值关系
 - [[exploration-vs-exploitation]] — 强化学习中的探索与利用权衡
 - [[contraction-mapping-theorem]] — 最优性算子收敛分析的数学基础
+- [[context-window-extension]] — extending inference context beyond pretraining length for LLMs
+- [[long-context-personalization]] — personalization under long context (1K-256K tokens) with constraint satisfaction
+- [[privacy-reasoning]] — privacy leakage detection and reasoning in long contexts
+- [[generalized-positional-encoding-framework]] — unified framework decomposing attention scores into multiplicative and additive components
+- [[elbo]] — 证据下界（ELBO），潜变量模型中 $\log p(\mathbf{x})$ 的可优化下界
 
 ## Techniques
 - [[frequency-aware-residual-representation]] — Fourier-based signal decomposition into periodic and residual components
 - [[spatial-temporal-attentive-encoder]] — dual-pathway encoder for short-term and long-term periodicity
 - [[dual-view-alignment-loss]] — regularization loss aligning representations across periodicity views
 - [[demlp-decoder]] — two-stage coarse-to-fine decoder with explicit trend removal
+- [[guided-layer-normalization]] — conditional normalization with dynamic affine parameters for accident-aware modeling
 - [[bellman-equation]] — 贝尔曼方程，强化学习中值函数的递归关系
 - [[temporal-difference-learning]] — 时序差分学习，包括 Sarsa、Q-learning 等算法
 - [[policy-evaluation]] — 给定策略下求解状态值函数的过程
@@ -54,10 +98,37 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[bellman-optimality-equation]] — 最优值函数与最优策略的不动点方程
 - [[value-iteration]] — 直接迭代求解最优方程的动态规划算法
 - [[policy-iteration]] — 策略评估与改进交替的动态规划算法
-- [[truncated-policy-iteration]] — 值迭代与策略迭代之间的截断折中
+- [[truncated-policy-iteration]] — 值迭代与策略迭代��间的截断折中
 - [[monte-carlo-methods-rl]] — 基于轨迹回报的无模型策略优化方法
 - [[epsilon-greedy]] — 经典探索策略
+- [[temporal-query-technique]] — periodically shifted learnable vectors as queries for global correlation
+- [[cross-period-sparse-forecasting]] — cross-period downsampling for extreme model compression
+- [[residual-cycle-forecasting]] — RCF technique using learnable recurrent cycles for explicit periodicity modeling
+- [[learnable-recurrent-cycles]] — trainable cycle parameters Q ∈ ℝ^(W×D) for periodicity representation
+- [[instance-normalization]] — RevIN strategy for handling distributional shifts in time series
+- [[linear-attention-bias]] — ALiBi's core mechanism: adding distance-proportional penalty to attention scores
+- [[position-extrapolation]] — Transformer model's ability to handle longer sequences at inference than training
+- [[geometric-slope-schedule]] — ALiBi's slope assignment method for multi-head attention
+- [[ntk-aware-interpolation]] — RoPE interpolation by changing base parameter to preserve high-frequency info
+- [[ntk-by-parts-interpolation]] — wavelength-based piecewise RoPE interpolation
+- [[attention-temperature-scaling]] — YaRN's technique to control attention entropy via temperature
+- [[dynamic-scaling]] — inference-time technique to dynamically adjust RoPE scaling factor
+- [[attention-dilution]] — theoretical mechanism explaining LLM performance degradation under long context (2026)
+- [[decoy-injection]] — benchmark technique injecting fake PII to increase privacy reasoning difficulty
+- [[convergent-normalization]] — softmax denominator convergence for infinite sequences
+- [[entropy-boundedness]] — finite Shannon entropy of attention distribution
+- [[long-distance-correlation-preservation]] — maintaining meaningful attention for distant tokens
+- [[gradient-positional-sensitivity]] — gradient dependence on relative position
+- [[normalization-independence]] — SimDiff's diffusion-specific technique for handling distribution drift
+- [[median-of-means-ensemble]] — MoM estimator for aggregating probabilistic samples into point predictions
+- [[patch-based-tokenization]] — converting time series into overlapping patch tokens for transformer input
+- [[channel-independence]] — processing each channel separately to enhance efficiency and distribution learning
+- [[key-normalization]] — ℓ2 normalization of keys to prevent attention hijacking
+- [[attention-logit-explosion]] — training instability from unbounded attention scores
+- [[attention-entropy-collapse]] — attention distribution becoming one-hot during training
+- [[spurious-patterns-in-attention]] — model learning shortcut features instead of semantic features
 
 ## Analyses
-- [[rl-learning-path-mfrl]] — 基于《Mathematical Foundations of Reinforcement Learning》的系统性 RL 学习路径
 - [[on-policy-vs-off-policy]] — on-policy 与 off-policy 学习范式对比
+- [[periodicity-modeling-in-time-series]] — analysis of periodic modeling approaches across time-series forecasting architectures
+- [[rl-learning-path-mfrl]] — 基于《Mathematical Foundations of Reinforcement Learning》的系统性 RL 学习路径

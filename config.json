@@ -1,0 +1,37 @@
+{
+  "agent": {
+    "orchestrator": {
+      "model": "kimi-k2.5",
+      "options": {},
+      "permission": {}
+    },
+    "oracle": {
+      "model": "deepseek/deepseek-v4-pro",
+      "variant": "high",
+      "options": {},
+      "permission": {}
+    },
+    "librarian": {
+      "model": "oaic/grok-4.20-fast",
+      "options": {},
+      "permission": {}
+    },
+    "explorer": {
+      "model": "oaic/grok-4.20-fast",
+      "options": {},
+      "permission": {}
+    },
+    "designer": {
+      "model": "gemini-3-flash-preview",
+      "variant": "medium",
+      "options": {},
+      "permission": {}
+    },
+    "fixer": {
+      "model": "deepseek/deepseek-v4-pro",
+      "variant": "medium",
+      "options": {},
+      "permission": {}
+    }
+  }
+}
