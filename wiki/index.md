@@ -54,6 +54,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-understanding-diffusion-models]] — Understanding Diffusion Models: A Unified Perspective (Luo, 2022)
 - [[source-edm]] — EDM: Elucidating the Design Space of Diffusion-Based Generative Models (Karras et al., NeurIPS 2022)
 - [[source-rombach-ldm-2022]] — LDM: High-Resolution Image Synthesis with Latent Diffusion Models (Rombach et al., CVPR 2022)
+- [[source-neural-ode]] — Neural ODE: Neural Ordinary Differential Equations (Chen et al., NeurIPS 2018)
 
 ## Entities
 - [[adaptive-positional-encoding]] — APE, adaptive positional encoding for infinite length extrapolation (2026)
@@ -85,6 +86,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[score-based-sde]] — Score-Based SDE, unifying SMLD and DDPM (Song et al., ICLR 2021)
 - [[edm]] — EDM, unified design space for diffusion models (Karras et al., NeurIPS 2022)
 - [[latent-diffusion-models]] — LDM, latent space diffusion for high-resolution image synthesis (Rombach et al., CVPR 2022)
+- [[neural-ordinary-differential-equation]] — Neural ODE, continuous-depth neural network using ODE solvers (Chen et al., NeurIPS 2018)
 
 ## Concepts
 - [[hybrid-periodicity-decoupling]] — explicitly separating short-term and long-term periodicity in time-series signals
@@ -105,6 +107,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[score-based-generative-modeling]] — 基于分数的生成建模，通过估计数据分布的对数密度梯度来生成样本
 - [[edm-design-space]] — EDM 统一设计空间，将 VP/VE/DDIM 等框架正交化
 - [[perceptual-compression]] — 感知压缩，将生成建模分为感知压缩和语义压缩两个层次
+- [[continuous-normalizing-flow]] — 连续归一化流 (CNF)，基于 Neural ODE 的可逆生成模型
 
 ## Techniques
 - [[frequency-aware-residual-representation]] — Fourier-based signal decomposition into periodic and residual components
@@ -163,6 +166,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[edm-noise-distribution]] — 对数正态噪声分布，EDM 训练策略
 - [[non-leaking-augmentation]] — 非泄漏数据增强，防止增强痕迹泄漏到生成图像
 - [[cross-attention-conditioning]] — 跨注意力条件化，LDM 的通用条件生成机制
+- [[adjoint-sensitivity-method]] — 伴随灵敏度方法，Neural ODE 的反向传播技术
 
 ## Analyses
 - [[on-policy-vs-off-policy]] — on-policy 与 off-policy 学习范式对比
