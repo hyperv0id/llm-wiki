@@ -24,6 +24,11 @@ First ingest. Downloaded arXiv 2511.09275 PDF and created full wiki scaffolding.
 Pages created: [[source-hyperd-hybrid-periodicity-decoupling]], [[hyperd]], [[hybrid-periodicity-decoupling]], [[traffic-forecasting]], [[frequency-aware-residual-representation]], [[spatial-temporal-attentive-encoder]], [[dual-view-alignment-loss]], [[demlp-decoder]]
 Pages updated: [[index]], [[log]]
 
+## [2026-04-28] maintenance | 扩充强化学习笔记
+为便于理解，扩充了 11 个极短的强化学习概念/算法页面。
+扩充的页面：[[mdp-formal-definition]], [[exploration-vs-exploitation]], [[value-iteration]], [[policy-iteration]], [[policy-evaluation]], [[truncated-policy-iteration]], [[q-learning-algorithm]], [[sarsa-algorithm]], [[expected-sarsa]], [[epsilon-greedy]], [[contraction-mapping-theorem]]
+主要增加内容：算法细节、收敛性分析、对比表格、变体扩展等。
+
 ## [2026-04-27] ingest | Mathematical Foundations of RL Chapters 1/2/7 (Deep Ingest)
 第二轮深度 ingest：围绕第 1/2/7 章补充 MDP、贝尔曼方程与 TD 算法主线，新增章节级 source-summary 与算法专题页。
 Pages created: [[source-chapter-1-basic-concepts]], [[source-chapter-2-state-values-and-bellman-equation]], [[source-chapter-7-temporal-difference-methods]], [[mdp-formal-definition]], [[policy-evaluation]], [[action-value-function]], [[sarsa-algorithm]], [[expected-sarsa]], [[n-step-sarsa]], [[q-learning-algorithm]], [[on-policy-vs-off-policy]]
