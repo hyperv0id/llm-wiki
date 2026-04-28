@@ -8,7 +8,7 @@ tags:
   - score-based
 created: 2026-04-28
 last_updated: 2026-04-28
-source_count: 1
+source_count: 2
 confidence: high
 status: active
 ---
@@ -102,6 +102,12 @@ $$
 - **采样速度慢**：生成一个样本需要数十到数千步的迭代去噪过程，远慢于 GAN 或 VAE 的单步生成。加速方法包括知识蒸馏、快速 ODE 求解器和一致性模型。
 - **无压缩的潜变量表示**：由于潜变量维度等于数据维度，扩散模型不提供有意义的低维潜空间，难以进行语义编辑或插值操作。
 
+## 关键实现
+
+- **[[ddpm|DDPM]]**：2020 年 NeurIPS 论文，首次证明扩散模型可生成高质量图像，建立了与得分匹配的等价性[^src-ddpm]
+- **[[ncsn]]**：NCSN，DDPM 的重要前身，使用退火朗之万动力学采样
+
 ## 引用
 
+[^src-ddpm]: [[source-ddpm]]
 [^src-understanding-diffusion-models]: [[source-understanding-diffusion-models]]

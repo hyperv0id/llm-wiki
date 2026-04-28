@@ -29,6 +29,11 @@ Pages updated: [[index]], [[log]]
 Pages created: [[source-chapter-1-basic-concepts]], [[source-chapter-2-state-values-and-bellman-equation]], [[source-chapter-7-temporal-difference-methods]], [[mdp-formal-definition]], [[policy-evaluation]], [[action-value-function]], [[sarsa-algorithm]], [[expected-sarsa]], [[n-step-sarsa]], [[q-learning-algorithm]], [[on-policy-vs-off-policy]]
 Pages updated: [[bellman-equation]], [[temporal-difference-learning]], [[grid-world-environment]], [[rl-learning-path-mfrl]], [[math-foundation-of-reinforcement-learning]], [[index]], [[log]]
 
+## [2026-04-28] ingest | Understanding Diffusion Models: A Unified Perspective (Luo, 2022)
+核心论文 ingest：扩散模型统一视角教程论文，提供 VAE → HVAE → VDM 的完整数学推导。
+Pages created: [[source-understanding-diffusion-models]], [[diffusion-model]], [[elbo]], [[variational-autoencoder]], [[score-function]], [[classifier-guidance]], [[classifier-free-guidance]]
+Pages updated: [[index]], [[log]]
+
 ## [2026-04-27] ingest | Mathematical Foundations of RL Chapters 3/4/5 (Deep Ingest)
 第三轮深度 ingest：补齐最优性方程、动态规划算法与蒙特卡洛主线。
 Pages created: [[source-chapter-3-optimal-state-values-and-bellman-optimality-equation]], [[source-chapter-4-value-iteration-and-policy-iteration]], [[source-chapter-5-monte-carlo-methods]], [[bellman-optimality-equation]], [[value-iteration]], [[policy-iteration]], [[truncated-policy-iteration]], [[monte-carlo-methods-rl]], [[epsilon-greedy]], [[exploration-vs-exploitation]], [[contraction-mapping-theorem]]
@@ -44,9 +49,19 @@ Added a comprehensive literature review page that synthesizes periodicity modeli
 Pages created: [[periodicity-modeling-in-time-series]]
 Pages updated: [[index]], [[log]]
 
+## [2026-04-28] ingest | DDPM: Denoising Diffusion Probabilistic Models (NeurIPS 2020)
+里程碑式论文，首次证明扩散模型可生成高质量图像。CIFAR-10 达到 IS 9.46, FID 3.17。建立扩散模型与去噪得分匹配的数学等价性，提出简化训练目标 L_simple。
+Pages created: [[source-ddpm]], [[ddpm]], [[ddpm-simplified-training-objective]]
+Pages updated: [[diffusion-model]], [[ncsn]], [[index]], [[log]]
+
 ## [2026-04-28] correction | 补充 HyperD 到周期性建模专题
 HyperD (2025) 是短/长周期解耦的代表性工作，原专题遗漏。补充 HyperD 章节、频率分离策略表格、时间线标记。
 Pages updated: [[periodicity-modeling-in-time-series]]
+
+## [2026-04-28] ingest | Tutorial on Diffusion Models for Imaging and Vision
+Ingested Stanley Chan's diffusion model tutorial (arXiv:2403.18103v3). This comprehensive tutorial covers VAE, DDPM, SMLD, SDE, and Fokker-Planck equations with rigorous mathematical foundations.
+Pages created: [[source-chan-diffusion-tutorial]]
+Pages updated: [[index]], [[log]]
 
 ## [2026-04-28] ingest | ConFormer: Accident-Informed Traffic Forecasting (KDD 2026)
 Ingested KDD 2026 paper on accident-aware traffic forecasting. ConFormer addresses the critical gap where existing models fail during accidents which create non-stationary perturbations with directional shockwaves.
@@ -100,4 +115,14 @@ Pages updated: [[index]], [[log]]
 ## [2026-04-28] ingest | QUEST: A Robust Attention Formulation Using Query-Modulated Spherical Attention (ICLR 2026)
 Ingested ICLR 2026 论文提出 QUEST (Query-modulated Spherical Attention) 方法——通过仅对键进行 ℓ2 归一化来消除键范数对注意力的"窃取"效应，同时保持每个查询独立控制其注意力锐度。核心洞见：查询范数控制锐度、键范数导致"全局注意力窃取"、Q-K 交叉依赖导致训练不稳定。实验验证：标准注意力在 ViT-Base/Large 上训练崩溃，QUEST 可稳定训练所有规模；ImageNet Top-1 提升 0.5-6.5%；对抗攻击和数据损坏下更鲁棒。
 Pages created: [[source-quest]], [[quest-attention]], [[key-normalization]], [[attention-logit-explosion]], [[attention-entropy-collapse]], [[spurious-patterns-in-attention]]
+Pages updated: [[index]], [[log]]
+
+## [2026-04-28] maintenance | ELBO concept page
+Created concept page for Evidence Lower Bound (ELBO) covering its definition, derivation via Jensen's inequality and KL divergence, forms in VAE and diffusion models (VDM), and importance in variational inference. Page includes required frontmatter and inline citation placeholder.
+Pages created: [[elbo]]
+Pages updated: [[index]], [[log]]
+
+## [2026-04-28] ingest | NCSN: Generative Modeling by Estimating Gradients of the Data Distribution (Song & Ermon, 2020)
+Ingested NeurIPS 2019/2020 paper proposing Noise Conditional Score Networks (NCSN). Core innovations: score matching for score estimation, multi-noise-level perturbation to handle manifold hypothesis and low-density regions, annealed Langevin dynamics for sampling. Achieved SOTA Inception Score 8.87 on CIFAR-10 (unconditional), FID 25.32.
+Pages created: [[source-ncsn]], [[ncsn]], [[score-based-generative-modeling]], [[annealed-langevin-dynamics]]
 Pages updated: [[index]], [[log]]

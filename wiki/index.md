@@ -40,17 +40,21 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-tqn]] — TQNet: Temporal Query Network for efficient multivariate forecasting (ICML 2025)
 - [[source-sparsetsf]] — SparseTSF: lightweight LTSF with <1k parameters via sparse modeling (TPAMI 2026 & ICML 2024 Oral)
 - [[source-cyclenet]] — CycleNet: modeling periodic patterns for time series forecasting (NeurIPS 2024)
+- [[source-ddpm]] — DDPM: Denoising Diffusion Probabilistic Models (NeurIPS 2020)
 - [[source-alibi]] — ALiBi: attention with linear biases enables input length extrapolation (ICLR 2022)
 - [[source-yarn]] — YaRN: efficient context window extension of large language models (2023)
 - [[source-paperbench]] — Long Context, Less Focus: A Scaling Gap in LLMs (Gu et al., 2026)
 - [[source-vetcha-2026-towards-infinite-length-extrapolation]] — Vetcha 2026: Towards Infinite Length Extrapolation - A Unified Approach
 - [[source-conformer]] — ConFormer: Conditional Transformer for accident-informed traffic forecasting (KDD 2026)
+- [[source-ncsn]] — NCSN: Generative Modeling by Estimating Gradients of the Data Distribution (Song & Ermon, 2020)
+- [[source-understanding-diffusion-models]] — Understanding Diffusion Models: A Unified Perspective (Luo, 2022)
 
 ## Entities
 - [[adaptive-positional-encoding]] — APE, adaptive positional encoding for infinite length extrapolation (2026)
 - [[long-tiny-stories-dataset]] — LongTinyStories, synthetic dataset for long-context evaluation (2026)
 - [[autoformer]] — Autoformer, decomposition transformer with auto-correlation (NeurIPS 2021)
 - [[cyclenet]] — CycleNet, periodicity modeling with residual cycle forecasting (NeurIPS 2024)
+- [[ddpm]] — DDPM, denoising diffusion probabilistic models (NeurIPS 2020)
 - [[dualsformer]] — Dualformer, time-frequency dual domain learning with hierarchical frequency sampling (2026)
 - [[alibi]] — ALiBi, attention with linear biases for position extrapolation (ICLR 2022)
 - [[yarn]] — YaRN, efficient context window extension for RoPE models (2023)
@@ -67,6 +71,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[tqn]] — TQNet, temporal query network for multivariate forecasting (ICML 2025)
 - [[sparsetsf]] — SparseTSF, lightweight LTSF with <1k parameters (TPAMI 2026)
 - [[tslib]] — Time Series Library (TSLib), benchmark for deep time series models
+- [[ncsn]] — Noise Conditional Score Networks, score-based generative model (Song & Ermon, 2020)
 
 ## Concepts
 - [[hybrid-periodicity-decoupling]] — explicitly separating short-term and long-term periodicity in time-series signals
@@ -81,6 +86,10 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[privacy-reasoning]] — privacy leakage detection and reasoning in long contexts
 - [[generalized-positional-encoding-framework]] — unified framework decomposing attention scores into multiplicative and additive components
 - [[elbo]] — 证据下界（ELBO），潜变量模型中 $\log p(\mathbf{x})$ 的可优化下界
+- [[diffusion-model]] — 扩散模型，通过逐步加噪和去噪学习的生成模型
+- [[variational-autoencoder]] — 变分自编码器（VAE），基于 ELBO 优化的潜变量生成模型
+- [[score-function]] — 分数函数 ∇_x log p(x)，对数概率密度的梯度
+- [[score-based-generative-modeling]] — 基于分数的生成建模，通过估计数据分布的对数密度梯度来生成样本
 
 ## Techniques
 - [[frequency-aware-residual-representation]] — Fourier-based signal decomposition into periodic and residual components
@@ -127,6 +136,10 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[attention-logit-explosion]] — training instability from unbounded attention scores
 - [[attention-entropy-collapse]] — attention distribution becoming one-hot during training
 - [[spurious-patterns-in-attention]] — model learning shortcut features instead of semantic features
+- [[annealed-langevin-dynamics]] — 退火朗之万动力学，多噪声水平逐步采样的方法
+- [[ddpm-simplified-training-objective]] — DDPM's L_simple, simplified noise prediction loss for diffusion models
+- [[classifier-guidance]] — 分类器引导利用分类器梯度引导扩散模型条件生成
+- [[classifier-free-guidance]] — 无分类器引导联合训练条件与无条件扩散模型实现条件控制
 
 ## Analyses
 - [[on-policy-vs-off-policy]] — on-policy 与 off-policy 学习范式对比
