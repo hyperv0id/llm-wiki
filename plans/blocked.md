@@ -1,5 +1,5 @@
 ---
-title: "Blocked — 판단/정보 필요 항목"
+title: "Blocked — 需要决策/信息的项目"
 created: 2026-04-23
 ---
 
@@ -7,52 +7,52 @@ created: 2026-04-23
 
 ---
 
-## [2026-04-23 20:45] BLOCK-MP-04 기존 콘텐츠 마이그레이션
+## [2026-04-23 20:45] BLOCK-MP-04 现有内容迁移
 
-**원본 큐 항목**: MP-04 `projects/karpathy-llm/`로 wiki/raw/ingest-reports/reflect-reports/query-log.jsonl/CLAUDE.md 이동
-**시도 횟수**: 0 (자율모드에서 실행하지 않음)
-**블록 사유**:
-- 위험도 `high` — `today-queue.md` 명시. §21.8에 따라 자율모드 금지.
-- 대량 `git mv`, 루트 레이아웃 변경, 실행 중인 대시보드 서버(pid 94329) 경로 기반 재시작 요구.
-- Q-1~Q-4 (아래) 결정이 전제.
+**原队列项目**: MP-04 将 wiki/raw/ingest-reports/reflect-reports/query-log.jsonl/CLAUDE.md 移动到 `projects/karpathy-llm/`
+**尝试次数**: 0 (未在自主模式下执行)
+**阻塞原因**:
+- 风险度 `high` — `today-queue.md` 中明确。根据 §21.8 禁止自主模式。
+- 大量 `git mv`，根目录布局变更，需要重启运行中的 dashboard 服务器(pid 94329) 并基于路径重启。
+- 需先决定 Q-1~Q-4 (见下文)
 
-**필요한 판단/정보** (사용자):
-- Q-1 단일 repo vs 프로젝트별 repo
-- Q-2 Obsidian vault 스코프
-- Q-3 slug 규칙 (기본: `make_slug` + 중복 검사)
-- Q-4 삭제 정책 (기본: `projects/.trash/` soft delete)
+**需要决策/信息** (用户):
+- Q-1 单一 repo vs 每个项目独立 repo
+- Q-2 Obsidian vault 作用域
+- Q-3 slug 规则 (默认: `make_slug` + 重复检查)
+- Q-4 删除策略 (默认: `projects/.trash/` 软删除)
 
-**실행 시 체크리스트** (사용자 승인 후):
-1. `git mv` 5건 (wiki, raw, ingest-reports, reflect-reports, query-log.jsonl)
-2. `git mv CLAUDE.md projects/karpathy-llm/CLAUDE.md` + 루트에 얇은 CLAUDE.md 재생성
-3. `.dashboard-settings.json` → `projects/karpathy-llm/.settings.json` (model 값 이전 후 원본 삭제)
-4. `projects.json`에 `karpathy-llm` 등록 + `active` 설정
-5. 서버 재시작 후 `/api/projects`, `/api/wiki?project=karpathy-llm` 스모크 테스트 — 주의: MP-07 미완 시 `/api/wiki`는 여전히 legacy 경로를 참조해 깨질 수 있음. MP-07 선행 필요.
+**执行检查清单** (用户批准后):
+1. `git mv` 5 项 (wiki, raw, ingest-reports, reflect-reports, query-log.jsonl)
+2. `git mv CLAUDE.md projects/karpathy-llm/CLAUDE.md` + 在根目录重新创建精简版 CLAUDE.md
+3. `.dashboard-settings.json` → `projects/karpathy-llm/.settings.json` (迁移 model 值后删除原文件)
+4. 在 `projects.json` 中注册 `karpathy-llm` + 设置 `active`
+5. 服务器重启后执行 `/api/projects`, `/api/wiki?project=karpathy-llm` 冒烟测试 — 注意: 如果 MP-07 未完成，`/api/wiki` 仍会引用 legacy 路径导致出错。需先完成 MP-07。
 
-**관련 커밋**: 8c0750d (MP-01), 18b0cd9 (MP-02), bcf7f32 (MP-03)
+**相关提交**: 8c0750d (MP-01), 18b0cd9 (MP-02), bcf7f32 (MP-03)
 
 ---
 
-## 결정 대기 중인 설계 포인트
+## 等待决策的设计要点
 
-## 결정 대기 중인 설계 포인트 (MP-04 실행 전 필수)
+## 等待决策的设计要点 (MP-04 执行前必须)
 
-- **[Q-1] 프로젝트별 git repo 분리 여부**
-  - 옵션 A: 단일 repo + `projects/<slug>/` 서브디렉터리 커밋 (권장, 간단)
-  - 옵션 B: 프로젝트당 별도 repo
-  - 결정 주체: 사용자
-  - 영향: MP-04, MP-05, OPS-04
+- **[Q-1] 是否按项目分离 git repo**
+  - 选项 A: 单一 repo + `projects/<slug>/` 子目录提交 (推荐，简单)
+  - 选项 B: 每个项目独立 repo
+  - 决策者: 用户
+  - 影响: MP-04, MP-05, OPS-04
 
-- **[Q-2] Obsidian vault 스코프**
-  - 옵션 A: 루트 전체를 하나의 vault로 (현재) — 프로젝트 간 이동 자유
-  - 옵션 B: 프로젝트당 독립 vault 등록 — obsidian.json에 N개 엔트리
-  - 결정 주체: 사용자 (작업 습관에 따라)
-  - 영향: MP-10
+- **[Q-2] Obsidian vault 作用域**
+  - 选项 A: 整个根目录作为一个 vault (当前) — 项目间移动自由
+  - 选项 B: 每个项目独立 vault 注册 — 在 obsidian.json 中添加 N 个条目
+  - 决策者: 用户 (根据工作习惯)
+  - 影响: MP-10
 
-- **[Q-3] 프로젝트 slug 규칙**
-  - 영숫자+하이픈 강제? 한글 허용? 공백 불허?
-  - 대안: 사용자 입력 title + 자동 slug (make_slug 재사용)
+- **[Q-3] 项目 slug 规则**
+  - 强制字母数字+连字符? 允许韩文? 不允许空格?
+  - 备选: 用户输入 title + 自动生成 slug (复用 make_slug)
 
-- **[Q-4] 프로젝트 삭제 정책**
-  - 즉시 영구 삭제 vs trash/<slug>-<timestamp>/ 이동
-  - 기본값은 trash 권장 (되돌릴 수 있음)
+- **[Q-4] 项目删除策略**
+  - 立即永久删除 vs 移动到 trash/<slug>-<timestamp>/
+  - 默认推荐 trash (可恢复)

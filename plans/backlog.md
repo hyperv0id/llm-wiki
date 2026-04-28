@@ -1,57 +1,57 @@
 ---
-title: "Backlog — 멀티 프로젝트 외 추가 개선 후보"
+title: "Backlog — 多项目外的额外改进候选"
 created: 2026-04-23
 ---
 
-# Backlog — 추가 구현/개발 필요 항목
+# Backlog — 额外实现/开发需求项目
 
-멀티 프로젝트 전환과 별개로 현재 구현을 돌아보며 식별된 개선 후보.
-우선순위는 사용자가 결정.
+与多项目切换无关，基于对当前实现的反思而识别的改进候选。
+优先级由用户决定。
 
 ---
 
-## 운영 / 안정성
+## 运营 / 稳定性
 
-- **[OPS-01] Job queue + 진행률 스트리밍** — `/api/ingest`가 길어지면 HTTP 타임아웃 위험. SSE/WS로 진행 로그 푸시 + 백그라운드 작업 식별자.
-- **[OPS-02] 장기 실행 Claude 호출 로그 영속화** — 현재는 stdout만. 실패 시 원인 추적 어려움. `runs/<date>-<id>.log` 저장.
-- **[OPS-03] 레이트 리밋 / 예산 가드** — 모델별 누적 토큰/비용 추적 + 임계값 초과 시 차단. 현재는 `query-log.jsonl`에만 비용 기록.
-- **[OPS-04] 백업/복원** — 프로젝트 단위 zip export/import. git bundle도 고려.
-- **[OPS-05] 헬스체크 개선** — Obsidian vault open 상태, git 상태, Claude CLI 응답시간을 한 endpoint로.
+- **[OPS-01] 任务队列 + 进度流式传输** — `/api/ingest` 时间长有 HTTP 超时风险。使用 SSE/WS 推送进度日志 + 后台任务标识符。
+- **[OPS-02] 长期运行 Claude 调用日志持久化** — 当前仅 stdout。失败时难以追踪原因。保存 `runs/<date>-<id>.log`。
+- **[OPS-03] 速率限制 / 预算保护** — 按模型累计 token/费用 + 超过阈值时阻止。当前仅在 `query-log.jsonl` 中记录费用。
+- **[OPS-04] 备份/恢复** — 项目级 zip 导出/导入。也可考虑 git bundle。
+- **[OPS-05] 健康检查改进** — 在一个端点中检查 Obsidian vault 打开状态、git 状态、Claude CLI 响应时间。
 
-## 품질 / 기능
+## 质量 / 功能
 
-- **[FEAT-01] 교차 프로젝트 검색** — 여러 프로젝트 wiki를 한 번에 검색하는 모드. 현재 TF-IDF는 단일 wiki 전용.
-- **[FEAT-02] 프로젝트 간 링크/임베드** — 다른 프로젝트 페이지를 참조할 수 있게 — `[[projectA::page]]` 같은 문법.
-- **[FEAT-03] 태그 기반 브라우저** — frontmatter `tags`로 필터/그룹. 현재 UI는 type 위주.
-- **[FEAT-04] 소스 업로드 UX** — 현재는 title/content 텍스트 입력만. 파일 업로드(.pdf, .html, .md) 지원.
-- **[FEAT-05] 페이지 히스토리 뷰** — 페이지별 git blame/diff 뷰어 (대시보드에서 읽기).
-- **[FEAT-06] 자동 reflect 스케줄** — 일정 주기로 reflect 실행 → 제안 큐에 쌓기.
-- **[FEAT-07] Diff 미리보기** — ingest/lint-fix 적용 전에 diff 확인 후 confirm.
-- **[FEAT-08] 다국어 위키 파이프라인** — 같은 개념의 KO/EN 페이지 연결 (superseded 아닌 translation 관계).
+- **[FEAT-01] 跨项目搜索** — 同时搜索多个项目 wiki。当前 TF-IDF 仅适用于单个 wiki。
+- **[FEAT-02] 项目间链接/嵌入** — 允许引用其他项目页面 — 类似 `[[projectA::page]]` 的语法。
+- **[FEAT-03] 基于标签的浏览器** — 按 frontmatter `tags` 过滤/分组。当前 UI 主要基于 type。
+- **[FEAT-04] 源文件上传 UX** — 当前仅支持 title/content 文本输入。支持文件上传(.pdf, .html, .md)。
+- **[FEAT-05] 页面历史视图** — 逐页 git blame/diff 查看器 (在 dashboard 中阅读)。
+- **[FEAT-06] 自动 reflect 调度** — 定期执行 reflect → 堆积到建议队列。
+- **[FEAT-07] Diff 预览** — ingest/lint-fix 应用前确认 diff 后确认。
+- **[FEAT-08] 多语言 wiki 管道** — 连接同一概念的 KO/EN 页面 (translation 关系，非 superseded)。
 
-## 스키마 / 거버넌스
+## 架构 / 治理
 
-- **[GOV-01] Contradiction 자동 감지** — 새 claim이 기존과 충돌할 가능성을 LLM이 체크해 사용자에게 경고.
-- **[GOV-02] Citation 검증기 (로컬)** — Claude 호출 없이 regex + frontmatter로 lint 자동 수행. CI hook 후보.
-- **[GOV-03] Source trust score** — 소스별 신뢰도 필드(peer-reviewed / blog / tweet 등) + 페이지 confidence 자동 계산.
-- **[GOV-04] CHANGELOG** — 프로젝트별 CHANGELOG.md (Keep a Changelog 형식). ingest/reflect/lint가 자동 append.
+- **[GOV-01] 自动矛盾检测** — LLM 检查新 claim 是否与现有 claim 冲突，并向用户发出警告。
+- **[GOV-02] Citation 验证器 (本地)** — 无需 Claude 调用，使用 regex + frontmatter 自动执行 lint。CI hook 候选。
+- **[GOV-03] Source trust score** — 各 source 的可信度字段 (peer-reviewed / blog / tweet 等) + 自动计算页面 confidence。
+- **[GOV-04] CHANGELOG** — 项目级 CHANGELOG.md (Keep a Changelog 格式)。ingest/reflect/lint 自动追加。
 
-## 보안 / 접근 제어
+## 安全 / 访问控制
 
-- **[SEC-01] localhost 이외 접근 금지 확인** — 현재 `::` 바인딩 — 로컬만 노출되도록 문서 보강 + 옵션화.
-- **[SEC-02] 프로젝트 삭제 가드** — `confirm` 파라미터 필수 + 쓰레기통(trash/) 경유.
-- **[SEC-03] 시크릿 스캔** — raw/wiki에 API 키/토큰 패턴이 포함됐는지 ingest 시점에 경고.
+- **[SEC-01] 确认禁止非 localhost 访问** — 当前绑定 `::` — 文档补充 + 选项化，确保仅暴露本地。
+- **[SEC-02] 项目删除保护** — `confirm` 参数必需 + 经过垃圾箱(trash/)。
+- **[SEC-03] 密钥扫描** — ingest 时警告 raw/wiki 中是否包含 API 密钥/令牌模式。
 
-## 테스트 / DX
+## 测试 / DX
 
-- **[DX-01] 단위 테스트** — `server.py`의 `make_slug`, `parse_fm`, `_diff_snapshots`, `_tokenize` 등 순수 함수 pytest.
-- **[DX-02] 엔드포인트 계약 테스트** — 각 `/api/*`에 대해 스모크 테스트.
-- **[DX-03] 개발 모드 핫 리로드** — 현재 수동 재시작.
-- **[DX-04] 로깅 포맷 표준화** — JSON 라인 로깅 + 레벨.
+- **[DX-01] 单元测试** — 对 `server.py` 的 `make_slug`, `parse_fm`, `_diff_snapshots`, `_tokenize` 等纯函数进行 pytest。
+- **[DX-02] 端点契约测试** — 对各 `/api/*` 进行冒烟测试。
+- **[DX-03] 开发模式热重载** — 当前需手动重启。
+- **[DX-04] 日志格式标准化** — JSON 行日志 + 级别。
 
-## 사용자 경험
+## 用户体验
 
-- **[UX-01] 온보딩 마법사** — 첫 실행 시 "프로젝트 생성" → "첫 소스 추가" → "질문 해보기" 3단계 튜토리얼.
-- **[UX-02] 커맨드 팔레트** — Cmd/Ctrl+K → 모든 기능 + 프로젝트 전환을 fuzzy search.
-- **[UX-03] 모바일 레이아웃** — 현재 데스크톱 전용. §8 기준 최소 대응.
-- **[UX-04] 다크/라이트 테마 토글** — 현재 다크 고정.
+- **[UX-01] 入门向导** — 首次运行时"创建项目" → "添加第一个 source" → "尝试提问" 3 步教程。
+- **[UX-02] 命令面板** — Cmd/Ctrl+K → fuzzy search 所有功能 + 项目切换。
+- **[UX-03] 移动端布局** — 当前仅桌面端。根据 §8 至少支持最低程度。
+- **[UX-04] 深色/浅色主题切换** — 当前固定深色。

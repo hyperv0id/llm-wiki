@@ -1,32 +1,32 @@
 # Wiki Template — LLM Research
 
-> LLM/ML 연구 주제에 최적화된 스타터 스키마.
+> 针对 LLM/ML 研究主题优化的起始模板。
 
-## 프로젝트 맥락
+## 项目背景
 
-- **주제**: LLM / ML 연구
-- **목적**: 논문·블로그·구현 노트를 축적해 개념 그래프를 구축
-- **주 언어**: ko
+- **主题**: LLM / ML 研究
+- **目的**: 积累论文、博客、实现笔记，构建概念图谱
+- **主要语言**: zh
 
-## 권장 wiki/ 구조
+## 建议 wiki/ 结构
 
 ```
 wiki/
-  sources/        # 논문·블로그 요약
-  models/         # 모델 (GPT-N, Llama, Claude 등)
-  techniques/     # 알고리즘 (RLHF, DPO, LoRA 등)
-  concepts/       # 아이디어 (scaling laws, attention 등)
-  entities/       # 연구자·조직·제품
-  benchmarks/     # 평가 세트
-  analyses/       # 종합 분석
+  sources/        # 论文/博客摘要
+  models/         # 模型 (GPT-N, Llama, Claude 等)
+  techniques/     # 算法 (RLHF, DPO, LoRA 等)
+  concepts/       # 思想 (scaling laws, attention 等)
+  entities/       # 研究者、组织、产品
+  benchmarks/     # 评估集
+  analyses/       # 综合分析
 ```
 
-## 추가 Frontmatter 필드 (권장)
+## 额外 Frontmatter 字段 (建议)
 
-- `paper_year: YYYY` — source-summary 타입에만
-- `venue: "NeurIPS 2024"` 등
-- `arxiv: "2401.xxxxx"` — 있으면
+- `paper_year: YYYY` — 仅 source-summary 类型
+- `venue: "NeurIPS 2024"` 等
+- `arxiv: "2401.xxxxx"` — 如有
 
-## Citation 규칙
+## Citation 规则
 
-루트 `CLAUDE.md`를 따릅니다. 논문 ingest 시 arxiv id가 있으면 source-summary에 명시.
+遵循根目录 `CLAUDE.md`。论文 ingest 时如有 arxiv id，请在 source-summary 中注明。
