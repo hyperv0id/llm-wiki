@@ -80,10 +80,11 @@ $$2^{-8/n}, 2^{-7/n}, ..., 2^0$$
 ## 局限性
 
 - 外推性能在约 2L 达到峰值，之后逐渐下降[^src-alibi]
-- 在非语言任务（如时序预测）上未验证[^src-alibi]
+- 在非语言任务（如时序预测）上未验证[^src-alibi] — 但 TIPS (AAAI 2026) 将 ALiBi 的距离衰减应用于金融时序预测的局部性归纳偏置[^src-tips]
 - 在 [[generalized-positional-encoding-framework|GPE 框架]]视角下，ALiBi 无法满足 [[long-distance-correlation-preservation|LDCP]] 和 [[gradient-positional-sensitivity|GPS]]，导致远距离相关性被完全抑制且梯度不携带位置信息[^src-vetcha-2026-towards-infinite-length-extrapolation]
 
 ## 引用
 
 [^src-alibi]: [[source-alibi]]
+[^src-tips]: [[source-tips]]
 [^src-vetcha-2026-towards-infinite-length-extrapolation]: [[source-vetcha-2026-towards-infinite-length-extrapolation]]

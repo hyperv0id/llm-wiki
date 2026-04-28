@@ -84,6 +84,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[shiyu-zhao]] — 赵世钰，强化学习教材作者，西湖大学教授
 - [[simdiff]] — SimDiff, end-to-end diffusion model for time series point forecasting (AAAI 2026)
 - [[timesnet]] — TimesNet, task-general time series foundation model (ICLR 2023)
+- [[tips]] — TIPS, inductive prior synthesis via knowledge distillation for financial forecasting (AAAI 2026)
 - [[tqn]] — TQNet, temporal query network for multivariate forecasting (ICML 2025)
 - [[sparsetsf]] — SparseTSF, lightweight LTSF with <1k parameters (TPAMI 2026)
 - [[tslib]] — Time Series Library (TSLib), benchmark for deep time series models

@@ -176,3 +176,8 @@ Pages updated: [[index]], [[log]]
 Shortcut Models 提出单网络、单训练阶段的少步/单步生成模型。核心思想：不仅根据噪声水平 t，还根据期望步长 d 调节网络。训练目标：Flow Matching 目标 (d=0) + 自一致性目标 (d>0)。自一致性约束：s(t,2d) = 0.5*s(t,d) + 0.5*s(t+d,d)。优势：无需两阶段训练、灵活推理预算、仅比基础扩散模型多 16% 计算量。CelebA-HQ-256: 1步 FID 20.5 vs Flow Matching 280.5。ImageNet-256: 1步 FID 40.3 vs 324.8。
 Pages created: [[source-shortcut-models]], [[shortcut-models]]
 Pages updated: [[index]], [[log]]
+
+## [2026-04-28] ingest | TIPS: Integrating Inductive Biases in Transformers via Distillation for Financial Time Series Forecasting (AAAI 2026)
+TIPS 提出金融时序预测需要"状态依赖的归纳偏置适应"——不同市场环境下需要不同的归纳偏置（因果性、局部性、周期性）。核心创新：1) 通过注意力掩码训练 7 个偏置专业化教师；2) 正则化知识蒸馏将偏置融合到单一学生模型；3) 发现"合并惩罚"现象——直接训练多偏置模型反而性能下降。TIPS 将 ALiBi 的距离衰减作为"局部性"归纳偏置之一应用于金融时序。在四个股票市场取得 SOTA，年化收益 +55%，Sharpe +9%，Calmar +16%。
+Pages created: [[source-tips]], [[tips]]
+Pages updated: [[index]], [[log]], [[alibi]]
