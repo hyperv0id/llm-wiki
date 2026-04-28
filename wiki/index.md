@@ -46,6 +46,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-consistency-models]] — Consistency Models: one-step generation (ICML 2023)
 - [[source-glow]] — Glow: Generative Flow with Invertible 1×1 Convolutions (NeurIPS 2018)
 - [[source-flow-matching]] — Flow Matching: simulation-free CNF training (NeurIPS 2023)
+- [[source-shortcut-models]] — Shortcut Models: one-step diffusion via self-consistency (arXiv 2025)
 - [[source-alibi]] — ALiBi: attention with linear biases enables input length extrapolation (ICLR 2022)
 - [[source-yarn]] — YaRN: efficient context window extension of large language models (2023)
 - [[source-paperbench]] — Long Context, Less Focus: A Scaling Gap in LLMs (Gu et al., 2026)
@@ -64,7 +65,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[cyclenet]] — CycleNet, periodicity modeling with residual cycle forecasting (NeurIPS 2024)
 - [[ddpm]] — DDPM, denoising diffusion probabilistic models (NeurIPS 2020)
 - [[dpm-solver]] — DPM-Solver, fast ODE solver for diffusion model (NeurIPS 2022)
-- [[consistency-models]] — Consistency Models, one-step generation (ICML 2023)
+- [[consistency-models]] — Consistency Models, one-step generation via trajectory consistency (ICML 2023)
+- [[shortcut-models]] — Shortcut Models, one-step diffusion via step-size conditioning and self-consistency (arXiv 2025)
 - [[glow]] — Glow, normalizing flow with invertible 1x1 convolutions (NeurIPS 2018)
 - [[normalizing-flow]] — Normalizing Flow, invertible transformation based generative models
 - [[flow-matching]] — Flow Matching, simulation-free CNF training with OT paths (NeurIPS 2023)

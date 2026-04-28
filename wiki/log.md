@@ -166,3 +166,8 @@ Pages updated: [[index]], [[log]]
 Flow Matching 提出无需模拟的训练 CNF 框架，通过条件概率路径构造和条件流匹配 (CFM) 目标实现。核心贡献：1) FM 目标直接回归向量场；2) CFM 目标与 FM 梯度等价；3) 高斯条件路径的解析向量场公式；4) OT 路径比扩散路径更简单高效。OT 路径：直线轨迹、恒定方向。CIFAR-10 FID 6.35 (OT) vs 7.48 (DDPM)，采样 NFE 142 vs 274。
 Pages created: [[source-flow-matching]], [[flow-matching]], [[optimal-transport]]
 Pages updated: [[index]], [[log]]
+
+## [2026-04-28] ingest | Shortcut Models (arXiv 2025)
+Shortcut Models 提出单网络、单训练阶段的少步/单步生成模型。核心思想：不仅根据噪声水平 t，还根据期望步长 d 调节网络。训练目标：Flow Matching 目标 (d=0) + 自一致性目标 (d>0)。自一致性约束：s(t,2d) = 0.5*s(t,d) + 0.5*s(t+d,d)。优势：无需两阶段训练、灵活推理预算、仅比基础扩散模型多 16% 计算量。CelebA-HQ-256: 1步 FID 20.5 vs Flow Matching 280.5。ImageNet-256: 1步 FID 40.3 vs 324.8。
+Pages created: [[source-shortcut-models]], [[shortcut-models]]
+Pages updated: [[index]], [[log]]
