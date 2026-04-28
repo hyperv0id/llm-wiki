@@ -52,6 +52,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-ncsn]] — NCSN: Generative Modeling by Estimating Gradients of the Data Distribution (Song & Ermon, 2020)
 - [[source-understanding-diffusion-models]] — Understanding Diffusion Models: A Unified Perspective (Luo, 2022)
 - [[source-edm]] — EDM: Elucidating the Design Space of Diffusion-Based Generative Models (Karras et al., NeurIPS 2022)
+- [[source-rombach-ldm-2022]] — LDM: High-Resolution Image Synthesis with Latent Diffusion Models (Rombach et al., CVPR 2022)
 
 ## Entities
 - [[adaptive-positional-encoding]] — APE, adaptive positional encoding for infinite length extrapolation (2026)
@@ -80,6 +81,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[ncsn]] — Noise Conditional Score Networks, score-based generative model (Song & Ermon, 2020)
 - [[score-based-sde]] — Score-Based SDE, unifying SMLD and DDPM (Song et al., ICLR 2021)
 - [[edm]] — EDM, unified design space for diffusion models (Karras et al., NeurIPS 2022)
+- [[latent-diffusion-models]] — LDM, latent space diffusion for high-resolution image synthesis (Rombach et al., CVPR 2022)
 
 ## Concepts
 - [[hybrid-periodicity-decoupling]] — explicitly separating short-term and long-term periodicity in time-series signals
@@ -99,6 +101,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[score-function]] — 分数函数 ∇_x log p(x)，对数概率密度的梯度
 - [[score-based-generative-modeling]] — 基于分数的生成建模，通过估计数据分布的对数密度梯度来生成样本
 - [[edm-design-space]] — EDM 统一设计空间，将 VP/VE/DDIM 等框架正交化
+- [[perceptual-compression]] — 感知压缩，将生成建模分为感知压缩和语义压缩两个层次
 
 ## Techniques
 - [[frequency-aware-residual-representation]] — Fourier-based signal decomposition into periodic and residual components
@@ -156,6 +159,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[edm-stochastic-sampler]] — EDM 随机采样器，带 churn 参数
 - [[edm-noise-distribution]] — 对数正态噪声分布，EDM 训练策略
 - [[non-leaking-augmentation]] — 非泄漏数据增强，防止增强痕迹泄漏到生成图像
+- [[cross-attention-conditioning]] — 跨注意力条件化，LDM 的通用条件生成机制
 
 ## Analyses
 - [[on-policy-vs-off-policy]] — on-policy 与 off-policy 学习范式对比

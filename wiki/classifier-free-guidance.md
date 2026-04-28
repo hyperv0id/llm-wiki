@@ -7,7 +7,7 @@ tags:
   - guidance
 created: 2026-04-28
 last_updated: 2026-04-28
-source_count: 1
+source_count: 2
 confidence: high
 status: active
 ---
@@ -63,4 +63,9 @@ $$
 - 高引导尺度（$w$ 过大）会导致样本质量下降、颜色饱和度过高、出现伪影。
 - 无法像分类器引导那样提供显式的分类置信度信号。
 
+## LDM 中的应用
+
+LDM 成功将无分类器引导应用于文本到图像生成[^src-rombach-ldm-2022]。在 MS-COCO 数据集上，CFG 将 FID 从 23.31 提升到 12.63（引导尺度 s=1.5）。典型引导尺度在 1.5 到 10.0 之间。
+
 [^src-understanding-diffusion-models]: [[source-understanding-diffusion-models]]
+[^src-rombach-ldm-2022]: [[source-rombach-ldm-2022]]

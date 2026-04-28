@@ -146,3 +146,8 @@ Pages updated: [[index]], [[log]]
 Ingested Karras et al. NeurIPS 2022 paper presenting unified design space for diffusion models. Core contributions: Heun 2nd-order ODE solver, EDM preconditioning (cskip/cout/cin), log-normal noise distribution, non-leaking augmentation. Achieved CIFAR-10 FID 1.79 (conditional), 1.97 (unconditional), ImageNet-64 FID 1.36.
 Pages created: [[source-edm]], [[edm]], [[edm-design-space]], [[heun-sampler]], [[edm-preconditioning]], [[edm-stochastic-sampler]], [[edm-noise-distribution]], [[non-leaking-augmentation]]
 Pages updated: [[index]], [[log]]
+
+## [2026-04-28] ingest | LDM: High-Resolution Image Synthesis with Latent Diffusion Models (Rombach et al., CVPR 2022)
+Ingested Rombach et al. CVPR 2022 paper presenting latent diffusion models. Core contributions: perceptual compression via pretrained autoencoders (f=4-16), latent space diffusion training, cross-attention conditioning for flexible multimodal conditioning. Achieved CelebA-HQ FID 5.11, text-to-image FID 12.63 on MS-COCO, class-conditional ImageNet FID 3.60.
+Pages created: [[source-rombach-ldm-2022]], [[latent-diffusion-models]], [[perceptual-compression]], [[cross-attention-conditioning]]
+Pages updated: [[index]], [[log]]
