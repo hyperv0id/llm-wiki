@@ -108,6 +108,7 @@ $$
 - **[[ncsn|NCSN]]**：NCSN，DDPM 的重要前身，使用退火朗之万动力学采样
 - **[[score-based-sde|Score-Based SDE]]**：2021 年 ICLR 论文，用 SDE 统一了 NCSN (SMLD) 和 DDPM，引入 PC 采样和概率流 ODE[^src-sde]
 - **[[dpm-solver|DPM-Solver]]**：2022 年 NeurIPS，专用快速 ODE 求解器，利用半线性结构在约 10 步内生成高质量样本[^src-dpm-solver]
+- **[[consistency-models|Consistency Models]]**：2023 年 ICML，单步生成模型，通过学习 PF ODE 轨迹映射实现快速生成[^src-consistency-models]
 - **[[edm|EDM]]**：2022 年 NeurIPS 论文，系统梳理扩散模型设计空间，提出 Heun 二阶采样器、预处理技术和对数正态噪声分布[^src-edm]
 
 ## 引用
@@ -115,5 +116,6 @@ $$
 [^src-ddpm]: [[source-ddpm]]
 [^src-sde]: [[source-sde]]
 [^src-dpm-solver]: [[source-dpm-solver]]
+[^src-consistency-models]: [[source-consistency-models]]
 [^src-edm]: [[source-edm]]
 [^src-understanding-diffusion-models]: [[source-understanding-diffusion-models]]

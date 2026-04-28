@@ -64,6 +64,11 @@ Pages updated: [[diffusion-model]], [[ncsn]], [[ddpm]], [[index]], [[log]]
 Pages created: [[source-dpm-solver]], [[dpm-solver]]
 Pages updated: [[diffusion-model]], [[index]], [[log]]
 
+## [2026-04-28] ingest | Consistency Models (ICML 2023)
+单步生成扩散模型，通过学习 PF ODE 轨迹上任意点到起点的映射。支持蒸馏训练 (CD) 和独立训练 (CT) 两种模式。保留多步采样和零样本编辑能力。CIFAR-10: 1步 FID 3.55, 2步 2.93。
+Pages created: [[source-consistency-models]], [[consistency-models]]
+Pages updated: [[diffusion-model]], [[index]], [[log]]
+
 ## [2026-04-28] correction | 补充 HyperD 到周期性建模专题
 HyperD (2025) 是短/长周期解耦的代表性工作，原专题遗漏。补充 HyperD 章节、频率分离策略表格、时间线标记。
 Pages updated: [[periodicity-modeling-in-time-series]]
