@@ -8,7 +8,7 @@ tags:
   - neurips-2019
 created: 2026-04-28
 last_updated: 2026-04-28
-source_count: 0
+source_count: 1
 confidence: high
 status: active
 ---
@@ -60,3 +60,9 @@ L(θ; σ) = E_{x~pdata, x̃~N(x,σ²I)} [||sθ(x̃, σ) + (x̃ - x)/σ²||²]
 ## 引用
 
 [^src-ncsn]: [[source-ncsn]]
+
+## 相关页面
+
+- [[ncsn]] — NCSN 模型实体页面
+- [[score-based-generative-modeling]] — 基于分数的生成建模概念
+- [[annealed-langevin-dynamics]] — 退火朗之万动力学采样方法

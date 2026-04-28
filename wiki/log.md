@@ -54,6 +54,11 @@ Pages updated: [[index]], [[log]]
 Pages created: [[source-ddpm]], [[ddpm]], [[ddpm-simplified-training-objective]]
 Pages updated: [[diffusion-model]], [[ncsn]], [[index]], [[log]]
 
+## [2026-04-28] ingest | Score-Based SDE: SMLD and DDPM unified (ICLR 2021)
+里程碑论文，用 SDE 统一 NCSN (SMLD) 和 DDPM。引入 VE SDE、VP SDE、Sub-VP SDE，PC 采样器，概率流 ODE。CIFAR-10 取得 IS 9.89, FID 2.20，NLL 2.99 bits/dim。首次实现 1024×1024 生成。
+Pages created: [[source-sde]], [[score-based-sde]], [[predictor-corrector-sampling]], [[probability-flow-ode]]
+Pages updated: [[diffusion-model]], [[ncsn]], [[ddpm]], [[index]], [[log]]
+
 ## [2026-04-28] correction | 补充 HyperD 到周期性建模专题
 HyperD (2025) 是短/长周期解耦的代表性工作，原专题遗漏。补充 HyperD 章节、频率分离策略表格、时间线标记。
 Pages updated: [[periodicity-modeling-in-time-series]]

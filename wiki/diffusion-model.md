@@ -8,7 +8,7 @@ tags:
   - score-based
 created: 2026-04-28
 last_updated: 2026-04-28
-source_count: 2
+source_count: 3
 confidence: high
 status: active
 ---
@@ -105,9 +105,11 @@ $$
 ## 关键实现
 
 - **[[ddpm|DDPM]]**：2020 年 NeurIPS 论文，首次证明扩散模型可生成高质量图像，建立了与得分匹配的等价性[^src-ddpm]
-- **[[ncsn]]**：NCSN，DDPM 的重要前身，使用退火朗之万动力学采样
+- **[[ncsn|NCSN]]**：NCSN，DDPM 的重要前身，使用退火朗之万动力学采样
+- **[[score-based-sde|Score-Based SDE]]**：2021 年 ICLR 论文，用 SDE 统一了 NCSN (SMLD) 和 DDPM，引入 PC 采样和概率流 ODE[^src-sde]
 
 ## 引用
 
 [^src-ddpm]: [[source-ddpm]]
+[^src-sde]: [[source-sde]]
 [^src-understanding-diffusion-models]: [[source-understanding-diffusion-models]]

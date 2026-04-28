@@ -41,6 +41,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-sparsetsf]] — SparseTSF: lightweight LTSF with <1k parameters via sparse modeling (TPAMI 2026 & ICML 2024 Oral)
 - [[source-cyclenet]] — CycleNet: modeling periodic patterns for time series forecasting (NeurIPS 2024)
 - [[source-ddpm]] — DDPM: Denoising Diffusion Probabilistic Models (NeurIPS 2020)
+- [[source-sde]] — Score-Based SDE: Unified framework for SMLD and DDPM (ICLR 2021)
 - [[source-alibi]] — ALiBi: attention with linear biases enables input length extrapolation (ICLR 2022)
 - [[source-yarn]] — YaRN: efficient context window extension of large language models (2023)
 - [[source-paperbench]] — Long Context, Less Focus: A Scaling Gap in LLMs (Gu et al., 2026)
@@ -72,6 +73,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[sparsetsf]] — SparseTSF, lightweight LTSF with <1k parameters (TPAMI 2026)
 - [[tslib]] — Time Series Library (TSLib), benchmark for deep time series models
 - [[ncsn]] — Noise Conditional Score Networks, score-based generative model (Song & Ermon, 2020)
+- [[score-based-sde]] — Score-Based SDE, unifying SMLD and DDPM (Song et al., ICLR 2021)
 
 ## Concepts
 - [[hybrid-periodicity-decoupling]] — explicitly separating short-term and long-term periodicity in time-series signals
@@ -138,6 +140,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[spurious-patterns-in-attention]] — model learning shortcut features instead of semantic features
 - [[annealed-langevin-dynamics]] — 退火朗之万动力学，多噪声水平逐步采样的方法
 - [[ddpm-simplified-training-objective]] — DDPM's L_simple, simplified noise prediction loss for diffusion models
+- [[predictor-corrector-sampling]] — PC sampling, combining SDE solvers with score-based MCMC
+- [[probability-flow-ode]] — deterministic neural ODE sampling with exact likelihood computation
 - [[classifier-guidance]] — 分类器引导利用分类器梯度引导扩散模型条件生成
 - [[classifier-free-guidance]] — 无分类器引导联合训练条件与无条件扩散模型实现条件控制
 
