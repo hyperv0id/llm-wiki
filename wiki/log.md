@@ -136,3 +136,8 @@ Pages updated: [[index]], [[log]]
 Ingested NeurIPS 2019/2020 paper proposing Noise Conditional Score Networks (NCSN). Core innovations: score matching for score estimation, multi-noise-level perturbation to handle manifold hypothesis and low-density regions, annealed Langevin dynamics for sampling. Achieved SOTA Inception Score 8.87 on CIFAR-10 (unconditional), FID 25.32.
 Pages created: [[source-ncsn]], [[ncsn]], [[score-based-generative-modeling]], [[annealed-langevin-dynamics]]
 Pages updated: [[index]], [[log]]
+
+## [2026-04-28] ingest | EDM: Elucidating the Design Space of Diffusion-Based Generative Models (Karras et al., NeurIPS 2022)
+Ingested Karras et al. NeurIPS 2022 paper presenting unified design space for diffusion models. Core contributions: Heun 2nd-order ODE solver, EDM preconditioning (cskip/cout/cin), log-normal noise distribution, non-leaking augmentation. Achieved CIFAR-10 FID 1.79 (conditional), 1.97 (unconditional), ImageNet-64 FID 1.36.
+Pages created: [[source-edm]], [[edm]], [[edm-design-space]], [[heun-sampler]], [[edm-preconditioning]], [[edm-stochastic-sampler]], [[edm-noise-distribution]], [[non-leaking-augmentation]]
+Pages updated: [[index]], [[log]]
