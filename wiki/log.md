@@ -59,6 +59,11 @@ Pages updated: [[diffusion-model]], [[ncsn]], [[index]], [[log]]
 Pages created: [[source-sde]], [[score-based-sde]], [[predictor-corrector-sampling]], [[probability-flow-ode]]
 Pages updated: [[diffusion-model]], [[ncsn]], [[ddpm]], [[index]], [[log]]
 
+## [2026-04-28] ingest | DPM-Solver: fast ODE solver for diffusion models (NeurIPS 2022)
+快速扩散模型采样，利用半线性 ODE 结构在约 10 步内生成高质量样本。揭示 DDIM 等价于 DPM-Solver-1。提出一/二/三阶求解器，训练免费、即插即用。CIFAR-10: 4.70 FID@10 NFE, 2.87@20。
+Pages created: [[source-dpm-solver]], [[dpm-solver]]
+Pages updated: [[diffusion-model]], [[index]], [[log]]
+
 ## [2026-04-28] correction | 补充 HyperD 到周期性建模专题
 HyperD (2025) 是短/长周期解耦的代表性工作，原专题遗漏。补充 HyperD 章节、频率分离策略表格、时间线标记。
 Pages updated: [[periodicity-modeling-in-time-series]]

@@ -74,6 +74,13 @@ $$
 - VE SDE 的 ODE 采样质量显著低于 VP SDE
 - 高维数据上 ODE 采样 FID 通常略差于 SDE 采样
 
+## 快速采样进展
+
+- **[[dpm-solver|DPM-Solver]]** (Lu et al., 2022)：利用半线性结构实现约 10 步采样
+- **DDIM** (Song et al., 2021)：一阶 ODE 求解器，~50 步
+- **RK45** (Song et al., ICLR 2021)：黑盒 ODE 求解器，~60 步
+
 ## 引用
 
 [^src-sde]: [[source-sde]]
+[^src-dpm-solver]: [[source-dpm-solver]]
