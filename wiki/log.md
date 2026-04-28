@@ -151,3 +151,8 @@ Pages updated: [[index]], [[log]]
 Ingested Rombach et al. CVPR 2022 paper presenting latent diffusion models. Core contributions: perceptual compression via pretrained autoencoders (f=4-16), latent space diffusion training, cross-attention conditioning for flexible multimodal conditioning. Achieved CelebA-HQ FID 5.11, text-to-image FID 12.63 on MS-COCO, class-conditional ImageNet FID 3.60.
 Pages created: [[source-rombach-ldm-2022]], [[latent-diffusion-models]], [[perceptual-compression]], [[cross-attention-conditioning]]
 Pages updated: [[index]], [[log]]
+
+## [2026-04-28] ingest | Glow (NeurIPS 2018)
+归一化流生成模型，引入可逆 1×1 卷积层替代 RealNVP 的固定通道置换。ActNorm 层解决小批量训练问题。首个高效生成 256×256 高分辨率图像的似然模型。CIFAR-10 bits/dim 3.35, ImageNet 64×64 3.81。
+Pages created: [[source-glow]], [[glow]], [[normalizing-flow]]
+Pages updated: [[index]], [[log]]
