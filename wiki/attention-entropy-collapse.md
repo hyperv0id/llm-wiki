@@ -7,9 +7,9 @@ tags:
   - stability
   - training-dynamics
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-04-29
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
@@ -100,3 +100,4 @@ $$\text{softmax}(x)_j \xrightarrow{x_j \gg x_{k \neq j}} 1_j$$
 
 - [[cbsa]] — CBSA 通过子空间压缩缓解注意力熵崩溃，压缩目标鼓励 token 向子空间聚集
 - [[mcr2]] — MCR² 目标通过编码率度量紧凑程度，直接驱动 token 压缩行为
+- [[spurious-patterns]] — Spurious patterns in attention that can trigger entropy collapse through shortcut learning

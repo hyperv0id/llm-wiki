@@ -7,9 +7,9 @@ tags:
   - traffic-forecasting
   - time-series
 created: 2026-04-27
-last_updated: 2026-04-28
-source_count: 4
-confidence: high
+last_updated: 2026-04-29
+source_count: 1
+confidence: medium
 status: active
 ---
 
@@ -43,11 +43,8 @@ In [[hyperd|HyperD]], the separation is achieved via Fourier transform in the [[
 
 Several recent methods share the principle of explicit periodicity modeling:
 
-- **[[source-dualformer|Dualformer]]** (2026) employs hierarchical frequency sampling in a dual-branch architecture, decomposing time-frequency representations across scales — conceptually related to the short/long decoupling in Hybrid Periodicity Decoupling[^src-dualformer].
-- **[[source-penguin|PENGUIN]]** (AISTATS 2026) introduces periodic-nested group attention that groups time steps by their position within a learned period, capturing intra-period patterns without explicit frequency decomposition[^src-penguin].
-- **[[source-prnet|PRNet]]** proposes periodic residual learning for crowd flow, where residuals are computed relative to periodic baselines, complementing the residual-periodic separation paradigm[^src-prnet].
+- **Dualformer** (2026) employs hierarchical frequency sampling in a dual-branch architecture, decomposing time-frequency representations across scales — conceptually related to the short/long decoupling in Hybrid Periodicity Decoupling.
+- **PENGUIN** (AISTATS 2026) introduces periodic-nested group attention that groups time steps by their position within a learned period, capturing intra-period patterns without explicit frequency decomposition.
+- **PRNet** proposes periodic residual learning for crowd flow, where residuals are computed relative to periodic baselines, complementing the residual-periodic separation paradigm.
 
 [^src-hyperd-hybrid-periodicity-decoupling]: [[source-hyperd-hybrid-periodicity-decoupling]]
-[^src-dualformer]: [[source-dualformer]]
-[^src-penguin]: [[source-penguin]]
-[^src-prnet]: [[source-prnet]]

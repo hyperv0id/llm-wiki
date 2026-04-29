@@ -7,8 +7,8 @@ tags:
   - theoretical-analysis
 created: 2026-04-28
 last_updated: 2026-04-28
-source_count: 1
-confidence: high
+source_count: 2
+confidence: medium
 status: active
 ---
 

@@ -9,7 +9,7 @@ tags:
 created: 2026-04-28
 last_updated: 2026-04-28
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
@@ -21,7 +21,7 @@ A crucial insight is that optimizing VDMs reduces to learning a neural network t
 
 The connection to [[score-based-generative-models|score-based generative models]] is established by showing that the score function $\nabla \log p(x_t)$ is proportional to the negative source noise: $\nabla \log p(x_t) = -\frac{1}{\sqrt{1-\bar{\alpha}_t}} \epsilon_0$[^src-understanding-diffusion-models]. This reveals that [[langevin-dynamics|Langevin dynamics]] sampling in score-based models corresponds to denoising in diffusion models[^src-understanding-diffusion-models].
 
-For conditional generation, the paper discusses both classifier guidance and classifier-free guidance approaches (see [[#Classifier Guidance]] and [[#Classifier-Free Guidance]] for details)[^src-understanding-diffusion-models]. Classifier guidance uses gradients from a separately trained classifier to steer generation, while classifier-free guidance jointly trains conditional and unconditional models and interpolates between their predictions[^src-understanding-diffusion-models].
+For conditional generation, the paper discusses both classifier guidance and classifier-free guidance approaches (see Classifier Guidance and Classifier-Free Guidance for details)[^src-understanding-diffusion-models]. Classifier guidance uses gradients from a separately trained classifier to steer generation, while classifier-free guidance jointly trains conditional and unconditional models and interpolates between their predictions[^src-understanding-diffusion-models].
 
 The paper acknowledges limitations of diffusion models, including slow sampling due to sequential denoising steps and lack of interpretable latent representations compared to VAEs[^src-understanding-diffusion-models]. However, it highlights their strong performance in generative modeling tasks and provides a unified mathematical foundation connecting multiple generative modeling approaches[^src-understanding-diffusion-models].
 

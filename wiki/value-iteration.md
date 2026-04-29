@@ -7,7 +7,7 @@ tags:
   - value-iteration
 created: 2026-04-27
 last_updated: 2026-04-28
-source_count: 3
+source_count: 2
 confidence: high
 status: active
 ---

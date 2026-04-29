@@ -10,7 +10,7 @@ last_updated: 2026-04-29
 source_count: 1
 references:
   - [[source-fast-long-horizon-forecasting]]
-confidence: high
+confidence: medium
 status: active
 ---
 

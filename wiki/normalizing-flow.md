@@ -8,7 +8,7 @@ tags:
 created: 2026-04-28
 last_updated: 2026-04-28
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
@@ -59,9 +59,7 @@ $$
 ## 相关页面
 
 - [[glow]] — Glow 模型
-- [[realnvp]] — RealNVP
 - [[variational-autoencoder]] — VAE
-- [[gan]] — GAN
 - [[diffusion-model]] — 扩散模型
 
 ## 引用

@@ -7,10 +7,10 @@ tags:
   - scalability
 created: 2026-04-29
 last_updated: 2026-04-29
-source_count: 1
+source_count: 2
 references:
   - [[source-fast-long-horizon-forecasting]]
-confidence: high
+confidence: medium
 status: active
 ---
 
@@ -48,7 +48,7 @@ status: active
 
 ## FaST 的解决方案
 
-[[source-fast-long-horizon-forecasting|FaST]] 提出两个核心技术：
+FaST 提出两个核心技术：
 
 1. **[[adaptive-graph-agent-attention|AGA-Att]]**: O(N·a) 空间复杂度（a = 32 ≪ N）
 2. **[[mixture-of-experts|HA-MoE]]**: 时间压缩输入避免 T 步展开

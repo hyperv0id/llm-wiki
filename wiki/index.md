@@ -175,7 +175,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[key-normalization]] — ℓ2 normalization of keys to prevent attention hijacking
 - [[attention-logit-explosion]] — training instability from unbounded attention scores
 - [[attention-entropy-collapse]] — attention distribution becoming one-hot during training
-- [[spurious-patterns-in-attention]] — model learning shortcut features instead of semantic features
+- [[spurious-patterns]] — model learning shortcut features instead of semantic features
 - [[annealed-langevin-dynamics]] — 退火朗之万动力学，多噪声水平逐步采样的方法
 - [[ddpm-simplified-training-objective]] — DDPM's L_simple, simplified noise prediction loss for diffusion models
 - [[predictor-corrector-sampling]] — PC sampling, combining SDE solvers with score-based MCMC

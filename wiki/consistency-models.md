@@ -9,7 +9,7 @@ tags:
 created: 2026-04-28
 last_updated: 2026-04-28
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
@@ -62,7 +62,6 @@ $$
 - [[score-based-sde]] — Score-Based SDE，理论基础
 - [[probability-flow-ode]] — 概率流 ODE
 - [[dpm-solver]] — DPM-Solver，另一快速采样方法
-- [[progressive-distillation]] — 渐进蒸馏，对比方法
 
 ## 引用
 

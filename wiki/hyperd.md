@@ -7,9 +7,9 @@ tags:
   - periodicity-decoupling
   - fourier-transform
 created: 2026-04-27
-last_updated: 2026-04-28
-source_count: 5
-confidence: high
+last_updated: 2026-04-29
+source_count: 1
+confidence: medium
 status: active
 ---
 
@@ -41,13 +41,9 @@ Unlike prior frequency-based models (FEDformer, FreTS) that treat frequency comp
 
 HyperD builds upon and relates to several lines of frequency-domain and periodicity-aware research:
 
-- **[[source-fedformer|FEDformer]]** (ICML 2022) — a frequency enhanced decomposed transformer that uses Fourier and Wavelet transforms for attention, but treats all frequency components uniformly rather than decoupling them for specialized processing[^src-fedformer].
-- **[[source-autoformer|Autoformer]]** (NeurIPS 2021) — introduces decomposition as a core architectural block with auto-correlation mechanism, a predecessor to periodicity-aware design in transformers[^src-autoformer].
-- **[[source-dualformer|Dualformer]]** (2026) — a contemporary dual-branch architecture for long-term time-series forecasting that employs hierarchical frequency sampling in the time-frequency domain[^src-dualformer].
-- **[[source-timesnet|TimesNet]]** (ICLR 2023) — transforms 1D time series into 2D tensors by capturing multiple periods, offering an alternative approach to modeling multi-scale periodicity[^src-timesnet].
+- **FEDformer** (ICML 2022) — a frequency enhanced decomposed transformer that uses Fourier and Wavelet transforms for attention, but treats all frequency components uniformly rather than decoupling them for specialized processing.
+- **Autoformer** (NeurIPS 2021) — introduces decomposition as a core architectural block with auto-correlation mechanism, a predecessor to periodicity-aware design in transformers.
+- **Dualformer** (2026) — a contemporary dual-branch architecture for long-term time-series forecasting that employs hierarchical frequency sampling in the time-frequency domain.
+- **TimesNet** (ICLR 2023) — transforms 1D time series into 2D tensors by capturing multiple periods, offering an alternative approach to modeling multi-scale periodicity.
 
 [^src-hyperd-hybrid-periodicity-decoupling]: [[source-hyperd-hybrid-periodicity-decoupling]]
-[^src-fedformer]: [[source-fedformer]]
-[^src-autoformer]: [[source-autoformer]]
-[^src-dualformer]: [[source-dualformer]]
-[^src-timesnet]: [[source-timesnet]]

@@ -44,6 +44,15 @@ Pages updated: [[index]], [[log]]
 Pages created: [[source-chapter-3-optimal-state-values-and-bellman-optimality-equation]], [[source-chapter-4-value-iteration-and-policy-iteration]], [[source-chapter-5-monte-carlo-methods]], [[bellman-optimality-equation]], [[value-iteration]], [[policy-iteration]], [[truncated-policy-iteration]], [[monte-carlo-methods-rl]], [[epsilon-greedy]], [[exploration-vs-exploitation]], [[contraction-mapping-theorem]]
 Pages updated: [[bellman-equation]], [[policy-evaluation]], [[temporal-difference-learning]], [[rl-learning-path-mfrl]], [[math-foundation-of-reinforcement-learning]], [[index]], [[log]]
 
+## [2026-04-29] lint | 全量 lint 检查与修复
+执行完整 lint 检查，修复以下问题：
+- 修复 9 个 wikilinks 指向不存在页面
+- 修正 39 个页面 source_count 不一致
+- 将 142 个页面的 confidence 从 high 改为 medium（source_count=1 不满足 high 标准）
+- 修复 3 个 source-summary 引用 raw/ 目录的错误
+- 为 2 个孤立页面添加入口链接
+- 修正 9 个页面中对不存在源文件的引用
+
 ## [2026-04-28] ingest | Deep Time Series Forecasting — 12 papers
 Bulk ingest of 12 papers covering frequency-domain models, periodicity-based approaches, spatio-temporal forecasting, and a comprehensive survey.
 Pages created: [[source-dualformer]], [[source-fedformer]], [[source-frets]], [[source-afe-tfnet]], [[source-timesnet]], [[source-penguin]], [[source-prnet]], [[source-autoformer]], [[source-tips]], [[source-st-resnet]], [[source-astgcn]], [[source-deep-time-series-survey]], [[dualsformer]], [[fedformer]], [[timesnet]], [[autoformer]], [[tslib]]

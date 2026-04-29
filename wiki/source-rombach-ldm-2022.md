@@ -38,4 +38,4 @@ LDM（Latent Diffusion Models）提出将扩散模型应用于预训练自编码
 - 重建能力可能成为需要精细像素精度的任务的瓶颈
 
 ## 源文件
-[^src-rombach-ldm-2022]: [[raw/ldm]]
+[^src-rombach-ldm-2022]: [[source-rombach-ldm-2022]]

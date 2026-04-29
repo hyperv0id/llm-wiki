@@ -9,7 +9,7 @@ tags:
 created: 2026-04-28
 last_updated: 2026-04-28
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
@@ -59,6 +59,5 @@ GLN is not limited to ConFormer. Experiments show that adding GLN to GWNet achie
 ## Related Techniques
 
 - [[instance-normalization]] — RevIN strategy for handling distributional shifts
-- [[layer-normalization]] — standard normalization in transformers
 
 [^src-conformer]: [[source-conformer]]

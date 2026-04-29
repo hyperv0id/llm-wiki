@@ -9,9 +9,9 @@ tags:
   - decomposition
   - NeurIPS-2021
 created: 2026-04-28
-last_updated: 2026-04-28
-source_count: 1
-confidence: high
+last_updated: 2026-04-29
+source_count: 2
+confidence: medium
 status: active
 ---
 
@@ -43,6 +43,6 @@ Autoformer achieves 38% relative MSE improvement over prior state-of-the-art on 
 
 - **[[fedformer]]** — FEDformer builds directly on Autoformer's decomposition philosophy, extending it with learnable MOEDecomp and frequency-domain attention for further improvements.
 - **[[timesnet]]** — TimesNet extends Autoformer's periodicity focus by transforming 1D series into 2D tensors for multi-periodicity modeling, while Autoformer treats periodicity through autocorrelation at the seasonal-part level.
-- **[[source-dualformer|Dualformer]]** — Dualformer's frequency-branch autocorrelation attention is directly inspired by Autoformer's Wiener-Khinchin theorem approach, extending it with hierarchical frequency sampling.
+- **Dualformer** — Dualformer's frequency-branch autocorrelation attention is directly inspired by Autoformer's Wiener-Khinchin theorem approach, extending it with hierarchical frequency sampling.
 
 [^src-autoformer]: [[source-autoformer]]

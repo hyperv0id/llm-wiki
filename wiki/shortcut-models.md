@@ -11,7 +11,7 @@ tags:
 created: 2026-04-28
 last_updated: 2026-04-28
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
@@ -252,7 +252,6 @@ Shortcut Models 还被应用于机器人控制任务：
 - [[flow-matching]] — Flow Matching 基础
 - [[consistency-models]] — Consistency Models
 - [[diffusion-model]] — 扩散模型
-- [[progressive-distillation]] — 渐进蒸馏
 
 ## 引用
 

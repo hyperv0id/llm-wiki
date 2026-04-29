@@ -10,8 +10,8 @@ tags:
   - arxiv-2025
 created: 2026-04-28
 last_updated: 2026-04-28
-source_count: 1
-confidence: high
+source_count: 0
+confidence: medium
 status: active
 ---
 

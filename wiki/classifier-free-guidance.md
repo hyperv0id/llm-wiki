@@ -49,7 +49,7 @@ $$
 | 推理计算量 | 每次采样需额外计算分类器梯度 | 需两次前向传播（条件+无条件） |
 | 实际效果 | 较好，但受限于分类器质量 | 更优，广泛用于主流模型 |
 
-无分类器引导在实践中表现更优，已成为现代扩散模型的标准技术。它被广泛应用于 [[stable-diffusion]]、[[dall-e-2]]、[[imagen]] 等主流文本到图像模型。[^src-understanding-diffusion-models]
+无分类器引导在实践中表现更优，已成为现代扩散模型的标准技术。它被广泛应用于 Stable Diffusion、DALL-E 2、Imagen 等主流文本到图像模型。[^src-understanding-diffusion-models]
 
 ## 应用
 

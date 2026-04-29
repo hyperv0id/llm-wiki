@@ -7,8 +7,8 @@ tags:
   - vae
   - score-based
 created: 2026-04-28
-last_updated: 2026-04-28
-source_count: 8
+last_updated: 2026-04-29
+source_count: 9
 confidence: high
 status: active
 ---
@@ -112,6 +112,10 @@ $$
 - **[[flow-matching|Flow Matching]]**：2023 年 NeurIPS，统一框架，将扩散模型视为 Flow Matching 的特例，支持 OT 等更优概率路径[^src-flow-matching]
 - **[[shortcut-models|Shortcut Models]]**：2025 年 arXiv，单阶段少步/单步生成模型，通过步长调节和自一致性实现高效推理[^src-shortcut-models]
 - **[[edm|EDM]]**：2022 年 NeurIPS 论文，系统梳理扩散模型设计空间，提出 Heun 二阶采样器、预处理技术和对数正态噪声分布[^src-edm]
+
+## Related Concepts
+
+- [[diffusion-models]] — A broader overview of diffusion models covering DDPM, SMLD, SDE unification, and applications
 
 ## 引用
 

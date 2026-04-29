@@ -7,7 +7,7 @@ tags:
   - intelligent-transportation
 created: 2026-04-27
 last_updated: 2026-04-28
-source_count: 8
+source_count: 13
 confidence: high
 status: active
 ---

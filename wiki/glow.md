@@ -9,7 +9,7 @@ tags:
 created: 2026-04-28
 last_updated: 2026-04-28
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
@@ -75,10 +75,7 @@ $$
 ## 相关页面
 
 - [[normalizing-flow]] — 归一化流概念
-- [[realnvp]] — RealNVP，前身工作
-- [[nice]] — NICE，早期流模型
 - [[variational-autoencoder]] — VAE，对比生成模型
-- [[gan]] — GAN，对比生成模型
 
 ## 引用
 

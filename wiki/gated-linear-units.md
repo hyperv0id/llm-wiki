@@ -7,8 +7,8 @@ tags:
   - efficiency
 created: 2026-04-29
 last_updated: 2026-04-29
-source_count: 1
-confidence: high
+source_count: 2
+confidence: medium
 status: active
 ---
 
@@ -41,7 +41,7 @@ GLU(Z) = σ(ZW_1 + b_1) ⊙ (ZW_2 + b_2)
 
 ## FaST 中的 GLU Expert
 
-在 [[source-fast-long-horizon-forecasting|FaST]] 中，每个 GLU expert 定义为：
+在 FaST 中，每个 GLU expert 定义为：
 
 ```
 Exp_i(Z_t^ℓ) = σ(Z_t^ℓ W_{i,2}^ℓ + b_{i,2}^ℓ) ⊙ (Z_t^ℓ W_{i,1}^ℓ + b_{i,1}^ℓ)

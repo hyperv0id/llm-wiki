@@ -9,7 +9,7 @@ tags:
 created: 2026-04-28
 last_updated: 2026-04-28
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
@@ -63,7 +63,6 @@ $$
 - [[ddpm]] — DDPM，原始采样需要 ~1000 步
 - [[score-based-sde]] — Score-Based SDE，ODE 求解基础
 - [[probability-flow-ode]] — 概率流 ODE
-- [[ddim]] — DDIM，等价于 DPM-Solver-1
 
 ## 引用
 

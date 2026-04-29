@@ -37,4 +37,4 @@ EDM 系统性地梳理了扩散模型的设计空间，将 VP (DDPM)、VE (NCSN)
 - 随机采样的 churn 参数需要针对每个模型单独调参
 
 ## 源文件
-[^src-edm]: [[raw/edm]]
+[^src-edm]: [[source-edm]]

@@ -6,9 +6,9 @@ tags:
   - signal-decomposition
   - traffic-forecasting
 created: 2026-04-27
-last_updated: 2026-04-28
-source_count: 4
-confidence: high
+last_updated: 2026-04-29
+source_count: 1
+confidence: medium
 status: active
 ---
 
@@ -45,11 +45,8 @@ The learned frequency thresholds align with interpretable real-world periods: da
 
 The FR module's frequency-band separation principle relates to other frequency-domain techniques:
 
-- **[[source-fedformer|FEDformer]]** (ICML 2022) uses Fourier-enhanced and Wavelet-enhanced attention blocks to capture frequency patterns, though it processes all frequency components uniformly without explicit band separation[^src-fedformer].
-- **[[source-frets|FreTS]]** (NeurIPS 2023) applies MLPs in the frequency domain to all components uniformly, in contrast to FR's targeted embedding per frequency band[^src-frets].
-- **[[source-afe-tfnet|AFE-TFNet]]** combines wavelet transform (WT) and FFT for adaptive multi-scale feature extraction, sharing FR's motivation of multi-resolution frequency analysis for time-series modeling[^src-afe-tfnet].
+- **FEDformer** (ICML 2022) uses Fourier-enhanced and Wavelet-enhanced attention blocks to capture frequency patterns, though it processes all frequency components uniformly without explicit band separation.
+- **FreTS** (NeurIPS 2023) applies MLPs in the frequency domain to all components uniformly, in contrast to FR's targeted embedding per frequency band.
+- **AFE-TFNet** combines wavelet transform (WT) and FFT for adaptive multi-scale feature extraction, sharing FR's motivation of multi-resolution frequency analysis for time-series modeling.
 
 [^src-hyperd-hybrid-periodicity-decoupling]: [[source-hyperd-hybrid-periodicity-decoupling]]
-[^src-fedformer]: [[source-fedformer]]
-[^src-frets]: [[source-frets]]
-[^src-afe-tfnet]: [[source-afe-tfnet]]
