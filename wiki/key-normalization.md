@@ -66,3 +66,7 @@ $$A_i = \text{softmax}\left(C\|q_i\|(\bar{q}_i \cdot \bar{k}_j)\right)$$
 ## 引用
 
 [^src-quest]: [[source-quest]]
+
+## 相关页面
+
+- [[cbsa]] — CBSA 通过子空间压缩实现稳定训练，与 QUEST 的键归一化是两种不同的稳定性机制

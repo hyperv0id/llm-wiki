@@ -89,7 +89,15 @@ $h(q, C_n)$ 与目标 $Y$ 之间的互信息 $I(Y; h(q, C_n))$ 随 $n$ 增长而
 | NTK-aware / YaRN | 位置编码外推 | 互补：解决位置编码问题，Attention Dilution 解决注意力分配问题 |
 | ALiBi | 位置编码外推 | 互补：线性偏置改善外推，但不解决注意力稀释 |
 | 上下文窗口扩展 | 模型架构 | 互补：扩展上下文长度，但 Attention Dilution 揭示更深层问题 |
+| **CBSA** | 可解释高效注意力 | **互补：固定代表数实现线性复杂度，突破 O(N²) 瓶颈** |
+
+## 相关页面
+
+- [[cbsa]] — CBSA 通过固定代表数 m 实现 O(N) 线性复杂度，区别于标准注意力的 O(N²) 复杂度[^src-cbsa]
 
 ## 引用
+
+[^src-paperbench]: [[source-paperbench]]
+[^src-cbsa]: [[source-cbsa]]
 
 [^src-paperbench]: [[source-paperbench]]

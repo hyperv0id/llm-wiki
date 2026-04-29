@@ -95,3 +95,8 @@ $$\text{softmax}(x)_j \xrightarrow{x_j \gg x_{k \neq j}} 1_j$$
 ## 引用
 
 [^src-quest]: [[source-quest]]
+
+## 相关页面
+
+- [[cbsa]] — CBSA 通过子空间压缩缓解注意力熵崩溃，压缩目标鼓励 token 向子空间聚集
+- [[mcr2]] — MCR² 目标通过编码率度量紧凑程度，直接驱动 token 压缩行为

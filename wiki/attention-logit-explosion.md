@@ -86,3 +86,8 @@ $$\frac{1}{\sqrt{d}}\|q_i\|\|k_j\| \rightarrow \infty$$
 ## 引用
 
 [^src-quest]: [[source-quest]]
+
+## 相关页面
+
+- [[cbsa]] — CBSA 通过子空间压缩实现训练稳定性，与 QUEST 的键归一化方法不同
+- [[algorithm-unrolling]] — CBSA 通过算法展开从优化目标导出，每层操作

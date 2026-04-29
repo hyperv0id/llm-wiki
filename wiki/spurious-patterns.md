@@ -99,3 +99,7 @@ status: active
 ## 引用
 
 [^src-quest]: [[source-quest]]
+
+## 相关页面
+
+- [[cbsa]] — CBSA 通过子空间压缩和可解释架构减少虚假模式学习的机会
