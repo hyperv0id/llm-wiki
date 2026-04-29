@@ -58,6 +58,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-edm]] — EDM: Elucidating the Design Space of Diffusion-Based Generative Models (Karras et al., NeurIPS 2022)
 - [[source-rombach-ldm-2022]] — LDM: High-Resolution Image Synthesis with Latent Diffusion Models (Rombach et al., CVPR 2022)
 - [[source-neural-ode]] — Neural ODE: Neural Ordinary Differential Equations (Chen et al., NeurIPS 2018)
+- [[source-cbsa]] — CBSA: Towards Interpretable and Efficient Attention (NeurIPS 2025)
+- [[source-fast-long-horizon-forecasting]] — FaST: Efficient Long-Horizon Forecasting for Large-Scale STG via MoE (KDD 2026)
 
 ## Entities
 - [[adaptive-positional-encoding]] — APE, adaptive positional encoding for infinite length extrapolation (2026)
@@ -95,6 +97,9 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[edm]] — EDM, unified design space for diffusion models (Karras et al., NeurIPS 2022)
 - [[latent-diffusion-models]] — LDM, latent space diffusion for high-resolution image synthesis (Rombach et al., CVPR 2022)
 - [[neural-ordinary-differential-equation]] — Neural ODE, continuous-depth neural network using ODE solvers (Chen et al., NeurIPS 2018)
+- [[cbsa]] — CBSA, Contract-and-Broadcast Self-Attention via algorithm unrolling (NeurIPS 2025)
+- [[cbt]] — CBT, Contract-and-Broadcast Transformer with interpretable CBSA layers (NeurIPS 2025)
+- [[crate-white-box-transformer]] — CRATE, White-Box Transformer via MCR² objective (NeurIPS 2023)
 
 ## Concepts
 - [[hybrid-periodicity-decoupling]] — explicitly separating short-term and long-term periodicity in time-series signals
@@ -116,6 +121,11 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[edm-design-space]] — EDM 统一设计空间，将 VP/VE/DDIM 等框架正交化
 - [[perceptual-compression]] — 感知压缩，将生成建模分为感知压缩和语义压缩两个层次
 - [[continuous-normalizing-flow]] — 连续归一化流 (CNF)，基于 Neural ODE 的可逆生成模型
+- [[algorithm-unrolling]] — algorithm unrolling, converting iterative optimization into neural network layers
+- [[mcr2]] — MCR², Maximal Coding Rate Reduction for learning compact structured representations
+- [[coding-rate]] — Coding Rate, information-theoretic measure for data distribution compactness
+- [[union-of-subspaces-model]] — Union of Subspaces Model, data assumption underlying MCR² and CBSA
+- [[large-scale-spatial-temporal-graph]] — 大规模时空图预测的计算复杂度与解决方案
 
 ## Techniques
 - [[frequency-aware-residual-representation]] — Fourier-based signal decomposition into periodic and residual components
@@ -179,8 +189,13 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[non-leaking-augmentation]] — 非泄漏数据增强，防止增强痕迹泄漏到生成图像
 - [[cross-attention-conditioning]] — 跨注意力条件化，LDM 的通用条件生成机制
 - [[adjoint-sensitivity-method]] — 伴随灵敏度方法，Neural ODE 的反向传播技术
+- [[contract-and-broadcast-mechanism]] — CBSA's core two-stage operation: contraction + broadcast
+- [[representative-token-extraction]] — extracting representative tokens via cross-attention for efficient compression
+- [[adaptive-graph-agent-attention]] — AGA-Att: using learnable agent tokens to reduce spatial complexity from O(N²) to O(Na)
+- [[gated-linear-units]] — GLU: gated linear units as efficient MoE experts with parallel computation
 
-## Analyses
+## Concepts
+- [[mixture-of-experts]] — MoE, mixture of experts architecture with dynamic expert routing
 - [[on-policy-vs-off-policy]] — on-policy 与 off-policy 学习范式对比
 - [[periodicity-modeling-in-time-series]] — analysis of periodic modeling approaches across time-series forecasting architectures
 - [[rl-learning-path-mfrl]] — 基于《Mathematical Foundations of Reinforcement Learning》的系统性 RL 学习路径

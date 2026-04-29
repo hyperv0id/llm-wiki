@@ -186,3 +186,13 @@ Pages updated: [[index]], [[log]], [[alibi]]
 首篇 ingest 2026-04-27 新发布的 arXiv 论文，提出将 RoPE 旋转流形从固定序数索引扩展为可学习的时间条件化空间。核心贡献：1) 双分支 SIREN-DNN 将时间戳映射为旋转角，捕获日/周周期和近因衰减；2) 可学习频率缩放替代固定逆频率；3) 可学习门控 λ 融合时间与序数信号。在 LinkedIn 生产社交信息流数据集上，三个参与度任务的校准和排序指标均取得一致提升，额外参数量仅 0.2%。
 Pages created: [[source-siren-rope]], [[siren-rope]], [[dual-branch-siren]], [[temporal-rotation]], [[ordinal-temporal-fusion]], [[learnable-frequency-scaling]]
 Pages updated: [[index]], [[log]]
+
+## [2026-04-29] ingest | CBSA: Towards Interpretable and Efficient Attention (NeurIPS 2025)
+Wen, Huang & Li (BUPT) 提出 CBSA (Contract-and-Broadcast Self-Attention)，一种通过算法展开从 MCR² 优化目标推导出的可解释且高效的注意力机制。核心贡献：1) 引入代表性 token 概念，将"压缩所有 token"转化为"收缩少数代表"，实现线性复杂度；2) CBSA 可统一 softmax/linear/channel/agent attention 作为不同代表结构下的实例；3) CBT 在 ImageNet-1K 以 ViT-S 30% 参数达到 71.4% (vs 72.4%)，语义分割 ADE20K mIoU 超越 Segmenter 1.5%。
+Pages created: [[source-cbsa]], [[cbsa]], [[cbt]], [[crate-white-box-transformer]], [[algorithm-unrolling]], [[mcr2]], [[coding-rate]], [[union-of-subspaces-model]], [[contract-and-broadcast-mechanism]], [[representative-token-extraction]]
+Pages updated: [[index]], [[log]]
+
+## [2026-04-29] ingest | FaST: Long-Horizon Forecasting for Large-Scale Spatial-Temporal Graph via MoE (KDD 2026)
+Zhao, Zhong, Wang, Wen, Jin, Liang, Wan, Wu 提出 FaST 框架，解决大规模时空图长视野预测的计算瓶颈。核心创新：1) 异质性感知 MoE (HA-MoE) 使用 GLU experts 和动态路由解决 expert 极化；2) 自适应图代理注意力 (AGA-Att) 用 a ≪ N 个代理 tokens 将空间复杂度从 O(N²) 降至 O(Na)。首次实现 672 步（1 周）预测在 8600 节点上可训练，MAE 提升 4.4%-18.4%，推理速度 1.3x-2.2x SOTA。Dense MoE 设计配合 GLU 并行化实现高效计算。
+Pages created: [[source-fast-long-horizon-forecasting]], [[mixture-of-experts]], [[adaptive-graph-agent-attention]], [[gated-linear-units]], [[large-scale-spatial-temporal-graph]]
+Pages updated: [[traffic-forecasting]], [[index]], [[log]]

@@ -7,7 +7,7 @@ tags:
   - intelligent-transportation
 created: 2026-04-27
 last_updated: 2026-04-28
-source_count: 7
+source_count: 8
 confidence: high
 status: active
 ---
@@ -43,6 +43,9 @@ FEDformer (2022), FreTS (2023), and StemGNN (2020) apply Fourier transforms but 
 ### Accident-Aware
 Traditional models assume stationary traffic patterns but fail during accidents which create non-stationary perturbations with directional shockwaves. ConFormer (KDD 2026) addresses this through accident-aware graph propagation and Guided Layer Normalization (GLN), achieving up to 10.7% improvement in accident scenarios[^src-conformer].
 
+### Large-Scale Long-Horizon
+FaST (KDD 2026) addresses computational bottlenecks in large-scale graphs (8,600+ nodes) with long-horizon predictions (672 steps = 1 week) using [[adaptive-graph-agent-attention|AGA-Att]] for O(N·a) spatial complexity and [[mixture-of-experts|Dense MoE]] for efficient feature extraction. Achieves 4.4%-18.4% MAE improvement over SOTA with 1.3x-2.2x faster inference[^src-fast-long-horizon-forecasting].
+
 ## Key Models
 
 Several influential models span the development of traffic and spatial-temporal forecasting:
@@ -65,3 +68,4 @@ The standard benchmarks are the PeMS (Caltrans Performance Measurement System) d
 [^src-penguin]: [[source-penguin]]
 [^src-deep-time-series-survey]: [[source-deep-time-series-survey]]
 [^src-conformer]: [[source-conformer]]
+[^src-fast-long-horizon-forecasting]: [[source-fast-long-horizon-forecasting]]
