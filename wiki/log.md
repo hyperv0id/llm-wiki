@@ -2,7 +2,7 @@
 title: Log
 type: concept
 created: 2026-04-26
-last_updated: 2026-04-28
+last_updated: 2026-04-29
 tags:
   - meta
 ---
@@ -181,3 +181,8 @@ Pages updated: [[index]], [[log]]
 TIPS 提出金融时序预测需要"状态依赖的归纳偏置适应"——不同市场环境下需要不同的归纳偏置（因果性、局部性、周期性）。核心创新：1) 通过注意力掩码训练 7 个偏置专业化教师；2) 正则化知识蒸馏将偏置融合到单一学生模型；3) 发现"合并惩罚"现象——直接训练多偏置模型反而性能下降。TIPS 将 ALiBi 的距离衰减作为"局部性"归纳偏置之一应用于金融时序。在四个股票市场取得 SOTA，年化收益 +55%，Sharpe +9%，Calmar +16%。
 Pages created: [[source-tips]], [[tips]]
 Pages updated: [[index]], [[log]], [[alibi]]
+
+## [2026-04-29] ingest | SIREN-RoPE: Temporal and Semantic Rotary Encoding (arXiv 2026)
+首篇 ingest 2026-04-27 新发布的 arXiv 论文，提出将 RoPE 旋转流形从固定序数索引扩展为可学习的时间条件化空间。核心贡献：1) 双分支 SIREN-DNN 将时间戳映射为旋转角，捕获日/周周期和近因衰减；2) 可学习频率缩放替代固定逆频率；3) 可学习门控 λ 融合时间与序数信号。在 LinkedIn 生产社交信息流数据集上，三个参与度任务的校准和排序指标均取得一致提升，额外参数量仅 0.2%。
+Pages created: [[source-siren-rope]], [[siren-rope]], [[dual-branch-siren]], [[temporal-rotation]], [[ordinal-temporal-fusion]], [[learnable-frequency-scaling]]
+Pages updated: [[index]], [[log]]

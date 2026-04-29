@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-04-28
+last_updated: 2026-04-29
 tags:
   - meta
 ---
@@ -34,6 +34,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-penguin]] — PENGUIN: periodic-nested group attention for long-term forecasting (AISTATS 2026)
 - [[source-prnet]] — PRNet: periodic residual learning for crowd flow forecasting
 - [[source-simdiff]] — SimDiff: simpler yet better diffusion model for time series point forecasting (AAAI 2026)
+- [[source-siren-rope]] — Learning to Rotate: Temporal and Semantic Rotary Encoding for Sequential Modeling (arXiv 2026)
 - [[source-st-resnet]] — ST-ResNet: deep spatio-temporal residual networks for crowd flow (AAAI 2017)
 - [[source-timesnet]] — TimesNet: temporal 2D-variation modeling for general time series analysis (ICLR 2023)
 - [[source-tips]] — TIPS: transformer with inductive prior synthesis for financial forecasting
@@ -83,6 +84,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[math-foundation-of-reinforcement-learning]] — 《Mathematical Foundations of Reinforcement Learning》教材（Springer, 2025）
 - [[shiyu-zhao]] — 赵世钰，强化学习教材作者，西湖大学教授
 - [[simdiff]] — SimDiff, end-to-end diffusion model for time series point forecasting (AAAI 2026)
+- [[siren-rope]] — SIREN-RoPE, learnable temporal rotary encoding for sequential modeling (2026)
 - [[timesnet]] — TimesNet, task-general time series foundation model (ICLR 2023)
 - [[tips]] — TIPS, inductive prior synthesis via knowledge distillation for financial forecasting (AAAI 2026)
 - [[tqn]] — TQNet, temporal query network for multivariate forecasting (ICML 2025)
@@ -152,6 +154,10 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[entropy-boundedness]] — finite Shannon entropy of attention distribution
 - [[long-distance-correlation-preservation]] — maintaining meaningful attention for distant tokens
 - [[gradient-positional-sensitivity]] — gradient dependence on relative position
+- [[dual-branch-siren]] — dual-branch SIREN-DNN architecture for temporal rotation
+- [[temporal-rotation]] — mapping continuous timestamps to RoPE rotation angles
+- [[ordinal-temporal-fusion]] — fusing temporal and ordinal signals with learnable gate
+- [[learnable-frequency-scaling]] — learnable per-dimension frequency scaling in RoPE
 - [[normalization-independence]] — SimDiff's diffusion-specific technique for handling distribution drift
 - [[median-of-means-ensemble]] — MoM estimator for aggregating probabilistic samples into point predictions
 - [[patch-based-tokenization]] — converting time series into overlapping patch tokens for transformer input
