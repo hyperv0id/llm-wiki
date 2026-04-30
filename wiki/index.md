@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-04-29
+last_updated: 2026-04-30
 tags:
   - meta
 ---
@@ -37,10 +37,13 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-siren-rope]] — Learning to Rotate: Temporal and Semantic Rotary Encoding for Sequential Modeling (arXiv 2026)
 - [[source-st-resnet]] — ST-ResNet: deep spatio-temporal residual networks for crowd flow (AAAI 2017)
 - [[source-timesnet]] — TimesNet: temporal 2D-variation modeling for general time series analysis (ICLR 2023)
+- [[source-timesfm]] — TimesFM: Decoder-Only Foundation Model for Time-Series Forecasting (ICLR 2024)
+- [[source-chronos]] — Chronos: Learning the Language of Time Series (ICLR 2024)
 - [[source-tips]] — TIPS: transformer with inductive prior synthesis for financial forecasting
 - [[source-tqn]] — TQNet: Temporal Query Network for efficient multivariate forecasting (ICML 2025)
 - [[source-sparsetsf]] — SparseTSF: lightweight LTSF with <1k parameters via sparse modeling (TPAMI 2026 & ICML 2024 Oral)
 - [[source-cyclenet]] — CycleNet: modeling periodic patterns for time series forecasting (NeurIPS 2024)
+- [[source-unica]] — UniCA: Unified Covariate Adaptation for Time Series Foundation Model (ICLR 2026)
 - [[source-ddpm]] — DDPM: Denoising Diffusion Probabilistic Models (NeurIPS 2020)
 - [[source-sde]] — Score-Based SDE: Unified framework for SMLD and DDPM (ICLR 2021)
 - [[source-dpm-solver]] — DPM-Solver: Fast ODE solver for diffusion models (NeurIPS 2022)
@@ -60,6 +63,9 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-neural-ode]] — Neural ODE: Neural Ordinary Differential Equations (Chen et al., NeurIPS 2018)
 - [[source-cbsa]] — CBSA: Towards Interpretable and Efficient Attention (NeurIPS 2025)
 - [[source-fast-long-horizon-forecasting]] — FaST: Efficient Long-Horizon Forecasting for Large-Scale STG via MoE (KDD 2026)
+- [[source-muon-optimizer]] — Muon: An optimizer for hidden layers in neural networks (Jordan, 2024)
+- [[source-kellerjordan-muon-blog]] — Muon optimizer blog post (kellerjordan.github.io, 2024)
+- [[source-kexue-muon-analysis]] — Muon优化器赏析：从向量到矩阵的本质跨越 (苏剑林, 2024)
 
 ## Entities
 - [[adaptive-positional-encoding]] — APE, adaptive positional encoding for infinite length extrapolation (2026)
@@ -88,20 +94,16 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[simdiff]] — SimDiff, end-to-end diffusion model for time series point forecasting (AAAI 2026)
 - [[siren-rope]] — SIREN-RoPE, learnable temporal rotary encoding for sequential modeling (2026)
 - [[timesnet]] — TimesNet, task-general time series foundation model (ICLR 2023)
-- [[tips]] — TIPS, inductive prior synthesis via knowledge distillation for financial forecasting (AAAI 2026)
-- [[tqn]] — TQNet, temporal query network for multivariate forecasting (ICML 2025)
-- [[sparsetsf]] — SparseTSF, lightweight LTSF with <1k parameters (TPAMI 2026)
-- [[tslib]] — Time Series Library (TSLib), benchmark for deep time series models
-- [[ncsn]] — Noise Conditional Score Networks, score-based generative model (Song & Ermon, 2020)
-- [[score-based-sde]] — Score-Based SDE, unifying SMLD and DDPM (Song et al., ICLR 2021)
-- [[edm]] — EDM, unified design space for diffusion models (Karras et al., NeurIPS 2022)
-- [[latent-diffusion-models]] — LDM, latent space diffusion for high-resolution image synthesis (Rombach et al., CVPR 2022)
-- [[neural-ordinary-differential-equation]] — Neural ODE, continuous-depth neural network using ODE solvers (Chen et al., NeurIPS 2018)
-- [[cbsa]] — CBSA, Contract-and-Broadcast Self-Attention via algorithm unrolling (NeurIPS 2025)
-- [[cbt]] — CBT, Contract-and-Broadcast Transformer with interpretable CBSA layers (NeurIPS 2025)
-- [[crate-white-box-transformer]] — CRATE, White-Box Transformer via MCR² objective (NeurIPS 2023)
+- [[timesfm]] — TimesFM, decoder-only foundation model for time-series forecasting (ICLR 2024)
+- [[chronos]] — Chronos, pretrained time series language model with tokenizer (ICLR 2024)
+- [[unified-covariate-adaptation]] — UniCA, unified covariate adaptation framework for TSFMs (ICLR 2026)
+- [[unica]] — UniCA entity page (alternative name)
+- [[covariate-fusion-module]] — UniCA's dual-stage attention-based fusion module for covariate integration (ICLR 2026)
 
 ## Concepts
+- [[covariate-homogenization]] — UniCA's technique for converting heterogeneous covariates into unified representations (ICLR 2026)
+- [[heterogeneous-covariates]] — classification and multimodal covariates that differ from target time series (ICLR 2026)
+- [[multimodal-time-series-forecasting]] — forecasting tasks involving numerical time series plus images/text (ICLR 2026)
 - [[hybrid-periodicity-decoupling]] — explicitly separating short-term and long-term periodicity in time-series signals
 - [[traffic-forecasting]] — predicting future traffic states from historical sensor data
 - [[accident-aware-traffic-forecasting]] — modeling disruptive impact of accidents on traffic prediction
@@ -128,11 +130,14 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[large-scale-spatial-temporal-graph]] — 大规模时空图预测的计算复杂度与解决方案
 
 ## Techniques
+- [[newton-schulz-iteration]] — Newton-Schulz iteration for matrix orthogonalization
 - [[frequency-aware-residual-representation]] — Fourier-based signal decomposition into periodic and residual components
 - [[spatial-temporal-attentive-encoder]] — dual-pathway encoder for short-term and long-term periodicity
 - [[dual-view-alignment-loss]] — regularization loss aligning representations across periodicity views
 - [[demlp-decoder]] — two-stage coarse-to-fine decoder with explicit trend removal
 - [[guided-layer-normalization]] — conditional normalization with dynamic affine parameters for accident-aware modeling
+- [[covariate-homogenization]] — UniCA's technique for converting heterogeneous covariates into unified representations (ICLR 2026)
+- [[covariate-fusion-module]] — UniCA's dual-stage attention-based fusion module for covariate integration (ICLR 2026)
 - [[bellman-equation]] — 贝尔曼方程，强化学习中值函数的递归关系
 - [[temporal-difference-learning]] — 时序差分学习，包括 Sarsa、Q-learning 等算法
 - [[policy-evaluation]] — 给定策略下求解状态值函数的过程
@@ -193,8 +198,13 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[representative-token-extraction]] — extracting representative tokens via cross-attention for efficient compression
 - [[adaptive-graph-agent-attention]] — AGA-Att: using learnable agent tokens to reduce spatial complexity from O(N²) to O(Na)
 - [[gated-linear-units]] — GLU: gated linear units as efficient MoE experts with parallel computation
+- [[conditional-attention-pooling]] — CAP: UniCA's conditional attention mechanism for covariate fusion (ICLR 2026)
+
+## Entities
+- [[muon-optimizer]] — Muon, neural network optimizer using Newton-Schulz orthogonalization (2024)
 
 ## Concepts
+- [[gradient-orthogonalization]] — orthogonalizing gradient updates to improve optimization
 - [[mixture-of-experts]] — MoE, mixture of experts architecture with dynamic expert routing
 - [[on-policy-vs-off-policy]] — on-policy 与 off-policy 学习范式对比
 - [[periodicity-modeling-in-time-series]] — analysis of periodic modeling approaches across time-series forecasting architectures

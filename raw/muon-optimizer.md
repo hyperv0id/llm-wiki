@@ -1,0 +1,245 @@
+---
+created: 2026-04-30T09:45:47 (UTC +08:00)
+tags: []
+source: https://kellerjordan.github.io/posts/muon/
+author: Keller Jordan
+---
+
+# Muon: An optimizer for hidden layers in neural networks | Keller Jordan blog
+
+> ## Excerpt
+> Muon is an optimizer for the hidden layers in neural networks. It is used in the current training speed records for both NanoGPT and CIFAR-10 speedrunning.
+Many empirical results using Muon have already been posted, so this writeup will focus mainly on Muon's design. First we will define Muon and provide an overview of the empirical results it has achieved so far. Then we will discuss its design in full detail, including connections to prior research and our best understanding of why it works.
+
+---
+Muon is an optimizer for the hidden layers of neural networks. It is used in the current training speed records for both [NanoGPT](https://x.com/kellerjordan0/status/1842300916864844014) and [CIFAR-10 speedrunning](https://x.com/kellerjordan0/status/1855675023916499249).
+
+[Many](https://x.com/kellerjordan0/status/1850995958697308307) [empirical](https://x.com/kellerjordan0/status/1844820919061287009) [results](https://x.com/kellerjordan0/status/1853638904957833433/photo/1) [using](https://x.com/Yuchenj_UW/status/1846964136204173318) [Muon](https://x.com/kellerjordan0/status/1847291684016783746) [have](https://x.com/kellerjordan0/status/1855675023916499249) already been posted, so this writeup will focus mainly on Muon's design. First we will define Muon and provide an overview of the empirical results it has achieved so far. Then we will discuss its design in full detail, including connections to prior research and our best understanding of why it works. Finally we will end with a discussion on standards of evidence in optimization research.
+
+## Definition
+
+Muon is an optimizer for 2D parameters of neural network hidden layers. It is defined as follows:
+
+![](https://kellerjordan.github.io/images/muon/muon_algo.png)
+
+where 'NewtonSchulz5' is defined to be the following _Newton-Schulz_ matrix iteration (Bernstein & Newhouse, 2024; Higham, 2008; Björck and Bowie, 1971; Kovarik, 1970):
+
+```
+# Pytorch code
+def newtonschulz5(G, steps=5, eps=1e-7):
+    assert G.ndim == 2
+    a, b, c = (3.4445, -4.7750, 2.0315)
+    X = G.bfloat16()
+    X /= (X.norm() + eps)
+    if G.size(0) > G.size(1):
+        X = X.T
+    for _ in range(steps):
+        A = X @ X.T
+        B = b * A + c * A @ A
+        X = a * X + B @ X
+    if G.size(0) > G.size(1):
+        X = X.T
+    return X
+```
+
+___
+
+A ready-to-use PyTorch implementation of Muon can be found [here](https://github.com/KellerJordan/Muon). An example usage in the current NanoGPT speedrun record can be found [here](https://github.com/KellerJordan/modded-nanogpt/blob/973030408364f8738b4ad9e8f912d8cbbf56e4d4/train_gpt2.py#L455).
+
+When training a neural network with Muon, scalar and vector parameters of the network, as well as the input and output layers, should be optimized by a standard method such as AdamW. Muon can be used for 4D convolutional parameters by flattening their last three dimensions ([like so](https://github.com/KellerJordan/cifar10-airbench/blob/0e6f9614572d7e8e3c259905aebc7196f91d5d79/research/clean_muon.py#L95)).
+
+## Results
+
+Muon has achieved the following empirical results.
+
+-   Improved the speed record for training to 94% accuracy on CIFAR-10 from [3.3 to 2.6 A100-seconds.](https://x.com/kellerjordan0/status/1855675023916499249)
+-   Improved the speed record for training to 3.28 val loss on FineWeb (a competitive task known as _NanoGPT speedrunning_) by [a factor of 1.35x](https://x.com/kellerjordan0/status/1842300916864844014).
+-   Continued showing training speed improvements while scaling to [774M](https://x.com/Yuchenj_UW/status/1845154032756957531) and [1.5B parameters](https://x.com/Yuchenj_UW/status/1846964136204173318).
+-   Trained a 1.5B parameter transformer to GPT-2 XL level performance on HellaSwag in [10 8xH100-hours](https://x.com/kellerjordan0/status/1850995958697308307). Using AdamW to achieve the same result takes 13.3 hours.
+
+Here's a comparison between different strong optimizers for NanoGPT speedrunning:
+
+![](https://kellerjordan.github.io/images/muon/nanogpt_speedrun81w.png) Figure 1. Optimizer comparison by sample efficiency. \[[reproducible logs](https://github.com/KellerJordan/modded-nanogpt/tree/master/records/102924_Optimizers)\] ![](https://kellerjordan.github.io/images/muon/nanogpt_speedrun82w.png) Figure 2. Optimizer comparison by wallclock time.
+
+In addition, here's a comparison between Muon and AdamW for training a 1.5B-parameter language model. Both optimizers have been tuned. ![](https://kellerjordan.github.io/images/muon/muon15b.jpeg) Figure 3. Muon vs. AdamW for a short 1.5B training. \[[reproducible logs](https://github.com/KellerJordan/modded-nanogpt/tree/master/records/102024_ScaleUp1B)\]
+
+## The design of Muon
+
+This section describes and analyzes Muon's design.
+
+Muon (MomentUm Orthogonalized by Newton-Schulz) optimizes 2D neural network parameters by taking the updates generated by SGD-momentum, and then applying a Newton-Schulz (NS) iteration as a post-processing step to each of them before applying them to the parameters.
+
+The function of the NS iteration is to approximately _orthogonalize_ the update matrix, _i.e._, to apply the following operation:
+
+In other words, the NS iteration effectively replaces SGD-momentum's update matrix with the nearest semi-orthogonal matrix to it. This is equivalent to replacing the update by , where is its singular value decomposition (SVD).
+
+### Why is it good to orthogonalize the update?
+
+We would first like to observe that one valid answer would be: It just is OK? (Shazeer 2020) ![](https://kellerjordan.github.io/images/muon/divine.png)
+
+But, for a theoretically-flavored motivation descending from Bernstein & Newhouse (2024)'s analysis of Shampoo (Gupta et al. 2018), see the [relationship to Shampoo](https://kellerjordan.github.io/posts/muon/#shampoo) section.
+
+And for an empirically-flavored motivation, we observe that based on manual inspection, the updates produced by both SGD-momentum and Adam for the 2D parameters in transformer-based neural networks typically have very high condition number. That is, they are almost low-rank matrices, with the updates for all neurons being dominated by just a few directions. We speculate that orthogonalization effectively increases the scale of other "rare directions" which have small magnitude in the update but are nevertheless important for learning.
+
+## Eliminating alternatives to NS iteration
+
+There are several other options besides NS iteration for orthogonalizing a matrix. In this subsection I'll describe why we didn't use two of them. Please refer to Appendix A of Bernstein & Newhouse (2024) for a more complete list of possible methods.
+
+SVD (_i.e._, computing the decomposition of the update and then replacing the update with ) is easy to understand, but we don't use it because it's far too slow.
+
+Coupled Newton iteration (Guo and Higham, 2006; Iannazzo, 2006) is used in implementations of Shampoo (Gupta et al. 2018; Anil et al. 2020; Shi et al., 2023) to perform inverse-fourth roots, and can be easily adapted to perform orthogonalization. But we don't use it because we find that it must be run in at least float32 precision to avoid numerical instability, which makes it slow on modern GPUs.
+
+In comparison, we find that Newton-Schulz iterations (Bernstein & Newhouse, 2024; Higham, 2008; Björck and Bowie, 1971; Kovarik, 1970) can be stably run in bfloat16. We therefore select them as our method of choice to orthogonalize the update.
+
+## Proving that NS iteration orthogonalizes the update
+
+To understand why the NS iteration orthogonalizes the update, let be the SVD of the update matrix produced by SGD-momentum. Then running one step of the NS iteration with coefficients yields the following output:
+
+In general, if we define the quintic polynomial , then applying steps of NS iteration with coefficients yields the output , where indicates applying times elementwise to the singular values that make up the diagonal of .
+
+As a result, to guarantee that the NS iteration converges to , all we need to do is (1) ensure that the initial entries of lie in the range , and (2) select the coefficients such that as for all .
+
+To satisfy the first criterion, we simply replace by before starting the NS iteration. This rescaling is benign because .
+
+To satisfy as , we have some freedom, as there are many possible choices of with this property. Later we will optimize this choice, but for now we show in the below plot that the simple baseline already works.
+
+![](https://kellerjordan.github.io/images/muon/poly_phi.png) Figure 3. Baseline coefficients for Newton-Schulz iteration.
+
+## Tuning the coefficients
+
+Although the NS coefficients work perfectly fine for orthogonalizing the update, they can be further tuned to reduce the number of NS iteration steps we need to run.
+
+For tuning the coefficients , we have the following considerations:
+
+1.  We want to make as large as possible, since the fact that implies that this coefficient is what controls the rate of convergence for small initial singular values.
+2.  For every , we want to converge to a value in the range as , so that the result of the NS iteration is not far from .
+
+The surprising observation here is that empirically, can be as high as around 0.3 without harming the loss curve for Muon-based trainings. Therefore, our goal will be to maximize subject to .
+
+There are many possible approaches to solve this constrained optimization problem. We use an ad-hoc gradient based approach and end up with the coefficients , which is what we use for the final design of Muon. The behavior of these coefficients can be seen in the figure below. Note the steeper growth around x=0.
+
+![](https://kellerjordan.github.io/images/muon/poly_phirho.png) Figure 4. Tuned coefficients for our Newton-Schulz iteration.
+
+In our experiments, when using Muon with these coefficients to train transformer language models and small convolutional networks, it suffices to run the NS iteration for only 5 steps.
+
+We also considered using third-order and seventh-order polynomials for the NS iteration, but found that these could not improve the wallclock overhead any further.
+
+## Runtime analysis
+
+In this section we analyze the runtime and memory requirements of Muon.
+
+Before the NS iteration is applied, Muon is just standard SGD-momentum, so it has the same memory requirement.
+
+For each matrix parameter in the network (w.l.o.g. let ), each step of the NS iteration requires matmul FLOPs, which is at most in the case of a square parameter. Therefore, the extra FLOPs required by Muon compared to SGD is at most , where is the number of NS iterations (typically we use ).
+
+If the parameter parametrizes a linear layer, then the baseline amount of FLOPs used to perform a step of training (_i.e.,_ a forward and backward pass) is , where is the number of inputs passed through the layer during the step.
+
+Therefore, **the FLOP overhead of Muon is at most , where is the model dimension, is the batch size in tokens, and is the number of NS iteration steps (typically ).**
+
+We now calculate this overhead for two concrete training scenarios: NanoGPT speedrunning, and Llama 405B training.
+
+1.  For the current NanoGPT speedrunning record, the model dimension is , and the number of tokens per batch is . Therefore, the overhead is .
+2.  For Llama 405B training, the model dimension is And the number of tokens per batch is reported to be (Dubey et al. 2024). Therefore, the overhead of using Muon for this training would be .
+
+We conclude that for typical LM training scenarios, at both the small and large scale, Muon has a FLOP overhead below 1%.
+
+## Relationship to prior optimizers
+
+### Shampoo
+
+The Shampoo optimizer is defined as follows [(Gupta et al. 2018)](https://arxiv.org/abs/1802.09568). ![](https://kellerjordan.github.io/images/muon/shampoo.png)
+
+If preconditioner accumulation is removed, then Bernstein & Newhouse (2024) observed that the update becomes the following (also see [Anil (2024a)](https://x.com/_arohan_/status/1843050297985466565)):
+
+Which is the orthogonalized gradient. If we then add momentum before the orthogonalization, we recover the Muon update, albeit with a higher wallclock and FLOP overhead due to the usage of inverse-fourth roots rather than Newton-Schulz iteration.
+
+It is therefore possible to interpret Muon with momentum turned off as a kind of "instantaneous" or "accumulation-free" Shampoo [(Anil 2024b)](https://x.com/_arohan_/status/1848065162919448889).
+
+### Orthogonal-SGDM
+
+[Tuddenham et al. (2022)](https://arxiv.org/abs/2202.07052) proposed to optimize neural networks by orthogonalizing the gradient via SVD, applying momentum to the result, and then using the momentum term as the update, calling this optimizer Orthogonal-SGDM. This is similar to Muon, with the difference being that Muon moves the momentum to before the orthogonalization, which we find performs better empirically, and uses a Newton-Schulz iteration instead of SVD for more efficient orthogonalization. In their best-performing experimental setup (Table 3), Tuddenham et al. (2022) reported that their method is outperformed by a well-tuned standard SGD-Momentum, which perhaps accounts for the fact that this paper was not cited prior to this blogpost.
+
+### Stochastic spectral descent and RMSspectral
+
+_Note: This subsection was added on 07/12/2025._
+
+Yet an earlier example of orthogonalization-based optimization can be found in the work of Carlson et al. ([2015a](https://proceedings.mlr.press/v38/carlson15.html), [2016](https://ieeexplore.ieee.org/document/7347351)), who proposed to optimize restricted Boltzmann machines and discrete graphical models by orthogonalizing their gradient estimates using SVD and then scaling by the nuclear norm, calling this method stochastic spectral descent. In addition, [Carlson et al. (2015b)](https://papers.nips.cc/paper_files/paper/2015/hash/f50a6c02a3fc5a3a5d4d9391f05f3efc-Abstract.html) proposed to optimize feedforward neural networks using a hybrid between stochastic spectral descent and RMSprop, called RMSspectral. Anticipating the need to speed up orthogonalization, RMSspectral uses randomized SVD instead of full SVD to approximate the orthogonalization operation. Compared to Muon, these pioneering early orthogonalization-based optimizers use SVD variants instead of Newton-Schulz iteration for orthogonalization, and lack any form of momentum. We find that using momentum is necessary for the best empirical performance.
+
+## Empirical considerations
+
+By design, Muon only applies to 2D parameters (and convolutional filters via flattening), so the remaining scalar and vector parameters in a network must be optimized using a standard method (e.g., AdamW). Empirically, we find that it is also important to optimize input and output parameters using AdamW, even though these are typically 2D. In particular, when training transformers, AdamW should be used for the embedding and final classifier head layers in order to attain the best performance. That the optimization dynamics of the embedding layer should be different from other layers follows from the _modular norm_ theory (Large et al. 2024). That such dynamics are also different for the output layer does not seem to follow from the theory, and is instead driven by empirics.
+
+Another purely empirical result is that using Nesterov-style momentum for Muon works a bit better than normal SGD-momentum in every case we have tested. We have therefore made this the default in the public [Muon implementation.](https://github.com/KellerJordan/Muon)
+
+A third result is that Muon works better for optimizing transformers if it is applied to their Q, K, V parameters separately, rather than together as would be the default for transformer implementations that parametrize QKV as a single linear layer whose outputs are split.
+
+## Discussion: Solving the undertuned baseline problem with the competitive task framework
+
+The neural network optimization research literature is by now mostly filled with a graveyard of dead optimizers that claimed to beat AdamW, often by huge margins, but then were never adopted by the community. Hot take, I know.
+
+With billions of dollars being spent on neural network training by an industry hungry for ways to reduce that cost, we can infer that the fault lies with the research community rather than the potential adopters. That is, something is going wrong with the research. Upon close inspection of individual papers, one finds that the most common culprit is _bad baselines_: Papers often don't sufficiently tune their AdamW baseline before comparing it to a newly proposed optimizer.
+
+I would like to note that the publication of new methods which claim huge improvements but fail to replicate / live up to the hype is not a victimless crime, because it wastes the time, money, and morale of a large number of individual researchers and small labs who run and are disappointed by failed attempts to replicate and build on such methods every day.
+
+To remedy this situation, I propose that the following evidential standard be adopted: The research community should demand that, whenever possible, new methods for neural network training should demonstrate _success in a competitive training task._
+
+Competitive tasks solve the undertuned baseline problem in two ways. First, the baseline in a competitive task is the prior record, which, if the task is popular, is likely to already be well-tuned. Second, even in the unlikely event that the prior record was not well-tuned, self-correction can occur via a new record that reverts the training to standard methods. The reason this should be possible is because standard methods usually have fast hardware-optimized implementations available, whereas new methods typically introduce some extra wallclock overhead; hence simply dropping the newly proposed method will suffice to set a new record. As a result, the chance of a large but spurious improvement to a standard method being persistently represented in the record history for a popular competitive task is small.
+
+To give an example, I will describe the current evidence for Muon. The main evidence for it being better than AdamW comes from its success in the competitive task "NanoGPT speedrunning." In particular, switching from AdamW to Muon set a new NanoGPT training speed record on 10/15/24, where Muon improved the training speed by 35%. Muon has persisted as the optimizer of choice through all 12 of the new NanoGPT speedrunning records since then, which have been set by 7 different researchers.
+
+Muon has a slower per-step wallclock time than AdamW, so if there existed hyperparameters that could make AdamW as sample-efficient as Muon, then it would be possible to set a new record by simply chucking Muon out of the window and putting good old AdamW back in. Therefore, to trust that Muon is better than AdamW, at least for training small language models, you actually don't need to trust me (Keller Jordan) at all. Instead, _you only need to trust that there exist researchers in the community who know how to tune AdamW and are interested in setting a new NanoGPT speedrunning record._ Isn't that beautiful?
+
+## Remaining open questions
+
+-   Will Muon scale to larger trainings? (e.g., 20B+ parameters for 1T+ tokens)
+-   Will it be possible to properly distribute the Newton-Schulz iterations used by Muon across a large-scale GPU cluster?
+-   Is it possible that Muon works only for pretraining, and won't work for finetuning or reinforcement learning workloads?
+
+At the time of writing, I don't know the answers to these questions.
+
+## Muon Contributors
+
+The following researchers have made contributions to Muon.
+
+-   Jeremy Bernstein & Laker Newhouse sent me their paper [Old Optimizer, New Norm: An Anthology](https://arxiv.org/abs/2409.20325), which in Appendix A recommends Newton-Schulz iteration as a computational strategy for Shampoo. Jeremy had also been posting theories on X about a closely related algorithm called _steepest descent under spectral norm_ for several months prior to the development & demonstration of Muon. Lastly, Jeremy helped by pointing out that the coefficients of an earlier version of my NS iteration could be further tuned.
+-   Vlado Boza [showed experimentally the result that Muon works better when applied separately to the Q,K,V parameters, instead of joining them into one matrix.](https://x.com/kellerjordan0/status/1844391659112644903)
+-   Yuchen Jin performed experiments demonstrating that Muon training scales to longer durations and larger models. And he provided the majority of the necessary capital (in H100-hours) for the project.
+-   Jeremy Bernstein, Jiacheng You, and Franz Cesista discovered that the efficiency of my initial Newton-Schulz iteration implementation could be improved from to FLOPs (for a parameter of shape where ). Jeremy Bernstein and Jiacheng You concurrently discovered the better variant and Franz Cesista made a pull request to the speedrunning repository benchmarking and implementing it.
+
+## References
+
+1.  Vineet Gupta, Tomer Koren, and Yoram Singer. "Shampoo: Preconditioned stochastic tensor optimization." International Conference on Machine Learning. PMLR, 2018.
+2.  Jeremy Bernstein and Laker Newhouse. "Old optimizer, new norm: An anthology." arXiv preprint arXiv:2409.20325 (2024).
+3.  Keller Jordan, Jeremy Bernstein, Brendan Rappazzo, @fernbear.bsky.social, Boza Vlado, Jiacheng You, Franz Cesista, Braden Koszarsky, and @Grad62304977. modded-nanogpt: Speedrunning the NanoGPT baseline. 2024. Available at: [https://github.com/KellerJordan/modded-nanogpt](https://github.com/KellerJordan/modded-nanogpt).
+4.  Rohan Anil et al. "Scalable second order optimization for deep learning." arXiv preprint arXiv:2002.09018 (2020).
+5.  Rohan Anil. "Just some fun linear algebra." X post, 6 Oct. 2024, Available at: [https://x.com/\_arohan\_/status/1843050297985466565](https://x.com/_arohan_/status/1843050297985466565).
+6.  Rohan Anil. "Shampoo with no accumulation ❤️." X post, 20 Oct. 2024, Available at: [https://x.com/\_arohan\_/status/1848065162919448889](https://x.com/_arohan_/status/1848065162919448889).
+7.  Abhimanyu Dubey et al. "The llama 3 herd of models." arXiv preprint arXiv:2407.21783 (2024).
+8.  C.-H. Guo and N. J. Higham. A Schur-Newton method for the matrix p'th root and its inverse. SIAM Journal On Matrix Analysis and Applications, 28(3):788–804, 2006.
+9.  B. Iannazzo. On the Newton method for the matrix p-th root. SIAM journal on matrix analysis and applications, 28(2):503–523, 2006.
+10.  Andrej Karpathy. nanoGPT: The simplest, fastest repository for training/finetuning medium-sized GPTs. GitHub repository, 2023. Available at: [https://github.com/karpathy/nanoGPT](https://github.com/karpathy/nanoGPT).
+11.  Tim Large et al. "Scalable Optimization in the Modular Norm." arXiv preprint arXiv:2405.14813 (2024).
+12.  Hao-Jun Michael Shi et al. "A distributed data-parallel pytorch implementation of the distributed shampoo optimizer for training neural networks at-scale." arXiv preprint arXiv:2309.06497 (2023).
+13.  Nicholas J. Higham. Functions of Matrices. Society for Industrial and Applied Mathematics, 2008.
+14.  Zdislav Kovarik. Some iterative methods for improving orthonormality. SIAM Journal on Numerical Analysis, 1970.
+15.  Åke Björck and C. Bowie. An iterative algorithm for computing the best estimate of an orthogonal matrix. SIAM Journal on Numerical Analysis, 1971.
+16.  Noam Shazeer. "Glu variants improve transformer." arXiv preprint arXiv:2002.05202 (2020).
+17.  Jeremy Cohen et al. "Understanding Optimization in Deep Learning with Central Flows." arXiv preprint arXiv:2410.24206 (2024).
+18.  Mark Tuddenham, Adam Prügel-Bennett, and Jonathan Hare. "Orthogonalising gradients to speed up neural network optimisation." arXiv preprint arXiv:2202.07052 (2022).
+19.  Keller Jordan. "The new optimizer is defined as follows. It is based on orthogonalizing the update given by SGD-Nesterov-momentum in an efficient way." X.com snapshot [https://archive.is/RZYBG](https://archive.is/RZYBG). (Oct 4 2024).
+20.  Ben Recht. "Too Much Information." Blog post [https://www.argmin.net/p/too-much-information#:~:text=benchmark%20competitions%20are%20the%20prime%20mover%20of%20AI%20progress](https://www.argmin.net/p/too-much-information#:~:text=benchmark%20competitions%20are%20the%20prime%20mover%20of%20AI%20progress). (Dec 19 2023)
+21.  David Carlson, Volkan Cevher, and Lawrence Carin. Stochastic spectral descent for Restricted Boltzmann Machines. In _International Conference on Artificial Intelligence and Statistics_, 2015a.
+22.  David Carlson, Edo Collins, Ya-Ping Hsieh, Lawrence Carin, and Volkan Cevher. Preconditioned spectral descent for deep learning. In _Neural Information Processing Systems_, 2015b.
+23.  David Carlson, Ya-Ping Hsieh, Edo Collins, Lawrence Carin, and Volkan Cevher. Stochastic spectral descent for discrete graphical models. _Selected Topics in Signal Processing_, 2016.
+
+## Citation
+
+```
+@misc{jordan2024muon,
+  author       = {Keller Jordan and Yuchen Jin and Vlado Boza and Jiacheng You and
+                  Franz Cesista and Laker Newhouse and Jeremy Bernstein},
+  title        = {Muon: An optimizer for hidden layers in neural networks},
+  year         = {2024},
+  url          = {https://kellerjordan.github.io/posts/muon/}
+}
+```

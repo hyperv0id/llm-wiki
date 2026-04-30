@@ -24,7 +24,10 @@ First ingest. Downloaded arXiv 2511.09275 PDF and created full wiki scaffolding.
 Pages created: [[source-hyperd-hybrid-periodicity-decoupling]], [[hyperd]], [[hybrid-periodicity-decoupling]], [[traffic-forecasting]], [[frequency-aware-residual-representation]], [[spatial-temporal-attentive-encoder]], [[dual-view-alignment-loss]], [[demlp-decoder]]
 Pages updated: [[index]], [[log]]
 
-## [2026-04-28] maintenance | 扩充强化学习笔记
+## [2026-04-29] ingest | UniCA: Unified Covariate Adaptation for Time Series Foundation Model
+Ingested ICLR 2026 paper from Zotero storage. UniCA solves the problem of adapting Time Series Foundation Models (TSFMs) to handle heterogeneous covariates (categorical, image, text).
+Pages created: [[source-unca]], [[unified-covariate-adaptation]], [[covariate-homogenization]], [[heterogeneous-covariates]], [[conditional-attention-pooling]], [[multimodal-time-series-forecasting]], [[timesfm]], [[source-timesfm]], [[chronos]], [[source-chronos]]
+Pages updated: [[index]], [[log]]
 为便于理解，扩充了 11 个极短的强化学习概念/算法页面。
 扩充的页面：[[mdp-formal-definition]], [[exploration-vs-exploitation]], [[value-iteration]], [[policy-iteration]], [[policy-evaluation]], [[truncated-policy-iteration]], [[q-learning-algorithm]], [[sarsa-algorithm]], [[expected-sarsa]], [[epsilon-greedy]], [[contraction-mapping-theorem]]
 主要增加内容：算法细节、收敛性分析、对比表格、变体扩展等。
@@ -205,3 +208,18 @@ Pages updated: [[index]], [[log]]
 Zhao, Zhong, Wang, Wen, Jin, Liang, Wan, Wu 提出 FaST 框架，解决大规模时空图长视野预测的计算瓶颈。核心创新：1) 异质性感知 MoE (HA-MoE) 使用 GLU experts 和动态路由解决 expert 极化；2) 自适应图代理注意力 (AGA-Att) 用 a ≪ N 个代理 tokens 将空间复杂度从 O(N²) 降至 O(Na)。首次实现 672 步（1 周）预测在 8600 节点上可训练，MAE 提升 4.4%-18.4%，推理速度 1.3x-2.2x SOTA。Dense MoE 设计配合 GLU 并行化实现高效计算。
 Pages created: [[source-fast-long-horizon-forecasting]], [[mixture-of-experts]], [[adaptive-graph-agent-attention]], [[gated-linear-units]], [[large-scale-spatial-temporal-graph]]
 Pages updated: [[traffic-forecasting]], [[index]], [[log]]
+
+## [2026-04-29] ingest | UniCA: Unified Covariate Adaptation for Time Series Foundation Model (ICLR 2026)
+Han, Liu, Li, Deng, Jiang, Sun, Yu, Wang, Lu, Ma, Ye, Zhan (Nanjing University & Ant Group) 提出 UniCA 框架，解决时间序列基础模型（TSFMs）无法处理异构协变量（分类/图像/文本）的问题。核心创新：1) 协变量同质化（Covariate Homogenization）通过预训练编码器（CLIP/BERT）+ 线性投影将异构协变量转换为统一表示；2) 注意力双融合模块（Pre-fusion + Post-fusion）在 TSFM 编码前后双阶段注入协变量信息；3) 保持 TSFM 主干冻结，仅训练轻量级融合模块。UniCA 是首个系统化处理 TSFMs 异构协变量适应问题的通用框架，在 12 个单模态数据集和 2 个多模态基准（MMSP、Time-MMD）上超越 ChronosX、TTM-R2 等基线方法。
+Pages created: [[source-unica]], [[unica]], [[covariate-homogenization]], [[covariate-fusion-module]], [[unified-covariate-adaptation]]
+Pages updated: [[instance-normalization]], [[normalization-independence]], [[timesnet]], [[tqn]], [[source-deep-time-series-survey]], [[index]], [[log]]
+
+## [2026-04-30] ingest | Muon: An optimizer for hidden layers in neural networks (Jordan, 2024)
+Keller Jordan 提出 Muon 优化器，针对神经网络隐藏层的 2D 参数。核心创新：在 SGD-动量更新后应用 Newton-Schulz 迭代进行正交化。实验结果：CIFAR-10 速度纪录 3.3→2.6 A100-秒，NanoGPT 速度纪录提升 1.35x，1.5B 模型训练 10h vs 13.3h AdamW。提出竞争性任务框架来解决优化器研究中的基线调优不足问题。
+Pages created: [[source-muon-optimizer]], [[source-kellerjordan-muon-blog]], [[muon-optimizer]], [[newton-schulz-iteration]], [[gradient-orthogonalization]]
+Pages updated: [[index]], [[log]]
+
+## [2026-04-30] ingest | Muon优化器赏析：理论补充 (苏剑林, 2024)
+补充科学空间的深度理论分析，从谱范数视角解释 Muon 的有效性。核心洞见：1) msign 是 sign 函数的矩阵推广；2) Muon 等价于谱范数约束下的最速下降；3) 当 Shampoo 的 β=0 时与 Muon 等价；4) 2015 年论文已提出类似算法 (Stochastic Spectral Descent)。详细推导了 Newton-Schulz 迭代的系数优化过程。
+Pages created: [[source-kexue-muon-analysis]]
+Pages updated: [[muon-optimizer]], [[newton-schulz-iteration]], [[index]], [[log]]
