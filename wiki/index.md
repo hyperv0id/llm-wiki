@@ -56,6 +56,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-paperbench]] — Long Context, Less Focus: A Scaling Gap in LLMs (Gu et al., 2026)
 - [[source-vetcha-2026-towards-infinite-length-extrapolation]] — Vetcha 2026: Towards Infinite Length Extrapolation - A Unified Approach
 - [[source-conformer]] — ConFormer: Conditional Transformer for accident-informed traffic forecasting (KDD 2026)
+- [[source-channelmts]] — ChannelMTS: Multi-modal Time-Series Framework for High-Speed Railway Channel Prediction (KDD 2026)
 - [[source-ncsn]] — NCSN: Generative Modeling by Estimating Gradients of the Data Distribution (Song & Ermon, 2020)
 - [[source-understanding-diffusion-models]] — Understanding Diffusion Models: A Unified Perspective (Luo, 2022)
 - [[source-edm]] — EDM: Elucidating the Design Space of Diffusion-Based Generative Models (Karras et al., NeurIPS 2022)
@@ -99,6 +100,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[unified-covariate-adaptation]] — UniCA, unified covariate adaptation framework for TSFMs (ICLR 2026)
 - [[unica]] — UniCA entity page (alternative name)
 - [[covariate-fusion-module]] — UniCA's dual-stage attention-based fusion module for covariate integration (ICLR 2026)
+- [[channelmts]] — ChannelMTS, multimodal time-series framework for HSR channel prediction (KDD 2026)
 
 ## Concepts
 - [[covariate-homogenization]] — UniCA's technique for converting heterogeneous covariates into unified representations (ICLR 2026)
@@ -199,6 +201,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[adaptive-graph-agent-attention]] — AGA-Att: using learnable agent tokens to reduce spatial complexity from O(N²) to O(Na)
 - [[gated-linear-units]] — GLU: gated linear units as efficient MoE experts with parallel computation
 - [[conditional-attention-pooling]] — CAP: UniCA's conditional attention mechanism for covariate fusion (ICLR 2026)
+- [[retrieval-augmented-statistical-channel]] — RAGC: retrieval-augmented statistical channel for高铁 channel prediction (KDD 2026)
 
 ## Entities
 - [[muon-optimizer]] — Muon, neural network optimizer using Newton-Schulz orthogonalization (2024)

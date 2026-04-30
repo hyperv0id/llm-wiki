@@ -25,6 +25,7 @@ The paper organizes deep time series models from two perspectives:
 
 1. **Basic Modules** — foundational techniques integrated into modern models:
    - **Stationarization** (RevIN, Non-Stationary Transformer, SAN) — normalizing non-stationary inputs
+   - **Unified Covariate Adaptation** (UniCA) — handling heterogeneous covariates (categorical/image/text) for TS foundation models; extends traditional stationarization to multimodal scenarios[^src-unica]
    - **Decomposition** — seasonal-trend decomposition (Autoformer), basis expansion (N-BEATS, N-HiTS), matrix factorization (TRMF, DeepGLO)
    - **Fourier Analysis** — time-domain modeling (TimesNet, FEDformer, FiLM, FITS) and frequency-domain modeling (FreTS, StemGNN, TSLANet)
 
@@ -47,4 +48,8 @@ The TSLib benchmark evaluates 13 advanced models across forecasting, classificat
 
 - **Strengths**: The two-level organizational scheme (modules → architectures) is pedagogically sound. TSLib fills a genuine need for standardized benchmarking in a fragmented field. Coverage of both classic (ARIMA, N-BEATS) and cutting-edge (Mamba, Koopa, TimesNet) methods is thorough.
 - **Limitations**: The survey is model-centric rather than problem-centric, so practitioners may find it hard to navigate by task. The TSLib benchmark, while comprehensive, focuses only on 13 of 30 implemented models for the full evaluation. The treatment of [[traffic-forecasting|spatio-temporal forecasting]] is brief, treated mainly as a subset of multivariate time series rather than a distinct domain with its own challenges (e.g., graph structure, dynamic correlations).
-- **Relevance to this wiki**: The survey's taxonomy directly contextualizes the models covered in this wiki — [[hyperd|HyperD]] (Transformer/periodicity-decoupling), ST-ResNet (CNN/residual), and ASTGCN (GCN/attention) — within the broader deep time series landscape.
+- **Relevance to this wiki**: The survey's taxonomy directly contextualizes the models covered in this wiki — [[hyperd|HyperD]] (Transformer/periodicity-decoupling), ST-ResNet (CNN/residual), and ASTGCN (GCN/attention) — within the broader deep time series landscape. Additionally, [[unica|UniCA]] extends the stationarization module family to handle heterogeneous covariates beyond traditional distribution shift handling.
+
+## 引用
+
+[^src-unica]: [[source-unica]]

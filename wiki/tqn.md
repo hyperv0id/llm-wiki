@@ -8,7 +8,7 @@ tags:
   - icml-2025
   - multivariate
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-04-29
 source_count: 1
 confidence: medium
 status: active
@@ -61,7 +61,14 @@ TQNet 极其简洁：
 | CycleNet | 可学习周期参数（无注意力） |
 | PENGUIN | 周期分组注意力偏置 |
 | PatchTST | 通道独立（无变量相关性） |
+| [[unica|UniCA]] | 统一的协变量适应框架，可为 TQNet 添加异构协变量支持 |
+
+## 相关页面
+
+- [[unified-covariate-adaptation]] — 统一协变量适应概念
+- [[instance-normalization|RevIN]] — TQNet 使用 RevIN 处理分布漂移
 
 ## 引用
 
+[^src-unica]: [[source-unica]]
 [^src-tqn]: [[source-tqn]]

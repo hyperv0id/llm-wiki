@@ -7,7 +7,7 @@ tags:
   - normalization
   - distribution-shift
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-04-29
 source_count: 1
 confidence: medium
 status: active
@@ -50,5 +50,15 @@ N.I. 仅增加一个轻量级仿射层，计算成本可忽略，但显著提升
 - **RevIN (Instance Normalization)**：用于处理分布漂移，但设计为可逆实例归一化 [^src-simdiff]
 - **标准 Z-Score**：假设过去和未来共享统计量，无法处理分布漂移 [^src-simdiff]
 - **N.I.**：解耦归一化，仅在训练时独立归一化未来，推理时完全避免未来泄露 [^src-simdiff]
+- **UniCA 协变量适应**：与 N.I. 处理分布漂移不同，UniCA 专注于处理**异构协变量**（分类/图像/文本）的模态鸿沟问题，是更广义的协变量适应框架[^src-unica]
 
+## 相关页面
+
+- [[unica|UniCA]] — 统一协变量适应框架
+- [[unified-covariate-adaptation]] — 统一协变量适应概念
+- [[instance-normalization|RevIN]] — 实例归一化技术
+
+## 引用
+
+[^src-unica]: [[source-unica]]
 [^src-simdiff]: [[source-simdiff]]

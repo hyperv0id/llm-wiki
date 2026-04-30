@@ -2,7 +2,7 @@
 title: Log
 type: concept
 created: 2026-04-26
-last_updated: 2026-04-29
+last_updated: 2026-04-30
 tags:
   - meta
 ---
@@ -23,6 +23,11 @@ Pages updated: [[index]], [[log]]
 First ingest. Downloaded arXiv 2511.09275 PDF and created full wiki scaffolding.
 Pages created: [[source-hyperd-hybrid-periodicity-decoupling]], [[hyperd]], [[hybrid-periodicity-decoupling]], [[traffic-forecasting]], [[frequency-aware-residual-representation]], [[spatial-temporal-attentive-encoder]], [[dual-view-alignment-loss]], [[demlp-decoder]]
 Pages updated: [[index]], [[log]]
+
+## [2026-04-30] ingest | ChannelMTS: Multi-modal Time-Series Framework for High-Speed Railway Channel Prediction
+Ingested KDD 2026 paper from Zotero storage. ChannelMTS solves HSR channel prediction by integrating environmental information (position, K-factor, RMS delay) with channel states through retrieval-augmented statistical channel (RAGC), modality alignment (median+IQR normalization), and adaptive fusion.
+Pages created: [[source-channelmts]], [[channelmts]], [[retrieval-augmented-statistical-channel]]
+Pages updated: [[multimodal-time-series-forecasting]], [[index]], [[log]]
 
 ## [2026-04-29] ingest | UniCA: Unified Covariate Adaptation for Time Series Foundation Model
 Ingested ICLR 2026 paper from Zotero storage. UniCA solves the problem of adapting Time Series Foundation Models (TSFMs) to handle heterogeneous covariates (categorical, image, text).

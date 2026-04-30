@@ -6,7 +6,7 @@ tags:
   - normalization
   - distribution-shift
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-04-29
 source_count: 1
 confidence: medium
 status: active
@@ -59,6 +59,12 @@ pred = pred * (std + eps) + mean
 
 RevIN 已被多种主流模型采用：iTransformer、PatchTST、SparseTSF 等[^src-cyclenet]。
 
+## 相关页面
+
+- [[unica|UniCA]] — 统一的协变量适应框架，被设计为RevIN的广义扩展，可处理异构协变量（分类/图像/文本）而不仅是数值序列的分布漂移[^src-unica]
+- [[unified-covariate-adaptation]] — 统一协变量适应概念，RevIN 是其处理分布漂移的子技术
+
 ## 引用
 
+[^src-unica]: [[source-unica]]
 [^src-cyclenet]: [[source-cyclenet]]
