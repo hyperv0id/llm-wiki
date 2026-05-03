@@ -7,8 +7,8 @@ tags:
   - decoder-only
   - iclr2024
 created: 2026-04-29
-last_updated: 2026-04-29
-source_count: 1
+last_updated: 2026-05-03
+source_count: 2
 confidence: high
 status: active
 ---
@@ -54,6 +54,9 @@ TimesFM 可以通过 UniCA 框架适配到协变量感知预测任务：
 - [[unified-covariate-adaptation]] — UniCA 框架
 - [[timesnet]] — 另一个时间序列基础模型
 - [[chronos]] — Chronos 时间序列模型
+- [[most]] — MoST 多模态时空基础模型（不同领域：TS vs ST）
+- [[aurora]] — Aurora 多模态生成式基础模型（TimesFM 为单模态，Aurora 支持多模态）
+- [[uniextreme]] — UniExtreme 极端天气基础模型（TimesFM: 通用 TS；UniExtreme: 天气极端事件）
 
 ---
 

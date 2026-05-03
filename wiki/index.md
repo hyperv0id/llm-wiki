@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-04-30
+last_updated: 2026-05-03
 tags:
   - meta
 ---
@@ -67,6 +67,14 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-muon-optimizer]] — Muon: An optimizer for hidden layers in neural networks (Jordan, 2024)
 - [[source-kellerjordan-muon-blog]] — Muon optimizer blog post (kellerjordan.github.io, 2024)
 - [[source-kexue-muon-analysis]] — Muon优化器赏析：从向量到矩阵的本质跨越 (苏剑林, 2024)
+- [[source-incident-guided-st-forecasting]] — IGSTGNN: Incident-Guided Spatiotemporal Graph Neural Network for Traffic Forecasting (KDD 2026)
+- [[source-most]] — MoST: A Foundation Model for Multi-modality Spatio-temporal Traffic Prediction (KDD 2026)
+- [[source-multimodal-ts-anomaly-detection]] — MindTS: multimodal time series anomaly detection with semantic alignment and condensed interaction (ICLR 2026)
+- [[source-event-driven-ts-forecasting]] — VoT: event-driven reasoning and multi-level alignment for time series forecasting (ICLR 2026)
+- [[source-aurora]] — Aurora: universal generative multimodal time series forecasting (arXiv 2026)
+- [[source-aurora]] — Aurora: Towards Universal Generative Multimodal Time Series Forecasting (arXiv 2026)
+- [[source-language-in-the-flow-of-time]] — Language in the Flow of Time: TaTS framework for multimodal TS (ICLR 2026)
+- [[source-uniextreme]] — UniExtreme: universal extreme weather forecasting foundation model (arXiv 2025)
 
 ## Entities
 - [[adaptive-positional-encoding]] — APE, adaptive positional encoding for infinite length extrapolation (2026)
@@ -101,11 +109,19 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[unica]] — UniCA entity page (alternative name)
 - [[covariate-fusion-module]] — UniCA's dual-stage attention-based fusion module for covariate integration (ICLR 2026)
 - [[channelmts]] — ChannelMTS, multimodal time-series framework for HSR channel prediction (KDD 2026)
+- [[igstgnn]] — IGSTGNN, incident-guided spatiotemporal graph neural network for traffic forecasting (KDD 2026)
+- [[most]] — MoST, multi-modality spatio-temporal traffic prediction foundation model (KDD 2026)
+- [[mindts]] — MindTS, multimodal time series anomaly detection model (ICLR 2026)
+- [[vot]] — VoT (Value of Text), multimodal time series forecasting model with event-driven reasoning (ICLR 2026)
+- [[aurora]] — Aurora, universal generative multimodal time series foundation model (arXiv 2026)
+- [[tats]] — TaTS (Texts as Time Series), plug-and-play multimodal TS framework (ICLR 2026)
+- [[uniextreme]] — UniExtreme, universal extreme weather forecasting foundation model (arXiv 2025)
 
 ## Concepts
 - [[covariate-homogenization]] — UniCA's technique for converting heterogeneous covariates into unified representations (ICLR 2026)
 - [[heterogeneous-covariates]] — classification and multimodal covariates that differ from target time series (ICLR 2026)
 - [[multimodal-time-series-forecasting]] — forecasting tasks involving numerical time series plus images/text (ICLR 2026)
+- [[multimodal-time-series-anomaly-detection]] — detecting anomalies using multimodal time series and text data (ICLR 2026)
 - [[hybrid-periodicity-decoupling]] — explicitly separating short-term and long-term periodicity in time-series signals
 - [[traffic-forecasting]] — predicting future traffic states from historical sensor data
 - [[accident-aware-traffic-forecasting]] — modeling disruptive impact of accidents on traffic prediction
@@ -130,10 +146,20 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[coding-rate]] — Coding Rate, information-theoretic measure for data distribution compactness
 - [[union-of-subspaces-model]] — Union of Subspaces Model, data assumption underlying MCR² and CBSA
 - [[large-scale-spatial-temporal-graph]] — 大规模时空图预测的计算复杂度与解决方案
+- [[spatio-temporal-foundation-model]] — 时空基础模型，跨城市零样本预测范式
+- [[event-driven-reasoning]] — 事件驱动推理，利用 LLM 从外生文本中提取预测信号 (ICLR 2026)
+- [[multi-level-alignment]] — 多级对齐，在表示级和预测级融合文本与时间序列模态 (ICLR 2026)
+- [[generative-time-series-forecasting]] — 生成式时间序列预测，通过概率建模实现不确定性量化的预测范式
+- [[chronological-textual-resonance]] — CTR，时间序列配对文本与数值序列的周期性共振现象 (ICLR 2026)
+- [[texts-as-auxiliary-variables]] — 文本作为辅助变量，TaTS 的核心设计概念 (ICLR 2026)
+- [[extreme-weather-forecasting]] — 极端天气预测，对罕见非线性大气极端事件的预报 (arXiv 2025)
+- [[signal-to-noise-ratio-modality-selection]] — SNR-based adaptive modality weighting for multi-modal prediction
+- [[mutual-information]] — 互信息，衡量两个随机变量之间共享信息量的信息论度量
 
 ## Techniques
 - [[newton-schulz-iteration]] — Newton-Schulz iteration for matrix orthogonalization
 - [[frequency-aware-residual-representation]] — Fourier-based signal decomposition into periodic and residual components
+- [[fine-grained-time-text-semantic-alignment]] — MindTS's cross-view text fusion and contrastive alignment (ICLR 2026)
 - [[spatial-temporal-attentive-encoder]] — dual-pathway encoder for short-term and long-term periodicity
 - [[dual-view-alignment-loss]] — regularization loss aligning representations across periodicity views
 - [[demlp-decoder]] — two-stage coarse-to-fine decoder with explicit trend removal
@@ -201,10 +227,27 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[adaptive-graph-agent-attention]] — AGA-Att: using learnable agent tokens to reduce spatial complexity from O(N²) to O(Na)
 - [[gated-linear-units]] — GLU: gated linear units as efficient MoE experts with parallel computation
 - [[conditional-attention-pooling]] — CAP: UniCA's conditional attention mechanism for covariate fusion (ICLR 2026)
+- [[content-condenser-reconstruction]] — MindTS's IB-based redundancy filtering and cross-modal reconstruction (ICLR 2026)
 - [[retrieval-augmented-statistical-channel]] — RAGC: retrieval-augmented statistical channel for高铁 channel prediction (KDD 2026)
+- [[incident-context-spatial-fusion]] — ICSF: incident-context spatial fusion via attention + spatial tensor (KDD 2026)
+- [[temporal-incident-impact-decay]] — TIID: temporal incident impact decay via Gaussian function (KDD 2026)
+- [[multi-modality-refinement]] — SNR-based modality selection for multi-modality ST prediction (KDD 2026)
+- [[multi-modality-guided-spatial-expert]] — multi-modality-guided spatial expert mechanism with MoE routing (KDD 2026)
+- [[historical-in-context-learning]] — HIC, retrieve corrected historical reasoning examples as error-informed guidance (ICLR 2026)
+- [[endogenous-text-alignment]] — ETA, decomposed pattern extraction and contrastive learning for text-TS alignment (ICLR 2026)
+- [[adaptive-frequency-fusion]] — AFF, frequency-domain fusion with learnable per-band weights (ICLR 2026)
+- [[modality-guided-self-attention]] — Aurora's attention mechanism injecting multimodal domain knowledge into temporal representations (arXiv 2026)
+- [[prototype-guided-flow-matching]] — Aurora's generative probabilistic forecasting via prototype-conditioned flow matching (arXiv 2026)
+- [[tt-wasserstein]] — TT-Wasserstein metric for quantifying CTR alignment quality (ICLR 2026)
+- [[adaptive-frequency-modulation]] — AFM, learnable Beta-distribution spectral filters + band aggregation for normal-extreme weather discrimination (arXiv 2025)
+- [[event-prior-augmentation]] — EPA, categorized extreme event memory pool + dual-level attention fusion for hierarchical extreme modeling (arXiv 2025)
+- [[cross-view-text-fusion]] — MindTS's cross-view attention fusing endogenous and exogenous text views (ICLR 2026)
+- [[contrastive-learning]] — representation learning via positive/negative pair similarity optimization
+- [[information-bottleneck-principle]] — IB, compressed representations retaining maximal task-relevant information
 
 ## Entities
 - [[muon-optimizer]] — Muon, neural network optimizer using Newton-Schulz orthogonalization (2024)
+- [[opencity]] — OpenCity, single-modal spatio-temporal traffic foundation model
 
 ## Concepts
 - [[gradient-orthogonalization]] — orthogonalizing gradient updates to improve optimization
@@ -212,3 +255,6 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[on-policy-vs-off-policy]] — on-policy 与 off-policy 学习范式对比
 - [[periodicity-modeling-in-time-series]] — analysis of periodic modeling approaches across time-series forecasting architectures
 - [[rl-learning-path-mfrl]] — 基于《Mathematical Foundations of Reinforcement Learning》的系统性 RL 学习路径
+
+## Analyses
+- [[multimodal-semantic-understanding]] — 多模态数据语义理解的对齐范式、融合策略与冗余过滤综合分析

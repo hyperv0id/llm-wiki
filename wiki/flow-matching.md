@@ -409,3 +409,5 @@ $$
 ## 引用
 
 [^src-flow-matching]: [[source-flow-matching]]
+- [[aurora]] — Aurora 使用 Prototype-Guided Flow Matching 进行时间序列概率预测
+- [[prototype-guided-flow-matching]] — Aurora 的原型引导流匹配技术

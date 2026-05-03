@@ -2,7 +2,7 @@
 title: Log
 type: concept
 created: 2026-04-26
-last_updated: 2026-04-30
+last_updated: 2026-05-03
 tags:
   - meta
 ---
@@ -10,6 +10,47 @@ tags:
 # Wiki Log
 
 Chronological record of all wiki activity.
+
+## [2026-05-03] query | 多模态数据的语义理解
+基于 7 个源文件（MindTS, VoT, TaTS/CTR, Aurora, MoST, UniCA, SimDiff）综合分析多模态语义理解的对齐范式（对比对齐/频域融合/自然共振）、融合策略（注意力引导/交叉视图/同质化/SNR门控/频域加权）和冗余过滤（信息瓶颈压缩/SNR模态选择）。提炼三层统一框架（理论基础→对齐机制→模型实例）和四个开放问题。归档为 analysis 页面。
+
+Pages created: [[multimodal-semantic-understanding]]
+Pages updated: [[index]], [[log]]
+
+## [2026-05-03] lint | 近 6 篇论文（42 页面）lint 检查与修复
+执行 lint 检查，修复以下问题：
+- 修正 aurora.md source_count=5→4（实际仅引用 4 个源文件）
+- 重命名 MindTS 系列页面 4 个文件中的脚注 slug：`src-multimodal-ts-ad` → `src-multimodal-ts-anomaly-detection`（不符合源文件命名规则）
+- 创建 6 个 stub 页面修复 broken wikilinks：[[signal-to-noise-ratio-modality-selection]], [[opencity]], [[mutual-information]], [[cross-view-text-fusion]], [[contrastive-learning]], [[information-bottleneck-principle]]
+- 更新 [[index]] 添加新 stub 页面条目
+
+Pages created: [[signal-to-noise-ratio-modality-selection]], [[opencity]], [[mutual-information]], [[cross-view-text-fusion]], [[contrastive-learning]], [[information-bottleneck-principle]]
+Pages updated: [[aurora]], [[mindts]], [[multimodal-time-series-anomaly-detection]], [[fine-grained-time-text-semantic-alignment]], [[content-condenser-reconstruction]], [[index]], [[log]]
+
+## [2026-05-03] ingest | UniExtreme: A Universal Foundation Model for Extreme Weather Forecasting (arXiv 2025)
+Ingested UniExtreme paper (arXiv:2508.01426v2) by Ni, Zhang & Liu (HKUST Guangzhou). UniExtreme is the first extreme weather foundation model trained on both labeled data from 18 types of real-world extreme weather events and general meteorological data. Key innovations: (1) Adaptive Frequency Modulation (AFM) — learnable Beta-distribution spectral filters + multi-granularity spatiotemporal band aggregation that captures the "right-shift" spectral disparity between normal and extreme weather regions; (2) Event Prior Augmentation (EPA) — categorized extreme event memory pool + dual-level (intra-type + inter-type) attention fusion that resolves hierarchical extreme diversity and compound event schema. Empirical analysis on ~36.4M normal and ~882K extreme US weather regions confirms spectral right-shift (Wasserstein distance 3.1e-3 vs 2.4e-4) and 86% composite extreme co-occurrence rate. UniExtreme achieves ~11% MAE and ~10% RMSE improvement over best baseline in extreme weather forecasting, and reduces normal-extreme gap by ~37% for MSL. Built HR-Extreme-V2 (26TB, 2019-2024, 18 event types).
+Pages created: [[source-uniextreme]], [[uniextreme]], [[extreme-weather-forecasting]], [[adaptive-frequency-modulation]], [[event-prior-augmentation]]
+Pages updated: [[aurora]], [[simdiff]], [[timesfm]], [[index]], [[log]]
+
+## [2026-05-03] ingest | Language in the Flow of Time: TaTS (ICLR 2026)
+Ingested TaTS paper (arXiv:2502.08942) by Li et al. (UIUC/Meta/IBM Research). TaTS is a plug-and-play multimodal time series framework that treats time-series-paired texts as auxiliary variables, enabling any existing TS model to handle multimodal data without architecture modification. Key innovations: (1) Chronological Textual Resonance (CTR) — the discovery that time-series-paired texts exhibit periodic properties mirroring the original time series, motivated by the Platonic Representation Hypothesis; (2) TT-Wasserstein — a metric to quantify CTR level and alignment quality; (3) Texts as Time Series (TaTS) — a simple framework that encodes texts via LLM, reduces dimensionality via MLP, and concatenates as auxiliary variables. Evaluated on 18 datasets across 9 TS models, achieving >5% average improvement on 6/9 datasets and >30% on the largest dataset. Compared with VoT (LLM reasoning), MindTS (anomaly detection), UniCA (covariate adaptation), Aurora (generative foundation model), and Chronos (tokenization).
+Pages created: [[source-language-in-the-flow-of-time]], [[tats]], [[chronological-textual-resonance]], [[tt-wasserstein]], [[texts-as-auxiliary-variables]]
+Pages updated: [[multimodal-time-series-forecasting]], [[vot]], [[chronos]], [[endogenous-text-alignment]], [[fine-grained-time-text-semantic-alignment]], [[aurora]], [[index]], [[log]]
+
+## [2026-05-03] ingest | Aurora: Towards Universal Generative Multimodal Time Series Forecasting (arXiv 2026)
+Ingested Aurora paper (arXiv:2509.22295) by Wu, Jin, Qiu, Chen, Shu, Yang & Guo. Aurora is the first Multimodal Time Series Foundation Model supporting multimodal inputs (text, image, numerical) and zero-shot inference. Key innovations: (1) Modality-Guided Multi-head Self-Attention — extracts domain knowledge from text/image modalities via tokenization-encoding-distillation and injects it into temporal representation modeling; (2) Prototype-Guided Flow Matching — uses multimodal representations to generate conditions and prototypes for future tokens, enabling generative probabilistic forecasting. Evaluated on 5 benchmarks (TimeMMD, TSFM-Bench, ProbTS, TFB, EPF), achieving SOTA on both unimodal and multimodal scenariosarl. Aurora fills the gap between single-modal TSFMs (TimesFM, Chronos) and end-to-end multimodal supervised models by supporting both multimodal inputs and zero-shot inference.
+Pages created: [[source-aurora]], [[aurora]], [[modality-guided-self-attention]], [[prototype-guided-flow-matching]], [[generative-time-series-forecasting]]
+Pages updated: [[multimodal-time-series-forecasting]], [[simdiff]], [[most]], [[timesfm]], [[chronos]], [[flow-matching]], [[vot]], [[mindts]], [[index]], [[log]]
+
+## [2026-05-03] ingest | VoT: Event-Driven Reasoning and Multi-Level Alignment for Time Series Forecasting (ICLR 2026)
+Ingested VoT paper (arXiv:2603.15452) from East China Normal University. VoT is a multimodal time series forecasting method that unlocks the value of text through two complementary mechanisms: (1) Event-driven Reasoning with Historical In-Context Learning (HIC) — a three-step generative pipeline that uses LLMs to reason over exogenous text (news, policy documents) and retrieves corrected historical examples as error-informed guidance; (2) Multi-level Alignment — Endogenous Text Alignment (ETA) at the representation level (decomposed trend/seasonal contrastive learning) and Adaptive Frequency Fusion (AFF) at the prediction level (learnable per-band frequency fusion). Evaluated on 10 real-world datasets, achieving 20/20 first-place counts against baselines. Same lab (ECNU) as MindTS.
+Pages created: [[source-event-driven-ts-forecasting]], [[vot]], [[event-driven-reasoning]], [[historical-in-context-learning]], [[multi-level-alignment]], [[endogenous-text-alignment]], [[adaptive-frequency-fusion]]
+Pages updated: [[multimodal-time-series-forecasting]], [[fine-grained-time-text-semantic-alignment]], [[mindts]], [[content-condenser-reconstruction]], [[index]], [[log]]
+
+## [2026-05-03] ingest | Multimodal Time Series Anomaly Detection with Semantic Alignment and Condensed Interaction (ICLR 2026)
+Ingested MindTS paper (arXiv:2603.21612) from East China Normal University. MindTS is the first dedicated multimodal anomaly detection model that jointly leverages time series and text modalities. Key innovations: (1) fine-grained time-text semantic alignment via cross-view fusion of endogenous and exogenous text, and (2) content condenser reconstruction using Information Bottleneck principle to filter redundant text and enhance cross-modal interaction. Evaluated on 6 real-world multimodal datasets, outperforming 17 baselines.
+Pages created: [[source-multimodal-ts-anomaly-detection]], [[mindts]], [[multimodal-time-series-anomaly-detection]], [[fine-grained-time-text-semantic-alignment]], [[content-condenser-reconstruction]]
+Pages updated: [[multimodal-time-series-forecasting]], [[channelmts]], [[most]], [[multi-modality-refinement]], [[index]], [[log]]
 
 ## [2026-04-26] maintenance | Wiki reset
 Cleared sample/demo content. Vault is empty and ready for first ingest.
@@ -228,3 +269,18 @@ Pages updated: [[index]], [[log]]
 补充科学空间的深度理论分析，从谱范数视角解释 Muon 的有效性。核心洞见：1) msign 是 sign 函数的矩阵推广；2) Muon 等价于谱范数约束下的最速下降；3) 当 Shampoo 的 β=0 时与 Muon 等价；4) 2015 年论文已提出类似算法 (Stochastic Spectral Descent)。详细推导了 Newton-Schulz 迭代的系数优化过程。
 Pages created: [[source-kexue-muon-analysis]]
 Pages updated: [[muon-optimizer]], [[newton-schulz-iteration]], [[index]], [[log]]
+
+## [2026-05-03] ingest | IGSTGNN: Incident-Guided Spatiotemporal Traffic Forecasting (KDD 2026)
+Ingested KDD 2026 论文，提出 IGSTGNN 框架通过 ICSF + TIID 两个即插即用模块显式建模非重复性事件对交通预测的时空影响。基于 XTraffic 基准构建三个事件对齐数据集，SOTA 全面超越。ICSF/TIID 可集成到 AGCRN、GWNET、STTN、D2STGNN 等骨干网络。
+Pages created: [[source-incident-guided-st-forecasting]], [[igstgnn]], [[incident-context-spatial-fusion]], [[temporal-incident-impact-decay]]
+Pages updated: [[accident-aware-traffic-forecasting]], [[traffic-forecasting]], [[large-scale-spatial-temporal-graph]], [[conformer]], [[index]], [[log]]
+
+## [2026-05-03] ingest | MoST: A Foundation Model for Multi-modality Spatio-temporal Traffic Prediction (KDD 2026)
+MoST 是首个多模态时空交通预测基础模型，通过 SNR 自适应模态选择和多模态引导空间专家实现零样本跨城市泛化。在五个大规模数据集上零样本超越所有基线（包括 OpenCity 基础模型和多数全量训练模型）。
+Pages created: [[source-most]], [[most]], [[multi-modality-refinement]], [[multi-modality-guided-spatial-expert]], [[spatio-temporal-foundation-model]]
+Pages updated: [[traffic-forecasting]], [[multimodal-time-series-forecasting]], [[large-scale-spatial-temporal-graph]], [[mixture-of-experts]], [[timesfm]], [[chronos]], [[unified-covariate-adaptation]], [[index]], [[log]]
+
+## [2026-05-03] ingest | Aurora: Towards Universal Generative Multimodal Time Series Forecasting (arXiv 2026)
+Aurora 是首个多模态时间序列基础模型，支持文本/图像/数值多模态输入和零样本推理。通过 Modality-Guided Self-Attention 注入领域知识，Prototype-Guided Flow Matching 实现生成式概率预测。在 5 个基准上单模态和多模态场景均 SOTA。
+Pages created: [[source-aurora]], [[aurora]], [[modality-guided-self-attention]], [[prototype-guided-flow-matching]], [[generative-time-series-forecasting]]
+Pages updated: [[simdiff]], [[chronos]], [[timesfm]], [[mindts]], [[vot]], [[most]], [[flow-matching]], [[multimodal-time-series-forecasting]], [[index]], [[log]]

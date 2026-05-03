@@ -8,8 +8,8 @@ tags:
   - covariate
   - iclr2026
 created: 2026-04-29
-last_updated: 2026-04-29
-source_count: 1
+last_updated: 2026-05-03
+source_count: 2
 confidence: high
 status: active
 ---
@@ -262,12 +262,14 @@ UniCA 适用于大多数主流 TSFMs：
 
 - [[timesnet]] — 时间序列基础模型
 - [[conditional-attention-pooling]] — CAP 机制
-- [[heterogeneous-covariates]] — 异构协变��
+- [[heterogeneous-covariates]] — 异构协变量
 - [[covariate-homogenization]] — 协变量同质化
 - [[multimodal-time-series-forecasting]] — 多模态时间序列预测
+- [[most]] — MoST 原生多模态时空基础模型（对比：UniCA 适配现有 TSFMs，MoST 从零训练多模态）
 
 ---
 
 ## 引用
 
 [^src-unca]: [[source-unca]]
+[^src-most]: [[source-most]]

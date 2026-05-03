@@ -30,6 +30,7 @@ ConFormer integrates two key innovations:
 ## Related Concepts
 
 - [[accident-aware-traffic-forecasting]] — the problem domain ConFormer addresses
+- [[igstgnn]] — IGSTGNN, a complementary KDD 2026 model for broader incident-guided forecasting
 - [[staeformer|STAEFormer]] — previous SOTA transformer for traffic forecasting
 - [[hyperd|HyperD]] — periodicity-decoupled traffic forecasting
 - [[timesnet|TimesNet]] — general time series foundation model

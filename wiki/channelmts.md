@@ -6,9 +6,9 @@ tags:
   - multimodal-time-series
   - kdd-2026
 created: 2026-04-30
-last_updated: 2026-04-30
+last_updated: 2026-05-03
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
@@ -67,6 +67,8 @@ $$\hat{E} = \frac{E - \mu_E}{\sigma_E} \times \sigma_C + \mu_C$$
 
 - [[source-channelmts]] — 论文详细摘要
 - [[multimodal-time-series-forecasting]] — 多模态时间序列预测概念
+- [[mindts]] — MindTS 多模态异常检测（同为多模态 TS，不同任务）
+- [[multimodal-time-series-anomaly-detection]] — 多模态异常检测任务
 
 ---
 

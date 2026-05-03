@@ -1,0 +1,70 @@
+---
+title: "Generative Time Series Forecasting"
+type: concept
+tags:
+  - time-series
+  - generative-model
+  - probabilistic-forecasting
+  - flow-matching
+  - diffusion-models
+created: 2026-05-03
+last_updated: 2026-05-03
+source_count: 2
+confidence: high
+status: active
+---
+
+# Generative Time Series Forecasting (生成式时间序列预测)
+
+## 定义
+
+**生成式时间序列预测**是指使用生成模型（如扩散模型、流匹配、归一化流）直接建模未来时间序列的条件概率分布 $p(\mathbf{y} \mid \mathbf{x})$，而非仅输出点估计的预测范式[^src-aurora][^src-simdiff]。
+
+## 与判别式预测的对比
+
+| 维度 | 判别式预测 | 生成式预测 |
+|------|-----------|-----------|
+| 输出 | 点估计 $\hat{y}$ | 概率分布 $p(y \mid x)$ |
+| 不确定性 | 隐式（需额外建模） | 显式（分布自然包含） |
+| 典型方法 | MSE/MAE 回归 | Diffusion / Flow Matching |
+| 代表模型 | PatchTST, iTransformer | SimDiff, Aurora |
+
+## 现有方法
+
+### 扩散模型方法
+
+**[[simdiff|SimDiff]]** (AAAI 2026) 是首个纯端到端扩散模型用于时间序列点预测，使用 DDPM 框架并通过 Median-of-Means 将概率样本聚合为点估计[^src-simdiff]。SimDiff 仅支持单模态数值输入。
+
+### 流匹配方法
+
+**[[aurora|Aurora]]** (arXiv 2026) 提出 Prototype-Guided Flow Matching，使用多模态领域知识生成条件和原型来引导流匹配过程，实现生成式概率预测[^src-aurora]。Aurora 支持多模态输入（文本、图像、数值）和零样本推理。
+
+### 方法对比
+
+| 方法 | 生成框架 | 模态支持 | 零样本 | 输出类型 |
+|------|---------|---------|--------|---------|
+| SimDiff | Diffusion (DDPM) | 仅数值 | ✗ | 点估计（MoM 聚合） |
+| Aurora | Flow Matching (OT) | 文本 + 图像 + 数值 | ✓ | 概率分布 |
+
+## 优势
+
+1. **不确定性量化**：生成式方法自然输出预测分布，无需额外的不确定性建模
+2. **多模态条件化**：Flow Matching 和扩散模型天然支持条件生成，便于融入多模态信息[^src-aurora]
+3. **灵活采样**：可从预测分布中采样多个实现，支持风险分析和决策
+
+## 挑战
+
+1. **计算成本**：生成式方法通常需要多步采样（扩散模型）或 ODE 求解（流匹配）
+2. **训练稳定性**：扩散/流匹配训练比判别式回归更复杂
+3. **评估指标**：概率预测需要 CRPS、NLL 等分布级指标，而非简单的 MSE/MAE
+
+## 相关页面
+
+- [[aurora]] — 流匹配生成式预测模型
+- [[simdiff]] — 扩散式生成预测模型
+- [[flow-matching]] — Flow Matching 理论基础
+- [[diffusion-model]] — 扩散模型理论基础
+- [[multimodal-time-series-forecasting]] — 多模态时间序列预测
+
+[^src-aurora]: [[source-aurora]]
+[^src-simdiff]: [[source-simdiff]]

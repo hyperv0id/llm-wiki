@@ -6,11 +6,11 @@ tags:
   - computational-complexity
   - scalability
 created: 2026-04-29
-last_updated: 2026-04-29
-source_count: 2
+last_updated: 2026-05-03
+source_count: 3
 references:
   - [[source-fast-long-horizon-forecasting]]
-confidence: medium
+confidence: high
 status: active
 ---
 
@@ -53,6 +53,10 @@ FaST 提出两个核心技术：
 1. **[[adaptive-graph-agent-attention|AGA-Att]]**: O(N·a) 空间复杂度（a = 32 ≪ N）
 2. **[[mixture-of-experts|HA-MoE]]**: 时间压缩输入避免 T 步展开
 
+## 基础模型方法
+
+[[most|MoST]] (KDD 2026) 采用零样本基础模型范式处理大规模时空图：在多个城市数据集上预训练后，无需微调即可在新城市上预测[^src-most]。通过仅建模 top-k 最近邻的空间交互（而非全图），将空间复杂度从 O(N²) 降至 O(N·k)，同时利用多模态背景信息提升泛化能力[^src-most]。在 SD (716节点)、GBA (2,352节点)、GLA (3,834节点) 上零样本性能超越多数全量训练模型[^src-most]。
+
 ## 现有方法分类
 
 ### 结构感知方法
@@ -83,10 +87,20 @@ LargeST 数据集（KDD 2024）：
 | GLA | 3,834 | 15min | 2019全年 |
 | CA | 8,600 | 15min | 2019全年 |
 
+XTraffic 数据集（2024）：基于加州 2023 年交通数据，包含时间对齐的事件记录，用于事件引导的时空预测[^src-incident-guided-st-forecasting]：
+| 子数据集 | 节点数 | 边数 | 事件数 |
+|----------|--------|------|--------|
+| Alameda | 521 | 13,828 | 14,687 |
+| Contra Costa | 496 | 13,339 | 5,587 |
+| Orange | 990 | 29,142 | 18,700 |
+
 ## 相关页面
 
 - [[traffic-forecasting]] — 城市交通预测场景
+- [[most]] — 多模态零样本基础模型方法
 - [[adaptive-graph-agent-attention|AGA-Att]] — 空间复杂度优化
 - [[mixture-of-experts|MoE]] — 特征提取与时间压缩
 
 [^src-fast-long-horizon-forecasting]: [[source-fast-long-horizon-forecasting]]
+[^src-incident-guided-st-forecasting]: [[source-incident-guided-st-forecasting]]
+[^src-most]: [[source-most]]

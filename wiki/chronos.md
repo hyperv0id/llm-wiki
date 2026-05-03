@@ -8,7 +8,7 @@ tags:
   - iclr2024
 created: 2026-04-29
 last_updated: 2026-04-29
-source_count: 1
+source_count: 2
 confidence: high
 status: active
 ---
@@ -61,6 +61,9 @@ Chronos 是 UniCA 论文中验证的主要基础模型之一：
 - [[unified-covariate-adaptation]] — UniCA 框架
 - [[timesfm]] — TimesFM 基础模型
 - [[timesnet]] — TimesNet 基础模型
+- [[most]] — MoST 多模态时空基础模型（不同领域：TS vs ST）
+- [[aurora]] — Aurora 多模态生成式基础模型（Chronos 为单模态，Aurora 支持多模态）
+- [[tats]] — TaTS 即插即用多模态框架（Chronos 为数值专用 tokenization，TaTS 通过辅助变量处理文本）
 
 ---
 
