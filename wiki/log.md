@@ -24,7 +24,15 @@ Chronological record of all wiki activity.
 Pages created: [[energy-based-model]], [[glu-gated-linear-unit]], [[heterogeneous-moe-routing]], [[staeformer]], [[tweedies-formula]], [[score-based-generative-models]]
 Pages updated: [[informer]], [[source-zhou-informer-2021]], [[log]], [[index]] + 33 source_count fixes + 19 confidence fixes
 
-## [2026-05-04] ingest | Informer: Beyond Efficient Transformer for Long Sequence Time-Series Forecasting (AAAI 2021 Best Paper)
+## [2026-05-04] ingest | TimesNet: Temporal 2D-Variation Modeling (ICLR 2023) — 补完
+
+从 Zotero 存储解析 TimesNet 完整 PDF 并增强已有 source-summary。仅保留 arXiv 链接，不存储 PDF。
+主要修改：
+- **修复**：补充 `source-timesnet.md` 中缺失的 `[^src-timesnet]` 脚注定义
+- **扩充**：添加 FFT 周期发现公式、TimesBlock 六步架构流程、五个任务详细基准与定量结果、效率分析、加深的批判分析
+- 更新 `timesnet.md` 实体页面：Connections 添加内联引用，移除未使用脚注
+
+Pages updated: [[source-timesnet]], [[timesnet]]
 
 Ingested Informer paper from Zotero storage. Informer is the seminal work that pioneered efficient Transformer architectures for LSTF, addressing all three vanilla Transformer bottlenecks simultaneously: $O(L^2)$ computation → $O(L \log L)$ via ProbSparse attention, $O(J \cdot L^2)$ memory → $O((2-\epsilon) L \log L)$ via self-attention distilling, and slow autoregressive decoding → one-forward-pass generative decoder. AAAI 2021 Best Paper. Evaluated on ETT, ECL, and Weather datasets, significantly outperforming ARIMA, Prophet, LSTMa, LSTnet, DeepAR, LogTrans, and Reformer. Updated 10 existing pages (autoformer, fedformer, timesnet, source-autoformer, source-fedformer, source-timesnet, source-frets, source-deep-time-series-survey, source-language-in-the-flow-of-time, periodicity-modeling-in-time-series) with cross-references and Informer citations.
 

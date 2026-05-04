@@ -43,10 +43,10 @@ TimesNet outperforms 15+ baselines (Autoformer, FEDformer, DLinear, Informer, et
 
 ## Connections
 
-- **[[informer]]** — Informer (AAAI 2021 Best Paper) pioneered efficient Transformer-based LSTF and is listed as a key baseline in TimesNet's experiments.
-- **[[autoformer]]** — Autoformer's progressive decomposition and periodicity analysis via autocorrelation precede TimesNet's approach. TimesNet extends the idea by explicitly modeling multiple periods through 2D reshaping.
-- **[[source-autoformer|Autoformer (source)]]** — Autoformer is extensively cited by TimesNet as a foundational reference for periodicity-based time series modeling.
-- **[[source-hyperd-hybrid-periodicity-decoupling|HyperD]]** — HyperD decouples short-term and long-term periodicity into separate specialized pathways, an alternative design to TimesNet's shared 2D convolution approach over multiple discovered periods.
+- **[[informer]]** — Informer (AAAI 2021 Best Paper) pioneered efficient Transformer-based LSTF and is listed as a key baseline in TimesNet's experiments[^src-timesnet].
+- **[[autoformer]]** — Autoformer's progressive decomposition and periodicity analysis via autocorrelation precede TimesNet's approach. TimesNet extends the idea by explicitly modeling multiple periods through 2D reshaping[^src-timesnet].
+- **[[source-autoformer|Autoformer (source)]]** — Autoformer is extensively cited by TimesNet as a foundational reference for periodicity-based time series modeling[^src-timesnet].
+- **[[source-hyperd-hybrid-periodicity-decoupling|HyperD]]** — HyperD decouples short-term and long-term periodicity into separate specialized pathways, an alternative design to TimesNet's shared 2D convolution approach over multiple discovered periods[^src-hyperd-hybrid-periodicity-decoupling]
 - **[[unica|UniCA]]** — 作为时间序列基础模型（TSFM）之一，TimesFM 可作为 UniCA 的适配基线。UniCA 框架可为其添加异构协变量支持，同时保持 TimesNet/TimesFM 主干冻结[^src-unica]
 
 ## 相关页面
@@ -59,4 +59,4 @@ TimesNet outperforms 15+ baselines (Autoformer, FEDformer, DLinear, Informer, et
 
 [^src-unica]: [[source-unica]]
 [^src-timesnet]: [[source-timesnet]]
-[^src-zhou-informer-2021]: [[source-zhou-informer-2021]]
+[^src-hyperd-hybrid-periodicity-decoupling]: [[source-hyperd-hybrid-periodicity-decoupling]]
