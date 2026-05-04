@@ -6,8 +6,8 @@ tags:
   - vae
   - latent-variable
 created: 2026-04-28
-last_updated: 2026-04-28
-source_count: 1
+last_updated: 2026-05-04
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -44,7 +44,7 @@ $$
 
 ## 重参数化技巧
 
-VAE 训练中的一个核心挑战是从编码器输出的分布 $q_\phi(\mathbf{z}|\mathbf{x})$ 中采样时，采样操作不可微，导致梯度无法通过随机节点反向传播。**重参数化技巧**（Reparameterization Trick）解决了这一问题：[^src-understanding-diffusion-models]
+VAE 训练中的一个核心挑战是从编码器输出的分布 $q_\phi(\mathbf{z}|\mathbf{x})$ 中采样时，采样操作不可微，导致梯度无法通过随机节点反向传播。**重参数化技巧**（[[reparameterization-trick|Reparameterization Trick]]）解决了这一问题：[^src-understanding-diffusion-models][^src-bluuuuue-reparameterization-trick]
 
 将随机采样 $\mathbf{z} \sim q_\phi(\mathbf{z}|\mathbf{x})$ 重写为确定性变换加独立噪声：
 
@@ -53,6 +53,8 @@ $$
 $$
 
 其中 $\odot$ 表示逐元素乘法。通过这种方式，随机性被转移到独立于模型参数的噪声变量 $\boldsymbol{\varepsilon}$ 上，而 $\mu_\phi$ 和 $\sigma_\phi$ 的梯度可以正常传播，使 VAE 能够通过标准反向传播进行端到端的随机梯度优化。[^src-understanding-diffusion-models]
+
+重参数化不仅打通了梯度路径，还显著降低了梯度估计方差——相比 REINFORCE 的得分函数估计，重参数化在训练初期可将方差降低数量级（Xu et al., 2019, AISTATS）。[^src-bluuuuue-reparameterization-trick]
 
 ## 与扩散模型的关系
 
@@ -72,3 +74,4 @@ VAE 的主要局限包括：[^src-understanding-diffusion-models]
 - **先验假设**：标准 VAE 假设潜变量服从各向同性高斯分布，这限制了其拟合复杂多模态分布的能力。后续工作如 VampPrior、Normalizing Flow 增强先验等尝试解决此问题。
 
 [^src-understanding-diffusion-models]: [[source-understanding-diffusion-models]]
+[^src-bluuuuue-reparameterization-trick]: [[source-bluuuuue-reparameterization-trick]]

@@ -6,8 +6,8 @@ tags:
   - rope
   - context-extension
 created: 2026-04-28
-last_updated: 2026-04-28
-source_count: 1
+last_updated: 2026-05-04
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -68,6 +68,9 @@ $$\sqrt{\frac{1}{t}} = 0.1\ln(s) + 1$$
 - 温度缩放处理注意力的熵/集中度
 - 两者结合 = [[yarn|YaRN]]
 
+温度缩放与 [[scaling-factor-sqrt-dk|缩放因子 $1/\sqrt{d_k}$]] 在数学上同构——两者都是在 Softmax 前对 logits 施加线性缩放。$1/\sqrt{d_k}$ 将点积方差归一化至 1 以预防饱和[^src-bluuuuue-scaling-factor-intuition]；温度 $t$ 则根据上下文扩展比例 $s$ 动态调节注意力锐度[^src-yarn]。温度缩放可视为缩放因子在位置编码上下文扩展场景下的推广。
+
 ## 引用
 
 [^src-yarn]: [[source-yarn]]
+[^src-bluuuuue-scaling-factor-intuition]: [[source-bluuuuue-scaling-factor-intuition]]

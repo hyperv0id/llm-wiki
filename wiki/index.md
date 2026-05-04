@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-05-03
+last_updated: 2026-05-04
 tags:
   - meta
 ---
@@ -73,6 +73,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-event-driven-ts-forecasting]] — VoT: event-driven reasoning and multi-level alignment for time series forecasting (ICLR 2026)
 - [[source-aurora]] — Aurora: universal generative multimodal time series forecasting (arXiv 2026)
 - [[source-aurora]] — Aurora: Towards Universal Generative Multimodal Time Series Forecasting (arXiv 2026)
+- [[source-bluuuuue-scaling-factor-intuition]] — 数学直觉系列（一）：缩放因子1/√dₖ——注意力机制的数值稳定性条件 (bluuuuue, 小红书)
+- [[source-bluuuuue-reparameterization-trick]] — 数学直觉系列（二）：VAE与重参数化——将不可逆的随机采样重构为可微的确定性变换 (bluuuuue, 小红书)
 - [[source-language-in-the-flow-of-time]] — Language in the Flow of Time: TaTS framework for multimodal TS (ICLR 2026)
 - [[source-uniextreme]] — UniExtreme: universal extreme weather forecasting foundation model (arXiv 2025)
 
@@ -137,6 +139,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[diffusion-model]] — 扩散模型，通过逐步加噪和去噪学习的生成模型
 - [[variational-autoencoder]] — 变分自编码器（VAE），基于 ELBO 优化的潜变量生成模型
 - [[score-function]] — 分数函数 ∇_x log p(x)，对数概率密度的梯度
+- [[scaling-factor-sqrt-dk]] — 缩放因子 1/√dₖ，注意力机制的数值稳定性条件
 - [[score-based-generative-modeling]] — 基于分数的生成建模，通过估计数据分布的对数密度梯度来生成样本
 - [[edm-design-space]] — EDM 统一设计空间，将 VP/VE/DDIM 等框架正交化
 - [[perceptual-compression]] — 感知压缩，将生成建模分为感知压缩和语义压缩两个层次
@@ -181,6 +184,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[epsilon-greedy]] — 经典探索策略
 - [[temporal-query-technique]] — periodically shifted learnable vectors as queries for global correlation
 - [[cross-period-sparse-forecasting]] — cross-period downsampling for extreme model compression
+- [[reparameterization-trick]] — 重参数化技巧，将随机采样重构为可微确定性变换+固定噪声
 - [[residual-cycle-forecasting]] — RCF technique using learnable recurrent cycles for explicit periodicity modeling
 - [[learnable-recurrent-cycles]] — trainable cycle parameters Q ∈ ℝ^(W×D) for periodicity representation
 - [[instance-normalization]] — RevIN strategy for handling distributional shifts in time series

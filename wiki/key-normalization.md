@@ -7,8 +7,8 @@ tags:
   - normalization
   - stability
 created: 2026-04-28
-last_updated: 2026-04-28
-source_count: 1
+last_updated: 2026-05-04
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -22,7 +22,7 @@ status: active
 在标准注意力机制中：
 $$A_i = \text{softmax}\left(C\|q_i\|\|\bar{k}_j\|(\bar{q}_i \cdot \bar{k}_j)\right)$$
 
-键范数 $\|k_j\|$ 直接影响注意力分数，导致：
+缩放因子 $1/\sqrt{d_k}$（参见 [[scaling-factor-sqrt-dk]]）在初始化阶段将点积方差归一化至 1，预防 Softmax 饱和[^src-bluuuuue-scaling-factor-intuition]。然而，缩放因子不约束 Q/K 的范数——训练过程中键范数仍可不受控制地增长，导致注意力"窃取"效应[^src-quest]。键范数 $\|k_j\|$ 直接影响注意力分数，导致：
 - 高范数键"窃取"全局注意力
 - 即使余弦相似度不高，高范数键也能获得高注意力
 - 训练时键范数不受控制地增长[^src-quest]
@@ -66,7 +66,9 @@ $$A_i = \text{softmax}\left(C\|q_i\|(\bar{q}_i \cdot \bar{k}_j)\right)$$
 ## 引用
 
 [^src-quest]: [[source-quest]]
+[^src-bluuuuue-scaling-factor-intuition]: [[source-bluuuuue-scaling-factor-intuition]]
 
 ## 相关页面
 
+- [[scaling-factor-sqrt-dk]] — 缩放因子 $1/\sqrt{d_k}$ 控制初始化阶段的点积方差，键归一化则约束训练中的 K 范数增长，两者互补
 - [[cbsa]] — CBSA 通过子空间压缩实现稳定训练，与 QUEST 的键归一化是两种不同的稳定性机制

@@ -6,8 +6,8 @@ tags:
   - vae
   - diffusion
 created: 2026-04-28
-last_updated: 2026-04-28
-source_count: 1
+last_updated: 2026-05-04
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -69,9 +69,10 @@ $$
 
 ELBO 是连接贝叶斯推理与可扩展深度学习的桥梁。它使得以下场景成为可能：[^src-understanding-diffusion-models]
 
-1. **VAE 系列**：使用重参数化技巧和 ELBO 梯度进行端到端训练。
+1. **VAE 系列**：使用[[reparameterization-trick|重参数化技巧]]和 ELBO 梯度进行端到端训练。重参数化将采样操作重排为确定性变换+固定噪声，使梯度可以穿过随机节点，同时将梯度估计方差降低数量级[^src-bluuuuue-reparameterization-trick]。
 2. **扩散模型**：通过去噪匹配目标的等价形式进行稳定训练。
 3. **变分推理**：为任意潜变量模型提供统一的可优化目标。
 4. **模型比较**：ELBO 可作为模型证据（marginal likelihood）的代理，用于模型选择和评估。
 
 [^src-understanding-diffusion-models]: [[source-understanding-diffusion-models]]
+[^src-bluuuuue-reparameterization-trick]: [[source-bluuuuue-reparameterization-trick]]

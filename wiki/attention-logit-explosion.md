@@ -7,8 +7,8 @@ tags:
   - stability
   - training-dynamics
 created: 2026-04-28
-last_updated: 2026-04-28
-source_count: 1
+last_updated: 2026-05-04
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -21,6 +21,8 @@ status: active
 
 标准注意力计算：
 $$A = \text{softmax}\left(\frac{1}{\sqrt{d}}QK^T\right)$$
+
+其中 $1/\sqrt{d}$ 是缩放因子（参见 [[scaling-factor-sqrt-dk]]），其作用是将点积方差从 $d_k$ 归一化至 1，在初始化阶段预防 logit 爆炸[^src-bluuuuue-scaling-factor-intuition]。然而，当训练过程中 Q/K 的范数不受约束地增长时，缩放因子不足以完全控制 logit 尺度，仍会发生爆炸[^src-quest]。
 
 当查询和键的范数 $\|q_i\|$ 和 $\|k_j\|$ 任意增长时：
 $$\frac{1}{\sqrt{d}}\|q_i\|\|k_j\| \rightarrow \infty$$
@@ -86,8 +88,10 @@ $$\frac{1}{\sqrt{d}}\|q_i\|\|k_j\| \rightarrow \infty$$
 ## 引用
 
 [^src-quest]: [[source-quest]]
+[^src-bluuuuue-scaling-factor-intuition]: [[source-bluuuuue-scaling-factor-intuition]]
 
 ## 相关页面
 
 - [[cbsa]] — CBSA 通过子空间压缩实现训练稳定性，与 QUEST 的键归一化方法不同
+- [[scaling-factor-sqrt-dk]] — 缩放因子 $1/\sqrt{d_k}$ 控制初始化阶段的点积方差，是预防 logit 爆炸的第一道防线
 - [[algorithm-unrolling]] — CBSA 通过算法展开从优化目标导出，每层操作

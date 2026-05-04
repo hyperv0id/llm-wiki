@@ -7,8 +7,8 @@ tags:
   - vae
   - score-based
 created: 2026-04-28
-last_updated: 2026-04-29
-source_count: 9
+last_updated: 2026-05-04
+source_count: 10
 confidence: high
 status: active
 ---
@@ -33,7 +33,7 @@ $$
 q(x_t | x_{t-1}) = \mathcal{N}\left(\sqrt{\alpha_t}\, x_{t-1},\; (1 - \alpha_t) I\right)
 $$
 
-其中 $\alpha_t \in (0, 1)$ 是噪声调度参数。通过重参数化技巧，可以直接从 $x_0$ 一步采样到任意时间步 $t$：
+其中 $\alpha_t \in (0, 1)$ 是噪声调度参数。通过[[reparameterization-trick|重参数化技巧]]，可以直接从 $x_0$ 一步采样到任意时间步 $t$——将随机采样 $\mathbf{x}_t \sim q(\mathbf{x}_t|\mathbf{x}_0)$ 重排为确定性变换加固定噪声 $\mathbf{x}_t = \sqrt{\bar\alpha_t}\mathbf{x}_0 + \sqrt{1-\bar\alpha_t}\epsilon$，使前向过程每步可导，这是扩散模型端到端训练的根本保证[^src-bluuuuue-reparameterization-trick]：
 
 $$
 q(x_t | x_0) = \mathcal{N}\left(\sqrt{\bar{\alpha}_t}\, x_0,\; (1 - \bar{\alpha}_t) I\right), \quad \bar{\alpha}_t = \prod_{s=1}^t \alpha_s
@@ -113,8 +113,9 @@ $$
 - **[[shortcut-models|Shortcut Models]]**：2025 年 arXiv，单阶段少步/单步生成模型，通过步长调节和自一致性实现高效推理[^src-shortcut-models]
 - **[[edm|EDM]]**：2022 年 NeurIPS 论文，系统梳理扩散模型设计空间，提出 Heun 二阶采样器、预处理技术和对数正态噪声分布[^src-edm]
 
-## Related Concepts
+## 相关概念
 
+- [[reparameterization-trick]] — 重参数化技巧，前向加噪过程的可微性保证
 - [[diffusion-models]] — A broader overview of diffusion models covering DDPM, SMLD, SDE unification, and applications
 
 ## 引用
@@ -128,3 +129,4 @@ $$
 [^src-edm]: [[source-edm]]
 [^src-rombach-ldm-2022]: [[source-rombach-ldm-2022]]
 [^src-understanding-diffusion-models]: [[source-understanding-diffusion-models]]
+[^src-bluuuuue-reparameterization-trick]: [[source-bluuuuue-reparameterization-trick]]

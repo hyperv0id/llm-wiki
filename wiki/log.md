@@ -2,7 +2,7 @@
 title: Log
 type: concept
 created: 2026-04-26
-last_updated: 2026-05-03
+last_updated: 2026-05-04
 tags:
   - meta
 ---
@@ -10,6 +10,16 @@ tags:
 # Wiki Log
 
 Chronological record of all wiki activity.
+
+## [2026-05-04] ingest | 数学直觉系列（二）：VAE与重参数化
+Ingested bluuuuue 小红书技术教程文章（第二期），将重参数化技巧定位为让随机性与梯度共存的结构性方案。核心论点：采样不可导→REINFORCE高方差→两步分离重参数化→双重功效（打通反传+降方差）→适用前提（连续+位置-尺度族）→三大应用（扩散/VLA/SAC）。
+创建的页面：[[source-bluuuuue-reparameterization-trick]], [[reparameterization-trick]]
+更新的页面：[[variational-autoencoder]], [[elbo]], [[diffusion-model]], [[ddpm-simplified-training-objective]], [[index]], [[log]]
+
+## [2026-05-04] ingest | 数学直觉系列（一）：缩放因子 1/√dₖ —— 注意力机制的数值稳定性条件
+Ingested bluuuuue 小红书技术教程文章，将 Scaled Dot-Product Attention 的缩放因子 $1/\sqrt{d_k}$ 重新定位为数值稳定性条件。核心论点：点积方差膨胀（$Var(Z)=d_k$）导致 Softmax 饱和与梯度消失；$1/\sqrt{d_k}$ 将方差归一化至 1；选择 $\sqrt{d_k}$ 而非 $d_k$ 避免过缩放；缩放保持 argmax 不变。更新了 4 个现有注意力稳定性相关页面添加交叉引用。
+创建的页面：[[source-bluuuuue-scaling-factor-intuition]], [[scaling-factor-sqrt-dk]]
+更新的页面：[[attention-entropy-collapse]], [[attention-logit-explosion]], [[attention-temperature-scaling]], [[key-normalization]], [[index]], [[log]]
 
 ## [2026-05-03] query | 多模态数据的语义理解
 基于 7 个源文件（MindTS, VoT, TaTS/CTR, Aurora, MoST, UniCA, SimDiff）综合分析多模态语义理解的对齐范式（对比对齐/频域融合/自然共振）、融合策略（注意力引导/交叉视图/同质化/SNR门控/频域加权）和冗余过滤（信息瓶颈压缩/SNR模态选择）。提炼三层统一框架（理论基础→对齐机制→模型实例）和四个开放问题。归档为 analysis 页面。

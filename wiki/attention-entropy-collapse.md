@@ -7,8 +7,8 @@ tags:
   - stability
   - training-dynamics
 created: 2026-04-28
-last_updated: 2026-04-29
-source_count: 1
+last_updated: 2026-05-04
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -31,6 +31,10 @@ $$H(A_i) = -\sum_j A_{ij} \log A_{ij}$$
 - 难以学习长程依赖[^src-quest]
 
 ## 触发机制
+
+## 根本原因：点积方差膨胀
+
+熵崩溃的数学根源是高维点积的方差膨胀性质。设 $q_i, k_i \sim N(0,1)$ 且独立，则点积 $Z = \sum_{i=1}^{d_k} q_i k_i$ 的方差为 $d_k$，标准差为 $\sqrt{d_k}$[^src-bluuuuue-scaling-factor-intuition]。当 $d_k$ 较大时，Softmax 输入的极差期望急剧扩大，饱和（输出趋近 One-hot）成为高概率事件[^src-bluuuuue-scaling-factor-intuition]。标准注意力中的缩放因子 $1/\sqrt{d_k}$（参见 [[scaling-factor-sqrt-dk]]）正是为了将该方差归一化至 1，从根本上预防熵崩溃[^src-bluuuuue-scaling-factor-intuition]。
 
 ### 1. 键范数增长
 高键范数吸引更多注意力：
@@ -95,9 +99,11 @@ $$\text{softmax}(x)_j \xrightarrow{x_j \gg x_{k \neq j}} 1_j$$
 ## 引用
 
 [^src-quest]: [[source-quest]]
+[^src-bluuuuue-scaling-factor-intuition]: [[source-bluuuuue-scaling-factor-intuition]]
 
 ## 相关页面
 
 - [[cbsa]] — CBSA 通过子空间压缩缓解注意力熵崩溃，压缩目标鼓励 token 向子空间聚集
 - [[mcr2]] — MCR² 目标通过编码率度量紧凑程度，直接驱动 token 压缩行为
+- [[scaling-factor-sqrt-dk]] — 缩放因子 $1/\sqrt{d_k}$ 将点积方差归一化，是防止熵崩溃的根本性预防机制
 - [[spurious-patterns]] — Spurious patterns in attention that can trigger entropy collapse through shortcut learning

@@ -5,8 +5,8 @@ tags:
   - diffusion-models
   - training-objective
 created: 2026-04-28
-last_updated: 2026-04-28
-source_count: 1
+last_updated: 2026-05-04
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -34,7 +34,7 @@ $$
 
 ## 数学推导
 
-通过重参数化 $x_t = \sqrt{\bar{\alpha}_t} x_0 + \sqrt{1 - \bar{\alpha}_t} \varepsilon$，并利用前向后验的闭式解，可以将原始的 KL 散度目标简化为预测噪声的形式。
+通过[[reparameterization-trick|重参数化]] $x_t = \sqrt{\bar{\alpha}_t} x_0 + \sqrt{1 - \bar{\alpha}_t} \varepsilon$，并利用前向后验的闭式解，可以将原始的 KL 散度目标简化为预测噪声的形式。重参数化将随机采样重排为确定性变换+固定噪声，使训练目标中每步加噪都可导，这是扩散模型端到端训练的基础[^src-bluuuuue-reparameterization-trick]。
 
 ## 为什么简化目标效果更好
 
@@ -50,6 +50,11 @@ $$
 - **预测 $x_0$**：等价的参数化形式
 - **预测得分 $\nabla \log p(x_t)$**：通过 Tweedie 公式与预测 $\varepsilon$ 等价
 
+## 相关概念
+
+- [[reparameterization-trick]] — 重参数化技巧，$L_{\text{simple}}$ 中加噪过程可微的数学前提
+
 ## 引用
 
 [^src-ddpm]: [[source-ddpm]]
+[^src-bluuuuue-reparameterization-trick]: [[source-bluuuuue-reparameterization-trick]]
