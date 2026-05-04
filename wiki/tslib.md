@@ -8,7 +8,7 @@ tags:
   - open-source
   - Tsinghua
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-04
 source_count: 1
 confidence: medium
 status: active
@@ -42,7 +42,7 @@ TSLib's evaluation of 13 advanced models across 30 datasets reveals that no sing
 
 - **[[timesnet]]** — TimesNet is one of the key models benchmarked in TSLib, with its 2D reshaping approach shown to be effective across multiple tasks.
 - **[[autoformer]]** — Autoformer is included in TSLib as a foundational periodicity-based Transformer and serves as a baseline for evaluating newer frequency-domain and decomposition-based models.
-- **[[fedformer]]** — FEDformer is benchmarked in TSLib as a representative frequency-domain Transformer, demonstrating the effectiveness of Fourier and wavelet attention.
+- **[[fedformer]]** — FEDformer is benchmarked in TSLib as a representative frequency-domain Transformer, demonstrating the effectiveness of [[frequency-enhanced-block|FEB]]/[[frequency-enhanced-attention|FEA]] and [[moe-decomposition|MOEDecomp]].
 - **[[source-timesnet|TimesNet (source)]]** — TimesNet's task-general design philosophy aligns with TSLib's goal of providing a comprehensive benchmarking ecosystem.
 
 [^src-deep-time-series-survey]: [[source-deep-time-series-survey]]

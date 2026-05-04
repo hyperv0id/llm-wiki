@@ -38,10 +38,11 @@ status: active
 
 ### FEDformer（ICML 2022）
 
-[[fedformer|FEDformer]] 用 Fourier/Wavelet 增强的注意力块替代标准 Transformer self-attention，且随机选取固定数量的 Fourier 模式（而非仅取低频），理论和实验均证明这比仅保留低频有效[^src-fedformer]。配合 MOEDecomp 的季节—趋势分解，达到 O(L) 线性复杂度。
+[[fedformer|FEDformer]] 用 [[frequency-enhanced-block|FEB]]（Fourier/Wavelet 增强的注意力块）替代标准 Transformer self-attention，用 [[frequency-enhanced-attention|FEA]] 替代 cross-attention。随机选取固定数量的 Fourier 模式（而非仅取低频），Theory 1 证明当 $s = O(k^2/\epsilon^2)$ 时 $\|A - P_{A'}(A)\| \leq (1+\epsilon)\|A - A_k\|$，实验也证实随机选取优于固定低频[^src-fedformer]。配合 [[moe-decomposition|MOEDecomp]] 的输入自适应季节—趋势分解（多尺寸平均滤波器 + 数据依赖 softmax 混合权重），达到 $O(L)$ 线性复杂度[^src-fedformer]。
 
-- **核心贡献**：首次系统论证 Transformer + 频域注意力在长时预测上的效力
-- **局限**：模式选择不依赖输入自适应（后续 Dualformer 改进）
+- **核心贡献**：首个达到 $O(L)$ 的 Transformer LSTF 模型；KS 检验证明仅 FEDformer 可保持输入输出同分布（所有 $P > 0.01$）；多变量 MSE 降低 14.8%，单变量降低 22.6% vs. Autoformer
+- **关键架构**：FEB-f/FEB-w（双频域自注意力）、FEA-f/FEA-w（双频域交叉注意力）、MOEDecomp（自适应趋势提取，提升 2.96%）
+- **局限**：模式选择不依赖输入自适应（后续 [[dualsformer|Dualformer]] 的 HFS 改进）；Fourier/Wavelet 选择需数据集调参
 
 ### FreTS（NeurIPS 2023）
 

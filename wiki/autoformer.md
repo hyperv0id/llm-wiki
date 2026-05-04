@@ -42,7 +42,7 @@ Autoformer achieves 38% relative MSE improvement over prior state-of-the-art on 
 ## Connections
 
 - **[[informer]]** — Informer (AAAI 2021 Best Paper) laid the Transformer-based LSTF groundwork by introducing ProbSparse attention and generative decoding; Autoformer showed that its decomposition architecture generalizes to improve Informer.
-- **[[fedformer]]** — FEDformer builds directly on Autoformer's decomposition philosophy, extending it with learnable MOEDecomp and frequency-domain attention for further improvements.
+- **[[fedformer]]** — FEDformer builds directly on Autoformer's decomposition philosophy, extending it with learnable [[moe-decomposition|MOEDecomp]] and [[frequency-enhanced-block|frequency-domain attention]] (FEB/FEA), achieving $O(L)$ linear complexity and 14.8% multivariate MSE reduction over Autoformer.
 - **[[timesnet]]** — TimesNet extends Autoformer's periodicity focus by transforming 1D series into 2D tensors for multi-periodicity modeling, while Autoformer treats periodicity through autocorrelation at the seasonal-part level.
 - **[[dualsformer|Dualformer]]** — Dualformer's frequency-branch autocorrelation attention is directly inspired by Autoformer's Wiener-Khinchin theorem approach, extending it with hierarchical frequency sampling.
 

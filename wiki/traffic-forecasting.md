@@ -35,7 +35,7 @@ The dominant paradigm since DCRNN (2018): Graph Neural Networks (GNNs) combined 
 STTN (2020), GMAN (2020), PDFormer (2023), and STAEformer (2024) use attention mechanisms to model global spatial-temporal dependencies[^src-hyperd-hybrid-periodicity-decoupling].
 
 ### Frequency-Domain
-FEDformer (2022), FreTS (2023), and StemGNN (2020) apply Fourier transforms but treat components uniformly without separating periodic from residual signals[^src-hyperd-hybrid-periodicity-decoupling].
+[[fedformer|FEDformer]] (ICML 2022) applies Fourier and Wavelet transforms in its [[frequency-enhanced-block|FEB]]/[[frequency-enhanced-attention|FEA]] blocks and [[moe-decomposition|MOEDecomp]] for adaptive seasonal-trend decomposition, but treats frequency components uniformly without separating periodic from residual signals. FreTS (NeurIPS 2023) and StemGNN (2020) follow similar uniform processing in the frequency domain[^src-hyperd-hybrid-periodicity-decoupling].
 
 ### Periodicity-Decoupled
 [[hyperd|HyperD]] (2025) explicitly decouples short-term and long-term periodicity via hybrid frequency-domain decomposition[^src-hyperd-hybrid-periodicity-decoupling].

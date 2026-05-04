@@ -166,6 +166,9 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[score-based-generative-models]] — 基于分数的生成模型，通过估计对数密度梯度生成样本
 
 ## Techniques
+- [[frequency-enhanced-attention]] — FEA, Fourier/Wavelet-domain cross-attention substituing standard attention in FEDformer (ICML 2022)
+- [[frequency-enhanced-block]] — FEB, frequency-domain self-attention substiution in FEDformer via Fourier or Wavelet (ICML 2022)
+- [[moe-decomposition]] — MOEDecomp, input-adaptive mixture-of-experts average filters for seasonal-trend decomposition (ICML 2022)
 - [[newton-schulz-iteration]] — Newton-Schulz iteration for matrix orthogonalization
 - [[glu-gated-linear-unit]] — Gated Linear Unit, activation-modulated linear transformation
 - [[heterogeneous-moe-routing]] — 异质性感知 MoE 路由，FaST 的动态 expert 路由机制

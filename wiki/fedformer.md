@@ -6,47 +6,104 @@ tags:
   - forecasting
   - frequency-domain
   - transformer
+  - fourier
+  - wavelet
   - ICML-2022
+  - alibaba
 created: 2026-04-28
 last_updated: 2026-05-04
 source_count: 2
-confidence: medium
+confidence: high
 status: active
 ---
 
 # FEDformer
 
-**FEDformer** (Frequency Enhanced Decomposed Transformer) is a Transformer architecture for long-term series forecasting, proposed by Tian Zhou, Ziqing Ma, Qingsong Wen, Xue Wang, Liang Sun, and Rong Jin (Alibaba Group), published at ICML 2022. It combines seasonal-trend decomposition with frequency-domain attention mechanisms to capture both global time series properties and local detailed structures, while achieving linear complexity[^src-fedformer].
+**FEDformer** (Frequency Enhanced Decomposed Transformer) is a Transformer architecture for [[lstf|long-term time series forecasting]], proposed by Tian Zhou, Ziqing Ma, **Qingsong Wen**, Xue Wang, Liang Sun, and Rong Jin from **Alibaba DAMO Academy**, published at **ICML 2022**[^src-fedformer]. It was the first Transformer-based forecasting model to achieve $O(L)$ linear complexity while simultaneously improving accuracy over prior SOTA.
 
-## Overview
+## Core Insight
 
-Standard Transformer forecasting methods struggle to maintain global time series properties because they make point-wise independent predictions per timestep. FEDformer addresses this by combining seasonal-trend decomposition via a Mixture-of-Experts scheme with frequency-enhanced attention blocks. The paper shows that randomly selecting a fixed number of frequency components yields better representations than keeping only low frequencies[^src-fedformer].
+Standard Transformers make point-wise independent predictions, failing to preserve the **global distribution** of time series (overall trend). FEDformer addresses this with two complementary mechanisms[^src-fedformer]:
 
-## Key Innovation
+1. **Frequency-domain attention** — operates on Fourier/Wavelet transforms rather than raw time-domain signals, capturing global spectral properties
+2. **Learnable seasonal-trend decomposition (MOEDecomp)** — uses a mixture-of-experts of average filters to adaptively extract trend, ensuring output distribution matches input
 
-FEDformer introduces three novel components[^src-fedformer]:
-
-1. **Frequency Enhanced Block (FEB)** — Substitutes the self-attention block. FEB-f uses Discrete Fourier Transform (DFT) to project inputs into the frequency domain, randomly selects M modes, applies a parameterized kernel, and returns via inverse DFT. FEB-w uses multiwavelet decomposition with Legendre polynomial bases, processing signals recursively across scales.
-
-2. **Frequency Enhanced Attention (FEA)** — Substitutes cross-attention between encoder and decoder. FEA-f converts queries, keys, and values via DFT, applies attention in the frequency domain, and inverts back. FEA-w applies multiwavelet decomposition to q, k, v separately.
-
-3. **Mixture of Experts Decomposition (MOEDecomp)** — Replaces fixed-window average pooling with learnable average filters of different sizes, combined via data-dependent softmax weights, adaptively extracting trend components from complex periodic patterns.
+A key theoretical contribution: **randomly selecting a fixed number of Fourier modes** (including both high and low frequencies) is provably better than keeping only low-frequency components. Theorem 1 bounds the reconstruction error: $|A - P_{A'}(A)| \leq (1+\epsilon)|A - A_k|$ when sampling $s = O(k^2/\epsilon^2)$ modes randomly, leveraging the low-rank property of multivariate time series in the frequency domain[^src-fedformer].
 
 ## Architecture
 
-FEDformer follows an encoder-decoder structure. With M randomly selected Fourier modes (default M=64), it achieves O(L) complexity versus O(L²) for standard Transformers. MOEDecomp blocks precede each FEB/FEA block, progressively decomposing seasonal and trend components[^src-fedformer].
+FEDformer follows an encoder-decoder structure with three novel components replacing standard Transformer blocks[^src-fedformer]:
+
+### 1. [[frequency-enhanced-block|Frequency Enhanced Block (FEB)]]
+Replaces self-attention in both encoder and decoder. Two variants[^src-fedformer]:
+- **FEB-f** (Fourier): DFT → random M-mode selection → learnable kernel $R$ → inverse DFT, $O(L)$ complexity
+- **FEB-w** (Wavelet): recursive multiwavelet decomposition (Legendre basis) with 3 shared FEB-f modules, $L=3$ cycles
+
+### 2. [[frequency-enhanced-attention|Frequency Enhanced Attention (FEA)]]
+Replaces cross-attention between encoder and decoder[^src-fedformer]:
+- **FEA-f**: Transforms $q, k, v$ via DFT separately, attention in frequency domain: $\sigma(\tilde{Q} \cdot \tilde{K}^\top) \cdot \tilde{V}$, then inverse DFT
+- **FEA-w**: Same recursive wavelet decomposition applied to $q, k, v$ independently, using FEA-f modules
+
+### 3. [[moe-decomposition|Mixture of Experts Decomposition (MOEDecomp)]]
+Data-adaptive trend extraction using multiple average filters of different sizes + learnable softmax mixing weights. Improves over single fixed-window decomposition by **2.96% on average**[^src-fedformer].
+
+### Encoder-Decoder Flow
+$$
+\begin{aligned}
+\text{Encoder}^l &: \text{FEB} \to \text{MOEDecomp} \to \text{FFN} \to \text{MOEDecomp} \\
+\text{Decoder}^l &: \text{FEB} \to \text{MOEDecomp} \to \underbrace{\text{FEA}(\text{enc outputs})}_{\text{cross-attention}} \to \text{MOEDecomp} \to \text{FFN} \to \text{MOEDecomp}
+\end{aligned}
+$$
+
+Final output: $\text{prediction} = W_S \cdot X_{de}^M + T_{de}^M$, where trend $T_{de}^l = T_{de}^{l-1} + \sum_i W_{l,i} \cdot T_{de}^{l,i}$[^src-fedformer].
+
+## Complexity
+
+FEDformer achieves $O(L)$ linear time and memory complexity—the first Transformer-based LSTF model to do so—by[^src-fedformer]:
+- Pre-selecting $M=64$ modes before DFT (avoids $O(L \log L)$ FFT)
+- Fixed recursive depth $L=3$ for wavelet variant
+- Frequency-domain operation **decouples** sequence length from attention matrix dimension
+
+| Model | Time | Memory | Test Steps |
+|:------|:-----|:-------|:-----------|
+| **FEDformer** | **$O(L)$** | **$O(L)$** | **1** |
+| Autoformer | $O(L \log L)$ | $O(L \log L)$ | 1 |
+| Informer | $O(L \log L)$ | $O(L \log L)$ | 1 |
+| Transformer | $O(L^2)$ | $O(L^2)$ | $L$ |
 
 ## Performance
 
-FEDformer achieves best results across all six benchmarks (ETTm2, Electricity, Exchange, Traffic, Weather, ILI) and horizons. Multivariate MSE is reduced 14.8% vs. Autoformer; univariate by 22.6%. On low-periodicity datasets (Exchange, ILI), improvements exceed 20%. The KS test confirms outputs better match input distributions than competing models[^src-fedformer].
+Evaluated on 6 benchmarks with input $I=96$, prediction $O \in \{96,192,336,720\}$[^src-fedformer]:
+
+| Metric | vs. Autoformer | Notes |
+|:-------|:---------------|:------|
+| Multivariate MSE | **-14.8%** | Best on all 6 datasets, all horizons |
+| Univariate MSE | **-22.6%** | Traffic/Weather over -30% |
+| Low-periodicity (Exchange/ILI) | **>-20%** | Works without clear periodicity |
+| KS distribution test | **All P > 0.01** | Only model retaining input distribution |
+| Ablation (FEB+FEA) | **16/16 cases** | Full model beats all stripped variants |
+
+Random mode selection consistently outperforms fixed low-frequency selection across all $M \in \{2, \dots, 256\}$[^src-fedformer].
 
 ## Connections
 
-- **[[informer]]** — Informer (AAAI 2021 Best Paper) was the primary efficient Transformer baseline improved upon by FEDformer, which reduces complexity further from O(L log L) to O(L).
-- **[[autoformer]]** — Autoformer introduced progressive decomposition and autocorrelation-based attention, both of which directly influenced FEDformer's design. FEDformer extends decomposition by making it learnable via MOEDecomp.
-- **[[dualsformer]]** — Dualformer builds on FEDformer's frequency-domain approach but replaces fixed random mode selection with input-adaptive hierarchical frequency sampling and periodicity-aware weighting.
-- **[[source-frets|FreTS]]** — FreTS also operates in the frequency domain but uses MLPs rather than attention, achieving even greater efficiency at the cost of less sophisticated frequency selection.
-- **[[timesnet]]** — TimesNet takes an alternative approach by transforming 1D series into 2D tensors for multi-periodicity modeling, a different paradigm from FEDformer's frequency-domain attention.
+### Precursors
+- **[[informer]]** (AAAI 2021 Best Paper) — pioneered efficient Transformers for LSTF ($O(L \log L)$ via ProbSparse attention + distilling); FEDformer further reduces to $O(L)$[^src-informer]
+- **[[autoformer]]** (NeurIPS 2021) — introduced progressive seasonal-trend decomposition inside Transformer + Auto-Correlation mechanism; FEDformer inherits the decomposition architecture and extends it with learnable MOEDecomp[^src-fedformer]
+
+### Successors & Alternatives
+- **[[dualsformer|Dualformer]]** — builds on FEDformer's frequency-domain paradigm but replaces fixed random sampling with input-adaptive hierarchical frequency selection and periodicity-aware weighting, addressing FEDformer's main limitation[^src-fedformer]
+- **[[source-frets|FreTS]]** (NeurIPS 2023) — takes frequency-domain operation further by using pure MLPs instead of attention, achieving greater efficiency at the cost of coarser frequency selection
+- **[[hyperd|HyperD]]** — uses explicit short/long-term periodicity decoupling with separate encoder pathways rather than uniform frequency processing
+- **[[timesnet]]** (ICLR 2023) — alternative paradigm: transforms 1D series into 2D tensors for multi-periodicity modeling via FFT-based period discovery
+- **[[sparsetsf|SparseTSF]]** (ICML 2024 Oral) — pushes efficiency to extreme: sub-1k parameters via cross-period sparse forecasting
+- **[[cyclenet|CycleNet]]** (NeurIPS 2024) — explicit periodicity modeling via learnable recurrent cycles, a different decomposition philosophy
+
+### Broader Impact
+- **[[tslib]]** — benchmarks FEDformer as a representative frequency-domain model
+- **[[periodicity-modeling-in-time-series|周期建模文献]]** — positions FEDformer in the evolution from efficiency-first (Informer) to structure-first (Autoformer) to domain-specific (FEDformer) approaches
+- **[[traffic-forecasting|交通预测]]** — FEDformer applied to traffic but treats frequencies uniformly; HyperD and others later improved upon this
+- **[[lstf|LSTF]]** — FEDformer represents the domain-specific stage in LSTF evolution
 
 [^src-fedformer]: [[source-fedformer]]
-[^src-zhou-informer-2021]: [[source-zhou-informer-2021]]
+[^src-informer]: [[source-zhou-informer-2021]]

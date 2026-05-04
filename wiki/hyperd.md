@@ -7,7 +7,7 @@ tags:
   - periodicity-decoupling
   - fourier-transform
 created: 2026-04-27
-last_updated: 2026-04-29
+last_updated: 2026-05-04
 source_count: 1
 confidence: medium
 status: active
@@ -35,13 +35,13 @@ HyperD achieves state-of-the-art results on all four PeMS benchmarks (PEMS03, 04
 
 ## Key Innovation
 
-Unlike prior frequency-based models (FEDformer, FreTS) that treat frequency components uniformly, HyperD's [[hybrid-periodicity-decoupling]] approach assigns different periodic scales to different encoder pathways, enabling each pathway to specialize[^src-hyperd-hybrid-periodicity-decoupling].
+Unlike prior frequency-based models (FEDformer's [[frequency-enhanced-block|FEB]]/[[frequency-enhanced-attention|FEA]] and FreTS's frequency-domain MLPs) that treat frequency components uniformly, HyperD's [[hybrid-periodicity-decoupling]] approach assigns different periodic scales to different encoder pathways, enabling each pathway to specialize[^src-hyperd-hybrid-periodicity-decoupling].
 
 ## Connections
 
 HyperD builds upon and relates to several lines of frequency-domain and periodicity-aware research:
 
-- **FEDformer** (ICML 2022) — a frequency enhanced decomposed transformer that uses Fourier and Wavelet transforms for attention, but treats all frequency components uniformly rather than decoupling them for specialized processing.
+- **FEDformer** (ICML 2022) — a frequency enhanced decomposed transformer with [[frequency-enhanced-block|FEB]]/[[frequency-enhanced-attention|FEA]] and [[moe-decomposition|MOEDecomp]], but treats all frequency components uniformly rather than decoupling them for specialized processing.
 - **Autoformer** (NeurIPS 2021) — introduces decomposition as a core architectural block with auto-correlation mechanism, a predecessor to periodicity-aware design in transformers.
 - **Dualformer** (2026) — a contemporary dual-branch architecture for long-term time-series forecasting that employs hierarchical frequency sampling in the time-frequency domain.
 - **TimesNet** (ICLR 2023) — transforms 1D time series into 2D tensors by capturing multiple periods, offering an alternative approach to modeling multi-scale periodicity.

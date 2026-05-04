@@ -61,7 +61,7 @@ Compared against ARIMA, Prophet, LSTMa, LSTnet, DeepAR, LogTrans, and Reformer o
 As the AAAI 2021 Best Paper, Informer established the **efficient Transformer for LSTF** research paradigm that subsequent works built upon. It serves as the primary baseline against which later architectures are measured:
 
 - **[[autoformer|Autoformer]]** (NeurIPS 2021) — replaces self-attention entirely with Auto-Correlation, embeds decomposition as an inner module; demonstrates that its decomposition architecture generalizes to improve Informer's performance.
-- **[[fedformer|FEDformer]]** (ICML 2022) — moves attention to the frequency domain via Fourier/Wavelet transforms, achieving $O(L)$ complexity.
+- **[[fedformer|FEDformer]]** (ICML 2022) — moves attention to the frequency domain via [[frequency-enhanced-block|FEB]]/[[frequency-enhanced-attention|FEA]] (Fourier/Wavelet transforms), achieving $O(L)$ complexity. First Transformer-based LSTF model to reach linear complexity; 14.8% multivariate and 22.6% univariate MSE reduction over Autoformer.
 - **[[timesnet|TimesNet]]** (ICLR 2023) — transforms 1D time series into 2D tensors based on multi-periodicity; lists Informer as a key baseline.
 - **[[source-frets|FreTS]]** (NeurIPS 2023) — applies MLPs in the frequency domain; outperforms Informer by >20% MAE/RMSE.
 - **[[dualsformer|Dualformer]]** (2026) — time-frequency dual domain learning; implicitly improves upon Informer's time-domain attention paradigm.

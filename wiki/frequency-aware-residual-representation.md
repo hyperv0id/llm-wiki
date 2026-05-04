@@ -6,7 +6,7 @@ tags:
   - signal-decomposition
   - traffic-forecasting
 created: 2026-04-27
-last_updated: 2026-04-29
+last_updated: 2026-05-04
 source_count: 1
 confidence: medium
 status: active
@@ -45,7 +45,7 @@ The learned frequency thresholds align with interpretable real-world periods: da
 
 The FR module's frequency-band separation principle relates to other frequency-domain techniques:
 
-- **FEDformer** (ICML 2022) uses Fourier-enhanced and Wavelet-enhanced attention blocks to capture frequency patterns, though it processes all frequency components uniformly without explicit band separation.
+- **FEDformer** (ICML 2022) uses [[frequency-enhanced-block|Fourier-enhanced (FEB-f)]] and Wavelet-enhanced (FEB-w) attention blocks to capture frequency patterns, though it processes all frequency components uniformly without explicit band separation.
 - **FreTS** (NeurIPS 2023) applies MLPs in the frequency domain to all components uniformly, in contrast to FR's targeted embedding per frequency band.
 - **AFE-TFNet** combines wavelet transform (WT) and FFT for adaptive multi-scale feature extraction, sharing FR's motivation of multi-resolution frequency analysis for time-series modeling.
 

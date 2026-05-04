@@ -11,7 +11,18 @@ tags:
 
 Chronological record of all wiki activity.
 
-## [2026-05-04] lint | 全量 lint 检查与修复
+## [2026-05-04] ingest | FEDformer: Frequency Enhanced Decomposed Transformer (ICML 2022) — 深度增强
+详细 ingest FEDformer 论文完整 PDF，深度增强已有 source-summary 和 entity 页面。创建 3 个核心技术页面，更新 9 个交叉引用页面，并添加反向链接。
+
+核心增强内容：
+- **source-summary**：补充 Theorem 1（随机 Fourier 采样理论保证）、RIP 矩阵低秩近似理论、完整架构公式（Encoder/Decoder 的 Equations 1-7、MOEDecomp 公式）、消融研究详细结果（V1/V2/V3 的 10/12/16 改进数）、KS 分布检验完整分析、MOEDecomp vs 单一分解 (+2.96%)、复杂度表格对比、与 Autoformer 的 5 个关键差异
+- **entity 页面**：重写为包含完整架构流程、复杂度对比表、6 个数据集的性能汇总、Connection 链完善（11 个关联页面）
+- [[frequency-enhanced-block]] — FEB-f/FEB-w 的完整数学公式、递归分解流程、与标准 self-attention 的对比表
+- [[frequency-enhanced-attention]] — FEA-f/FEA-w 的交叉注意力设计、消融证据（16/16 改进）、与标准 cross-attention 的对比
+- [[moe-decomposition]] — MOEDecomp 的输入自适应加权机制、编码器/解码器中的三层部署、效果对比（+2.96%）、其他分解方法的全面对比
+
+创建的页面：[[frequency-enhanced-block]], [[frequency-enhanced-attention]], [[moe-decomposition]]
+更新的页面：[[source-fedformer]], [[fedformer]], [[autoformer]], [[dualsformer]], [[informer]], [[hyperd]], [[frequency-aware-residual-representation]], [[tslib]], [[traffic-forecasting]], [[periodicity-modeling-in-time-series]], [[index]], [[log]]
 
 执行完整 lint 检查并修复以下问题：
 - 修正 33 个页面 source_count 与页面内实际引用数量不一致

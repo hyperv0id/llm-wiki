@@ -8,7 +8,7 @@ tags:
   - transformer
   - dual-domain
 created: 2026-04-28
-last_updated: 2026-04-29
+last_updated: 2026-05-04
 source_count: 1
 confidence: medium
 status: active
@@ -42,7 +42,7 @@ Dualformer achieves top rank in 13 of 16 average cases and 44 of 64 multivariate
 
 ## Connections
 
-- **[[fedformer]]** — FEDformer also operates in the frequency domain but uses fixed random mode selection rather than input-adaptive hierarchical sampling. Dualformer's periodicity-aware weighting directly addresses this limitation.
+- **[[fedformer]]** — FEDformer also operates in the frequency domain but uses fixed random mode selection in [[frequency-enhanced-block|FEB]]/[[frequency-enhanced-attention|FEA]] rather than input-adaptive hierarchical sampling. Dualformer's periodicity-aware weighting directly addresses this limitation.
 - **[[autoformer]]** — Autoformer's autocorrelation mechanism (Wiener-Khinchin theorem) directly inspired Dualformer's frequency-branch attention design.
 - **HyperD** — Both frameworks employ structured frequency allocation, though HyperD focuses on decoupling short-term vs. long-term periodicity for traffic forecasting, while Dualformer uses layer-wise hierarchical frequency sampling for general LTSF.
 
