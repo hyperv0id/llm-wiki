@@ -9,7 +9,7 @@ tags:
   - decomposition
   - NeurIPS-2021
 created: 2026-04-28
-last_updated: 2026-04-29
+last_updated: 2026-05-04
 source_count: 2
 confidence: medium
 status: active
@@ -21,7 +21,7 @@ status: active
 
 ## Overview
 
-Prior Transformer models faced two limitations: intricate temporal patterns make point-wise self-attention unreliable for long-range dependencies, and sparse attention variants sacrifice information utilization for efficiency. Autoformer addresses both by replacing self-attention with series-wise Auto-Correlation and embedding decomposition as an inner block, enabling the model to alternately decompose and refine hidden variables[^src-autoformer].
+Prior Transformer models faced three limitations: quadratic time/memory complexity of self-attention, information loss from sparse attention variants, and the inability to capture global time-series structure from point-wise predictions[^src-autoformer][^src-zhou-informer-2021]. Autoformer addresses all three by replacing self-attention with series-wise Auto-Correlation and embedding decomposition as an inner block, enabling the model to alternately decompose and refine hidden variables[^src-autoformer].
 
 ## Key Innovation
 
@@ -41,8 +41,10 @@ Autoformer achieves 38% relative MSE improvement over prior state-of-the-art on 
 
 ## Connections
 
+- **[[informer]]** — Informer (AAAI 2021 Best Paper) laid the Transformer-based LSTF groundwork by introducing ProbSparse attention and generative decoding; Autoformer showed that its decomposition architecture generalizes to improve Informer.
 - **[[fedformer]]** — FEDformer builds directly on Autoformer's decomposition philosophy, extending it with learnable MOEDecomp and frequency-domain attention for further improvements.
 - **[[timesnet]]** — TimesNet extends Autoformer's periodicity focus by transforming 1D series into 2D tensors for multi-periodicity modeling, while Autoformer treats periodicity through autocorrelation at the seasonal-part level.
-- **Dualformer** — Dualformer's frequency-branch autocorrelation attention is directly inspired by Autoformer's Wiener-Khinchin theorem approach, extending it with hierarchical frequency sampling.
+- **[[dualsformer|Dualformer]]** — Dualformer's frequency-branch autocorrelation attention is directly inspired by Autoformer's Wiener-Khinchin theorem approach, extending it with hierarchical frequency sampling.
 
 [^src-autoformer]: [[source-autoformer]]
+[^src-zhou-informer-2021]: [[source-zhou-informer-2021]]

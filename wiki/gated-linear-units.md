@@ -7,7 +7,7 @@ tags:
   - efficiency
 created: 2026-04-29
 last_updated: 2026-04-29
-source_count: 2
+source_count: 1
 confidence: medium
 status: active
 ---

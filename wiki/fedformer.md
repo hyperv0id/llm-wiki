@@ -8,7 +8,7 @@ tags:
   - transformer
   - ICML-2022
 created: 2026-04-28
-last_updated: 2026-04-29
+last_updated: 2026-05-04
 source_count: 2
 confidence: medium
 status: active
@@ -42,9 +42,11 @@ FEDformer achieves best results across all six benchmarks (ETTm2, Electricity, E
 
 ## Connections
 
+- **[[informer]]** — Informer (AAAI 2021 Best Paper) was the primary efficient Transformer baseline improved upon by FEDformer, which reduces complexity further from O(L log L) to O(L).
 - **[[autoformer]]** — Autoformer introduced progressive decomposition and autocorrelation-based attention, both of which directly influenced FEDformer's design. FEDformer extends decomposition by making it learnable via MOEDecomp.
 - **[[dualsformer]]** — Dualformer builds on FEDformer's frequency-domain approach but replaces fixed random mode selection with input-adaptive hierarchical frequency sampling and periodicity-aware weighting.
-- **FreTS** — FreTS also operates in the frequency domain but uses MLPs rather than attention, achieving even greater efficiency at the cost of less sophisticated frequency selection.
+- **[[source-frets|FreTS]]** — FreTS also operates in the frequency domain but uses MLPs rather than attention, achieving even greater efficiency at the cost of less sophisticated frequency selection.
 - **[[timesnet]]** — TimesNet takes an alternative approach by transforming 1D series into 2D tensors for multi-periodicity modeling, a different paradigm from FEDformer's frequency-domain attention.
 
 [^src-fedformer]: [[source-fedformer]]
+[^src-zhou-informer-2021]: [[source-zhou-informer-2021]]

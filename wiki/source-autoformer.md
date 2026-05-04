@@ -10,7 +10,7 @@ tags:
   - decomposition
   - series-wise
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-04
 source_count: 1
 confidence: medium
 status: active
@@ -41,4 +41,7 @@ Autoformer achieves **38% relative MSE improvement** over previous state-of-the-
 
 ## Critique
 
-Autoformer's progressive decomposition assumes additive trend + seasonal structure, which may not hold for all real-world series (e.g., multiplicative seasonality or abrupt regime changes). The FFT-based autocorrelation computation, while efficient, implicitly assumes stationarity; highly non-stationary series may yield unreliable period estimates. Compared to [[hybrid-periodicity-decoupling|Hybrid Periodicity Decoupling]] approaches like [[hyperd|HyperD]], Autoformer treats periodicity at the seasonal-part level rather than separating short-term and long-term cycles. The [[demlp-decoder|fDMLP decoder]] in HyperD was explicitly inspired by Autoformer/DLinear's decomposition philosophy, but extends it to multi-scale fusion. Autoformer also predates and is cited extensively by TimesNet, [[source-timesnet|TimesNet]], and PENGUIN, serving as a foundational reference for periodicity-based time series modeling.
+Autoformer's progressive decomposition assumes additive trend + seasonal structure, which may not hold for all real-world series (e.g., multiplicative seasonality or abrupt regime changes). The FFT-based autocorrelation computation, while efficient, implicitly assumes stationarity; highly non-stationary series may yield unreliable period estimates. Compared to [[informer|Informer]] (AAAI 2021 Best Paper) which pioneered efficient Transformer-based LSTF with ProbSparse attention, Autoformer replaces self-attention entirely rather than making it sparse — a fundamentally different design philosophy[^src-zhou-informer-2021]. Compared to [[hybrid-periodicity-decoupling|Hybrid Periodicity Decoupling]] approaches like [[hyperd|HyperD]], Autoformer treats periodicity at the seasonal-part level rather than separating short-term and long-term cycles. The [[demlp-decoder|fDMLP decoder]] in HyperD was explicitly inspired by Autoformer/DLinear's decomposition philosophy, but extends it to multi-scale fusion. Autoformer also predates and is cited extensively by TimesNet, [[source-timesnet|TimesNet]], and PENGUIN, serving as a foundational reference for periodicity-based time series modeling.
+
+
+[^src-zhou-informer-2021]: [[source-zhou-informer-2021]]

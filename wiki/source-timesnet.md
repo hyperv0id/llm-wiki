@@ -9,9 +9,9 @@ tags:
   - 2d-variation
   - foundation-model
 created: 2026-04-28
-last_updated: 2026-04-28
-source_count: 0
-confidence: high
+last_updated: 2026-05-04
+source_count: 2
+confidence: medium
 status: active
 ---
 
@@ -33,8 +33,10 @@ A key advantage is *generality in 2D vision backbones*: any vision architecture 
 
 ## Results
 
-TimesNet achieves **consistent state-of-the-art across five mainstream tasks**: short- and long-term forecasting, imputation, classification, and anomaly detection. On long-term forecasting, it outperforms 15+ baselines (Autoformer, FEDformer, DLinear, Informer, etc.) on ETT, Electricity, Traffic, Weather, Exchange, and ILI benchmarks. On M4 short-term forecasting, it surpasses specialized models like N-BEATS and N-HiTS. It also excels in classification (73.6% accuracy on UEA, surpassing Rocket and Flowformer) and anomaly detection (best F1 across SMD, MSL, SMAP, SWaT, PSM).
+TimesNet achieves **consistent state-of-the-art across five mainstream tasks**: short- and long-term forecasting, imputation, classification, and anomaly detection. On long-term forecasting, it outperforms 15+ baselines including [[informer|Informer]] (AAAI 2021 Best Paper), Autoformer, FEDformer, and DLinear on ETT, Electricity, Traffic, Weather, Exchange, and ILI benchmarks[^src-timesnet]. On M4 short-term forecasting, it surpasses specialized models like N-BEATS and N-HiTS. It also excels in classification (73.6% accuracy on UEA, surpassing Rocket and Flowformer) and anomaly detection (best F1 across SMD, MSL, SMAP, SWaT, PSM).
 
 ## Critique
 
 TimesNet's strength is its task generality, but its reliance on FFT-based period discovery assumes reasonably clear periodic structure — time series with weak or no periodicity may not benefit from the 2D transformation. The Inception block, while efficient, may not match the representation power of deeper vision backbones. The paper does not thoroughly explore scaling behavior or failure modes on non-periodic data. Compared to [[hyperd|HyperD]]'s approach of decoupling short/long-term periodicity into separate pathways, TimesNet handles multiple periods through modular but shared 2D convolutions — a design trade-off between simplicity and specialization. As a foundation model, it is computationally heavier than lightweight linear models like DLinear but more flexible across diverse tasks.
+
+[^src-zhou-informer-2021]: [[source-zhou-informer-2021]]

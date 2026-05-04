@@ -9,8 +9,8 @@ tags:
   - communication-systems
 created: 2026-04-30
 last_updated: 2026-04-30
-source_count: 1
-confidence: high
+source_count: 0
+confidence: medium
 status: active
 ---
 

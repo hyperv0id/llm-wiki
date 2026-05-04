@@ -9,8 +9,8 @@ tags:
   - energy-compaction
   - global-view
 created: 2026-04-28
-last_updated: 2026-04-28
-source_count: 1
+last_updated: 2026-05-04
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -43,6 +43,7 @@ Extensive experiments on 13 real-world benchmarks (7 short-term, 6 long-term) de
 
 ## Critique
 
-FreTS's primary contribution is demonstrating that simple MLPs, when moved to the frequency domain, can match or outperform sophisticated Transformer architectures—a finding with significant practical implications for deployment-constrained settings. The dual-learner design (channel + temporal) is elegant and the theoretical grounding (global convolution equivalence, energy compaction) is rigorous. However, FreTS does not adaptively select frequency components—it uses all frequencies uniformly, unlike FEDformer's random selection or Dualformer's hierarchical sampling. The fixed architecture may struggle on datasets where different frequency bands carry vastly different predictive value. Performance on the Electricity and Traffic datasets, while still strong, shows less dramatic gains than on Weather and Exchange. The paper also does not explore very long lookback windows beyond 96 steps, leaving open questions about scalability.
+FreTS's primary contribution is demonstrating that simple MLPs, when moved to the frequency domain, can match or outperform sophisticated Transformer architectures (including [[informer|Informer]] as a key baseline, outperforming it by >20% MAE/RMSE) — a finding with significant practical implications for deployment-constrained settings. The dual-learner design (channel + temporal) is elegant and the theoretical grounding (global convolution equivalence, energy compaction) is rigorous. However, FreTS does not adaptively select frequency components—it uses all frequencies uniformly, unlike FEDformer's random selection or Dualformer's hierarchical sampling. The fixed architecture may struggle on datasets where different frequency bands carry vastly different predictive value. Performance on the Electricity and Traffic datasets, while still strong, shows less dramatic gains than on Weather and Exchange. The paper also does not explore very long lookback windows beyond 96 steps, leaving open questions about scalability.
 
 [^src-frets]: [[source-frets]]
+[^src-zhou-informer-2021]: [[source-zhou-informer-2021]]

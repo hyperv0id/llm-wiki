@@ -8,7 +8,7 @@ tags:
   - kdd-2026
 created: 2026-04-29
 last_updated: 2026-04-29
-source_count: 2
+source_count: 0
 references:
   - [[source-hyperd-hybrid-periodicity-decoupling]]
 confidence: high

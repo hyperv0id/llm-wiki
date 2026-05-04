@@ -8,7 +8,7 @@ tags:
   - numerical-methods
 created: 2026-04-30
 last_updated: 2026-04-30
-source_count: 3
+source_count: 2
 confidence: high
 status: active
 ---

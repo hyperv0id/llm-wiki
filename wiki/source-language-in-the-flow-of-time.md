@@ -45,7 +45,7 @@ No architecture modification is required. Jointly trains the mapping MLP and the
 
 ## Experimental Results
 
-Evaluated on 18 datasets from Time-MMD, FNSPID, and FNF, integrated with 9 time series models (iTransformer, PatchTST, Crossformer, DLinear, FEDformer, FiLM, Autoformer, Informer, Transformer)[^src-language-in-the-flow-of-time]. TaTS achieves:
+Evaluated on 18 datasets from Time-MMD, FNSPID, and FNF, integrated with 9 time series models (iTransformer, PatchTST, Crossformer, DLinear, FEDformer, FiLM, Autoformer, [[informer|Informer]] (AAAI 2021 Best Paper), and Transformer)[^src-language-in-the-flow-of-time]. TaTS achieves:
 - Average >5% improvement on 6/9 datasets for forecasting
 - >30% improvement on the largest dataset (Environment)
 - Up to 30% improvement on imputation tasks (Climate, Economy, Traffic)

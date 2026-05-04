@@ -39,6 +39,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-timesnet]] — TimesNet: temporal 2D-variation modeling for general time series analysis (ICLR 2023)
 - [[source-timesfm]] — TimesFM: Decoder-Only Foundation Model for Time-Series Forecasting (ICLR 2024)
 - [[source-chronos]] — Chronos: Learning the Language of Time Series (ICLR 2024)
+- [[source-zhou-informer-2021]] — Informer: Beyond Efficient Transformer for Long Sequence Time-Series Forecasting (AAAI 2021 Best Paper)
 - [[source-tips]] — TIPS: transformer with inductive prior synthesis for financial forecasting
 - [[source-tqn]] — TQNet: Temporal Query Network for efficient multivariate forecasting (ICML 2025)
 - [[source-sparsetsf]] — SparseTSF: lightweight LTSF with <1k parameters via sparse modeling (TPAMI 2026 & ICML 2024 Oral)
@@ -83,6 +84,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[long-tiny-stories-dataset]] — LongTinyStories, synthetic dataset for long-context evaluation (2026)
 - [[autoformer]] — Autoformer, decomposition transformer with auto-correlation (NeurIPS 2021)
 - [[cyclenet]] — CycleNet, periodicity modeling with residual cycle forecasting (NeurIPS 2024)
+- [[informer]] — Informer, efficient Transformer for LSTF with ProbSparse attention (AAAI 2021 Best Paper)
 - [[ddpm]] — DDPM, denoising diffusion probabilistic models (NeurIPS 2020)
 - [[dpm-solver]] — DPM-Solver, fast ODE solver for diffusion model (NeurIPS 2022)
 - [[consistency-models]] — Consistency Models, one-step generation via trajectory consistency (ICML 2023)
@@ -154,13 +156,21 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[multi-level-alignment]] — 多级对齐，在表示级和预测级融合文本与时间序列模态 (ICLR 2026)
 - [[generative-time-series-forecasting]] — 生成式时间序列预测，通过概率建模实现不确定性量化的预测范式
 - [[chronological-textual-resonance]] — CTR，时间序列配对文本与数值序列的周期性共振现象 (ICLR 2026)
+- [[lstf]] — Long Sequence Time-Series Forecasting, the problem setting formalized by Informer
 - [[texts-as-auxiliary-variables]] — 文本作为辅助变量，TaTS 的核心设计概念 (ICLR 2026)
 - [[extreme-weather-forecasting]] — 极端天气预测，对罕见非线性大气极端事件的预报 (arXiv 2025)
 - [[signal-to-noise-ratio-modality-selection]] — SNR-based adaptive modality weighting for multi-modal prediction
 - [[mutual-information]] — 互信息，衡量两个随机变量之间共享信息量的信息论度量
+- [[energy-based-model]] — EBM, energy-based model with unnormalized probability via energy function
+- [[tweedies-formula]] — Tweedie 公式，加噪数据分数函数与干净数据后验期望的关系
+- [[score-based-generative-models]] — 基于分数的生成模型，通过估计对数密度梯度生成样本
 
 ## Techniques
 - [[newton-schulz-iteration]] — Newton-Schulz iteration for matrix orthogonalization
+- [[glu-gated-linear-unit]] — Gated Linear Unit, activation-modulated linear transformation
+- [[heterogeneous-moe-routing]] — 异质性感知 MoE 路由，FaST 的动态 expert 路由机制
+- [[probsparse-self-attention]] — Informer's efficient O(L log L) attention via query sparsity measurement (AAAI 2021)
+- [[generative-style-decoder]] — non-autoregressive one-forward-pass decoding from Informer (AAAI 2021)
 - [[frequency-aware-residual-representation]] — Fourier-based signal decomposition into periodic and residual components
 - [[fine-grained-time-text-semantic-alignment]] — MindTS's cross-view text fusion and contrastive alignment (ICLR 2026)
 - [[spatial-temporal-attentive-encoder]] — dual-pathway encoder for short-term and long-term periodicity
@@ -252,6 +262,7 @@ All wiki pages, organized by type. Updated on every ingest.
 ## Entities
 - [[muon-optimizer]] — Muon, neural network optimizer using Newton-Schulz orthogonalization (2024)
 - [[opencity]] — OpenCity, single-modal spatio-temporal traffic foundation model
+- [[staeformer]] — STAEFormer, previous SOTA transformer for traffic forecasting
 
 ## Concepts
 - [[gradient-orthogonalization]] — orthogonalizing gradient updates to improve optimization

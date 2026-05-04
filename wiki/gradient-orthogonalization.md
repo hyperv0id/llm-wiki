@@ -7,7 +7,7 @@ tags:
   - orthogonalization
 created: 2026-04-30
 last_updated: 2026-04-30
-source_count: 3
+source_count: 1
 confidence: medium
 status: active
 ---

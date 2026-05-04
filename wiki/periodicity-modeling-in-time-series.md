@@ -9,8 +9,8 @@ tags:
   - decomposition
   - survey
 created: 2026-04-28
-last_updated: 2026-04-28
-source_count: 30
+last_updated: 2026-05-04
+source_count: 17
 confidence: medium
 status: active
 ---
@@ -18,6 +18,19 @@ status: active
 # 时序周期性建模文献梳理
 
 本文梳理 2017–2026 年间深度时间序列预测中**周期性建模**的主要方法路线。周期性是真实世界时间序列（交通、能源、气象、金融）最突出的结构特征之一，但不同模型对"如何利用周期性"给出了截然不同的回答。本专题按方法学路线组织，重点关注本 wiki 已收录的 12 篇核心文献。
+
+## 路线〇：高效 Transformer 基础
+
+这类方法解决 LSTF（长序列时间序列预测）的计算瓶颈，为后续 Transformer-based 周期建模提供了效率基础。
+
+### Informer（AAAI 2021 Best Paper）
+
+[[informer|Informer]] 是首个系统解决 Transformer 应用于 LSTF 三大瓶颈的工作：$O(L^2)$ 计算、$O(J \cdot L^2)$ 内存、自回归解码速度慢[^src-zhou-informer-2021]。核心创新：
+- **ProbSparse 自注意力**：利用注意力分布的长尾特性，仅对 Top-$c \cdot \ln L$ 个 query 做全量注意力计算，复杂度降至 $O(L \log L)$
+- **自注意力蒸馏**：编码器中通过 1D 卷积 + MaxPool 逐层压缩时序维度，形成金字塔特征
+- **生成式解码**：一次前向预测全部输出，避免累计误差
+
+虽然 Informer 本身不直接建模周期性，但其建立了 Transformer-based LSTF 的研究范式，[[autoformer|Autoformer]] 在其基础上将注意力完全替换为 Auto-Correlation（利用周期自相似性），开启了后续一系列基于周期/频域的工作。
 
 ## 路线一：频域操作
 
@@ -189,6 +202,7 @@ TPLib 调查的结论——"没有单一架构在所有任务上通用"——对
 |------|------|------------|------|
 | [[source-st-resnet|ST-ResNet]] | 2017 | **AAAI** | 早期时间分量分解范式 |
 | [[source-astgcn|ASTGCN]] | 2019 | **AAAI** | 注意力 + 图卷积 + 时间分量 |
+| [[source-zhou-informer-2021|Informer]] | 2021 | **AAAI 2021** ★ | ProbSparse 注意力 + 生成式解码（Best Paper）|
 | [[source-autoformer|Autoformer]] | 2021 | **NeurIPS** | 渐进分解 + Auto-Correlation（奠基之作）|
 | [[source-fedformer|FEDformer]] | 2022 | **ICML** | 频域增强注意力 |
 | [[source-prnet|PRNet]] | 2022 | DeepSpatial (KDD Workshop) | 周期残差学习 |
@@ -212,6 +226,7 @@ TPLib 调查的结论——"没有单一架构在所有任务上通用"——对
 - **多周期融合效率**：TimesNet 的 top-k × 2D 卷积随周期数线性增长；PENGUIN 的分组注意力也有类似开销
 - **理论基础**：除 Dualformer 的谐波能量下界和 FreTS 的全局卷积等价性外，多数模型缺乏关于周期建模为何有效的理论支撑
 
+[^src-zhou-informer-2021]: [[source-zhou-informer-2021]]
 [^src-fedformer]: [[source-fedformer]]
 [^src-frets]: [[source-frets]]
 [^src-dualformer]: [[source-dualformer]]

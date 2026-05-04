@@ -8,7 +8,7 @@ tags:
   - foundation-model
   - ICLR-2023
 created: 2026-04-28
-last_updated: 2026-04-29
+last_updated: 2026-05-04
 source_count: 3
 confidence: medium
 status: active
@@ -43,6 +43,7 @@ TimesNet outperforms 15+ baselines (Autoformer, FEDformer, DLinear, Informer, et
 
 ## Connections
 
+- **[[informer]]** — Informer (AAAI 2021 Best Paper) pioneered efficient Transformer-based LSTF and is listed as a key baseline in TimesNet's experiments.
 - **[[autoformer]]** — Autoformer's progressive decomposition and periodicity analysis via autocorrelation precede TimesNet's approach. TimesNet extends the idea by explicitly modeling multiple periods through 2D reshaping.
 - **[[source-autoformer|Autoformer (source)]]** — Autoformer is extensively cited by TimesNet as a foundational reference for periodicity-based time series modeling.
 - **[[source-hyperd-hybrid-periodicity-decoupling|HyperD]]** — HyperD decouples short-term and long-term periodicity into separate specialized pathways, an alternative design to TimesNet's shared 2D convolution approach over multiple discovered periods.
@@ -58,3 +59,4 @@ TimesNet outperforms 15+ baselines (Autoformer, FEDformer, DLinear, Informer, et
 
 [^src-unica]: [[source-unica]]
 [^src-timesnet]: [[source-timesnet]]
+[^src-zhou-informer-2021]: [[source-zhou-informer-2021]]

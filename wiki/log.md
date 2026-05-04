@@ -11,6 +11,26 @@ tags:
 
 Chronological record of all wiki activity.
 
+## [2026-05-04] lint | 全量 lint 检查与修复
+
+执行完整 lint 检查并修复以下问题：
+- 修正 33 个页面 source_count 与页面内实际引用数量不一致
+- 19 个页面 confidence: high → medium（source_count=0 或 1，不满足 high 标准）
+- 修复 2 个 typo 断链：probparse → probsparse（informer.md, source-zhou-informer-2021.md）
+- 修正 log.md 中 spurious-patterns-in-attention → spurious-patterns（页面不存在）
+- 创建 7 个 stub 页面修复 broken wikilinks：energy-based-model, glu-gated-linear-unit, heterogeneous-moe-routing, staeformer, tweedies-formula, score-based-generative-models
+- 更新 index.md 添加新 stub 页面条目
+
+Pages created: [[energy-based-model]], [[glu-gated-linear-unit]], [[heterogeneous-moe-routing]], [[staeformer]], [[tweedies-formula]], [[score-based-generative-models]]
+Pages updated: [[informer]], [[source-zhou-informer-2021]], [[log]], [[index]] + 33 source_count fixes + 19 confidence fixes
+
+## [2026-05-04] ingest | Informer: Beyond Efficient Transformer for Long Sequence Time-Series Forecasting (AAAI 2021 Best Paper)
+
+Ingested Informer paper from Zotero storage. Informer is the seminal work that pioneered efficient Transformer architectures for LSTF, addressing all three vanilla Transformer bottlenecks simultaneously: $O(L^2)$ computation → $O(L \log L)$ via ProbSparse attention, $O(J \cdot L^2)$ memory → $O((2-\epsilon) L \log L)$ via self-attention distilling, and slow autoregressive decoding → one-forward-pass generative decoder. AAAI 2021 Best Paper. Evaluated on ETT, ECL, and Weather datasets, significantly outperforming ARIMA, Prophet, LSTMa, LSTnet, DeepAR, LogTrans, and Reformer. Updated 10 existing pages (autoformer, fedformer, timesnet, source-autoformer, source-fedformer, source-timesnet, source-frets, source-deep-time-series-survey, source-language-in-the-flow-of-time, periodicity-modeling-in-time-series) with cross-references and Informer citations.
+
+Pages created: [[source-zhou-informer-2021]], [[informer]], [[probsparse-self-attention]], [[generative-style-decoder]], [[lstf]]
+Pages updated: [[autoformer]], [[fedformer]], [[timesnet]], [[source-autoformer]], [[source-fedformer]], [[source-timesnet]], [[source-frets]], [[source-deep-time-series-survey]], [[source-language-in-the-flow-of-time]], [[periodicity-modeling-in-time-series]], [[index]], [[log]]
+
 ## [2026-05-04] ingest | 数学直觉系列（二）：VAE与重参数化
 Ingested bluuuuue 小红书技术教程文章（第二期），将重参数化技巧定位为让随机性与梯度共存的结构性方案。核心论点：采样不可导→REINFORCE高方差→两步分离重参数化→双重功效（打通反传+降方差）→适用前提（连续+位置-尺度族）→三大应用（扩散/VLA/SAC）。
 创建的页面：[[source-bluuuuue-reparameterization-trick]], [[reparameterization-trick]]
@@ -202,7 +222,7 @@ Pages updated: [[index]], [[log]]
 
 ## [2026-04-28] ingest | QUEST: A Robust Attention Formulation Using Query-Modulated Spherical Attention (ICLR 2026)
 Ingested ICLR 2026 论文提出 QUEST (Query-modulated Spherical Attention) 方法——通过仅对键进行 ℓ2 归一化来消除键范数对注意力的"窃取"效应，同时保持每个查询独立控制其注意力锐度。核心洞见：查询范数控制锐度、键范数导致"全局注意力窃取"、Q-K 交叉依赖导致训练不稳定。实验验证：标准注意力在 ViT-Base/Large 上训练崩溃，QUEST 可稳定训练所有规模；ImageNet Top-1 提升 0.5-6.5%；对抗攻击和数据损坏下更鲁棒。
-Pages created: [[source-quest]], [[quest-attention]], [[key-normalization]], [[attention-logit-explosion]], [[attention-entropy-collapse]], [[spurious-patterns-in-attention]]
+Pages created: [[source-quest]], [[quest-attention]], [[key-normalization]], [[attention-logit-explosion]], [[attention-entropy-collapse]], [[spurious-patterns]]
 Pages updated: [[index]], [[log]]
 
 ## [2026-04-28] maintenance | ELBO concept page

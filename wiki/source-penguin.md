@@ -11,7 +11,7 @@ tags:
 created: 2026-04-28
 last_updated: 2026-04-28
 source_count: 0
-confidence: high
+confidence: medium
 status: active
 ---
 

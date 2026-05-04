@@ -10,8 +10,8 @@ tags:
   - wavelet-transform
   - seasonal-trend-decomposition
 created: 2026-04-28
-last_updated: 2026-04-28
-source_count: 1
+last_updated: 2026-05-04
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -38,10 +38,11 @@ By keeping only M randomly selected Fourier modes (default M=64), the model achi
 
 ## Results
 
-FEDformer was evaluated on six benchmark datasets (ETTm2, Electricity, Exchange, Traffic, Weather, ILI) and compared against Autoformer, Informer, LogTrans, and Reformer[^src-fedformer]. It achieved the best performance across all datasets and all horizons. Multivariate MSE was reduced by 14.8% relative to Autoformer; univariate MSE reduction was 22.6%. On datasets without clear periodicity (Exchange, ILI), improvements exceeded 20%. The Kolmogorov-Smirnov test confirmed that FEDformer's outputs share a more similar distribution with inputs than competing models. Random mode selection outperformed fixed low-frequency selection across all mode counts (M ∈ {2, 4, ..., 256}).
+FEDformer was evaluated on six benchmark datasets (ETTm2, Electricity, Exchange, Traffic, Weather, ILI) and compared against Autoformer, Informer, LogTrans, and Reformer[^src-fedformer][^src-zhou-informer-2021]. It achieved the best performance across all datasets and all horizons. Multivariate MSE was reduced by 14.8% relative to Autoformer; univariate MSE reduction was 22.6%. On datasets without clear periodicity (Exchange, ILI), improvements exceeded 20%. The Kolmogorov-Smirnov test confirmed that FEDformer's outputs share a more similar distribution with inputs than competing models. Random mode selection outperformed fixed low-frequency selection across all mode counts (M ∈ {2, 4, ..., 256}).
 
 ## Critique
 
 FEDformer was a seminal work that demonstrated the effectiveness of frequency-domain operations for time series Transformers, inspiring subsequent models like Dualformer and FreTS. Its key insight—random Fourier mode selection is both theoretically justified and practically superior to low-pass filtering—was well-supported. The wavelet variant provides complementary benefits for capturing local structures. However, the paper's baselines did not include some later strong models (PatchTST, iTransformer), and the ILI dataset results show relatively high absolute errors. The MOEDecomp block adds architectural complexity, and the choice between Fourier and wavelet variants requires dataset-specific tuning. The fixed random mode selection, while efficient, is not input-adaptive—a limitation later addressed by models like Dualformer's periodicity-aware weighting.
 
 [^src-fedformer]: [[source-fedformer]]
+[^src-zhou-informer-2021]: [[source-zhou-informer-2021]]
