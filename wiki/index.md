@@ -80,6 +80,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-bluuuuue-reparameterization-trick]] — 数学直觉系列（二）：VAE与重参数化——将不可逆的随机采样重构为可微的确定性变换 (bluuuuue, 小红书)
 - [[source-language-in-the-flow-of-time]] — Language in the Flow of Time: TaTS framework for multimodal TS (ICLR 2026)
 - [[source-uniextreme]] — UniExtreme: universal extreme weather forecasting foundation model (arXiv 2025)
+- [[source-ragc-efficient-traffic-forecasting]] — RAGC: Efficient Traffic Forecasting on Large-Scale Road Network by Regularized Adaptive Graph Convolution (arXiv 2026)
 
 ## Entities
 - [[sa-bcp]] — SA-BCP, state-adaptive Bayesian conformal prediction (arXiv 2026)
@@ -124,6 +125,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[aurora]] — Aurora, universal generative multimodal time series foundation model (arXiv 2026)
 - [[tats]] — TaTS (Texts as Time Series), plug-and-play multimodal TS framework (ICLR 2026)
 - [[uniextreme]] — UniExtreme, universal extreme weather forecasting foundation model (arXiv 2025)
+- [[ragc]] — RAGC, regularized adaptive graph convolution for large-scale traffic forecasting (arXiv 2026)
 
 ## Concepts
 - [[conformal-prediction]] — 共形预测，与模型无关的不确定性量化框架
@@ -173,6 +175,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[energy-based-model]] — EBM, energy-based model with unnormalized probability via energy function
 - [[tweedies-formula]] — Tweedie 公式，加噪数据分数函数与干净数据后验期望的关系
 - [[score-based-generative-models]] — 基于分数的生成模型，通过估计对数密度梯度生成样本
+- [[node-embedding-regularization]] — 节点嵌入正则化，抑制自适应图学习中节点嵌入的过参数化
 
 ## Techniques
 - [[spectral-graph-wavelet-transform]] — SGWT，谱图小波变换用于图信号的多尺度分解
@@ -271,6 +274,9 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[cross-view-text-fusion]] — MindTS's cross-view attention fusing endogenous and exogenous text views (ICLR 2026)
 - [[contrastive-learning]] — representation learning via positive/negative pair similarity optimization
 - [[information-bottleneck-principle]] — IB, compressed representations retaining maximal task-relevant information
+- [[efficient-cosine-operator]] — ECO, linear-complexity graph convolution via cosine similarity decomposition (arXiv 2026)
+- [[stochastic-shared-embedding]] — SSE, stochastic shared embedding regularization for graph node embeddings (NeurIPS 2019, adapted 2026)
+- [[residual-difference-mechanism]] — RDM, subtractive residual that suppresses SSE noise via adaptive graph convolution weights
 
 ## Entities
 - [[muon-optimizer]] — Muon, neural network optimizer using Newton-Schulz orthogonalization (2024)
