@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-05-04
+last_updated: 2026-05-07
 tags:
   - meta
 ---
@@ -15,6 +15,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[overview]] — wiki scope and current state
 
 ## Sources
+- [[source-sa-bcp]] — SA-BCP: Optimal Spatio-Temporal Decoupling for Bayesian Conformal Prediction (arXiv 2026)
+- [[source-scale]] — SCALE: Spectral Conformal Prediction via Wavelet Transform (ICML 2026)
 - [[source-afe-tfnet]] — AFE-TFNet: adaptive feature extraction time-frequency network for wave height
 - [[source-astgcn]] — ASTGCN: attention spatial-temporal graph convolutional networks for traffic (AAAI 2019)
 - [[source-autoformer]] — Autoformer: decomposition transformers with auto-correlation (NeurIPS 2021)
@@ -80,6 +82,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-uniextreme]] — UniExtreme: universal extreme weather forecasting foundation model (arXiv 2025)
 
 ## Entities
+- [[sa-bcp]] — SA-BCP, state-adaptive Bayesian conformal prediction (arXiv 2026)
+- [[scale]] — SCALE, spectral conformal prediction via wavelet transform (ICML 2026)
 - [[adaptive-positional-encoding]] — APE, adaptive positional encoding for infinite length extrapolation (2026)
 - [[long-tiny-stories-dataset]] — LongTinyStories, synthetic dataset for long-context evaluation (2026)
 - [[autoformer]] — Autoformer, decomposition transformer with auto-correlation (NeurIPS 2021)
@@ -122,6 +126,11 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[uniextreme]] — UniExtreme, universal extreme weather forecasting foundation model (arXiv 2025)
 
 ## Concepts
+- [[conformal-prediction]] — 共形预测，与模型无关的不确定性量化框架
+- [[spatio-temporal-decoupling]] — 时空解耦在在线共形预测中的最优权衡
+- [[spectral-graph-conditional-exchangeability]] — SGCE，谱图条件可交换性 (ICML 2026)
+- [[bayesian-conformal-prediction]] — Bayesian 共形预测，时间折扣历史权重
+- [[adaptive-conformal-inference]] — ACI，在线误差反馈驱动的共形预测
 - [[covariate-homogenization]] — UniCA's technique for converting heterogeneous covariates into unified representations (ICLR 2026)
 - [[heterogeneous-covariates]] — classification and multimodal covariates that differ from target time series (ICLR 2026)
 - [[multimodal-time-series-forecasting]] — forecasting tasks involving numerical time series plus images/text (ICLR 2026)
@@ -166,6 +175,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[score-based-generative-models]] — 基于分数的生成模型，通过估计对数密度梯度生成样本
 
 ## Techniques
+- [[spectral-graph-wavelet-transform]] — SGWT，谱图小波变换用于图信号的多尺度分解
 - [[frequency-enhanced-attention]] — FEA, Fourier/Wavelet-domain cross-attention substituing standard attention in FEDformer (ICML 2022)
 - [[frequency-enhanced-block]] — FEB, frequency-domain self-attention substiution in FEDformer via Fourier or Wavelet (ICML 2022)
 - [[moe-decomposition]] — MOEDecomp, input-adaptive mixture-of-experts average filters for seasonal-trend decomposition (ICML 2022)

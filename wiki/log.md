@@ -2,7 +2,7 @@
 title: Log
 type: concept
 created: 2026-04-26
-last_updated: 2026-05-04
+last_updated: 2026-05-07
 tags:
   - meta
 ---
@@ -333,3 +333,13 @@ Pages updated: [[traffic-forecasting]], [[multimodal-time-series-forecasting]], 
 Aurora 是首个多模态时间序列基础模型，支持文本/图像/数值多模态输入和零样本推理。通过 Modality-Guided Self-Attention 注入领域知识，Prototype-Guided Flow Matching 实现生成式概率预测。在 5 个基准上单模态和多模态场景均 SOTA。
 Pages created: [[source-aurora]], [[aurora]], [[modality-guided-self-attention]], [[prototype-guided-flow-matching]], [[generative-time-series-forecasting]]
 Pages updated: [[simdiff]], [[chronos]], [[timesfm]], [[mindts]], [[vot]], [[most]], [[flow-matching]], [[multimodal-time-series-forecasting]], [[index]], [[log]]
+
+## [2026-05-07] ingest | SA-BCP: Optimal Spatio-Temporal Decoupling for Bayesian Conformal Prediction (arXiv 2026)
+Ingested SA-BCP paper (arXiv:2605.00432v1) by Fang & Lee (National Taiwan University). SA-BCP proposes state-adaptive Bayesian conformal prediction that decouples temporal baseline inertia from spatial pattern memory via a density-gated mixture mechanism ($\pi_t^S = D_t^S / (D_t^S + K)$). Theoretically proves asymptotic marginal validity, dynamic regret bounds, oracle conditional coverage, and a minimax bias-variance tradeoff governed by $K^* = V_0 / M^T$. Empirically outperforms ACI variants and Bayesian CP on volatile financial datasets (AMD, Gold, GBP/USD, 2016-2026), reducing BCP interval bloat by 10-37%.
+Created pages: [[source-sa-bcp]], [[sa-bcp]], [[spatio-temporal-decoupling]], [[conformal-prediction]], [[bayesian-conformal-prediction]], [[adaptive-conformal-inference]]
+Updated pages: [[index]], [[log]]
+
+## [2026-05-07] ingest | SCALE: Spectral Conformal Prediction via Wavelet Transform (ICML 2026)
+Ingested SCALE paper (arXiv:2605.04957v1) by Guo, Han, Luo, Liu, Gong & Wang (Shanghai Jiao Tong University, ICML 2026). SCALE proposes Spectral Graph Conditional Exchangeability (SGCE) — the concept that high-frequency components of graph-structured MTS are conditionally exchangeable given low-frequency components. Uses SGWT for spectral decomposition, with a learnable low-frequency encoder and parameter-free high-frequency statistics extractor, fused via adaptive gating. Theoretically proves finite-sample coverage under SGCE and controllable coverage gap under wavelet approximation. Empirically achieves near-nominal coverage with competitive efficiency on METR-LA, PEMS04/07/08 traffic datasets.
+Created pages: [[source-scale]], [[scale]], [[spectral-graph-conditional-exchangeability]], [[spectral-graph-wavelet-transform]]
+Updated pages: [[conformal-prediction]], [[index]], [[log]]
