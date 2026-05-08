@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-05-07
+last_updated: 2026-05-08
 tags:
   - meta
 ---
@@ -81,6 +81,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-language-in-the-flow-of-time]] — Language in the Flow of Time: TaTS framework for multimodal TS (ICLR 2026)
 - [[source-uniextreme]] — UniExtreme: universal extreme weather forecasting foundation model (arXiv 2025)
 - [[source-ragc-efficient-traffic-forecasting]] — RAGC: Efficient Traffic Forecasting on Large-Scale Road Network by Regularized Adaptive Graph Convolution (arXiv 2026)
+- [[source-2401-08119-specstg]] — SpecSTG: A Fast Spectral Diffusion Framework for Probabilistic Spatio-Temporal Traffic Forecasting (arXiv 2024)
 
 ## Entities
 - [[sa-bcp]] — SA-BCP, state-adaptive Bayesian conformal prediction (arXiv 2026)
@@ -126,6 +127,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[tats]] — TaTS (Texts as Time Series), plug-and-play multimodal TS framework (ICLR 2026)
 - [[uniextreme]] — UniExtreme, universal extreme weather forecasting foundation model (arXiv 2025)
 - [[ragc]] — RAGC, regularized adaptive graph convolution for large-scale traffic forecasting (arXiv 2026)
+- [[specstg]] — SpecSTG, spectral diffusion framework for probabilistic STG traffic forecasting (arXiv 2024)
 
 ## Concepts
 - [[conformal-prediction]] — 共形预测，与模型无关的不确定性量化框架
@@ -277,6 +279,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[efficient-cosine-operator]] — ECO, linear-complexity graph convolution via cosine similarity decomposition (arXiv 2026)
 - [[stochastic-shared-embedding]] — SSE, stochastic shared embedding regularization for graph node embeddings (NeurIPS 2019, adapted 2026)
 - [[residual-difference-mechanism]] — RDM, subtractive residual that suppresses SSE noise via adaptive graph convolution weights
+- [[fast-spectral-graph-convolution]] — Fast Spectral GC, O(KN) Chebyshev graph convolution for Fourier-domain inputs (arXiv 2024)
+- [[spectral-recurrent-encoder]] — SG-GRU, spectral-domain Graph GRU encoder for STG diffusion conditioning (arXiv 2024)
 
 ## Entities
 - [[muon-optimizer]] — Muon, neural network optimizer using Newton-Schulz orthogonalization (2024)

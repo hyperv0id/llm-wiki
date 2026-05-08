@@ -2,7 +2,7 @@
 title: Log
 type: concept
 created: 2026-04-26
-last_updated: 2026-05-07
+last_updated: 2026-05-08
 tags:
   - meta
 ---
@@ -10,6 +10,13 @@ tags:
 # Wiki Log
 
 Chronological record of all wiki activity.
+
+## [2026-05-08] ingest | SpecSTG: A Fast Spectral Diffusion Framework for Probabilistic Spatio-Temporal Traffic Forecasting
+
+Ingest arXiv:2401.08119v3 (Lin, Shi, Han & Gao, 2024)。SpecSTG 是首个在图谱域执行扩散过程的概率时空图预测框架，通过生成图傅里叶表示而非原始序列来利用空间依赖关系，实现 8% RMSE 提升和 3.33× 训练加速。
+
+创建的页面：[[source-2401-08119-specstg]], [[specstg]], [[fast-spectral-graph-convolution]], [[spectral-recurrent-encoder]]
+更新的页面：[[traffic-forecasting]], [[generative-time-series-forecasting]], [[index]], [[log]]
 
 ## [2026-05-04] ingest | FEDformer: Frequency Enhanced Decomposed Transformer (ICML 2022) — 深度增强
 详细 ingest FEDformer 论文完整 PDF，深度增强已有 source-summary 和 entity 页面。创建 3 个核心技术页面，更新 9 个交叉引用页面，并添加反向链接。

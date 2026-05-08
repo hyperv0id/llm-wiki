@@ -8,8 +8,8 @@ tags:
   - flow-matching
   - diffusion-models
 created: 2026-05-03
-last_updated: 2026-05-03
-source_count: 2
+last_updated: 2026-05-08
+source_count: 3
 confidence: high
 status: active
 ---
@@ -35,16 +35,19 @@ status: active
 
 **[[simdiff|SimDiff]]** (AAAI 2026) 是首个纯端到端扩散模型用于时间序列点预测，使用 DDPM 框架并通过 Median-of-Means 将概率样本聚合为点估计[^src-simdiff]。SimDiff 仅支持单模态数值输入。
 
+**[[specstg|SpecSTG]]** (arXiv 2024) 是首个在图谱域执行扩散过程的概率时空图预测框架。核心创新是将扩散过程转移到图傅里叶域——生成未来时间序列的傅里叶表示而非原始序列，使得空间依赖关系自然融入扩散基中。通过 [[fast-spectral-graph-convolution|Fast Spectral GC]] 将图卷积复杂度从 $O(N^2)$ 降至 $O(N)$，训练速度达 GCRDD 的 3.33 倍，点估计最高提升 8%[^src-2401-08119-specstg]。
+
 ### 流匹配方法
 
 **[[aurora|Aurora]]** (arXiv 2026) 提出 Prototype-Guided Flow Matching，使用多模态领域知识生成条件和原型来引导流匹配过程，实现生成式概率预测[^src-aurora]。Aurora 支持多模态输入（文本、图像、数值）和零样本推理。
 
 ### 方法对比
 
-| 方法 | 生成框架 | 模态支持 | 零样本 | 输出类型 |
-|------|---------|---------|--------|---------|
-| SimDiff | Diffusion (DDPM) | 仅数值 | ✗ | 点估计（MoM 聚合） |
-| Aurora | Flow Matching (OT) | 文本 + 图像 + 数值 | ✓ | 概率分布 |
+| 方法 | 生成框架 | 模态支持 | 零样本 | 输出类型 | 操作域 |
+|------|---------|---------|--------|---------|--------|
+| SimDiff | Diffusion (DDPM) | 仅数值 | ✗ | 点估计（MoM 聚合） | 原始域 |
+| SpecSTG | Diffusion (谱域) | 仅数值 | ✗ | 概率分布 + 点估计 | **谱域** |
+| Aurora | Flow Matching (OT) | 文本 + 图像 + 数值 | ✓ | 概率分布 | 原始域 |
 
 ## 优势
 
@@ -61,6 +64,7 @@ status: active
 ## 相关页面
 
 - [[aurora]] — 流匹配生成式预测模型
+- [[specstg]] — 谱域扩散时空图预测模型
 - [[simdiff]] — 扩散式生成预测模型
 - [[flow-matching]] — Flow Matching 理论基础
 - [[diffusion-model]] — 扩散模型理论基础
@@ -68,3 +72,4 @@ status: active
 
 [^src-aurora]: [[source-aurora]]
 [^src-simdiff]: [[source-simdiff]]
+[^src-2401-08119-specstg]: [[source-2401-08119-specstg]]
