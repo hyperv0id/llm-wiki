@@ -8,8 +8,8 @@ tags:
   - frequency-domain
 created: 2026-05-09
 last_updated: 2026-05-09
-source_count: 1
-confidence: medium
+source_count: 3
+confidence: high
 status: active
 ---
 
@@ -70,6 +70,8 @@ $$L = \mathbb{E}_{t, \mathbf{x}_0, \boldsymbol{\epsilon}}\left[\|\boldsymbol{\ep
 
 去噪模型 $\boldsymbol{\epsilon}_\theta$ 必须学会从 $\mathbf{x}_t$ 中恢复被噪声 $\boldsymbol{\epsilon}$ 抹除的信息。因此，**$\boldsymbol{\epsilon}$ 的统计特性决定了模型需要学习的内容**。[^src-2502-10236]
 
+Falck 等人从 SNR 几何给出互补解释：即使噪声是标准白噪声，数据频谱方差 $C_i=\operatorname{Var}[(Fx_0)_i]$ 的非均匀性也会让 DDPM 的每频率 SNR $s_t^{\mathrm{DDPM}}(i)=\bar\alpha_t C_i/(1-\bar\alpha_t)$ 呈现低频高、高频低的层级。[^src-equal-snr] 因此前向过程不仅通过“噪声形状”塑造偏置，也通过“信号方差与噪声方差的相对比例”塑造偏置。[^src-equal-snr]
+
 ### 三种塑造策略
 
 **策略 1：强调特定频段**
@@ -111,6 +113,7 @@ $$\mathbf{x}' = \mathbf{x} + \gamma_c\,\boldsymbol{\epsilon}_{[a_c, b_c]}$$
 | 方法 | 操控对象 | 数学形式 | 与频域噪声控制的关系 |
 |------|---------|---------|---------------------|
 | 噪声调度调整 (Sahoo et al., 2024) | 噪声量级 $\sigma(t)$ | $\sigma(t)$ 可学习 | **正交**——量级 vs 频谱形状 |
+| [[equal-snr|EqualSNR]] (Falck et al., 2025) | 每频率 SNR 速率 | $\Sigma_{ii}=cC_i$ | **互补**——校准数据频谱方差造成的 SNR 不均匀 |
 | 非高斯噪声 (Bansal et al., 2022) | 噪声分布类型 | $\boldsymbol{\epsilon} \sim \text{非高斯}$ | **不同方向**——分布类型 vs 频谱形状 |
 | 奖励优化对齐 (Zhang et al., 2024) | 模型输出偏好 | 事后微调 | **补充**——事后调整 vs 训练时塑造 |
 | 频域噪声控制（本方法） | 噪声频谱形状 | $w(\mathbf{f})$ 加权 | — |
@@ -119,7 +122,7 @@ $$\mathbf{x}' = \mathbf{x} + \gamma_c\,\boldsymbol{\epsilon}_{[a_c, b_c]}$$
 
 ## 更广泛的意义
 
-归纳偏置塑造的思想不局限于扩散模型。核心洞见——**训练过程中信息抹除的模式决定了模型学习的内容**——可以推广到任何涉及前向加噪/信息破坏的生成模型框架：[^src-2502-10236]
+归纳偏置塑造的思想不局限于扩散模型。核心洞见——**训练过程中信息抹除的模式决定了模型学习的内容**——可以推广到任何涉及前向加噪/信息破坏的生成模型框架：[^src-2502-10236][^src-sagd]
 
 - **[[flow-matching|Flow Matching]]**：概率路径的选择决定了模型学习的变换方向
 - **VAE**：编码器引入的噪声分布影响潜变量的语义结构
@@ -129,11 +132,17 @@ $$\mathbf{x}' = \mathbf{x} + \gamma_c\,\boldsymbol{\epsilon}_{[a_c, b_c]}$$
 ## 链接
 
 - [[frequency-based-noise-control]] — 频域噪声控制（具体实现）
+- [[equal-snr]] — EqualSNR，所有频率等 SNR 加噪
+- [[frequency-hierarchy-in-diffusion]] — 扩散模型中的频率层级
 - [[frequency-diffusion]] — 频域扩散（具体技术）
 - [[diffusion-model]] — 扩散模型
 - [[edm-design-space]] — EDM 设计空间
 - [[spurious-patterns]] — 虚假模式/捷径学习
+- [[spectral-bias-training-dynamics]] — 扩散模型训练谱偏置理论（"偏置为什么存在"的机理）
+- [[source-sagd]] — SAGD 完整版论文
 
 ## 引用
 
 [^src-2502-10236]: [[source-2502-10236]]
+[^src-sagd]: [[source-sagd]]
+[^src-equal-snr]: [[source-equal-snr]]

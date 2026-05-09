@@ -8,7 +8,7 @@ tags:
   - score-based
 created: 2026-04-28
 last_updated: 2026-05-09
-source_count: 13
+source_count: 14
 confidence: high
 status: active
 ---
@@ -113,6 +113,8 @@ $$\boldsymbol{\epsilon} \xrightarrow{\mathcal{F}} \mathbf{N}_{\text{freq}} \xrig
 
 核心洞见：**前向加噪过程中被抹除的信息，恰好是去噪模型有压力去学习的信息**。因此通过选择性强调/抑制/跳过特定频段的噪声，可以引导模型聚焦于数据分布的特定方面。实验在 5 个数据集（MNIST, CIFAR-10, DomainNet-Quickdraw, WikiArt, CelebA）中的 3 个上取得了 FID/KID 的显著改善，并展示了选择性忽略被噪声破坏频段的能力。[^src-2502-10236]
 
+Falck 等人（Microsoft Research, 2025）从 SNR 角度给出另一种频域解释：若 $y_0=Fx_0$ 且 $C_i=\operatorname{Var}[(y_0)_i]$，则 DDPM 在频率 $i$ 的 SNR 为 $s_t^{\mathrm{DDPM}}(i)=\bar\alpha_t C_i/(1-\bar\alpha_t)$；自然图像等数据的 $C_i$ 随频率升高而快速下降，因此高频在前向过程中更早、更快被破坏。[^src-equal-snr] 他们提出 [[equal-snr|EqualSNR]]，令傅里叶噪声协方差满足 $\Sigma_{ii}=cC_i$，使所有频率在同一时间步拥有相同 SNR；该方法在标准图像 FID 上与 DDPM 大体持平，同时明显改善高频谱统计。[^src-equal-snr]
+
 ## 局限性
 
 扩散模型存在以下主要局限：[^src-understanding-diffusion-models]
@@ -135,6 +137,8 @@ $$\boldsymbol{\epsilon} \xrightarrow{\mathcal{F}} \mathbf{N}_{\text{freq}} \xrig
 
 - [[reparameterization-trick]] — 重参数化技巧，前向加噪过程的可微性保证
 - [[frequency-based-noise-control]] — 频域噪声控制，通过操控噪声频谱塑造归纳偏置
+- [[equal-snr]] — 通过 $\Sigma_{ii}=cC_i$ 实现所有频率等 SNR 加噪
+- [[frequency-hierarchy-in-diffusion]] — DDPM 的低频到高频隐式生成层级
 - [[frequency-diffusion]] — 频域扩散，频域噪声控制的具体技术实现
 - [[inductive-bias-shaping]] — 归纳偏置塑造，显式引导模型学习特定方面
 - [[freqflow]] — FreqFlow，频率感知流匹配，通过双分支架构显式建模频率成分（2026）
@@ -156,3 +160,4 @@ $$\boldsymbol{\epsilon} \xrightarrow{\mathcal{F}} \mathbf{N}_{\text{freq}} \xrig
 [^src-understanding-diffusion-models]: [[source-understanding-diffusion-models]]
 [^src-bluuuuue-reparameterization-trick]: [[source-bluuuuue-reparameterization-trick]]
 [^src-2502-10236]: [[source-2502-10236]]
+[^src-equal-snr]: [[source-equal-snr]]

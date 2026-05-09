@@ -6,10 +6,11 @@ tags:
   - frequency-domain
   - inductive-bias
   - noise-schedule
+  - sagd
 created: 2026-05-09
 last_updated: 2026-05-09
 source_count: 2
-confidence: medium
+confidence: high
 status: active
 ---
 
@@ -113,6 +114,57 @@ $$\gamma_l = \gamma_h = 0.5,\quad a_l = 0,\ b_l = 0.5,\ a_h = 0.5,\ b_h = 1$$
 
 ---
 
+## SAGD：各向异性高斯扩散（完整版理论框架）
+
+SAGD（Spectrally Anisotropic Gaussian Diffusion）是同一团队（Scimeca, Jiralerspong, Bengio 等，arXiv:2510.09660, 2025）提出的完整版，将频域噪声控制形式化为**各向异性高斯前向协方差**框架。[^src-sagd]
+
+### 协方差形式化
+
+定义线性算子 $T_w = \mathcal{F}^{-1} \text{Diag}(w) \mathcal{F}$，前向噪声 $\epsilon^{(w)} = T_w \xi$ 服从：
+
+$$\epsilon^{(w)} \sim \mathcal{N}(0, \Sigma_w), \quad \Sigma_w = T_w T_w^\top = \mathcal{F}^{-1} \text{Diag}(|w(f)|^2) \mathcal{F}$$
+
+前向边缘分布：
+
+$$q_w(x_t | x_0) = \mathcal{N}\left(\sqrt{\bar{\alpha}_t}\, x_0,\ \sigma_t^2 \Sigma_w\right)$$[^src-sagd]
+
+### Score-$\epsilon$ 关系（各向异性推广）
+
+$$\nabla_{x_t} \log q_{w,t}(x_t) = -\frac{1}{\sigma_t} \Sigma_w^{-1}\, \mathbb{E}[\epsilon^{(w)} | x_t]$$
+
+当 $\Sigma_w = I$ 时退化为标准 DDPM score 关系。**$\ell_2$ 训练目标不变**，$\Sigma_w^{-1}$ 仅在 score 转换时出现。[^src-sagd]
+
+### Score 收敛性定理
+
+当 $\Sigma_w \succ 0$（满秩，即 $w(f) > 0$ 对所有 $f$）且数据分布有局部正 $C^1$ 密度时：
+
+$$\lim_{t \to 0} \nabla_{x_t} \log q_{w,t}(x_t) = \nabla_x \log q(x) \quad \text{a.e.}$$
+
+**意义**：塑形前向协方差改变的是概率流路径（path），而非终点（endpoint）score。[^src-sagd]
+
+### 两种具体算子
+
+**plw-SAGD（幂律加权）**：$w_\alpha(f) = (r(f) + \varepsilon)^\alpha$，$\alpha \in \mathbb{R}$ 控制频谱斜率。
+
+**bpm-SAGD（带通掩码+两频段混合）**：$\epsilon^{(w)} = \gamma_l \epsilon_{[a_l,b_l]} + \gamma_h \epsilon_{[a_h,b_h]}$。
+
+### 选择性忽略的理论
+
+当 $w$ 在某频段为零时 $\Sigma_w$ 奇异，模型学到 **projected score** $\Pi \nabla_x \log q(x)$，$\Pi$ 为正交投影到 $\text{range}(\Sigma_w)$。[^src-sagd]
+
+### ImageNet-1k DiT 实验（SAGD 亮点）
+
+256×256 分辨率，RAE DiT backbone in DINOv2 latent space（196M 参数）：
+
+| 设定 | FID |
+|------|-----|
+| 基线 ($\alpha=0$) | 8.68 ± 0.07 |
+| SAGD ($\alpha=-0.04$) | **7.55 ± 0.06** |
+
+绝对改善 ≈ 1.1 FID（约 13% 相对提升），证明 SAGD 在大规模高分辨率设定下有效。[^src-sagd]
+
+---
+
 ## 实验设计
 
 固定 $a_l = 0, b_h = 1, b_l = a_h = 0.5$，扫描 $\gamma_l \in [0.1, 0.2, \dots, 0.9]$ 和 $\gamma_h = 1 - \gamma_l$。每个数据集训练 9 个模型（8 种频域调度 + 标准扩散基线），3 个随机种子取平均。[^src-2502-10236]
@@ -179,9 +231,12 @@ $$b_l = a_c,\quad a_h = b_c$$
 - [[frequency-based-noise-control]] — 频域噪声控制概念
 - [[inductive-bias-shaping]] — 归纳偏置塑造
 - [[two-band-mixture-noise]] — 两频段混合噪声参数化
-- [[freqflow]] — FreqFlow，频率感知流匹配，通过双分支架构在流匹配中显式建模频率成分（2026）
+- [[source-sagd]] — SAGD 完整版论文（各向异性高斯扩散）
+- [[spectral-bias-training-dynamics]] — 扩散模型训练谱偏置理论
+- [[freqflow]] — FreqFlow，频率感知流匹配
 - [[frequency-aware-conditioning]] — 频率感知条件化概念
 
 ## 引用
 
 [^src-2502-10236]: [[source-2502-10236]]
+[^src-sagd]: [[source-sagd]]

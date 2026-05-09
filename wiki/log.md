@@ -11,6 +11,27 @@ tags:
 
 Chronological record of all wiki activity.
 
+## [2026-05-09] ingest | A Fourier Space Perspective on Diffusion Models / EqualSNR (Microsoft Research, 2025)
+
+Ingested arXiv:2505.11278 by Falck et al. (Microsoft Research). 论文从傅里叶空间重写 DDPM 前向过程，给出每频率 SNR 公式 $s_t^{\mathrm{DDPM}}(i)=\bar\alpha_t C_i/(1-\bar\alpha_t)$，说明自然图像等数据的傅里叶功率律会让高频分量更早、更快降 SNR。核心贡献包括：(1) 理论与 KDE 可视化证明高频快速加噪会使反向后验 $q(y_{t-1}\mid y_t)$ 更易偏离单一高斯假设；(2) 提出 EqualSNR，令 $\Sigma_{ii}=cC_i$ 使所有频率等 SNR 加噪，并给出 $C^{-1/2}$ 加权傅里叶损失及其 ELBO 解释；(3) 在 CIFAR-10/CelebA/LSUN Church 上 FID 与 DDPM 大体持平，在高频谱统计与 Dots 高频任务上显著优于 DDPM；(4) FlippedSNR 多次训练失败，提示低频到高频层级可能具有优化价值但非绝对必要。
+
+创建的页面：[[source-equal-snr]], [[equal-snr]], [[frequency-hierarchy-in-diffusion]]
+更新的页面：[[diffusion-model]], [[frequency-based-noise-control]], [[ddpm]], [[inductive-bias-shaping]], [[index]], [[log]]
+
+## [2026-05-09] ingest | An Analytical Theory of Spectral Bias in the Learning Dynamics of Diffusion Models (NeurIPS 2025, Harvard)
+
+Ingested Wang & Pehlevan (Kempner Institute, Harvard, NeurIPS 2025) 论文，首次对"扩散模型为什么先学低频"给出严格理论解答。核心贡献：利用高斯等价原理求解线性 denoiser 的梯度流闭式解，积分 PF-ODE 得到生成分布的解析表达式。发现反比方差谱定律 $\tau_k^* \propto \lambda_k^{-1}$——高方差模式（粗结构）比低方差模式（细纹理）收敛快一个数量级。扩展到深度线性网络和卷积网络，证明权重共享加速但不消除偏置，而局部卷积带来质的改变。MLP-UNet 实验确认谱定律存在；CNN-UNet 中谱偏置几乎消失，说明卷积架构重塑了学习动力学。
+
+创建的页面：[[source-spectral-bias-learning-dynamics]], [[spectral-bias-training-dynamics]]
+更新的页面：[[frequency-based-noise-control]], [[inductive-bias-shaping]], [[frequency-diffusion]], [[index]], [[log]]
+
+## [2026-05-09] ingest | SAGD: Spectrally Anisotropic Gaussian Diffusion (arXiv 2510.09660)
+
+Ingested SAGD 完整版论文（Scimeca, Jiralerspong, Earnshaw, Hartford, Bengio, 2025），将 workshop 版（2502.10236）的频域噪声控制形式化为各向异性高斯协方差 $\Sigma_w$ 框架。核心理论贡献：(1) 推导各向异性 score-$\epsilon$ 关系 $\nabla_{x_t} \log q_{w,t} = -\frac{1}{\sigma_t}\Sigma_w^{-1}\epsilon_\theta$；(2) 证明 $\Sigma_w \succ 0$ 时 $t \to 0$ score 收敛到真实数据 score；(3) rank-deficient $\Sigma_w$ 下 projected score 的选择性忽略理论。提出 plw-SAGD（幂律加权）和 bpm-SAGD（带通掩码）两种算子。ImageNet-1k 256×256 DiT 实验 FID 8.68→7.55（↓13%）。Workshop 版标记为 superseded。
+
+创建的页面：[[source-sagd]]
+更新的页面：[[source-2502-10236]]（superseded），[[frequency-diffusion]]，[[frequency-based-noise-control]]，[[inductive-bias-shaping]]，[[two-band-mixture-noise]]，[[index]]，[[log]]
+
 ## [2026-05-09] ingest | Elucidating the SNR-t Bias of Diffusion Probabilistic Models (CVPR 2026)
 
 Ingested Yu et al. (AMAP Alibaba Group & Lanzhou University, CVPR 2026). 论文识别并理论证明了扩散模型中的 SNR-t Bias——推理阶段预测样本 SNR 与时间步之间的错配。核心贡献：(1) 通过滑动窗口实验发现 Key Finding 1（低 SNR → 高估噪声预测）和 Key Finding 2（逆过程 SNR 系统性低于前向过程）；(2) 提出更准确的重建样本假设 $x_\theta^0 = \gamma_t x_0 + \phi_t \epsilon_t$（修复了此前 $x_\theta^0 = x_0 + \phi_t \epsilon_t$ 与方差恒等式的矛盾），严格证明逆过程 SNR 始终低于前向过程 (Theorem 5.1)；(3) 提出 DCW 方法，在小波域对各频率子带做差分校正，用 $\sigma_t$ 动态调度低/高频校正系数。实验覆盖 9 种模型 (IDDPM/ADM/DDIM/A-DPM/EDM/PFGM++/FLUX/Qwen-Image/DiT)、4 个数据集、多种采样步数，FID 降幅最高 42.9%，计算开销仅 0.08%~0.47%。详细数学推导记录在 source-summary 页面 (>100 行)。

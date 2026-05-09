@@ -7,8 +7,8 @@ tags:
   - noise-schedule
 created: 2026-05-09
 last_updated: 2026-05-09
-source_count: 1
-confidence: medium
+source_count: 2
+confidence: high
 status: active
 ---
 
@@ -117,7 +117,9 @@ $$b_l = a_c,\quad a_h = b_c$$
 
 - [[frequency-diffusion]] — 频域扩散
 - [[frequency-based-noise-control]] — 频域噪声控制
+- [[source-sagd]] — SAGD 完整版论文（bpm-SAGD 是其正式化）
 
 ## 引用
 
 [^src-2502-10236]: [[source-2502-10236]]
+[^src-sagd]: [[source-sagd]]
