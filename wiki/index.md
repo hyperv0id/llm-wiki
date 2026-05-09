@@ -82,6 +82,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-uniextreme]] — UniExtreme: universal extreme weather forecasting foundation model (arXiv 2025)
 - [[source-ragc-efficient-traffic-forecasting]] — RAGC: Efficient Traffic Forecasting on Large-Scale Road Network by Regularized Adaptive Graph Convolution (arXiv 2026)
 - [[source-2401-08119-specstg]] — SpecSTG: A Fast Spectral Diffusion Framework for Probabilistic Spatio-Temporal Traffic Forecasting (arXiv 2024)
+- [[source-demystify-mamba-linear-attention-2024]] — Demystify Mamba in Vision: A Linear Attention Perspective (NeurIPS 2024)
 
 ## Entities
 - [[sa-bcp]] — SA-BCP, state-adaptive Bayesian conformal prediction (arXiv 2026)
@@ -128,6 +129,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[uniextreme]] — UniExtreme, universal extreme weather forecasting foundation model (arXiv 2025)
 - [[ragc]] — RAGC, regularized adaptive graph convolution for large-scale traffic forecasting (arXiv 2026)
 - [[specstg]] — SpecSTG, spectral diffusion framework for probabilistic STG traffic forecasting (arXiv 2024)
+- [[mamba]] — Mamba, selective state space model reformulated as linear attention variant (NeurIPS 2024)
+- [[mila]] — MILA, Mamba-Inspired Linear Attention model (NeurIPS 2024)
 
 ## Concepts
 - [[conformal-prediction]] — 共形预测，与模型无关的不确定性量化框架
@@ -178,6 +181,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[tweedies-formula]] — Tweedie 公式，加噪数据分数函数与干净数据后验期望的关系
 - [[score-based-generative-models]] — 基于分数的生成模型，通过估计对数密度梯度生成样本
 - [[node-embedding-regularization]] — 节点嵌入正则化，抑制自适应图学习中节点嵌入的过参数化
+- [[linear-attention-unified-framework]] — Mamba ↔ Linear Attention unified formulation with 6 differences identified
 
 ## Techniques
 - [[spectral-graph-wavelet-transform]] — SGWT，谱图小波变换用于图信号的多尺度分解
@@ -281,6 +285,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[residual-difference-mechanism]] — RDM, subtractive residual that suppresses SSE noise via adaptive graph convolution weights
 - [[fast-spectral-graph-convolution]] — Fast Spectral GC, O(KN) Chebyshev graph convolution for Fourier-domain inputs (arXiv 2024)
 - [[spectral-recurrent-encoder]] — SG-GRU, spectral-domain Graph GRU encoder for STG diffusion conditioning (arXiv 2024)
+- [[forget-gate-in-sequential-models]] — forget gate as multiplicative decay on past hidden states, replaceable by positional encoding
+- [[mamba-block-design]] — Mamba's modified block design with swapped sub-blocks and unified normalization
 
 ## Entities
 - [[muon-optimizer]] — Muon, neural network optimizer using Newton-Schulz orthogonalization (2024)

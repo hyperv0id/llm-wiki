@@ -6,9 +6,9 @@ tags:
   - extrapolation
   - theory
 created: 2026-04-28
-last_updated: 2026-04-28
-source_count: 1
-confidence: medium
+last_updated: 2026-05-08
+source_count: 2
+confidence: high
 status: active
 ---
 
@@ -42,6 +42,15 @@ $$A(n) = f(n) \cdot q_i^\top W(n) k_j + b(n)$$
 2. **ALiBi** 通过线性偏置实现衰减，但完全丢失了远距离相关性[^src-vetcha-2026-towards-infinite-length-extrapolation]
 3. **APE** 结合两者优点，通过次线性衰减保留长程依赖[^src-vetcha-2026-towards-infinite-length-extrapolation]
 
+## 与 Mamba 遗忘门的联系
+
+GPE 框架的分解 $A(n) = f(n) \cdot q_i^\top W(n) k_j + b(n)$ 直接解释了 Mamba 遗忘门可被位置编码替代的原因[^src-demystify-mamba-linear-attention-2024]：
+
+- Mamba 的遗忘门 $\prod_{k=j+1}^i \widetilde{A}_k$ 对应于 GPE 中的衰减函数 $f(n)$，其中 $n = i - j$ 为相对距离
+- 遗忘门的输入依赖特性（通过 $\Delta_i$ 调节）对应于 GPE 中可学习的 $f(n)$
+- 这表明遗忘门本质上是一种隐式的位置编码机制，其功能可被显式的位置编码（如 RoPE 的 $W(n)$ 或 ALiBi 的 $b(n)$）替代
+
 ---
 
 [^src-vetcha-2026-towards-infinite-length-extrapolation]: [[source-vetcha-2026-towards-infinite-length-extrapolation]]
+[^src-demystify-mamba-linear-attention-2024]: [[source-demystify-mamba-linear-attention-2024]]

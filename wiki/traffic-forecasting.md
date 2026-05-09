@@ -7,7 +7,7 @@ tags:
   - intelligent-transportation
 created: 2026-04-27
 last_updated: 2026-05-08
-source_count: 12
+source_count: 13
 confidence: high
 status: active
 ---
@@ -57,6 +57,9 @@ Deterministic models only output point estimates, lacking uncertainty quantifica
 - **[[specstg|SpecSTG]]** (arXiv 2024) is the first spectral diffusion framework for probabilistic STG forecasting. It generates the graph Fourier representation of future time series instead of raw sequences, naturally embedding spatial dependencies into the diffusion process. With [[fast-spectral-graph-convolution|Fast Spectral Graph Convolution]] reducing graph convolution complexity from $O(N^2)$ to $O(N)$, SpecSTG achieves up to 8% RMSE improvement and 3.33× training speedup over GCRDD (the most efficient existing diffusion method)[^src-2401-08119-specstg].
 - Other diffusion methods (TimeGrad, GCRDD, DiffSTG, PriSTI) operate in the original domain and treat sensors independently during probabilistic generation, limiting spatial information usage[^src-2401-08119-specstg].
 
+### Mamba / SSM-Based
+Mamba 的选择性状态空间模型也被应用于交通预测。Han et al. (NeurIPS 2024) 的统一框架揭示了 Mamba 的遗忘门 $\widetilde{A}_i$ 在交通场景中对应于空间衰减模式——附近传感器的相关性更强，这与遗忘门的局部偏置特性一致。该框架表明，交通特定的位置编码（如道路距离、转向关系）可替代遗忘门的循环计算，在保持并行性的同时捕获局部空间结构[^src-demystify-mamba-linear-attention-2024]。
+
 ### Foundation Model
 [[most|MoST]] (KDD 2026) is the first multi-modality spatio-temporal foundation model for traffic prediction, enabling zero-shot cross-city generalization using satellite imagery, POI text, and location as background context[^src-most]. Unlike task-specific models, MoST uses an SNR-based [[multi-modality-refinement|modality selector]] to adaptively filter noisy modalities and [[multi-modality-guided-spatial-expert|multi-modality-guided spatial experts]] to capture region-specific local spatial patterns[^src-most]. Its zero-shot performance surpasses most full-shot end-to-end models and the OpenCity foundation model across five datasets[^src-most].
 
@@ -89,3 +92,4 @@ The XTraffic benchmark provides incident-aligned traffic datasets for California
 [^src-most]: [[source-most]]
 [^src-ragc-efficient-traffic-forecasting]: [[source-ragc-efficient-traffic-forecasting]]
 [^src-2401-08119-specstg]: [[source-2401-08119-specstg]]
+[^src-demystify-mamba-linear-attention-2024]: [[source-demystify-mamba-linear-attention-2024]]

@@ -11,6 +11,13 @@ tags:
 
 Chronological record of all wiki activity.
 
+## [2026-05-08] ingest | Demystify Mamba in Vision: A Linear Attention Perspective (NeurIPS 2024)
+
+Ingested Han et al. (Tsinghua & Alibaba, NeurIPS 2024) paper that unifies Mamba and linear attention within a single framework, identifying 6 key differences. Created MILA architecture page and supporting technique/concept pages. Updated 4 existing pages with cross-references.
+
+创建的页面：[[source-demystify-mamba-linear-attention-2024]], [[mamba]], [[mila]], [[linear-attention-unified-framework]], [[forget-gate-in-sequential-models]], [[mamba-block-design]]
+更新的页面：[[linear-attention-bias]], [[generalized-positional-encoding-framework]], [[traffic-forecasting]], [[glu-gated-linear-unit]], [[index]], [[log]]
+
 ## [2026-05-08] ingest | SpecSTG: A Fast Spectral Diffusion Framework for Probabilistic Spatio-Temporal Traffic Forecasting
 
 Ingest arXiv:2401.08119v3 (Lin, Shi, Han & Gao, 2024)。SpecSTG 是首个在图谱域执行扩散过程的概率时空图预测框架，通过生成图傅里叶表示而非原始序列来利用空间依赖关系，实现 8% RMSE 提升和 3.33× 训练加速。

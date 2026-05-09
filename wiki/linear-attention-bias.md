@@ -6,8 +6,8 @@ tags:
   - attention
   - position-encoding
 created: 2026-04-28
-last_updated: 2026-04-28
-source_count: 2
+last_updated: 2026-05-08
+source_count: 3
 confidence: high
 status: active
 ---
@@ -66,7 +66,16 @@ attention_scores = attention_scores + bias
 - 偏置与查询向量无关，导致梯度不携带位置信息（缺乏 [[gradient-positional-sensitivity|GPS]]）[^src-vetcha-2026-towards-infinite-length-extrapolation]
 - [[adaptive-positional-encoding|APE]] 通过次线性衰减（log + √|n|）改进此问题[^src-vetcha-2026-towards-infinite-length-extrapolation]
 
+## 与 Mamba 遗忘门的关系
+
+Mamba 的遗忘门 $\widetilde{A}_i = \text{diag}(\exp(\Delta_i A))$ 与 ALiBi 的线性偏置在功能上相似——两者都引入距离依赖的注意力衰减。但存在关键差异[^src-demystify-mamba-linear-attention-2024]：
+
+- **ALiBi** 是加性偏置，固定不可学习，衰减与距离成线性关系
+- **Mamba 遗忘门** 是乘性衰减，输入依赖（通过 $\Delta_i$ 调节），衰减呈指数形式
+- Han et al. (NeurIPS 2024) 证明遗忘门的局部偏置功能可通过位置编码（如 LePE、CPE、RoPE）替代，而 ALiBi 的线性偏置也可视为一种更简单的固定衰减形式[^src-demystify-mamba-linear-attention-2024]
+
 ## 引用
 
 [^src-alibi]: [[source-alibi]]
 [^src-vetcha-2026-towards-infinite-length-extrapolation]: [[source-vetcha-2026-towards-infinite-length-extrapolation]]
+[^src-demystify-mamba-linear-attention-2024]: [[source-demystify-mamba-linear-attention-2024]]
