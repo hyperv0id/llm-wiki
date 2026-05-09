@@ -8,7 +8,7 @@ tags:
   - score-based
 created: 2026-04-28
 last_updated: 2026-05-09
-source_count: 12
+source_count: 13
 confidence: high
 status: active
 ---
@@ -138,6 +138,8 @@ $$\boldsymbol{\epsilon} \xrightarrow{\mathcal{F}} \mathbf{N}_{\text{freq}} \xrig
 - [[frequency-diffusion]] — 频域扩散，频域噪声控制的具体技术实现
 - [[inductive-bias-shaping]] — 归纳偏置塑造，显式引导模型学习特定方面
 - [[freqflow]] — FreqFlow，频率感知流匹配，通过双分支架构显式建模频率成分（2026）
+- [[snr-t-bias]] — SNR-t Bias，扩散模型推理阶段的信噪比-时间步错配偏置（CVPR 2026）
+- [[dcw]] — DCW，小波域差分校正方法，缓解 SNR-t Bias 的无需训练方法
 - [[frequency-aware-conditioning]] — 频率感知条件化概念
 - [[diffusion-models]] — A broader overview of diffusion models covering DDPM, SMLD, SDE unification, and applications
 

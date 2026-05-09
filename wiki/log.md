@@ -2,7 +2,7 @@
 title: Log
 type: concept
 created: 2026-04-26
-last_updated: 2026-05-08
+last_updated: 2026-05-09
 tags:
   - meta
 ---
@@ -10,6 +10,13 @@ tags:
 # Wiki Log
 
 Chronological record of all wiki activity.
+
+## [2026-05-09] ingest | Elucidating the SNR-t Bias of Diffusion Probabilistic Models (CVPR 2026)
+
+Ingested Yu et al. (AMAP Alibaba Group & Lanzhou University, CVPR 2026). 论文识别并理论证明了扩散模型中的 SNR-t Bias——推理阶段预测样本 SNR 与时间步之间的错配。核心贡献：(1) 通过滑动窗口实验发现 Key Finding 1（低 SNR → 高估噪声预测）和 Key Finding 2（逆过程 SNR 系统性低于前向过程）；(2) 提出更准确的重建样本假设 $x_\theta^0 = \gamma_t x_0 + \phi_t \epsilon_t$（修复了此前 $x_\theta^0 = x_0 + \phi_t \epsilon_t$ 与方差恒等式的矛盾），严格证明逆过程 SNR 始终低于前向过程 (Theorem 5.1)；(3) 提出 DCW 方法，在小波域对各频率子带做差分校正，用 $\sigma_t$ 动态调度低/高频校正系数。实验覆盖 9 种模型 (IDDPM/ADM/DDIM/A-DPM/EDM/PFGM++/FLUX/Qwen-Image/DiT)、4 个数据集、多种采样步数，FID 降幅最高 42.9%，计算开销仅 0.08%~0.47%。详细数学推导记录在 source-summary 页面 (>100 行)。
+
+创建的页面：[[source-snr-t-bias]], [[snr-t-bias]], [[dcw]]
+更新的页面：[[diffusion-model]], [[tweedies-formula]], [[index]], [[log]]
 
 ## [2026-05-09] ingest | FreqFlow: Frequency-Aware Flow Matching (arXiv 2026)
 

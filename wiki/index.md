@@ -84,6 +84,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-2401-08119-specstg]] — SpecSTG: A Fast Spectral Diffusion Framework for Probabilistic Spatio-Temporal Traffic Forecasting (arXiv 2024)
 - [[source-demystify-mamba-linear-attention-2024]] — Demystify Mamba in Vision: A Linear Attention Perspective (NeurIPS 2024)
 - [[source-2502-10236]] — Shaping Inductive Bias in Diffusion Models through Frequency-Based Noise Control (ICLR 2025 Workshop)
+- [[source-snr-t-bias]] — Elucidating the SNR-t Bias of Diffusion Probabilistic Models (Yu et al., CVPR 2026, AMAP Alibaba + LZU)
 
 ## Entities
 - [[sa-bcp]] — SA-BCP, state-adaptive Bayesian conformal prediction (arXiv 2026)
@@ -187,6 +188,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[freqflow]] — FreqFlow, frequency-aware flow matching with dual-branch architecture (arXiv 2026)
 - [[frequency-aware-conditioning]] — 频率感知条件化，显式利用频域信息作为生成模型条件信号的范式
 - [[inductive-bias-shaping]] — 归纳偏置塑造，显式引导模型学习数据分布特定方面
+- [[snr-t-bias]] — SNR-t Bias，扩散模型推理阶段的信噪比-时间步错配偏置 (CVPR 2026)
 
 ## Techniques
 - [[spectral-graph-wavelet-transform]] — SGWT，谱图小波变换用于图信号的多尺度分解
@@ -293,6 +295,12 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[forget-gate-in-sequential-models]] — forget gate as multiplicative decay on past hidden states, replaceable by positional encoding
 - [[mamba-block-design]] — Mamba's modified block design with swapped sub-blocks and unified normalization
 - [[two-band-mixture-noise]] — 两频段混合噪声，频域扩散中低频+高频噪声的线性组合方案 (ICLR 2025 Workshop)
+
+## Techniques (continued)
+- [[dcw]] — DCW，小波域差分校正，缓解扩散模型 SNR-t Bias 的即插即用方法 (CVPR 2026)
+
+## Concepts (continued)
+- [[snr-t-bias]] — SNR-t Bias，扩散模型推理阶段的信噪比-时间步错配偏置 (CVPR 2026)
 
 ## Entities
 - [[muon-optimizer]] — Muon, neural network optimizer using Newton-Schulz orthogonalization (2024)

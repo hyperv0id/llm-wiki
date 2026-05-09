@@ -6,8 +6,8 @@ tags:
   - score-function
   - diffusion-model
 created: 2026-05-04
-last_updated: 2026-05-04
-source_count: 0
+last_updated: 2026-05-09
+source_count: 1
 confidence: medium
 status: active
 ---
@@ -20,7 +20,12 @@ $$\mathbb{E}[\mathbf{x} | \mathbf{x}_t] = \mathbf{x}_t + \sigma_t^2 \nabla_{\mat
 
 在[[diffusion-model|扩散模型]]中，Tweedie 公式建立了加噪数据 $\mathbf{x}_t$ 的[[score-function|分数函数]]与干净数据 $\mathbf{x}_0$ 的 MMSE 估计之间的联系，是去噪得分匹配（DSM）和 DDPM 简化训练目标的理论基础。
 
+在 [[snr-t-bias|SNR-t Bias]] 的理论证明中，Tweedie 公式被用于建立重建样本 $x_\theta^0(x_t, t)$ 作为后验均值估计的依据，进而推导出逆过程 SNR 的解析形式。[^src-2604.16044]
+
 ## Related Pages
 - [[score-function]]
 - [[diffusion-model]]
 - [[ddpm-simplified-training-objective]]
+- [[snr-t-bias]]
+
+[^src-2604.16044]: [[source-snr-t-bias]]
