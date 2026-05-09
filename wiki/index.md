@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-05-08
+last_updated: 2026-05-09
 tags:
   - meta
 ---
@@ -83,6 +83,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-ragc-efficient-traffic-forecasting]] — RAGC: Efficient Traffic Forecasting on Large-Scale Road Network by Regularized Adaptive Graph Convolution (arXiv 2026)
 - [[source-2401-08119-specstg]] — SpecSTG: A Fast Spectral Diffusion Framework for Probabilistic Spatio-Temporal Traffic Forecasting (arXiv 2024)
 - [[source-demystify-mamba-linear-attention-2024]] — Demystify Mamba in Vision: A Linear Attention Perspective (NeurIPS 2024)
+- [[source-2502-10236]] — Shaping Inductive Bias in Diffusion Models through Frequency-Based Noise Control (ICLR 2025 Workshop)
 
 ## Entities
 - [[sa-bcp]] — SA-BCP, state-adaptive Bayesian conformal prediction (arXiv 2026)
@@ -182,6 +183,9 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[score-based-generative-models]] — 基于分数的生成模型，通过估计对数密度梯度生成样本
 - [[node-embedding-regularization]] — 节点嵌入正则化，抑制自适应图学习中节点嵌入的过参数化
 - [[linear-attention-unified-framework]] — Mamba ↔ Linear Attention unified formulation with 6 differences identified
+- [[frequency-based-noise-control]] — 频域噪声控制，通过操控噪声频谱分布显式设置扩散模型归纳偏置 (ICLR 2025 Workshop)
+- [[frequency-diffusion]] — 频域扩散，频域噪声控制的具体技术实现 (ICLR 2025 Workshop)
+- [[inductive-bias-shaping]] — 归纳偏置塑造，显式引导模型学习数据分布特定方面
 
 ## Techniques
 - [[spectral-graph-wavelet-transform]] — SGWT，谱图小波变换用于图信号的多尺度分解
@@ -287,6 +291,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[spectral-recurrent-encoder]] — SG-GRU, spectral-domain Graph GRU encoder for STG diffusion conditioning (arXiv 2024)
 - [[forget-gate-in-sequential-models]] — forget gate as multiplicative decay on past hidden states, replaceable by positional encoding
 - [[mamba-block-design]] — Mamba's modified block design with swapped sub-blocks and unified normalization
+- [[two-band-mixture-noise]] — 两频段混合噪声，频域扩散中低频+高频噪声的线性组合方案 (ICLR 2025 Workshop)
 
 ## Entities
 - [[muon-optimizer]] — Muon, neural network optimizer using Newton-Schulz orthogonalization (2024)

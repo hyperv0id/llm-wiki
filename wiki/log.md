@@ -11,6 +11,13 @@ tags:
 
 Chronological record of all wiki activity.
 
+## [2026-05-09] ingest | Shaping Inductive Bias in Diffusion Models through Frequency-Based Noise Control (ICLR 2025 Workshop)
+
+Ingested Jiralerspong, Earnshaw, Hartford, Bengio & Scimeca (Mila/Valence Labs, 2025) 论文，提出频域扩散方法——通过在前向加噪过程中对噪声的频谱进行目的性操控来显式塑造扩散模型的归纳偏置。核心假设：前向加噪中被抹除的信息恰好是去噪模型有压力学习的信息。提出三种频域加权方式（幂律、指数衰减、带通混合），实验验证5个数据集中3个显著受益，并展示选择性忽略被噪声破坏频段的能力。
+
+创建的页面：[[source-2502-10236]], [[frequency-diffusion]], [[frequency-based-noise-control]], [[inductive-bias-shaping]], [[two-band-mixture-noise]]
+更新的页面：[[diffusion-model]], [[edm-design-space]], [[index]], [[log]]
+
 ## [2026-05-08] ingest | Demystify Mamba in Vision: A Linear Attention Perspective (NeurIPS 2024)
 
 Ingested Han et al. (Tsinghua & Alibaba, NeurIPS 2024) paper that unifies Mamba and linear attention within a single framework, identifying 6 key differences. Created MILA architecture page and supporting technique/concept pages. Updated 4 existing pages with cross-references.

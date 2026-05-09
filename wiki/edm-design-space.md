@@ -7,8 +7,8 @@ tags:
   - sampling
   - training
 created: 2026-04-28
-last_updated: 2026-04-28
-source_count: 1
+last_updated: 2026-05-09
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -40,6 +40,10 @@ $$dx = \left[ \frac{\dot{s}(t)}{s(t)} x - \frac{s(t)^2 \dot{\sigma}(t)}{\sigma(t
 
 EDM 的核心观点是：上述各设计选择基本相互独立[^src-edm]，可以单独改进某一组件而不影响其他组件。这与此前将多个选择打包在一起的"紧耦合"设计形成对比。
 
+## 与频域噪声控制的关系
+
+[[frequency-based-noise-control|频域噪声控制]]与 EDM 设计空间是**正交**的：EDM 调整噪声量级 $\sigma(t)$ 和信号缩放 $s(t)$ 的数值，而频域噪声控制调整噪声在频域中的**形状**。两者可以组合使用——在 EDM 框架内对每个噪声水平 $\sigma$ 使用不同频域加权 $w_\sigma(\mathbf{f})$，实现噪声量级与频谱形状的独立调控。[^src-2502-10236]
+
 ## 链接
 
 - [[edm]] — EDM 论文
@@ -48,6 +52,8 @@ EDM 的核心观点是：上述各设计选择基本相互独立[^src-edm]，可
 - [[ncsn]] — NCSN
 - [[score-based-sde]] — Score-Based SDE
 - [[heun-sampler]] — Heun 采样器
-- [[edm-preconditioning]] — 预处理技术
+- [[ edm-preconditioning]] — 预处理技术
+- [[frequency-based-noise-control]] — 频域噪声控制（正交设计维度）
 
 [^src-edm]: [[source-edm]]
+[^src-2502-10236]: [[source-2502-10236]]

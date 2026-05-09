@@ -7,8 +7,8 @@ tags:
   - vae
   - score-based
 created: 2026-04-28
-last_updated: 2026-05-04
-source_count: 10
+last_updated: 2026-05-09
+source_count: 11
 confidence: high
 status: active
 ---
@@ -95,6 +95,24 @@ $$
   $$
   其中 $w \geq 0$ 控制引导强度。无分类器引导是目前最广泛使用的条件生成方法。[^src-understanding-diffusion-models]
 
+## 前向过程的归纳偏置塑造
+
+标准扩散模型的前向过程使用各向同性白噪声 $\boldsymbol{\epsilon} \sim \mathcal{N}(0, \mathbf{I})$，对所有频率成分均匀施加噪声：
+
+$$\mathbf{x}_t = \sqrt{\alpha_t}\,\mathbf{x}_{t-1} + \sqrt{1-\alpha_t}\,\boldsymbol{\epsilon}$$
+
+Jiralerspong 等人（2025）提出[[frequency-based-noise-control|频域噪声控制]]方法，将白噪声替换为频域塑形噪声 $\boldsymbol{\epsilon}^{(w)}$：[^src-2502-10236]
+
+$$\mathbf{x}_t = \sqrt{\alpha_t}\,\mathbf{x}_{t-1} + \sqrt{1-\alpha_t}\,\boldsymbol{\epsilon}^{(w)}$$
+
+频域塑形流程为：
+
+$$\boldsymbol{\epsilon} \xrightarrow{\mathcal{F}} \mathbf{N}_{\text{freq}} \xrightarrow{w(\mathbf{f})} \mathbf{N}_{\text{freq}}^{(w)} \xrightarrow{\mathcal{F}^{-1}} \boldsymbol{\epsilon}^{(w)}$$
+
+其中 $\mathbf{N}_{\text{freq}} = \mathbf{N}_{\text{real}} + i\mathbf{N}_{\text{imag}}$ 为复高斯随机场，$w(\mathbf{f})$ 为频域加权函数。由于高斯分布的傅里叶变换仍是高斯，频域加权保持高斯假设不变。
+
+核心洞见：**前向加噪过程中被抹除的信息，恰好是去噪模型有压力去学习的信息**。因此通过选择性强调/抑制/跳过特定频段的噪声，可以引导模型聚焦于数据分布的特定方面。实验在 5 个数据集（MNIST, CIFAR-10, DomainNet-Quickdraw, WikiArt, CelebA）中的 3 个上取得了 FID/KID 的显著改善，并展示了选择性忽略被噪声破坏频段的能力。[^src-2502-10236]
+
 ## 局限性
 
 扩散模型存在以下主要局限：[^src-understanding-diffusion-models]
@@ -116,6 +134,9 @@ $$
 ## 相关概念
 
 - [[reparameterization-trick]] — 重参数化技巧，前向加噪过程的可微性保证
+- [[frequency-based-noise-control]] — 频域噪声控制，通过操控噪声频谱塑造归纳偏置
+- [[frequency-diffusion]] — 频域扩散，频域噪声控制的具体技术实现
+- [[inductive-bias-shaping]] — 归纳偏置塑造，显式引导模型学习特定方面
 - [[diffusion-models]] — A broader overview of diffusion models covering DDPM, SMLD, SDE unification, and applications
 
 ## 引用
@@ -130,3 +151,4 @@ $$
 [^src-rombach-ldm-2022]: [[source-rombach-ldm-2022]]
 [^src-understanding-diffusion-models]: [[source-understanding-diffusion-models]]
 [^src-bluuuuue-reparameterization-trick]: [[source-bluuuuue-reparameterization-trick]]
+[^src-2502-10236]: [[source-2502-10236]]
