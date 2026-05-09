@@ -9,8 +9,8 @@ tags:
   - meta-ai
   - neurips-2023
 created: 2026-04-28
-last_updated: 2026-04-28
-source_count: 1
+last_updated: 2026-05-09
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -404,10 +404,12 @@ $$
 - [[diffusion-model]] — 扩散模型
 - [[glow]] — Glow 流模型
 - [[optimal-transport]] — 最优传输理论
-- [[probability-flow-ode]] — ��率流 ODE
+- [[probability-flow-ode]] — 概率流 ODE
+- [[freqflow]] — FreqFlow，频率感知流匹配，引入双分支架构和双域监督
+- [[frequency-aware-conditioning]] — 频率感知条件化，FreqFlow 的核心设计概念
+- [[aurora]] — Aurora 使用 Prototype-Guided Flow Matching 进行时间序列概率预测
+- [[prototype-guided-flow-matching]] — Aurora 的原型引导流匹配技术
 
 ## 引用
 
 [^src-flow-matching]: [[source-flow-matching]]
-- [[aurora]] — Aurora 使用 Prototype-Guided Flow Matching 进行时间序列概率预测
-- [[prototype-guided-flow-matching]] — Aurora 的原型引导流匹配技术

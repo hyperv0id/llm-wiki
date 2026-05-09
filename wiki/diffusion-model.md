@@ -8,7 +8,7 @@ tags:
   - score-based
 created: 2026-04-28
 last_updated: 2026-05-09
-source_count: 11
+source_count: 12
 confidence: high
 status: active
 ---
@@ -137,6 +137,8 @@ $$\boldsymbol{\epsilon} \xrightarrow{\mathcal{F}} \mathbf{N}_{\text{freq}} \xrig
 - [[frequency-based-noise-control]] — 频域噪声控制，通过操控噪声频谱塑造归纳偏置
 - [[frequency-diffusion]] — 频域扩散，频域噪声控制的具体技术实现
 - [[inductive-bias-shaping]] — 归纳偏置塑造，显式引导模型学习特定方面
+- [[freqflow]] — FreqFlow，频率感知流匹配，通过双分支架构显式建模频率成分（2026）
+- [[frequency-aware-conditioning]] — 频率感知条件化概念
 - [[diffusion-models]] — A broader overview of diffusion models covering DDPM, SMLD, SDE unification, and applications
 
 ## 引用

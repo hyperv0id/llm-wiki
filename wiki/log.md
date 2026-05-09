@@ -11,6 +11,13 @@ tags:
 
 Chronological record of all wiki activity.
 
+## [2026-05-09] ingest | FreqFlow: Frequency-Aware Flow Matching (arXiv 2026)
+
+Ingested FreqFlow paper (arXiv:2604.15521) by Ren et al. (JHU & ByteDance, 2026). FreqFlow proposes a frequency-aware flow matching framework with a two-branch architecture: a frequency branch that separately processes low- and high-frequency components via DFT/Gaussian filtering, and a spatial branch (ConvNeXt) guided by frequency features. Key innovations: (1) adaptive time-dependent frequency integration $\omega_t = \sigma(\text{MLP}(h_t^L, h_t^H, t))$; (2) dual-domain supervision combining spatial L2 loss and frequency FFT loss; (3) unified frequency branch (ViT) outperforming separate networks. Achieves SOTA FID 1.38 on ImageNet-256, surpassing DiT (+0.79) and SiT (+0.58). Detailed mathematical derivations recorded in technique page (>100 lines).
+
+创建的页面：[[source-freqflow]], [[freqflow]], [[frequency-aware-conditioning]]
+更新的页面：[[flow-matching]], [[diffusion-model]], [[frequency-based-noise-control]], [[frequency-diffusion]], [[index]], [[log]]
+
 ## [2026-05-09] ingest | Shaping Inductive Bias in Diffusion Models through Frequency-Based Noise Control (ICLR 2025 Workshop)
 
 Ingested Jiralerspong, Earnshaw, Hartford, Bengio & Scimeca (Mila/Valence Labs, 2025) 论文，提出频域扩散方法——通过在前向加噪过程中对噪声的频谱进行目的性操控来显式塑造扩散模型的归纳偏置。核心假设：前向加噪中被抹除的信息恰好是去噪模型有压力学习的信息。提出三种频域加权方式（幂律、指数衰减、带通混合），实验验证5个数据集中3个显著受益，并展示选择性忽略被噪声破坏频段的能力。

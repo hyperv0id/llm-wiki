@@ -52,7 +52,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-dpm-solver]] — DPM-Solver: Fast ODE solver for diffusion models (NeurIPS 2022)
 - [[source-consistency-models]] — Consistency Models: one-step generation (ICML 2023)
 - [[source-glow]] — Glow: Generative Flow with Invertible 1×1 Convolutions (NeurIPS 2018)
-- [[source-flow-matching]] — Flow Matching: simulation-free CNF training (NeurIPS 2023)
+- [[source-freqflow]] — FreqFlow: Frequency-Aware Flow Matching for High-Quality Image Generation (arXiv 2026)
 - [[source-shortcut-models]] — Shortcut Models: one-step diffusion via self-consistency (arXiv 2025)
 - [[source-alibi]] — ALiBi: attention with linear biases enables input length extrapolation (ICLR 2022)
 - [[source-yarn]] — YaRN: efficient context window extension of large language models (2023)
@@ -184,7 +184,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[node-embedding-regularization]] — 节点嵌入正则化，抑制自适应图学习中节点嵌入的过参数化
 - [[linear-attention-unified-framework]] — Mamba ↔ Linear Attention unified formulation with 6 differences identified
 - [[frequency-based-noise-control]] — 频域噪声控制，通过操控噪声频谱分布显式设置扩散模型归纳偏置 (ICLR 2025 Workshop)
-- [[frequency-diffusion]] — 频域扩散，频域噪声控制的具体技术实现 (ICLR 2025 Workshop)
+- [[freqflow]] — FreqFlow, frequency-aware flow matching with dual-branch architecture (arXiv 2026)
+- [[frequency-aware-conditioning]] — 频率感知条件化，显式利用频域信息作为生成模型条件信号的范式
 - [[inductive-bias-shaping]] — 归纳偏置塑造，显式引导模型学习数据分布特定方面
 
 ## Techniques

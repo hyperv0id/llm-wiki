@@ -8,7 +8,7 @@ tags:
   - noise-schedule
 created: 2026-05-09
 last_updated: 2026-05-09
-source_count: 1
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -179,6 +179,8 @@ $$b_l = a_c,\quad a_h = b_c$$
 - [[frequency-based-noise-control]] — 频域噪声控制概念
 - [[inductive-bias-shaping]] — 归纳偏置塑造
 - [[two-band-mixture-noise]] — 两频段混合噪声参数化
+- [[freqflow]] — FreqFlow，频率感知流匹配，通过双分支架构在流匹配中显式建模频率成分（2026）
+- [[frequency-aware-conditioning]] — 频率感知条件化概念
 
 ## 引用
 
