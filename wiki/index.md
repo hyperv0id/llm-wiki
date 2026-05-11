@@ -89,6 +89,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-sagd]] — SAGD: Steering Diffusion via Spectrally Anisotropic Forward Noise (arXiv 2025, 完整版)
 - [[source-spectral-bias-learning-dynamics]] — An Analytical Theory of Spectral Bias in the Learning Dynamics of Diffusion Models (NeurIPS 2025, Harvard)
 - [[source-snr-t-bias]] — Elucidating the SNR-t Bias of Diffusion Probabilistic Models (Yu et al., CVPR 2026, AMAP Alibaba + LZU)
+- [[source-yang-gsli-2025]] — GSLI: Graph Structure Learning for Spatial-Temporal Imputation Adapting to Node and Feature Scales (Yang et al., AAAI 2025)
 - [[source-equal-snr]] — A Fourier Space Perspective on Diffusion Models: EqualSNR frequency-SNR analysis (Microsoft Research, 2025)
 
 ## Entities
@@ -140,6 +141,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[imputeformer]] — ImputeFormer, low-rankness-induced Transformer with projected/embedded attention and Fourier sparsity loss for generalizable spatiotemporal imputation (KDD 2024)
 - [[mamba]] — Mamba, selective state space model reformulated as linear attention variant (NeurIPS 2024)
 - [[mila]] — MILA, Mamba-Inspired Linear Attention model (NeurIPS 2024)
+- [[gsli]] — GSLI, multi-scale graph structure learning for spatiotemporal imputation with feature heterogeneity (AAAI 2025)
 
 ## Concepts
 - [[conformal-prediction]] — 共形预测，与模型无关的不确定性量化框架
@@ -305,6 +307,11 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[forget-gate-in-sequential-models]] — forget gate as multiplicative decay on past hidden states, replaceable by positional encoding
 - [[mamba-block-design]] — Mamba's modified block design with swapped sub-blocks and unified normalization
 - [[two-band-mixture-noise]] — 两频段混合噪声，频域扩散中低频+高频噪声的线性组合方案 (ICLR 2025 Workshop)
+
+## Techniques (continued)
+- [[node-scale-graph-structure-learning]] — 节点尺度图结构学习，为每个特征独立学习全局元图以解决特征异质性 (AAAI 2025)
+- [[feature-scale-graph-structure-learning]] — 特征尺度图结构学习，学习跨特征的共同空间相关性元图 (AAAI 2025)
+- [[prominence-modeling-gsl]] — 显著度建模，在图结构学习中为节点/特征分配重要性权重 (AAAI 2025)
 
 ## Techniques (continued)
 - [[dcw]] — DCW，小波域差分校正，缓解扩散模型 SNR-t Bias 的即插即用方法 (CVPR 2026)

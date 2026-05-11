@@ -11,6 +11,13 @@ tags:
 
 Chronological record of all wiki activity.
 
+## [2026-05-11] ingest | GSLI: Graph Structure Learning for Spatial-Temporal Imputation (AAAI 2025)
+
+Ingested Yang et al. (Nankai University & HIT Shenzhen, AAAI 2025) paper proposing multi-scale graph structure learning for spatial-temporal imputation. GSLI addresses feature heterogeneity and cross-feature spatial dependencies through three innovations: (1) Node-scale graph structure learning — independent meta-graphs per feature with prominence modeling, solving the problem that standard graph convolution cannot handle different spatial correlations for different features (Propositions 1 & 2); (2) Feature-scale graph structure learning — meta-feature graph capturing common spatial correlations across features within all stations; (3) Cross-feature and cross-temporal representation learning via Transformer self-attention. Evaluated on 6 real-world incomplete datasets with consistent superiority across MCAR/MAR/MNAR mechanisms.
+
+创建的页面：[[source-yang-gsli-2025]], [[gsli]], [[node-scale-graph-structure-learning]], [[feature-scale-graph-structure-learning]], [[prominence-modeling-gsl]]
+更新的页面：[[imputeformer]], [[cofill]], [[traffic-forecasting]], [[index]], [[log]]
+
 ## [2026-05-11] maintenance | ImputeFormer 精读增强
 
 基于微信公众号论文精读文章补充了 ImputeFormer 页面内容：

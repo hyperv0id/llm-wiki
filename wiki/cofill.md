@@ -8,7 +8,7 @@ tags:
   - dual-stream-architecture
 created: 2026-05-11
 last_updated: 2026-05-11
-source_count: 1
+source_count: 2
 confidence: high
 status: active
 ---
@@ -69,6 +69,7 @@ CoFILL 使用两种预处理策略生成条件输入：
 | SpecSTG | 谱域 | 否 | 谱域嵌入 |
 | **CoFILL** | 原始域 | **双流 Cross-Attention** | **TCN + GCN** |
 | **ImputeFormer** | 原始域 | 投影+嵌入Attention | 隐式（节点嵌入） |
+| **GSLI** | 原始域 | 跨特征+跨时间 Transformer | **双尺度学习图**（节点+特征） |
 
 ## 局限性
 
@@ -96,8 +97,10 @@ https://github.com/joyHJL/CoFILL
 
 - [[diffusion-model]] — 扩散模型理论基础
 - [[imputeformer]] — ImputeFormer，低秩引导的 Transformer 时空填补
+- [[gsli]] — GSLI，多尺度图结构学习填补（AAAI 2025，处理特征异质性）
 - [[spatio-temporal-foundation-model]] — 时空基础模型
 - [[generative-time-series-forecasting]] — 生成式时间序列预测
 - [[traffic-forecasting]] — 交通预测
 
 [^src-cofill]: [[source-cofill-spatiotemporal-imputation]]
+[^src-yang-gsli-2025]: [[source-yang-gsli-2025]]

@@ -9,7 +9,7 @@ tags:
   - kdd-2024
 created: 2026-05-11
 last_updated: 2026-05-11
-source_count: 1
+source_count: 2
 confidence: high
 status: active
 ---
@@ -158,7 +158,9 @@ L = L_recon + λ · L_FIL
 - [[embedded-attention]] — 空间嵌入注意力机制
 - [[fourier-imputation-loss]] — 傅里叶填补损失
 - [[cofill]] — CoFILL 时空填补扩散模型
+- [[gsli]] — GSLI 多尺度图结构学习填补（AAAI 2025，处理特征异质性）
 - [[traffic-forecasting]] — 交通预测
 - [[generative-time-series-forecasting]] — 生成式时序预测
 
 [^src-2312-01728]: [[source-2312-01728]]
+[^src-yang-gsli-2025]: [[source-yang-gsli-2025]]
