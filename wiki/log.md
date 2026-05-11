@@ -11,6 +11,13 @@ tags:
 
 Chronological record of all wiki activity.
 
+## [2026-05-11] ingest | CoFILL: Spatiotemporal Data Imputation by Conditional Diffusion (arXiv 2025)
+
+Ingested CoFILL paper by He et al. (Hebei University of Technology, Tiangong University, University of Southern Queensland). CoFILL 是一种用于时空数据填补的新型条件扩散框架，核心创新包括：(1) 非递归扩散结构解决误差累积问题；(2) 双流架构同时处理时域（TCN+GCN）和频域（DCT）特征，通过 Cross-Attention 融合；(3) 双策略预处理（Forward Interpolation + Gaussian Noise）。在 AQI-36、METR-LA、PEMS-BAY 三个数据集上，在 MAE/MSE/CRPS 指标上 12/15 配置达到最优，相比 PriSTI 在 METR-LA Block 场景提升 10.22%。
+
+创建的页面：[[source-cofill-spatiotemporal-imputation]], [[cofill]], [[dual-stream-temporal-frequency-processing]]
+更新的页面：[[generative-time-series-forecasting]], [[spatio-temporal-foundation-model]], [[traffic-forecasting]], [[index]], [[log]]
+
 ## [2026-05-09] ingest | A Fourier Space Perspective on Diffusion Models / EqualSNR (Microsoft Research, 2025)
 
 Ingested arXiv:2505.11278 by Falck et al. (Microsoft Research). 论文从傅里叶空间重写 DDPM 前向过程，给出每频率 SNR 公式 $s_t^{\mathrm{DDPM}}(i)=\bar\alpha_t C_i/(1-\bar\alpha_t)$，说明自然图像等数据的傅里叶功率律会让高频分量更早、更快降 SNR。核心贡献包括：(1) 理论与 KDE 可视化证明高频快速加噪会使反向后验 $q(y_{t-1}\mid y_t)$ 更易偏离单一高斯假设；(2) 提出 EqualSNR，令 $\Sigma_{ii}=cC_i$ 使所有频率等 SNR 加噪，并给出 $C^{-1/2}$ 加权傅里叶损失及其 ELBO 解释；(3) 在 CIFAR-10/CelebA/LSUN Church 上 FID 与 DDPM 大体持平，在高频谱统计与 Dots 高频任务上显著优于 DDPM；(4) FlippedSNR 多次训练失败，提示低频到高频层级可能具有优化价值但非绝对必要。
