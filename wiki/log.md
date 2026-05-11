@@ -2,7 +2,7 @@
 title: Log
 type: concept
 created: 2026-04-26
-last_updated: 2026-05-09
+last_updated: 2026-05-11
 tags:
   - meta
 ---
@@ -10,6 +10,25 @@ tags:
 # Wiki Log
 
 Chronological record of all wiki activity.
+
+## [2026-05-11] maintenance | ImputeFormer 精读增强
+
+基于微信公众号论文精读文章补充了 ImputeFormer 页面内容：
+- 增加设计动机中的频谱可视化证据（图 1：低秩模型 vs 深度模型的奇异值分布差异）
+- 增加相关工作的细化分类（低秩类：TRMF、TiDER；深度类：GRU-D、BRITS、GAIN、PriSTI、CSDI 等）
+- 增加详细的实验结果数据（各数据集 MAE 对比、不同观测率鲁棒性、消融实验具体数值）
+- 增加可解释性发现（频谱分析、t-SNE 空间嵌入、inflow/outflow 可视化、填补结果对比）
+- 增加未来工作方向（多任务学习、大规模预训练、表示学习）
+- 在 source-summary 中补充核心动机（频谱视角）和更完整的消融/鲁棒性数据
+
+更新的页面：[[imputeformer]], [[source-2312-01728]]
+
+## [2026-05-11] ingest | ImputeFormer: Low Rankness-Induced Transformers for Generalizable Spatiotemporal Imputation (KDD 2024)
+
+Downloaded arXiv 2312.01728 PDF and ingested ImputeFormer paper by Nie et al. (Tongji University & Hong Kong Polytechnic University, KDD 2024). ImputeFormer 是一种低秩性引导的 Transformer 时空填补模型，核心创新包括：(1) 时间投影注意力（Projected Attention）通过可学习投影器实现显式低秩分解，复杂度 O(TC)；(2) 空间嵌入注意力（Embedded Attention）利用节点嵌入作为低维代理计算空间相关性，复杂度 O(N·D_emb)；(3) 傅里叶填补损失（Fourier Imputation Loss）基于 DFT 核范数等价性，对填补频谱进行 ℓ1 稀疏正则化。在 10 个基准数据集的点缺失和块缺失场景下均取得 SOTA，训练速度比 SPIN 快 15×。
+
+创建的页面：[[source-2312-01728]], [[imputeformer]], [[projected-attention]], [[embedded-attention]], [[fourier-imputation-loss]]
+更新的页面：[[cofill]], [[index]], [[log]]
 
 ## [2026-05-11] ingest | CoFILL: Spatiotemporal Data Imputation by Conditional Diffusion (arXiv 2025)
 
@@ -108,6 +127,8 @@ Pages updated: [[informer]], [[source-zhou-informer-2021]], [[log]], [[index]] +
 
 Pages updated: [[source-timesnet]], [[timesnet]]
 
+## [2026-05-04] ingest | Informer: Beyond Efficient Transformer for Long Sequence Time-Series Forecasting (AAAI 2021 Best Paper)
+
 Ingested Informer paper from Zotero storage. Informer is the seminal work that pioneered efficient Transformer architectures for LSTF, addressing all three vanilla Transformer bottlenecks simultaneously: $O(L^2)$ computation → $O(L \log L)$ via ProbSparse attention, $O(J \cdot L^2)$ memory → $O((2-\epsilon) L \log L)$ via self-attention distilling, and slow autoregressive decoding → one-forward-pass generative decoder. AAAI 2021 Best Paper. Evaluated on ETT, ECL, and Weather datasets, significantly outperforming ARIMA, Prophet, LSTMa, LSTnet, DeepAR, LogTrans, and Reformer. Updated 10 existing pages (autoformer, fedformer, timesnet, source-autoformer, source-fedformer, source-timesnet, source-frets, source-deep-time-series-survey, source-language-in-the-flow-of-time, periodicity-modeling-in-time-series) with cross-references and Informer citations.
 
 Pages created: [[source-zhou-informer-2021]], [[informer]], [[probsparse-self-attention]], [[generative-style-decoder]], [[lstf]]
@@ -150,7 +171,7 @@ Pages created: [[source-language-in-the-flow-of-time]], [[tats]], [[chronologica
 Pages updated: [[multimodal-time-series-forecasting]], [[vot]], [[chronos]], [[endogenous-text-alignment]], [[fine-grained-time-text-semantic-alignment]], [[aurora]], [[index]], [[log]]
 
 ## [2026-05-03] ingest | Aurora: Towards Universal Generative Multimodal Time Series Forecasting (arXiv 2026)
-Ingested Aurora paper (arXiv:2509.22295) by Wu, Jin, Qiu, Chen, Shu, Yang & Guo. Aurora is the first Multimodal Time Series Foundation Model supporting multimodal inputs (text, image, numerical) and zero-shot inference. Key innovations: (1) Modality-Guided Multi-head Self-Attention — extracts domain knowledge from text/image modalities via tokenization-encoding-distillation and injects it into temporal representation modeling; (2) Prototype-Guided Flow Matching — uses multimodal representations to generate conditions and prototypes for future tokens, enabling generative probabilistic forecasting. Evaluated on 5 benchmarks (TimeMMD, TSFM-Bench, ProbTS, TFB, EPF), achieving SOTA on both unimodal and multimodal scenariosarl. Aurora fills the gap between single-modal TSFMs (TimesFM, Chronos) and end-to-end multimodal supervised models by supporting both multimodal inputs and zero-shot inference.
+Ingested Aurora paper (arXiv:2509.22295) by Wu, Jin, Qiu, Chen, Shu, Yang & Guo. Aurora is the first Multimodal Time Series Foundation Model supporting multimodal inputs (text, image, numerical) and zero-shot inference. Key innovations: (1) Modality-Guided Multi-head Self-Attention — extracts domain knowledge from text/image modalities via tokenization-encoding-distillation and injects it into temporal representation modeling; (2) Prototype-Guided Flow Matching — uses multimodal representations to generate conditions and prototypes for future tokens, enabling generative probabilistic forecasting. Evaluated on 5 benchmarks (TimeMMD, TSFM-Bench, ProbTS, TFB, EPF), achieving SOTA on both unimodal and multimodal scenarios. Aurora fills the gap between single-modal TSFMs (TimesFM, Chronos) and end-to-end multimodal supervised models by supporting both multimodal inputs and zero-shot inference.
 Pages created: [[source-aurora]], [[aurora]], [[modality-guided-self-attention]], [[prototype-guided-flow-matching]], [[generative-time-series-forecasting]]
 Pages updated: [[multimodal-time-series-forecasting]], [[simdiff]], [[most]], [[timesfm]], [[chronos]], [[flow-matching]], [[vot]], [[mindts]], [[index]], [[log]]
 
@@ -288,12 +309,12 @@ Pages created: [[source-yarn]], [[yarn]], [[ntk-aware-interpolation]], [[ntk-by-
 Pages updated: [[index]], [[log]]
 
 ## [2026-04-28] ingest | Long Context, Less Focus: A Scaling Gap in LLMs (Gu et al., 2026)
-Ingested 2026 论文提出 PAPerBench 基准评估长上下文下个性化生成和隐私推理能力揭示了统一的长上下文缩放 gap——随着上下文长度增加，所有模型的个性化与隐私性能均一致下降。理论分析表明 Attention Dilution 机制（注意力按 O(1/n) 衰减）是根本原因。大��型渐进式下降，小模型提前崩溃。
+Ingested 2026 论文提出 PAPerBench 基准评估长上下文下个性化生成和隐私推理能力揭示了统一的长上下文缩放 gap——随着上下文长度增加，所有模型的个性化与隐私性能均一致下降。理论分析表明 Attention Dilution 机制（注意力按 O(1/n) 衰减）是根本原因。大型模型渐进式下降，小模型提前崩溃。
 Pages created: [[source-paperbench]], [[paperbench]], [[long-context-scaling-gap]], [[attention-dilution]], [[decoy-injection]], [[long-context-personalization]], [[privacy-reasoning]]
 Pages updated: [[index]], [[log]]
 
 ## [2026-04-28] ingest | Vetcha 2026: Towards Infinite Length Extrapolation - A Unified Approach
-Ingested 2026 论文提出统一位置编码框架 (GPE)，将注意力分数分解为乘法变换和加性偏置。基于此提出 Adaptive Positional Encoding (APE)，结合自适应频率调制和线性+对数+平方根衰减偏置。理论证明无限上下文外推的四个关键条件：收敛归一化、熵有界性、远距��相关性保持 (LDCP)、梯度位置敏感性 (GPS)。同时发布 LongTinyStories 数据集用于长上下文评估。
+Ingested 2026 论文提出统一位置编码框架 (GPE)，将注意力分数分解为乘法变换和加性偏置。基于此提出 Adaptive Positional Encoding (APE)，结合自适应频率调制和线性+对数+平方根衰减偏置。理论证明无限上下文外推的四个关键条件：收敛归一化、熵有界性、远距离相关性保持 (LDCP)、梯度位置敏感性 (GPS)。同时发布 LongTinyStories 数据集用于长上下文评估。
 Pages created: [[source-vetcha-2026-towards-infinite-length-extrapolation]], [[adaptive-positional-encoding]], [[generalized-positional-encoding-framework]], [[convergent-normalization]], [[entropy-boundedness]], [[long-distance-correlation-preservation]], [[gradient-positional-sensitivity]], [[long-tiny-stories-dataset]]
 Pages updated: [[index]], [[log]]
 
@@ -396,18 +417,3 @@ Pages updated: [[traffic-forecasting]], [[multimodal-time-series-forecasting]], 
 Aurora 是首个多模态时间序列基础模型，支持文本/图像/数值多模态输入和零样本推理。通过 Modality-Guided Self-Attention 注入领域知识，Prototype-Guided Flow Matching 实现生成式概率预测。在 5 个基准上单模态和多模态场景均 SOTA。
 Pages created: [[source-aurora]], [[aurora]], [[modality-guided-self-attention]], [[prototype-guided-flow-matching]], [[generative-time-series-forecasting]]
 Pages updated: [[simdiff]], [[chronos]], [[timesfm]], [[mindts]], [[vot]], [[most]], [[flow-matching]], [[multimodal-time-series-forecasting]], [[index]], [[log]]
-
-## [2026-05-07] ingest | SA-BCP: Optimal Spatio-Temporal Decoupling for Bayesian Conformal Prediction (arXiv 2026)
-Ingested SA-BCP paper (arXiv:2605.00432v1) by Fang & Lee (National Taiwan University). SA-BCP proposes state-adaptive Bayesian conformal prediction that decouples temporal baseline inertia from spatial pattern memory via a density-gated mixture mechanism ($\pi_t^S = D_t^S / (D_t^S + K)$). Theoretically proves asymptotic marginal validity, dynamic regret bounds, oracle conditional coverage, and a minimax bias-variance tradeoff governed by $K^* = V_0 / M^T$. Empirically outperforms ACI variants and Bayesian CP on volatile financial datasets (AMD, Gold, GBP/USD, 2016-2026), reducing BCP interval bloat by 10-37%.
-Created pages: [[source-sa-bcp]], [[sa-bcp]], [[spatio-temporal-decoupling]], [[conformal-prediction]], [[bayesian-conformal-prediction]], [[adaptive-conformal-inference]]
-Updated pages: [[index]], [[log]]
-
-## [2026-05-07] ingest | SCALE: Spectral Conformal Prediction via Wavelet Transform (ICML 2026)
-Ingested SCALE paper (arXiv:2605.04957v1) by Guo, Han, Luo, Liu, Gong & Wang (Shanghai Jiao Tong University, ICML 2026). SCALE proposes Spectral Graph Conditional Exchangeability (SGCE) — the concept that high-frequency components of graph-structured MTS are conditionally exchangeable given low-frequency components. Uses SGWT for spectral decomposition, with a learnable low-frequency encoder and parameter-free high-frequency statistics extractor, fused via adaptive gating. Theoretically proves finite-sample coverage under SGCE and controllable coverage gap under wavelet approximation. Empirically achieves near-nominal coverage with competitive efficiency on METR-LA, PEMS04/07/08 traffic datasets.
-Created pages: [[source-scale]], [[scale]], [[spectral-graph-conditional-exchangeability]], [[spectral-graph-wavelet-transform]]
-Updated pages: [[conformal-prediction]], [[index]], [[log]]
-
-## [2026-05-07] ingest | RAGC: Efficient Traffic Forecasting on Large-Scale Road Network by Regularized Adaptive Graph Convolution (arXiv 2026)
-Ingested RAGC paper (arXiv:2506.07179v2) by Wu, Kong, Zhang, Chen & Liu (Sun Yat-Sen University). RAGC addresses two limitations of adaptive graph learning for large-scale traffic networks: O(N²) graph convolution complexity and lack of node embedding regularization. Proposes ECO (Efficient Cosine Operator) for O(N) graph convolution via cosine similarity decomposition without approximation noise, and integrates SSE (Stochastic Shared Embedding) with adaptive graph convolution through a Residual Difference Mechanism (RDM) that suppresses SSE-induced noise while retaining regularization. Consistently outperforms 12 baselines on four LargeST datasets (716–8,600 nodes) with competitive efficiency.
-Created pages: [[source-ragc-efficient-traffic-forecasting]], [[ragc]], [[efficient-cosine-operator]], [[stochastic-shared-embedding]], [[residual-difference-mechanism]], [[node-embedding-regularization]]
-Updated pages: [[traffic-forecasting]], [[large-scale-spatial-temporal-graph]], [[index]], [[log]]

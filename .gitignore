@@ -22,3 +22,5 @@ mcp-server/__pycache__/
 # Claude Code
 .claude/
 /raw/assets/
+
+*.pdf

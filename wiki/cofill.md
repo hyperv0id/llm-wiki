@@ -68,6 +68,7 @@ CoFILL 使用两种预处理策略生成条件输入：
 | PriSTI | 原始域 | 有限 | 注意力 |
 | SpecSTG | 谱域 | 否 | 谱域嵌入 |
 | **CoFILL** | 原始域 | **双流 Cross-Attention** | **TCN + GCN** |
+| **ImputeFormer** | 原始域 | 投影+嵌入Attention | 隐式（节点嵌入） |
 
 ## 局限性
 
@@ -94,6 +95,7 @@ https://github.com/joyHJL/CoFILL
 ## 关联页面
 
 - [[diffusion-model]] — 扩散模型理论基础
+- [[imputeformer]] — ImputeFormer，低秩引导的 Transformer 时空填补
 - [[spatio-temporal-foundation-model]] — 时空基础模型
 - [[generative-time-series-forecasting]] — 生成式时间序列预测
 - [[traffic-forecasting]] — 交通预测

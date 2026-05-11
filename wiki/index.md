@@ -59,6 +59,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-paperbench]] — Long Context, Less Focus: A Scaling Gap in LLMs (Gu et al., 2026)
 - [[source-vetcha-2026-towards-infinite-length-extrapolation]] — Vetcha 2026: Towards Infinite Length Extrapolation - A Unified Approach
 - [[source-conformer]] — ConFormer: Conditional Transformer for accident-informed traffic forecasting (KDD 2026)
+- [[source-2312-01728]] — ImputeFormer: Low Rankness-Induced Transformers for Generalizable Spatiotemporal Imputation (KDD 2024)
 - [[source-cofill-spatiotemporal-imputation]] — CoFILL: Spatiotemporal Data Imputation by Conditional Diffusion (arXiv 2025)
 - [[source-channelmts]] — ChannelMTS: Multi-modal Time-Series Framework for High-Speed Railway Channel Prediction (KDD 2026)
 - [[source-ncsn]] — NCSN: Generative Modeling by Estimating Gradients of the Data Distribution (Song & Ermon, 2020)
@@ -136,6 +137,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[ragc]] — RAGC, regularized adaptive graph convolution for large-scale traffic forecasting (arXiv 2026)
 - [[specstg]] — SpecSTG, spectral diffusion framework for probabilistic STG traffic forecasting (arXiv 2024)
 - [[cofill]] — CoFILL, conditional diffusion model for spatiotemporal imputation (arXiv 2025)
+- [[imputeformer]] — ImputeFormer, low-rankness-induced Transformer with projected/embedded attention and Fourier sparsity loss for generalizable spatiotemporal imputation (KDD 2024)
 - [[mamba]] — Mamba, selective state space model reformulated as linear attention variant (NeurIPS 2024)
 - [[mila]] — MILA, Mamba-Inspired Linear Attention model (NeurIPS 2024)
 
@@ -306,6 +308,11 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Techniques (continued)
 - [[dcw]] — DCW，小波域差分校正，缓解扩散模型 SNR-t Bias 的即插即用方法 (CVPR 2026)
+
+## Techniques (continued)
+- [[projected-attention]] — low-rank temporal projected attention for linear-complexity time series imputation (KDD 2024)
+- [[embedded-attention]] — low-rank spatial embedded attention using node embedding agents (KDD 2024)
+- [[fourier-imputation-loss]] — Fourier sparsity regularization for signal-noise balanced imputation (KDD 2024)
 - [[equal-snr]] — EqualSNR，通过 $\Sigma_{ii}=cC_i$ 让所有傅里叶频率等 SNR 加噪的扩散前向过程
 
 ## Concepts (continued)
