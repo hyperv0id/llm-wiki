@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-05-11
+last_updated: 2026-05-12
 tags:
   - meta
 ---
@@ -91,6 +91,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-snr-t-bias]] — Elucidating the SNR-t Bias of Diffusion Probabilistic Models (Yu et al., CVPR 2026, AMAP Alibaba + LZU)
 - [[source-yang-gsli-2025]] — GSLI: Graph Structure Learning for Spatial-Temporal Imputation Adapting to Node and Feature Scales (Yang et al., AAAI 2025)
 - [[source-equal-snr]] — A Fourier Space Perspective on Diffusion Models: EqualSNR frequency-SNR analysis (Microsoft Research, 2025)
+- [[source-flow-grpo]] — Flow-GRPO: Training Flow Matching Models via Online RL (NeurIPS 2025)
 
 ## Entities
 - [[sa-bcp]] — SA-BCP, state-adaptive Bayesian conformal prediction (arXiv 2026)
@@ -200,6 +201,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[spectral-bias-training-dynamics]] — 扩散模型训练谱偏置理论，数据协方差驱动学习顺序的反比方差谱定律 (NeurIPS 2025, Harvard)
 - [[snr-t-bias]] — SNR-t Bias，扩散模型推理阶段的信噪比-时间步错配偏置 (CVPR 2026)
 - [[frequency-hierarchy-in-diffusion]] — 扩散模型中由傅里叶功率律与白噪声共同诱导的低频到高频生成层级
+- [[flow-grpo]] — Flow-GRPO，首个将在线 GRPO 强化学习引入 Flow Matching 模型的方法，通过 ODE-to-SDE 转换和 Denoising Reduction 实现高效 T2I 对齐 (NeurIPS 2025)
 
 ## Techniques
 - [[spectral-graph-wavelet-transform]] — SGWT，谱图小波变换用于图信号的多尺度分解
@@ -321,6 +323,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[embedded-attention]] — low-rank spatial embedded attention using node embedding agents (KDD 2024)
 - [[fourier-imputation-loss]] — Fourier sparsity regularization for signal-noise balanced imputation (KDD 2024)
 - [[equal-snr]] — EqualSNR，通过 $\Sigma_{ii}=cC_i$ 让所有傅里叶频率等 SNR 加噪的扩散前向过程
+- [[ode-to-sde-conversion]] — ODE-to-SDE 转换，将确定性流匹配 ODE 转换为等边缘分布的 SDE 以实现随机 RL 探索 (NeurIPS 2025)
+- [[denoising-reduction]] — Denoising Reduction 去噪步数缩减策略，训练时用 10 步推理时用 40 步以加速在线 RL (NeurIPS 2025)
 
 ## Concepts (continued)
 - [[snr-t-bias]] — SNR-t Bias，扩散模型推理阶段的信噪比-时间步错配偏置 (CVPR 2026)
