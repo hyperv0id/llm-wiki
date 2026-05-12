@@ -11,6 +11,13 @@ tags:
 
 Chronological record of all wiki activity.
 
+## [2026-05-12] ingest | UrbanDiT: Diffusion Transformers as Open-World Spatiotemporal Foundation Models (NeurIPS 2025)
+
+Ingested UrbanDiT paper from Zotero storage (Yuan et al., Tsinghua FIB Lab, NeurIPS 2025). UrbanDiT is a spatiotemporal foundation model based on Diffusion Transformer (DiT) architecture with prompt learning, unifying diverse urban spatiotemporal data types. Supports four tasks: bi-directional prediction, temporal interpolation, spatial extrapolation, and spatio-temporal imputation. Key advantage: zero-shot generalization surpassing many trained baselines. Applicable to traffic flow, crowd movement, taxi demand, bike-sharing, cellular network traffic, etc.
+
+创建的页面：[[source-urbandit]], [[urbandit]]
+更新的页面：[[index]], [[log]]
+
 ## [2026-05-12] ingest | Flow-GRPO: Training Flow Matching Models via Online RL (NeurIPS 2025)
 
 下载 arXiv 2505.05470 PDF 并 ingest。Flow-GRPO 首次将在线策略梯度 RL（GRPO）引入流匹配模型。核心创新：(1) ODE-to-SDE 转换将确定性 ODE（dxt = vt dt）转换为等效 SDE，通过 Fokker-Planck 方程推导出漂移系数 fSDE = vt + (σt²/2)∇log pt，最终得到 Euler-Maruyama 离散化更新规则，在保持边缘分布的前提下引入随机性；(2) Denoising Reduction 训练时用 10 步去噪加速训练 4 倍以上，推理时保持 40 步保证质量。在 GenEval 上将 SD3.5-M 准确率从 63% 提升至 95%，超越 GPT-4o，且 reward hacking 极低。

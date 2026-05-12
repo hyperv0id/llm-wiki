@@ -7,9 +7,9 @@ tags:
   - zero-shot
   - generalization
 created: 2026-05-03
-last_updated: 2026-05-03
-source_count: 1
-confidence: medium
+last_updated: 2026-05-12
+source_count: 2
+confidence: high
 status: active
 ---
 
@@ -29,6 +29,7 @@ Foundation models address both by pre-training once on diverse multi-city data a
 
 ### Single-Modal
 - **[[opencity|OpenCity]]** (2024): Transformer + GNN architecture for traffic prediction. Trained on multiple cities, supports zero-shot inference but limited to single-modal time series data[^src-most].
+- **[[urbandit|UrbanDiT]]** (NeurIPS 2025): Diffusion Transformer (DiT) backbone with prompt learning. Supports bi-directional prediction, temporal interpolation, spatial extrapolation, and spatio-temporal imputation with strong zero-shot capabilities[^src-urbandit].
 - **UniST** (2024): Grid-based spatio-temporal foundation model for Euclidean-grid data[^src-most].
 - **UrbanGPT** (2024): LLM-based spatio-temporal model using question-answering paradigm. Processes one sensor at a time, making it computationally expensive (7B parameters, 174s inference)[^src-most].
 - **Pangu-Weather / Fengwu**: Weather-specific foundation models on Euclidean grids[^src-most].
@@ -54,8 +55,10 @@ Foundation models address both by pre-training once on diverse multi-city data a
 ## Related Pages
 
 - [[most]] — MoST, first multi-modality ST foundation model
+- [[urbandit]] — UrbanDiT, diffusion transformer for open-world spatiotemporal prediction
 - [[traffic-forecasting]] — general traffic prediction
 - [[multimodal-time-series-forecasting]] — multimodal TS forecasting
 - [[large-scale-spatial-temporal-graph]] — large-scale ST graph challenges
 
 [^src-most]: [[source-most]]
+[^src-urbandit]: [[source-urbandit]]
