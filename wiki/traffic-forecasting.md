@@ -6,8 +6,8 @@ tags:
   - spatial-temporal
   - intelligent-transportation
 created: 2026-04-27
-last_updated: 2026-05-08
-source_count: 14
+last_updated: 2026-05-12
+source_count: 15
 confidence: high
 status: active
 ---
@@ -48,6 +48,10 @@ Extending beyond accidents, [[igstgnn|IGSTGNN]] (KDD 2026) explicitly models the
 
 ### Large-Scale Long-Horizon
 FaST (KDD 2026) addresses computational bottlenecks in large-scale graphs (8,600+ nodes) with long-horizon predictions (672 steps = 1 week) using [[adaptive-graph-agent-attention|AGA-Att]] for O(N·a) spatial complexity and [[mixture-of-experts|Dense MoE]] for efficient feature extraction. Achieves 4.4%-18.4% MAE improvement over SOTA with 1.3x-2.2x faster inference[^src-fast-long-horizon-forecasting].
+
+### Pre-training & Masked Autoencoder
+
+[[std-mae|STD-MAE]] (IJCAI-2024) proposes a spatial-temporal-decoupled masked pre-training framework for traffic forecasting. It addresses a critical limitation of end-to-end models: short input horizons (typically 12 steps = 1 hour) that cause a **[[spatiotemporal-mirage|spatiotemporal mirage]]** — similar input sequences leading to dissimilar future values and vice versa. STD-MAE pre-trains two decoupled masked autoencoders (S-MAE for spatial, T-MAE for temporal) on long sequences (e.g., 864 steps = 3 days), learning clear spatiotemporal heterogeneity representations that can enhance any downstream predictor. On six PEMS benchmarks, STD-MAE achieves SOTA performance with 22.6%-72.5% faster pre-training than comparable methods[^src-2312-00516-std-mae].
 
 ### Regularized Adaptive Graph Convolution
 [[ragc|RAGC]] (arXiv 2026) tackles two limitations of adaptive graph learning for large-scale networks: O(N²) graph convolution complexity and lack of node embedding regularization. It proposes [[efficient-cosine-operator|ECO]] for O(N) graph convolution via cosine similarity decomposition, and integrates [[stochastic-shared-embedding|SSE]] with adaptive graph convolution through a [[residual-difference-mechanism|residual difference mechanism]] that suppresses SSE-induced noise while retaining regularization benefits. On four LargeST datasets (716–8,600 nodes), RAGC consistently achieves the best prediction accuracy with competitive training/inference speed[^src-ragc-efficient-traffic-forecasting].
@@ -97,3 +101,4 @@ The XTraffic benchmark provides incident-aligned traffic datasets for California
 [^src-2401-08119-specstg]: [[source-2401-08119-specstg]]
 [^src-yang-gsli-2025]: [[source-yang-gsli-2025]]
 [^src-demystify-mamba-linear-attention-2024]: [[source-demystify-mamba-linear-attention-2024]]
+[^src-2312-00516-std-mae]: [[source-2312-00516-std-mae]]

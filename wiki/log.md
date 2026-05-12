@@ -438,3 +438,10 @@ Pages updated: [[traffic-forecasting]], [[multimodal-time-series-forecasting]], 
 Aurora 是首个多模态时间序列基础模型，支持文本/图像/数值多模态输入和零样本推理。通过 Modality-Guided Self-Attention 注入领域知识，Prototype-Guided Flow Matching 实现生成式概率预测。在 5 个基准上单模态和多模态场景均 SOTA。
 Pages created: [[source-aurora]], [[aurora]], [[modality-guided-self-attention]], [[prototype-guided-flow-matching]], [[generative-time-series-forecasting]]
 Pages updated: [[simdiff]], [[chronos]], [[timesfm]], [[mindts]], [[vot]], [[most]], [[flow-matching]], [[multimodal-time-series-forecasting]], [[index]], [[log]]
+
+## [2026-05-12] ingest | STD-MAE: Spatial-Temporal-Decoupled Masked Pre-training for Spatiotemporal Forecasting (IJCAI-2024)
+
+Downloaded arXiv 2312.00516 PDF and ingested STD-MAE paper by Gao et al. (The University of Tokyo, SUSTech, UTS, IJCAI-2024). STD-MAE proposes a spatial-temporal-decoupled masked pre-training framework using two decoupled masked autoencoders for spatiotemporal forecasting. Key innovations: (1) Spatial-Temporal-Decoupled Masking — separately masking along spatial (S-Mask) and temporal (T-Mask) dimensions to learn clear heterogeneity; (2) non-architecture-modifying integration — pre-trained representations seamlessly added to any downstream predictor's hidden states; (3) identification of "spatiotemporal mirage" — a fundamental limitation of end-to-end models under short input windows. Achieves SOTA across PEMS03/04/07/08, METR-LA, and PEMS-BAY with 22.6%-72.5% pre-training speedup compared to STEP.
+
+创建的页面：[[source-2312-00516-std-mae]], [[std-mae]], [[spatiotemporal-mirage]]
+更新的页面：[[traffic-forecasting]], [[index]], [[log]]

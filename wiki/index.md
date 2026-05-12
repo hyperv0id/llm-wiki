@@ -82,6 +82,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-bluuuuue-reparameterization-trick]] — 数学直觉系列（二）：VAE与重参数化——将不可逆的随机采样重构为可微的确定性变换 (bluuuuue, 小红书)
 - [[source-language-in-the-flow-of-time]] — Language in the Flow of Time: TaTS framework for multimodal TS (ICLR 2026)
 - [[source-uniextreme]] — UniExtreme: universal extreme weather forecasting foundation model (arXiv 2025)
+- [[source-2312-00516-std-mae]] — STD-MAE: Spatial-Temporal-Decoupled Masked Pre-training for Spatiotemporal Forecasting (IJCAI-2024)
 - [[source-urbandit]] — UrbanDiT: Diffusion Transformers as Open-World Spatiotemporal Foundation Models (NeurIPS 2025)
 - [[source-ragc-efficient-traffic-forecasting]] — RAGC: Efficient Traffic Forecasting on Large-Scale Road Network by Regularized Adaptive Graph Convolution (arXiv 2026)
 - [[source-2401-08119-specstg]] — SpecSTG: A Fast Spectral Diffusion Framework for Probabilistic Spatio-Temporal Traffic Forecasting (arXiv 2024)
@@ -145,6 +146,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[mamba]] — Mamba, selective state space model reformulated as linear attention variant (NeurIPS 2024)
 - [[mila]] — MILA, Mamba-Inspired Linear Attention model (NeurIPS 2024)
 - [[gsli]] — GSLI, multi-scale graph structure learning for spatiotemporal imputation with feature heterogeneity (AAAI 2025)
+- [[std-mae]] — STD-MAE, spatial-temporal-decoupled masked autoencoder for spatiotemporal pre-training (IJCAI-2024)
 
 ## Concepts
 - [[conformal-prediction]] — 共形预测，与模型无关的不确定性量化框架
@@ -342,6 +344,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[on-policy-vs-off-policy]] — on-policy 与 off-policy 学习范式对比
 - [[periodicity-modeling-in-time-series]] — analysis of periodic modeling approaches across time-series forecasting architectures
 - [[rl-learning-path-mfrl]] — 基于《Mathematical Foundations of Reinforcement Learning》的系统性 RL 学习路径
+- [[spatiotemporal-mirage]] — 时空幻象，短输入窗口导致模型无法区分不同→相似或相似→不同的预测困境
 
 ## Analyses
 - [[multimodal-semantic-understanding]] — 多模态数据语义理解的对齐范式、融合策略与冗余过滤综合分析
