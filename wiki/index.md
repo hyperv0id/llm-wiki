@@ -80,6 +80,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-aurora]] — Aurora: Towards Universal Generative Multimodal Time Series Forecasting (arXiv 2026)
 - [[source-bluuuuue-scaling-factor-intuition]] — 数学直觉系列（一）：缩放因子1/√dₖ——注意力机制的数值稳定性条件 (bluuuuue, 小红书)
 - [[source-bluuuuue-reparameterization-trick]] — 数学直觉系列（二）：VAE与重参数化——将不可逆的随机采样重构为可微的确定性变换 (bluuuuue, 小红书)
+- [[source-2605-07319]] — Generative Modeling with Flux Matching：全新生成建模范式，推广得分函数为任意生成向量场 (Pao-Huang et al., Stanford, arXiv 2026)
 - [[source-language-in-the-flow-of-time]] — Language in the Flow of Time: TaTS framework for multimodal TS (ICLR 2026)
 - [[source-uniextreme]] — UniExtreme: universal extreme weather forecasting foundation model (arXiv 2025)
 - [[source-2312-00516-std-mae]] — STD-MAE: Spatial-Temporal-Decoupled Masked Pre-training for Spatiotemporal Forecasting (IJCAI-2024)
@@ -209,8 +210,11 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[snr-t-bias]] — SNR-t Bias，扩散模型推理阶段的信噪比-时间步错配偏置 (CVPR 2026)
 - [[frequency-hierarchy-in-diffusion]] — 扩散模型中由傅里叶功率律与白噪声共同诱导的低频到高频生成层级
 - [[flow-grpo]] — Flow-GRPO，首个将在线 GRPO 强化学习引入 Flow Matching 模型的方法，通过 ODE-to-SDE 转换和 Denoising Reduction 实现高效 T2I 对齐 (NeurIPS 2025)
+- [[flux-matching]] — Flux Matching，通量匹配生成范式，推广 score matching 到任意分布保持向量场 (Pao-Huang et al., Stanford, 2026)
+- [[generative-vector-field]] — 生成向量场，驱动扩散过程以目标分布为平稳分布的向量场，不限于得分函数
 
 ## Techniques
+- [[projected-fisher-divergence]] — 投影 Fisher 散度，Flux Matching 中用于学习分布保持向量场的统计散度
 - [[spectral-graph-wavelet-transform]] — SGWT，谱图小波变换用于图信号的多尺度分解
 - [[frequency-enhanced-attention]] — FEA, Fourier/Wavelet-domain cross-attention substituing standard attention in FEDformer (ICML 2022)
 - [[frequency-enhanced-block]] — FEB, frequency-domain self-attention substiution in FEDformer via Fourier or Wavelet (ICML 2022)

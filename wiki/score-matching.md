@@ -6,8 +6,8 @@ tags:
   - estimation
   - diffusion-models
 created: 2026-04-28
-last_updated: 2026-04-28
-source_count: 1
+last_updated: 2026-05-13
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -51,6 +51,10 @@ $$
 - **SMLD**：使用 [[ncsn]] 网络在多个噪声水平上训练得分函数
 - **DDPM**：等价于在特定噪声调度下进行得分匹配
 
+## 与其他方法的关系
+
+- **Flux Matching**：Flux Matching 是 score matching 的推广，不要求逐点匹配得分，而是仅匹配概率通量的散度，从而学习任意分布保持向量场[^src-2605-07319]
+
 ## 相关页面
 
 - [[ncsn]] — NCSN 使用分数匹配训练条件分数网络
@@ -60,3 +64,4 @@ $$
 ## 引用
 
 [^src-tutorial]: [[source-chan-2025-diffusion-tutorial]]
+[^src-2605-07319]: [[source-2605-07319]]

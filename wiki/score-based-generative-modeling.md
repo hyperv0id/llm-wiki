@@ -7,8 +7,8 @@ tags:
   - langevin-dynamics
   - machine-learning
 created: 2026-04-28
-last_updated: 2026-04-28
-source_count: 1
+last_updated: 2026-05-13
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -81,6 +81,7 @@ NCSN 通过以下技术解决上述挑战：
 - **DDPM** (Ho & Ermon, 2019)：将分数匹配与扩散过程统一
 - **Score-Based SDE** (Song et al., 2021)：用随机微分方程统一框架
 - **Diffusion Models** (2022-)：成为主流生成模型
+- **Flux Matching** (Pao-Huang et al., 2026)：将分数匹配推广到任意生成向量场，不再限于保守的得分函数[^src-2605-07319]
 
 ## 相关页面
 
@@ -94,3 +95,4 @@ NCSN 通过以下技术解决上述挑战：
 ## 引用
 
 [^src-ncsn]: [[source-ncsn]]
+[^src-2605-07319]: [[source-2605-07319]]

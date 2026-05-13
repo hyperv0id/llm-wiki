@@ -11,6 +11,13 @@ tags:
 
 Chronological record of all wiki activity.
 
+## [2026-05-13] ingest | Generative Modeling with Flux Matching (Pao-Huang et al., Stanford, arXiv 2026)
+
+下载 arXiv 2605.07319 PDF 并 ingest。Flux Matching 由 Peter Pao-Huang、Xiaojie Qiu 和 Stefano Ermon（Stanford University）提出，是一种全新生成建模范式，将 score-based 模型推广到任意"生成向量场"（不限于保守的得分函数）。核心创新：(1) 基于 Fokker-Planck 平稳条件的 Flux Matching 损失，不要求逐点匹配得分，仅匹配概率通量的散度；(2) 投影 Fisher 散度 (Projected Fisher Divergence)，在保持 $L^2(p_{\text{data}})$ 几何的同时兼容非保守向量场；(3) 噪声退火扩展使其可接入现有扩散框架。应用：加速采样（优化混合速度）、可解释生成（RNA 速度的机制性 ODE）、因果掩码嵌入有向依赖、独立图像生成（CIFAR-10 / CelebA）。
+
+创建的页面：[[source-2605-07319]], [[flux-matching]], [[projected-fisher-divergence]], [[generative-vector-field]]
+更新的页面：[[index]], [[log]], [[score-matching]], [[fokker-planck-equation]], [[score-based-generative-modeling]]
+
 ## [2026-05-12] ingest | UrbanDiT: Diffusion Transformers as Open-World Spatiotemporal Foundation Models (NeurIPS 2025)
 
 Ingested UrbanDiT paper from Zotero storage (Yuan et al., Tsinghua FIB Lab, NeurIPS 2025). UrbanDiT is a spatiotemporal foundation model based on Diffusion Transformer (DiT) architecture with prompt learning, unifying diverse urban spatiotemporal data types. Supports four tasks: bi-directional prediction, temporal interpolation, spatial extrapolation, and spatio-temporal imputation. Key advantage: zero-shot generalization surpassing many trained baselines. Applicable to traffic flow, crowd movement, taxi demand, bike-sharing, cellular network traffic, etc.

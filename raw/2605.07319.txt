@@ -1,0 +1,2578 @@
+Generative Modeling with Flux Matching
+
+arXiv:2605.07319v1 [cs.LG] 8 May 2026
+
+Peter Pao-Huang1 Xiaojie Qiu1,2 Stefano Ermon1
+1
+Department of Computer Science, Stanford University
+2
+Department of Genetics, Stanford University
+{peterph,xiaojie,ermon}@stanford.edu
+
+Abstract
+We introduce Flux Matching, a new paradigm for generative modeling that generalizes existing score-based models to a broader family of vector fields that need not
+be conservative. Rather than requiring the model to equal the data score, the Flux
+Matching objective imposes a weaker condition that admits infinitely many vector
+fields whose stationary distribution is the data. This flexibility enables a class of
+generative models that cannot be learned under score matching, in which inductive
+biases, structural priors, and properties of the dynamics can be directly imposed or
+optimized. We show that Flux Matching performs strongly on high-dimensional
+image datasets and, more importantly, that our added freedom unlocks a range
+of applications including faster sampling, interpretable and mechanistic models,
+and dynamics that encode directed dependencies between variables. More broadly,
+Flux Matching opens a new dimension in generative modeling by turning the vector
+field itself into a design choice rather than a fixed target. Code is available at
+https://github.com/peterpaohuang/flux_matching.
+
+1
+
+Introduction
+
+Many different vector fields produce diffusion processes with the same stationary distribution. Modern
+generative modeling [58, 59, 25], however, canonically targets one particular vector field called the
+(Stein) score function, typically fit via score matching [31, 31, 59], whose population loss is the Fisher
+divergence. Once learned, the score model can be used in Langevin dynamics or other gradient-based
+Markov chain Monte Carlo (MCMC) methods to generate samples from the target distribution pdata .
+This score-based paradigm dominants current state-of-the-art image generation models [54, 12, 51],
+protein generation and design models [63, 1], robotics [9, 50], and others [26, 35, 21, 11, 32, 64].
+The narrow focus on the score overlooks a large space of
+alternative vector fields whose diffusion processes share
+the same target distribution. We refer to these vector fields
+as generative vector fields, or generative fields for short,
+with the Fokker–Planck equation (FPE) characterizing the
+full family [27]. Figure 1 highlights the distinction: in
+the space of vector fields Ω, score matching picks out
+a single point, ∇ log pdata , when any other point in the
+rectangle of generative fields characterized by the FPE
+is also equally valid. These non-score generative fields
+Figure 1: Ω is the space of vector fields
+provide an extra degree of freedom for encoding useful
+∈ L2 (pdata ). Score matching learns
+attributes, illustrated abstractly by Attributes A and B in
+∇ log pdata , a single point in this space.
+Figure 1. Concretely, they can capture directed depenIn contrast, Flux Matching can learn any
+dencies between variables, impose mechanistic structure,
+vector field inside the rectangle.
+improve smoothness or mixing, and produce dynamics
+that are meaningful in their own right rather than merely a means of sampling.
+Preprint.
+
+Figure 2: From Section 4.1 where we maximize different vector field attributes that generate the same
+stationary distribution. (Left) Score function (Right) Alternative vector fields with useful properties.
+In this work, we propose Flux Matching, a novel paradigm for learning generative vector fields
+beyond the score (aka any point inside the rectangle of Figure 1). Instead of requiring the model to
+equal ∇ log pdata pointwise, Flux Matching requires a weaker condition that only the divergence of
+the probability flux matches. This condition guarantees that the field generates the target distribution
+while leaving a nullspace of infinitely many valid generative fields. In order to compare the flux
+divergences in the same L2 (pdata ) geometry as the Fisher divergence—while preserving the non-score
+degrees of freedom—we define a new statistical divergence called the projected Fisher divergence
+and derive a tractable Flux Matching loss that computes it. We further extend Flux Matching to
+the noise annealed setting used by diffusion models [59, 58]. Rather than learning one field for
+the data distribution, we learn a continuum of fields for increasingly noise annealed distributions.
+Among the many valid vector fields that generate the target distribution, we also show how to select
+application-specific solutions either through architectural constraints or by adding regularizers that
+favor desired attributes.
+Empirically, we show that Flux Matching is both scalable and useful in varying domains: (1) Flux
+Matching can be used as a standalone generative objective on high-dimensional image datasets such
+as CIFAR-10 and CelebA 64 × 64; (2) Flux Matching can learn faster mixing fields to accelerate
+sampling speed; (3) Flux Matching can fit interpretable RNA-velocity in single-cell genomics; and
+(4) Flux Matching can embed structural priors, such as directed temporal dependencies, directly into
+the generative field.
+To summarize, our contributions are:
+• We introduce Flux Matching, a generative modeling paradigm that learns vector fields beyond
+the score by matching the divergence of the probability flux.
+• We derive an efficient Flux Matching loss that preserves the Fisher divergence geometry.
+• We extend Flux Matching to noise annealed generative modeling and show that it scales to
+complex image distributions.
+• We demonstrate new use cases enabled by non-score generative fields, including faster mixing,
+interpretable fields like RNA velocity, and structured generative dynamics.
+
+2
+
+Preliminaries
+
+Let pdata denote an unknown data distribution on Rd , observed only through samples {xi }ni=1 ∼
+pdata . A key goal of generative modeling is to learn a representation of pdata that allows us to
+generate new samples from this distribution. Existing approaches do this by either modeling the
+density itself [13, 47], an unnormalized density [15, 39, 22, 24], or the closely related score function
+[31, 59, 25].
+2.1
+
+The (Stein) score function ∇ log pdata (x)
+
+Learning. If the score was directly available, we could fit a vector field fθ : Rd → Rd by minimizing
+the Fisher divergence:
+
+
+J (θ) = Ex∼pdata ∥fθ (x) − ∇ log pdata (x)∥2 .
+(1)
+However, the score ∇ log pdata (x) is typically inaccessible because pdata itself is unknown. Scorebased methods therefore rely on objectives that avoid direct access to this target, including implicit
+2
+
+score matching [31], denoising score matching [62], and nonparametric kernel density estimation
+(KDE) approximations [31, 62].
+Sampling. Once a score estimator fθ ≈ ∇ log√pdata has been learned, we can sample from pdata
+by simulating the diffusion dxt = fθ (xt ) dt + 2 dWt , where Wt is standard Brownian motion. In
+practice, we run gradient-based Markov chain Monte Carlo (MCMC) methods that discretize
+√ this
+diffusion. A standard example is unadjusted Langevin dynamics, xk+1 = xk + ηfθ (xk ) + 2η ξk
+with ξk ∼ N (0, I), which (under mild regularity) converges to pdata as η → 0 and k → ∞. For
+brevity, we say that vector field fθ generates pdata (or samples from pdata ) as shorthand for when the
+diffusion with drift fθ has pdata as its stationary distribution.
+2.2
+
+The Fokker–Planck equation
+
+To understand why the score is useful for sampling, it is helpful to look at √
+how densities evolve under
+stochastic dynamics. Again, consider the diffusion dxt = fθ (xt ) dt + 2 dWt . If pt denotes the
+time t marginal density of xt , then pt evolves according to the Fokker–Planck equation:
+
+i
+h
+
+
+∂pt (x)
+(2)
+= − ∇ · pt (x)fθ (x) −∇ · pt (x)∇ log pt (x) .
+∂t
+{z
+}
+|
+{z
+}
+|
+flux of score
+
+flux of fθ
+
+Intuitively, Equation (2) is a continuity equation in which the density evolves under the competing
+divergences of two probability fluxes, the drift flux pt (x)fθ (x) carrying mass along the vector field
+fθ and the score flux pt (x)∇ log pt (x) encoding the smoothing effect of Brownian motion. At
+stationarity, the two forces perfectly balance and the density no longer changes in time, so ∂t pt = 0,
+which gives the following:
+Proposition 2.1. [Classical stationary Fokker–Planck characterization,
+Section 2.4 of [48]] pdata
+√
+is a stationary distribution of the diffusion dxt = fθ (xt ) dt + 2 dWt iff
+
+
+∇ · pdata (x)fθ (x) − ∇ · pdata (x)∇ log pdata (x) = 0
+for all x.
+We therefore refer to vector fields fθ satisfying Proposition 2.1 as generative vector fields, since
+simulating the corresponding diffusion produces samples from pdata . The usual choice is fθ (x) =
+∇ log pdata (x), for which the condition holds trivially. Importantly, however, Proposition 2.1 shows
+that the score is not the only valid drift. Any vector field of the form
+
+fθ (x) = ∇ log pdata (x) + v(x) with ∇ · pdata (x)v(x) = 0,
+(3)
+has the same stationary distribution pdata . In other words, there is generally a whole family of vector
+fields that preserve the same target distribution, and the score is only one particular member of this
+family. Pictorially, some alternative vector fields are shown in Figure 2.
+
+3
+
+Flux Matching
+
+We now shift from learning fθ by matching the score to learning fθ by matching the divergence of
+the probability flux the score induces, which we call Flux Matching. The motivation comes directly
+from the Fokker–Planck equation, where if our goal is to ensure that fθ generates pdata , then it is
+only necessary to match the flux divergence ∇ · (pdata fθ ) (from Proposition 2.1) rather than to match
+the vector field pointwise. Consequently, Flux Matching allows learning the family of generative
+vector fields that need not be the score (e.g. Figure 2).
+New Capability: Same Distribution, Many Dynamics. Flux Matching enables vector fields to
+follow any dynamics that generate the target distribution.
+3.1
+
+Projected Fisher Divergence
+
+Matching ∇ · (pdata fθ ) and ∇ · (pdata ∇ log pdata ) requires a geometry suited to learning vector
+fields since fθ is the vector field we optimize. The most direct option, comparing the two flux
+divergences as scalar fields, is invariant to pdata -preserving dynamics by construction, but moves
+3
+
+one derivative beyond the L2 (pdata ) vector field geometry of the Fisher divergence, making the
+objective sensitive to derivative-level artifacts [7]. We therefore seek an objective that matches
+flux divergences within the geometry of the Fisher divergence while remaining invariant to any
+perturbation v with ∇ · (pdata v) = 0. To this end, let Πflux f denote the unique gradient field that
+satisfies ∇ · (pdata Πflux fθ ) = ∇ · (pdata fθ ), and note that since ∇ log pdata is already a gradient
+field, Πflux (∇ log pdata ) = ∇ log pdata . We define the projected Fisher divergence:
+
+
+Je(θ) := Ex∼p
+∥Πflux fθ (x) − ∇ log pdata (x)∥2 .
+(4)
+data
+
+This objective is invariant to any perturbation v with ∇ · (pdata v) = 0 because ∇ · (pdata (fθ + v)) =
+∇ · (pdata fθ ), and hence Πflux (fθ + v) = Πflux fθ by the definition of Πflux . Directly computing
+Equation (4), however, is intractable in high dimensions.
+3.2
+
+Flux Matching Loss
+
+We provide a scalable training objective with the same gradients as the projected Fisher divergence of
+Equation (4). Let uθ := fθ − ∇ log pdata and rθ := p−1
+data ∇ · (pdata uθ ) = ∇ · uθ + uθ · ∇ log pdata .
+To bridge Equation (4) to our final loss, we show a series of key identities (proven in Section A):
+Z ∞
+Je(θ) =
+Ex0 ∼pdata , xt |x0 [rθ (x0 )rθ (xt )] dt
+(Step 1 via Lemma A.2)
+0
+#
+"
+(5)
+Z ∞
+⊤
+⊤ ∂xt
+=−
+Ex0 ∼pdata , xt |x0 uθ (x0 )
+∇xt rθ (xt ) dt (Step 2 via Lemma A.3).
+∂x0
+0
+Intuitively, rθ (aka the Langevin-Stein operator) is invariant to any pdata -preserving dynamics, but applies the local
+differential operator ∇·, which sits one derivative beyond
+the Fisher divergence geometry. Step 1 closes this gap
+by
+√ using diffusion simulations dxt = ∇ log pdata (xt ) dt +
+2 dWt to propagate the pointwise value of rθ across
+nearby regions of the data distribution. Integrating the autocorrelation rθ (x0 )rθ (xt ) over time t accumulates these
+propagated values, effectively "undoing" the ∇· operator
+and projecting rθ back in the Fisher divergence geometry, as illustrated in Figure 3. Step 2 uses integration
+by parts to convert the autocorrelation rθ (x0 )rθ (xt ) into Figure 3: Geometric interpretation of
+components uθ (x0 ) and ∂xt /∂x⊤
+0 ∇xt rθ (xt ). As a final Flux Matching. Colors are detailed in
+the accompanying Algorithm 1.
+Step 3, we apply a stop-gradient on ∂xt /∂x⊤
+0 ∇xt rθ (xt ).
+Lemma A.4 shows this preserves the gradient w.r.t. θ (up to
+a factor of 2) while eliminating the need to backpropagate through the expensive ∂xt /∂x⊤
+0 ∇xt rθ (xt )
+term. Sampling the simulation horizon t ∼ q with t ∈ [0, ∞) gives the resulting Flux Matching loss:
+"
+!#
+⊤
+1
+∂x
+t
+Lflux (θ) := −E
+uθ (x0 )⊤ sg
+∇xt rθ (xt )
+▶ Flux Matching (6)
+t∼q
+∂x0
+x0 ∼pdata , xt |x0 q(t)
+where sg denotes stop-gradient and xt | x0 denotes a simulation chain from x0 to xt . We formalize
+the end-to-end connection between the projected Fisher divergence (Equation (4)) and the final Flux
+Matching loss (Equation (6)) via the following:
+Theorem 3.1. Assume pdata > 0 on Rd and boundary terms in integration-by-parts arguments
+vanish. Then,
+∇θ Je(θ) = 2 ∇θ Lflux (θ).
+3.3
+
+Estimating the Loss in Practice
+
+Approximating ∇ log pdata . We replace the unknown score ∇ log pdata with a nonparametric score
+approximation [31] by building a KDE of the minibatch:
+!
+!
+B
+B
+X
+X
+ 2
+
+ 2
+2
+2
+2
+∇ log pbσ (x) =
+exp −∥x − xi ∥ 2σ (xi − x)
+σ
+exp −∥x − xi ∥ 2σ
+,
+i=1
+
+i=1
+
+(7)
+4
+
+Algorithm 1 One Training Iteration of Flux Matching.
+(i)
+
+x0 denotes initial samples, x0
+
+highlights the selected initial sample, xt denotes simulated samples at time t, and wim
+(i)
+
+denotes the weight of simulated sample m on x0 . (Note: Font colors match the visual nodes and edges in Figure 3).
+(i)
+
+Input: minibatch {x0 }B
+i=1 , bandwidth σ, learnable vector field fθ
+(i)
+
+(i)
+
+(i)
+
+bσ (x0 ) for all i
+1: Construct ∇ log pbσ via Equation (7) and compute uθ (x0 ) = fθ (x0 ) − ∇ log p
+2: Sample shared simulation time t ∼ q on [0, T ] with T = 4σ 2
+(i)
+(i) B
+3: MCMC {x0 }B
+bσ using Equation (8)
+i=1 to {xt }i=1 with ∇ log p
+PB
+(i)
+(m)
+\
+⊤ ∇r (x(i) , t) :=
+4: For selected initial sample x , calculate Equation (9): ∂x /∂x
+w ∇
+r (x
+)
+t
+
+0
+
+0
+
+θ
+
+m=1
+
+0
+
+im
+
+5: Apply Step 4 for every initial sample i = 1, . . . , B
+6: Form Lflux from Equation (6) and update θ
+
+(m)
+
+xt
+
+θ
+
+t
+
+which is asymptotically unbiased in the usual large-batch, vanishing-bandwidth regime and is a
+common technique used in modern generative models [65, 57, 20, 37].
+Simulating xt from x0 . We sample the simulation horizon t ∼ q where q is supported on [0, ∞).
+Simulating arbitrarily large horizons is computationally infeasible, however, so we truncate the
+support of q to [0, T ]. In practice, we find that defining q to be either a truncated uniform or
+exponential and setting T = 4σ 2 is sufficient (justification is provided in Section D.1.1). Given t, we
+run 4 MCMC steps with step size h = 41 t starting from x0 . To enable stable large-step sampling, we
+use an exponentially integrated Langevin update:
+p
+xk+1 = µk +e−h (xk −µk )+σ 1 − e−2h ξk , µk = xk +σ 2 ∇ log pσ (xk ), ξk ∼ N (0, I). (8)
+Note that the computational cost of calculating Equation (8) many times is negligible compared to
+running fθ once since ∇ log pσ is a closed-form KDE approximation.
+Estimating ∂xt/∂x0 ⊤ ∇xt rθ (xt ). One could backpropagate through each simulated chain to obtain
+the pathwise term ∂xt/∂x0 ⊤ ∇xt rθ (xt ) = ∇x0 rθ (xt ). However, this term appears inside a conditional
+expectation over xt | x0 (aka an expectation over simulation paths from x0 ). Therefore, for each
+(i)
+initial point x0 and time t, we can reduce variance by estimating the conditional expectation using
+(j)
+all simulated chains {xt }B
+is specific regimes of
+j=1 from the current minibatch (particularly helpful
+(i)
+(i)
+σ, which we detail in Section D), rather than only using a single chain xt generated from x0 .
+(i)
+
+(i)
+
+(j)
+
+(i)
+
+Unlike the same chain sensitivity ∂xt /∂x0 , the cross-chain sensitivity ∂xt /∂x0 where i ̸= j is
+unavailable, so we approximate it with Gaussian transition weights wij normalized over mini(i)
+batch endpoints j (further details in Section D.1.2). Specifically, for each x0 , we replace
+⊤
+∂xt /∂x0 ∇xt rθ (xt ) with the variance-reduced estimator:
+B
+
+
+X
+(i)
+(j)
+\
+⊤
+(∂xt /∂x
+wij (t) ∇x(j) rθ xt
+.
+(9)
+0 ) ∇rθ (x0 , t) :=
+j=1
+
+t
+
+Finally, the divergence term in rθ = ∇ · uθ + uθ · ∇ log p is approximated with a single-sample
+Hutchinson trace estimator [29].
+3.4
+
+Extension to Noise Annealed Generative Fields
+
+Rather than learning a single vector field at the data distribution, diffusion models [59, 58, 40, 25, 56]
+learn score fields over a continuum of noise annealed distributions {pσ }σ∼P where P denotes the
+sampling distribution for noise levels used during training. Here, pσ = pdata ∗ N (0, σ 2 I). Flux
+Matching extends to this setting by applying the same objective independently at each noise level. Let
+fθσ (x) := fθ (x, σ), and let qσ denote the σ-dependent importance sampler over simulation horizons
+(can be learned via Section D.1.1). We write
+
+Lσflux (θ) := Lflux θ; pσ , qσ , fθσ ,
+(10)
+where the right-hand side denotes Equation (6) with p replaced by pσ , fθ replaced by fθσ , q replaced
+by qσ , and all noise-dependent quantities evaluated at the same σ (e.g., the truncation horizon
+T = 4σ 2 ). The noise annealed Flux Matching objective is then
+Lflux-noise (θ, η) := Eσ∼P [Lσflux (θ)/ exp(sη (σ)) + sη (σ)] .
+(11)
+sη (σ) is a learned normalizer (single-layer MLP) that reweighs losses from different noise levels to
+be on comparable scales [34] and is simultaneously trained with the main network.
+5
+
+Figure 4: Normalized score matching and Flux Matching losses as we vary properties of the vector
+field on a Gaussian mixture. The black star denotes the attribute value of the score field ∇ log pdata .
+The first three panels vary distribution preserving fields with different values of a chosen attribute;
+the last panel varies fields that violate the target stationary distribution.
+3.5
+
+Sampling & Likelihood Computation
+
+Training and sampling are fully decoupled. Although fθ is learned through Flux Matching, at
+sampling time it can replace the score term in standard score-based samplers (e.g. unadjusted
+Langevin dynamics) with no algorithmic changes and additional cost. Similarly, models learned via
+noise annealed Flux Matching can be used with reverse diffusion and probability-flow ODE samplers
+by simply replacing the noise conditioned score with fθσ . For probability-flow ODE sampling,
+likelihoods can also be computed with the usual instantaneous change-of-variables formula [8]. See
+Proposition A.1 for a formal statement.
+3.6
+
+Learning Useful Generative Vector Fields
+
+Flux Matching learns a family of vector fields that generate the same target distribution. The
+remaining task is to choose an element of this family with properties useful for the application. We
+provide two general strategies:
+(1) Application Specific Loss. Augment
+P the Flux Matching objective with a loss Lapp that encourages
+the desired properties, e.g., Lflux + i λapp,i Lapp,i . For example, adding λL2 ∥fθ ∥2L2 (p) recovers
+the score function when minimized. In the noise annealed setting, nonnegative application losses
+can be normalized across noise levels using an equivalent learned normalizer as Equation (11). For
+signed losses, we instead can normalize within discrete σ-buckets using running statistics, as in [10].
+(2) Model Parameterization. Desired attributes can also be built directly into the architecture used
+to represent fθ . For example, an attention mask in a transformer can enforce directed relationships
+among variables [61].
+Section 4 instantiates these two strategies in different settings, showing how Flux Matching can select
+useful generative fields while preserving the same target distribution.
+
+4
+
+Applications of Flux Matching
+
+We evaluate Flux Matching across five settings that highlight unique applications of the method.
+The first two experiments use the Flux Matching loss from Equation (6): Section 4.1 isolates the
+main controllability benefit of Flux Matching on a toy distribution, and Section 4.2 shows that Flux
+Matching can fit biologically interpretable vector fields. The remaining three experiments use the
+noise annealed objective from Equation (11): Section 4.3 tests Flux Matching as a standalone image
+generation objective, Section 4.4 leverages Flux Matching to optimize fields for faster sampling, and
+Section 4.5 uses Flux Matching to impose directed structure between variables.
+4.1
+
+Controllable Generative Fields
+
+One advantage of Flux Matching is that it exposes distribution-preserving degrees of freedom for
+control. Many vector fields share the same stationary distribution, and their differences govern
+properties of the generative process such as mixing rate, circulation pattern, and reversibility. Score
+matching targets ∇ log pdata as the unique correct field and penalizes any deviation, even ones that
+6
+
+Dataset
+Pancreas
+Gastrulation
+Dentategyrus
+Bone Marrow
+Hindbrain
+
+Flux Matching
+scVelo [5]
+CBC ↑ / Consist. ↑ CBC ↑ / Consist. ↑
+0.202 / 0.972
+0.611 / 0.991
+0.284 / 0.981
+0.177 / 0.939
+0.345 / 0.897
+
+0.330 / 0.821
+-0.639 / 0.877
+-0.084 / 0.791
+-0.789 / 0.857
+0.332 / 0.874
+
+Figure 5: (Left) Learned RNA velocity using Flux Matching; blue arrows indicate ground-truth
+biological progression between cell-types. (Right) CBC and consistency means across datasets.
+leave the distribution unchanged. Flux Matching instead treats the entire distribution preserving
+family as equivalent.
+Setup. On a 2D three-component Gaussian mixture, we construct three one-parameter families of
+distribution preserving perturbations of the score field, indexed by attributes we call mixing speed,
+triangle shape, and Jacobian skewness. For each perturbed field we compute the score matching and
+Flux Matching losses, alongside a distribution-violation metric that is zero exactly on the distribution
+preserving family. Since the two objectives have different raw scales, we report standardized losses.
+Full definitions and construction details appear in Section B.1.
+Results. Figure 4 displays the outcomes. In the first three panels, increasing the perturbation
+magnitude drives the score matching loss up immediately while the Flux Matching loss stays at
+exactly zero. Practitioners can therefore tune these degrees of freedom to shape the dynamics, for
+example to increase mixing, enforce triangular circulation, or induce nonreversible structure, without
+changing the target density. The fourth panel perturbs the field outside the distribution preserving
+family, and the Flux Matching loss now rises with the degree of distribution violation. Flux Matching
+is not flat everywhere. It is flat precisely on the family of vector fields sharing the target stationary
+distribution.
+4.2
+
+Interpretable Generative Fields
+
+A second practical advantage of Flux Matching is that the vector field fθ may be of any parametric
+family, including ones whose parameters carry scientific meaning. This enables interpretable
+generative dynamics. Rather than learning a black-box neural field, we constrain fθ to a structured
+form chosen by domain experts and fit its parameters directly from data. We illustrate this on RNA
+velocity [36], a problem in single-cell biology where the admissible vector fields are prescribed by a
+known mechanistic model.
+RNA velocity. From a single static snapshot of a cell population, RNA velocity aims to infer the
+direction in which each cell is moving through gene expression space. For each of G genes, two
+quantities are measured per cell, namely an immature transcript ug and its mature form sg . A standard
+biophysical model [5] prescribes the ordinary differential equation (ODE)
+  
+
+d ug
+αg (τ ) − βg ug
+=
+,
+(12)
+βg ug − γg sg
+dτ sg
+where the rates αg , βg , γg are biologically meaningful (transcription, splicing, and degradation,
+respectively). A dominant method, scVelo [5], fits these rates per gene using an EM-style latentvariable procedure that is known to be sensitive to initialization.
+Flux Matching as a drop-in trainer. We keep the biophysical model (12) unchanged but replace
+the bespoke EM fit with gradient descent on Lflux . Concretely, we concatenate the per-gene fields
+across G = 2000 genes into a full cell-state vector field and optimize the scalar parameters jointly.
+The structured ODE restricts the admissible vector fields, while Flux Matching supplies the training
+objective.
+Results. Figure 5 reports two standard RNA velocity metrics. Cross-boundary correctness (CBC)
+measures how well predicted velocities align with known transitions between cell types, and consistency measures whether nearby cells receive similar velocity directions. Across five real single cell
+datasets, Flux Matching improves consistency on all five and CBC on four out of five, under the same
+parametric family as scVelo. Because the model class is unchanged, the gains are attributable to the
+7
+
+Figure 6: FID (calculated with 1K generated samples) as a function of the number of sampling steps.
+fitting procedure rather than to added expressivity. We foresee that Flux Matching can be applied to
+other newly developed RNA velocity models with more sophisticated biological parameterizations.
+4.3
+
+Unrestricted Generative Fields
+
+Flux Matching’s main value is in imposing structure on the learned vector field, but the Flux Matching
+loss is also viable as a standalone training objective on complex high-dimensional distributions. We
+verify this in the unrestricted (vanilla) setting, where no additional field property is optimized.
+Setup. We evaluate on CIFAR10 (3 × 32 × 32) and CelebA (3 × 64 × 64). We train a standard
+UNet architecture from [19] with the noise annealed Flux Matching objective in Equation (11), using
+the EDM noise level distribution [33], for 500,000 steps. As a baseline, we train noise annealed
+denoising score matching (DSM) with the same architecture and hyperparameters.
+Results. The top half of Table 1 shows that Flux Matching performs strongly on both datasets,
+demonstrating that the loss alone scales to realistic high-dimensional image distributions. The Table 1: Unconditional generation performance
+remaining FID gap to DSM is unsurprising since and training-time efficiency.
+DSM has benefited from many engineering it- Dataset Model
+Performance
+erations specifically aimed at optimizing FID,
+FID (↓) IS (↑)
+NLL (bpd, ↓)
+whereas Flux Matching is evaluated here as a
+4.74
+8.52
+3.16
+first-pass implementation of a new learning ob- CIFAR10 DSM
+Flux
+9.06
+8.54
+3.26
+jective. The bottom half shows that Flux Match- CelebA DSM
+2.41
+2.03
+Flux
+7.07
+2.17
+ing is roughly 3–4× slower than DSM during
+training and uses about 2–3× more memory. Dataset Model
+Efficiency
+This overhead is incurred only during training.
+Speed (it/s)
+Memory/GPU (G)
+At sampling time, the learned field can be used
+CIFAR10 DSM
+11.63
+2.79
+in the same samplers as a score model. As noted
+Flux
+4.01
+5.69
+earlier, the main motivation for Flux Matching CelebA DSM
+7.20
+7.79
+Flux
+1.77
+22.67
+is not to replace DSM in this unrestricted setting
+but to enable dynamics with useful properties,
+as shown in the next two experiments.
+4.4
+
+Fast Mixing Generative Fields for Accelerated Sampling
+
+Fast mixing fields can accelerate sampling by requiring fewer sampling steps to converge to the target
+distribution. Score-based Langevin dynamics is reversible and known to mix slowly [30, 53, 16], so
+score matching cannot exploit this property while Flux Matching can. Since mixing time itself is
+intractable to optimize directly, we minimize a proxy defined in Section B.4.
+Setup. We reuse the training and model setup of Section 4.3 but add the mixing proxy with weight
+λmixing = 0.01, giving Lflux−fast = Lflux-noise + λmixing Lmixing . After training fθσ with Lflux−fast
+on CIFAR10 and CelebA, we evaluate FID on 1K generated samples across different numbers of
+sampling steps and compare against vanilla Flux Matching and DSM (noise annealed versions).
+Results. As shown in Figure 6, fast-mixing Flux Matching reaches a reasonable FID with substantially
+fewer sampling steps than vanilla Flux Matching and DSM on CIFAR10; on CelebA, the gain
+8
+
+Figure 7: (Left) Causal attention mask used for trajectory generation. Rows index the output at each
+trajectory time, and columns index the input states at each trajectory time. The upper-triangular mask
+σ
+allows fθ,n
+to depend only on states xm with m ≤ n, enforcing autoregressive structure while still
+evaluating all outputs in parallel. (Right) Relative change in Wasserstein distance from adding a
+σ
+causal attention mask to fθ,n
+when training with DSM versus Flux Matching.
+over vanilla Flux Matching is modest. Interestingly, Flux Matching without fast mixing reaches a
+reasonable FID with fewer sampling steps than DSM on both datasets, suggesting that Flux Matching
+may already learn fields whose sampling dynamics are easier to mix.
+4.5
+
+Embedding Structure in Generative Fields
+
+Many generative problems have known structure among variables, and Flux Matching lets us encode
+this structure directly into the architecture representing the vector field. Score fields are gradient
+fields with symmetric Jacobians (by equality of mixed partials), so directed dependencies such as
+temporal autoregression are incompatible. Flux Matching has no such constraint.
+Setup. We simulate trajectories of two masses connected by nonlinear springs (ODE in Section B.5),
+with simulator state x(τ ) = (q1 (τ ), v1 (τ ), q2 (τ ), v2 (τ )) ∈ R4 giving the position qi and velocity vi
+of each mass at physical time τ . Each data sample is a discretized trajectory X = (x0 , . . . , xN −1 ) ∈
+RN ×4 with xn := x(n∆τ ) and N = 50. Our goal is to model the distribution over full trajectories.
+Temporal order provides a natural inductive bias that later states depend only on earlier states, which
+shrinks the hypothesis class and improves data efficiency [4]. Standard diffusion samplers generate all
+time points in parallel, but Flux Matching additionally lets us impose a causal mask on fθσ , retaining
+the autoregressive inductive bias without sequential sampling. We train noise annealed DSM and
+Flux Matching, each with and without a causal mask (left of Figure 7), on 2000 simulated trajectories.
+All four models share the same attention architecture (Section B.5). We evaluate via the empirical
+Wasserstein distance W2 to the training distribution.
+Results. The right side of Figure 7 reports the relative change in W2 from adding the causal mask.
+The mask consistently improves Flux Matching, confirming that the autoregressive inductive bias
+helps. The same mask worsens DSM, as expected since DSM forces the learned field to approximate
+a conservative score field whose symmetric Jacobian conflicts with directed temporal dependence.
+
+5
+
+Conclusion
+
+In this paper, we presented Flux Matching, a new generative modeling paradigm that generalizes score
+matching to learn any vector field that generates samples from the target distribution. We proposed
+a scalable learning objective, the Flux Matching loss, together with a noise annealed extension
+whose learned models can be used out of the box with existing diffusion samplers and likelihood
+computations. We showed that Flux Matching performs well across a range of applications, including
+complex, high-dimensional image distributions. Most importantly, these applications demonstrate the
+flexibility Flux Matching gives practitioners to enforce and optimize attributes of the vector field itself.
+We showed that this flexibility enables faster samplers, more interpretable models, and generative
+models with prescribed relationships between variables.
+
+9
+
+Acknowledgments and Disclosure of Funding
+We thank Eric Ma, Alex Belov, Meihua Dang, Gabe Guo, Jiaqi Han, and Haotian Ye for helpful
+feedback and discussions. This work was supported by CZ Biohub, ONR Grant N00014-23-1-2159,
+the Laude Institute Moonshot Seed Grant, the Pantas And Ting Sutardja Foundation, the Wu Tsai
+Neurosciences Institute Big Ideas in Neuroscience Program, NIH DP2 grant 1DP2OD037052-01,
+and NIH K99/R00 grant 4K99HG012887-02. PPH acknowledges support from the NSF Graduate
+Research Fellowship.
+
+References
+[1] J. Abramson, J. Adler, J. Dunger, R. Evans, T. Green, A. Pritzel, O. Ronneberger, L. Willmore,
+A. J. Ballard, J. Bambrick, et al. Accurate structure prediction of biomolecular interactions with
+alphafold 3. Nature, 630(8016):493–500, 2024.
+[2] M. S. Albergo and E. Vanden-Eijnden. Building normalizing flows with stochastic interpolants.
+arXiv preprint arXiv:2209.15571, 2022.
+[3] F. Bao, S. Nie, K. Xue, Y. Cao, C. Li, H. Su, and J. Zhu. All are worth words: A vit backbone
+for diffusion models. In Proceedings of the IEEE/CVF conference on computer vision and
+pattern recognition, pages 22669–22679, 2023.
+[4] J. Baxter. A model of inductive bias learning. Journal of artificial intelligence research,
+12:149–198, 2000.
+[5] V. Bergen, M. Lange, S. Peidli, F. A. Wolf, and F. J. Theis. Generalizing rna velocity to transient
+cell states through dynamical modeling. Nature biotechnology, 38(12):1408–1414, 2020.
+[6] F. Bleile, S. Lumpp, and M. Drton. Efficient learning of stationary diffusions with stein-type
+discrepancies. arXiv preprint arXiv:2601.16597, 2026.
+[7] R. Chartrand. Numerical differentiation of noisy, nonsmooth data. International Scholarly
+Research Notices, 2011(1):164564, 2011.
+[8] R. T. Chen, Y. Rubanova, J. Bettencourt, and D. K. Duvenaud. Neural ordinary differential
+equations. Advances in neural information processing systems, 31, 2018.
+[9] C. Chi, Z. Xu, S. Feng, E. Cousineau, Y. Du, B. Burchfiel, R. Tedrake, and S. Song. Diffusion
+policy: Visuomotor policy learning via action diffusion. The International Journal of Robotics
+Research, 44(10-11):1684–1704, 2025.
+[10] K. Choi, C. Meng, Y. Song, and S. Ermon. Density ratio estimation via infinitesimal classification. In International Conference on Artificial Intelligence and Statistics, pages 2552–2573.
+PMLR, 2022.
+[11] G. Corso, H. Stärk, B. Jing, R. Barzilay, and T. Jaakkola. Diffdock: Diffusion steps, twists, and
+turns for molecular docking. arXiv preprint arXiv:2210.01776, 2022.
+[12] P. Dhariwal and A. Nichol. Diffusion models beat gans on image synthesis. Advances in neural
+information processing systems, 34:8780–8794, 2021.
+[13] L. Dinh, J. Sohl-Dickstein, and S. Bengio. Density estimation using real nvp. arXiv preprint
+arXiv:1605.08803, 2016.
+[14] A. Dixit, O. Parnas, B. Li, J. Chen, C. P. Fulco, L. Jerby-Arnon, N. D. Marjanovic, D. Dionne,
+T. Burks, R. Raychowdhury, et al. Perturb-seq: dissecting molecular circuits with scalable
+single-cell rna profiling of pooled genetic screens. cell, 167(7):1853–1866, 2016.
+[15] Y. Du and I. Mordatch. Implicit generation and modeling with energy based models. Advances
+in neural information processing systems, 32, 2019.
+[16] A. B. Duncan, T. Lelievre, and G. A. Pavliotis. Variance reduction using nonreversible langevin
+samplers. Journal of statistical physics, 163(3):457–491, 2016.
+10
+
+[17] A. B. Duncan, G. A. Pavliotis, and K. Zygalakis. Nonreversible langevin samplers: Splitting
+schemes, analysis and implementation. arXiv preprint arXiv:1701.04247, 2017.
+[18] N. Fishman, L. Klarner, E. Mathieu, M. Hutchinson, and V. De Bortoli. Metropolis sampling for
+constrained diffusion models. Advances in Neural Information Processing Systems, 36:62296–
+62331, 2023.
+[19] FutureXiang. Diffusion: Minimal multi-gpu implementation of diffusion models with
+classifier-free guidance (cfg). https://github.com/FutureXiang/Diffusion/tree/
+master, 2023.
+[20] Z. Geng, M. Deng, X. Bai, J. Z. Kolter, and K. He. Mean flows for one-step generative modeling.
+arXiv preprint arXiv:2505.13447, 2025.
+[21] S. Gong, M. Li, J. Feng, Z. Wu, and L. Kong. Diffuseq: Sequence to sequence text generation
+with diffusion models. arXiv preprint arXiv:2210.08933, 2022.
+[22] M. Gutmann and A. Hyvärinen. Noise-contrastive estimation: A new estimation principle
+for unnormalized statistical models. In Proceedings of the thirteenth international conference
+on artificial intelligence and statistics, pages 297–304. JMLR Workshop and Conference
+Proceedings, 2010.
+[23] N. Hansen and A. Sokol. Causal interpretation of stochastic differential equations. 2014.
+[24] G. E. Hinton. Training products of experts by minimizing contrastive divergence. Neural
+computation, 14(8):1771–1800, 2002.
+[25] J. Ho, A. Jain, and P. Abbeel. Denoising diffusion probabilistic models. Advances in neural
+information processing systems, 33:6840–6851, 2020.
+[26] J. Ho, T. Salimans, A. Gritsenko, W. Chan, M. Norouzi, and D. J. Fleet. Video diffusion models.
+Advances in neural information processing systems, 35:8633–8646, 2022.
+[27] C. Horvat and J.-P. Pfister. On gauge freedom, conservativity and intrinsic dimensionality
+estimation in diffusion models. arXiv preprint arXiv:2402.03845, 2024.
+[28] Y. Huang, T. Transue, S.-H. Wang, W. Feldman, H. Zhang, and B. Wang. Improving flow
+matching by aligning flow divergence. arXiv preprint arXiv:2602.00869, 2026.
+[29] M. F. Hutchinson. A stochastic estimator of the trace of the influence matrix for laplacian
+smoothing splines. Communications in Statistics-Simulation and Computation, 18(3):1059–
+1076, 1989.
+[30] C.-R. Hwang, S.-Y. Hwang-Ma, and S.-J. Sheu. Accelerating diffusions. 2005.
+[31] A. Hyvärinen and P. Dayan. Estimation of non-normalized statistical models by score matching.
+Journal of Machine Learning Research, 6(4), 2005.
+[32] B. Jing, G. Corso, J. Chang, R. Barzilay, and T. Jaakkola. Torsional diffusion for molecular
+conformer generation. Advances in neural information processing systems, 35:24240–24253,
+2022.
+[33] T. Karras, M. Aittala, T. Aila, and S. Laine. Elucidating the design space of diffusion-based
+generative models. Advances in neural information processing systems, 35:26565–26577, 2022.
+[34] T. Karras, M. Aittala, J. Lehtinen, J. Hellsten, T. Aila, and S. Laine. Analyzing and improving
+the training dynamics of diffusion models. In Proceedings of the IEEE/CVF conference on
+computer vision and pattern recognition, pages 24174–24184, 2024.
+[35] Z. Kong, W. Ping, J. Huang, K. Zhao, and B. Catanzaro. Diffwave: A versatile diffusion model
+for audio synthesis. arXiv preprint arXiv:2009.09761, 2020.
+[36] G. La Manno, R. Soldatov, A. Zeisel, E. Braun, H. Hochgerner, V. Petukhov, K. Lidschreiber,
+M. E. Kastriti, P. Lönnerberg, A. Furlan, et al. Rna velocity of single cells. Nature,
+560(7719):494–498, 2018.
+11
+
+[37] C.-H. Lai, B. Nguyen, N. Murata, Y. Takida, T. Uesaka, Y. Mitsufuji, S. Ermon, and M. Tao. A
+unified view of drifting and score-based models. arXiv preprint arXiv:2603.07514, 2026.
+[38] C.-H. Lai, Y. Takida, N. Murata, T. Uesaka, Y. Mitsufuji, and S. Ermon. Fp-diffusion: Improving
+score-based diffusion models by enforcing the underlying score fokker-planck equation. In
+International Conference on Machine Learning, pages 18365–18398. PMLR, 2023.
+[39] Y. LeCun, S. Chopra, R. Hadsell, M. Ranzato, F. Huang, et al. A tutorial on energy-based
+learning. Predicting structured data, 1(0), 2006.
+[40] Y. Lipman, R. T. Chen, H. Ben-Hamu, M. Nickel, and M. Le. Flow matching for generative
+modeling. arXiv preprint arXiv:2210.02747, 2022.
+[41] X. Liu, C. Gong, and Q. Liu. Flow straight and fast: Learning to generate and transfer data with
+rectified flow. arXiv preprint arXiv:2209.03003, 2022.
+[42] L. Lorch, A. Krause, and B. Schölkopf. Causal modeling with stationary diffusions. In
+International Conference on Artificial Intelligence and Statistics, pages 1927–1935. PMLR,
+2024.
+[43] A. Lou and S. Ermon. Reflected diffusion models. In International Conference on Machine
+Learning, pages 22675–22701. PMLR, 2023.
+[44] Y.-A. Ma, T. Chen, and E. Fox. A complete recipe for stochastic gradient mcmc. Advances in
+neural information processing systems, 28, 2015.
+[45] K. Neklyudov, R. Brekelmans, D. Severo, and A. Makhzani. Action matching: Learning
+stochastic dynamics from samples. In International conference on machine learning, pages
+25858–25889. PMLR, 2023.
+[46] K. Neklyudov, R. Brekelmans, A. Tong, L. Atanackovic, Q. Liu, and A. Makhzani. A computational framework for solving wasserstein lagrangian flows. arXiv preprint arXiv:2310.10649,
+2023.
+[47] G. Papamakarios, E. Nalisnick, D. J. Rezende, S. Mohamed, and B. Lakshminarayanan. Normalizing flows for probabilistic modeling and inference. Journal of Machine Learning Research,
+22(57):1–64, 2021.
+[48] G. A. Pavliotis. Stochastic processes and applications. Texts in applied mathematics, 60:41–43,
+2014.
+[49] G. A. Pavliotis and A. M. Stuart. Multiscale methods, volume 53 of texts in applied mathematics,
+2008.
+[50] T. Pearce, T. Rashid, A. Kanervisto, D. Bignell, M. Sun, R. Georgescu, S. V. Macua, S. Z. Tan,
+I. Momennejad, K. Hofmann, et al. Imitating human behaviour with diffusion models. arXiv
+preprint arXiv:2301.10677, 2023.
+[51] W. Peebles and S. Xie. Scalable diffusion models with transformers. In Proceedings of the
+IEEE/CVF international conference on computer vision, pages 4195–4205, 2023.
+[52] K. Petrović, L. Atanackovic, V. Moro, K. Kapuśniak, I. I. Ceylan, M. Bronstein, A. J. Bose,
+and A. Tong. Curly flow matching for learning non-gradient field dynamics. arXiv preprint
+arXiv:2510.26645, 2025.
+[53] L. Rey-Bellet and K. Spiliopoulos. Irreversible langevin samplers and variance reduction: a
+large deviations approach. Nonlinearity, 28(7):2081–2103, 2015.
+[54] R. Rombach, A. Blattmann, D. Lorenz, P. Esser, and B. Ommer. High-resolution image synthesis
+with latent diffusion models. In Proceedings of the IEEE/CVF conference on computer vision
+and pattern recognition, pages 10684–10695, 2022.
+[55] P. K. Rubenstein, S. Bongers, B. Schölkopf, and J. M. Mooij. From deterministic odes to
+dynamic structural causal models. arXiv preprint arXiv:1608.08028, 2016.
+12
+
+[56] J. Sohl-Dickstein, E. Weiss, N. Maheswaranathan, and S. Ganguli. Deep unsupervised learning
+using nonequilibrium thermodynamics. In International conference on machine learning, pages
+2256–2265. pmlr, 2015.
+[57] Y. Song, P. Dhariwal, M. Chen, and I. Sutskever. Consistency models. 2023.
+[58] Y. Song and S. Ermon. Generative modeling by estimating gradients of the data distribution.
+Advances in neural information processing systems, 32, 2019.
+[59] Y. Song, J. Sohl-Dickstein, D. P. Kingma, A. Kumar, S. Ermon, and B. Poole. Score-based
+generative modeling through stochastic differential equations. arXiv preprint arXiv:2011.13456,
+2020.
+[60] A. Tong, K. Fatras, N. Malkin, G. Huguet, Y. Zhang, J. Rector-Brooks, G. Wolf, and Y. Bengio.
+Improving and generalizing flow-based generative models with minibatch optimal transport.
+arXiv preprint arXiv:2302.00482, 2023.
+[61] A. Vaswani, N. Shazeer, N. Parmar, J. Uszkoreit, L. Jones, A. N. Gomez, Ł. Kaiser, and
+I. Polosukhin. Attention is all you need. Advances in neural information processing systems,
+30, 2017.
+[62] P. Vincent. A connection between score matching and denoising autoencoders. Neural computation, 23(7):1661–1674, 2011.
+[63] J. L. Watson, D. Juergens, N. R. Bennett, B. L. Trippe, J. Yim, H. E. Eisenach, W. Ahern, A. J.
+Borst, R. J. Ragotte, L. F. Milles, et al. De novo design of protein structure and function with
+rfdiffusion. Nature, 620(7976):1089–1100, 2023.
+[64] M. Xu, L. Yu, Y. Song, C. Shi, S. Ermon, and J. Tang. Geodiff: A geometric diffusion model
+for molecular conformation generation. arXiv preprint arXiv:2203.02923, 2022.
+[65] Y. Xu, S. Tong, and T. Jaakkola. Stable target field for reduced variance score estimation in
+diffusion models. arXiv preprint arXiv:2302.00670, 2023.
+[66] Y. Zhang and M. Levin. Equilibrium flow: from snapshots to dynamics. arXiv preprint
+arXiv:2509.17990, 2025.
+
+13
+
+Appendix Overview
+A Proofs
+
+15
+
+B Experiment Details
+
+18
+
+B.1 Application 1: Controllable Generative Fields . . . . . . . . . . . . . . . . . . . .
+
+18
+
+B.2 Application 2: Interpretable Generative Fields . . . . . . . . . . . . . . . . . . . .
+
+21
+
+B.3 Application 3: Unrestricted Generative Fields . . . . . . . . . . . . . . . . . . . .
+
+25
+
+B.4 Application 4: Fast Mixing Generative Fields for Accelerated Sampling . . . . . .
+
+26
+
+B.5 Application 5: Embedding Structure in Generative Fields . . . . . . . . . . . . . .
+
+29
+
+C Other Applications of Flux Matching
+
+31
+
+C.1 Causality . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+31
+
+C.2 Generative Modeling in Constrained Domains . . . . . . . . . . . . . . . . . . . .
+
+32
+
+C.3 Spatially Structured Dependencies in Images . . . . . . . . . . . . . . . . . . . .
+
+32
+
+C.4 Augmenting Existing Score-Based Models . . . . . . . . . . . . . . . . . . . . . .
+
+32
+
+D Flux Matching Details
+
+32
+
+D.1 Component Calculation Specifications . . . . . . . . . . . . . . . . . . . . . . . .
+
+32
+
+D.2 Variance at Intermediate Noise Levels . . . . . . . . . . . . . . . . . . . . . . . .
+
+33
+
+D.3 Architectures Need to Be Gradient Friendly . . . . . . . . . . . . . . . . . . . . .
+
+34
+
+E v-Flux Matching for Distribution Flows
+
+34
+
+E.1 Distribution Flows and Equivalent Vector Fields . . . . . . . . . . . . . . . . . . .
+
+35
+
+E.2 v-Flux Matching at a Single Marginal . . . . . . . . . . . . . . . . . . . . . . . .
+
+35
+
+E.3 Pathwise v-Flux Matching . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+36
+
+F Related Work
+
+36
+
+F.1
+
+Analyzing Non-Conservative Generative Vector Fields . . . . . . . . . . . . . . . .
+
+36
+
+F.2
+
+Learning Non-Conservative Generative Vector Fields . . . . . . . . . . . . . . . .
+
+36
+
+F.3
+
+Enforcing the Fokker–Planck (or Continuity) Equation . . . . . . . . . . . . . . .
+
+36
+
+G Limitations
+
+36
+
+14
+
+A
+
+Proofs
+
+Proposition 2.1. [Classical stationary Fokker–Planck characterization,
+Section 2.4 of [48]] pdata
+√
+is a stationary distribution of the diffusion dxt = fθ (xt ) dt + 2 dWt iff
+
+
+∇ · pdata (x)fθ (x) − ∇ · pdata (x)∇ log pdata (x) = 0
+for all x.
+Proof. Follows directly from Equation 2.37 of [48].
+Proposition A.1. Assume pt > 0 on Rd . If vector field ft satisfies the Flux Matching condition
+given by Proposition 2.1 that
+∇ · (ft (x)pt (x)) = ∇ · (∇ log pt (x)pt (x))
+
+(13)
+
+for all t and x, then replacing ∇ log pt by ft in the sampler leaves the continuous-time marginal
+density evolution unchanged.
+Proof. The Fokker–Planck contribution of replacing ∇ log pt by ft differs from the score-based one
+by
+
+
+− ∇ · (ft (x)pt (x)) − ∇ · (∇ log pt (x)pt (x)) ,
+
+which is zero by (13). Hence the same pt solves the same marginal evolution.
+Lemma A.2. Let
+gθ := Πflux fθ − ∇ log pdata ,
+
+uθ := fθ − ∇ log pdata ,
+
+rθ :=
+
+1
+∇ · (pdata uθ ).
+pdata
+
+Since Πflux fθ and ∇ log pdata are gradient fields, gθ = ∇ϕθ for some potential ϕθ , unique up to
+an additive constant. Assume ϕθ , rθ ∈ L20 (pdata ) and vanishing boundary terms. Then,
+Z ∞
+
+
+Ex∼pdata ∥gθ (x)∥2 =
+Ex0 ∼pdata ,xt |x0 [rθ (x0 ) rθ (xt )] dt,
+0
+
+where (xt )t≥0 is the stationary Langevin diffusion with generator
+L = ∆ + ∇ log pdata · ∇.
+Proof. Since both Πflux fθ and ∇ log pdata are gradient fields, so is
+gθ = Πflux fθ − ∇ log pdata .
+Thus gθ = ∇ϕθ for some ϕθ , unique up to an additive constant, which we fix by requiring ϕθ ∈
+L20 (pdata ). Moreover, by definition of Πflux ,
+
+∇ · pdata Πflux fθ = ∇ · (pdata fθ ).
+Hence
+1
+
+∇ · (pdata uθ )
+pdata
+
+1
+=
+∇ · pdata (fθ − ∇ log pdata )
+pdata
+
+1
+=
+∇ · pdata (Πflux fθ − ∇ log pdata )
+pdata
+1
+=
+∇ · (pdata gθ )
+pdata
+= ∇ · gθ + gθ · ∇ log pdata .
+
+rθ =
+
+15
+
+Therefore rθ is equivalently the Langevin Stein operator applied to gθ , and since gθ = ∇ϕθ ,
+rθ =
+
+1
+pdata
+
+∇ · (pdata ∇ϕθ ) = ∆ϕθ + ∇ log pdata · ∇ϕθ = Lϕθ .
+
+By integration by parts,
+
+
+Ex∼pdata ∥gθ (x)∥2 =
+
+Z
+
+∥∇ϕθ (x)∥2 pdata (x) dx
+Z
+= − ϕθ (x) Lϕθ (x) pdata (x) dx
+Z
+= − ϕθ (x) rθ (x) pdata (x) dx.
+
+Since rθ = Lϕθ , we have ϕθ = −(−L)−1 rθ , and thus
+Z
+
+
+2
+Ex∼pdata ∥gθ (x)∥ = rθ (x) (−L)−1 rθ (x) pdata (x) dx.
+R∞
+We use the identity (−L)−1 = 0 eLt dt (Ch. 11 of [49]),
+Z
+Z ∞Z
+rθ (x) (−L)−1 rθ (x) pdata (x) dx =
+rθ (x) (etL rθ )(x) pdata (x) dx dt.
+0
+
+Finally, for the Langevin diffusion with generator L,
+(etL rθ )(x) = E[rθ (xt ) | x0 = x] ,
+where the expectation is over the Langevin diffusion path (xs )s≥0 started from x0 = x (see Ch. 2 of
+[48]). Therefore, since x0 ∼ pdata ,
+Z
+rθ (x) (etL rθ )(x) pdata (x) dx = Ex0 ∼pdata [rθ (x0 ) E[rθ (xt ) | x0 ]]
+= Ex0 ∼pdata [E[rθ (x0 )rθ (xt ) | x0 ]]
+= Ex0 ∼pdata ,xt |x0 [rθ (x0 )rθ (xt )] .
+Hence,
+Z
+
+rθ (x) (−L)−1 rθ (x) pdata (x) dx =
+
+Z ∞
+Ex0 ∼pdata ,xt |x0 [rθ (x0 )rθ (xt )] dt.
+0
+
+Lemma A.3. Let
+uθ := fθ − ∇ log pdata ,
+
+rθ :=
+
+1
+∇ · (pdata uθ ).
+pdata
+
+Assume uθ and etL rθ are sufficiently regular and vanishing boundary terms hold. Then, for every
+t ≥ 0,
+
+
+Ex0 ∼pdata ,xt |x0 [rθ (x0 ) rθ (xt )] = −Ex0 ∼pdata uθ (x0 )⊤ ∇(etL rθ )(x0 ) ,
+where (xt )t≥0 is the stationary Langevin diffusion with generator
+L = ∆ + ∇ log pdata · ∇,
+and ∂xt /∂x0 denotes the Jacobian of the associated Langevin path. Equivalently,
+
+
+Ex0 ∼pdata ,xt |x0 [rθ (x0 ) rθ (xt )] = −Ex0 ∼pdata ,xt |x0 uθ (x0 )⊤ ∂xt /∂x⊤
+0 ∇xt rθ (xt ) .
+Proof. For the Langevin diffusion with generator L,
+(etL rθ )(x) = E[rθ (xt ) | x0 = x] ,
+16
+
+where the expectation is over diffusion paths (xs )s≥0 started from x0 = x (Ch. 2 of [48]). Hence,
+Ex0 ∼pdata ,xt |x0 [rθ (x0 ) rθ (xt )] = Ex0 ∼pdata [rθ (x0 ) E[rθ (xt ) | x0 ]]
+
+
+= Ex0 ∼pdata rθ (x0 ) (etL rθ )(x0 ) .
+Using rθ = p−1
+data ∇ · (pdata uθ ), we have
+Z
+
+
+
+Ex0 ∼pdata rθ (x0 ) (etL rθ )(x0 ) = ∇ · pdata (x)uθ (x) (etL rθ )(x) dx
+Z
+= − pdata (x) uθ (x)⊤ ∇(etL rθ )(x) dx
+
+
+= −Ex0 ∼pdata uθ (x0 )⊤ ∇(etL rθ )(x0 ) .
+
+(integration by parts)
+
+Finally, let ∂xt /∂x0 denote the Jacobian of the path generated by the Langevin diffusion. Since
+
+
+∇(etL rθ )(x0 ) = ∇x0 E[rθ (xt ) | x0 ] = E ∂xt /∂x⊤
+0 ∇xt rθ (xt ) | x0 ,
+we obtain
+
+
+Ex0 ∼pdata ,xt |x0 [rθ (x0 ) rθ (xt )] = −Ex0 ∼pdata ,xt |x0 uθ (x0 )⊤ ∂xt /∂x⊤
+0 ∇xt rθ (xt ) .
+
+Lemma A.4. Let q be any strictly positive probability density on [0, ∞), let ∂xt /∂x0 , and define
+
+
+LeFlux (θ) := −E
+q(t)−1 uθ (x0 )⊤ ∂xt /∂x⊤
+t∼q
+0 ∇xt rθ (xt ) ,
+x0 ∼pdata , xt |x0
+
+LFlux (θ) := −E
+
+t∼q
+x0 ∼pdata , xt |x0
+
+
+
+q(t)−1 uθ (x0 )⊤ sg ∂xt /∂x⊤
+0 ∇xt rθ (xt ) .
+
+Assume differentiation and expectation may be interchanged, and that the stationary Langevin
+diffusion is reversible with respect to pdata . Then,
+∇θ LeFlux (θ) = 2 ∇θ LFlux (θ).
+Proof. We differentiate componentwise in θ. For any parameter θj ,
+
+
+∂θj LeFlux (θ) = −E q(t)−1 (∂θj uθ (x0 ))⊤ ∂xt /∂x⊤
+0 ∇xt rθ (xt )
+
+
+− E q(t)−1 uθ (x0 )⊤ ∂xt /∂x⊤
+0 ∇xt (∂θj rθ (xt )) .
+1
+Since rθ = pdata
+∇ · (pdata uθ ) depends linearly on uθ , we have
+
+∂θj rθ =
+
+1
+
+
+∇ · pdata ∂θj uθ .
+
+pdata
+Applying Lemma 2 with uθ replaced by ∂θj uθ gives
+
+
+
+
+−1
+−E q(t)−1 (∂θj uθ (x0 ))⊤ ∂xt /∂x⊤
+(∂θj rθ (x0 )) rθ (xt ) .
+0 ∇xt rθ (xt ) = E q(t)
+Similarly,
+
+
+
+
+−1
+−E q(t)−1 uθ (x0 )⊤ ∂xt /∂x⊤
+rθ (x0 ) ∂θj rθ (xt ) .
+0 ∇xt (∂θj rθ (xt )) = E q(t)
+By reversibility of the stationary Langevin diffusion, E[φ(x0 , xt )] = E[φ(xt , x0 )] for any test
+function φ, so the two right-hand sides are equal. Thus,
+
+
+∂θ LeFlux (θ) = −2 E q(t)−1 (∂θ uθ (x0 ))⊤ ∂xt /∂x⊤
+0 ∇x rθ (xt ) .
+j
+
+j
+
+t
+
+On the other hand, by definition of stop-gradient,
+
+
+∂θj LFlux (θ) = −E q(t)−1 (∂θj uθ (x0 ))⊤ sg ∂xt /∂x⊤
+0 ∇xt rθ (xt )
+
+
+= −E q(t)−1 (∂θj uθ (x0 ))⊤ ∂xt /∂x⊤
+0 ∇xt rθ (xt ) .
+Therefore
+∂θj LeFlux (θ) = 2 ∂θj LFlux (θ)
+for every j,
+and
+∇θ LeFlux (θ) = 2 ∇θ LFlux (θ).
+
+17
+
+Theorem 3.1. Assume pdata > 0 on Rd and boundary terms in integration-by-parts arguments
+vanish. Then,
+∇θ Je(θ) = 2 ∇θ Lflux (θ).
+Proof. We have
+
+
+J (θ) = Ex0 ∼pdata ∥Πflux fθ (x0 ) − ∇ log pdata (x0 )∥2
+Z ∞
+Ex0 ∼pdata , xt |x0 [rθ (x0 ) rθ (xt )] dt
+=
+0
+Z ∞
+
+
+=−
+Ex0 ∼pdata , xt |x0 uθ (x0 )⊤ ∂xt /∂x⊤
+0 ∇xt rθ (xt ) dt
+
+(Lemma A.2)
+(Lemma A.3).
+
+0
+
+Differentiating with respect to θ and applying Lemma A.4 yields
+
+
+∇θ Je(θ) = −2 ∇θ E
+q(t)−1 uθ (x0 )⊤ sg ∂xt /∂x⊤
+= 2 ∇θ LFlux (θ).
+t∼q
+0 ∇xt rθ (xt )
+x0 ∼pdata , xt |x0
+
+B
+
+Experiment Details
+
+B.1
+
+Application 1: Controllable Generative Fields
+
+Goal. In this toy setting of a two-dimensional Gaussian mixture, we aim to show that (1) Flux
+Matching assign 0 loss to fields that preserve the target distribution but have very different dynamics,
+while penalizing fields that change the target distribution and (2) score matching assigns high loss to
+both fields that preserve the distribution (but have non score dynamics) and fields that change the
+target distribution. Ultimately, the core message of this experiment is that Flux Matching enables
+control over interesting attributes about the vector field (that still preserve the distribution) while
+score matching does not.
+Target distribution.
+
+We use
+pσ (x) =
+
+3
+X
+
+πk N (x; µk , νσ2 I),
+
+(14)
+
+µ3 = (1.99, −1.15),
+
+νσ2 = σ02 + σ 2 = 0.625. (15)
+
+k=1
+
+with
+µ1 = (0, 2.3),
+
+µ2 = (−1.99, −1.15),
+
+The three modes lie at the vertices of an equilateral triangle. Since pσ is known analytically, its score
+is also available in closed form:
+sσ (x) = ∇ log pσ (x) =
+where
+
+mσ (x) − x
+,
+νσ2
+
+mσ (x) =
+
+3
+X
+
+ωkσ (x)µk ,
+
+(16)
+
+k=1
+
+
+
+πk exp −∥x − µk ∥2 /(2νσ2 )
+ωkσ (x) = P3
+.
+2
+2
+ℓ=1 πℓ exp(−∥x − µℓ ∥ /(2νσ ))
+
+Vector field families.
+
+(17)
+
+All fields are perturbations of the score,
+
+fθ (x) = sσ (x) + uθ (x),
+
+uθ (x) = θ0 crot (x) + θ1 ctri (x) + θ2 cskew (x).
+
+(18)
+
+The three controls (aka attributes) respectively induce global rotation, clockwise circulation around
+the triangle, and localized Jacobian asymmetry. We will then calculate specific metrics on these
+vector fields (specified under “Metrics”), which give us Figure 2 and Figure 4.
+For the distribution-preserving family, we use
+crot (x) ∝ Jsσ (x),
+
+ctri (x) ∝ −
+
+J∇ψtri (x)
+,
+pσ (x)
+18
+
+cskew (x) ∝
+
+J∇ψskew (x)
+,
+pσ (x)
+
+(19)
+
+
+where J = 01 −1
+0 . The exact forms of ψtri and ψskew are not essential to this experiment; they are
+smooth templates chosen to produce visually interesting vector fields for Figure 2. The key structural
+requirement is that each distribution preserving attribute has the form J∇ψ/pσ , which guarantees
+∇ · (pσ c) = 0. Within this constraint, we tuned the template parameters to make the induced vector
+fields visually clear, high-contrast, and qualitatively distinct, where ψtri produces circulation along
+the triangle and ψskew produces a localized asymmetric perturbation. As a result, the somewhat
+elaborate formulas below should be viewed as implementation choices for constructing illustrative
+vector fields with interesting attributes, not as something rigorously motivated.
+The scalar function ψtri concentrates near the triangle edges, while ψskew is a localized anisotropic
+bump. More precisely, let vj be the triangle vertices, ej the unit direction of edge j, nj the outward
+normal to edge j, and ℓj the edge length. For each edge, define the along-edge coordinate and normal
+distance
+aj (x) = e⊤
+dj (x) = n⊤
+(20)
+j (x − vj ),
+j (x − vj ).
+We define an edge-localized template by
+
+
+
+
+
+
+κaj (x)
+dj (x)2
+κ(ℓj − aj (x))
+sigmoid
+Rj (x) = exp −
+sigmoid
+,
+(21)
+2w2
+w
+w
+which is large near edge j and small away from that edge segment. We also define a smooth triangle
+level function
+3
+X
+
+1
+⊤
+h(x) = log
+exp β(n⊤
+(22)
+j x − n j vj ) .
+β
+j=1
+Then,
+
+
+
+
+3
+ReLU(h(x))2  1 X
+ψtri (x) = exp −
+Rj (x) + λint sigmoid(−βh(x)) .
+2η 2
+3 j=1
+
+(23)
+
+In the experiment, we use w = 0.24, κ = 5.0, β = 10.0, λint = 0.12, and η = 0.9.
+For the skew template, let
+d = (cos α, sin α),
+z = ρRd,
+d⊥ = Jd,
+◦
+where R = 2.3, α = −20 , and ρ = 0.78. For r = x − z, define
+r∥ = d⊤ r,
+r⊥ = d⊤
+⊥ r.
+We set
+!# 
+"
+ ⊤ 
+2
+2
+γd x
+1 r∥
+r⊥
+1 + λbias sigmoid
+ψskew (x) = exp −
++ 2
+,
+2
+2 a
+b
+R
+
+(24)
+(25)
+(26)
+
+with a = 0.60, b = 1.05, λbias = 0.45, and γ = 1.75.
+Each attribute vector field is constructed to be of 0 flux divergence (aka should make the Flux
+Matching loss 0):
+
+∇ · pσ (x)c(x) = 0.
+(27)
+Hence every linear combination satisfies
+
+∇ · pσ (x)uθ (x) = 0,
+(28)
+so these perturbations change the vector field dynamics without changing the stationary distribution
+pσ . For comparison, we also construct a distribution-violating family by removing the 90◦ rotation
+from the same templates:
+∇ψskew (x)
+∇ψtri (x)
+c̃rot (x) = sσ (x),
+c̃tri (x) ∝
+,
+c̃skew (x) ∝
+.
+(29)
+pσ (x)
+pσ (x)
+Then
+
+uviol
+∇ · pσ uviol
+̸= 0
+(30)
+θ (x) = θ0 c̃rot (x) + θ1 c̃tri (x) + θ2 c̃skew (x),
+θ
+in general, so these perturbations change the stationary distribution.
+Finally, the distribution preserving attributes are rescaled to have unit RMS norm under pσ :
+c(x)
+c(x) ← p
+.
+(31)
+Ex∼pσ ∥c(x)∥22
+The scale factors are estimated using 1200 samples from pσ and are reused for the corresponding
+distribution-violating fields, making the coefficients θ0 , θ1 , θ2 comparable across control directions.
+19
+
+Evaluation grid. All metrics are computed on a 25 × 25 grid over [−5.5, 5.5]2 and let {xi }N
+i=1 be
+the grid points. We use normalized density weights
+pσ (xi )
+wi = PN
+.
+(32)
+j=1 pσ (xj )
+Metrics.
+
+All metrics use the 25 × 25 grid and density weights wi ∝ pσ (xi ).
+
+Mixing speed. For observables
+Φ = {x1 , x2 , ∥x∥2 , cos(∠x), sin(∠x)},
+(33)
+we discretize Lfθ = ∆ + fθ · ∇ and, for each φ ∈ Φ, solve the mean-constrained Poisson equation
+−Lfθ ψφ = φ − Ew [φ].
+(34)
+We estimate the integrated autocorrelation time by
+
+−1
+X
+1
+2⟨φ − Ew [φ], ψφ ⟩w
+,
+Mmix (fθ ) = 
+τφ (fθ ) .
+(35)
+τφ (fθ ) =
+Varw (φ)
+|Φ|
+φ∈Φ
+
+Larger Mmix means faster mixing.
+Triangle shape. We measure cosine alignment between the perturbation and the triangle-shape
+control:
+⟨uθ , ctri ⟩w
+Mtri (fθ ) =
+.
+(36)
+∥uθ ∥w ∥ctri ∥w
+Jacobian skewness. For uθ = (u1 , u2 ), we measure the weighted squared antisymmetric Jacobian
+component:
+X
+1
+2
+Mskew (fθ ) =
+wi [(∂x2 u1 )(xi ) − (∂x1 u2 )(xi )] .
+(37)
+2
+i
+Distribution violation. For the non-preserving family, we measure the stationarity residual
+!1/2
+X
+viol
+viol
+2
+rθ (x) = ∇ · uθ (x) + uθ (x) · sσ (x),
+V (fθ ) =
+wi rθ (xi )
+.
+
+(38)
+
+i
+
+Here V (fθ ) = 0 exactly when the perturbation preserves pσ .
+Losses.
+
+The score matching loss is
+1
+1
+(39)
+LSM (fθ ) = Ex∼pσ ∥fθ (x) − sσ (x)∥22 = Ex∼pσ ∥uθ (x)∥22 .
+2
+2
+Note again that sσ (x) is given to us in closed form via Equation (16). In the experiment, we
+approximate this expectation on the same 25 × 25 grid used for the metrics.
+
+The Flux Matching loss is estimated separately by Monte Carlo, not on the 25 × 25 grid (since the
+(i)
+Flux Matching loss requires short MCMC steps). For each θ, we sample B = 256 samples x0 ∼ pσ
+as a minibatch, and compute the Flux Matching loss via Equation (6). We set the horizon sampler
+distributed to be the truncated uniform, q = U [0, T ]. We average this estimate over 64 independent
+minibatches.
+Sweep and plotting.
+
+For Figure 4, we sweep
+θ0 , θ1 , θ2 ∈ {−2.5, 0, 2.5},
+(40)
+giving 27 fields. For each field, we record the relevant metric together with the score matching and
+Flux Matching losses. Since the two losses have different raw scales, each loss is divided by its
+mean value over the distribution-violating family before plotting. Curves are produced by binning the
+horizontal axis into 12 equally spaced bins and plotting the mean and standard error in each bin.
+For Figure 2, we perform a separate one-dimensional scan along each control axis using 33 values in
+[−8, 8]. We display the field with the best value of each metric. For the Jacobian-skewness panel,
+if multiple fields are within 99.5% of the maximum skewness, we choose the one with the smallest
+triangle-flow alignment so that the displayed field isolates skewness rather than triangle circulation.
+The background empirical samples (in red dots) are 1800 draws from pσ .
+20
+
+Algorithm 2 scVelo dynamical model fitting [5]
+Input: Unspliced and spliced counts {(uig , sig )}i,g
+1: for each gene g (independently) do
+2:
+Initialize Θg .
+3:
+repeat
+4:
+E-step. For each cell i:
+(k)
+5:
+For each phase k, find the best latent time τig = argmaxτ log p(uig , sig | k, τ, Θg ).
+(k)
+
+Pick the better phase: kig = argmaxk log p(uig , sig | k, τig , Θg ), and set τig =
+
+6:
+(k )
+
+τig ig .
+M-step. Update Θg ← argmaxΘg
+8:
+until convergence
+9: end for
+7:
+
+B.2
+
+P
+
+i log p(uig , sig | kig , τig , Θg ).
+
+Application 2: Interpretable Generative Fields
+
+Goal. The goal of this experiment is to show that Flux Matching can learn interpretable biological
+vector fields, such as RNA velocity. We use the scVelo dynamical model of [5], but fit its parameters
+with Flux Matching rather than their EM-style latent-time optimization.
+Background on scVelo’s Dynamical Model [5]. The Dynamical model generalizes RNA velocity
+beyond the original steady-state model [36] by fitting a likelihood-based dynamical model of splicing
+kinetics. The scVelo dynamical model describes each gene g’s unspliced and spliced abundances by
+dug (τ )
+= αg (τ ) − βg ug (τ ),
+dτ
+
+dsg (τ )
+= βg ug (τ ) − γg sg (τ ),
+dτ
+
+where the transcription rate switches between phases k ∈ {I NDUCTION, R EPRESSION}:
+
+αg , k = I NDUCTION (τ ≤ τsg ),
+αg (τ ) =
+0,
+k = R EPRESSION (τ > τsg ).
+Induction starts from (ug , sg ) = (0, 0) at τ = 0; repression starts from (ug (τsg ), sg (τsg )). Closedform solutions ūg (τ, k; Θg ) and s̄g (τ, k; Θg ) yield a Gaussian observation model
+
+
+
+2
+2
+log p uig , sig | k, τ, Θg = log N uig ; ūg (τ, k), σu,g
++ log N sig ; s̄g (τ, k), σs,g
+,
+with per-gene parameters Θg = (αg , βg , γg , τsg , σu,g , σs,g ). The fitting procedure is summarized in
+Algorithm 2.
+Interestingly, Flux Matching removes the need for these EM-style updates. Instead of alternating
+between assigning latent times under the current kinetic parameters and updating the parameters
+under those assignments, we directly optimize the parameters of the vector field using the Flux
+Matching loss.
+Datasets. We use five RNA-velocity datasets: Bone marrow, Dentate Gyrus, Gastrulation, Hindbrain, and Pancreas. The datasets are loaded as follows
+import scvelo as scv
+datasets = {
+"bone_marrow": scv.datasets.bonemarrow(),
+"dentate_gyrus": scv.datasets.dentategyrus(),
+"gastrulation": scv.datasets.gastrulation(),
+"pancreas": scv.datasets.pancreas(),
+"hindbrain": scv.read("path/to/hindbrain.h5ad"),
+}
+We provide further instructions on obtaining and loading the hindbrain dataset in our code.
+21
+
+Table 2: Hyperparameters for the RNA-velocity experiment.
+Hyperparameter
+Value
+Training iterations
+Optimizer
+Learning rate
+σ2
+Horizon distribution
+
+Data preprocessing.
+
+100
+Adam
+10−3
+10−3
+q(t) = U [0, T ]
+
+We apply the same preprocessing pipeline to each dataset
+
+import scanpy as sc
+import scvelo as scv
+sc.pp.filter_cells(adata, min_counts=1)
+scv.pp.filter_and_normalize(adata, min_shared_counts=20)
+sc.pp.highly_variable_genes(
+adata,
+n_top_genes=2000,
+flavor="seurat",
+subset=True,
+)
+sc.pp.pca(adata)
+sc.pp.neighbors(adata, n_pcs=30, n_neighbors=30)
+scv.pp.moments(adata, n_neighbors=None, n_pcs=None)
+Model parameterization. The scVelo dynamical model uses gene-specific splicing and degradation
+dynamics that depend on a discrete latent transcriptional state (the 4 phases, namely induction
+initiation, induction saturation, repression initiation, and repression decay, details can be found in
+[5]). Because we optimize using gradient descent, we must use a continuous analogue to the discrete
+assignment:
+αg (ug , sg ) = softplus (ag ug + bg sg + cg ) ,
+dug
+= αg (ug , sg ) − βg ug ,
+(41)
+dτ
+dsg
+= βg ug − γg sg .
+dτ
+Here αg (ug , sg ) > 0 is the learned transcription rate, approximated by a first-order approximation
+αg (ug , sg ) = softplus(ag ug + bg sg + cg ) , while β, γ ≥ 0 are the learned splicing and degradation rates, respectively. The optimized gene-specific parameters are β̃g , γ̃g , ag , bg , cg . We enforce
+positivity of the kinetic rates by setting
+βg = softplus(β̃g ),
+
+γg = softplus(γ̃g ).
+
+(42)
+
+The coefficients ag , bg , cg provide a continuous analogue of the latent transcriptional-state assignment
+in the dynamical model. Rather than switching among discrete transcription rates, the model learns a
+smooth state-dependent transcription rate. We initialize ag , bg , cg at zero, so the transcription rate is
+initially constant and the model begins as a simple linear kinetic ODE.
+Training details. The RNA velocity experiments on all datasets use the same Flux Matching
+hyperparameters, summarized in Table 2. For the dynamical model, we use the package’s default
+hyperparameters.
+Visualizing Learned RNA Velocity. We provide visualizations of the inferred RNA velocity and
+ground truth progression of the bone marrow dataset in Figure 8, the dentate gyrus dataset in Figure 9,
+the gastrulation dataset in Figure 10, the hindbrain dataset in Figure 11, and the pancreas dataset in
+Figure 12.
+22
+
+Figure 8: Bone Marrow Dataset. (Left half) inferred RNA velocity (Right half) ground truth
+biological progression given by arrows
+
+Figure 9: Dentate Gyrus Dataset. (Left half) inferred RNA velocity (Right half) ground truth
+biological progression given by arrows
+
+23
+
+Figure 10: Gastrulation Dataset. (Left half) inferred RNA velocity (Right half) ground truth
+biological progression given by arrows
+
+Figure 11: Hindbrain Dataset. (Left half) inferred RNA velocity (Right half) ground truth biological
+progression given by arrows
+
+24
+
+Figure 12: Pancreas Dataset. (Left half) inferred RNA velocity (Right half) ground truth biological
+progression given by arrows
+Table 3: Model parameterization for Experiment 3 & 4.
+
+B.3
+
+Parameter
+
+CIFAR-10
+
+CelebA
+
+Input shape
+Base channels
+Channel multipliers
+Attention pattern
+Dropout
+Residual blocks per resolution
+Number of parameters
+
+3 × 32 × 32
+128
+[1, 2, 2, 2]
+[False, True, False, False]
+0.1
+2
+35.7M
+
+3 × 64 × 64
+128
+[1, 2, 2, 2]
+[False, True, False, False]
+0.1
+2
+35.7M
+
+Application 3: Unrestricted Generative Fields
+
+Goal. While not the primary benefit of Flux Matching, we want to show in this experiment that
+Flux Matching can be used as a standalone generative model that performs well on high-dimensional,
+complex image distributions and scales efficiently in both runtime and memory.
+Datasets. We evaluate on CIFAR-10 and CelebA. CIFAR-10 contains 50,000 training images with
+dimension 3 × 32 × 32. CelebA contains 162,770 training images with dimension 3 × 64 × 64.
+Model parameterization. For both CIFAR-10 and CelebA, we use the standard U-Net architecture
+from [19]. The architecture details are given in Table 3.
+Training objective. We train using the EDM noise parameterization and distribution with default
+EDM settings on bfloat16. Since Flux Matching uses a batch KDE estimate of the score in its loss,
+we compare against the stable target version of diffusion models [65],which uses the same batch
+KDE score representation. This baseline is stronger than single sample DSM since stable targets
+were shown to outperform the standard single sample DSM by reducing variance.
+25
+
+Table 4: Training and sampling hyperparameters for Experiments 3 & 4. Unless otherwise noted, the
+same values are used for CIFAR-10 and CelebA.
+Training
+
+Sampling
+
+Hyperparameter
+
+Value
+
+Hyperparameter
+
+Value
+
+Optimizer
+Learning rate
+
+AdamW
+10−4
+
+Sampler
+Solver
+
+EMA rate
+Warmup steps
+Training iterations
+Number of GPUs
+Batch size, CIFAR-10
+Batch size, CelebA
+Horizontal flips
+
+0.9993
+2,500
+500,000
+4
+128 per GPU
+32 per GPU
+True
+
+Implementation
+Method
+Relative tolerance
+Absolute tolerance
+σmin
+σmax
+Sampling interval
+
+PF ODE
+Adaptive second-order
+Heun
+torchdiffeq.odeint
+adaptive_heun
+10−5
+10−5
+0.002
+80
+[σmin , σmax ]
+
+Training, sampling, and evaluation hyperparameters. We use the same hyperparameters for
+CIFAR-10 and CelebA except for the per-GPU batch size. During training, we compute 10K-image
+FID every 50,000 iterations. For the final reported results, we select the checkpoint with the best
+10K-image FID and compute 50K-image FID, negative log-likelihood, and Inception score (standard
+evaluation procedure, following [59]). The negative log-likelihood is computed using the same
+probability-flow ODE solver and tolerances used for sampling. The main training and sampling
+hyperparameters are given in Table 4. Efficiency values reported in Table 1 were based on distributed
+training on 4 NVIDIA A100 GPUs. Furthermore, to ensure a fair comparison of efficiency values
+for CIFAR10 and CelebA, we standardize the batch size to 32 when computing wall-clock time and
+memory usage.
+Extended samples. We show randomly generated CIFAR-10 samples in Figure 13 and CelebA
+samples in Figure 14.
+B.4
+
+Application 4: Fast Mixing Generative Fields for Accelerated Sampling
+
+Goal. We want to show that Flux Matching is much more than just its unrestricted form (standalone
+objective), where optimizing different vector field attributes can have tangible benefits in purely
+generative modeling terms. Here, we show that we can reduce the number of sampling steps (aka
+number of function evalutions) by optimizing for vector fields with faster mixing properties.
+Datasets, model parameterization, and evaluation. We use the same datasets, model parameterization, optimizer, training schedule, and noise distribution as in Section B.3. For checkpoint selection,
+we follow the same protocol as in Section B.3: for each method, we select the checkpoint with the
+best 10K FID using the adaptive Heun sampler. We then evaluate this selected checkpoint using the
+predictor–corrector sampler above and report 1K FID across different numbers of PC steps. These
+results are shown in Figure 6.
+Training. Directly optimizing the mixing time of the sampler is intractable, so we introduce a
+(i)
+(i) B/2
+tractable one-step proxy. Given a minibatch {x0 }B
+i=1 ∼ pσ , we use the first half {x0 }i=1 as a
+reference batch from the target marginal. From the second half, we construct an off-distribution
+(i)
+(i+B/2)
+(i)
+(i)
+batch by adding Gaussian noise xnoise = x0
++ σz0 where z0 ∼ N (0, I) for i = 1, . . . , B/2.
+Starting from these off-distribution samples, we apply one Langevin step using the learned field fθσ :
+p
+(i)
+(i)
+(i)
+(i)
+(i)
+xmix = xnoise + hσ fθσ (xnoise ) + 2hσ znoise ,
+znoise ∼ N (0, I),
+hσ = 0.2σ 2 . (43)
+Our proxy for mixing speed measures whether this single step moves xnoise closer to the target
+marginal:
+
+
+
+
+(i) B/2
+(i) B/2
+SD {xmix }i=1 , {x0 }i=1
+i e−smixing (σ) + smixing (σ) ,
+Lmixing = Eσ∼P  h 
+(44)
+(i)
+B/2
+(i) B/2
+sg SD {xnoise }i=1 , {x0 }i=1
+26
+
+Figure 13: Random CIFAR-10 samples from Flux Matching (left) and DSM (right).
+
+27
+
+Figure 14: Random CelebA samples from Flux Matching (left) and DSM (right).
+
+28
+
+Algorithm 3 Predictor–Corrector sampler [59]
+1: Set σ0 = σmax > · · · > σK = σmin on a logarithmic grid.
+2
+2: Sample x ∼ N (0, σmax
+I).
+3: for k = 0, . . . , K − 1 do
+4:
+Predictor step
+2
+5:
+∆k ← σk2 − σk+1
+.
+6:
+if k < K − 1 then
+7:
+Sample z ∼ N (0, I).
+
+√
+x ← x + ∆k fθσk (x) + ∆k z.
+else
+x ← x + ∆k fθσk (x).
+end if
+if k < K − 1 then
+Corrector step
+Sample z ′ ∼ N (0, I).
+2
+σ
+15:
+ϵk ← 2 ρ∥z ′ ∥2 /(∥fθ k+1 (x)∥2 ) , with ρ = 0.16 (Table 5 of [59]).
+√
+σ
+16:
+x ← x + ϵk fθ k+1 (x) + 2ϵk z ′ .
+17:
+end if
+18: end for
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+
+where SD is the Sinkhorn divergence and smixing (σ) is a learned normalizer (similar as Section 3.4,
+parameterized as a 1-layer MLP and trained simultaneously with the main model) that keeps the
+mixing loss on a comparable scale across noise levels σ. We compute the Sinkhorn divergence with
+regularization parameter ε = 0.05 and 50 Sinkhorn iterations.
+The final training objective is
+Lflux-fast = Lflux-noise + λmix Lmix ,
+
+(45)
+
+with λmix = 0.01.
+Sampling. We evaluate fast mixing using the predictor–corrector (PC) sampler in Algorithm 3,
+following [59]. We use a PC sampler rather than adaptive Heun because mixing speed concerns how
+quickly the sampling dynamics induced by a field converge to their stationary distribution. In the
+noised setting, the relevant stationary distribution at noise level σ is the noised marginal pσ . Thus, a
+fast-mixing field should be able to take a sample that is not exactly distributed according to pσ and
+quickly move it toward pσ . This is precisely the role of the corrector step in PC sampling, while
+the predictor moves samples across noise levels. When we use fewer sampling steps, these moves
+between noise levels become larger and can move samples farther from the next noised marginal.
+The corrector then uses the learned field at the current noise level to pull samples back toward that
+marginal. Therefore, faster-mixing fields should enable fewer and larger predictor steps because even
+when the predictor introduces more error, the faster mixing corrector can remove that error more
+quickly.
+For K PC steps, the sampler uses 2K evaluations of fθσ : K predictor evaluations and K corrector
+evaluations.
+B.5
+
+Application 5: Embedding Structure in Generative Fields
+
+Goal. This experiment tests whether Flux Matching can incorporate directed structural relationships
+between variables while still generating all variables in parallel. The data is trajectories, so a natural
+inductive bias is temporal directionality—the field at a given physical time point should depend only
+on the current and previous time points. Standard diffusion samplers also generate all time points in
+parallel, but DSM restricts the learned field to be the score function, which have symmetric Jacobians
+by equality of mixed partial derivatives, making strictly directed dependencies such as temporal
+autoregression incompatible with the true score. Flux Matching has no such constraint, so we can
+impose a causal temporal mask on fθσ , while still generating the entire trajectory in one parallel
+sampling procedure. This masking restricts the effective hypothesis class toward fields that respect
+the temporal ordering of the data, which can improve data efficiency [4].
+29
+
+Figure 15: A single sample from the spring simulation. The system contains two masses, shown
+as blue blocks. Each mass is connected to a wall by a spring, shown in purple and green, and the
+two masses are connected to each other by a spring, shown in red. Each column corresponds to
+one physical time point and contains four features, which are the positions and velocities of the two
+masses. Collectively, these time points form one trajectory, which is one sample in the dataset.
+Table 5: Dataset and simulator parameters for the nonlinear spring experiment.
+Parameter
+Value
+Number of training trajectories
+Trajectory length
+State dimension per time point
+Trajectory dimension after flattening
+Wall spring constant
+Coupling spring constant
+Damping coefficient
+Nonlinear spring coefficient
+Initial positions
+Initial velocities
+
+2000
+N = 50
+4
+200
+kwall = 1.0
+kcouple = 0.7
+γ = 0.08
+c = 0.08
+qi (0) ∼ N (0, 3.02 )
+vi (0) ∼ N (0, 1.52 )
+
+Dataset. Our dataset consists of simulated trajectories of two masses connected by nonlinear springs.
+Each data sample is a full trajectory over physical time. Let x(τ ) = (q1 (τ ), v1 (τ ), q2 (τ ), v2 (τ )) ∈ R4
+denote the simulator state at physical time τ , where qi (τ ) and vi (τ ) are the position and velocity
+of mass i. We record trajectories X = (x0 , . . . , xN −1 ) ∈ RN ×4 , where xn := x(n∆τ ). The
+trajectories are generated by integrating the ODE below with RK4 using physical step size ∆τ = 0.10:
+dq1
+= v1 ,
+dτ
+dq2
+= v2 ,
+dτ
+
+dv1
+= −kwall q1 − kcouple (q1 − q2 ) − γv1 − cq13 ,
+dτ
+dv2
+= −kwall q2 − kcouple (q2 − q1 ) − γv2 − cq23 .
+dτ
+
+(46)
+
+We use the simulator and dataset parameters in Table 5. Figure 15 visualizes one simulated trajectory.
+Model parameterization. We use the same transformer architecture for Flux Matching and DSM.
+Each trajectory is represented as a sequence of physical-time tokens, where each token contains the
+state (q1 , v1 , q2 , v2 ). The model first projects each token to a hidden representation of 512 dimensions,
+adds a sinusoidal positional embedding over physical time, and adds a learned embedding of the
+30
+
+Table 6: Training and sampling hyperparameters for Experiment 5.
+Parameter
+Value
+Noise sampling
+σmin
+σmax
+Optimizer
+Training iterations
+Batch size
+Learning rate
+EMA rate
+Sampler
+Sampling steps
+
+log σ ∼ Unif(log σmin , log σmax )
+0.002
+80.0
+Adam
+10, 000
+256
+3 × 10−4
+0.99
+Reverse VE sampler [59]
+512
+
+noise level σ. The resulting sequence is processed by a stack of 8 heads of 12 residual self-attention
+blocks with LayerNorm, self-attention, and a GELU MLP. The final hidden states are normalized and
+projected back to the state dimension, producing one output vector per physical time point.
+We compare two attention patterns. The noncausal model uses full self-attention across all physical
+time points. The causal model applies an upper-triangular attention mask over the physical-time
+dimension. In each attention block, if Aij denotes the attention logit from time point i to time point
+j, then the causal model sets
+Aij = −∞
+
+whenever
+
+j>i
+
+(47)
+
+before applying the softmax. As a result, the output at time point i can depend only on time points
+0, . . . , i (visualized on the left side of Figure 7). This enforces directed temporal dependence while
+preserving parallel generation, since all time points are still produced in a single forward pass.
+Training objective. Since this experiment is not image-based, we use the standard varianceexploding (VE) noise distribution rather than the EDM noise distribution. Flux Matching is trained
+with the noised annealed Flux Matching loss in Section 3.4. For noise annealed DSM, we use the
+stronger baseline of the stable-target variant from [65], as was done in Section B.3.
+We train four models: Flux Matching with full attention, Flux Matching with causal attention, DSM
+with full attention, and DSM with causal attention (all of which are noise annealed versions). This
+isolates the effect of adding a directed temporal mask under each training objective.
+Training, sampling, and evaluation hyperparameters. All training and sampling hyperparameters
+are shown in Table 6. At sampling time, we use the reverse VE sampler (Eq. 9 from [59]). We
+evaluate sample quality using Wasserstein distance W2 between 2000 generated trajectories and
+training trajectories.
+
+C
+
+Other Applications of Flux Matching
+
+We briefly outline additional potential applications of Flux Matching beyond those presented in the
+main text. These are directions we find exciting but were unable to pursue in this paper, and we hope
+they spark future research.
+C.1
+
+Causality
+
+Vector fields, expressed as the drift of ordinary differential equations (ODEs) and stochastic differential equations (SDEs) [55, 23], can be used to represent causal structure. Recent works [42, 6]
+have explored learning generative vector fields to discover causal structures and perform inference
+by simulating the learned SDE. The core limitation of these works [42, 6] is their inability to scale
+to high-dimensional data. For instance, [42, 6] primarily evaluated on data with 20 dimensions, far
+fewer than what is needed in settings like single-cell transcriptomics (via Perturb-seq [14]), which
+involves ∼ 20000 dimensions. Notably, we can simply replace their loss function—KDS in [42] and
+31
+
+SKDS in [6]—with the Flux Matching loss to scale causal learning to very high dimensions, since, as
+shown in Section 4.3, Flux Matching naturally scales to high-dimensional image datasets.
+C.2
+
+Generative Modeling in Constrained Domains
+
+Prior work has studied diffusion models on constrained domains by either designing custom diffusion
+processes that respect the constraint set Ω [43] or by correcting invalid proposals through rejection
+or Metropolis-style steps when samples leave Ω [18]. Flux Matching could be a complementary
+approach. Even when the target distribution is supported on a constrained domain, there are many
+distribution generating vector fields that behave very differently near the boundary ∂Ω. Under a
+finite-step sampler, a field with large outward components near the boundary is more likely to produce
+invalid samples, while a field that is tangent to the boundary or points inward is more likely to remain
+inside the domain. Since Flux Matching does not require the learned field to equal the score, we
+can use the additional degrees of freedom to favor boundary-respecting dynamics. For example, the
+training objective could be designed so we penalize the learned field when it violates the support
+under the chosen discretization.
+C.3
+
+Spatially Structured Dependencies in Images
+
+Many generative problems have known structure among different parts of the sample like what we
+have outlined in Section 4.5. We focus here specifically on the application of images, where one
+example of structured dependencies mean allowing some regions of the image to influence others,
+while other interactions are not allowed. For example, the appearance of a human face may influence
+the appearance of sunglasses, but it should not directly alter the background. Flux Matching makes
+it possible to encode such region-to-region relationships directly in the architecture of the learned
+generative vector field (via, for example, masked attention).
+C.4
+
+Augmenting Existing Score-Based Models
+
+As shown in Equation (3), we can add any flux divergence-free term to ∇ log pdata while still
+preserving the target distribution. Suppose we already have a trained off-the-shelf score-based
+model, and we want to leverage the benefits of Flux Matching (like accelerated sampling). Rather
+than training a new model from scratch using Flux Matching, we can train a network vϕ such that
+∇ · (pdata vϕ ) = 0 using an analogous version of the Flux Matching loss:
+"
+!#
+∂xt ⊤
+1
+⊤
+vϕ (x0 ) sg
+Lflux−aug (θ) := −E
+∇xt F(xt )
+,
+(48)
+t∼q
+∂x0
+x0 ∼pdata , xt |x0 q(t)
+where F(xt ) := ∇ · vϕ (xt ) + vϕ (xt ) · ∇ log pdata (xt ). Then, after vϕ is trained using Lflux−aug (θ),
+add vϕ to the already trained score model, fθ = ∇ log p + vϕ , and proceed to sample using fθ .
+This application can be useful in, for example, the case of faster mixing fields for accelerated sampling.
+We can simply train a fast mixing acceleration layer that we can "tack" onto an existing diffusion
+model we want to accelerate.
+
+D
+
+Flux Matching Details
+
+D.1
+
+Component Calculation Specifications
+
+We provide an extended description of the different components in Section 3.3.
+D.1.1
+
+Sampling MCMC horizon t from importance sampler q
+
+As mentioned in the main text, even though q is supported on [0, ∞), in practice, we find that defining
+the simulation horizon sampler q to be either a truncated uniform or exponential on [0, T ] and setting
+T = 4σ 2 is sufficient. The bottom row of Figure 16 supports this truncation: empirically, Lflux
+decays approximately exponentially in t. Thus, after a sufficiently large cutoff, the remaining tail
+contribution is negligible. We find that setting T = 4σ 2 is sufficient, as shown in Figure 16 since
+little mass remains after the red cutoff (set at T = 4σ 2 ). The simplest distribution for q is the uniform
+32
+
+Figure 16: Mode crossing and loss variance in a three-component Gaussian mixture. The component
+means are fixed, while the component variance increases with σ. (Top row) show terminal samples
+after running Langevin dynamics for 100 steps at different noise levels. Samples are colored blue
+if their terminal point is assigned to a different mode than their initial point, and orange otherwise.
+(Bottom row) shows the corresponding Lflux as a function of the simulation horizon, with shaded
+bands denoting standard deviation.
+density U[0, T ], but since the loss follows an exponential shape over t, a lower variance alternative is
+to sample from a truncated exponential distribution
+
+
+qλ (t) = λe−λt 1 − e−λT ,
+t ∈ [0, T ], λ > 0,
+(49)
+where λ can be cheaply fitted during training as a single scalar parameter via
+h 
+
+i
+L(λ) := −Et∼q̄ sg Lbflux (t) log qλ (t) .
+
+(50)
+
+where q̄ is a fixed copy used to draw the current horizon t and Lbflux (t) is the realized Flux Matching
+loss. In the case of noise annealed Flux matching, we similarly learn λϕ (σ), the rate of the truncatedexponential sampler qλϕ (σ) that is now dependent on σ. Let q̄λϕ (σ) denote the fixed copy of this
+sampler used to draw the current horizon t, and let Lbσflux (t) be the realized noise annealed Flux
+Matching loss, already importance reweighted by the sampling density q̄λϕ (σ) . We fit λϕ with
+!
+#
+"
+Lbσflux (t)
+log qλϕ (σ) (t) .
+(51)
+Lq (ϕ) := −Eσ∼P, t∼q̄λϕ (σ) sg
+exp(sη (σ))
+where sη (σ) is the learned normalizer (single-layer MLP) that reweighs losses from different noise
+levels to be on comparable scales [34]. λϕ (σ) is also parameterized by a single-layer MLP and fitted
+simultaneously with the main network.
+D.1.2
+
+Estimating ∂xt/∂x0 ⊤ ∇xt rθ (xt )
+
+We set weights wij to be
+
+
+2 
+(j)
+(i)
+(i)
+2
+−t
+wij (t) = softmaxi − xt −x0 −σ (1−e )∇ log pσ (x0 ) / 2σ2 (1−e−2t ) .
+D.2
+
+(52)
+
+Variance at Intermediate Noise Levels
+
+In the noise annealed version of Flux Matching, we observe that the variance of the objective can vary
+substantially across noise levels. The bottom row of Figure 16 illustrates this effect. At very low noise
+33
+
+Figure 17: Distribution flows can have the same marginal evolution but different particle trajectories.
+The gray background shows the same path of marginals, while the solid colored curves show different
+individual transports that realize this path.
+
+(σ = 0.01) and very high noise (σ = 80.0), the empirical Lflux has relatively small variance, as
+indicated by the narrow standard-deviation bands. In contrast, at intermediate noise levels (σ ≈ 3.0),
+the standard-deviation bands are much larger across simulation horizons, suggesting that this regime
+produces a substantially higher-variance estimator.
+The top row of Figure 16 provides intuition for this phenomenon. At low noise, the modes are
+well separated, and Langevin chains tend to remain in the same mode even after many simulation
+steps. At high noise, although chains mix more readily, the noised distribution is already close to a
+single Gaussian, so mode crossing is less informative and less variable. The intermediate regime is a
+difficult sweet spot where the effective supports of the modes begin to overlap, but the modes still
+remain distinct. As a result, some chains cross between modes while others do not, producing large
+sample-to-sample variation in the loss estimate. A related observation was also made by [65], who
+found that intermediate noise levels can have higher variance in their learning objective.
+This intermediate regime is also where the cross-chain minibatch estimator in Section 3.2, used to
+estimate ∂xt/∂x0 ⊤ ∇xt rθ (xt ), is most useful. By averaging information across chains in the minibatch,
+the estimator is less sensitive to whether any single chain crosses modes. In contrast, we found that
+the single-chain estimator ∇x0 rθ (xt ) is often sufficient in the low- and high-noise regimes, where
+the loss variance is much smaller.
+
+D.3
+
+Architectures Need to Be Gradient Friendly
+
+The Flux Matching loss in Equation (6) requires differentiating rθ with respect to the input. Since rθ
+itself contains a divergence of the learned vector field, training depends on input derivatives of fθ
+beyond the vector-field level. Thus, architectures used to parameterize fθ should have well-behaved
+input gradients and divergences. We did not study this issue systematically, but we found that using
+the specific architecture of ViT [3] to parameterize fθ does not work well (while UNet did) in Flux
+Matching. We hypothesize that the patching procedure used in ViT may be problematic, but this
+remains an open question for future work.
+
+E
+
+v-Flux Matching for Distribution Flows
+
+Flux Matching is not restricted to matching the score. More generally, it can match the flux divergence
+induced by any vector field. This allows us to start from a distribution flow model, such as flow
+matching [40, 60] or related constructions [45, 2, 41], and learn alternative particle dynamics that
+preserve the same marginal path.
+New Capability: Same Marginal Path, Many Particle Paths. Flux Matching can learn different
+individual transports while preserving the same evolution of distributions.
+34
+
+E.1
+
+Distribution Flows and Equivalent Vector Fields
+
+Let a ∈ [0, 1] denote distribution flow time, and let {pa }a∈[0,1] be a path of densities. A velocity field
+va induces this path if it satisfies the continuity equation
+∂pa (x)
+= −∇ · (pa (x)va (x)) .
+∂a
+
+(53)
+
+The velocity field that realizes a given marginal path is not unique: any two vector fields va and fa
+induce the same instantaneous distributional change whenever
+∇ · (pa fa ) = ∇ · (pa va ) .
+
+(54)
+
+Assume ∇ · (pa fa ) = ∇ · (pa va ) for all a ∈ [0, 1]. If va and fa are initialized with the same density
+p0 , they induce the same marginal path {pa }a∈[0,1] , and in particular the same terminal distribution
+p1 .
+E.2
+
+v-Flux Matching at a Single Marginal
+
+For clarity, we first fix a distribution flow time
+√ a and a reference velocity field va . Let (xt )t≥0
+denote the diffusion dxt = ∇ log pa (xt ) dt + 2 dWt with stationary density pa . To emphasize, the
+diffusion is only used to obtain the correct geometry on the loss; the target vector field being flux
+matched is va , not ∇ log pa . Let
+uθ,a (x) = fθ (x, a) − va (x),
+
+rθ,a (x) = ∇ · uθ,a (x) + uθ,a (x) · ∇ log pa (x).
+
+(55)
+
+Define
+"
+Lav-flux (θ) := −E
+
+t∼q
+x0 ∼pa , xt |x0
+
+1
+uθ,a (x0 )⊤ sg
+q(t)
+
+!#
+∂xt ⊤
+∇xt rθ,a (xt )
+.
+∂x0
+
+(56)
+
+This is the same objective as Equation (6), with pdata replaced by pa and the score target replaced by
+va .
+Corollary E.1 (v-Flux Matching). Fix a ∈ [0, 1]. Assume pa > 0 on Rd and boundary terms in
+a
+integration-by-parts arguments vanish. Let Πpflux
+follow the same definition as Equation (4) with
+respect to pa . Let
+h
+i
+2
+a
+a
+a
+Jev-flux
+(θ) := Ex∼pa ∥Πpflux
+fθ (·, a)(x) − Πpflux
+va (x)∥ .
+(57)
+Then
+a
+∇θ Jev-flux
+(θ) = 2∇θ Lav-flux (θ).
+
+(58)
+
+Proof. This is a direct application of Theorem 3.1. The proof of Theorem 3.1 only depends on the
+density pdata and the mismatch field uθ . Setting pdata = pa and uθ = uθ,a = fθ (·, a) − va gives
+exactly Equation (56) and Equation (57).
+Marginal Velocity for Flow Matching Paths. The marginal velocity depends on the path used to
+define the interpolating marginals pa . As a simple example, consider the conditional flow matching
+path of [40] with x1 ∼ p1 and
+
+pa (x | x1 ) = N x; ax1 , (1 − a)2 I .
+(59)
+Equivalently, xa = ax1 + (1 − a)ϵ with ϵ ∼ N (0, I). The marginal velocity can be approximated by
+(i)
+the minibatch {x1 }B
+i=1 , which gives
+va (x) ≈
+
+B
+X
+i=1
+
+(i)
+
+wi (x, a)
+
+(i)
+
+x1 − x
+,
+1−a
+
+pa (x | x1 )
+wi (x, a) = PB
+.
+(j)
+j=1 pa (x | x1 )
+
+which is a common approximation used in few-step generative models (e.g. [20]).
+35
+
+(60)
+
+E.3
+
+Pathwise v-Flux Matching
+
+The previous subsection defined v-Flux Matching at a fixed marginal pa . To match an entire
+distribution flow, we apply the same objective independently along the path {pa }a∈[0,1] . The pathwise
+v-Flux Matching objective is
+Lpath-v-flux (θ, ϕ, η) := Ea∼ν [Lav-flux (θ, ϕ)/ exp(sη (a)) + sη (a)] ,
+(61)
+where ν is the sampling distribution over flow times a ∈ [0, 1], and Lav-flux (θ, ϕ) denotes the fixed-a
+loss in Equation (56) with fθa (x) := fθ (x, a) and diffusion simulation horizon distribution qλϕ (a) .
+All diffusion simulations are performed with the score ∇ log pa . The learned normalizer sη (a)
+reweighs losses from different marginals so that they remain on comparable scales [34], while λϕ (a)
+parameterizes the diffusion horizon sampler at each point along the path.
+
+F
+
+Related Work
+
+F.1
+
+Analyzing Non-Conservative Generative Vector Fields
+
+A long line of work from the MCMC and statistical physics literature has analyzed the space of
+vector fields that preserve a given stationary distribution and characterized the benefits of departing
+from reversibility. Augmenting the score with a divergence-free flux component has been shown
+to accelerate convergence to the stationary distribution [30, 53] (which we empirically corroborate
+in Section 4.4) and to reduce the asymptotic variance of resulting estimators [16, 17]. [44] gives
+a complete parameterization of all continuous Markov processes admitting a prescribed stationary
+distribution. Crucially, these works assume a closed-form target distribution and prescribe the nonconservative drift analytically rather than learning it from data. Flux Matching is, to our knowledge,
+the first objective to operationalize this body of theory into a learning objective for non-conservative
+generative dynamics that scales to high-dimensional distributions.
+F.2
+
+Learning Non-Conservative Generative Vector Fields
+
+A handful of prior works have explored learning non-score generative vector fields. [66] learns
+a non-conservative vector field to assign dynamics to snapshot data, similar to our RNA velocity
+experiment, but their method is restricted to 2D. The objectives of [42, 6], while originally proposed
+for causal SDEs, could in principle learn arbitrary generative vector fields. However, neither scales
+beyond 20D. Flux Matching is novel not by the goal of learning non-gradient fields, but by being the
+first objective to do so while scaling to high-dimensional, complex distributions.
+[52] frame their method as learning non-gradient field dynamics, yet it fundamentally matches a
+prior to a terminal distribution via a learned (rather than predefined) interpolation, a special case
+of [46]. Crucially, their method cannot learn non-gradient fields given a single distribution. The
+two approaches are in fact complementary, with [52] producing a bridge of distributions and Flux
+Matching providing flexibility over the individual particle trajectories that realize the given bridge.
+F.3
+
+Enforcing the Fokker–Planck (or Continuity) Equation
+
+[38] and [28] enforce the Fokker–Planck equation (respectively, the continuity equation) as a regularizer on top of a primary score matching or flow matching objective, providing tighter control
+over the induced PDE. In contrast, Flux Matching is a standalone generative objective: [38, 28] add
+a regularizer to a generative loss, whereas Flux Matching is the generative loss. Moreover, both
+prior methods are restricted to score matching/flow matching-style trajectories, while Flux Matching
+admits arbitrary trajectories realizing the same marginals.
+Via the Fokker–Planck, [27] observe that diffusion models possess a gauge degree of freedom (as
+we formalize in Proposition 2.1), but treat this purely as an observation with no associated learning
+procedure.
+
+G
+
+Limitations
+
+Flux Matching is most useful when the goal is not only to model a distribution, but also to learn
+a generative vector field with additional desired structure. If one only cares about unrestricted
+36
+
+generative modeling, then standard DSM already provides a highly optimized objective. Flux
+Matching should be viewed less as a replacement for DSM and more as a paradigm that enables use
+cases where the vector field itself matters. The main practical limitation is computational cost, with
+our implementation being roughly 2–4× more expensive than DSM in both runtime and memory.
+Reducing this overhead is an important direction for future work.
+Further, the flexibility that Flux Matching provides is only useful when paired with a meaningful
+inductive bias or auxiliary objective. Flux Matching expands the class of learnable generative vector
+fields but does not automatically identify the best member for a given application, and designing
+architectures or regularizers that exploit this extra freedom remains problem dependent. Finding
+clever and elegant ways of constraining the learned vector field to exhibit a desired attribute is itself
+the central task facing a practitioner using Flux Matching. We expect that individual instantiations
+of such constructions—each tailored to a particular structural or application-specific goal—can
+constitute a substantial contribution in their own right.
+
+37
+
+
