@@ -7,8 +7,8 @@ tags:
   - text-to-image
   - grpo
 created: 2026-05-12
-last_updated: 2026-05-12
-source_count: 1
+last_updated: 2026-05-13
+source_count: 2
 confidence: high
 status: active
 ---
@@ -106,4 +106,9 @@ PickScore 从 21.72 → 23.31（w/ KL 约束，保持画质和多样性）。
 - 多奖励平衡（真实感/平滑/连贯）需要更精细的调参
 - 规模扩展至更大分辨率/更长序列仍需更高效的采样管线
 
+## 后续工作：Flow-OPD
+
+[[flow-opd|Flow-OPD]] 在 Flow-GRPO 的基础上引入了多教师在线蒸馏（On-Policy Distillation），通过轨迹级稠密监督替代标量奖励，有效解决了多任务对齐中的 seesaw effect。在 SD3.5-Medium 上将 GenEval 从 63 提升至 92，OCR 从 59 提升至 94，超越了简单 GRPO 混合训练的瓶颈。[^src-2605-08063]
+
 [^src-2505-05470]: [[source-flow-grpo]]
+[^src-2605-08063]: [[source-flow-opd]]

@@ -94,6 +94,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-yang-gsli-2025]] — GSLI: Graph Structure Learning for Spatial-Temporal Imputation Adapting to Node and Feature Scales (Yang et al., AAAI 2025)
 - [[source-equal-snr]] — A Fourier Space Perspective on Diffusion Models: EqualSNR frequency-SNR analysis (Microsoft Research, 2025)
 - [[source-flow-grpo]] — Flow-GRPO: Training Flow Matching Models via Online RL (NeurIPS 2025)
+- [[source-flow-opd]] — Flow-OPD: On-Policy Distillation for Flow Matching Models (arXiv 2026)
 - [[source-elf-embedded-language-flows]] — ELF: Embedded Language Flows, continuous diffusion LM via Flow Matching (MIT, arXiv 2026)
 - [[source-back-to-basics-let-denoising-generative-models-denoise]] — Back to Basics: Let Denoising Generative Models Denoise, x-prediction via plain ViT on pixel patches (Li & He, MIT, arXiv 2025)
 
@@ -331,6 +332,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[equal-snr]] — EqualSNR，通过 $\Sigma_{ii}=cC_i$ 让所有傅里叶频率等 SNR 加噪的扩散前向过程
 - [[ode-to-sde-conversion]] — ODE-to-SDE 转换，将确定性流匹配 ODE 转换为等边缘分布的 SDE 以实现随机 RL 探索 (NeurIPS 2025)
 - [[denoising-reduction]] — Denoising Reduction 去噪步数缩减策略，训练时用 10 步推理时用 40 步以加速在线 RL (NeurIPS 2025)
+- [[flow-opd]] — Flow-OPD: On-Policy Distillation for Flow Matching，通过多教师在线蒸馏解决多任务 seesaw effect (arXiv 2026)
+- [[manifold-anchor-regularization]] — MAR，通过审美教师 KL 惩罚锚定生成过程在高品质流形的正则化方法 (arXiv 2026)
 
 ## Concepts (continued)
 - [[snr-t-bias]] — SNR-t Bias，扩散模型推理阶段的信噪比-时间步错配偏置 (CVPR 2026)

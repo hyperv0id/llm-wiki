@@ -459,3 +459,10 @@ Downloaded arXiv PDF (2511.13720) and ingested paper by Tianhong Li and Kaiming 
 
 Pages created: [[source-back-to-basics-let-denoising-generative-models-denoise]], [[jit]], [[x-prediction]]
 Pages updated: [[diffusion-model]], [[edm-design-space]], [[index]], [[log]]
+
+## [2026-05-13] ingest | Flow-OPD: On-Policy Distillation for Flow Matching Models (arXiv 2605.08063)
+
+Downloaded arXiv PDF (2605.08063) and ingested Flow-OPD paper by Fang, Huang et al. (USTC, UCLA, CUHK, Xiaohongshu). Flow-OPD is the first framework to integrate On-Policy Distillation (OPD) into Flow Matching post-training, addressing two multi-task alignment bottlenecks: reward sparsity and gradient interference. Proposes two-stage alignment: (1) single-reward GRPO fine-tuning yields domain-specialized teachers; (2) multi-teacher OPD with Cold-Start, task-routing labeling, and dense trajectory-level supervision consolidates expertise into a single student. Introduces Manifold Anchor Regularization (MAR) with a task-agnostic aesthetic teacher to prevent RL-induced aesthetic degradation. Built on SD3.5-Medium, raises GenEval from 63→92 and OCR from 59→94, achieving ~10-point improvement over vanilla GRPO with emergent teacher-surpassing effect.
+
+创建的页面：[[source-flow-opd]], [[flow-opd]], [[manifold-anchor-regularization]]
+更新的页面：[[flow-grpo]], [[index]], [[log]]
