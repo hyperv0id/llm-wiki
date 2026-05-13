@@ -8,8 +8,8 @@ tags:
   - flow-matching
   - diffusion-models
 created: 2026-05-03
-last_updated: 2026-05-08
-source_count: 3
+last_updated: 2026-05-13
+source_count: 4
 confidence: high
 status: active
 ---
@@ -39,6 +39,8 @@ status: active
 
 ### 流匹配方法
 
+**[[freqflow-ts|FrèqFlow/SpectFlow]]** (NeurIPS 2025) 首次将条件流匹配引入频域进行确定性 MTS 预测。通过复值线性层在频域中插值频谱，配合流匹配头进行残差学习，仅 89k 参数即达到 SOTA。采用 ODE 单次确定性采样，推理速度远超扩散方法[^src-2511-16426]。
+
 **[[aurora|Aurora]]** (arXiv 2026) 提出 Prototype-Guided Flow Matching，使用多模态领域知识生成条件和原型来引导流匹配过程，实现生成式概率预测[^src-aurora]。Aurora 支持多模态输入（文本、图像、数值）和零样本推理。
 
 ### 方法对比
@@ -47,6 +49,7 @@ status: active
 |------|---------|---------|--------|---------|--------|
 | SimDiff | Diffusion (DDPM) | 仅数值 | ✗ | 点估计（MoM 聚合） | 原始域 |
 | SpecSTG | Diffusion (谱域) | 仅数值 | ✗ | 概率分布 + 点估计 | **谱域** |
+| **FrèqFlow** | **Flow Matching (频域)** | **仅数值** | **✗** | **点估计（确定性）** | **频域** |
 | Aurora | Flow Matching (OT) | 文本 + 图像 + 数值 | ✓ | 概率分布 | 原始域 |
 
 ## 优势
@@ -66,6 +69,7 @@ status: active
 - [[aurora]] — 流匹配生成式预测模型
 - [[specstg]] — 谱域扩散时空图预测模型
 - [[simdiff]] — 扩散式生成预测模型
+- [[freqflow-ts|FrèqFlow/SpectFlow]] — 频域流匹配确定性预测（NeurIPS 2025）
 - [[flow-matching]] — Flow Matching 理论基础
 - [[diffusion-model]] — 扩散模型理论基础
 - [[multimodal-time-series-forecasting]] — 多模态时间序列预测
@@ -73,3 +77,4 @@ status: active
 [^src-aurora]: [[source-aurora]]
 [^src-simdiff]: [[source-simdiff]]
 [^src-2401-08119-specstg]: [[source-2401-08119-specstg]]
+[^src-2511-16426]: [[source-2511-16426]]

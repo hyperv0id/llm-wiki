@@ -10,7 +10,7 @@ tags:
   - neurips-2023
 created: 2026-04-28
 last_updated: 2026-05-13
-source_count: 2
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -410,6 +410,7 @@ $$
 - [[aurora]] — Aurora 使用 Prototype-Guided Flow Matching 进行时间序列概率预测
 - [[elf|ELF]] — ELF (Embedded Language Flows)，Flow Matching 在语言建模中的应用（MIT, 2026）
 - [[prototype-guided-flow-matching]] — Aurora 的原型引导流匹配技术
+- [[freqflow-ts|FrèqFlow/SpectFlow]] — 频域流匹配用于时间序列预测，仅 89k 参数 (NeurIPS 2025)
 
 ## 引用
 

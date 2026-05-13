@@ -99,6 +99,9 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-elf-embedded-language-flows]] — ELF: Embedded Language Flows, continuous diffusion LM via Flow Matching (MIT, arXiv 2026)
 - [[source-back-to-basics-let-denoising-generative-models-denoise]] — Back to Basics: Let Denoising Generative Models Denoise, x-prediction via plain ViT on pixel patches (Li & He, MIT, arXiv 2025)
 
+## Sources (continued)
+- [[source-2511-16426]] — FrèqFlow/SpectFlow: Long-term forecasting using lightweight flow matching (NeurIPS 2025)
+
 ## Entities
 - [[sa-bcp]] — SA-BCP, state-adaptive Bayesian conformal prediction (arXiv 2026)
 - [[scale]] — SCALE, spectral conformal prediction via wavelet transform (ICML 2026)
@@ -151,6 +154,9 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[mila]] — MILA, Mamba-Inspired Linear Attention model (NeurIPS 2024)
 - [[gsli]] — GSLI, multi-scale graph structure learning for spatiotemporal imputation with feature heterogeneity (AAAI 2025)
 - [[std-mae]] — STD-MAE, spatial-temporal-decoupled masked autoencoder for spatiotemporal pre-training (IJCAI-2024)
+
+## Entities (continued)
+- [[freqflow-ts]] — FrèqFlow/SpectFlow, lightweight frequency-domain flow matching for time series forecasting (NeurIPS 2025)
 
 ## Concepts
 - [[conformal-prediction]] — 共形预测，与模型无关的不确定性量化框架

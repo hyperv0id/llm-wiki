@@ -6,8 +6,8 @@ tags:
   - spatial-temporal
   - intelligent-transportation
 created: 2026-04-27
-last_updated: 2026-05-12
-source_count: 15
+last_updated: 2026-05-13
+source_count: 16
 confidence: high
 status: active
 ---
@@ -56,6 +56,9 @@ FaST (KDD 2026) addresses computational bottlenecks in large-scale graphs (8,600
 ### Regularized Adaptive Graph Convolution
 [[ragc|RAGC]] (arXiv 2026) tackles two limitations of adaptive graph learning for large-scale networks: O(N²) graph convolution complexity and lack of node embedding regularization. It proposes [[efficient-cosine-operator|ECO]] for O(N) graph convolution via cosine similarity decomposition, and integrates [[stochastic-shared-embedding|SSE]] with adaptive graph convolution through a [[residual-difference-mechanism|residual difference mechanism]] that suppresses SSE-induced noise while retaining regularization benefits. On four LargeST datasets (716–8,600 nodes), RAGC consistently achieves the best prediction accuracy with competitive training/inference speed[^src-ragc-efficient-traffic-forecasting].
 
+### Flow Matching / Frequency-Domain
+[[freqflow-ts|FrèqFlow/SpectFlow]] (NeurIPS 2025) is the first framework to apply conditional flow matching in the frequency domain for deterministic MTS traffic forecasting. With only 89k parameters, it uses a complex-valued linear layer for frequency interpolation and a flow matching head for residual learning. On Brussels, PEMS08, and PEMS04 datasets, it achieves 7% average RMSE improvement over Moirai-MoE and diffusion baselines (GCRDD, DiffSTG, PriSTI, SpecSTG)[^src-2511-16426].
+
 ### Probabilistic / Diffusion-Based
 Deterministic models only output point estimates, lacking uncertainty quantification. Probabilistic methods address this gap:
 - **[[specstg|SpecSTG]]** (arXiv 2024) is the first spectral diffusion framework for probabilistic STG forecasting. It generates the graph Fourier representation of future time series instead of raw sequences, naturally embedding spatial dependencies into the diffusion process. With [[fast-spectral-graph-convolution|Fast Spectral Graph Convolution]] reducing graph convolution complexity from $O(N^2)$ to $O(N)$, SpecSTG achieves up to 8% RMSE improvement and 3.33× training speedup over GCRDD (the most efficient existing diffusion method)[^src-2401-08119-specstg].
@@ -102,3 +105,4 @@ The XTraffic benchmark provides incident-aligned traffic datasets for California
 [^src-yang-gsli-2025]: [[source-yang-gsli-2025]]
 [^src-demystify-mamba-linear-attention-2024]: [[source-demystify-mamba-linear-attention-2024]]
 [^src-2312-00516-std-mae]: [[source-2312-00516-std-mae]]
+[^src-2511-16426]: [[source-2511-16426]]

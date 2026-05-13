@@ -473,3 +473,10 @@ Downloaded arXiv PDF (2605.08063) and ingested Flow-OPD paper by Fang, Huang et 
 
 创建的页面：[[source-flow-opd]], [[flow-opd]], [[manifold-anchor-regularization]]
 更新的页面：[[flow-grpo]], [[index]], [[log]]
+
+## [2026-05-13] ingest | FrèqFlow/SpectFlow: Long-term forecasting using lightweight flow matching (NeurIPS 2025)
+
+Downloaded arXiv 2511.16426 PDF 并 ingest。FrèqFlow（别名 SpectFlow）由 Moghadas 等人（Vrije Universiteit Brussel & imec, NeurIPS 2025）提出，首次将条件流匹配（Conditional Flow Matching）引入频域进行多元时间序列确定性预测。核心创新：(1) 复值线性层在频域中插值频谱，通过复乘法建模幅度缩放和相位平移；(2) 低通滤波保留 6 次谐波内低频结构；(3) 流匹配头专用于残差学习，频率插值头提供趋势和季节性。仅 89k 参数（比扩散模型小一个数量级），在 Brussels/PEMS08/PEMS04 三个交通数据集上平均 RMSE 提升 7%，超越 GCRDD/DiffSTG/PriSTI/SpecSTG 和 Moirai-MoE 基础模型。
+
+创建的页面：[[source-2511-16426]], [[freqflow-ts]]
+更新的页面：[[traffic-forecasting]], [[flow-matching]], [[generative-time-series-forecasting]], [[index]], [[log]]
