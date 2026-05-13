@@ -7,8 +7,8 @@ tags:
   - sampling
   - training
 created: 2026-04-28
-last_updated: 2026-05-09
-source_count: 2
+last_updated: 2026-05-13
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -44,6 +44,12 @@ EDM 的核心观点是：上述各设计选择基本相互独立[^src-edm]，可
 
 [[frequency-based-noise-control|频域噪声控制]]与 EDM 设计空间是**正交**的：EDM 调整噪声量级 $\sigma(t)$ 和信号缩放 $s(t)$ 的数值，而频域噪声控制调整噪声在频域中的**形状**。两者可以组合使用——在 EDM 框架内对每个噪声水平 $\sigma$ 使用不同频域加权 $w_\sigma(\mathbf{f})$，实现噪声量级与频谱形状的独立调控。[^src-2502-10236]
 
+## EDM 预处理器与 x-prediction 的矛盾
+
+Li & He (2025) 指出，EDM 的 pre-conditioner 公式 $x_\theta(z_t, t) = c_\text{skip} \cdot z_t + c_\text{out} \cdot \text{net}_\theta(z_t, t)$ 意味着**除非 $c_\text{skip} \equiv 0$，否则网络的直接输出 $\text{net}_\theta$ 不是 x-prediction**。在高维空间中（如 JiT-B/16 的 768-d patch），pre-conditioner 同样会失败（FID 28~72 vs x-prediction 的 8.62），尽管比纯 ε-/v-prediction（FID 372+）略好——因为 $t \to 0$ 时 $c_\text{skip} \to 0$，$c_\text{out} \to 1$，趋近 x-prediction。[^src-2511-13720]
+
+这一发现表明，pre-conditioner 设计假设网络需要在不同 $t$ 下输出不同量级的混合信号，但流形视角下，网络应该始终输出 on-manifold 的干净数据。详见 [[x-prediction]]。
+
 ## 链接
 
 - [[edm]] — EDM 论文
@@ -52,8 +58,11 @@ EDM 的核心观点是：上述各设计选择基本相互独立[^src-edm]，可
 - [[ncsn]] — NCSN
 - [[score-based-sde]] — Score-Based SDE
 - [[heun-sampler]] — Heun 采样器
-- [[ edm-preconditioning]] — 预处理技术
+- [[edm-preconditioning]] — 预处理技术
 - [[frequency-based-noise-control]] — 频域噪声控制（正交设计维度）
+- [[x-prediction]] — x-prediction，与 EDM pre-conditioner 存在内在矛盾
+- [[jit|JiT]] — JiT，揭示 pre-conditioner 与 x-prediction 矛盾的工作
 
 [^src-edm]: [[source-edm]]
 [^src-2502-10236]: [[source-2502-10236]]
+[^src-2511-13720]: [[source-back-to-basics-let-denoising-generative-models-denoise]]

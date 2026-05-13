@@ -452,3 +452,10 @@ Downloaded arXiv PDF (2605.10938) and ingested ELF paper by Hu, Qiu, Li, Kim, Lu
 
 Pages created: [[source-elf-embedded-language-flows]], [[elf]], [[continuous-diffusion-language-model]]
 Pages updated: [[flow-matching]], [[index]], [[log]]
+
+## [2026-05-13] ingest | Back to Basics: Let Denoising Generative Models Denoise (arXiv 2511.13720, MIT)
+
+Downloaded arXiv PDF (2511.13720) and ingested paper by Tianhong Li and Kaiming He (MIT). The paper argues that under the manifold assumption, predicting clean data (x-prediction) is fundamentally different from predicting noise (ε-prediction) or velocity (v-prediction), because clean data lies on a low-dimensional manifold while noised quantities fill the entire high-dimensional space. Proposes JiT (Just image Transformers) — a plain ViT on pixel patches with x-prediction, achieving competitive generation quality without tokenizers, pre-training, or extra losses. Key results: JiT-G/16 achieves 1.82 FID on ImageNet 256×256 (383 Gflops); JiT-G/32 achieves 1.78 FID on ImageNet 512×256 (384 Gflops); ε-/v-prediction fail catastrophically at high patch dimensions. The paper also reveals that EDM's pre-conditioner deviates from x-prediction and similarly fails in high-dimensional settings.
+
+Pages created: [[source-back-to-basics-let-denoising-generative-models-denoise]], [[jit]], [[x-prediction]]
+Pages updated: [[diffusion-model]], [[edm-design-space]], [[index]], [[log]]

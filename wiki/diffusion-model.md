@@ -7,8 +7,8 @@ tags:
   - vae
   - score-based
 created: 2026-04-28
-last_updated: 2026-05-09
-source_count: 14
+last_updated: 2026-05-13
+source_count: 15
 confidence: high
 status: active
 ---
@@ -62,7 +62,9 @@ $$
    $$
 3. **预测得分 $\nabla \log p(x_t)$**：训练网络估计对数概率密度的梯度。
 
-这三种形式通过重参数化相互等价，选择哪种取决于实现便利性和训练稳定性。[^src-understanding-diffusion-models]
+这三种形式通过重参数化在数学上相互等价（给定一种预测可推导出另外两种），但 Li & He (2025) 指出，**在流形假设下，预测目标的根本性质不同**：x-prediction 的输出位于低维数据流形上（on-manifold），而 ε-和 v-prediction 的输出散布在整个高维空间中（off-manifold）。当 patch/输入维度接近或超过网络容量时，只有 x-prediction 能正常工作，ε-/v-prediction 会灾难性失败。[^src-2511-13720]
+
+x-prediction 最早可追溯到 DDPM 的原始代码[^src-2511-13720]，但长期未被作为主要预测目标。Li & He 提出的 [[jit|JiT]]（Just image Transformers）系统论证了 x-prediction 在高维空间的必要性，使用标准 ViT + 大 patch + x-prediction 在像素空间实现了有竞争力的生成质量（JiT-G/16: FID 1.82 @ ImageNet 256）。详见 [[x-prediction]]。
 
 ## 与基于得分的模型的联系
 
@@ -132,6 +134,7 @@ Falck 等人（Microsoft Research, 2025）从 SNR 角度给出另一种频域解
 - **[[flow-matching|Flow Matching]]**：2023 年 NeurIPS，统一框架，将扩散模型视为 Flow Matching 的特例，支持 OT 等更优概率路径[^src-flow-matching]
 - **[[shortcut-models|Shortcut Models]]**：2025 年 arXiv，单阶段少步/单步生成模型，通过步长调节和自一致性实现高效推理[^src-shortcut-models]
 - **[[edm|EDM]]**：2022 年 NeurIPS 论文，系统梳理扩散模型设计空间，提出 Heun 二阶采样器、预处理技术和对数正态噪声分布[^src-edm]
+- **[[jit|JiT]]**：2025 年 arXiv (MIT)，提出 x-prediction 在高维空间的必要性，使用标准 ViT + 大 patch 在像素空间实现有竞争力的生成[^src-2511-13720]
 
 ## 相关概念
 
@@ -146,6 +149,8 @@ Falck 等人（Microsoft Research, 2025）从 SNR 角度给出另一种频域解
 - [[dcw]] — DCW，小波域差分校正方法，缓解 SNR-t Bias 的无需训练方法
 - [[frequency-aware-conditioning]] — 频率感知条件化概念
 - [[diffusion-models]] — A broader overview of diffusion models covering DDPM, SMLD, SDE unification, and applications
+- [[x-prediction]] — x-prediction，扩散模型中直接预测干净数据的参数化方式
+- [[jit|JiT]] — JiT (Just image Transformers)，基于 x-prediction 的像素空间扩散模型
 
 ## 引用
 
@@ -161,3 +166,4 @@ Falck 等人（Microsoft Research, 2025）从 SNR 角度给出另一种频域解
 [^src-bluuuuue-reparameterization-trick]: [[source-bluuuuue-reparameterization-trick]]
 [^src-2502-10236]: [[source-2502-10236]]
 [^src-equal-snr]: [[source-equal-snr]]
+[^src-2511-13720]: [[source-back-to-basics-let-denoising-generative-models-denoise]]

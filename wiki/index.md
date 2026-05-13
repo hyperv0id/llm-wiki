@@ -95,6 +95,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-equal-snr]] — A Fourier Space Perspective on Diffusion Models: EqualSNR frequency-SNR analysis (Microsoft Research, 2025)
 - [[source-flow-grpo]] — Flow-GRPO: Training Flow Matching Models via Online RL (NeurIPS 2025)
 - [[source-elf-embedded-language-flows]] — ELF: Embedded Language Flows, continuous diffusion LM via Flow Matching (MIT, arXiv 2026)
+- [[source-back-to-basics-let-denoising-generative-models-denoise]] — Back to Basics: Let Denoising Generative Models Denoise, x-prediction via plain ViT on pixel patches (Li & He, MIT, arXiv 2025)
 
 ## Entities
 - [[sa-bcp]] — SA-BCP, state-adaptive Bayesian conformal prediction (arXiv 2026)
@@ -337,11 +338,13 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Entities
 - [[elf]] — ELF (Embedded Language Flows), continuous diffusion LM via Flow Matching (MIT, 2026)
+- [[jit]] — JiT (Just image Transformers), x-prediction pixel-space diffusion on plain ViT (Li & He, MIT, 2025)
 - [[muon-optimizer]] — Muon, neural network optimizer using Newton-Schulz orthogonalization (2024)
 - [[opencity]] — OpenCity, single-modal spatio-temporal traffic foundation model
 - [[staeformer]] — STAEFormer, previous SOTA transformer for traffic forecasting
 
 ## Concepts
+- [[x-prediction]] — x-prediction，扩散模型中直接预测干净数据的参数化方式，基于流形假设在高维空间中优于 ε-/v-prediction
 - [[gradient-orthogonalization]] — orthogonalizing gradient updates to improve optimization
 - [[mixture-of-experts]] — MoE, mixture of experts architecture with dynamic expert routing
 - [[on-policy-vs-off-policy]] — on-policy 与 off-policy 学习范式对比
