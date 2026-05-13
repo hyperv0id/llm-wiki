@@ -9,7 +9,7 @@ tags:
   - meta-ai
   - neurips-2023
 created: 2026-04-28
-last_updated: 2026-05-09
+last_updated: 2026-05-13
 source_count: 2
 confidence: medium
 status: active
@@ -408,6 +408,7 @@ $$
 - [[freqflow]] — FreqFlow，频率感知流匹配，引入双分支架构和双域监督
 - [[frequency-aware-conditioning]] — 频率感知条件化，FreqFlow 的核心设计概念
 - [[aurora]] — Aurora 使用 Prototype-Guided Flow Matching 进行时间序列概率预测
+- [[elf|ELF]] — ELF (Embedded Language Flows)，Flow Matching 在语言建模中的应用（MIT, 2026）
 - [[prototype-guided-flow-matching]] — Aurora 的原型引导流匹配技术
 
 ## 引用

@@ -2,7 +2,7 @@
 title: Log
 type: concept
 created: 2026-04-26
-last_updated: 2026-05-12
+last_updated: 2026-05-13
 tags:
   - meta
 ---
@@ -445,3 +445,10 @@ Downloaded arXiv 2312.00516 PDF and ingested STD-MAE paper by Gao et al. (The Un
 
 创建的页面：[[source-2312-00516-std-mae]], [[std-mae]], [[spatiotemporal-mirage]]
 更新的页面：[[traffic-forecasting]], [[index]], [[log]]
+
+## [2026-05-13] ingest | ELF: Embedded Language Flows (arXiv 2605.10938, MIT)
+
+Downloaded arXiv PDF (2605.10938) and ingested ELF paper by Hu, Qiu, Li, Kim, Lu, Zhao, Andreas, He (MIT, equal contribution). ELF is a continuous diffusion language model based on Flow Matching that operates entirely in continuous embedding space, discretizing only at the final time step. Key contributions: (1) showing continuous DLMs can be highly competitive with proper design — the performance gap vs discrete DLMs is due to algorithmic design, not inherent discreteness of language; (2) shared-weight denoiser-decoder via x-prediction parameterization; (3) native CFG support for language diffusion, enabling direct inheritance of image-domain diffusion advances; (4) 10x fewer training tokens than leading discrete DLMs, with better quality at fewer sampling steps. ELF achieves Gen. PPL 24 @ 32 steps (OWT), BLEU 26.4 (WMT14 De-En), and ROUGE-1 36.0 (XSum), outperforming both discrete (MDLM, Duo) and continuous (FLM, LangFlow) baselines.
+
+Pages created: [[source-elf-embedded-language-flows]], [[elf]], [[continuous-diffusion-language-model]]
+Pages updated: [[flow-matching]], [[index]], [[log]]

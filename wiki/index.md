@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-05-12
+last_updated: 2026-05-13
 tags:
   - meta
 ---
@@ -94,6 +94,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-yang-gsli-2025]] — GSLI: Graph Structure Learning for Spatial-Temporal Imputation Adapting to Node and Feature Scales (Yang et al., AAAI 2025)
 - [[source-equal-snr]] — A Fourier Space Perspective on Diffusion Models: EqualSNR frequency-SNR analysis (Microsoft Research, 2025)
 - [[source-flow-grpo]] — Flow-GRPO: Training Flow Matching Models via Online RL (NeurIPS 2025)
+- [[source-elf-embedded-language-flows]] — ELF: Embedded Language Flows, continuous diffusion LM via Flow Matching (MIT, arXiv 2026)
 
 ## Entities
 - [[sa-bcp]] — SA-BCP, state-adaptive Bayesian conformal prediction (arXiv 2026)
@@ -332,8 +333,10 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Concepts (continued)
 - [[snr-t-bias]] — SNR-t Bias，扩散模型推理阶段的信噪比-时间步错配偏置 (CVPR 2026)
+- [[continuous-diffusion-language-model]] — 连续扩散语言模型，在连续 embedding/simplex/latent 空间中做 diffusion 的语言模型类别
 
 ## Entities
+- [[elf]] — ELF (Embedded Language Flows), continuous diffusion LM via Flow Matching (MIT, 2026)
 - [[muon-optimizer]] — Muon, neural network optimizer using Newton-Schulz orthogonalization (2024)
 - [[opencity]] — OpenCity, single-modal spatio-temporal traffic foundation model
 - [[staeformer]] — STAEFormer, previous SOTA transformer for traffic forecasting
