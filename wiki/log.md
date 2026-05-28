@@ -2,7 +2,7 @@
 title: Log
 type: concept
 created: 2026-04-26
-last_updated: 2026-05-13
+last_updated: 2026-05-28
 tags:
   - meta
 ---
@@ -10,6 +10,23 @@ tags:
 # Wiki Log
 
 Chronological record of all wiki activity.
+
+## [2026-05-28] ingest | UrbanDiT: Diffusion Transformers as Open-World Spatiotemporal Foundation Models (Yuan et al., NeurIPS 2025, 完整论文)
+
+收到完整论文 PDF（arXiv:2411.12164v2），对之前基于摘要+README 创建的 Wiki 页面进行全面重写和大幅扩展。新增核心内容：
+- 数据统一化机制（3D CNN / GCN / temporal patching）
+- Rectified Flow 训练（InstaFlow / 25× 加速 vs DDPM）
+- 掩码策略公式 $X_t = X_t \odot (1-M) + X_0 \odot M$
+- 统一提示学习：三个 memory pool（时域/频域/空域）+ task-specific mask prompt 的完整实现细节
+- 消融实验（频域 prompt 影响最大）
+- 三种模型规模（S/M/L）+ 扩展性分析
+- 6 grid + 3 graph 数据集的完整统计
+- 20+ 基线的全面对比
+- 关键性能数据（11.3% 提升 on forward prediction, 30.4% 提升 on backward prediction）
+
+创建的页面：[[unified-prompt-learning]]
+更新的页面：[[source-urbandit]], [[urbandit]], [[spatio-temporal-foundation-model]], [[index]], [[log]]
+源文件：raw/urbandit.pdf
 
 ## [2026-05-13] ingest | Generative Modeling with Flux Matching (Pao-Huang et al., Stanford, arXiv 2026)
 
