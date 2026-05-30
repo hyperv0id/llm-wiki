@@ -64,7 +64,8 @@ $$\hat{Z} = \text{LayerNorm}(X_P + Z), \quad Z' = \text{LayerNorm}(\hat{Z} + \te
 - 基于：[[router-attention-for-cvpe]] — 核心聚合-分发机制
 - 基于：[[learnable-patch-position-encoding]] — 位置编码组件
 - 关系：[[channel-independence]] — CVPE 保留 CI backbone 同时注入 CD 信息
+- 关系：[[cross-dimension-dependency]] — CVPE 建模的跨维度依赖
+- 对比：[[crossformer]] — CVPE Router-Attention 的灵感来源，全 CD 架构
 - 对比：[[adaptive-graph-agent-attention]] — 同样用 agent/router token 降低注意力复杂度
-- 对比：Crossformer — router-attention 的灵感来源
 
 [^src-cvpe-2025]: [[source-cvpe-2025]]
