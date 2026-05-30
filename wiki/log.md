@@ -2,7 +2,7 @@
 title: Log
 type: concept
 created: 2026-04-26
-last_updated: 2026-05-28
+last_updated: 2026-05-30
 tags:
   - meta
 ---
@@ -10,6 +10,13 @@ tags:
 # Wiki Log
 
 Chronological record of all wiki activity.
+
+## [2026-05-30] ingest | CVPE: Enhancing Channel-Independent Time Series Forecasting via Cross-Variate Patch Embedding (Shin & Zhang, arXiv 2025)
+
+下载 arXiv 2505.12761v3 PDF 并 ingest。CVPE 由 Donghwa Shin (Humanity Unleashed / UVA) 和 Edwin Zhang (OpenAI) 提出，是一种轻量级模块，将跨变量上下文注入通道独立 (CI) 时间序列预测模型，仅需修改 patch embedding 步骤。核心创新：(1) 可学习位置编码 $W_P \in \mathbb{R}^{P \times d_m}$ 编码 patch 在时间和变量维度上的相对位置；(2) Router-Attention 机制（借鉴 Crossformer）通过两步 MHA（聚合-分发）高效注入跨变量信息，复杂度 $O(NP)$；(3) 仅修改 patch embedding 层，保留 CI backbone 鲁棒性。集成到 Time-LLM (GPT-2 backbone) 后，Weather ↓4.6% MSE, Traffic (Modified) ↓6.7% MSE；但 ETTh2/ETTm2 ↑5.2%（过拟合弱相关特征）。
+
+创建的页面：[[source-cvpe-2025]], [[cvpe]], [[router-attention-for-cvpe]], [[learnable-patch-position-encoding]]
+更新的页面：[[channel-independence]], [[patch-based-tokenization]], [[multimodal-time-series-forecasting]], [[index]], [[log]]
 
 ## [2026-05-28] ingest | UrbanDiT: Diffusion Transformers as Open-World Spatiotemporal Foundation Models (Yuan et al., NeurIPS 2025, 完整论文)
 

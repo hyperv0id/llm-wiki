@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-05-28
+last_updated: 2026-05-30
 tags:
   - meta
 ---
@@ -101,6 +101,7 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Sources (continued)
 - [[source-2511-16426]] — FrèqFlow/SpectFlow: Long-term forecasting using lightweight flow matching (NeurIPS 2025)
+- [[source-cvpe-2025]] — CVPE: Enhancing CI Forecasting via Cross-Variate Patch Embedding (arXiv 2025)
 
 ## Entities
 - [[sa-bcp]] — SA-BCP, state-adaptive Bayesian conformal prediction (arXiv 2026)
@@ -158,6 +159,7 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Entities (continued)
 - [[freqflow-ts]] — FrèqFlow/SpectFlow, lightweight frequency-domain flow matching for time series forecasting (NeurIPS 2025)
+- [[cvpe]] — CVPE, Cross-Variate Patch Embedding for CI model enhancement (arXiv 2025)
 
 ## Concepts
 - [[conformal-prediction]] — 共形预测，与模型无关的不确定性量化框架
@@ -345,6 +347,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[denoising-reduction]] — Denoising Reduction 去噪步数缩减策略，训练时用 10 步推理时用 40 步以加速在线 RL (NeurIPS 2025)
 - [[flow-opd]] — Flow-OPD: On-Policy Distillation for Flow Matching，通过多教师在线蒸馏解决多任务 seesaw effect (arXiv 2026)
 - [[manifold-anchor-regularization]] — MAR，通过审美教师 KL 惩罚锚定生成过程在高品质流形的正则化方法 (arXiv 2026)
+- [[router-attention-for-cvpe]] — 两步聚合-分发注意力机制，CVPE 中用于跨变量信息注入 (arXiv 2025)
+- [[learnable-patch-position-encoding]] — 可学习 patch 位置编码，编码时间和变量维度相对位置 (arXiv 2025)
 
 ## Concepts (continued)
 - [[snr-t-bias]] — SNR-t Bias，扩散模型推理阶段的信噪比-时间步错配偏置 (CVPR 2026)

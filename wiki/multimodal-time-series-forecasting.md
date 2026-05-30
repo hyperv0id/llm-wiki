@@ -7,8 +7,8 @@ tags:
   - forecasting
   - covariate
 created: 2026-04-29
-last_updated: 2026-05-03
-source_count: 6
+last_updated: 2026-05-30
+source_count: 7
 confidence: high
 status: active
 ---
@@ -36,6 +36,7 @@ status: active
 
 利用 LLM 的强大时间编码能力：
 - **Time-LLM**：将时间序列 reprogramming 为 LLM 输入
+- **Time-LLM + CVPE**：在 Time-LLM 的 patch embedding 层注入跨变量上下文，Weather ↓4.6% MSE, Traffic ↓6.7% MSE [^src-cvpe-2025]
 - **ChatTime**：结合时间感知提示
 - **LLM4TS**：零样本 LLM 预测
 
@@ -170,6 +171,7 @@ UniCA 在多模态场景下的表现：
 - [[generative-time-series-forecasting]] — 生成式时间序列预测概念
 - [[event-driven-reasoning]] — 事件驱动推理范式
 - [[multi-level-alignment]] — 多级对齐概念
+- [[cvpe]] — 跨变量 Patch Embedding (CI+CD 折中策略)
 
 ---
 
@@ -181,3 +183,4 @@ UniCA 在多模态场景下的表现：
 [^src-event-driven-ts-forecasting]: [[source-event-driven-ts-forecasting]]
 [^src-aurora]: [[source-aurora]]
 [^src-language-in-the-flow-of-time]: [[source-language-in-the-flow-of-time]]
+[^src-cvpe-2025]: [[source-cvpe-2025]]
