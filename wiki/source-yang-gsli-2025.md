@@ -8,7 +8,7 @@ tags:
   - feature-heterogeneity
   - aaai-2025
 created: 2026-05-11
-last_updated: 2026-05-11
+last_updated: 2026-05-30
 source_count: 1
 confidence: medium
 status: active
@@ -70,8 +70,8 @@ status: active
 
 ### 主要结果
 - 在所有缺失率（10%-40%）和所有数据集上取得最优 RMSE 和 MAE
-- DutchWind 10% 缺失：RMSE 0.410, MAE 0.205（次优 GRIN: 0.437/0.229）
-- LondonAQ 10% 缺失：RMSE 0.272, MAE 0.173（次优 GRIN: 0.311/0.198）
+- DutchWind 10% 缺失：RMSE 0.410, MAE 0.205（次优 [[grin]]: 0.437/0.229）
+- LondonAQ 10% 缺失：RMSE 0.272, MAE 0.173（次优 [[grin]]: 0.311/0.198）
 - CN 10% 缺失：RMSE 0.253, MAE 0.120（次优 w/o Prominence: 0.260/0.124）
 - 在 MCAR、MAR、MNAR 三种缺失机制下均一致最优
 

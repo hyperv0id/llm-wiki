@@ -7,7 +7,7 @@ tags:
   - data-imputation
   - dual-stream-architecture
 created: 2026-05-11
-last_updated: 2026-05-11
+last_updated: 2026-05-30
 source_count: 2
 confidence: high
 status: active
@@ -15,13 +15,13 @@ status: active
 
 # CoFILL
 
-**CoFILL** (Conditional Diffusion Model based on Temporal-Frequency Spatiotemporal Imputation) 是由河北工业大学、天津工业大学和南昆士兰大学的研究者于 2025 年提出的时空数据填补框架[^src-cofill]。
+**CoFILL** (Conditional Diffusion Model based on Temporal-Frequency Spatiotemporal Imputation) 是由河北工业大学、天津工业大学和南昆士兰大学的研究者于 2025 年提出的时空数据填补框架[^src-cofill-spatiotemporal-imputation]。
 
 ## 核心创新
 
 ### 1. 非递归扩散结构
 
-传统 RNN/GNN 方法存在误差累积问题——早期预测错误会通过递归结构传播到后续时间步。CoFILL 采用扩散模型的非递归特性，每个时间步的填补独立进行，有效减少误差累积[^src-cofill]。
+传统 RNN/GNN 方法存在误差累积问题——早期预测错误会通过递归结构传播到后续时间步。CoFILL 采用扩散模型的非递归特性，每个时间步的填补独立进行，有效减少误差累积[^src-cofill-spatiotemporal-imputation]。
 
 ### 2. 双流特征处理架构
 
@@ -42,13 +42,13 @@ status: active
 
 - **时域分支**：TCN (Temporal Convolutional Network) + GCN 学习时序依赖和空间关联
 - **频域分支**：DCT (Discrete Cosine Transform) 提取周期性和长期趋势
-- **融合**：Cross-Attention 机制将两个分支的特征融合为条件信息[^src-cofill]
+- **融合**：Cross-Attention 机制将两个分支的特征融合为条件信息[^src-cofill-spatiotemporal-imputation]
 
 ### 3. 双策略预处理
 
 CoFILL 使用两种预处理策略生成条件输入：
 - **Forward Interpolation**：用前一时间步的值填补当前缺失值，保持时空连续性
-- **Gaussian Noise**：注入与数据分布一致的高斯噪声，增强数据多样性[^src-cofill]
+- **Gaussian Noise**：注入与数据分布一致的高斯噪声，增强数据多样性[^src-cofill-spatiotemporal-imputation]
 
 ## 实验结果
 
@@ -58,7 +58,7 @@ CoFILL 使用两种预处理策略生成条件输入：
 | PEMS-BAY (Point) | MAE, MSE | ~1% |
 | AQI-36 (SF) | MAE, MSE | 3.65% |
 
-消融实验表明，Forward Interpolation 的贡献���大，移除后 MAE 从 8.70 升至 9.15[^src-cofill]。
+消融实验表明，Forward Interpolation 的贡献���大，移除后 MAE 从 8.70 升至 9.15[^src-cofill-spatiotemporal-imputation]。
 
 ## 与相关方法的对比
 
@@ -67,6 +67,7 @@ CoFILL 使用两种预处理策略生成条件输入：
 | CSDI | 原始域 | 否 | 否 |
 | PriSTI | 原始域 | 有限 | 注意力 |
 | SpecSTG | 谱域 | 否 | 谱域嵌入 |
+| [[grin]] | 原始域 | 显式 MPNN | ✅ 预定义图 |
 | **CoFILL** | 原始域 | **双流 Cross-Attention** | **TCN + GCN** |
 | **ImputeFormer** | 原始域 | 投影+嵌入Attention | 隐式（节点嵌入） |
 | **GSLI** | 原始域 | 跨特征+跨时间 Transformer | **双尺度学习图**（节点+特征） |
@@ -75,7 +76,7 @@ CoFILL 使用两种预处理策略生成条件输入：
 
 ### 计算效率
 
-CoFILL 相比其他扩散填补方法计算开销较大[^src-cofill]：
+CoFILL 相比其他扩散填补方法计算开销较大[^src-cofill-spatiotemporal-imputation]：
 
 1. **扩散步数**：T=100（META-LA/PEMS-BAY 为 50），每次填补需要 100 步迭代去噪
 2. **双流架构**：时域分支（TCN+GCN）+ 频域分支（DCT）+ Cross-Attention 融合，计算复杂度高
@@ -95,6 +96,7 @@ https://github.com/joyHJL/CoFILL
 
 ## 关联页面
 
+- [[grin]] — GRIN，首个 GNN 填补模型（ICLR 2022），CoFILL 解决其误差累积问题
 - [[diffusion-model]] — 扩散模型理论基础
 - [[imputeformer]] — ImputeFormer，低秩引导的 Transformer 时空填补
 - [[gsli]] — GSLI，多尺度图结构学习填补（AAAI 2025，处理特征异质性）
@@ -102,5 +104,5 @@ https://github.com/joyHJL/CoFILL
 - [[generative-time-series-forecasting]] — 生成式时间序列预测
 - [[traffic-forecasting]] — 交通预测
 
-[^src-cofill]: [[source-cofill-spatiotemporal-imputation]]
+[^src-cofill-spatiotemporal-imputation]: [[source-cofill-spatiotemporal-imputation]]
 [^src-yang-gsli-2025]: [[source-yang-gsli-2025]]

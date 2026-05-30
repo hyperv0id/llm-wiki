@@ -9,8 +9,8 @@ tags:
   - decomposition
   - NeurIPS-2021
 created: 2026-04-28
-last_updated: 2026-05-04
-source_count: 2
+last_updated: 2026-05-30
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -46,5 +46,8 @@ Autoformer achieves 38% relative MSE improvement over prior state-of-the-art on 
 - **[[timesnet]]** — TimesNet extends Autoformer's periodicity focus by transforming 1D series into 2D tensors for multi-periodicity modeling, while Autoformer treats periodicity through autocorrelation at the seasonal-part level.
 - **[[dualsformer|Dualformer]]** — Dualformer's frequency-branch autocorrelation attention is directly inspired by Autoformer's Wiener-Khinchin theorem approach, extending it with hierarchical frequency sampling.
 
+- **[[ltsf-linear|LTSF-Linear]]** — Zeng et al. (2022) showed that DLinear, which borrows Autoformer's moving average decomposition scheme, outperforms Autoformer on all nine LTSF benchmarks. Autoformer's performance drops 56.91% (Shuf.) when input order is shuffled, indicating limited temporal order preservation despite Auto-Correlation[^src-zeng-2022-are-transformers-effective].
+
 [^src-autoformer]: [[source-autoformer]]
 [^src-zhou-informer-2021]: [[source-zhou-informer-2021]]
+[^src-zeng-2022-are-transformers-effective]: [[source-zeng-2022-are-transformers-effective]]

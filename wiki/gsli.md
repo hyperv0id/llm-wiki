@@ -8,7 +8,7 @@ tags:
   - feature-heterogeneity
   - aaai-2025
 created: 2026-05-11
-last_updated: 2026-05-11
+last_updated: 2026-05-30
 source_count: 1
 confidence: medium
 status: active
@@ -67,9 +67,9 @@ GSLI 由四个模块组成：
 
 | 数据集 | 缺失率 | GSLI RMSE | 次优 RMSE | 提升 |
 |--------|--------|-----------|-----------|------|
-| DutchWind | 10% | 0.410 | 0.437 (GRIN) | 6.2% |
+| DutchWind | 10% | 0.410 | 0.437 ([[grin]]) | 6.2% |
 | BeijingMEO | 10% | 0.399 | 0.402 (w/o Prom) | 0.7% |
-| LondonAQ | 10% | 0.272 | 0.311 (GRIN) | 12.5% |
+| LondonAQ | 10% | 0.272 | 0.311 ([[grin]]) | 12.5% |
 | CN | 10% | 0.253 | 0.260 (w/o Prom) | 2.7% |
 | Los | 10% | 0.263 | 0.295 (PriSTI) | 10.8% |
 | LuohuTaxi | 10% | 0.410 | 0.436 (PoGeVon) | 6.0% |
@@ -80,7 +80,7 @@ GSLI 由四个模块组成：
 
 | 方法 | 图结构 | 特征异质性 | 跨特征依赖 | 显著度建模 |
 |------|--------|-----------|-----------|-----------|
-| GRIN | 固定图 | ❌ | ❌ | ❌ |
+| [[grin]] | 固定图 | ❌ | ❌ | ❌ |
 | PriSTI | 学习图（粗粒度） | ❌ | ❌ | ❌ |
 | ImputeFormer | 无图（节点嵌入） | ❌ | ❌ | ❌ |
 | **GSLI** | **双尺度学习** | **✅** | **✅** | **✅** |
@@ -90,6 +90,7 @@ GSLI 由四个模块组成：
 - [[node-scale-graph-structure-learning]] — 节点尺度图结构学习
 - [[feature-scale-graph-structure-learning]] — 特征尺度图结构学习
 - [[prominence-modeling-gsl]] — 显著度建模
+- [[grin]] — GRIN，首个 GNN 填补模型（ICLR 2022），GSLI 解决其固定图限制
 - [[imputeformer]] — ImputeFormer，低秩引导 Transformer 填补（同时期工作）
 - [[cofill]] — CoFILL，条件扩散填补
 - [[traffic-forecasting]] — 交通预测

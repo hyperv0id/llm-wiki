@@ -11,8 +11,8 @@ tags:
   - ICML-2022
   - alibaba
 created: 2026-04-28
-last_updated: 2026-05-04
-source_count: 2
+last_updated: 2026-05-30
+source_count: 3
 confidence: high
 status: active
 ---
@@ -88,7 +88,7 @@ Random mode selection consistently outperforms fixed low-frequency selection acr
 ## Connections
 
 ### Precursors
-- **[[informer]]** (AAAI 2021 Best Paper) — pioneered efficient Transformers for LSTF ($O(L \log L)$ via ProbSparse attention + distilling); FEDformer further reduces to $O(L)$[^src-informer]
+- **[[informer]]** (AAAI 2021 Best Paper) — pioneered efficient Transformers for LSTF ($O(L \log L)$ via ProbSparse attention + distilling); FEDformer further reduces to $O(L)$[^src-zhou-informer-2021]
 - **[[autoformer]]** (NeurIPS 2021) — introduced progressive seasonal-trend decomposition inside Transformer + Auto-Correlation mechanism; FEDformer inherits the decomposition architecture and extends it with learnable MOEDecomp[^src-fedformer]
 
 ### Successors & Alternatives
@@ -105,5 +105,8 @@ Random mode selection consistently outperforms fixed low-frequency selection acr
 - **[[traffic-forecasting|交通预测]]** — FEDformer applied to traffic but treats frequencies uniformly; HyperD and others later improved upon this
 - **[[lstf|LSTF]]** — FEDformer represents the domain-specific stage in LSTF evolution
 
+- **[[ltsf-linear|LTSF-Linear]]** — Zeng et al. (2022) showed that FEDformer is the most competitive Transformer on ETTh1 due to its frequency-based time series inductive bias. However, LTSF-Linear still outperforms FEDformer on most benchmarks by 20%–50%. FEDformer's performance drops 73.28% when input order is shuffled on ETTh1, indicating some temporal information extraction via frequency processing[^src-zeng-2022-are-transformers-effective].
+
 [^src-fedformer]: [[source-fedformer]]
-[^src-informer]: [[source-zhou-informer-2021]]
+[^src-zhou-informer-2021]: [[source-zhou-informer-2021]]
+[^src-zeng-2022-are-transformers-effective]: [[source-zeng-2022-are-transformers-effective]]

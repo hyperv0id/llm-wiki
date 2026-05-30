@@ -7,9 +7,9 @@ tags:
   - low-rank
   - spatio-temporal
 created: 2026-05-11
-last_updated: 2026-05-11
+last_updated: 2026-05-30
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
@@ -64,7 +64,7 @@ L = L_recon + λ · L_FIL
 1. **计算高效**：FFT 复杂度 O(NT log(NT))，远低于 SVD 的 O(min{N²T, NT²})
 2. **全局约束**：L_recon 仅约束掩蔽观测点，L_FIL 通过频谱正则化间接约束所有位置（包括真正缺失点）
 3. **信号-噪声平衡**：低秩模型过度平滑（截断过多能量），深度模型保留噪声（高频过多），FIL 在频域施加的 ℓ1 约束促使填补结果在奇异值频谱上达到平衡
-4. **无需层次化损失**：替代了 GRIN/SPIN 等使用的层次化损失（每层都计算损失），避免过拟合的同时保持简单性
+4. **无需层次化损失**：替代了 [[grin]]/SPIN 等使用的层次化损失（每层都计算损失），避免过拟合的同时保持简单性
 
 ## 消融实验
 

@@ -8,7 +8,7 @@ tags:
   - low-rank
   - kdd-2024
 created: 2026-05-11
-last_updated: 2026-05-11
+last_updated: 2026-05-30
 source_count: 2
 confidence: high
 status: active
@@ -39,7 +39,7 @@ status: active
 - RNN 系列：GRU-D、GRUI、BRITS
 - 生成式模型：GAIN、E2GAN
 - 扩散模型：NAOMI、PriSTI
-- GNN 系列：GRIN、GACN（利用图神经网络建模传感器间相关性）
+- **GNN 系列**：[[grin]]（ICLR 2022，首个 GNN 填补模型）、GACN（利用图神经网络建模传感器间相关性）
 
 **Transformer 补全系列（ImputeFormer 的直接竞品）：**
 - CSDI：跨通道注意力利用维度间相关性
@@ -104,7 +104,7 @@ L = L_recon + λ · L_FIL
 
 | 方法 | 时空建模 | 复杂度 | 低秩先验 | 图结构依赖 |
 |------|---------|--------|---------|-----------|
-| GRIN | GNN+RNN | O(N²) | ❌ | ✅ 预定义图 |
+| [[grin]] | GNN+RNN | O(N²) | ❌ | ✅ 预定义图 |
 | SPIN | 稀疏Cross-Attn | O(N²) | ❌ | ❌ |
 | SAITS | 对角掩码Self-Attn | O(T²) | ❌ | ❌ |
 | CoFILL | 扩散+TCN+GCN+DCT | O(N²+T²) | ❌ | ✅ 预定义图 |
@@ -125,7 +125,7 @@ L = L_recon + λ · L_FIL
 | SOLAR | Point | **15.9%** ↓ |
 | AQI | Point | **13.2%** ↓ |
 
-在 METR-LA Block missing 场景下 ImputeFormer 以 MAE 17.43 超越所有基线（SPIN 17.82、GRIN 20.78、SAITS 21.04）。
+在 METR-LA Block missing 场景下 ImputeFormer 以 MAE 17.43 超越所有基线（SPIN 17.82、[[grin]] 20.78、SAITS 21.04）。
 
 ### 不同缺失率下的鲁棒性
 
@@ -143,7 +143,7 @@ L = L_recon + λ · L_FIL
 | — 移除嵌入注意力 | 11.54 (+4.8%) | 13.36 (+6.9%) |
 | — 移除 FIL + 层次化损失替代 | 11.78 (+7.0%) | 13.89 (+11.1%) |
 
-空间嵌入注意力在 Block 场景下更重要（移除后 +6.9%），说明块缺失场景更需要全局空间依赖。层次化损失（GRIN/SPIN 使用的方式）替代 FIL 后性能下降最显著（+7.0%/+11.1%），证明 FIL 不仅更简单，而且更有效[^src-2312-01728]。
+空间嵌入注意力在 Block 场景下更重要（移除后 +6.9%），说明块缺失场景更需要全局空间依赖。层次化损失（[[grin]]/SPIN 使用的方式）替代 FIL 后性能下降最显著（+7.0%/+11.1%），证明 FIL 不仅更简单，而且更有效[^src-2312-01728]。
 
 ## 未来工作方向
 
@@ -157,6 +157,7 @@ L = L_recon + λ · L_FIL
 - [[projected-attention]] — 时间投影注意力机制
 - [[embedded-attention]] — 空间嵌入注意力机制
 - [[fourier-imputation-loss]] — 傅里叶填补损失
+- [[grin]] — GRIN，首个 GNN 填补模型（ICLR 2022）
 - [[cofill]] — CoFILL 时空填补扩散模型
 - [[gsli]] — GSLI 多尺度图结构学习填补（AAAI 2025，处理特征异质性）
 - [[traffic-forecasting]] — 交通预测
