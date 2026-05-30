@@ -6,9 +6,9 @@ tags:
   - reinforcement-learning
   - text-to-image
 created: 2026-05-12
-last_updated: 2026-05-12
+last_updated: 2026-05-30
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
@@ -129,4 +129,4 @@ D_{\mathrm{KL}}(\pi_\theta\|\pi_{\text{ref}}) = \frac{\|x_{t+\Delta t,\theta} - 
 - 多奖励平衡需要精细调参
 - KL 正则化虽有效但需延长训练时间
 
-[^src-2505-05470]: [[source-flow-grpo]]
+[^src-flow-grpo]: [[source-flow-grpo]]

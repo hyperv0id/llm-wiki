@@ -9,25 +9,25 @@ tags:
   - knowledge-distillation
   - multi-task-learning
 created: 2026-05-13
-last_updated: 2026-05-13
+last_updated: 2026-05-30
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
 # Flow-OPD: On-Policy Distillation for Flow Matching
 
-> Flow-OPD 是首个将 On-Policy Distillation (OPD) 引入 Flow Matching 模型的后训练框架，通过多教师在线蒸馏解决多任务对齐中的标量奖励稀疏性和梯度干扰问题。[^src-2605-08063]
+> Flow-OPD 是首个将 On-Policy Distillation (OPD) 引入 Flow Matching 模型的后训练框架，通过多教师在线蒸馏解决多任务对齐中的标量奖励稀疏性和梯度干扰问题。[^src-flow-opd]
 
 ## 动机
 
 ### GRPO 在单任务上有效
 
-标准流匹配依赖离线重建损失（L2 速度场回归），无法优化不可微的偏好。[[flow-grpo|Flow-GRPO]] 通过在线探索（组内优势归一化）突破离线 SFT 的性能上限。[^src-2605-08063]
+标准流匹配依赖离线重建损失（L2 速度场回归），无法优化不可微的偏好。[[flow-grpo|Flow-GRPO]] 通过在线探索（组内优势归一化）突破离线 SFT 的性能上限。[^src-flow-opd]
 
 ### GRPO 在多任务上失败
 
-单奖励 GRPO 导致灾难性遗忘：优化一个目标（如 OCR）时，其他未监控能力（如 GenEval）严重退化。根源是标量奖励压缩多维度冲突进入零和博弈。简单混合多个奖励同样不可行——梯度干扰导致 seesaw effect。[^src-2605-08063]
+单奖励 GRPO 导致灾难性遗忘：优化一个目标（如 OCR）时，其他未监控能力（如 GenEval）严重退化。根源是标量奖励压缩多维度冲突进入零和博弈。简单混合多个奖励同样不可行——梯度干扰导致 seesaw effect。[^src-flow-opd]
 
 ## 两阶段框架
 
@@ -39,7 +39,7 @@ status: active
 - PickScore 教师（人类偏好）
 - DeQA 教师（图像质量）
 
-每个教师在其对应指标上达到性能上限。[^src-2605-08063]
+每个教师在其对应指标上达到性能上限。[^src-flow-opd]
 
 ### 阶段二：多教师在线蒸馏
 
@@ -58,7 +58,7 @@ status: active
 dx_t = \left[v_\theta(x_t,t) + \frac{\sigma_t^2}{2t}\big(x_t + (1-t)v_\theta(x_t,t)\big)\right] dt + \sigma_t dw
 \]
 
-Euler-Maruyama 离散化后，学生的转移行为为各向同性高斯策略：[^src-2605-08063]
+Euler-Maruyama 离散化后，学生的转移行为为各向同性高斯策略：[^src-flow-opd]
 
 \[
 \pi_\theta(x_{t-\Delta t}|x_t,c) = \mathcal{N}(\mu_\theta(x_t,t), \sigma_t^2 \Delta t I)
@@ -74,7 +74,7 @@ v_{\text{target}}(x_t,t,c) = v_{\phi_k}(x_t,t,c), \quad \text{where } k = \mathc
 
 #### Dense KL Reward
 
-由于学生和教师的转移策略共享相同的各向同性协方差 σ_t²ΔtI，Reverse KL 散度可解析计算为均值间的 L2 距离：[^src-2605-08063]
+由于学生和教师的转移策略共享相同的各向同性协方差 σ_t²ΔtI，Reverse KL 散度可解析计算为均值间的 L2 距离：[^src-flow-opd]
 
 \[
 D_{\mathrm{KL}}(\pi_\theta\|\pi_{\text{target}}) = \frac{\|\mu_\theta(x_t,t) - \mu_{\text{target}}(x_t,t)\|^2}{2\sigma_t^2\Delta t}
@@ -88,7 +88,7 @@ r_t^{(i)} = -w(t)\|\bar{v}_\theta^{(i)}(x_t,t,c) - v_{\text{target}}^{(i)}(x_t,t
 
 #### Clipped Policy Gradient
 
-使用 PPO clip 机制稳定稠密奖励训练，梯度仅通过策略比率 ρ_{t,i,j}(θ) 传播，不经过稠密奖励（严格 detached）。[^src-2605-08063]
+使用 PPO clip 机制稳定稠密奖励训练，梯度仅通过策略比率 ρ_{t,i,j}(θ) 传播，不经过稠密奖励（严格 detached）。[^src-flow-opd]
 
 ### Manifold Anchor Regularization (MAR)
 
@@ -98,13 +98,13 @@ r_t^{(i)} = -w(t)\|\bar{v}_\theta^{(i)}(x_t,t,c) - v_{\text{target}}^{(i)}(x_t,t
 \mathcal{L}_{\text{Total}}(\theta) = \mathcal{L}_{\text{Policy}}(\theta) + \lambda \mathbb{E}_{c,t,x_t \sim \rho_\theta^t}\left[w(t)\|v_\theta(x_t,t,c) - v_{\text{aesthetic}}(x_t,t,c)\|^2\right]
 \]
 
-详见 [[manifold-anchor-regularization|Manifold Anchor Regularization]]。[^src-2605-08063]
+详见 [[manifold-anchor-regularization|Manifold Anchor Regularization]]。[^src-flow-opd]
 
 ## 关键洞察
 
 ### Teacher-Surpassing 效应
 
-Flow-OPD 在部分边缘案例上超越所有单个教师，推测源于知识交叉授粉：多个专家的同时稠密监督迫使学生学习更整体、更平滑的表示，弥合了单一专家的认知盲区。[^src-2605-08063]
+Flow-OPD 在部分边缘案例上超越所有单个教师，推测源于知识交叉授粉：多个专家的同时稠密监督迫使学生学习更整体、更平滑的表示，弥合了单一专家的认知盲区。[^src-flow-opd]
 
 ### 稠密监督 vs 标量奖励
 
@@ -124,4 +124,4 @@ Flow-OPD 在部分边缘案例上超越所有单个教师，推测源于知识�
 
 ## 引用
 
-[^src-2605-08063]: [[source-flow-opd]]
+[^src-flow-opd]: [[source-flow-opd]]

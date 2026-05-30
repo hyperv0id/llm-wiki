@@ -8,26 +8,26 @@ tags:
   - reward-hacking
   - aesthetic-preservation
 created: 2026-05-13
-last_updated: 2026-05-13
+last_updated: 2026-05-30
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
 # Manifold Anchor Regularization (MAR)
 
-> MAR 是 Flow-OPD 框架中的一种任务无关正则化方法，通过审美教师提供全数据 KL 惩罚，将生成过程锚定在高品质视觉流形上，有效缓解纯 RL 对齐中的审美退化。[^src-2605-08063]
+> MAR 是 Flow-OPD 框架中的一种任务无关正则化方法，通过审美教师提供全数据 KL 惩罚，将生成过程锚定在高品质视觉流形上，有效缓解纯 RL 对齐中的审美退化。[^src-flow-opd]
 
 ## 问题背景
 
-在 [[flow-grpo|Flow-GRPO]] 等纯 RL 对齐方法中，针对功能目标（如精确文字渲染、严格空间布局）的激进优化频繁触发 **reward hacking**，表现为：[^src-2605-08063]
+在 [[flow-grpo|Flow-GRPO]] 等纯 RL 对齐方法中，针对功能目标（如精确文字渲染、严格空间布局）的激进优化频繁触发 **reward hacking**，表现为：[^src-flow-opd]
 - **Background Mode Collapse** — 模型过拟合到单调背景环境
 - **Semantic Redundancy** — 多个实体间出现雷同特征（如多个物体共享相同纹理）
 - **Aesthetic Degradation** — 视觉质量显著下降
 
 ## 核心思想
 
-不同于 Flow-GRPO 使用 KL 惩罚锚定通用预训练模型，MAR 维护一个**冻结的审美教师**（经 DeQA 优化）来提供高保真正则化速度场。[^src-2605-08063]
+不同于 Flow-GRPO 使用 KL 惩罚锚定通用预训练模型，MAR 维护一个**冻结的审美教师**（经 DeQA 优化）来提供高保真正则化速度场。[^src-flow-opd]
 
 ### 数学形式
 
@@ -37,7 +37,7 @@ status: active
 \mathcal{L}_{\text{MAR}} = \lambda \mathbb{E}_{c,t,x_t \sim \rho_\theta^t}\left[w(t)\|v_\theta(x_t,t,c) - v_{\text{aesthetic}}(x_t,t,c)\|^2\right]
 \]
 
-总损失为策略损失与 MAR 损失的直接求和：[^src-2605-08063]
+总损失为策略损失与 MAR 损失的直接求和：[^src-flow-opd]
 
 \[
 \mathcal{L}_{\text{Total}}(\theta) = \mathcal{L}_{\text{Policy}}(\theta) + \lambda \mathbb{E}_{c,t,x_t \sim \rho_\theta^t}\left[w(t)\|v_\theta(x_t,t,c) - v_{\text{aesthetic}}(x_t,t,c)\|^2\right]
@@ -56,7 +56,7 @@ status: active
 
 ### 定性效果
 
-MAR 有效解决了背景模式崩溃和语义冗余问题。纯 GRPO 优化往往导致单调背景和雷同实体特征，而加入 MAR 后恢复了结构多样性和精确语义遵循。[^src-2605-08063]
+MAR 有效解决了背景模式崩溃和语义冗余问题。纯 GRPO 优化往往导致单调背景和雷同实体特征，而加入 MAR 后恢复了结构多样性和精确语义遵循。[^src-flow-opd]
 
 ### 定量结果
 
@@ -66,12 +66,12 @@ MAR 有效解决了背景模式崩溃和语义冗余问题。纯 GRPO 优化往�
 | w/o MAR | 5.89 | 3.518 | 0.2998 | 3.82 |
 | **Ours (MAR)** | **6.23** | **3.659** | **0.3302** | **4.05** |
 
-MAR 在所有画质和人类偏好指标上带来显著提升。[^src-2605-08063]
+MAR 在所有画质和人类偏好指标上带来显著提升。[^src-flow-opd]
 
 ### 超参数
 
-MAR 的 KL 惩罚系数 λ（论文中记为 β）设为 **0.02**。[^src-2605-08063]
+MAR 的 KL 惩罚系数 λ（论文中记为 β）设为 **0.02**。[^src-flow-opd]
 
 ## 引用
 
-[^src-2605-08063]: [[source-flow-opd]]
+[^src-flow-opd]: [[source-flow-opd]]

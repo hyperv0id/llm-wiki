@@ -9,7 +9,7 @@ tags:
   - meta-ai
   - neurips-2023
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-30
 source_count: 1
 confidence: medium
 status: active
@@ -109,4 +109,4 @@ Flow Matching 统一了扩散模型和连续归一化流，提供了更灵活的
 
 ## 引用
 
-[^src-flow-matching]: Lipman et al. "Flow Matching for Generative Modeling". NeurIPS 2023. arXiv:2210.02747
+[^src-flow-matching]: [[source-flow-matching]]

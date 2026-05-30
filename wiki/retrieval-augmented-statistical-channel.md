@@ -7,15 +7,15 @@ tags:
   - multimodal
   - kdd-2026
 created: 2026-04-30
-last_updated: 2026-04-30
-source_count: 0
-confidence: medium
+last_updated: 2026-05-30
+source_count: 1
+confidence: low
 status: active
 ---
 
 # Retrieval-Augmented Statistical Channel (RAGC)
 
-**检索增强统计信道 (RAGC)** 是 ChannelMTS 框架中的核心组件，用于利用历史环境-信道配对信息来增强当前预测[^sec4.2.2]。
+**检索增强统计信道 (RAGC)** 是 ChannelMTS 框架中的核心组件，用于利用历史环境-信道配对信息来增强当前预测[^sec4.2.2]。[^src-retrieval-augmented-statistical-channel]
 
 ## 背景与动机
 
@@ -92,4 +92,5 @@ $$\tilde{E}_t = [E_t; \tilde{C}_t]$$
 
 ## 引用
 
-[^sec4.2.2]: Section 4.2.2 Retrieval-Augmented Statistical Channel
+[^sec4.2.2]: [[source-sec4.2.2]]
+[^src-retrieval-augmented-statistical-channel]: [[source-retrieval-augmented-statistical-channel]]

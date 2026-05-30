@@ -8,9 +8,9 @@ tags:
   - grpo
   - arxiv-2026
 created: 2026-05-13
-last_updated: 2026-05-13
+last_updated: 2026-05-30
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
@@ -20,7 +20,7 @@ status: active
 
 ## 核心贡献
 
-Flow-OPD 是首个将 On-Policy Distillation (OPD) 集成到 Flow Matching 模型后训练（post-training）框架中的方法，旨在解决多任务对齐中的两大瓶颈：标量奖励稀疏性（reward sparsity）和梯度干扰（gradient interference）。[^src-2605-08063]
+Flow-OPD 是首个将 On-Policy Distillation (OPD) 集成到 Flow Matching 模型后训练（post-training）框架中的方法，旨在解决多任务对齐中的两大瓶颈：标量奖励稀疏性（reward sparsity）和梯度干扰（gradient interference）。[^src-flow-opd]
 
 ### 三个关键发现
 
@@ -30,7 +30,7 @@ Flow-OPD 是首个将 On-Policy Distillation (OPD) 集成到 Flow Matching 模�
 
 ## 方法架构
 
-Flow-OPD 采用两阶段对齐策略：[^src-2605-08063]
+Flow-OPD 采用两阶段对齐策略：[^src-flow-opd]
 
 ### 阶段一：领域专家教师训练
 
@@ -46,13 +46,13 @@ Flow-OPD 采用两阶段对齐策略：[^src-2605-08063]
 
 ### Cold-Start 策略
 
-两种初始化方式：[^src-2605-08063]
+两种初始化方式：[^src-flow-opd]
 - **SFT-based** — 用专家教师的轨迹对进行监督微调
 - **Model Merging** — 合并多个教师的参数，将学生置于损失景观中已有协同的高能力区域
 
 ### Manifold Anchor Regularization (MAR)
 
-引入一个与任务无关的审美教师（DeQA 优化）提供全数据监督，将生成过程锚定在高品质流形上，有效缓解纯 RL 对齐中常见的审美退化（background mode collapse、semantic redundancy）。[^src-2605-08063]
+引入一个与任务无关的审美教师（DeQA 优化）提供全数据监督，将生成过程锚定在高品质流形上，有效缓解纯 RL 对齐中常见的审美退化（background mode collapse、semantic redundancy）。[^src-flow-opd]
 
 ## 实验结果
 
@@ -74,8 +74,8 @@ Flow-OPD 采用两阶段对齐策略：[^src-2605-08063]
 
 - **教师性能天花板** — 当专业教师生成语义错误的图像时，错误会通过稠密监督传播
 - **架构同质需求** — 教师和学生模型需要相同架构以支持逐步骤的细粒度监督
-- 未来方向：共进化蒸馏（co-evolutionary distillation）、自蒸馏、跨词汇蒸馏（cross-vocabulary distillation）[^src-2605-08063]
+- 未来方向：共进化蒸馏（co-evolutionary distillation）、自蒸馏、跨词汇蒸馏（cross-vocabulary distillation）[^src-flow-opd]
 
 ## 引用
 
-[^src-2605-08063]: [[source-flow-opd]]
+[^src-flow-opd]: [[source-flow-opd]]

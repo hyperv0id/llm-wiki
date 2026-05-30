@@ -7,9 +7,9 @@ tags:
   - data-imputation
   - conditional-diffusion
 created: 2026-05-11
-last_updated: 2026-05-11
+last_updated: 2026-05-30
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
@@ -39,4 +39,4 @@ status: active
 
 公开于 https://github.com/joyHJL/CoFILL
 
-[^src-cofill]: [[source-cofill-spatiotemporal-imputation]]
+[^src-cofill-spatiotemporal-imputation]: [[source-cofill-spatiotemporal-imputation]]

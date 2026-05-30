@@ -7,15 +7,15 @@ tags:
   - denoising-reduction
   - training-efficiency
 created: 2026-05-12
-last_updated: 2026-05-12
+last_updated: 2026-05-30
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
 # Denoising Reduction：RL 训练中的去噪步数缩减
 
-> 在线 RL 训练时使用极少的去噪步数生成样本（T_train = 10），推理时恢复完整步数（T_infer = 40），大幅加速训练流程而不牺牲性能。[^src-2505-05470]
+> 在线 RL 训练时使用极少的去噪步数生成样本（T_train = 10），推理时恢复完整步数（T_infer = 40），大幅加速训练流程而不牺牲性能。[^src-flow-grpo]
 
 ## 动机
 
@@ -65,4 +65,4 @@ Denoising Reduction 与 [[ode-to-sde-conversion|ODE-to-SDE 转换]] 互补：
 - **有效学习信号**：虽然少步样本画质差，但相对排序信号依然有效（实验验证）
 - **收敛曲线**：以 wall-clock 时间衡量，T=10 的奖励增长速率远超 T=40
 
-[^src-2505-05470]: [[source-flow-grpo]]
+[^src-flow-grpo]: [[source-flow-grpo]]

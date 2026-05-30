@@ -8,7 +8,7 @@ tags:
   - vision-transformer
   -iclr-2026
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-30
 source_count: 1
 confidence: medium
 status: active
@@ -70,4 +70,4 @@ $$A = \text{softmax}(Q\bar{K}^T)$$
 
 ## 引用
 
-[^src-quest]: Govindarajan, S., Sidén, P., Roll, J., & Lindsten, F. (2026). QUEST: A robust attention formulation using query-modulated spherical attention. ICLR 2026.
+[^src-quest]: [[source-quest]]

@@ -7,9 +7,9 @@ tags:
   - wavelet-correction
   - cvpr-2026
 created: 2026-05-09
-last_updated: 2026-05-09
+last_updated: 2026-05-30
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
@@ -24,9 +24,9 @@ status: active
 
 ## 关键发现
 
-**Key Finding 1（滑动窗口实验）**：固定网络 $\epsilon_\theta(\cdot, s)$ 的时间步 $s$，输入具有不同 SNR 的样本 $x_t$（通过前向过程 Eq. 2 生成），网络输出 $\|\epsilon_\theta(x_t, s)\|_2$ 呈现系统性偏差：当输入 SNR 低于预期（$t > s$）时输出被高估；当 SNR 高于预期（$t < s$）时输出被低估。[^src-2604.16044]
+**Key Finding 1（滑动窗口实验）**：固定网络 $\epsilon_\theta(\cdot, s)$ 的时间步 $s$，输入具有不同 SNR 的样本 $x_t$（通过前向过程 Eq. 2 生成），网络输出 $\|\epsilon_\theta(x_t, s)\|_2$ 呈现系统性偏差：当输入 SNR 低于预期（$t > s$）时输出被高估；当 SNR 高于预期（$t < s$）时输出被低估。[^src-snr-t-bias]
 
-**Key Finding 2（逆过程 SNR 始终偏低）**：在同一时间步 $t$，逆过程预测样本 $\hat{x}_t$ 的网络输出 $\|\epsilon_\theta(\hat{x}_t, t)\|_2$ 始终大于前向样本 $\|\epsilon_\theta(x_t, t)\|_2$，说明 $\hat{x}_t$ 的 SNR 系统性低于理想值。[^src-2604.16044]
+**Key Finding 2（逆过程 SNR 始终偏低）**：在同一时间步 $t$，逆过程预测样本 $\hat{x}_t$ 的网络输出 $\|\epsilon_\theta(\hat{x}_t, t)\|_2$ 始终大于前向样本 $\|\epsilon_\theta(x_t, t)\|_2$，说明 $\hat{x}_t$ 的 SNR 系统性低于理想值。[^src-snr-t-bias]
 
 ## 数学形式化
 
@@ -84,13 +84,13 @@ $$x_\theta^0(\hat{x}_t, t) = \gamma_t x_0 + \phi_t \epsilon_t, \quad 0 < \gamma_
 
 $$\mathbb{E}[\|x_\theta^0\|^2] \leq \mathbb{E}[\|x_0\|^2] \tag{Eq. 11}$$
 
-而 $x_\theta^0 = x_0 + \phi_t \epsilon_t$ 意味着 $\mathbb{E}[\|x_\theta^0\|^2] = \mathbb{E}[\|x_0\|^2] + \phi_t^2$，与 Eq. 11 矛盾。因此必须引入 $\gamma_t < 1$ 表示重建过程中的信息损失。[^src-2604.16044]
+而 $x_\theta^0 = x_0 + \phi_t \epsilon_t$ 意味着 $\mathbb{E}[\|x_\theta^0\|^2] = \mathbb{E}[\|x_0\|^2] + \phi_t^2$，与 Eq. 11 矛盾。因此必须引入 $\gamma_t < 1$ 表示重建过程中的信息损失。[^src-snr-t-bias]
 
 **定理 5.1**：逆过程中偏置去噪样本 $\hat{x}_t$ 的实际 SNR 为：
 
 $$\text{SNR}(t) = \frac{\hat{\gamma}^2_t \bar{\alpha}_t}{1 - \bar{\alpha}_t + \left( \frac{\sqrt{\bar{\alpha}_t} \beta_{t+1}}{1-\bar{\alpha}_{t+1}} \phi_{t+1} \right)^2} \tag{Eq. 12}$$
 
-其中 $0 < \hat{\gamma}_t \leq 1$。对比前向 SNR $\text{SNR}(t) = \bar{\alpha}_t/(1-\bar{\alpha}_t)$，逆过程的 SNR 严格更低（因为分母多了正项 $(\cdot)^2$），严格证明了 SNR-t bias 的存在。[^src-2604.16044]
+其中 $0 < \hat{\gamma}_t \leq 1$。对比前向 SNR $\text{SNR}(t) = \bar{\alpha}_t/(1-\bar{\alpha}_t)$，逆过程的 SNR 严格更低（因为分母多了正项 $(\cdot)^2$），严格证明了 SNR-t bias 的存在。[^src-snr-t-bias]
 
 **推导概览**：将 Eq. 10 和 Eq. 2 代入实际逆过程 Eq. 8，得到 $\hat{x}_{t-1}$ 的解析形式：
 
@@ -127,7 +127,7 @@ $$\lambda^l_t = \lambda_l \cdot \sigma_t \tag{Eq. 20}$$
 高频校正系数：
 $$\lambda^h_t = (1-\lambda_h) \cdot \sigma_t \tag{Eq. 21}$$
 
-设计动机：去噪早期（$\sigma_t$ 大）侧重低频校正以重建轮廓，后期（$\sigma_t$ 小）侧重高频校正以细化纹理。$\lambda_l, \lambda_h$ 为标量超参数（通过两阶段网格搜索确定）。[^src-2604.16044]
+设计动机：去噪早期（$\sigma_t$ 大）侧重低频校正以重建轮廓，后期（$\sigma_t$ 小）侧重高频校正以细化纹理。$\lambda_l, \lambda_h$ 为标量超参数（通过两阶段网格搜索确定）。[^src-snr-t-bias]
 
 ## 实验结果
 
@@ -140,7 +140,7 @@ $$\lambda^h_t = (1-\lambda_h) \cdot \sigma_t \tag{Eq. 21}$$
 | IDDPM | LSUN Bedroom 256 | 20 | 18.69 | 11.03 | 41.0% |
 | EDM | CIFAR-10 | 13 NFE | 22.62 | 12.92 | 42.9% |
 
-DCW 还可叠加在已有偏置校正方法（ADM-ES、DPM-FR）之上进一步改进。在 FLUX、Qwen-Image 等现代文生图模型上也有效。计算开销仅 0.08%~0.47%。[^src-2604.16044]
+DCW 还可叠加在已有偏置校正方法（ADM-ES、DPM-FR）之上进一步改进。在 FLUX、Qwen-Image 等现代文生图模型上也有效。计算开销仅 0.08%~0.47%。[^src-snr-t-bias]
 
 ## 局限性
 
@@ -150,10 +150,10 @@ DCW 还可叠加在已有偏置校正方法（ADM-ES、DPM-FR）之上进一步�
 
 ## 与 Exposure Bias 的关系
 
-本文清晰地界定了 SNR-t bias 与先前工作研究的 exposure bias 之间的区别与联系：[^src-2604.16044]
+本文清晰地界定了 SNR-t bias 与先前工作研究的 exposure bias 之间的区别与联系：[^src-snr-t-bias]
 
 - **Exposure bias** 关注的是样本间的分布偏移（$x_t$ 与 $\hat{x}_t$ 之间的差异），是 inter-sample 层面的偏置
 - **SNR-t bias** 关注的是样本 SNR 与时间步之间的错配，是 sample-timestep 层面的偏置
 - SNR-t bias 是 exposure bias 的根本原因之一——SNR 错配导致网络预测误差，预测误差累积又进一步加剧 SNR 错配
 
-[^src-2604.16044]: [[source-snr-t-bias]]
+[^src-snr-t-bias]: [[source-snr-t-bias]]

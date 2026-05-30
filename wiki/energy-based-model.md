@@ -6,15 +6,15 @@ tags:
   - energy-function
   - score-function
 created: 2026-05-04
-last_updated: 2026-05-04
-source_count: 0
-confidence: medium
+last_updated: 2026-05-30
+source_count: 1
+confidence: low
 status: active
 ---
 
 # Energy-Based Model (EBM)
 
-An **Energy-Based Model (EBM)** is a generative modeling framework where probability distributions are defined through an unnormalized **energy function** $E_\theta(\mathbf{x})$:
+An **Energy-Based Model (EBM)** is a generative modeling framework where probability distributions are defined through an unnormalized **energy function** $E_\theta(\mathbf{x})$:[^src-energy-based-model]
 
 $$p_\theta(\mathbf{x}) = \frac{\exp(-E_\theta(\mathbf{x}))}{Z_\theta}$$
 
@@ -24,3 +24,4 @@ where $Z_\theta = \int \exp(-E_\theta(\mathbf{x})) d\mathbf{x}$ is the intractab
 - [[score-function]]
 - [[score-based-generative-modeling]]
 - [[diffusion-model]]
+[^src-energy-based-model]: [[source-energy-based-model]]

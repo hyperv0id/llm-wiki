@@ -2,13 +2,13 @@
 title: "Muon: An optimizer for hidden layers in neural networks"
 type: source-summary
 tags:
-  - optimizer
-  - neural-network-optimization
-  - newton-schulz
+ - optimizer
+ - neural-network-optimization
+ - newton-schulz
 created: 2026-04-30
-last_updated: 2026-04-30
-source_count: 2
-confidence: high
+last_updated: 2026-05-30
+source_count: 1
+confidence: medium
 status: active
 ---
 
@@ -16,7 +16,7 @@ status: active
 
 ## 核心论点
 
-Muon 是一种针对神经网络隐藏层 2D 参数的新型优化器，通过在 SGD-动量更新后应用 Newton-Schulz 迭代进行正交化来处理更新矩阵[^src-muon-optimizer][^src-kellerjordan-muon-blog]。
+Muon 是一种针对神经网络隐藏层 2D 参数的新型优化器，通过在 SGD-动量更新后应用 Newton-Schulz 迭代进行正交化来处理更新矩阵[^src-muon-optimizer]。
 
 ## 主要贡献
 
@@ -55,4 +55,4 @@ Muon 是一种针对神经网络隐藏层 2D 参数的新型优化器，通过�
 ## 参考文献
 
 [^src-muon-optimizer]: [[source-muon-optimizer]]
-[^src-kellerjordan-muon-blog]: [[source-kellerjordan-muon-blog]]
+: 

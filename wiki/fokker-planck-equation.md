@@ -6,7 +6,7 @@ tags:
   - partial-differential-equations
   - diffusion-models
 created: 2026-04-28
-last_updated: 2026-05-13
+last_updated: 2026-05-30
 source_count: 2
 confidence: medium
 status: active
@@ -14,7 +14,7 @@ status: active
 
 # 福克-普朗克方程
 
-**福克-普朗克方程**描述马尔可夫随机过程的概率密度函数 $p(x, t)$ 随时间演化的偏微分方程，是分析扩散模型的理论基石。[^src-tutorial]
+**福克-普朗克方程**描述马尔可夫随机过程的概率密度函数 $p(x, t)$ 随时间演化的偏微分方程，是分析扩散模型的理论基石。[^src-chan-2025-diffusion-tutorial]
 
 ## 一般形式
 
@@ -31,7 +31,7 @@ $$
 
 其中：
 - $D^{(1)}(x, t) = h(x, t) + g'(x, t) g(x, t)$（漂移项）
-- $D^{(2)}(x, t) = g^2(x, t)$（扩散项）[^src-tutorial]
+- $D^{(2)}(x, t) = g^2(x, t)$（扩散项）[^src-chan-2025-diffusion-tutorial]
 
 ## 概率流解释
 
@@ -47,7 +47,7 @@ $$
 \frac{\partial p}{\partial t} + \frac{\partial S}{\partial x} = 0
 $$
 
-表示概率的守恒。[^src-tutorial]
+表示概率的守恒。[^src-chan-2025-diffusion-tutorial]
 
 ## 在 SMLD 中的应用
 
@@ -56,7 +56,7 @@ $$
 \dot{x} = \tau \frac{\partial}{\partial x} \log p(x) + \sigma \Gamma(t)
 $$
 
-福克-普朗克分析表明，当 $t \to \infty$ 时，解 $x(t)$ 的分布收敛于 $p(x)$。选择 $\sigma = \sqrt{\tau}$ 可使收敛分布恰好为目标分布。[^src-tutorial]
+福克-普朗克分析表明，当 $t \to \infty$ 时，解 $x(t)$ 的分布收敛于 $p(x)$。选择 $\sigma = \sqrt{\tau}$ 可使收敛分布恰好为目标分布。[^src-chan-2025-diffusion-tutorial]
 
 ## 在 Flux Matching 中的核心作用
 
@@ -70,5 +70,5 @@ $$
 
 ## 引用
 
-[^src-tutorial]: [[source-chan-2025-diffusion-tutorial]]
+[^src-chan-2025-diffusion-tutorial]: [[source-chan-2025-diffusion-tutorial]]
 [^src-2605-07319]: [[source-2605-07319]]

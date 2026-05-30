@@ -7,15 +7,15 @@ tags:
   - reinforcement-learning
   - stochastic-differential-equation
 created: 2026-05-12
-last_updated: 2026-05-12
+last_updated: 2026-05-30
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
 # ODE-to-SDE 转换：流匹配中的随机采样
 
-> 将确定性 ODE 采样转换为等效的随机微分方程（SDE），在保持边缘分布的前提下引入随机性，使得在线强化学习（GRPO）可应用于流匹配模型。[^src-2505-05470]
+> 将确定性 ODE 采样转换为等效的随机微分方程（SDE），在保持边缘分布的前提下引入随机性，使得在线强化学习（GRPO）可应用于流匹配模型。[^src-flow-grpo]
 
 ## 问题背景
 
@@ -175,4 +175,4 @@ D_{\mathrm{KL}}(\pi_\theta\|\pi_{\text{ref}}) = \frac{\|x_{t+\Delta t,\theta} - 
 - **计算高效**：无需估计散度或重训练模型，仅需在采样时注入高斯噪声
 - **已集成到框架中**：当前 SOTA 的 T2I 流匹配模型（SD3.5、FLUX）均可直接使用
 
-[^src-2505-05470]: [[source-flow-grpo]]
+[^src-flow-grpo]: [[source-flow-grpo]]

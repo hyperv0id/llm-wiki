@@ -8,9 +8,9 @@ tags:
   - pixel-space
   - mit
 created: 2026-05-13
-last_updated: 2026-05-13
+last_updated: 2026-05-30
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
@@ -21,7 +21,7 @@ status: active
 
 ## 核心问题
 
-现代扩散模型并不真正"去噪"——它们预测噪声（ε-prediction）或流速度（v-prediction），而非直接预测干净图像。这篇论文追问：**在流形假设下，预测干净数据和预测含噪量在根本上是否不同？如果是，那么让网络直接预测干净数据（x-prediction）能否彻底改变高维空间扩散模型的设计？**[^src-2511-13720]
+现代扩散模型并不真正"去噪"——它们预测噪声（ε-prediction）或流速度（v-prediction），而非直接预测干净图像。这篇论文追问：**在流形假设下，预测干净数据和预测含噪量在根本上是否不同？如果是，那么让网络直接预测干净数据（x-prediction）能否彻底改变高维空间扩散模型的设计？**[^src-back-to-basics-let-denoising-generative-models-denoise]
 
 ## 核心洞察
 
@@ -30,15 +30,15 @@ status: active
 根据流形假设，自然数据（如图像）位于高维空间中的低维流形上，而噪声 ε 或速度 v = x − ε 本质上散布在整个高维空间中（off-manifold）。因此：
 
 - **x-prediction**：网络只需保留低维流形信息，过滤掉噪声。有限容量网络即可胜任。
-- **ε-/v-prediction**：网络需要在高维空间中保留噪声的全部信息，需要高容量。当观测维度超过网络容量时，会灾难性失败。[^src-2511-13720]
+- **ε-/v-prediction**：网络需要在高维空间中保留噪声的全部信息，需要高容量。当观测维度超过网络容量时，会灾难性失败。[^src-back-to-basics-let-denoising-generative-models-denoise]
 
 ### 九种组合的系统枚举
 
-论文系统分析了损失空间和预测空间的九种组合（Tab. 1），证明所有九种都是合法的生成器，但只有 x-prediction 能在高维下正常工作。[^src-2511-13720]
+论文系统分析了损失空间和预测空间的九种组合（Tab. 1），证明所有九种都是合法的生成器，但只有 x-prediction 能在高维下正常工作。[^src-back-to-basics-let-denoising-generative-models-denoise]
 
 ### 玩具实验验证
 
-用 d 维底层数据嵌入 D 维观测空间（d << D）的玩具实验表明：当 D 增大时，只有 x-prediction 能产生合理结果；ε-/v-prediction 在 D=16 时已开始退化，在 D=512 时完全崩溃（使用 256-dim MLP）。[^src-2511-13720]
+用 d 维底层数据嵌入 D 维观测空间（d << D）的玩具实验表明：当 D 增大时，只有 x-prediction 能产生合理结果；ε-/v-prediction 在 D=16 时已开始退化，在 D=512 时完全崩溃（使用 256-dim MLP）。[^src-back-to-basics-let-denoising-generative-models-denoise]
 
 ## JiT: Just image Transformers
 
@@ -49,7 +49,7 @@ status: active
 - adaLN-Zero 时间/类别条件化
 - 使用 SwiGLU、RMSNorm、RoPE、qk-norm 等通用 Transformer 改进
 - 可选的 in-context class conditioning（多 token 前置）
-- bottleneck 线性嵌入层（默认 128-d）反而有益[^src-2511-13720]
+- bottleneck 线性嵌入层（默认 128-d）反而有益[^src-back-to-basics-let-denoising-generative-models-denoise]
 
 ### 关键发现
 
@@ -75,7 +75,7 @@ status: active
 | JiT-G/32 | 512 | 2.11 / 1.78 | 2B | 384 |
 | JiT-B/64 | 1024 | 4.82 | 141M | 30 |
 
-所有 JiT 模型在相同序列长度（16×16）下运行，不同分辨率仅改变 patch 维度。计算成本几乎不随分辨率增长。[^src-2511-13720]
+所有 JiT 模型在相同序列长度（16×16）下运行，不同分辨率仅改变 patch 维度。计算成本几乎不随分辨率增长。[^src-back-to-basics-let-denoising-generative-models-denoise]
 
 ### 与现有方法的对比
 
@@ -86,8 +86,8 @@ JiT 在所有像素空间扩散方法中实现了最佳的计算效率-FID 平�
 
 ## 意义
 
-1. **对扩散模型设计的根本反思**：预测目标的选择不仅影响损失加权，更决定网络能否有效利用其容量。在高维空间中，x-prediction 不是选项之一，而是必要条件。[^src-2511-13720]
-2. **自包含范式的推动**：JiT 展示了"Diffusion + Transformer"在原生数据上自包含工作的可能性，无需领域特定的 tokenizer 设计。这对于 tokenizer 难以设计的科学应用（蛋白质、分子、天气）尤为重要。[^src-2511-13720]
+1. **对扩散模型设计的根本反思**：预测目标的选择不仅影响损失加权，更决定网络能否有效利用其容量。在高维空间中，x-prediction 不是选项之一，而是必要条件。[^src-back-to-basics-let-denoising-generative-models-denoise]
+2. **自包含范式的推动**：JiT 展示了"Diffusion + Transformer"在原生数据上自包含工作的可能性，无需领域特定的 tokenizer 设计。这对于 tokenizer 难以设计的科学应用（蛋白质、分子、天气）尤为重要。[^src-back-to-basics-let-denoising-generative-models-denoise]
 3. **与 ELF 的呼应**：ELF（同实验室的连续 DLM 工作）也采用 x-prediction，验证了该设计在不同模态间的普适性。
 
 ## 局限性
@@ -97,4 +97,4 @@ JiT 在所有像素空间扩散方法中实现了最佳的计算效率-FID 平�
 - 大模型（H/G）需要 dropout 和 early stopping 来防止过拟合
 - 未探索条件生成（如 text-to-image）场景
 
-[^src-2511-13720]: [[source-back-to-basics-let-denoising-generative-models-denoise]]
+[^src-back-to-basics-let-denoising-generative-models-denoise]: [[source-back-to-basics-let-denoising-generative-models-denoise]]

@@ -6,7 +6,7 @@ tags:
   - estimation
   - diffusion-models
 created: 2026-04-28
-last_updated: 2026-05-13
+last_updated: 2026-05-30
 source_count: 2
 confidence: medium
 status: active
@@ -14,7 +14,7 @@ status: active
 
 # 得分匹配
 
-**得分匹配** 是 Aapo Hyvärinen 于 2005 年提出的非归一化统计模型估计方法。它通过匹配对数密度梯度（得分函数）来进行参数估计，无需计算归一化常数。[^src-tutorial]
+**得分匹配** 是 Aapo Hyvärinen 于 2005 年提出的非归一化统计模型估计方法。它通过匹配对数密度梯度（得分函数）来进行参数估计，无需计算归一化常数。[^src-chan-2025-diffusion-tutorial]
 
 ## 定义
 
@@ -32,7 +32,7 @@ $$
 
 ## 显式得分匹配的问题
 
-直接优化需要计算 Hessian 矩阵的对角线元素 $\nabla_x^2 \log p(x)$，计算量巨大，无法扩展到高维数据。[^src-tutorial]
+直接优化需要计算 Hessian 矩阵的对角线元素 $\nabla_x^2 \log p(x)$，计算量巨大，无法扩展到高维数据。[^src-chan-2025-diffusion-tutorial]
 
 ## 去噪得分匹配
 
@@ -42,9 +42,9 @@ $$
 \frac{1}{2} \mathbb{E}_{p(x)}\mathbb{E}_{q(\tilde{x}|x)} \left[ \| s_\theta(\tilde{x}) - \nabla_{\tilde{x}} \log q(\tilde{x}|x) \|^2 \right]
 $$
 
-其中 $\nabla_{\tilde{x}} \log q(\tilde{x}|x) = (x - \tilde{x}) / \sigma^2$。[^src-tutorial]
+其中 $\nabla_{\tilde{x}} \log q(\tilde{x}|x) = (x - \tilde{x}) / \sigma^2$。[^src-chan-2025-diffusion-tutorial]
 
-**关键结论**：在 $q(\tilde{x}|x)$ 为高斯噪声的条件下，去噪得分匹配等价于训练一个去噪自动编码器。[^src-tutorial]
+**关键结论**：在 $q(\tilde{x}|x)$ 为高斯噪声的条件下，去噪得分匹配等价于训练一个去噪自动编码器。[^src-chan-2025-diffusion-tutorial]
 
 ## 在扩散模型中的应用
 
@@ -63,5 +63,5 @@ $$
 
 ## 引用
 
-[^src-tutorial]: [[source-chan-2025-diffusion-tutorial]]
+[^src-chan-2025-diffusion-tutorial]: [[source-chan-2025-diffusion-tutorial]]
 [^src-2605-07319]: [[source-2605-07319]]

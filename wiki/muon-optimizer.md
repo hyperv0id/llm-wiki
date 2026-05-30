@@ -2,20 +2,20 @@
 title: "Muon Optimizer"
 type: entity
 tags:
-  - optimizer
-  - neural-network
-  - orthogonalization
-  - matrix-optimization
+ - optimizer
+ - neural-network
+ - orthogonalization
+ - matrix-optimization
 created: 2026-04-30
-last_updated: 2026-04-30
-source_count: 3
+last_updated: 2026-05-30
+source_count: 2
 confidence: high
 status: active
 ---
 
 # Muon Optimizer
 
-**Muon** (MomentUm Orthogonalized by Newton-Schulz) 是一种专门用于神经网络**隐藏层 2D 参数**的优化器[^src-muon-optimizer][^src-kellerjordan-muon-blog]。它在当前 NanoGPT 和 CIFAR-10 速度训练纪录中使用，是大模型时代备受关注的优化器[^src-muon-optimizer]。
+**Muon** (MomentUm Orthogonalized by Newton-Schulz) 是一种专门用于神经网络**隐藏层 2D 参数**的优化器[^src-muon-optimizer]。它在当前 NanoGPT 和 CIFAR-10 速度训练纪录中使用，是大模型时代备受关注的优化器[^src-muon-optimizer]。
 
 > [!tip] 为什么 Muon 值得关注
 > 
@@ -100,32 +100,32 @@ Muon 的关键设计：在正交化**之前**应用动量，这比之前的方�
 
 ```python
 def newtonschulz5(G, steps=5, eps=1e-7):
-    """
-    Newton-Schulz 迭代近似矩阵符号函数
-    
-    参数:
-        G: 输入矩阵
-        steps: 迭代步数 (通常用 5)
-        eps: 数值稳定性参数
-    返回:
-        近似正交矩阵
-    """
-    a, b, c = (3.4445, -4.7750, 2.0315)  # 调优系数
-    X = G.bfloat16()  # 可以在 bfloat16 下稳定运行
-    X /= (X.norm() + eps)  # 归一化，确保奇异值在 [0,1]
-    
-    if G.size(0) > G.size(1):
-        X = X.T  # 转置确保矩阵形状适合迭代
-    
-    for _ in range(steps):
-        A = X @ X.T
-        B = b * A + c * A @ A
-        X = a * X + B @ X
-    
-    if G.size(0) > G.size(1):
-        X = X.T
-    
-    return X
+ """
+ Newton-Schulz 迭代近似矩阵符号函数
+ 
+ 参数:
+ G: 输入矩阵
+ steps: 迭代步数 (通常用 5)
+ eps: 数值稳定性参数
+ 返回:
+ 近似正交矩阵
+ """
+ a, b, c = (3.4445, -4.7750, 2.0315) # 调优系数
+ X = G.bfloat16() # 可以在 bfloat16 下稳定运行
+ X /= (X.norm() + eps) # 归一化，确保奇异值在 [0,1]
+ 
+ if G.size(0) > G.size(1):
+ X = X.T # 转置确保矩阵形状适合迭代
+ 
+ for _ in range(steps):
+ A = X @ X.T
+ B = b * A + c * A @ A
+ X = a * X + B @ X
+ 
+ if G.size(0) > G.size(1):
+ X = X.T
+ 
+ return X
 ```
 
 ### 系数的选择
@@ -165,11 +165,11 @@ $$
 ### 向量 vs 矩阵
 
 - **向量**：常用 $p$ 范数 $\Vert\boldsymbol{v}\Vert_p$
-  - $p=2$：欧氏范数 → SGD
-  - $p\to\infty$：无穷范数 → SignSGD
+ - $p=2$：欧氏范数 → SGD
+ - $p\to\infty$：无穷范数 → SignSGD
 - **矩阵**：常用两种范数
-  - **Frobenius 范数**：将矩阵展平为向量的欧氏范数 → 等价于 SGD
-  - **谱范数（2-范数）**：$\Vert\boldsymbol{\Phi}\Vert_2 = \max_{\Vert\boldsymbol{x}\Vert_2=1} \Vert\boldsymbol{\Phi}\boldsymbol{x}\Vert_2$
+ - **Frobenius 范数**：将矩阵展平为向量的欧氏范数 → 等价于 SGD
+ - **谱范数（2-范数）**：$\Vert\boldsymbol{\Phi}\Vert_2 = \max_{\Vert\boldsymbol{x}\Vert_2=1} \Vert\boldsymbol{\Phi}\boldsymbol{x}\Vert_2$
 
 ### 关键结论
 
@@ -295,5 +295,4 @@ Muon 与 2015 年的论��� "Stochastic Spectral Descent for Restricted Bol
 ## 参考文献
 
 [^src-muon-optimizer]: [[source-muon-optimizer]]
-[^src-kellerjordan-muon-blog]: [[source-kellerjordan-muon-blog]]
 [^src-kexue-muon-analysis]: [[source-kexue-muon-analysis]]

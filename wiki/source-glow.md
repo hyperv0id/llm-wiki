@@ -7,7 +7,7 @@ tags:
   - openai
   - nips-2018
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-30
 source_count: 1
 confidence: medium
 status: active
@@ -61,4 +61,4 @@ Glow 是首个能够高效生成高分辨率图像（如 256×256）的基于似
 
 ## 引用
 
-[^src-glow]: Kingma & Dhariwal. "Glow: Generative Flow with Invertible 1×1 Convolutions". NeurIPS 2018. arXiv:1807.03039
+[^src-glow]: [[source-glow]]

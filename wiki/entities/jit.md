@@ -8,15 +8,15 @@ tags:
   - mit
   - x-prediction
 created: 2026-05-13
-last_updated: 2026-05-13
+last_updated: 2026-05-30
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
 # JiT — Just image Transformers
 
-JiT（Just image Transformers）是由 MIT 的 Tianhong Li 和 Kaiming He 提出的像素空间扩散模型，核心思想是将标准 Vision Transformer (ViT) 直接应用于原始像素块，使用 **x-prediction**（预测干净图像）而非 ε-/v-prediction。[^src-2511-13720]
+JiT（Just image Transformers）是由 MIT 的 Tianhong Li 和 Kaiming He 提出的像素空间扩散模型，核心思想是将标准 Vision Transformer (ViT) 直接应用于原始像素块，使用 **x-prediction**（预测干净图像）而非 ε-/v-prediction。[^src-back-to-basics-let-denoising-generative-models-denoise]
 
 ## 核心设计
 
@@ -33,7 +33,7 @@ JiT（Just image Transformers）是由 MIT 的 Tianhong Li 和 Kaiming He 提出
 
 关键算法（Tab. 1(3)(a)）：
 1. 训练：$x_\theta = \text{net}(z_t, t)$, $v_\theta = (x_\theta - z_t)/(1-t)$, $\mathcal{L} = \|v_\theta - v\|^2$
-2. 采样：$x_\theta = \text{net}(z_t, t)$, $v_\theta = (x_\theta - z_t)/(1-t)$, $z_{t+\Delta t} = z_t + \Delta t \cdot v_\theta$[^src-2511-13720]
+2. 采样：$x_\theta = \text{net}(z_t, t)$, $v_\theta = (x_\theta - z_t)/(1-t)$, $z_{t+\Delta t} = z_t + \Delta t \cdot v_\theta$[^src-back-to-basics-let-denoising-generative-models-denoise]
 
 ## 关键发现
 
@@ -41,7 +41,7 @@ JiT 的核心贡献不是新架构，而是揭示了一个被忽视的根本问�
 
 - ε-prediction：FID 372+（灾难性失败）
 - v-prediction：FID 96+（灾难性失败）
-- x-prediction：FID 8.62（合理），通过通用改进降至 4.37，扩展到 G 模型降至 1.82[^src-2511-13720]
+- x-prediction：FID 8.62（合理），通过通用改进降至 4.37，扩展到 G 模型降至 1.82[^src-back-to-basics-let-denoising-generative-models-denoise]
 
 ## 模型变体
 
@@ -64,4 +64,4 @@ JiT 的核心贡献不是新架构，而是揭示了一个被忽视的根本问�
 3. **通用性**：设计思路可推广到其他 tokenizer 难以设计的领域（蛋白质、分子、天气）
 4. **与 [[elf|ELF]] 的呼应**：同实验室的连续 DLM 也采用 x-prediction，验证了跨模态普适性
 
-[^src-2511-13720]: [[source-back-to-basics-let-denoising-generative-models-denoise]]
+[^src-back-to-basics-let-denoising-generative-models-denoise]: [[source-back-to-basics-let-denoising-generative-models-denoise]]

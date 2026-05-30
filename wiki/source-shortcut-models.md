@@ -9,7 +9,7 @@ tags:
   - uc-berkeley
   - arxiv-2025
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-30
 source_count: 1
 confidence: medium
 status: active
@@ -67,4 +67,4 @@ $$
 
 ## 引用
 
-[^src-shortcut-models]: Frans et al. "One Step Diffusion via Shortcut Models". arXiv:2410.12557v3, 2025.
+[^src-shortcut-models]: [[source-shortcut-models]]

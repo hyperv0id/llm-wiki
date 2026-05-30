@@ -10,8 +10,8 @@ tags:
   - spatial-temporal
   - cnn
 created: 2026-04-28
-last_updated: 2026-04-28
-source_count: 0
+last_updated: 2026-05-30
+source_count: 1
 confidence: medium
 status: active
 ---
@@ -20,7 +20,7 @@ status: active
 
 ## Overview
 
-Published at the DeepSpatial '22 workshop (ACM SIGKDD) by Chengxin Wang, Yuxuan Liang, and Gary Tan (National University of Singapore), PRNet addresses **crowd flow forecasting** — predicting the number of people entering or leaving city regions. The core observation is that while raw crowd flow data is highly dynamic and non-stationary, the **periodic residual** (the difference between the current time step and the same time step one period ago, e.g., one week) is far more stationary and easier to learn. PRNet reframes crowd flow forecasting as a periodic residual learning problem.
+Published at the DeepSpatial '22 workshop (ACM SIGKDD) by Chengxin Wang, Yuxuan Liang, and Gary Tan (National University of Singapore), PRNet addresses **crowd flow forecasting** — predicting the number of people entering or leaving city regions. The core observation is that while raw crowd flow data is highly dynamic and non-stationary, the **periodic residual** (the difference between the current time step and the same time step one period ago, e.g., one week) is far more stationary and easier to learn. PRNet reframes crowd flow forecasting as a periodic residual learning problem.[^src-source-prnet]
 
 ## Key Method
 
@@ -39,3 +39,5 @@ On two real-world datasets (TaxiBJ and BikeNYC), PRNet outperforms HA, DeepST, S
 ## Critique
 
 PRNet is specifically designed for region-based **crowd flow data** with strong weekly periodicity — its applicability to general time series or other spatial-temporal tasks (e.g., [[traffic-forecasting]] on sensor networks) is not demonstrated. The periodic residual approach requires known period lengths (daily, weekly) and may not generalize to series with multiple or variable periods. The paper uses CNN-based spatial modules, which assume grid-structured city partitions; graph-based methods may be more suitable for irregular sensor layouts. Compared to [[frequency-aware-residual-representation|frequency-domain approaches]] like HyperD and TimesNet, PRNet's period handling is more heuristic (direct subtraction of periodic segments) than spectral, trading generality for simplicity and efficiency.
+
+[^src-source-prnet]: [[source-prnet]]

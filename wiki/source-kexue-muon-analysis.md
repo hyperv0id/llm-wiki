@@ -2,13 +2,13 @@
 title: "Muon优化器赏析：从向量到矩阵的本质跨越"
 type: source-summary
 tags:
-  - optimizer
-  - matrix-optimization
-  - spectral-norm
-  - theory
+ - optimizer
+ - matrix-optimization
+ - spectral-norm
+ - theory
 created: 2026-04-30
-last_updated: 2026-04-30
-source_count: 3
+last_updated: 2026-05-30
+source_count: 2
 confidence: high
 status: active
 ---
@@ -17,7 +17,7 @@ status: active
 
 ## 核心论点
 
-本文从理论层面深入分析了 Muon 优化器的数学本质，提出 Muon 体现了向量与矩阵优化的本质差异[^src-kellerjordan-muon-blog][^src-kexue-muon-analysis]。
+本文从理论层面深入分析了 Muon 优化器的数学本质，提出 Muon 体现了向量与矩阵优化的本质差异[^src-kexue-muon-analysis]。
 
 ## 主要理论贡献
 
@@ -63,6 +63,5 @@ Muon 相当于谱范数（2-范数）约束下的梯度下降[^src-kexue-muon-an
 
 ## 参考��献
 
-[^src-kellerjordan-muon-blog]: [[source-kellerjordan-muon-blog]]
 [^src-muon-optimizer]: [[source-muon-optimizer]]
 [^src-kexue-muon-analysis]: [[source-kexue-muon-analysis]]

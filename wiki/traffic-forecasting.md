@@ -6,8 +6,8 @@ tags:
   - spatial-temporal
   - intelligent-transportation
 created: 2026-04-27
-last_updated: 2026-05-13
-source_count: 16
+last_updated: 2026-05-30
+source_count: 18
 confidence: high
 status: active
 ---
@@ -106,3 +106,5 @@ The XTraffic benchmark provides incident-aligned traffic datasets for California
 [^src-demystify-mamba-linear-attention-2024]: [[source-demystify-mamba-linear-attention-2024]]
 [^src-2312-00516-std-mae]: [[source-2312-00516-std-mae]]
 [^src-2511-16426]: [[source-2511-16426]]
+[^src-2312-01728]: [[source-2312-01728]]
+[^src-cofill-spatiotemporal-imputation]: [[source-cofill-spatiotemporal-imputation]]

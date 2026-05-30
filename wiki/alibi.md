@@ -7,8 +7,8 @@ tags:
   - extrapolation
   - iclr-2022
 created: 2026-04-28
-last_updated: 2026-04-28
-source_count: 4
+last_updated: 2026-05-30
+source_count: 3
 confidence: high
 status: active
 ---
@@ -67,7 +67,7 @@ $$2^{-8/n}, 2^{-7/n}, ..., 2^0$$
 ## 应用场景
 
 - **长上下文推理**：训练短序列，外推处理更长序列[^src-alibi]
-- **Few-shot learning**：在 NLP 任务中可输入更多示例[^src-alibili]
+- **Few-shot learning**：在 NLP 任务中可输入更多示例[^src-alibi]
 - **长文本生成**：支持生成长于训练序列的输出[^src-alibi]
 
 ## 与其他位置编码的关系

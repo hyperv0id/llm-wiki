@@ -6,7 +6,7 @@ tags:
   - generative-model
   - nips-2020
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-30
 source_count: 1
 confidence: medium
 status: active
@@ -89,4 +89,4 @@ DDPM 与 [[ncsn|NCSN]]（Song & Ermon, 2019/2020）密切相关：
 
 ## 引用
 
-[^src-ddpm]: Jonathan Ho, Ajay Jain, Pieter Abbeel. "Denoising Diffusion Probabilistic Models". NeurIPS 2020. arXiv:2006.11239
+[^src-ddpm]: [[source-ddpm]]

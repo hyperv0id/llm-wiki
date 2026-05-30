@@ -9,8 +9,8 @@ tags:
   - decomposition
   - survey
 created: 2026-04-28
-last_updated: 2026-05-04
-source_count: 17
+last_updated: 2026-05-30
+source_count: 16
 confidence: medium
 status: active
 ---
@@ -92,7 +92,7 @@ status: active
 
 ### HyperD（2025）
 
-[[hyperd|HyperD]] 提出**混合周期解耦**（Hybrid Periodicity Decoupling），将交通信号显式分解为**短周期**（intra-day, 1–6 小时）、**长周期**（daily/weekly）和**残差**三部分[^src-hyperd]。FR 模块通过 RFFT 将频率分量聚类为高/中/低三频段，分别对应残差、短周期嵌入、长周期嵌入。双路径编码器（STFE + FR-STFE）各自处理原始信号和残差信号，由对应的频率嵌入引导。fDMLP 解码器进一步在预测阶段做趋势分离。
+[[hyperd|HyperD]] 提出**混合周期解耦**（Hybrid Periodicity Decoupling），将交通信号显式分解为**短周期**（intra-day, 1–6 小时）、**长周期**（daily/weekly）和**残差**三部分[^src-hyperd-hybrid-periodicity-decoupling]。FR 模块通过 RFFT 将频率分量聚类为高/中/低三频段，分别对应残差、短周期嵌入、长周期嵌入。双路径编码器（STFE + FR-STFE）各自处理原始信号和残差信号，由对应的频率嵌入引导。fDMLP 解码器进一步在预测阶段做趋势分离。
 
 - **核心贡献**：首次在编码器层面实现短/长周期路径分离；频率阈值通过学习获得，自动对齐日周期（288 步/天）和周周期（2016 步/周）
 - **局限**：针对交通预测设计，泛化到一般时间序列未验证；PeMS 之外数据集覆盖有限
@@ -195,7 +195,7 @@ status: active
 - **多周期并行**：TimesNet 保留 top-k 个周期各自独立处理（细粒度）
 - **周期残差**：PRNet 仅建模相对于已知周期的偏差（极简方案）
 
-TPLib 调查的结论——"没有单一架构在所有任务上通用"——对周期建模同样适用[^src-survey]。高度周期性数据（交通、电力）受益于多周期并行处理，弱周期性数据（汇率、ILI）可能因过度周期化而受损。
+TPLib 调查的结论——"没有单一架构在所有任务上通用"——对周期建模同样适用[^src-deep-time-series-survey]。高度周期性数据（交通、电力）受益于多周期并行处理，弱周期性数据（汇率、ILI）可能因过度周期化而受损。
 
 ## 时间线与中稿情况
 
@@ -238,7 +238,7 @@ TPLib 调查的结论——"没有单一架构在所有任务上通用"——对
 [^src-penguin]: [[source-penguin]]
 [^src-st-resnet]: [[source-st-resnet]]
 [^src-astgcn]: [[source-astgcn]]
-[^src-survey]: [[source-deep-time-series-survey]]
+[^src-deep-time-series-survey]: [[source-deep-time-series-survey]]
 [^src-hyperd-hybrid-periodicity-decoupling]: [[source-hyperd-hybrid-periodicity-decoupling]]
 [^src-tqn]: [[source-tqn]]
 [^src-sparsetsf]: [[source-sparsetsf]]

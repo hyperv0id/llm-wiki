@@ -6,7 +6,7 @@ tags:
   - sampling
   - diffusion-models
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-30
 source_count: 1
 confidence: medium
 status: active
@@ -14,7 +14,7 @@ status: active
 
 # 朗之万动力学
 
-朗之万动力学是一类描述粒子在势能场中受随机力驱动的**随机微分方程**，由 Paul Langevin 于 1908 年提出。在生成模型中，它被用作从概率分布中采样的工具。[^src-tutorial]
+朗之万动力学是一类描述粒子在势能场中受随机力驱动的**随机微分方程**，由 Paul Langevin 于 1908 年提出。在生成模型中，它被用作从概率分布中采样的工具。[^src-chan-2025-diffusion-tutorial]
 
 ## 数学形式
 
@@ -24,7 +24,7 @@ $$
 \dot{\xi}(t) + \gamma \xi(t) = \Gamma(t)
 $$
 
-其中 $\gamma$ 是阻尼系数，$\Gamma(t)$ 是高斯白噪声，满足 $E[\Gamma(t)] = 0$，$E[\Gamma(t)\Gamma(t')] = q\delta(t-t')$。[^src-tutorial]
+其中 $\gamma$ 是阻尼系数，$\Gamma(t)$ 是高斯白噪声，满足 $E[\Gamma(t)] = 0$，$E[\Gamma(t)\Gamma(t')] = q\delta(t-t')$。[^src-chan-2025-diffusion-tutorial]
 
 用于采样的离散形式：
 
@@ -45,8 +45,8 @@ $$
 p(x) = \sqrt{\frac{\gamma}{2\pi q}} e^{-\frac{\gamma x^2}{2q}}
 $$
 
-即零均值高斯分布。这为朗之万采样的收敛性提供了理论保证。[^src-tutorial]
+即零均值高斯分布。这为朗之万采样的收敛性提供了理论保证。[^src-chan-2025-diffusion-tutorial]
 
 ## 引用
 
-[^src-tutorial]: [[source-chan-2025-diffusion-tutorial]]
+[^src-chan-2025-diffusion-tutorial]: [[source-chan-2025-diffusion-tutorial]]

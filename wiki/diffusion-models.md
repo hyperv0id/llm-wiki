@@ -6,7 +6,7 @@ tags:
   - diffusion
   - deep-learning
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-30
 source_count: 1
 confidence: medium
 status: active
@@ -14,7 +14,7 @@ status: active
 
 # 扩散模型
 
-**扩散模型**是一类通过逐步向数据添加噪声再逆转过程来生成新样本的生成模型。核心思想来自非平衡热力学。[^src-tutorial]
+**扩散模型**是一类通过逐步向数据添加噪声再逆转过程来生成新样本的生成模型。核心思想来自非平衡热力学。[^src-chan-2025-diffusion-tutorial]
 
 ## 两类主流方法
 
@@ -41,7 +41,7 @@ $$
 - **DDPM**：对应方差爆炸型 (VE) SDE
 - **SMLD**：对应方差保持型 (VP) SDE
 
-逆向过程对应反向时间 SDE，福克-普朗克方程描述概率密度的演化。[^src-tutorial]
+逆向过程对应反向时间 SDE，福克-普朗克方程描述概率密度的演化。[^src-chan-2025-diffusion-tutorial]
 
 ## 应用领域
 
@@ -56,8 +56,8 @@ $$
 - 与物理世界的物理一致性
 - 信息取证与深度伪造检测
 
-知识蒸馏和快速 ODE 求解器是加速采样的主要方向。[^src-tutorial]
+知识蒸馏和快速 ODE 求解器是加速采样的主要方向。[^src-chan-2025-diffusion-tutorial]
 
 ## 引用
 
-[^src-tutorial]: [[source-chan-2025-diffusion-tutorial]]
+[^src-chan-2025-diffusion-tutorial]: [[source-chan-2025-diffusion-tutorial]]

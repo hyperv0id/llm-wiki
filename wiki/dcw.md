@@ -9,19 +9,19 @@ tags:
   - training-free
   - post-processing
 created: 2026-05-09
-last_updated: 2026-05-09
+last_updated: 2026-05-30
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
 # DCW: Differential Correction in Wavelet Domain
 
-**DCW（Differential Correction in Wavelet Domain）** 是一种针对扩散模型 SNR-t bias 的无需训练、即插即用的后处理方法。通过对每一步去噪结果与重建样本之间的差分信号进行小波域分解和频率分量级校正，有效缓解信噪比-时间步错配问题。[^src-2604.16044]
+**DCW（Differential Correction in Wavelet Domain）** 是一种针对扩散模型 SNR-t bias 的无需训练、即插即用的后处理方法。通过对每一步去噪结果与重建样本之间的差分信号进行小波域分解和频率分量级校正，有效缓解信噪比-时间步错配问题。[^src-snr-t-bias]
 
 ## 动机
 
-SNR-t bias 使逆过程预测样本 $\hat{x}_{t-1}$ 偏离理想的前向样本 $x_{t-1}$。然而，差分信号 $\hat{x}_{t-1} - x_\theta^0(\hat{x}_t, t)$ 天然包含将 $\hat{x}_{t-1}$ 拉向 $x_{t-1}$ 的方向信息（势信息）。[^src-2604.16044]
+SNR-t bias 使逆过程预测样本 $\hat{x}_{t-1}$ 偏离理想的前向样本 $x_{t-1}$。然而，差分信号 $\hat{x}_{t-1} - x_\theta^0(\hat{x}_t, t)$ 天然包含将 $\hat{x}_{t-1}$ 拉向 $x_{t-1}$ 的方向信息（势信息）。[^src-snr-t-bias]
 
 ## 核心公式
 
@@ -48,7 +48,7 @@ $$\tilde{x}_{t-1} = \text{iDWT}(\hat{x}^f_{t-1} | f \in \{ll, lh, hl, hh\}) \tag
 
 ## 动态权重调度
 
-动机：去噪过程遵循**从粗到细**的范式——早期重建低频轮廓，后期细化高频细节。[^src-2604.16044]
+动机：去噪过程遵循**从粗到细**的范式——早期重建低频轮廓，后期细化高频细节。[^src-snr-t-bias]
 
 利用逆过程方差 $\sigma_t$ 作为去噪进度的自然指示器（去噪早期 $\sigma_t$ 大，后期 $\sigma_t$ 小）：
 
@@ -93,7 +93,7 @@ $$\lambda^h_t = (1 - \lambda_h) \cdot \sigma_t \tag{Eq. 21}$$
 
 ## 超参数敏感性
 
-$\lambda_l$ 和 $\lambda_h$ 对最终 FID 的影响呈先降后升的单峰形态，存在较宽的最优区间，敏感性较低。在两阶段搜索中，先固定 $\lambda_h$ 搜索 $\lambda_l$，再固定最优 $\lambda_l$ 搜索 $\lambda_h$，可快速确定最优值。[^src-2604.16044]
+$\lambda_l$ 和 $\lambda_h$ 对最终 FID 的影响呈先降后升的单峰形态，存在较宽的最优区间，敏感性较低。在两阶段搜索中，先固定 $\lambda_h$ 搜索 $\lambda_l$，再固定最优 $\lambda_l$ 搜索 $\lambda_h$，可快速确定最优值。[^src-snr-t-bias]
 
 ## 与同类方法的区别
 
@@ -104,4 +104,4 @@ $\lambda_l$ 和 $\lambda_h$ 对最终 FID 的影响呈先降后升的单峰形�
 - DCW 使用 $\sigma_t$ 动态调度权重，而非固定系数
 - DCW 可在这些方法之上进一步改进（证明其捕捉到了不同/互补的偏置信号）
 
-[^src-2604.16044]: [[source-snr-t-bias]]
+[^src-snr-t-bias]: [[source-snr-t-bias]]

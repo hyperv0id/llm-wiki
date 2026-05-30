@@ -7,7 +7,7 @@ tags:
   - one-step-generation
   - icml-2023
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-30
 source_count: 1
 confidence: medium
 status: active
@@ -64,4 +64,4 @@ $$
 
 ## 引用
 
-[^src-consistency-models]: Yang Song et al. "Consistency Models". ICML 2023. arXiv:2303.01469
+[^src-consistency-models]: [[source-consistency-models]]

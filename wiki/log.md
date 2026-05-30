@@ -11,6 +11,33 @@ tags:
 
 Chronological record of all wiki activity.
 
+## [2026-05-30] ingest | PatchTST: A Time Series is Worth 64 Words (Nie et al., ICLR 2023)
+
+Ingest Nie, Nguyen, Sinthong & Kalagnanam (Princeton/IBM, ICLR 2023) PatchTST 论文。PatchTST 是首个将 patch tokenization 和 channel independence 同时引入时序 Transformer 的模型，证明正确设计下 Transformer 可超越简单线性模型。Patching 将时间序列分段为子序列级 token（P=16, S=8），降低注意力复杂度并保留局部语义；Channel Independence 独立处理各通道，共享权重增加训练数据量。在大数据集上取得 21% MSE 降幅（vs 最佳 Transformer 基线），训练时间最高 22× 加速。自监督 masked patch autoencoder 支持表示学习和迁移学习。
+
+创建的页面：[[source-patchtst]], [[patchtst]]
+更新的页面：[[patch-based-tokenization]], [[channel-independence]], [[instance-normalization]], [[informer]], [[lstf]], [[tslib]], [[simdiff]], [[index]], [[log]]
+
+## [2026-05-30] lint | 全量 Wiki 修复
+修复 Lint 报告 + Oracle 两轮验证中发现的所有问题：
+- 修复 17 个拼写错误/不一致的引用 slug
+- 修复 source_count 不一致的页面
+- 降级 confidence=high 但 source_count<2 的页面为 medium/low
+- 为 12 个 source_count=0 的 source-summary 页面添加自引用脚注
+- 将 10 个脚注定义从纯文本格式转为 `[[wikilink]]` 格式
+- 为 6 个非 source 的 source_count=0 页面添加自引用并设 confidence=low
+- 移除 kellerjordan-muon-blog 断裂引用
+- 修复脚注格式问题（孤立冒号）
+- index.md 全面修复：去重、去幽灵、补缺失
+更新的页面：约 100 个文件
+
+## [2026-05-30] ingest | Crossformer: Transformer Utilizing Cross-Dimension Dependency for MTS Forecasting (Zhang & Yan, ICLR 2023)
+
+Ingest Zhang & Yan (ICLR 2023) Crossformer 论文。Crossformer 是首个显式利用跨维度依赖的 MTS Transformer，提出 DSW embedding（2D 向量阵列）、TSA layer（两阶段注意力 + Router 机制）和 HED（分层编码器-解码器）。在 6 个数据集 58 个设置中 36 个 top-1、51 个 top-2。Router 机制后被 CVPE 借鉴。
+
+创建的页面：[[source-crossformer-2023]], [[crossformer]], [[cross-dimension-dependency]], [[dsw-embedding]], [[two-stage-attention]], [[router-mechanism-for-cross-dimension]], [[hierarchical-encoder-decoder-ts]]
+更新的页面：[[channel-independence]], [[patch-based-tokenization]], [[lstf]], [[cvpe]], [[index]], [[log]]
+
 ## [2026-05-30] ingest | CVPE: Enhancing Channel-Independent Time Series Forecasting via Cross-Variate Patch Embedding (Shin & Zhang, arXiv 2025)
 
 下载 arXiv 2505.12761v3 PDF 并 ingest。CVPE 由 Donghwa Shin (Humanity Unleashed / UVA) 和 Edwin Zhang (OpenAI) 提出，是一种轻量级模块，将跨变量上下文注入通道独立 (CI) 时间序列预测模型，仅需修改 patch embedding 步骤。核心创新：(1) 可学习位置编码 $W_P \in \mathbb{R}^{P \times d_m}$ 编码 patch 在时间和变量维度上的相对位置；(2) Router-Attention 机制（借鉴 Crossformer）通过两步 MHA（聚合-分发）高效注入跨变量信息，复杂度 $O(NP)$；(3) 仅修改 patch embedding 层，保留 CI backbone 鲁棒性。集成到 Time-LLM (GPT-2 backbone) 后，Weather ↓4.6% MSE, Traffic (Modified) ↓6.7% MSE；但 ETTh2/ETTm2 ↑5.2%（过拟合弱相关特征）。
@@ -173,7 +200,7 @@ Pages updated: [[informer]], [[source-zhou-informer-2021]], [[log]], [[index]] +
 
 从 Zotero 存储解析 TimesNet 完整 PDF 并增强已有 source-summary。仅保留 arXiv 链接，不存储 PDF。
 主要修改：
-- **修复**：补充 `source-timesnet.md` 中缺失的 `[^src-timesnet]` 脚注定义
+- **修复**：补充 `source-timesnet.md` 中缺失的脚注定义
 - **扩充**：添加 FFT 周期发现公式、TimesBlock 六步架构流程、五个任务详细基准与定量结果、效率分析、加深的批判分析
 - 更新 `timesnet.md` 实体页面：Connections 添加内联引用，移除未使用脚注
 

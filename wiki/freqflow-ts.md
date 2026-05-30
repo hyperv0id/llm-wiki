@@ -10,9 +10,9 @@ tags:
   - neurips-2025
   - complex-valued
 created: 2026-05-13
-last_updated: 2026-05-13
+last_updated: 2026-05-30
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 

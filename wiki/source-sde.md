@@ -7,7 +7,7 @@ tags:
   - sde
   - iclr-2021
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-30
 source_count: 1
 confidence: medium
 status: active
@@ -73,4 +73,4 @@ $$
 
 ## 引用
 
-[^src-sde]: Yang Song, Abhishek Kumar, Jascha Sohl-Dickstein, Stefano Ermon, Diederik P. Kingma, Ben Poole. "Score-Based Generative Modeling through Stochastic Differential Equations". ICLR 2021. arXiv:2011.13456
+[^src-sde]: [[source-sde]]

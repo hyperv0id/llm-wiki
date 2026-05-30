@@ -7,7 +7,7 @@ tags:
   - fast-inference
   - nips-2022
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-30
 source_count: 1
 confidence: medium
 status: active
@@ -61,4 +61,4 @@ $$
 
 ## 引用
 
-[^src-dpm-solver]: Cheng Lu et al. "DPM-Solver: A Fast ODE Solver for Diffusion Probabilistic Model Sampling in Around 10 Steps". NeurIPS 2022. arXiv:2206.00927
+[^src-dpm-solver]: [[source-dpm-solver]]

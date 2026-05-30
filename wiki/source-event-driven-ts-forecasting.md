@@ -9,15 +9,15 @@ tags:
   - event-driven
   - iclr-2026
 created: 2026-05-03
-last_updated: 2026-05-03
-source_count: 0
+last_updated: 2026-05-30
+source_count: 1
 confidence: medium
 status: active
 ---
 
 # VoT: Event-Driven Reasoning and Multi-Level Alignment for Time Series Forecasting
 
-**Source**: Siyuan Wang, Peng Chen, Yihang Wang, Wanghui Qiu, Chenjuan Guo, Bin Yang, Yang Shu (East China Normal University). arXiv:2603.15452. Accepted by ICLR 2026.
+**Source**: Siyuan Wang, Peng Chen, Yihang Wang, Wanghui Qiu, Chenjuan Guo, Bin Yang, Yang Shu (East China Normal University). arXiv:2603.15452. Accepted by ICLR 2026.[^src-source-event-driven-ts-forecasting]
 
 ## Core Contribution
 
@@ -32,7 +32,7 @@ A three-step generative pipeline (template generation → summarization → reas
 ### 2. Multi-level Alignment
 
 - **Representation level**: Endogenous Text Alignment (ETA) converts time series statistics into textual descriptions, then uses decomposed pattern extraction (trend/seasonal) and decomposed contrastive learningODIS to align text and time series representations.
-- **Prediction level**: Adaptive Frequency Fusion (AFF) decomposes both event-driven and numerical predictions into frequency bands (low/mid/high) and learns adaptive fusion weights per band, achieving complementary advantages across modalities.
+- **Prediction level**: Adaptive Frequency Fusion (AFF) decomposes both event-driven and numerical predictions into frequency bands (low/mid/high) and learns adaptive fusion weights per band, achieving complementary advantages across modalities.[^src-source-event-driven-ts-forecasting]
 
 ### 3. Dual-Branch Architecture
 
@@ -46,7 +46,7 @@ Evaluated on 10 real-world multimodal datasets across diverse domains (Agricultu
 
 - Relies on LLM inference for the event-driven branch, which may introduce latency
 - HIC requires constructing and maintaining a knowledge base of corrected reasoning samples
-- The approach assumes availability of both exogenous and endogenous text, which may not hold in all domains
+- The approach assumes availability of both exogenous and endogenous text, which may not hold in all domains[^src-source-event-driven-ts-forecasting]
 
 ## Related Pages
 
@@ -58,4 +58,6 @@ Evaluated on 10 real-world multimodal datasets across diverse domains (Agricultu
 - [[adaptive-frequency-fusion]] — AFF technique
 - [[multimodal-time-series-forecasting]] — task concept
 - [[mindts]] — related multimodal TS model (anomaly detection)
-- [[fine-grained-time-text-semantic-alignment]] — MindTS's alignment technique (compare with ETA)
+- [[fine-grained-time-text-semantic-alignment]] — MindTS's alignment technique (compare with ETA)[^src-source-event-driven-ts-forecasting]
+
+[^src-source-event-driven-ts-forecasting]: [[source-event-driven-ts-forecasting]]

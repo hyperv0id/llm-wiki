@@ -7,7 +7,7 @@ tags:
   - multimodal-time-series
   - iclr-2026
 created: 2026-04-29
-last_updated: 2026-04-29
+last_updated: 2026-05-30
 source_count: 1
 confidence: medium
 status: active
@@ -86,4 +86,4 @@ UniCA 在以下基准上验证有效性：
 ## 参考文献
 
 [^src-unica]: [[source-unica]]
-[^source]: https://arxiv.org/abs/2506.22039 — UniCA: Unified Covariate Adaptation for Time Series Foundation Model (ICLR 2026)
+[^source]: [[source-source]]

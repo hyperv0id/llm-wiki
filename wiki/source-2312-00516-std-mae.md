@@ -8,9 +8,9 @@ tags:
   - self-supervised-learning
   - ijcai-2024
 created: 2026-05-12
-last_updated: 2026-05-12
+last_updated: 2026-05-30
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
@@ -72,4 +72,4 @@ status: active
 - [[traffic-forecasting]] — 交通预测综述
 - [[spatio-temporal-decoupling]] — 时空解耦（共形预测语境，不同应用）
 
-[^src-2312-00516-std-mae]: 原始源文件 `raw/2312.00516.pdf`
+[^src-2312-00516-std-mae]: [[source-2312-00516-std-mae]]

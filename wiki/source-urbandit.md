@@ -9,9 +9,9 @@ tags:
   - traffic-forecasting
   - rectified-flow
 created: 2026-05-12
-last_updated: 2026-05-28
+last_updated: 2026-05-30
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
@@ -126,4 +126,4 @@ UrbanDiT-L 在 data size 从 0.8 增至 1.0 时性能提升斜率（0.011）显�
 
 论文明确指出的局限[^src-urbandit]：当前聚焦于人类活动数据（出行、交通），尚未包含环境变量（空气污染、气候指标、微气候动态）。未来工作应整合这些环境维度以实现更全面的城市建模。
 
-[^src-urbandit]: Yuan, Y., Han, C., Ding, J., Zhang, G., Jin, D., & Li, Y. (2025). Diffusion Transformers as Open-World Spatiotemporal Foundation Models. *NeurIPS 2025*. arXiv:2411.12164v2.
+[^src-urbandit]: [[source-urbandit]]

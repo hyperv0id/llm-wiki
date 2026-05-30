@@ -8,9 +8,9 @@ tags:
   - traffic-prediction
   - autoencoder
 created: 2026-05-12
-last_updated: 2026-05-12
+last_updated: 2026-05-30
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
