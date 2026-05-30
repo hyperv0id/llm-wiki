@@ -9,9 +9,9 @@ tags:
   - long-sequence
   - AAAI-2021
 created: 2026-05-04
-last_updated: 2026-05-04
-source_count: 1
-confidence: medium
+last_updated: 2026-05-30
+source_count: 3
+confidence: high
 status: active
 ---
 
@@ -66,6 +66,11 @@ As the AAAI 2021 Best Paper, Informer established the **efficient Transformer fo
 - **[[source-frets|FreTS]]** (NeurIPS 2023) — applies MLPs in the frequency domain; outperforms Informer by >20% MAE/RMSE.
 - **[[dualsformer|Dualformer]]** (2026) — time-frequency dual domain learning; implicitly improves upon Informer's time-domain attention paradigm.
 - **[[source-language-in-the-flow-of-time|TaTS]]** (ICLR 2026) — uses Informer as one of nine backbone models for plug-and-play text-augmented forecasting.
+- **[[patchtst|PatchTST]]** (ICLR 2023) — challenges the linear model dominance by introducing patch tokenization + CI, achieving 21% MSE reduction over Informer and other Transformer baselines[^src-patchtst].
+
+## Critical Reassessment
+
+Zeng et al. (2022) directly challenged Informer's effectiveness for LTSF, showing that gradually simplifying Informer to a linear model (Informer → Att.-Linear → Embed+Linear → Linear) **improves** performance on Exchange-Rate (MSE: 0.847 → 0.084 at T=96). Moreover, shuffling the input sequence barely affects Informer's performance (average drop: -0.12% to 0.18%), indicating limited temporal relation extraction. [[ltsf-linear|LTSF-Linear]] outperforms Informer on all nine benchmarks[^src-zeng-2022-are-transformers-effective].
 
 ## Related Technical Concepts
 
@@ -74,3 +79,5 @@ As the AAAI 2021 Best Paper, Informer established the **efficient Transformer fo
 - [[lstf]] — Long Sequence Time-Series Forecasting concept
 
 [^src-zhou-informer-2021]: [[source-zhou-informer-2021]]
+[^src-patchtst]: [[source-patchtst]]
+[^src-zeng-2022-are-transformers-effective]: [[source-zeng-2022-are-transformers-effective]]

@@ -8,7 +8,7 @@ tags:
   - point-forecasting
   - aaaai-2026
 created: 2026-04-28
-last_updated: 2026-05-03
+last_updated: 2026-05-30
 source_count: 1
 confidence: medium
 status: active
@@ -37,6 +37,7 @@ SimDiff (Simpler Yet Better Diffusion Model) 是首个纯端到端的扩散模�
 - 对比：[[fedformer]] (频域分解 Transformer, ICML 2022)
 - 对比：[[timesnet]] (时序 2D 变化建模, ICLR 2023)
 - 对比：[[tqn]] (Temporal Query Network, ICML 2025)
+- 对比：[[patchtst|PatchTST]] — PatchTST (rank 3.22) 的 patch+CI 设计被 SimDiff 继承并扩展至扩散框架 [^src-simdiff]
 - 对比：[[sparsetsf]] (稀疏建模, TPAMI 2026)
 - 基础：[[diffusion-model]] — 扩散模型理论基础
 - 对比：[[cyclenet]] (周期残差学习, NeurIPS 2024)

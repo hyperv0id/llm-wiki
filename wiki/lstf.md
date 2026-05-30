@@ -7,9 +7,9 @@ tags:
   - long-sequence
   - transformer
 created: 2026-05-04
-last_updated: 2026-05-04
-source_count: 1
-confidence: medium
+last_updated: 2026-05-30
+source_count: 5
+confidence: high
 status: active
 ---
 
@@ -45,9 +45,22 @@ LSTF has driven a sustained research line focused on efficient Transformer archi
 | **[[autoformer|Autoformer]]** | 2021 | $O(L \log L)$ | Progressive decomposition + Auto-Correlation (NeurIPS) |
 | **[[fedformer|FEDformer]]** | 2022 | $O(L)$ | Frequency-enhanced attention via Fourier/Wavelet (ICML) |
 | **[[source-frets|FreTS]]** | 2023 | $O(N \log N + L \log L)$ | Frequency-domain MLPs as global convolutions (NeurIPS) |
+| **[[crossformer|Crossformer]]** | 2023 | $O(DL^2_\text{seg})$ | DSW 2D embedding + TSA cross-dimension attention + HED (ICLR) |
+| **[[patchtst|PatchTST]]** | 2023 | $O((L/S)^2)$ | Patch tokenization + Channel Independence + self-supervised (ICLR) |
+| **[[itransformer|iTransformer]]** | 2024 | $O(N^2)$ per layer | Inverted dimensions: attention on variates, FFN on time (ICLR) |
 | **[[sparsetsf|SparseTSF]]** | 2025 | Extreme compression | Cross-period sparse forecasting with <1k parameters (ICML/TPAMI) |
 
-The progression shows a trend from **efficiency-first** (Informer: reduce complexity) → **structure-first** (Autoformer: embed decomposition) → **domain-specific** (FEDformer/FreTS: frequency domain) → **extreme compression** (SparseTSF: sub-1k-parameter models).
+The progression shows a trend from **efficiency-first** (Informer: reduce complexity) → **structure-first** (Autoformer: embed decomposition) → **domain-specific** (FEDformer/FreTS: frequency domain) → **cross-dimension** (Crossformer: explicit variable interaction) → **tokenization rethink** (PatchTST: patch + CI, proving Transformer can beat linear models) → **architecture rethinking** (iTransformer: invert dimensions without modifying components) → **extreme compression** (SparseTSF: sub-1k-parameter models).
+
+## iTransformer 对 LSTF 的突破
+
+传统 Transformer 在 LSTF 中存在一个长期痛点：**随回看窗口增长性能不提升**——注意力在更长输入上分散。iTransformer 解决了这一问题：由于 FFN 作用于时间维度（等价共享线性预测器），扩展回看窗口带来更多历史信息，性能持续提升，与统计方法的理论期望一致[^src-itransformer]。这使得 iTransformer 成为 LSTF 场景下更合理的 Transformer backbone。
+
+## Linear Model Challenge
+
+Zeng et al. (2022) fundamentally challenged the Transformer-based LSTF paradigm with [[ltsf-linear|LTSF-Linear]] — embarrassingly simple one-layer linear models that outperform all existing Transformer-based LTSF models on nine benchmarks by 20%–50%. Key findings: (1) Transformers fail to exploit longer input sequences (performance deteriorates with increasing look-back window), while LTSF-Linear improves significantly; (2) self-attention is permutation-invariant and inevitably loses temporal ordering; (3) shuffling input barely affects Transformer performance on Exchange-Rate, confirming limited temporal relation extraction. The paper argues that long-term forecasting depends primarily on capturing trend and periodicity — information that linear models naturally extract[^src-zeng-2022-are-transformers-effective].
+
+**PatchTST 的回应**：PatchTST (ICLR 2023) 通过 patching + channel independence 证明正确设计的 Transformer 可以超越 DLinear，且是唯一随 look-back window 增大持续降低 MSE 的 Transformer 模型[^src-patchtst]。
 
 ## Relationship to Other Forecasting Settings
 
@@ -56,3 +69,7 @@ The progression shows a trend from **efficiency-first** (Informer: reduce comple
 - **Multi-horizon forecasting**: Predicts multiple future horizons simultaneously — LSTF is a specific instantiation with long horizons.
 
 [^src-zhou-informer-2021]: [[source-zhou-informer-2021]]
+[^src-crossformer-2023]: [[source-crossformer-2023]]
+[^src-zeng-2022-are-transformers-effective]: [[source-zeng-2022-are-transformers-effective]]
+[^src-itransformer]: [[source-itransformer]]
+[^src-patchtst]: [[source-patchtst]]
