@@ -6,7 +6,7 @@ tags:
   - sequence-modeling
   - linear-complexity
 created: 2026-05-08
-last_updated: 2026-05-08
+last_updated: 2026-05-31
 source_count: 1
 confidence: medium
 status: active
@@ -46,6 +46,7 @@ $$y_i = C_i h_i + D \odot x_i$$
 
 ## 相关页面
 
+- [[s-mamba|S-Mamba]] — 首个 Mamba-based 多变量时间序列预测框架 (Neurocomputing 2024)
 - [[mila|MILA]] — 受 Mamba 启发的线性注意力模型
 - [[linear-attention-unified-framework|Mamba ↔ Linear Attention 统一框架]]
 - [[forget-gate-in-sequential-models|遗忘门在序列模型中的作用]]

@@ -7,8 +7,8 @@ tags:
   - channel-processing
   - multivariate
 created: 2026-04-28
-last_updated: 2026-05-30
-source_count: 5
+last_updated: 2026-05-31
+source_count: 6
 confidence: high
 status: active
 ---
@@ -54,6 +54,12 @@ CI 与 CD（跨维度依赖建模）并非二元对立。Crossformer 是首个�
 
 CVPE (Cross-Variate Patch Embedding) 提出一种折中策略——仅在最轻量的 patch embedding 层注入跨变量信息（通过可学习位置编码和 Router-Attention），而保留后续所有层的 CI backbone [^src-cvpe-2025]。实验证明：在强跨变量相关数据集（Weather ↓4.6% MSE, Traffic ↓6.7%）上获益显著，而在弱相关数据集上可能过拟合（ETTh2/ETTm2 ↑5.2%）[^src-cvpe-2025]。这提示 CI 与 CD 之间的选择并非二元对立——局部、轻量的 CD 增强可以与 CI 鲁棒性共存，但需根据数据集的变量相关性谨慎调节。
 
+### CPiRi：CI 与 CD 的深度融合
+
+[[cpiri|CPiRi]] (ICLR 2026) 提出了一种更彻底的 CI-CD 融合方案——**时空解耦 + 排列不变正则化**[^src-cpiri]。其架构由三阶段组成：冻结局模型 (Sundial) 独立提取时间特征（CI 端）、可训练的空间模块通过 multi-head self-attention 学习内容驱动的跨通道关系（CD 端）、冻结局模型独立生成预测。关键创新在于训练策略：每次训练步随机打乱通道顺序，迫使空间模块基于时间特征的内容而非位置索引来推断通道间关系 [^src-cpiri]。
+
+CPiRi 的通道打乱测试暴露了一个关键问题：大多数 CD 模型在通道排列下的错误率飙升超过 100%（如 Informer 在 PEMS-08 上 WAPE 从 13.02% 升至 118.19%），揭示了它们依赖位置记忆而非内容推理 [^src-cpiri]。而 CPiRi 在所有打乱率下保持稳定（9.43% WAPE 不变），且在仅用 25% 通道训练时能以 ~70% 的训练时间成本泛化到全通道集合 [^src-cpiri]。
+
 ## 与其他方法对比
 
 - **Channel-mixing**：传统方法，将所有通道拼接后一起处理
@@ -71,10 +77,12 @@ CVPE (Cross-Variate Patch Embedding) 提出一种折中策略——仅在最轻�
 - 相关：[[router-attention-for-cvpe]] — CVPE 的跨变量聚合机制
 - 相关：[[crossformer]] — 首个全 CD Transformer
 - 相关：[[cross-dimension-dependency]] — 跨维度依赖概念
-- 相关：[[dsw-embedding]] — Crossformer 的 2D embedding
+- 相关：[[cpiri]] — CI+CD 深度融合框架 (ICLR 2026)
+- 相关：[[s-mamba]] — CI backbone + 双向 Mamba 跨变量相关性编码 (Neurocomputing 2024)
 
 [^src-simdiff]: [[source-simdiff]]
 [^src-patchtst]: [[source-patchtst]]
 [^src-cvpe-2025]: [[source-cvpe-2025]]
 [^src-crossformer-2023]: [[source-crossformer-2023]]
 [^src-itransformer]: [[source-itransformer]]
+[^src-cpiri]: [[source-cpiri]]

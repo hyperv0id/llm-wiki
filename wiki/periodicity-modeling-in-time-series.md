@@ -9,8 +9,8 @@ tags:
   - decomposition
   - survey
 created: 2026-04-28
-last_updated: 2026-05-30
-source_count: 16
+last_updated: 2026-05-31
+source_count: 17
 confidence: medium
 status: active
 ---
@@ -161,7 +161,23 @@ status: active
 - **核心贡献**：首次系统论证显式建模全局周期模式的有效性；RCF 可作为即插即用模块提升 PatchTST、iTransformer 等模型性能；参数减少 90%+[^src-cyclenet]
 - **局限**：在具有显著时空特性和极端值的 Traffic 数据集上性能略逊于 iTransformer；当前版本仅考虑单通道关系建模[^src-cyclenet]
 
-## 交叉主题
+## 路线六：周期异质性感知（PHAT）
+
+这类方法**不再假设所有变量共享同一周期**——而是检测各变量独立的周期长度，按周期分组建模，是周期建模范式的一次关键升级。
+
+### PHAT（ICLR 2026）
+
+[[phat|PHAT]]（Period Heterogeneity-Aware Transformer）是首篇显式建模周期异质性的工作[^src-phat]。三个核心创新：
+
+1. **Period Bucket 结构**：FFT 检测每变量 Top-K 周期 → 按主导周期长度分组（bucketing）→ 每组内折叠为 2D（period-offset × period-aligned）。Bucket B0 处理无周期变量。Cross-bucket masking 防止不同周期组之间的干扰。
+
+2. **PNA（正负分解注意力）**：X 形注意力沿周期内（period-offset）和跨周期（period-aligned）两轴分离计算。Period-offset 注意力分解为正（ζ）和负（η）两个 logit 流，经 modulation 项（周期性距离先验）调制后融合为 `A = Softmax(ζ̃) − Λ ⊙ Softmax(η̃)`。Λ 通过 sigmoid 学习，自适应控制负相关贡献强度。
+
+3. **数学支撑**：Stick-breaking 解释（近周期性距离优先获得注意力质量）+ 方差削减证明（`V[Ā_ij] = (1−Λ_ij)σ²`）。
+
+**14 数据集 × 18 baselines → 73.95% metrics SOTA，84.38% top-2。** 在异质周期数据集（ILI 比 TimesNet 提升 23.08%，CzeLan 提升 19.18%）和无周期数据集上均表现稳健[^src-phat]。
+
+**与 TimesNet 的关键区别**：TimesNet 对所有变量取平均幅度后用 FFT 发现共享周期（多变量共享同一 top-k 周期列表）→ 这意味着周期异质性高的多变量信号会被平均化处理。PHAT 对每个变量独立检测周期然后分桶，从根本上解决了这一问题。
 
 ### 频率分离策略的演变
 
@@ -216,12 +232,14 @@ TPLib 调查的结论——"没有单一架构在所有任务上通用"——对
 | [[source-penguin|PENGUIN]] | 2026 | **AISTATS 2026** | 周期嵌套分组注意力 |
 | [[source-tqn|TQNet]] | 2025 | **ICML 2025** | Temporal Query 可学习向量 + 极简架构 |
 | [[source-sparsetsf|SparseTSF]] | 2025 | **TPAMI 2026** & **ICML 2024 Oral** | 跨周期稀疏预测 <1k 参数 |
+| [[source-phat|PHAT]] | 2026 | **ICLR 2026** | 周期异质性感知 + 正负分解注意力 + periodic bucket ★ |
 | [[source-cyclenet|CycleNet]] | 2024 | **NeurIPS 2024** | 可学习循环周期 RCF + 即插即用模块 |
 
 > ★ 表示本 wiki 收录的 HyperD 原始论文（arXiv 2025-11, AAAI 2026 中稿）
 
 ## 开放问题
 
+- **周期异质性（Period Heterogeneity）**：PHAT（ICLR 2026）首次显式建模这一被长期忽视的现象[^src-phat]——不同变量具有不同的周期长度和正/负相关模式。传统方法将所有变量混池处理会学习到虚假的时序动态。
 - **弱周期数据处理**：如何在不引入错误周期偏置的前提下让模型自适应退化到非周期建模
 - **自适应周期发现**：当前多依赖 FFT/ACF 先验，但非平稳序列的周期可能随时间漂移
 - **多周期融合效率**：TimesNet 的 top-k × 2D 卷积随周期数线性增长；PENGUIN 的分组注意力也有类似开销
@@ -243,3 +261,4 @@ TPLib 调查的结论——"没有单一架构在所有任务上通用"——对
 [^src-tqn]: [[source-tqn]]
 [^src-sparsetsf]: [[source-sparsetsf]]
 [^src-cyclenet]: [[source-cyclenet]]
+[^src-phat]: [[source-phat]]

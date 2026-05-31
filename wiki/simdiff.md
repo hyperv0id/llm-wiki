@@ -8,7 +8,7 @@ tags:
   - point-forecasting
   - aaaai-2026
 created: 2026-04-28
-last_updated: 2026-05-30
+last_updated: 2026-05-31
 source_count: 1
 confidence: medium
 status: active
@@ -43,6 +43,7 @@ SimDiff (Simpler Yet Better Diffusion Model) 是首个纯端到端的扩散模�
 - 对比：[[cyclenet]] (周期残差学习, NeurIPS 2024)
 - 对比：[[aurora]] — Aurora 生成式多模态基础模型（Flow Matching vs Diffusion）
 - 对比：[[uniextreme]] — UniExtreme 极端天气基础模型（频域 Beta 滤波 vs Diffusion；天气 vs TS）
+- 对比：[[tedm]] — TEDM：EDM 框架的时间序列扩散模型，O(H) sampling (ICLR 2026)
 
 ## 相关技术
 

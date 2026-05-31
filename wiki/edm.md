@@ -7,7 +7,7 @@ tags:
   - training
   - nerips-2022
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-31
 source_count: 1
 confidence: medium
 status: active
@@ -37,5 +37,6 @@ EDM 将 VP (DDPM)、VE (NCSN)、iDDPM、DDIM 等扩散模型变体统一到一�
 - [[diffusion-model]] — 扩散模型基础
 - [[heun-sampler]] — Heun 采样器
 - [[edm-preconditioning]] — 预处理技术
+- [[tedm]] — TEDM：EDM 框架的时间序列扩展 (ICLR 2026)
 
 [^src-edm]: [[source-edm]]

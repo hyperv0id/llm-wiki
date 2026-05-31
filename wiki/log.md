@@ -2,7 +2,7 @@
 title: Log
 type: concept
 created: 2026-04-26
-last_updated: 2026-05-30
+last_updated: 2026-05-31
 tags:
   - meta
 ---
@@ -10,6 +10,146 @@ tags:
 # Wiki Log
 
 Chronological record of all wiki activity.
+
+## [2026-05-31] ingest | S-Mamba: Is Mamba Effective for Time Series Forecasting? (Neurocomputing 2024, arXiv:2403.11144)
+
+Ingest Zihan Wang et al. S-Mamba paper。首个将 Mamba 选择性 SSM 引入多变量时间序列预测（MTSF）的 baseline 框架。核心设计：双向 Mamba VC Encoding 层捕获全局跨变量相关性 + FFN TD Encoding 层提取时间依赖。13 数据集 × 9 SOTA 对比：Mamba 在 VC 编码上优于 Transformer，FFN 在 TD 编码上保持统治。关键发现：变量顺序不敏感、40%→100% 泛化、增窗性能持续提升、可提升现有 Transformer。GPU 内存和训练时间均低于 Transformer 基线。
+
+创建的页面：[[source-s-mamba]], [[s-mamba]]
+更新的页面：[[index]], [[log]]
+
+## [2026-05-31] ingest | LSTNet: Modeling Long- and Short-Term Temporal Patterns with Deep Neural Networks (SIGIR 2018)
+
+Ingest LSTNet paper (Lai, Chang, Yang & Liu, CMU, SIGIR 2018, ~1,728 citations)。首个跨维度多变量时间序列深度学习框架：CNN 提取跨变量局部依赖 + GRU 建模长期趋势 + Skip-RNN（周期跳跃连接 p）捕获超长周期模式 + 并行 AR 线性模型解决神经网络尺度不敏感问题。4 数据集 × horizon 3/6/12/24 → 17 项最佳 (LSTNet-skip) + 7 项 (LSTNet-Attn)。MTS 深度学习路线的奠基之作。
+
+创建的页面：[[source-lstnet]], [[lstnet]]
+更新的页面：[[index]], [[log]], [[cross-dimension-dependency]]
+
+## [2026-05-31] ingest | TimeCAP: Learning to Contextualize, Augment, and Predict Time Series Events with LLM Agents (AAAI 2025 Oral)
+
+Ingest TimeCAP paper (Lee, Yu, Shin, Cheng & Chen, KAIST / NEC Labs, AAAI 2025 Oral)。TimeCAP 首次将 LLM 用作时间序列的上下文理解器（而非仅预测器），通过双 LLM agent（AC contextualizer + AP predictor）+ 多模态编码器（BERT + Transformer）实现输入增强和提示增强。在 7 个真实数据集上平均 F1 提升 28.75%，仅 contextualization 即贡献 21.98%。LMaaS 兼容、数据稀缺友好、提供可解释性。
+
+创建的页面：[[source-timecap]], [[timecap]]
+更新的页面：[[index]], [[log]], [[timesfm]], [[chronos]]
+
+## [2026-05-31] ingest | GTR: Enhancing Multivariate Time Series Forecasting with Global Temporal Retrieval (ICLR 2026)
+
+Ingest GTR paper (Cao, Dai, Han & Xiong, HKUST-GZ/HKUST/SDU, ICLR 2026)。GTR 是一个轻量级即插即用模块，通过维护可学习的全局时间嵌入 Q ∈ R^(L×N)，根据绝对时间位置检索全周期信息，以 2D 卷积和残差连接融合局部与全局依赖。在 6 个数据集上全面超越 SOTA，与简单 MLP 主干组合仅 0.98M 参数。Pearson 相关性分析揭示全局周期相关性（0.96）强于局部邻近（0.94）——这是 GTR 设计的核心洞察。理论证明在贝叶斯框架下 GTR 能严格缩小相关性估计误差。
+
+创建的页面：[[source-gtr]], [[gtr]]
+更新的页面：[[index]], [[log]]
+
+## [2026-05-31] ingest | TEDM: Time Series Forecasting with Elucidated Diffusion Models (ICLR 2026)
+
+Ingest TEDM paper (Solano-Carrillo, Naveenachandran & Niebling, DLR, ICLR 2026)。TEDM 将 EDM 的完整设计空间迁移到时间序列预测，两大创新：(1) 扩散时间轴 = 物理时间轴，采样复杂度从 O(SH) 降至 O(H)；(2) 从数据中经验估计 noise/scale schedule，避免人工预设 schedule 的归纳偏置。8 个数据集上对比 5 个扩散 + 4 个非扩散 baseline，ETTh2/ETTm2/Exchange 上 SOTA，训练仅 0.004s/batch、21 MB 内存。
+
+创建的页面：[[source-tedm]], [[tedm]]
+更新的页面：[[index]], [[log]]
+
+## [2026-05-31] ingest | CoRA: Covariate-Aware Adaptation of Time Series Foundation Models (ICLR 2026)
+
+Ingest CoRA paper (Anonymous, ICLR 2026 double-blind)。CoRA 提出面向 TSFMs 的通用协变量适配框架，创新在于：冻结基础模型作为特征提取器 + 因果嵌入（Causality Embedding）实现可解释的 Granger 因果选择 + 零初始化 adaLN 条件注入避免灾难性遗忘。兼容 TimesFM/Chronos/Moirai/FlowState/Sundial，在单模态、多模态、多元预测任务上全面超越 UniCA 和其他适配方法。
+
+创建的页面：[[source-cora]], [[cora-tsfm]]
+更新的页面：[[index]], [[log]]
+
+## [2026-05-31] ingest | PHAT: Modeling Period Heterogeneity for Multivariate Time Series Forecasting (Ma et al., ICLR 2026)
+
+Ingest Ma et al. (USTC, ICLR 2026) PHAT。首篇显式建模周期异质性的多变量时序预测工作——FFT 检测每变量周期→按周期分组形成 periodic bucket→折叠为 3D 张量（变量组 × phase-aligned × intra-period offsets）→PNA（正负分解注意力 + modulation 项注入周期先验 + cross-bucket masking 防干扰）。14 数据集 × 18 baselines → 73.95% metrics SOTA。数学支撑：stick-breaking 解释 + 方差削减证明。
+
+创建的页面：[[source-phat]], [[phat]]
+更新的页面：[[index]], [[log]]
+
+## [2026-05-31] ingest | LogTrans: Enhancing the Locality and Breaking the Memory Bottleneck (Li et al., NeurIPS 2019)
+
+Ingest Li et al. (UCSB, NeurIPS 2019) LogTrans。首个将 Transformer 成功应用于时间序列预测的工作——卷积自注意力用因果卷积替代线性投影使注意力匹配基于局部形状；LogSparse 注意力每层仅关注 O(log L) 个指数间隔历史位置，堆叠层保证全信息流通，总内存 O(L(log L)²)。开创 Transformer-for-time-series 研究范式。
+
+创建的页面：[[source-logtrans]], [[logtrans]], [[logsparse-self-attention]]
+更新的页面：[[logtrans]]（source_count 1→2）, [[index]], [[log]]
+
+## [2026-05-31] ingest | Pyraformer: Low-Complexity Pyramidal Attention (Liu et al., ICLR 2022 Oral)
+
+Ingest Liu et al. (Ant Group / SJTU / TU Wien, ICLR 2022 Oral) Pyraformer。首个同时达成 O(L) 复杂度 + O(1) 最大信号传播路径的 Transformer——PAM（金字塔注意力模块）C-叉树 inter-scale + intra-scale 连接；CSCM（粗尺度构建模块）带 Bottleneck 的卷积降尺度。Q-K pairs 较 LogTrans 减 65.4%，较全注意力减 96.6%；序列 20000 时仅 1.91GB（Informer OOM）。ETTh1 上 MSE 较 Informer 降 24.8%–28.9%。
+
+创建的页面：[[pyraformer]], [[source-pyraformer]]
+更新的页面：[[index]], [[log]]
+
+## [2026-05-31] ingest | S-Mamba: Mamba for MTS Forecasting (Wang et al., Neurocomputing 2024)
+
+Ingest Wang et al. (Neurocomputing 2024) S-Mamba。首个 Mamba-for-MTS 基线——双向 Mamba VC (变量相关性) + FFN TD (时序依赖)；CI backbone + selective SSM 替代 Transformer attention；13 datasets × 9 baselines lead with lower GPU/time；变量顺序不变、40%→100% 泛化。
+
+创建的页面：[[source-s-mamba]], [[s-mamba]]
+更新的页面：[[mamba]], [[channel-independence]], [[index]], [[log]]
+
+## [2026-05-31] ingest | TimeCAP: LLM-Agent Contextualize + Predict (Lee et al., AAAI 2025 Oral)
+
+Ingest Lee et al. (KAIST / NEC Labs, AAAI 2025 Oral) TimeCAP。双 LLM agent (contextualizer AC + predictor AP) + 多模态 encoder + mutual augmentation；7 真实数据集平均 28.75% F1 提升（仅 contextualization 贡献 21.98%），黑盒 LMaaS 兼容、零样本强、可解释。
+
+创建的页面：[[source-timecap]], [[timecap]]
+更新的页面：[[timesfm]], [[chronos]], [[index]], [[log]]
+
+## [2026-05-31] ingest | LSTNet: Long- and Short-Term Temporal Patterns (Lai et al., SIGIR 2018)
+
+Ingest Lai et al. (CMU, SIGIR 2018) LSTNet。首个跨维度 MTS 深度学习模型——CNN (短期局部) + RNN/GRU (长期趋势) + Skip-RNN skip=p (周期季节) + AR (尺度不变线性)。~1,728 citations，开创 CD 建模路线。
+
+创建的页面：[[source-lstnet]], [[lstnet]]
+更新的页面：[[cross-dimension-dependency]], [[index]], [[log]]
+
+## [2026-05-31] ingest | GTR: Global Temporal Retrieval (Cao et al., ICLR 2026)
+
+Ingest Cao et al. (HKUST-GZ/HKUST/SDU, ICLR 2026) GTR。轻量级可插拔全局时序检索模块——自适应全局时序嵌入 + 绝对位置检索 + 2D 卷积局部-全局融合。核心发现：全局周期相关性 (0.96) 强于局部邻近 (0.94)。MLP backbone 仅 0.98M 参数 (19% of iTransformer)。6 数据集 SOTA，Solar 降 8.2% MSE。
+
+创建的页面：[[source-gtr]], [[gtr]]
+更新的页面：[[index]], [[log]]
+
+## [2026-05-31] ingest | TEDM: Elucidated Diffusion Models for TS (Carrillo et al., ICLR 2026)
+
+Ingest Carrillo et al. (DLR, ICLR 2026) TEDM。首次将 EDM 框架适配时序预测——扩散时间 = 物理时间 (O(SH)→O(H))，经验估计噪声/尺度 schedule，structured noise + denoiser + ODE/SDE 数值积分。轻量架构 21MB / 0.004s-batch，ETTh2/ETTm2/Exchange SOTA。对角线近似下极简推理适配实时部署。
+
+创建的页面：[[source-tedm]], [[tedm]]
+更新的页面：[[edm]], [[simdiff]], [[index]], [[log]]
+
+## [2026-05-31] ingest | PHAT: Modeling Period Heterogeneity (Ma et al., ICLR 2026)
+
+Ingest Ma et al. (USTC, ICLR 2026) PHAT。周期异质性感知 Transformer——FFT 检测周期→按周期分桶→3D 张量展开 (variate groups × phase-aligned time × intra-period offsets)→PNA (Positive-Negative Attention) X 形注意 + modulation gating→cross-bucket masking 防干扰→Bucket B0 处理非周期变量。14 datasets × 18 baselines → 73.95% metrics SOTA, top-2 84.38%。
+
+创建的页面：[[source-phat]], [[phat]]
+更新的页面：[[periodicity-modeling-in-time-series]], [[index]], [[log]]
+
+## [2026-05-31] ingest | CoRA: Covariate-Aware Adaptation of TSFMs (ICLR 2026)
+
+Ingest Qin et al. (ICLR 2026, double-blind) CoRA。TSFM 协变量感知适配框架——冻结预训练 backbone 作 embedding extractor，Causality Embedding (Granger 因果评估) + zero-initialized condition-injection (防灾难遗忘)，支持多模态协变量 (时序+语言+图像)；31.1% MSE reduction on covariate-aware benchmarks，兼容 TimesFM/Chronos-Bolt/Moirai。
+
+创建的页面：[[source-cora]], [[cora-tsfm]]
+更新的页面：[[index]], [[log]]
+
+## [2026-05-31] ingest | xCPD: Routing Channel-Patch Dependencies (Li et al., ICLR 2026)
+
+Ingest Li et al. (UTokyo + MSRA, ICLR 2026) xCPD。图频谱分解 + 动态 MoE routing 实现 patch 级通道依赖自适应建模——频谱嵌入→低/中/高频分组→频谱路由。4 backbone × 9 数据集一致提升；CI backbone 零样本迁移最大获益 15.2%。
+
+创建的页面：[[source-xcpd]], [[xcpd]]
+更新的页面：[[index]], [[log]]
+
+## [2026-05-31] ingest | CPiRi: Channel Permutation-Invariant Relational Interaction (Xu et al., ICLR 2026)
+
+Ingest Xu et al. (SHUFE/ZUFE, ICLR 2026) CPiRi。CI+CD 解耦框架——frozen CI 时序编码器 + 可训练 CD 空间模块 + 通道 shuffle 训练策略实现排列不变跨通道交互；CD 模型通道重排后误差 +400%，CPiRi 保持稳定。
+
+创建的页面：[[source-cpiri]], [[cpiri]]
+更新的页面：[[channel-independence]], [[cross-dimension-dependency]], [[index]], [[log]]
+
+## [2026-05-31] ingest | TimeMixer: Decomposable Multiscale Mixing (Wang et al., ICLR 2024)
+
+Ingest Wang, Wu et al. (Ant Group / Tsinghua, ICLR 2024) TimeMixer。全 MLP 架构，PDM（Past-Decomposable-Mixing）在 fine-to-coarse 和 coarse-to-fine 两方向分别混合多尺度季节与趋势分量；FMM（Future-Multipredictor-Mixing）集成多尺度预测器。长短期预测均 SOTA——Weather MSE 0.240（vs PatchTST 0.265），Solar-Energy MSE 0.216（↓24.7%）。
+
+创建的页面：[[source-timemixer]], [[timemixer]]
+更新的页面：[[index]], [[log]]
+
+## [2026-05-31] ingest | MTGNN: Connecting the Dots (Wu et al., KDD 2020)
+
+Ingest Wu, Pan, Long, Jiang, Zhang (UTS/Monash, KDD 2020) MTGNN。首个通用 GNN-based MTS 预测框架，端到端学习图结构：graph learning layer（单向稀疏邻接矩阵）、mix-hop propagation（防过平滑）、dilated inception temporal convolution（多尺度周期）、curriculum learning。SOTA on Solar/Traffic/Electricity；无空间先验下与 METR-LA/PEMS-BAY 上预定义图 STGNN 持平。
+
+创建的页面：[[source-mtgnn]], [[mtgnn]]
+更新的页面：[[mtgnn]]（source_count 1→2）, [[index]], [[log]]
 
 ## [2026-05-30] ingest | PatchTST: A Time Series is Worth 64 Words (Nie et al., ICLR 2023)
 
@@ -531,3 +671,8 @@ Downloaded arXiv 2511.16426 PDF 并 ingest。FrèqFlow（别名 SpectFlow）由 
 
 创建的页面：[[source-2511-16426]], [[freqflow-ts]]
 更新的页面：[[traffic-forecasting]], [[flow-matching]], [[generative-time-series-forecasting]], [[index]], [[log]]
+
+## [2026-05-31] analysis | UrbanDiT Paper River
+4 层向后引文搜索，追溯 UrbanDiT (NeurIPS 2025) 从基础模型到最终产品的完整演化链。
+创建的页面：[[urbandit-paper-river]]
+涉及的源文件：STGCN (IJCAI 2018), DDPM (NeurIPS 2020), MAE (CVPR 2022), PatchTST (ICLR 2023), DiT (ICCV 2023), CSDI (NeurIPS 2021), STD-MAE (IJCAI 2024), GPT-ST (NeurIPS 2023), ST-SSL (AAAI 2023), GPD (ICLR 2024), UniST (KDD 2024), UrbanGPT (KDD 2024), OpenCity (2024)

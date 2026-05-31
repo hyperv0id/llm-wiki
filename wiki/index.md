@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-05-30
+last_updated: 2026-05-31
 tags:
   - meta
 ---
@@ -16,6 +16,7 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Sources
 - [[source-sa-bcp]] — SA-BCP: Optimal Spatio-Temporal Decoupling for Bayesian Conformal Prediction (arXiv 2026)
+- [[source-s-mamba]] — S-Mamba: first Mamba-based MTSF baseline, bidirectional Mamba for VC + FFN for TD (Neurocomputing 2024)
 - [[source-scale]] — SCALE: Spectral Conformal Prediction via Wavelet Transform (ICML 2026)
 - [[source-afe-tfnet]] — AFE-TFNet: adaptive feature extraction time-frequency network for wave height
 - [[source-astgcn]] — ASTGCN: attention spatial-temporal graph convolutional networks for traffic (AAAI 2019)
@@ -31,6 +32,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-fedformer]] — FEDformer: frequency enhanced decomposed transformer (ICML 2022)
 - [[source-frets]] — FreTS: frequency-domain MLPs for time series forecasting (NeurIPS 2023)
 - [[source-grid-world-code-readme]] — 网格世界环境官方代码说明（Zhao, Mi & Li）
+- [[source-gtr]] — GTR: Global Temporal Retriever, plug-and-play global cycle retrieval for MTSF (ICLR 2026)
 - [[source-hyperd-hybrid-periodicity-decoupling]] — "HyperD: Hybrid Periodicity Decoupling Framework for Traffic Forecasting" (Wen & Feng, 2025)
 - [[source-math-foundation-rl-readme]] — "Mathematical Foundations of Reinforcement Learning" 配套 Readme（Zhao, 2025）
 - [[source-penguin]] — PENGUIN: periodic-nested group attention for long-term forecasting (AISTATS 2026)
@@ -45,7 +47,9 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-tips]] — TIPS: transformer with inductive prior synthesis for financial forecasting
 - [[source-tqn]] — TQNet: Temporal Query Network for efficient multivariate forecasting (ICML 2025)
 - [[source-sparsetsf]] — SparseTSF: lightweight LTSF with <1k parameters via sparse modeling (TPAMI 2026 & ICML 2024 Oral)
+- [[source-tedm]] — TEDM: first EDM-based TS forecasting framework with O(H) sampling via diffusion-physical time alignment (ICLR 2026)
 - [[source-cyclenet]] — CycleNet: modeling periodic patterns for time series forecasting (NeurIPS 2024)
+- [[source-cora]] — CoRA: Covariate-Aware Adaptation of Time Series Foundation Models (ICLR 2026)
 - [[source-unica]] — UniCA: Unified Covariate Adaptation for Time Series Foundation Model (ICLR 2026)
 - [[source-ddpm]] — DDPM: Denoising Diffusion Probabilistic Models (NeurIPS 2020)
 - [[source-sde]] — Score-Based SDE: Unified framework for SMLD and DDPM (ICLR 2021)
@@ -70,6 +74,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-cbsa]] — CBSA: Towards Interpretable and Efficient Attention (NeurIPS 2025)
 - [[source-fast-long-horizon-forecasting]] — FaST: Efficient Long-Horizon Forecasting for Large-Scale STG via MoE (KDD 2026)
 - [[source-muon-optimizer]] — Muon: An optimizer for hidden layers in neural networks (Jordan, 2024)
+- [[source-phat]] — PHAT: Period Heterogeneity-Aware Transformer for MTS forecasting (ICLR 2026)
 
 - [[source-kexue-muon-analysis]] — Muon优化器赏析：从向量到矩阵的本质跨越 (苏剑林, 2024)
 - [[source-incident-guided-st-forecasting]] — IGSTGNN: Incident-Guided Spatiotemporal Graph Neural Network for Traffic Forecasting (KDD 2026)
@@ -77,6 +82,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-multimodal-ts-anomaly-detection]] — MindTS: multimodal time series anomaly detection with semantic alignment and condensed interaction (ICLR 2026)
 - [[source-event-driven-ts-forecasting]] — VoT: event-driven reasoning and multi-level alignment for time series forecasting (ICLR 2026)
 - [[source-aurora]] — Aurora: universal generative multimodal time series forecasting (arXiv 2026)
+- [[source-timecap]] — TimeCAP: contextualize, augment, and predict time series events with LLM agents (AAAI 2025 Oral)
 - [[source-bluuuuue-scaling-factor-intuition]] — 数学直觉系列（一）：缩放因子1/√dₖ——注意力机制的数值稳定性条件 (bluuuuue, 小红书)
 - [[source-bluuuuue-reparameterization-trick]] — 数学直觉系列（二）：VAE与重参数化——将不可逆的随机采样重构为可微的确定性变换 (bluuuuue, 小红书)
 - [[source-2605-07319]] — Generative Modeling with Flux Matching：全新生成建模范式，推广得分函数为任意生成向量场 (Pao-Huang et al., Stanford, arXiv 2026)
@@ -114,6 +120,20 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-patchtst]] — PatchTST: A Time Series is Worth 64 Words, long-term forecasting with Transformers (ICLR 2023)
 - [[source-zeng-2022-are-transformers-effective]] — Are Transformers Effective for Time Series Forecasting? LTSF-Linear baseline (Zeng et al., 2022)
 - [[source-itransformer]] — iTransformer: Inverted Transformers Are Effective for Time Series Forecasting (ICLR 2024)
+- [[source-logtrans]] — LogTrans: convolutional self-attention + LogSparse Transformer (NeurIPS 2019)
+- [[source-mtgnn]] — MTGNN: graph neural network for MTS forecasting with learned graph structure (KDD 2020)
+- [[source-pyraformer]] — Pyraformer: pyramidal attention with O(L) complexity + O(1) path length (ICLR 2022 Oral)
+- [[source-timemixer]] — TimeMixer: decomposable multiscale mixing for time series forecasting (ICLR 2024)
+- [[source-xcpd]] — xCPD: graph spectral decomposition for channel-patch dependency routing (ICLR 2026)
+- [[source-cpiri]] — CPiRi: channel permutation-invariant relational interaction for MTSF (ICLR 2026)
+- [[source-lstnet]] — LSTNet: first cross-dimension deep MTS model, CNN+RNN+Skip-RNN+AR (SIGIR 2018)
+- [[source-phat]] — PHAT: period heterogeneity-aware Transformer with 3D bucket + PNA for MTSF (ICLR 2026)
+- [[source-cora]] — CoRA: Covariate-Aware Adaptation of Time Series Foundation Models (ICLR 2026)
+- [[source-gtr]] — GTR: global temporal retrieval for long-cycle periodic patterns (ICLR 2026)
+- [[source-timecap]] — TimeCAP: contextualize + augment + predict time series events with LLM agents (AAAI 2025 Oral)
+- [[source-lstnet]] — LSTNet: modeling long- and short-term temporal patterns with deep neural networks (SIGIR 2018)
+- [[source-s-mamba]] — S-Mamba: Mamba-based framework for multivariate time series forecasting (Neurocomputing 2024)
+- [[source-tedm]] — TEDM: diffusion time = physical time, O(H) sampling for TS forecasting (ICLR 2026)
 
 ## Entities
 - [[sa-bcp]] — SA-BCP, state-adaptive Bayesian conformal prediction (arXiv 2026)
@@ -124,6 +144,11 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[cyclenet]] — CycleNet, periodicity modeling with residual cycle forecasting (NeurIPS 2024)
 - [[informer]] — Informer, efficient Transformer for LSTF with ProbSparse attention (AAAI 2021 Best Paper)
 - [[itransformer]] — iTransformer, inverted Transformer with attention on variates and FFN on time (ICLR 2024)
+- [[logtrans]] — LogTrans, first Transformer for time series forecasting with convolutional + LogSparse attention (NeurIPS 2019)
+- [[lstnet]] — LSTNet, first cross-dimension deep learning model for MTS, CNN+GRU+Skip-RNN+AR (SIGIR 2018)
+- [[mtgnn]] — MTGNN, adaptive graph learning + dilated inception for MTS forecasting (KDD 2020)
+- [[pyraformer]] — Pyraformer, multi-resolution pyramidal attention Transformer, O(L) complexity + O(1) max path (ICLR 2022 Oral)
+- [[timemixer]] — TimeMixer, fully MLP-based multiscale mixing for long-term and short-term forecasting (ICLR 2024)
 - [[ddpm]] — DDPM, denoising diffusion probabilistic models (NeurIPS 2020)
 - [[dpm-solver]] — DPM-Solver, fast ODE solver for diffusion model (NeurIPS 2022)
 - [[consistency-models]] — Consistency Models, one-step generation via trajectory consistency (ICML 2023)
@@ -143,12 +168,14 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[conformer]] — ConFormer, conditional transformer for accident-aware traffic forecasting (KDD 2026)
 - [[math-foundation-of-reinforcement-learning]] — 《Mathematical Foundations of Reinforcement Learning》教材（Springer, 2025）
 - [[shiyu-zhao]] — 赵世钰，强化学习教材作者，西湖大学教授
+- [[s-mamba]] — S-Mamba, first Mamba-based MTSF baseline with bidirectional Mamba VC + FFN TD encoding (Neurocomputing 2024)
 - [[simdiff]] — SimDiff, end-to-end diffusion model for time series point forecasting (AAAI 2026)
 - [[siren-rope]] — SIREN-RoPE, learnable temporal rotary encoding for sequential modeling (2026)
 - [[timesnet]] — TimesNet, task-general time series foundation model (ICLR 2023)
 - [[timesfm]] — TimesFM, decoder-only foundation model for time-series forecasting (ICLR 2024)
 - [[chronos]] — Chronos, pretrained time series language model with tokenizer (ICLR 2024)
 - [[unified-prompt-learning]] — UrbanDiT 的三个 memory pool（时域/频域/空域）+任务掩码 prompt 的自适应引导机制
+- [[cora-tsfm]] — CoRA, covariate-aware adaptation framework for TSFMs with Causality Embedding and zero-initialization (ICLR 2026)
 - [[unified-covariate-adaptation]] — UniCA, unified covariate adaptation framework for TSFMs (ICLR 2026)
 - [[unica]] — UniCA entity page (alternative name)
 - [[channelmts]] — ChannelMTS, multimodal time-series framework for HSR channel prediction (KDD 2026)
@@ -165,10 +192,22 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[urbandit]] — UrbanDiT, diffusion transformer for open-world spatiotemporal prediction with unified prompt learning (NeurIPS 2025)
 - [[imputeformer]] — ImputeFormer, low-rankness-induced Transformer with projected/embedded attention and Fourier sparsity loss for generalizable spatiotemporal imputation (KDD 2024)
 - [[crossformer]] — Crossformer, Transformer utilizing cross-dimension dependency for MTS forecasting (ICLR 2023)
+- [[xcpd]] — xCPD, model-agnostic plugin for spectral-domain channel-patch dependency routing (ICLR 2026)
+- [[cpiri]] — CPiRi, CI+CD decoupled with channel shuffling for permutation-invariant MTSF (ICLR 2026)
+- [[phat]] — PHAT, period heterogeneity-aware Transformer, 3D bucket + PNA cross-bucket attention (ICLR 2026)
+- [[cora-tsfm]] — CoRA, TSFM covariate adaptation with Causality Embedding + zero-init injection (ICLR 2026)
+- [[gtr]] — GTR, plug-and-play global temporal retrieval for extending temporal awareness (ICLR 2026)
+- [[lstnet]] — LSTNet, first cross-dimension MTS deep learning model, CNN+RNN+Skip-RNN+AR (SIGIR 2018)
+- [[s-mamba]] — S-Mamba, Mamba-based MTS forecasting with bidirectional VC + FFN TD encoding (Neurocomputing 2024)
+- [[timecap]] — TimeCAP, dual LLM agent contextualization + multi-modal encoder event prediction (AAAI 2025 Oral)
+- [[tedm]] — TEDM, elucidated diffusion for time series, diffusion time = physical time O(H) (ICLR 2026)
+- [[timecap]] — TimeCAP, dual LLM agent + multi-modal encoder framework for time series event prediction (AAAI 2025 Oral)
 - [[patchtst]] — PatchTST, patch tokenization + channel independence Transformer for LSTF and self-supervised learning (ICLR 2023)
+- [[phat]] — PHAT, Period Heterogeneity-Aware Transformer with positive-negative attention and periodic bucket structure (ICLR 2026)
 - [[ltsf-linear]] — LTSF-Linear, embarrassingly simple linear baseline that outperforms Transformer LTSF models (Zeng et al., 2022)
 - [[edm]] — EDM, Elucidating the Design Space of Diffusion-Based Generative Models (NeurIPS 2022)
 - [[grin]] — GRIN, first GNN-based multivariate time series imputation model with message-passing spatial decoder (ICLR 2022)
+- [[gtr]] — GTR, lightweight plug-and-play global temporal retrieval module for MTSF, extends cycle awareness beyond look-back window (ICLR 2026)
 - [[mamba]] — Mamba, selective state space model reformulated as linear attention variant (NeurIPS 2024)
 - [[mila]] — MILA, Mamba-Inspired Linear Attention model (NeurIPS 2024)
 - [[gsli]] — GSLI, multi-scale graph structure learning for spatiotemporal imputation with feature heterogeneity (AAAI 2025)
@@ -184,6 +223,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[quest-attention]] — QUEST Attention, efficient long-range attention via token clustering
 - [[score-based-sde]] — Score-Based SDE, unified SMLD+DDPM framework (ICLR 2021)
 - [[sparsetsf]] — SparseTSF, lightweight LTSF with <1k parameters (TPAMI 2026)
+- [[tedm]] — TEDM, diffusion time = physical time, O(H) sampling, empirical noise/scale schedules (ICLR 2026)
 - [[tips]] — TIPS, Transformer with Inductive Prior Synthesis for financial forecasting
 - [[tqn]] — TQNet, Temporal Query Network for efficient multivariate forecasting (ICML 2025)
 - [[tslib]] — TSLib, open-source time series library and benchmark
@@ -417,3 +457,4 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Analyses
 - [[multimodal-semantic-understanding]] — 多模态数据语义理解的对齐范式、融合策略与冗余过滤综合分析
+

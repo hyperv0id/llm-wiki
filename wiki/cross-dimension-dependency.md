@@ -7,8 +7,8 @@ tags:
   - cross-dimension
   - dependency
 created: 2026-05-30
-last_updated: 2026-05-30
-source_count: 3
+last_updated: 2026-05-31
+source_count: 5
 confidence: medium
 status: active
 ---
@@ -30,7 +30,7 @@ Cross-dimension dependency（跨维度依赖）是多变量时间序列 (MTS) �
 ### 显式建模
 
 - **GNN 方法**（MTGNN）：学习维度间图结构，用图卷积显式建模 [^src-crossformer-2023]
-- **CNN 方法**（LSTnet）：用 CNN 捕获跨维度依赖 [^src-crossformer-2023]
+- **CNN 方法**（[[lstnet|LSTNet]]）：首个用 CNN 捕获跨维度依赖的深度学习模型，SIGIR 2018 [^src-lstnet][^src-crossformer-2023]
 - **Transformer 方法**（[[crossformer|Crossformer]]）：DSW embedding 保留维度信息 + TSA layer 的 Cross-Dimension Stage 用 Router 机制建模维度间依赖 [^src-crossformer-2023]
 
 ### iTransformer 的反转范式
@@ -46,6 +46,10 @@ Cross-dimension dependency（跨维度依赖）是多变量时间序列 (MTS) �
 
 [[channel-independence|Channel Independence (CI)]] 策略完全忽略跨维度依赖，[[cvpe|CVPE]] 则提出折中——仅在最轻量的 patch embedding 层注入跨变量信息而保留 CI backbone [^src-cvpe-2025]。实验表明：强跨变量相关数据集上 CD 增益显著，弱相关数据集上可能过拟合。
 
+### CPiRi：时空解耦的排列不变框架
+
+[[cpiri|CPiRi]] (ICLR 2026) 代表了 CI-CD 融合的新范式——通过时空解耦架构将 CI 和 CD 分配到不同组件，而非在单个组件内折中 [^src-cpiri]。冻结局模型承担 CI 角色（逐通道独立提取时间特征），可训练的空间模块承担 CD 角色（通过 multi-head self-attention 学习内容驱动的跨通道交互）。训练时通过随机通道打乱迫使空间模块学习内容驱动的排列不变关系推理，而 CD 模型因依赖固定位置编码而在此测试中崩溃（Informer 错误率增加 >400%）[^src-cpiri]。这种解耦设计同时实现了 O(T² + C²) 的计算复杂度，比耦合方法的 O((T×C)²) 更具扩展性 [^src-cpiri]。
+
 ## 与 Cross-Time Dependency 的关系
 
 MTS 预测需要同时建模两种依赖 [^src-crossformer-2023]：
@@ -59,14 +63,18 @@ MTS 预测需要同时建模两种依赖 [^src-crossformer-2023]：
 
 ## 相关页面
 
+- [[lstnet]] — 首个 CNN 跨维度依赖模型，跨维度 MTS 深度学习路线的起点 (SIGIR 2018)
 - [[crossformer]] — 首个显式利用跨维度依赖的 Transformer
 - [[channel-independence]] — CI 策略（不建模跨维度依赖）
 - [[cvpe]] — CI + CD 折中方案
+- [[cpiri]] — CI+CD 时空解耦融合框架 (ICLR 2026)
 - [[two-stage-attention]] — Crossformer 的两阶段注意力
 - [[router-mechanism-for-cross-dimension]] — 降低跨维度注意力复杂度的路由机制
 - [[itransformer]] — 反转范式：attention 作用于 variate token 维度
 - [[multivariate-correlation-attention]] — iTransformer 的变量间注意力
 
+[^src-lstnet]: [[source-lstnet]]
 [^src-crossformer-2023]: [[source-crossformer-2023]]
 [^src-cvpe-2025]: [[source-cvpe-2025]]
 [^src-itransformer]: [[source-itransformer]]
+[^src-cpiri]: [[source-cpiri]]
