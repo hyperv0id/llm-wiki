@@ -6,7 +6,7 @@ tags:
   - td-learning
   - on-policy
 created: 2026-04-27
-last_updated: 2026-04-28
+last_updated: 2026-05-31
 source_count: 1
 confidence: medium
 status: active
@@ -45,7 +45,7 @@ $$q(S_t, A_t) \leftarrow q(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma q(S_{t+1},
 
 ## Sarsa vs Q-learning 对比
 
-| 特性 | Sarsa | [[q-learning-algorithm\|Q-learning]] |
+| 特性 | Sarsa | [[q-learning-algorithm|Q-learning]] |
 |------|-------|-------------|
 | 更新方式 | On-policy | Off-policy |
 | 更新目标 | $R + \gamma q(s', a')$ | $R + \gamma \max_{a'} q(s', a')$ |

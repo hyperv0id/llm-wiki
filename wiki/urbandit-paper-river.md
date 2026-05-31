@@ -8,9 +8,9 @@ tags:
   - paper-river
   - lineage
 created: 2026-05-31
-last_updated: 2026-05-31
-source_count: 4
-confidence: high
+last_updated: 2026-06-01
+source_count: 0
+confidence: medium
 status: active
 ---
 
@@ -25,7 +25,7 @@ status: active
 ```
 Layer 1 (目标) ─── UrbanDiT (NeurIPS 2025)
                         ↑
-Layer 2 (ST FM)  ─── UniST ─── UrbanGPT ─── GPD ─── OpenCity
+Layer 2 (ST FM)  ─── UniST ─── UrbanGPT ─── [[gpd|GPD]] ─── OpenCity
                         ↑           ↑           ↑
 Layer 3 (桥接)   ─── CSDI ─── STD-MAE ─── GPT-ST ─── ST-SSL
                         ↑           ↑           ↑           ↑
@@ -57,7 +57,7 @@ Layer 4 (基础)   ─── PatchTST ─── MAE ─── DiT ─── DDPM
 
 **被谁解决**：15 层后的 UrbanDiT 通过统一提示学习和多任务掩码策略彻底突破了这些局限。
 
-**影响路径**：STGCN → ASTGCN/STSGCN/GWN/AGCRN → GPD → UniST → UrbanDiT
+**影响路径**：STGCN → ASTGCN/STSGCN/GWN/AGCRN → [[gpd|GPD]] → UniST → UrbanDiT
 
 ---
 
@@ -84,7 +84,7 @@ Layer 4 (基础)   ─── PatchTST ─── MAE ─── DiT ─── DDPM
 
 **被谁解决**：CSDI 将其扩展到时间序列；DiT 将 U-Net 替换为 Transformer；UrbanDiT 通过 rectified flow 将 1000 步减至 20 步。
 
-**影响路径**：DDPM → CSDI → GPD → UrbanDiT
+**影响路径**：DDPM → CSDI → [[gpd|GPD]] → UrbanDiT
             DDPM → DiT → UrbanDiT
 
 ---
@@ -190,20 +190,20 @@ Layer 4 (基础)   ─── PatchTST ─── MAE ─── DiT ─── DDPM
 - 推理仍较慢（标准扩散迭代）
 - 专注于插补，不做预测
 
-**被谁解决**：GPD 将其扩展到时空图（加入空间信息）；UrbanDiT 更进一步到多数据类型+多任务+25×加速。
+**被谁解决**：[[gpd|GPD]] 将其扩展到时空图（加入空间信息）；UrbanDiT 更进一步到多数据类型+多任务+25×加速。
 
-**影响路径**：DDPM → CSDI → GPD → UrbanDiT
+**影响路径**：DDPM → CSDI → [[gpd|GPD]] → UrbanDiT
 
 ---
 
-### 3b. STD-MAE (IJCAI 2024) & GPT-ST (NeurIPS 2023) & ST-SSL (AAAI 2023)
+### 3b. [[std-mae|STD-MAE]] (IJCAI 2024) & [[gpt-st|GPT-ST]] (NeurIPS 2023) & ST-SSL (AAAI 2023)
 
 这三者代表了将 MAE 预训练范式适配到时空域的早期尝试：
 
 | 模型 | 会议 | 核心思想 | 局限 |
 |------|------|---------|------|
 | **ST-SSL** | AAAI 2023 | 时空自监督学习：空间聚类+时序对比 | 仍 task-specific，需下游训练 |
-| **GPT-ST** | NeurIPS 2023 | 时空掩码自编码预训练框架，与下游参数共享 | 仍 per-dataset，不跨域 |
+| **[[gpt-st|GPT-ST]]** | NeurIPS 2023 | 时空掩码自编码预训练框架，与下游参数共享 | 仍 per-dataset，不跨域 |
 | **STD-MAE** | IJCAI 2024 | 空间/时间解耦掩码预训练 | 预训练-微调范式，非零样本 |
 
 **留下的共同局限**：
@@ -212,11 +212,11 @@ Layer 4 (基础)   ─── PatchTST ─── MAE ─── DiT ─── DDPM
 
 **被谁解决**：UniST 首次提出"one-for-all"通用模型，直接零样本推理。
 
-**影响路径**：MAE → ST-SSL/GPT-ST/STD-MAE → UniST → UrbanDiT
+**影响路径**：MAE → ST-SSL/[[gpt-st|GPT-ST]]/[[std-mae|STD-MAE]] → UniST → UrbanDiT
 
 ---
 
-### 3c. GPD (ICLR 2024)
+### 3c. [[gpd|GPD]] (ICLR 2024)
 
 | 属性 | 内容 |
 |------|------|
@@ -236,7 +236,7 @@ Layer 4 (基础)   ─── PatchTST ─── MAE ─── DiT ─── DDPM
 
 **被谁解决**：UniST（grid 数据 + 零样本）/ UrbanDiT（graph+grid + 多任务 + rectified flow）。
 
-**影响路径**：DDPM → CSDI → GPD → UniST → UrbanDiT
+**影响路径**：DDPM → CSDI → [[gpd|GPD]] → UniST → UrbanDiT
 
 ---
 
@@ -325,7 +325,7 @@ Layer 4 (基础)   ─── PatchTST ─── MAE ─── DiT ─── DDPM
 **三合一继承**：
 1. **来自 UniST**（同实验室）：统一预训练范式、zero-shot 目标、prompt 思想
 2. **来自 DiT**：Transformer 替换 U-Net 的可扩展骨干
-3. **来自 CSDI/GPD**：扩散模型在时空数据上的条件生成
+3. **来自 CSDI/[[gpd|GPD]]**：扩散模型在时空数据上的条件生成
 
 **四项突破**：
 1. **双数据类型 + 5 任务统一**：grid + graph，forward/backward prediction + interpolation + extrapolation + imputation
@@ -372,8 +372,8 @@ DiT 证明 Transformer 是扩散模型的可扩展骨干（Gflops ↔ 质量正�
 2021 ── MAE: 掩码自编码预训练 (图像领域)
 2022 ── PatchTST: Patching + CI (1D TS Transformer)
 2023 ── DiT: Transformer替换U-Net (图像扩散)
-2023 ── ST-SSL / GPT-ST / STD-MAE: MAE预训练进入时空域
-2024 ── GPD: 扩散→时空图预测 (ICLR)
+2023 ── ST-SSL / [[gpt-st|GPT-ST]] / [[std-mae|STD-MAE]]: MAE预训练进入时空域
+2024 ── [[gpd|GPD]]: 扩散→时空图预测 (ICLR)
 2024 ── UniST: 首个通用时空预测模型 (KDD)
 2024 ── UrbanGPT: LLM-based 时空预测 (KDD)
 2025 ── UrbanDiT: DiT + 时空扩散基础模型 (NeurIPS)
@@ -390,13 +390,6 @@ DiT 证明 Transformer 是扩散模型的可扩展骨干（Gflops ↔ 质量正�
 - [[ddpm]] — DDPM 实体页
 - [[patchtst]] — PatchTST 实体页
 - [[source-patchtst]] — PatchTST 源文件摘要
+- [[gpt-st]] — GPT-ST 技术页（NeurIPS 2023）
 - [[diffusion-model]] — 扩散模型概念
 
-## 源文件引用
-
-[^src-urbandit]: [[source-urbandit]]
-[^src-patchtst]: [[source-patchtst]]
-[^src-ddpm]: [[source-ddpm]]
-[^src-most]: [[source-most]]
-[^src-stssl]: [[source-stssl]](计划创建)
-[^src-gpt-st]: [[source-gpt-st]](计划创建)

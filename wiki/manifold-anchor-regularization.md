@@ -1,0 +1,1 @@
+techniques/manifold-anchor-regularization.md

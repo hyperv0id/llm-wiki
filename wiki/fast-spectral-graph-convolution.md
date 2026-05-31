@@ -101,7 +101,7 @@ Fast Spectral Graph Convolution 在 SpecSTG 中被两个组件使用[^src-2401-0
 | GCN (Kipf 2017) | 一阶 Chebyshev | 原始域 | $O(|\mathcal{E}|)$ | 否 | 通用图节点分类 |
 | ChebNet (Defferrard 2016) | K 阶 Chebyshev | 原始域 | $O(K|\mathcal{E}|)$ | 否 | 需要多尺度滤波 |
 | GraphSAGE | 采样聚合 | 原始域 | $O(S^K)$ | 否 | 大规模归纳学习 |
-| [[efficient-cosine-operator\|ECO]] | 余弦相似度分解 | 原始域 | $O(N)$ | 否 | 大规模自适应图 |
+| [[efficient-cosine-operator|ECO]] | 余弦相似度分解 | 原始域 | $O(N)$ | 否 | 大规模自适应图 |
 | **Fast Spectral GC** | **K 阶 Chebyshev** | **傅里叶域** | **$O(KN)$** | **是（预计算一次）** | **谱域扩散模型** |
 
 ### 与 ECO 的对比

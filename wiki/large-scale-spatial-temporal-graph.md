@@ -6,8 +6,8 @@ tags:
   - computational-complexity
   - scalability
 created: 2026-04-29
-last_updated: 2026-05-07
-source_count: 4
+last_updated: 2026-05-31
+source_count: 3
 references:
   - [[source-fast-long-horizon-forecasting]]
 confidence: high
@@ -108,7 +108,6 @@ XTraffic 数据集（2024）：基于加州 2023 年交通数据，包含时间�
 - [[ragc]] — 正则化自适应图卷积方法
 - [[efficient-cosine-operator|ECO]] — 余弦相似度线性复杂度图卷积
 
-[^src-fast-long-horizon-forecasting]: [[source-fast-long-horizon-forecasting]]
 [^src-incident-guided-st-forecasting]: [[source-incident-guided-st-forecasting]]
 [^src-most]: [[source-most]]
 [^src-ragc-efficient-traffic-forecasting]: [[source-ragc-efficient-traffic-forecasting]]

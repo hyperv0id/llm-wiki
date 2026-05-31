@@ -6,7 +6,7 @@ tags:
   - gradient
   - orthogonalization
 created: 2026-04-30
-last_updated: 2026-04-30
+last_updated: 2026-05-31
 source_count: 1
 confidence: medium
 status: active

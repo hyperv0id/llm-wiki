@@ -6,8 +6,8 @@ tags:
   - generative-model
   - nips-2020
 created: 2026-04-28
-last_updated: 2026-05-09
-source_count: 2
+last_updated: 2026-05-31
+source_count: 1
 confidence: medium
 status: active
 ---
@@ -37,6 +37,7 @@ DDPM 的白噪声前向过程在傅里叶空间可写为 $y_t=\sqrt{\bar\alpha_t
 ## 后续发展
 
 - **[[score-based-sde|Score-Based SDE]]** (Song et al., ICLR 2021)：将 DDPM 重新解释为 VP SDE 的离散化
+- **[[dit|DiT]]** (Peebles & Xie, ICCV 2023)：用 ViT Transformer 替换 U-Net，继承 DDPM 扩散框架并在隐空间实现 SOTA 生成
 - **[[equal-snr|EqualSNR]]** (Falck et al., 2025)：从傅里叶 SNR 角度修改 DDPM 前向过程
 
 ## 相关页面
@@ -47,8 +48,9 @@ DDPM 的白噪声前向过程在傅里叶空间可写为 $y_t=\sqrt{\bar\alpha_t
 - [[score-based-generative-modeling]] — 基于分数的生成模型
 - [[annealed-langevin-dynamics]] — 退火朗之万动力学
 - [[frequency-hierarchy-in-diffusion]] — DDPM 的低频到高频隐式生成顺序
+- [[dit]] — DiT，继承 DDPM 扩散框架的 Transformer 架构
+- [[instaflow]] — InstaFlow，将 DDPM 的 1000 步推理蒸馏为一步，reflow+distill 管线 (ICLR 2024)
 
 ## 引用
 
-[^src-ddpm]: [[source-ddpm]]
 [^src-equal-snr]: [[source-equal-snr]]

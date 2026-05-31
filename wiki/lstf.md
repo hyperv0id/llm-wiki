@@ -7,8 +7,8 @@ tags:
   - long-sequence
   - transformer
 created: 2026-05-04
-last_updated: 2026-05-30
-source_count: 5
+last_updated: 2026-05-31
+source_count: 4
 confidence: high
 status: active
 ---
@@ -69,7 +69,6 @@ Zeng et al. (2022) fundamentally challenged the Transformer-based LSTF paradigm 
 - **Multi-horizon forecasting**: Predicts multiple future horizons simultaneously — LSTF is a specific instantiation with long horizons.
 
 [^src-zhou-informer-2021]: [[source-zhou-informer-2021]]
-[^src-crossformer-2023]: [[source-crossformer-2023]]
 [^src-zeng-2022-are-transformers-effective]: [[source-zeng-2022-are-transformers-effective]]
 [^src-itransformer]: [[source-itransformer]]
 [^src-patchtst]: [[source-patchtst]]

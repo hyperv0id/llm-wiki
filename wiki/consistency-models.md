@@ -7,7 +7,7 @@ tags:
   - one-step-generation
   - icml-2023
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-31
 source_count: 1
 confidence: medium
 status: active
@@ -62,6 +62,8 @@ $$
 - [[score-based-sde]] — Score-Based SDE，理论基础
 - [[probability-flow-ode]] — 概率流 ODE
 - [[dpm-solver]] — DPM-Solver，另一快速采样方法
+- [[instaflow]] — InstaFlow，reflow+distill 路线的另一种一步生成方法 (ICLR 2024)
+- [[rectified-flow|Rectified Flow]] — 直线 ODE 生成，与一致性模型同为少步生成方法
 
 ## 引用
 

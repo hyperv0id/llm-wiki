@@ -6,8 +6,8 @@ tags:
   - conditional-generation
   - guidance
 created: 2026-04-28
-last_updated: 2026-04-28
-source_count: 2
+last_updated: 2026-05-31
+source_count: 4
 confidence: high
 status: active
 ---
@@ -54,6 +54,7 @@ $$
 ## 应用
 
 - **文本到图像生成**：CFG 是 Stable Diffusion、DALL-E 2、Imagen 等模型的核心组件，用于控制文本提示的遵循程度。
+- **类别条件生成**：[[dit|DiT]] 在 ImageNet 类别条件生成中使用 CFG（最佳 scale=1.50），取得 FID 2.27 的 SOTA 结果[^src-dit]。
 - **文本到视频/3D 生成**：扩散模型在视频和 3D 生成中同样采用 CFG 技术。
 - **其他条件生成任务**：任何需要条件控制（如类别条件、布局条件）的扩散模型都可以使用 CFG。
 
@@ -65,7 +66,9 @@ $$
 
 ## LDM 中的应用
 
-LDM 成功将无分类器引导应用于文本到图像生成[^src-rombach-ldm-2022]。在 MS-COCO 数据集上，CFG 将 FID 从 23.31 提升到 12.63（引导尺度 s=1.5）。典型引导尺度在 1.5 到 10.0 之间。
+LDM 成功将无分类器引导应用于文本到图像生成[^src-rombach-ldm-2022]。在 MS-COCO 数据集上，CFG 将 FID 从 23.31 提升到 12.63（引导尺度 s=1.5）。典型引导尺度在 1.5 到 10.0 之间。[[instaflow|InstaFlow]] 为 Rectified Flow 设计了 CFG 等效机制 $v^\alpha = \alpha\cdot v(\cdot|T) + (1-\alpha)\cdot v(\cdot|\text{NULL})$，最佳 $\alpha\approx 1.5$ 远低于 SD 的 5-7.5[^src-instaflow]。
 
 [^src-understanding-diffusion-models]: [[source-understanding-diffusion-models]]
 [^src-rombach-ldm-2022]: [[source-rombach-ldm-2022]]
+[^src-dit]: [[source-dit]]
+[^src-instaflow]: [[source-instaflow]]

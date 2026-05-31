@@ -7,7 +7,7 @@ tags:
   - fast-inference
   - nips-2022
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-31
 source_count: 1
 confidence: medium
 status: active
@@ -63,6 +63,7 @@ $$
 - [[ddpm]] — DDPM，原始采样需要 ~1000 步
 - [[score-based-sde]] — Score-Based SDE，ODE 求解基础
 - [[probability-flow-ode]] — 概率流 ODE
+- [[instaflow]] — InstaFlow，用 DPM-Solver 25 步实现 SD 采样，再经 reflow+distill 一步生成 (ICLR 2024)
 
 ## 引用
 

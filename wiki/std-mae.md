@@ -8,7 +8,7 @@ tags:
   - traffic-prediction
   - autoencoder
 created: 2026-05-12
-last_updated: 2026-05-30
+last_updated: 2026-05-31
 source_count: 1
 confidence: medium
 status: active
@@ -98,7 +98,9 @@ $$H^{(Aug)} = MLP(H'^{(S)}) + MLP(H'^{(T)}) + H^{(F)}$$
 
 ## 相关技术
 
-- MAE (Masked AutoEncoder) — CV 中的掩码自编码器
+- [[mae|MAE (Masked AutoEncoder)]] — CV 中的掩码自编码器
+- [[gpt-st]] — GPT-ST，时空MAE预训练框架（NeurIPS 2023）
+- [[videomae]] — VideoMAE，视频掩码自编码器（MAE 的视频扩展）
 - [[spatiotemporal-mirage]] — 时空幻象问题
 - [[traffic-forecasting]] — 交通预测综述
 - [[spatio-temporal-decoupling]] — 时空解耦（不同语境，共形预测）

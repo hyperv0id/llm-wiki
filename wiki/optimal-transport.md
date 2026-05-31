@@ -7,7 +7,7 @@ tags:
   - probability
   - wasserstein-distance
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-31
 source_count: 1
 confidence: medium
 status: active
@@ -125,6 +125,8 @@ $$
 - [[flow-matching]] — 流匹配框架
 - [[continuous-normalizing-flow]] — 连续归一化流
 - [[diffusion-model]] — 扩散模型
+- [[instaflow]] — InstaFlow，reflow 通过降低凸传输代价改善噪声-图像配对 (ICLR 2024)
+- [[rectified-flow|Rectified Flow]] — 通过独立耦合收敛到 OT 映射的直线 ODE 生成模型
 
 ## 引用
 

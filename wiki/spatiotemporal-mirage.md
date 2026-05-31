@@ -7,7 +7,7 @@ tags:
   - heterogeneity
   - time-series
 created: 2026-05-12
-last_updated: 2026-05-12
+last_updated: 2026-05-31
 source_count: 1
 confidence: medium
 status: active
@@ -56,7 +56,7 @@ flowchart LR
 ### 定性效果
 
 在 PEMS 数据集的实际案例分析中（传感器 215 和 279）：
-- GWNet（基线）不能区分两种幻象情况，预测误差显著
+- [[gwnet|GWNet]]（基线）不能区分两种幻象情况，预测误差显著
 - STD-MAE 增强版本准确捕捉趋势转折，具备区分能力[^src-2312-00516-std-mae]
 
 ## 关联概念

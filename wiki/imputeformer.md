@@ -8,9 +8,9 @@ tags:
   - low-rank
   - kdd-2024
 created: 2026-05-11
-last_updated: 2026-05-30
-source_count: 2
-confidence: high
+last_updated: 2026-05-31
+source_count: 1
+confidence: medium
 status: active
 ---
 
@@ -38,11 +38,11 @@ status: active
 **深度学习补全模型：**
 - RNN 系列：GRU-D、GRUI、BRITS
 - 生成式模型：GAIN、E2GAN
-- 扩散模型：NAOMI、PriSTI
+- 扩散模型：NAOMI、[[pristi|PriSTI]]
 - **GNN 系列**：[[grin]]（ICLR 2022，首个 GNN 填补模型）、GACN（利用图神经网络建模传感器间相关性）
 
 **Transformer 补全系列（ImputeFormer 的直接竞品）：**
-- CSDI：跨通道注意力利用维度间相关性
+- [[csdi|CSDI]]：跨通道注意力利用维度间相关性
 - SAITS：掩蔽填补 + 观测重构双任务，对角掩码自注意力分层重构稀疏数据
 - SPIN：稀疏交叉注意力 + 时间自注意力，此前 SOTA
 
@@ -164,4 +164,3 @@ L = L_recon + λ · L_FIL
 - [[generative-time-series-forecasting]] — 生成式时序预测
 
 [^src-2312-01728]: [[source-2312-01728]]
-[^src-yang-gsli-2025]: [[source-yang-gsli-2025]]

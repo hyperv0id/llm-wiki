@@ -10,7 +10,7 @@ tags:
   - self-supervised
   - ICLR-2023
 created: 2026-05-30
-last_updated: 2026-05-30
+last_updated: 2026-05-31
 source_count: 1
 confidence: medium
 status: active
@@ -69,7 +69,7 @@ Output: x̂^(i) ∈ ℝ^(1×T)
 
 ## 自监督表示学习
 
-Patch-level masked autoencoder：非重叠 patch，40% 掩码率，训练重建被掩码 patch [^src-patchtst]。
+Patch-level masked autoencoder（借鉴 CV [[mae|MAE]] 的范式）：非重叠 patch，40% 掩码率，训练重建被掩码 patch [^src-patchtst]。
 
 - Fine-tuning 在大数据集上超越 supervised training
 - Transfer learning（Electricity 预训练→迁移）仍优于 DLinear 和其他 Transformer
@@ -101,6 +101,6 @@ PatchTST 是 LSTF 领域的关键转折点 [^src-patchtst]：
 - **前驱/基线**：[[informer|Informer]], [[autoformer|Autoformer]], [[fedformer|FEDformer]], DLinear
 - **后续/继承**：[[simdiff|SimDiff]]（patch + CI + diffusion）, [[cvpe|CVPE]]（CI + CD 折中）, [[sparsetsf|SparseTSF]]（patch + 极致压缩）
 - **核心概念**：[[patch-based-tokenization]], [[channel-independence]], [[instance-normalization]], [[lstf]]
-- **评估框架**：[[tslib|TSLib]]（30 模型 benchmark，PatchTST 为 patch-wise 代表）
+- **自监督/预训练**：[[mae|MAE]], [[videomae]], [[timesfm|TimesFM]], [[chronos]]
 
 [^src-patchtst]: [[source-patchtst]]

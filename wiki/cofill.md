@@ -7,9 +7,9 @@ tags:
   - data-imputation
   - dual-stream-architecture
 created: 2026-05-11
-last_updated: 2026-05-30
-source_count: 2
-confidence: high
+last_updated: 2026-05-31
+source_count: 1
+confidence: medium
 status: active
 ---
 
@@ -52,7 +52,7 @@ CoFILL 使用两种预处理策略生成条件输入：
 
 ## 实验结果
 
-| 数据集 | 指标 | 相比 PriSTI 提升 |
+| 数据集 | 指标 | 相比 [[pristi|PriSTI]] 提升 |
 |--------|------|-----------------|
 | METR-LA (Block) | MAE, MSE | 10.22% |
 | PEMS-BAY (Point) | MAE, MSE | ~1% |
@@ -64,8 +64,8 @@ CoFILL 使用两种预处理策略生成条件输入：
 
 | 方法 | 扩散域 | 时频融合 | 空间建模 |
 |------|--------|---------|---------|
-| CSDI | 原始域 | 否 | 否 |
-| PriSTI | 原始域 | 有限 | 注意力 |
+| [[csdi|CSDI]] | 原始域 | 否 | 否 |
+| [[pristi|PriSTI]] | 原始域 | 有限 | 注意力 |
 | SpecSTG | 谱域 | 否 | 谱域嵌入 |
 | [[grin]] | 原始域 | 显式 MPNN | ✅ 预定义图 |
 | **CoFILL** | 原始域 | **双流 Cross-Attention** | **TCN + GCN** |
@@ -84,8 +84,8 @@ CoFILL 相比其他扩散填补方法计算开销较大[^src-cofill-spatiotempor
 
 | 方法 | 扩散步数 | 架构复杂度 |
 |------|---------|-----------|
-| CSDI | 100 | 单流 Transformer |
-| PriSTI | ~50 | 时空注意力 |
+| [[csdi|CSDI]] | 100 | 单流 Transformer |
+| [[pristi|PriSTI]] | ~50 | 时空注意力 |
 | **CoFILL** | **100** | **双流 TCN+GCN+DCT+CrossAttn** |
 
 消融实验显示 Forward Interpolation 对性能贡献最大（移除后 MAE 8.70→9.15），但其带来的额外预填补计算也是效率损失的一部分。
@@ -105,4 +105,3 @@ https://github.com/joyHJL/CoFILL
 - [[traffic-forecasting]] — 交通预测
 
 [^src-cofill-spatiotemporal-imputation]: [[source-cofill-spatiotemporal-imputation]]
-[^src-yang-gsli-2025]: [[source-yang-gsli-2025]]

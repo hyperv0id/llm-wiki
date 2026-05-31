@@ -126,8 +126,8 @@ EDM 调整噪声量级 $\sigma(t)$ 和信号缩放 $s(t)$，频域噪声控制�
 
 ### 其他频域方法
 
-- **[[frequency-enhanced-attention\|FEA]] / [[frequency-enhanced-block\|FEB]]**（FEDformer）：修改注意力计算，频域噪声控制修改数据层面的噪声分布——互不干扰
-- **[[adaptive-frequency-modulation\|AFM]]**（UniExtreme）：在模型内部分类频段，频域噪声控制在前向过程操控噪声——互补
+- **[[frequency-enhanced-attention|FEA]] / [[frequency-enhanced-block|FEB]]**（FEDformer）：修改注意力计算，频域噪声控制修改数据层面的噪声分布——互不干扰
+- **[[adaptive-frequency-modulation|AFM]]**（UniExtreme）：在模型内部分类频段，频域噪声控制在前向过程操控噪声——互补
 - **冷扩散（Cold Diffusion）**：使用非高斯退化，频域噪声控制保持高斯假设——不同方向
 
 ---

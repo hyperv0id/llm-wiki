@@ -8,7 +8,7 @@ tags:
   - plug-and-play
   - iclr-2026
 created: 2026-05-03
-last_updated: 2026-05-03
+last_updated: 2026-05-31
 source_count: 1
 confidence: medium
 status: active
@@ -55,7 +55,7 @@ By encoding texts into numerical vectors and concatenating them as new "channels
 | LLM Reasoning | [[vot|VoT]] | High (LLM generation) | Dual-branch architecture |
 | Modality-Guided Attention | [[aurora|Aurora]] | High (tokenization + distillation) | Custom attention mechanism |
 
-The auxiliary variables approach is the **simplest** and most **broadly compatible**, trading off deeper semantic integration for universal applicability[^src-language-in-the-flow-of-time].
+The auxiliary variables approach is the **simplest** and most **widely compatible**, trading off deeper semantic integration for universal applicability[^src-language-in-the-flow-of-time].
 
 ## Advantages
 

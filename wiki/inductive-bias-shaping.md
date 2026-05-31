@@ -7,7 +7,7 @@ tags:
   - diffusion-models
   - frequency-domain
 created: 2026-05-09
-last_updated: 2026-05-09
+last_updated: 2026-05-31
 source_count: 3
 confidence: high
 status: active
@@ -126,7 +126,7 @@ $$\mathbf{x}' = \mathbf{x} + \gamma_c\,\boldsymbol{\epsilon}_{[a_c, b_c]}$$
 
 - **[[flow-matching|Flow Matching]]**：概率路径的选择决定了模型学习的变换方向
 - **VAE**：编码器引入的噪声分布影响潜变量的语义结构
-- **Masked Autoencoder**：掩码模式决定了模型需要重建的信息
+- **[[mae|Masked Autoencoder]]**：掩码模式决定了模型需要重建的信息
 - **Denoising Autoencoder**：噪声类型影响学到的特征表示
 
 ## 链接

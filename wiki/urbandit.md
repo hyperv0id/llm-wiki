@@ -8,13 +8,13 @@ tags:
   - traffic-forecasting
   - rectified-flow
 created: 2026-05-12
-last_updated: 2026-05-30
+last_updated: 2026-06-01
 source_count: 1
 confidence: medium
 status: active
 ---
 
-**UrbanDiT**（Urban Diffusion Transformer）是清华大学电子工程系 FIB Lab（Yuan Yuan 等）提出的开放世界城市时空基础模型，发表于 **NeurIPS 2025**[^src-urbandit]。它首次将 Diffusion Transformer（DiT）架构成功扩展到城市时空领域，通过统一提示学习（Unified Prompt Learning）实现多数据类型（grid-based + graph-based）和多任务（5 种）的统一建模[^src-urbandit]。
+**UrbanDiT**（Urban Diffusion Transformer）是清华大学电子工程系 FIB Lab（Yuan Yuan 等）提出的开放世界城市时空基础模型，发表于 **NeurIPS 2025**[^src-urbandit]。它首次将 [[dit|Diffusion Transformer (DiT)]] 架构成功扩展到城市时空领域，通过统一提示学习（Unified Prompt Learning）实现多数据类型（grid-based + graph-based）和多任务（5 种）的统一建模[^src-urbandit]。
 
 ## 核心特色
 
@@ -38,7 +38,7 @@ Task Memory Pool  → Task-specific Prompt ─┘            │  (Temporal Attn
 1. **数据统一化**：grid-based 数据通过 3D CNN（kernel=pt×ps×ps）patched + reshaped；graph-based 数据通过 1D CNN（时间）+ GCN（空间）处理为统一序列 $X^{N \times T}$[^src-urbandit]
 2. **掩码策略**：通过掩码矩阵 $M$ 将不同任务统一为"重建缺失数据"——Forward 掩码未来、Backward 掩码过去、Interpolation 掩码中间时间点、Extrapolation 掩码未知空间区域、Imputation 随机掩码[^src-urbandit]
 3. **[[unified-prompt-learning|统一提示学习]]**：三个 learnable key-value memory pools 分别捕捉时域、频域、空域模式，通过 cosine similarity 检索最相关 patterns 作为 data-driven prompts；task mask 通过 attention 生成 task-specific prompt[^src-urbandit]
-4. **Rectified Flow 训练**：采用 InstaFlow 的 straightened ODE trajectory，比传统 DDPM 弯曲路径更高效，扩散步数 500、推理步数 20，实现 25 倍加速[^src-urbandit]
+4. **[[rectified-flow|Rectified Flow]] 训练**：采用 [[instaflow|InstaFlow]] 的 straightened ODE trajectory，比传统 DDPM 弯曲路径更高效，扩散步数 500、推理步数 20，实现 25 倍加速[^src-urbandit]
 
 ## 模型变体
 
@@ -81,7 +81,8 @@ UrbanDiT-L 展现出最强的扩展行为——数据量增加时性能提升斜
 
 | 方面 | UrbanDiT vs |
 |------|------------|
-| **vs UniST** | 同实验室前身。UniST 仅支持 grid 数据 + 预测任务；UrbanDiT 扩展到 graph 数据 + 5 种任务 + rectified flow 训练[^src-urbandit] |
+| **vs [[unist|UniST]]** | 同实验室前身。UniST 仅支持 grid 数据 + 预测任务；UrbanDiT 扩展到 graph 数据 + 5 种任务 + rectified flow 训练[^src-urbandit] |
+| **vs [[uniflow|UniFlow]]** | 同实验室同期工作。UniFlow 采用纯 Transformer + ST-MRA (memory retrieval) 路线，UrbanDiT 采用 DiT + rectified flow 扩散路线。UniFlow 支持 >10K nodes 大规模 graph，UrbanDiT 支持 5 种任务（含 imputation/extrapolation）[^src-urbandit] |
 | **vs UrbanGPT** | UrbanGPT 基于 LLM 逐一处理传感器（7B params，174s inference）；UrbanDiT 从零训练，多传感器并行[^src-urbandit] |
 | **vs MoST** | MoST 专注多模态（图像+文本+时序），UrbanDiT 单模态但多数据类型+多任务[^src-urbandit] |
 | **vs CSDI** | CSDI 是扩散插补模型，UrbanDiT 在插补任务上超越 CSDI，且覆盖预测任务，25 倍更快[^src-urbandit] |
@@ -92,6 +93,9 @@ UrbanDiT-L 展现出最强的扩展行为——数据量增加时性能提升斜
 - 代码仓库：https://github.com/tsinghua-fib-lab/UrbanDiT
 - [[unified-prompt-learning]] — UrbanDiT 的核心提示学习机制
 - [[spatio-temporal-foundation-model]] — 时空基础模型的通用框架
-- [[rectified-flow]] — 训练使用的 rectified flow 加速方法
+- [[uniflow]] — UniFlow，同实验室的纯 Transformer + ST-MRA 路线（grid+graph 统一）
+- [[dit]] — DiT，UrbanDiT 的基础架构
+- [[rectified-flow|Rectified Flow]] — 直线 ODE 生成，UrbanDiT 的训练基础
+- [[bigcity]] — BIGCity，首个 MTMD 时空模型，使用 GPT-2+LoRA+Prompt 扩展 UrbanDiT 的 traffic-only 范式到轨迹+交通状态（arXiv 2024）
 
 [^src-urbandit]: [[source-urbandit]]

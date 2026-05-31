@@ -7,7 +7,7 @@ tags:
   - traffic-forecasting
   - transformer
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-31
 source_count: 1
 confidence: medium
 status: active
@@ -54,7 +54,7 @@ where Q' = γ·(Q-μ_Q)/σ + β and similarly for K'[^src-conformer].
 
 ## Extensibility
 
-GLN is not limited to ConFormer. Experiments show that adding GLN to GWNet achieves 2.63% MAE reduction across datasets, demonstrating its general applicability to other spatiotemporal models[^src-conformer].
+GLN is not limited to ConFormer. Experiments show that adding GLN to [[gwnet|GWNet]] achieves 2.63% MAE reduction across datasets, demonstrating its general applicability to other spatiotemporal models[^src-conformer].
 
 ## Related Techniques
 

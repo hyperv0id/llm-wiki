@@ -9,7 +9,7 @@ tags:
   - uc-berkeley
   - arxiv-2025
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-31
 source_count: 1
 confidence: medium
 status: active
@@ -252,6 +252,8 @@ Shortcut Models 还被应用于机器人控制任务：
 - [[flow-matching]] — Flow Matching 基础
 - [[consistency-models]] — Consistency Models
 - [[diffusion-model]] — 扩散模型
+- [[instaflow]] — InstaFlow，reflow+distill 路线，与 Shortcut 的自一致性路线形成对比 (ICLR 2024)
+- [[rectified-flow|Rectified Flow]] — 通过 rectification 学习直线轨迹的 ODE 生成模型
 
 ## 引用
 

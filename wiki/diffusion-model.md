@@ -7,8 +7,8 @@ tags:
   - vae
   - score-based
 created: 2026-04-28
-last_updated: 2026-05-30
-source_count: 13
+last_updated: 2026-05-31
+source_count: 14
 confidence: high
 status: active
 ---
@@ -133,7 +133,9 @@ Falck 等人（Microsoft Research, 2025）从 SNR 角度给出另一种频域解
 - **[[consistency-models|Consistency Models]]**：2023 年 ICML，单步生成模型，通过学习 PF ODE 轨迹映射实现快速生成[^src-consistency-models]
 - **[[flow-matching|Flow Matching]]**：2023 年 NeurIPS，统一框架，将扩散模型视为 Flow Matching 的特例，支持 OT 等更优概率路径[^src-flow-matching]
 - **[[shortcut-models|Shortcut Models]]**：2025 年 arXiv，单阶段少步/单步生成模型，通过步长调节和自一致性实现高效推理[^src-shortcut-models]
+- **[[instaflow|InstaFlow]]**：ICLR 2024，首个成功将大规模 SD 蒸馏为一步模型的 reflow+distill 方法，证明 reflow 是蒸馏成功的必要前提[^src-instaflow]
 - **[[edm|EDM]]**：2022 年 NeurIPS 论文，系统梳理扩散模型设计空间，提出 Heun 二阶采样器、预处理技术和对数正态噪声分布[^src-edm]
+- **[[dit|DiT]]**：2022 年 ICCV 2023 论文，用 ViT Transformer 替换 U-Net 作为扩散模型主干，提出 adaLN-Zero 条件注入和 Gflops-based scaling law，ImageNet 256 FID=2.27[^src-dit]
 - **[[jit|JiT]]**：2025 年 arXiv (MIT)，提出 x-prediction 在高维空间的必要性，使用标准 ViT + 大 patch 在像素空间实现有竞争力的生成[^src-back-to-basics-let-denoising-generative-models-denoise]
 
 ## 相关概念
@@ -151,6 +153,8 @@ Falck 等人（Microsoft Research, 2025）从 SNR 角度给出另一种频域解
 - [[diffusion-models]] — A broader overview of diffusion models covering DDPM, SMLD, SDE unification, and applications
 - [[x-prediction]] — x-prediction，扩散模型中直接预测干净数据的参数化方式
 - [[jit|JiT]] — JiT (Just image Transformers)，基于 x-prediction 的像素空间扩散模型
+- [[dit]] — DiT，用 Transformer 替换 U-Net 的扩散模型架构
+- [[rectified-flow|Rectified Flow]] — 通过 rectification 学习直线 ODE 轨迹实现少步生成
 
 ## 引用
 
@@ -160,10 +164,11 @@ Falck 等人（Microsoft Research, 2025）从 SNR 角度给出另一种频域解
 [^src-consistency-models]: [[source-consistency-models]]
 [^src-flow-matching]: [[source-flow-matching]]
 [^src-shortcut-models]: [[source-shortcut-models]]
+[^src-dit]: [[source-dit]]
 [^src-edm]: [[source-edm]]
-[^src-rombach-ldm-2022]: [[source-rombach-ldm-2022]]
 [^src-understanding-diffusion-models]: [[source-understanding-diffusion-models]]
 [^src-bluuuuue-reparameterization-trick]: [[source-bluuuuue-reparameterization-trick]]
 [^src-2502-10236]: [[source-2502-10236]]
 [^src-equal-snr]: [[source-equal-snr]]
 [^src-back-to-basics-let-denoising-generative-models-denoise]: [[source-back-to-basics-let-denoising-generative-models-denoise]]
+[^src-instaflow]: [[source-instaflow]]

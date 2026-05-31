@@ -7,7 +7,7 @@ tags:
   - traffic-forecasting
   - time-series
 created: 2026-04-27
-last_updated: 2026-04-29
+last_updated: 2026-05-31
 source_count: 1
 confidence: medium
 status: active
@@ -35,7 +35,7 @@ In [[hyperd|HyperD]], the separation is achieved via Fourier transform in the [[
 
 ## Contrast with Other Approaches
 
-- **Single-pathway models** (STGCN, GWNet, STAEformer): model periodicity implicitly without explicit decomposition[^src-hyperd-hybrid-periodicity-decoupling]
+- **Single-pathway models** ([[stgcn|STGCN]], [[gwnet|GWNet]], STAEformer): model periodicity implicitly without explicit decomposition[^src-hyperd-hybrid-periodicity-decoupling]
 - **Uniform frequency models** (FEDformer, FreTS): transform into frequency domain but do not separate periodic from residual signals for differentiated processing[^src-hyperd-hybrid-periodicity-decoupling]
 - **Seasonal-trend decomposition** (Autoformer, DLinear): separate trend from seasonal components but without the short/long periodicity distinction[^src-hyperd-hybrid-periodicity-decoupling]
 

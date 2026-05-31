@@ -8,7 +8,7 @@ tags:
   - scalability
   - regularization
 created: 2026-05-07
-last_updated: 2026-05-30
+last_updated: 2026-05-31
 source_count: 1
 confidence: medium
 status: active
@@ -23,7 +23,7 @@ RAGC (Regularized Adaptive Graph Convolution) 是一种用于大规模路网交�
 RAGC 针对自适应图学习的两个关键局限[^src-ragc-efficient-traffic-forecasting]：
 
 1. **O(N²) 计算复杂度** — 自适应邻接矩阵的图卷积需要构建 N×N 矩阵，大规模路网（8,600 节点）不可扩展
-2. **节点嵌入过参数化** — 节点嵌入占模型参数的主要比例（如 GWNet 占 72%，AGCRN 占 86%），但缺乏正则化
+2. **节点嵌入过参数化** — 节点嵌入占模型参数的主要比例（如 [[gwnet|GWNet]] 占 72%，AGCRN 占 86%），但缺乏正则化
 
 ## 模型架构
 
@@ -48,9 +48,9 @@ RAGC 由三个组件构成[^src-ragc-efficient-traffic-forecasting]：
 
 | 技术 | 功能 | 复杂度 |
 |------|------|--------|
-| [[efficient-cosine-operator\|ECO]] | 余弦相似度图卷积 | O(N) |
-| [[stochastic-shared-embedding\|SSE]] | 节点嵌入正则化 | — |
-| [[residual-difference-mechanism\|RDM]] | 抑制 SSE 噪声传播 | — |
+| [[efficient-cosine-operator|ECO]] | 余弦相似度图卷积 | O(N) |
+| [[stochastic-shared-embedding|SSE]] | 节点嵌入正则化 | — |
+| [[residual-difference-mechanism|RDM]] | 抑制 SSE 噪声传播 | — |
 
 ## 实验结果
 

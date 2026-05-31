@@ -9,8 +9,8 @@ tags:
   - contrastive-learning
   - information-bottleneck
 created: 2026-05-03
-last_updated: 2026-05-03
-source_count: 7
+last_updated: 2026-05-31
+source_count: 5
 confidence: high
 status: active
 ---
@@ -166,5 +166,3 @@ Layer 1: 模型实例
 [^src-language-in-the-flow-of-time]: [[source-language-in-the-flow-of-time]]
 [^src-aurora]: [[source-aurora]]
 [^src-most]: [[source-most]]
-[^src-unica]: [[source-unica]]
-[^src-simdiff]: [[source-simdiff]]

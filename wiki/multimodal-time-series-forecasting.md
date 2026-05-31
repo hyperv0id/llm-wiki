@@ -7,8 +7,8 @@ tags:
   - forecasting
   - covariate
 created: 2026-04-29
-last_updated: 2026-05-30
-source_count: 7
+last_updated: 2026-05-31
+source_count: 6
 confidence: high
 status: active
 ---
@@ -180,7 +180,6 @@ UniCA 在多模态场景下的表现：
 [^src-unca]: [[source-unca]]
 [^src-channelmts]: [[source-channelmts]]
 [^src-most]: [[source-most]]
-[^src-event-driven-ts-forecasting]: [[source-event-driven-ts-forecasting]]
 [^src-aurora]: [[source-aurora]]
 [^src-language-in-the-flow-of-time]: [[source-language-in-the-flow-of-time]]
 [^src-cvpe-2025]: [[source-cvpe-2025]]

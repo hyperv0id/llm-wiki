@@ -8,8 +8,8 @@ tags:
   - icml-2025
   - multivariate
 created: 2026-04-28
-last_updated: 2026-04-29
-source_count: 2
+last_updated: 2026-05-31
+source_count: 1
 confidence: medium
 status: active
 ---
@@ -70,5 +70,4 @@ TQNet 极其简洁：
 
 ## 引用
 
-[^src-unica]: [[source-unica]]
 [^src-tqn]: [[source-tqn]]

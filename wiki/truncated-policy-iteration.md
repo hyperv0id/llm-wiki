@@ -7,7 +7,7 @@ tags:
   - value-iteration
   - trade-off
 created: 2026-04-27
-last_updated: 2026-04-28
+last_updated: 2026-05-31
 source_count: 1
 confidence: medium
 status: active
@@ -31,9 +31,9 @@ $$v_0 \xrightarrow{\text{Policy Evaluation (k steps)}} v_k \xrightarrow{\text{Po
 
 | 评估步数 $k$ | 极端情况 | 每轮成本 | 收敛轮数 |
 |-------------|---------|---------|---------|
-| $k=1$ | [[value-iteration\|值迭代]] | 低 | 多 |
+| $k=1$ | [[value-iteration|值迭代]] | 低 | 多 |
 | $k$ 中等 | 截断策略迭代 | 适中 | 适中 |
-| $k \to \infty$ | [[policy-iteration\|策略迭代]] | 高 | 少 |
+| $k \to \infty$ | [[policy-iteration|策略迭代]] | 高 | 少 |
 
 值迭代和策略迭代是同一算法族在不同评估深度下的两个端点。[^src-chapter-4-value-iteration-and-policy-iteration]
 

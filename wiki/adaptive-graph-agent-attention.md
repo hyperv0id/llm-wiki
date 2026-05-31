@@ -6,8 +6,8 @@ tags:
   - attention-mechanism
   - computational-efficiency
 created: 2026-04-29
-last_updated: 2026-04-29
-source_count: 1
+last_updated: 2026-05-31
+source_count: 0
 references:
   - [[source-fast-long-horizon-forecasting]]
 confidence: medium
@@ -104,5 +104,3 @@ Z_t^ℓ = RMSNorm( AGA-Att(H_t^{ℓ-1}) + H_t^{ℓ-1} )
 
 - [[mixture-of-experts|MoE]] — FaST 中与 AGA-Att 配合使用的特征变换模块
 - [[large-scale-spatial-temporal-graph]] — 大规模时空图预测场景
-
-[^src-fast-long-horizon-forecasting]: [[source-fast-long-horizon-forecasting]]

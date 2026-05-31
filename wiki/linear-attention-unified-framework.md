@@ -74,5 +74,6 @@ $$y_i = C_i \sum_{j=1}^i (\prod_{k=j+1}^i \widetilde{A}_k) B_j (\Delta_j \odot x
 - [[forget-gate-in-sequential-models|遗忘门在序列模型中的作用]]
 - [[mamba-block-design|Mamba 块设计]]
 - [[linear-attention-bias|线性注意力偏置（ALiBi）]]
+- [[urbanpg|UrbanPG]] — STCA 模块直接使用 Performers 随机特征映射线性注意力，是该框架在 STGNN 领域的最新实例 (AAAI 2026)
 
 [^src-demystify-mamba-linear-attention-2024]: [[source-demystify-mamba-linear-attention-2024]]

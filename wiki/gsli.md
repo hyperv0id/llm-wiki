@@ -8,7 +8,7 @@ tags:
   - feature-heterogeneity
   - aaai-2025
 created: 2026-05-11
-last_updated: 2026-05-30
+last_updated: 2026-05-31
 source_count: 1
 confidence: medium
 status: active
@@ -71,7 +71,7 @@ GSLI 由四个模块组成：
 | BeijingMEO | 10% | 0.399 | 0.402 (w/o Prom) | 0.7% |
 | LondonAQ | 10% | 0.272 | 0.311 ([[grin]]) | 12.5% |
 | CN | 10% | 0.253 | 0.260 (w/o Prom) | 2.7% |
-| Los | 10% | 0.263 | 0.295 (PriSTI) | 10.8% |
+| Los | 10% | 0.263 | 0.295 ([[pristi|PriSTI]]) | 10.8% |
 | LuohuTaxi | 10% | 0.410 | 0.436 (PoGeVon) | 6.0% |
 
 在 MCAR、MAR、MNAR 三种缺失机制下均一致最优[^src-yang-gsli-2025]。
@@ -81,7 +81,7 @@ GSLI 由四个模块组成：
 | 方法 | 图结构 | 特征异质性 | 跨特征依赖 | 显著度建模 |
 |------|--------|-----------|-----------|-----------|
 | [[grin]] | 固定图 | ❌ | ❌ | ❌ |
-| PriSTI | 学习图（粗粒度） | ❌ | ❌ | ❌ |
+| [[pristi|PriSTI]] | 学习图（粗粒度） | ❌ | ❌ | ❌ |
 | ImputeFormer | 无图（节点嵌入） | ❌ | ❌ | ❌ |
 | **GSLI** | **双尺度学习** | **✅** | **✅** | **✅** |
 

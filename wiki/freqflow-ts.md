@@ -10,7 +10,7 @@ tags:
   - neurips-2025
   - complex-valued
 created: 2026-05-13
-last_updated: 2026-05-30
+last_updated: 2026-05-31
 source_count: 1
 confidence: medium
 status: active
@@ -61,7 +61,7 @@ status: active
 | PEMS04 | RMSE | 31.71 | 31.34 | 32.16 (Moirai-MoE) | 1.4-2.5% |
 | PEMS04 | MAE | 21.11 | 20.93 | 22.28 (Moirai-MoE) | 5.3-6.1% |
 
-超越的基线包括 GCRDD、DiffSTG、PriSTI、SpecSTG（扩散方法）以及 Moirai-MoE（基础模型）[^src-2511-16426]。
+超越的基线包括 [[d3vae|GCRDD]]、DiffSTG、[[pristi|PriSTI]]、SpecSTG（扩散方法）以及 Moirai-MoE（基础模型）[^src-2511-16426]。
 
 ## 与相关工作的关系
 
@@ -81,7 +81,7 @@ status: active
 - 创新在于将 velocity field 学习从时域信号迁移到频谱分量
 
 ### vs [[generative-time-series-forecasting|生成式时间序列预测]]
-- 现有生成式方法（DiffSTG、GCRDD、PriSTI）基于扩散模型，迭代采样开销大
+- 现有生成式方法（DiffSTG、[[d3vae|GCRDD]]、PriSTI）基于扩散模型，迭代采样开销大
 - FrèqFlow 基于流匹配的 ODE 单次确定性采样，推理速度显著更快
 - 89k 参数 vs 扩散模型的数百万参数
 

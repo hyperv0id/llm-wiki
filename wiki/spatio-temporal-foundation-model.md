@@ -7,15 +7,15 @@ tags:
   - zero-shot
   - generalization
 created: 2026-05-03
-last_updated: 2026-05-28
-source_count: 2
+last_updated: 2026-06-01
+source_count: 11
 confidence: high
 status: active
 ---
 
 # Spatio-Temporal Foundation Model
 
-A **spatio-temporal foundation model** is a large-scale pre-trained model designed for cross-city/cross-domain spatio-temporal prediction without requiring per-dataset training or fine-tuning[^src-most]. Unlike task-specific spatio-temporal models (e.g., STGCN, GWN) that are trained and evaluated on the same dataset, foundation models aim to capture universal spatio-temporal patterns transferable to unseen cities[^src-most].
+A **spatio-temporal foundation model** is a large-scale pre-trained model designed for cross-city/cross-domain spatio-temporal prediction without requiring per-dataset training or fine-tuning[^src-most]. Unlike task-specific spatio-temporal models (e.g., [[stgcn|STGCN]], GWN) that are trained and evaluated on the same dataset, foundation models aim to capture universal spatio-temporal patterns transferable to unseen cities[^src-most].
 
 ## Motivation
 
@@ -27,11 +27,19 @@ Foundation models address both by pre-training once on diverse multi-city data a
 
 ## Existing Models
 
+### Pre-Foundation ST Pre-Training
+
+Before the emergence of true foundation models, **[[gpt-st|GPT-ST]]** (NeurIPS 2023) pioneered the MAE pre-training paradigm for spatio-temporal graphs. It demonstrated that pre-trained representations can universally enhance diverse downstream STGNNs without architecture modification, but remained task-specific (per-dataset pre-training required)[^src-gpt-st]. [[std-mae|STD-MAE]] (IJCAI 2024) further developed this with spatial-temporal-decoupled masking[^src-2312-00516-std-mae].
+
 ### Single-Modal
-- **[[opencity|OpenCity]]** (2024): Transformer + GNN architecture for traffic prediction. Trained on multiple cities, supports zero-shot inference but limited to single-modal time series data[^src-most].
+- **[[opencity|OpenCity]]** (2024): Transformer + GNN architecture with instance normalization for zero-shot traffic prediction. Uses TimeShift Transformer (PTTM + DTP dual attention) to decouple periodic and dynamic patterns, and Laplacian eigenvectors for spatial context encoding. Pre-trained on 21 datasets (151M observations), achieves zero-shot performance surpassing full-shot baselines on 4/6 test datasets. Three scales: 2M (mini), 5M (base), 26M (plus)[^src-opencity].
+- **[[urbanpg|UrbanPG]]** (AAAI 2026): Prompt-backbone decoupled architecture with STCA linear attention (O(N·d²)), unifying large-scale, few-shot, and continual learning under one framework. Freeze general backbone, fine-tune/expand only personalized context prompts. SOTA on CA 8600 nodes with 48-72% efficiency gains over PatchSTG[^src-urbanpg].
 - **[[urbandit|UrbanDiT]]** (NeurIPS 2025): Diffusion Transformer (DiT) backbone with unified prompt learning (time/frequency/spatial memory pools). Unifies grid-based and graph-based spatio-temporal data, supports 5 tasks (forward/backward prediction, temporal interpolation, spatial extrapolation, spatio-temporal imputation). Uses rectified flow for 25× inference acceleration. Zero-shot outperforms nearly all trained baselines[^src-urbandit].
-- **UniST** (2024): Grid-based spatio-temporal foundation model for Euclidean-grid data[^src-most].
-- **UrbanGPT** (2024): LLM-based spatio-temporal model using question-answering paradigm. Processes one sensor at a time, making it computationally expensive (7B parameters, 174s inference)[^src-most].
+- **[[unist|UniST]]** (KDD 2024): First one-for-all grid-based spatio-temporal foundation model using MAE pre-training + knowledge-guided memory-based prompt learning. Single model covers 20+ datasets across 5 domains with zero-shot capability surpassing few-shot baselines[^src-unist]. Same Tsinghua FIB Lab as [[urbandit|UrbanDiT]].
+- **[[uniflow|UniFlow]]** (arXiv 2024): First unified grid+graph foundation model using pure Transformer + ST-MRA (Spatio-Temporal Memory Retrieval Augmentation). Four structured learnable memory pools store shared spatio-temporal patterns for cross-learning. 9 datasets (6 grid + 3 graph), 9.1% avg RMSE improvement. Same Tsinghua FIB Lab as UrbanDiT and UniST[^src-uniflow].
+- **[[urbanfm|UrbanFM]]** (arXiv 2026): First scaling-centric ST foundation model with WorldST (100+ cities, 1B+ data points), MiniST (KD-Tree clustering tokenization), and minimalist factorized attention architecture. Achieves 39-70.2% zero-shot improvement over existing foundation models, surpasses full-shot experts. Imputation capability without any imputation training[^src-urbanfm].
+- **[[factost|FactoST]]** (NeurIPS 2025 / arXiv 2026): Factorized two-stage STFM — Universal Temporal Pretraining (UTP, encoder-only, 11B+ time points) + Spatio-Temporal Adaptation (STA, lightweight adapter). First STFM to achieve linear O(N) complexity through complete stage-level factorization. 4 model scales (2.5M-30.4M), SOTA on few-shot/full-shot/zero-shot across 9 benchmarks. Same HKUST-GZ group (Yuxuan Liang) as UrbanFM[^src-factost].
+- **[[urbangpt|UrbanGPT]]** (KDD 2024): First spatio-temporal LLM using Vicuna-7b + instruction-tuning paradigm. Encoder uses multi-level gated dilated convolution (no graph), spatial reasoning delegated to LLM via textual POI descriptions. Processes one sensor at a time, making it computationally expensive (7B parameters, 174s inference)[^src-urbangpt].
 - **Pangu-Weather / Fengwu**: Weather-specific foundation models on Euclidean grids[^src-most].
 
 ### Multi-Modal
@@ -56,9 +64,26 @@ Foundation models address both by pre-training once on diverse multi-city data a
 
 - [[most]] — MoST, first multi-modality ST foundation model
 - [[urbandit]] — UrbanDiT, diffusion transformer for open-world spatiotemporal prediction
+- [[gpt-st]] — GPT-ST, MAE pre-training for ST graphs, precursor to foundation models
+- [[std-mae]] — STD-MAE, spatial-temporal-decoupled masked pre-training
+- [[urbangpt]] — UrbanGPT, first spatio-temporal LLM with instruction-tuning (KDD 2024)
+- [[uniflow]] — UniFlow, unified grid+graph ST foundation model with ST-MRA (arXiv 2024)
 - [[traffic-forecasting]] — general traffic prediction
 - [[multimodal-time-series-forecasting]] — multimodal TS forecasting
 - [[large-scale-spatial-temporal-graph]] — large-scale ST graph challenges
+- [[urbanfm]] — UrbanFM, scaling-centric ST foundation model with WorldST+MiniST+minimalist Transformer (arXiv 2026)
+- [[factost]] — FactoST, factorized ST foundation model with UTP+STA, linear complexity (NeurIPS 2025 / arXiv 2026)
+- [[urbanverse]] — UrbanVerse, complementary model for cross-city/cross-task urban region attribute prediction (crime/population/carbon/nightlight), non-temporal (arXiv 2026)
+- [[urbanpg]] — UrbanPG, prompt-backbone decoupled ST framework unifying large-scale + few-shot + continual learning (AAAI 2026)
+- [[ustd]] — USTD, task-unified ST diffusion (SIGSPATIAL 2024), complementary to foundation model paradigm
 
 [^src-most]: [[source-most]]
 [^src-urbandit]: [[source-urbandit]]
+[^src-gpt-st]: [[source-gpt-st]]
+[^src-2312-00516-std-mae]: [[source-2312-00516-std-mae]]
+[^src-opencity]: [[source-opencity]]
+[^src-unist]: [[source-unist]]
+[^src-uniflow]: [[source-uniflow]]
+[^src-urbanfm]: [[source-urbanfm]]
+[^src-urbanpg]: [[source-urbanpg]]
+[^src-factost]: [[source-factost]]

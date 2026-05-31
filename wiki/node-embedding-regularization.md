@@ -7,7 +7,7 @@ tags:
   - over-parameterization
   - adaptive-graph-learning
 created: 2026-05-07
-last_updated: 2026-05-07
+last_updated: 2026-05-31
 source_count: 1
 confidence: medium
 status: active
@@ -23,7 +23,7 @@ RAGC 论文分析了 LargeST-CA（8,600 节点）数据集上各模型的参数�
 
 | 模型 | 节点嵌入参数占比 | 嵌入使用方式 |
 |------|-----------------|-------------|
-| GWNet | ~72% | 构建自适应邻接矩阵 |
+| [[gwnet|GWNet]] | ~72% | 构建自适应邻接矩阵 |
 | AGCRN | ~86% | 构建自适应邻接矩阵 |
 | STID | ~67% | 拼接为输入特征 |
 | STAEFormer | ~71% | 拼接为输入特征 |
@@ -37,7 +37,7 @@ RAGC 论文分析了 LargeST-CA（8,600 节点）数据集上各模型的参数�
 
 | 方法 | 原理 | 局限 |
 |------|------|------|
-| [[stochastic-shared-embedding\|SSE]] | 随机替换节点嵌入，注入全局平均噪声 | 噪声通过残差传播，需配合抑制机制 |
+| [[stochastic-shared-embedding|SSE]] | 随机替换节点嵌入，注入全局平均噪声 | 噪声通过残差传播，需配合抑制机制 |
 | Dropout | 随机置零部分嵌入维度 | 破坏空间信息完整性，嵌入维度间的关联被割裂 |
 | Laplacian 正则化 | 惩罚预定义图上相邻节点的嵌入距离 | 依赖预定义图结构，缺乏数据驱动灵活性 |
 

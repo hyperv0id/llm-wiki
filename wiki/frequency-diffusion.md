@@ -218,9 +218,9 @@ $$b_l = a_c,\quad a_h = b_c$$
 
 | 方法 | 修改位置 | 机制 | 与频域扩散的关系 |
 |------|---------|------|-----------------|
-| [[frequency-enhanced-attention\|FEA]] | 注意力计算 | Fourier/Wavelet 域交叉注意力替代标准注意力 | 正交——频域扩散改前向过程 |
-| [[frequency-enhanced-block\|FEB]] | 注意力计算 | 频域自注意力替代 | 正交 |
-| [[adaptive-frequency-modulation\|AFM]] | 模型内部 | Beta 分布谱滤波器分频段 | 互补——AFM 模型内，频域扩散数据层 |
+| [[frequency-enhanced-attention|FEA]] | 注意力计算 | Fourier/Wavelet 域交叉注意力替代标准注意力 | 正交——频域扩散改前向过程 |
+| [[frequency-enhanced-block|FEB]] | 注意力计算 | 频域自注意力替代 | 正交 |
+| [[adaptive-frequency-modulation|AFM]] | 模型内部 | Beta 分布谱滤波器分频段 | 互补——AFM 模型内，频域扩散数据层 |
 | EDM 噪声调度 | 前向过程 | 调整 $\sigma(t)$ 数值 | **正交可组合**——EDM 改量级，频域扩散改频谱形状 |
 | 冷扩散（Cold Diffusion） | 前向过程 | 非高斯退化 | 不同方向——退化类型 vs 频谱形状 |
 

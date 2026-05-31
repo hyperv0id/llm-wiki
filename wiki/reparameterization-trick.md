@@ -94,12 +94,12 @@ $$\mathbf{x}_t = \sqrt{1-\beta_t}\mathbf{x}_{t-1} + \sqrt{\beta_t}\epsilon, \qua
 
 | 概念 | 关系 |
 |------|------|
-| [[variational-autoencoder\|VAE]] | VAE 的核心训练依赖——ELBO 中重建项 $\mathbb{E}_{q}[\log p(\mathbf{x}\|\mathbf{z})]$ 的梯度回传 |
-| [[elbo\|ELBO]] | ELBO 的可优化性以重参数化为前提 |
-| [[diffusion-model\|扩散模型]] | 前向过程每步使用重参数化，是端到端训练的基础 |
-| [[score-function\|分数函数]] | REINFORCE 使用得分函数 $\nabla_\phi \log q_\phi$，重参数化绕过了它的高方差问题 |
-| [[ddpm-simplified-training-objective\|$L_{\text{simple}}$]] | DDPM 训练目标中 $\mathbf{x}_t = \sqrt{\bar\alpha_t}\mathbf{x}_0 + \sqrt{1-\bar\alpha_t}\epsilon$ 即重参数化 |
-| [[scaling-factor-sqrt-dk\|缩放因子 $1/\sqrt{d_k}$]] | 同系列文章：缩放因子解决 Softmax 饱和，重参数化解决采样不可导——两者都是数值/梯度稳定性的结构性方案 |
+| [[variational-autoencoder|VAE]] | VAE 的核心训练依赖——ELBO 中重建项 $\mathbb{E}_{q}[\log p(\mathbf{x}\|\mathbf{z})]$ 的梯度回传 |
+| [[elbo|ELBO]] | ELBO 的可优化性以重参数化为前提 |
+| [[diffusion-model|扩散模型]] | 前向过程每步使用重参数化，是端到端训练的基础 |
+| [[score-function|分数函数]] | REINFORCE 使用得分函数 $\nabla_\phi \log q_\phi$，重参数化绕过了它的高方差问题 |
+| [[ddpm-simplified-training-objective|$L_{\text{simple}}$]] | DDPM 训练目标中 $\mathbf{x}_t = \sqrt{\bar\alpha_t}\mathbf{x}_0 + \sqrt{1-\bar\alpha_t}\epsilon$ 即重参数化 |
+| [[scaling-factor-sqrt-dk|缩放因子 $1/\sqrt{d_k}$]] | 同系列文章：缩放因子解决 Softmax 饱和，重参数化解决采样不可导——两者都是数值/梯度稳定性的结构性方案 |
 
 ## 引用
 

@@ -8,8 +8,8 @@ tags:
   - flow-matching
   - diffusion-models
 created: 2026-05-03
-last_updated: 2026-05-13
-source_count: 4
+last_updated: 2026-06-01
+source_count: 5
 confidence: high
 status: active
 ---
@@ -33,9 +33,15 @@ status: active
 
 ### 扩散模型方法
 
+**[[timegrad|TimeGrad]]** (ICML 2021) 是首个将扩散模型引入时间序列概率预测的开创性工作，将 RNN 自回归编码与 DDPM 条件扩散结合，在 6 个数据集的 CRPS 评估中全面领先 14 种基线[^src-timegrad]。其"RNN 负责时间记忆 + 扩散负责分布建模"的二段式架构为后续 CSDI、DiffSTG、SpecSTG 等扩散+时序工作奠定了范式基础。
+
+在插补方向，**[[csdi|CSDI]]** (NeurIPS 2021) 首次将条件扩散模型显式用于时间序列缺失值插补，其自监督训练策略和双轴 Transformer 注意力设计成为后续扩散插补工作的标准范式，在预测任务上也展现了与 TimeGrad 相当的竞争力。
+
 **[[simdiff|SimDiff]]** (AAAI 2026) 是首个纯端到端扩散模型用于时间序列点预测，使用 DDPM 框架并通过 Median-of-Means 将概率样本聚合为点估计[^src-simdiff]。SimDiff 仅支持单模态数值输入。
 
-**[[specstg|SpecSTG]]** (arXiv 2024) 是首个在图谱域执行扩散过程的概率时空图预测框架。核心创新是将扩散过程转移到图傅里叶域——生成未来时间序列的傅里叶表示而非原始序列，使得空间依赖关系自然融入扩散基中。通过 [[fast-spectral-graph-convolution|Fast Spectral GC]] 将图卷积复杂度从 $O(N^2)$ 降至 $O(N)$，训练速度达 GCRDD 的 3.33 倍，点估计最高提升 8%[^src-2401-08119-specstg]。
+**[[specstg|SpecSTG]]** (arXiv 2024) 是首个在图谱域执行扩散过程的概率时空图预测框架。核心创新是将扩散过程转移到图傅里叶域——生成未来时间序列的傅里叶表示而非原始序列，使得空间依赖关系自然融入扩散基中。通过 [[fast-spectral-graph-convolution|Fast Spectral GC]] 将图卷积复杂度从 $O(N^2)$ 降至 $O(N)$，训练速度达 [[d3vae|GCRDD]] 的 3.33 倍，点估计最高提升 8%[^src-2401-08119-specstg]。
+
+**[[ustd|USTD]]** (SIGSPATIAL 2024) 首次统一时空预测和插值到扩散框架。核心贡献：预训练编码器（GWNet backbone + 75% masking + 80% graph sampling）与任务特定 gated attention denoisers（TGA/SGA）的解耦两阶段训练，打破了此前"diffusion STG 打不过 deterministic baseline"的共识。4 数据集 × 16 baselines，CRPS 最高降低 12%，推理比 CSDI 快 ~47%。
 
 ### 流匹配方法
 
@@ -70,11 +76,13 @@ status: active
 - [[specstg]] — 谱域扩散时空图预测模型
 - [[simdiff]] — 扩散式生成预测模型
 - [[freqflow-ts|FrèqFlow/SpectFlow]] — 频域流匹配确定性预测（NeurIPS 2025）
+- [[ustd]] — USTD，解耦预训练的统一时空扩散预测与插值框架（SIGSPATIAL 2024）
 - [[flow-matching]] — Flow Matching 理论基础
 - [[diffusion-model]] — 扩散模型理论基础
 - [[multimodal-time-series-forecasting]] — 多模态时间序列预测
 
 [^src-aurora]: [[source-aurora]]
 [^src-simdiff]: [[source-simdiff]]
+[^src-timegrad]: [[source-timegrad]]
 [^src-2401-08119-specstg]: [[source-2401-08119-specstg]]
 [^src-2511-16426]: [[source-2511-16426]]

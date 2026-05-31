@@ -6,9 +6,9 @@ tags:
   - frequency-domain
   - noise-schedule
 created: 2026-05-09
-last_updated: 2026-05-09
-source_count: 2
-confidence: high
+last_updated: 2026-05-31
+source_count: 1
+confidence: medium
 status: active
 ---
 
@@ -122,4 +122,3 @@ $$b_l = a_c,\quad a_h = b_c$$
 ## 引用
 
 [^src-2502-10236]: [[source-2502-10236]]
-[^src-sagd]: [[source-sagd]]

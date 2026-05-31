@@ -8,7 +8,7 @@ tags:
   - multivariate
 created: 2026-04-28
 last_updated: 2026-05-31
-source_count: 6
+source_count: 7
 confidence: high
 status: active
 ---
@@ -60,6 +60,10 @@ CVPE (Cross-Variate Patch Embedding) 提出一种折中策略——仅在最轻�
 
 CPiRi 的通道打乱测试暴露了一个关键问题：大多数 CD 模型在通道排列下的错误率飙升超过 100%（如 Informer 在 PEMS-08 上 WAPE 从 13.02% 升至 118.19%），揭示了它们依赖位置记忆而非内容推理 [^src-cpiri]。而 CPiRi 在所有打乱率下保持稳定（9.43% WAPE 不变），且在仅用 25% 通道训练时能以 ~70% 的训练时间成本泛化到全通道集合 [^src-cpiri]。
 
+## 在 UniFlow 中的应用
+
+[[uniflow|UniFlow]] (arXiv 2024) 在时空 patching 阶段采用 channel-independence 策略：将 T×N×C 的时空流数据拆分为 C 个独立的 T×N 序列，分别送入 patching 模块（grid: 3D-CNN, graph: 1D-CNN+METIS）[^src-uniflow]。这与 PatchTST 的 CI 设计一致——共享权重的 patching 模块增加了有效训练样本数，同时避免了异质变量间的噪声干扰。9 个数据集的 SOTA 结果验证了 CI 在时空基础模型中的有效性 [^src-uniflow]。
+
 ## 与其他方法对比
 
 - **Channel-mixing**：传统方法，将所有通道拼接后一起处理
@@ -80,9 +84,12 @@ CPiRi 的通道打乱测试暴露了一个关键问题：大多数 CD 模型在�
 - 相关：[[cpiri]] — CI+CD 深度融合框架 (ICLR 2026)
 - 相关：[[s-mamba]] — CI backbone + 双向 Mamba 跨变量相关性编码 (Neurocomputing 2024)
 
+- 相关：[[uniflow]] — UniFlow，CI 策略在时空基础模型中的应用 (arXiv 2024)
+
 [^src-simdiff]: [[source-simdiff]]
 [^src-patchtst]: [[source-patchtst]]
 [^src-cvpe-2025]: [[source-cvpe-2025]]
 [^src-crossformer-2023]: [[source-crossformer-2023]]
 [^src-itransformer]: [[source-itransformer]]
 [^src-cpiri]: [[source-cpiri]]
+[^src-uniflow]: [[source-uniflow]]

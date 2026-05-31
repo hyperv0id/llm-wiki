@@ -8,7 +8,7 @@ tags:
   - spatio-temporal
   - kdd-2026
 created: 2026-05-03
-last_updated: 2026-05-03
+last_updated: 2026-05-31
 source_count: 2
 confidence: high
 status: active
@@ -42,7 +42,7 @@ Leverages refined multi-modality context to capture region-specific spatial patt
 
 In zero-shot evaluation across five datasets (Taxi-NYC, Taxi-CHI, SD, GBA, GLA), MoST outperforms:
 - All heuristic baselines (HA, VAR)
-- Most full-shot end-to-end models (STGCN, GWN, ASTGCN, STWA, BigST, PatchSTG)
+- Most full-shot end-to-end models ([[stgcn|STGCN]], GWN, ASTGCN, STWA, BigST, PatchSTG)
 - The single-modal foundation model OpenCity
 
 Ablation studies confirm that removing the modality selector, spatial expert routing, or multi-modality data each cause significant performance degradation[^src-most].

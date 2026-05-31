@@ -7,8 +7,8 @@ tags:
   - likelihood
   - sde
 created: 2026-04-28
-last_updated: 2026-04-28
-source_count: 2
+last_updated: 2026-05-31
+source_count: 1
 confidence: medium
 status: active
 ---
@@ -79,8 +79,8 @@ $$
 - **[[dpm-solver|DPM-Solver]]** (Lu et al., 2022)：利用半线性结构实现约 10 步采样
 - **DDIM** (Song et al., 2021)：一阶 ODE 求解器，~50 步
 - **RK45** (Song et al., ICLR 2021)：黑盒 ODE 求解器，~60 步
+- **[[instaflow|InstaFlow]]** (Liu et al., ICLR 2024)：通过 reflow 拉直 PF-ODE 轨迹后蒸馏到一步生成
 
 ## 引用
 
 [^src-sde]: [[source-sde]]
-[^src-dpm-solver]: [[source-dpm-solver]]

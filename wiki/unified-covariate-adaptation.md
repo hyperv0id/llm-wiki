@@ -8,9 +8,9 @@ tags:
   - covariate
   - iclr2026
 created: 2026-04-29
-last_updated: 2026-05-03
-source_count: 2
-confidence: high
+last_updated: 2026-05-31
+source_count: 1
+confidence: medium
 status: active
 ---
 
@@ -272,4 +272,3 @@ UniCA 适用于大多数主流 TSFMs：
 ## 引用
 
 [^src-unca]: [[source-unca]]
-[^src-most]: [[source-most]]

@@ -7,7 +7,7 @@ tags:
   - text-to-image
   - cvpr-2022
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-31
 source_count: 1
 confidence: medium
 status: active
@@ -61,6 +61,7 @@ $$Attention(Q, K, V) = softmax\left(\frac{QK^T}{\sqrt{d}}\right)V$$
 - [[diffusion-model]] — 扩散模型基础
 - [[ddpm]] — DDPM
 - [[classifier-free-guidance]] — 无分类器引导
+- [[dit]] — DiT，复用 LDM 预训练 VAE 的 Transformer 扩散模型
 - [[variational-autoencoder]] — 变分自编码器
 
 [^src-rombach-ldm-2022]: [[source-rombach-ldm-2022]]

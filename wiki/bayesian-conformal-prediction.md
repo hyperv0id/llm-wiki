@@ -6,8 +6,8 @@ tags:
   - bayesian
   - uncertainty-quantification
 created: 2026-05-07
-last_updated: 2026-05-07
-source_count: 1
+last_updated: 2026-05-31
+source_count: 0
 confidence: medium
 status: active
 ---
@@ -27,4 +27,3 @@ Bayesian CP 是一类将贝叶斯原理与共形预测相结合的在线自适�
 ## 关联方法
 - [[sa-bcp]] — 通过时空解耦解决 Bayesian CP 的结构滞后问题
 
-[^src-sa-bcp]: [[source-sa-bcp]]

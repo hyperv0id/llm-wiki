@@ -50,7 +50,7 @@ MTGNN 由四个核心模块交替堆叠构成 [^src-mtgnn]：
 | 单步预测 | Traffic | 862 | RSE 显著优于所有基线（horizon 3: -7.24%） |
 | 单步预测 | Electricity | 321 | SOTA |
 | 单步预测 | Exchange-Rate | 8 | **失败**（小图 + 少样本） |
-| 多步预测 | METR-LA | 207 | 与 DCRNN/STGCN/GWN/GMAN 持平（*无需预定义图*） |
+| 多步预测 | METR-LA | 207 | 与 DCRNN/[[stgcn|STGCN]]/GWN/GMAN 持平（*无需预定义图*） |
 | 多步预测 | PEMS-BAY | 325 | 与 GWN/GMAN 持平（*无需预定义图*） |
 
 在多步预测中，MTGNN 不使用道路网络拓扑即达到与依赖预定义图的 STGNN 模型持平的性能，证明了自适应图学习的有效性 [^src-mtgnn]。

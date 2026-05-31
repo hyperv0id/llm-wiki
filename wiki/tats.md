@@ -9,7 +9,7 @@ tags:
   - text-alignment
   - iclr-2026
 created: 2026-05-03
-last_updated: 2026-05-03
+last_updated: 2026-05-31
 source_count: 1
 confidence: medium
 status: active
@@ -82,7 +82,7 @@ TaTS was evaluated on 18 datasets across 9 time series models:
 | Fusion | Concatenation | ETA (representation) + AFF (prediction) |
 | Complexity | Low (MLP + concat) | High (LLM reasoning + HIC + dual alignment) |
 
-TaTS is simpler and more broadly compatible, while VoT achieves deeper semantic integration through LLM reasoning[^src-language-in-the-flow-of-time].
+TaTS is simpler and more widely compatible, while VoT achieves deeper semantic integration through LLM reasoning[^src-language-in-the-flow-of-time].
 
 ### vs. UniCA
 

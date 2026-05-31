@@ -6,8 +6,8 @@ tags:
   - online-learning
   - uncertainty-quantification
 created: 2026-05-07
-last_updated: 2026-05-07
-source_count: 1
+last_updated: 2026-05-31
+source_count: 0
 confidence: medium
 status: active
 ---
@@ -25,4 +25,3 @@ ACI 由 Gibbs & Candes（2021）提出，是一种纯误差反馈驱动的在线
 - 高区间方差
 - 在 90% 目标下常低于所需边际覆盖率（86-87%）
 
-[^src-sa-bcp]: [[source-sa-bcp]]

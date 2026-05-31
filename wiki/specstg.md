@@ -8,7 +8,7 @@ tags:
   - traffic-forecasting
   - probabilistic-forecasting
 created: 2026-05-08
-last_updated: 2026-05-30
+last_updated: 2026-06-01
 source_count: 1
 confidence: medium
 status: active
@@ -22,13 +22,13 @@ SpecSTG（Spectral Spatio-Temporal Graph）是首个在图谱域执行扩散过�
 
 ### 确定性模型的局限
 
-传统交通预测模型（如 DCRNN, GWNet, STAEformer）仅输出点估计，无法量化未来不确定性[^src-2401-08119-specstg]。在交通管理等安全关键应用中，决策者需要知道预测的可信程度，仅有点估计是不够的。
+传统交通预测模型（如 [[dcrnn|DCRNN]], [[gwnet|GWNet]], STAEformer）仅输出点估计，无法量化未来不确定性[^src-2401-08119-specstg]。在交通管理等安全关键应用中，决策者需要知道预测的可信程度，仅有点估计是不够的。
 
 ### 现有扩散方法的不足
 
-已有概率 STG 预测方法（如 TimeGrad, GCRDD, DiffSTG, PriSTI）虽然提供了不确定性量化，但存在两个关键问题[^src-2401-08119-specstg]：
+已有概率 STG 预测方法（如 [[timegrad|TimeGrad]], [[d3vae|GCRDD]], [[diffstg|DiffSTG]], [[pristi|PriSTI]]）虽然提供了不确定性量化，但存在两个关键问题[^src-2401-08119-specstg]：
 
-1. **空间信息利用不足**：这些方法在扩散过程中对每个传感器独立建模，空间信息仅通过条件编码器间接提供，未在概率学习过程中直接利用图结构。GCRDD 虽然使用图卷积，但仅在条件编码阶段利用空间信息，扩散采样阶段仍然是逐节点独立进行。
+1. **空间信息利用不足**：这些方法在扩散过程中对每个传感器独立建模，空间信息仅通过条件编码器间接提供，未在概率学习过程中直接利用图结构。[[d3vae|GCRDD]] 虽然使用图卷积，但仅在条件编码阶段利用空间信息，扩散采样阶段仍然是逐节点独立进行。
 2. **计算效率低**：传统图卷积（如 Chebyshev 卷积）在原始域执行，计算复杂度为 $O(N^2)$，限制了可扩展性。
 
 ### 谱域的关键优势
@@ -127,7 +127,7 @@ SpecSTG 在 CRPS 和 Calibration 指标上均优于扩散基线，提升幅度�
 
 ### 效率
 
-训练+验证速度为 GCRDD 的 **3.33 倍**[^src-2401-08119-specstg]。加速来源：
+训练+验证速度为 [[d3vae|GCRDD]] 的 **3.33 倍**[^src-2401-08119-specstg]。加速来源：
 1. Fast Spectral Graph Convolution 的 $O(N)$ 复杂度
 2. Spectral Graph WaveNet 中 Conv1d → 全连接层的替换
 3. 谱域无需逆变换的开销（仅在最终输出时执行一次）
@@ -137,9 +137,9 @@ SpecSTG 在 CRPS 和 Calibration 指标上均优于扩散基线，提升幅度�
 | 方法 | 扩散域 | 空间信息利用 | 图卷积复杂度 | 训练速度 |
 |------|--------|------------|------------|---------|
 | TimeGrad | 原始域 | 无（独立传感器） | — | 基线 |
-| GCRDD | 原始域 | 条件编码阶段 | $O(N^2)$ | 1.0× |
+| [[d3vae|GCRDD]] | 原始域 | 条件编码阶段 | $O(N^2)$ | 1.0× |
 | DiffSTG | 原始域 | 注意力机制 | $O(N^2)$ | <1.0× |
-| PriSTI | 原始域 | 有限 | — | ~1.0× |
+| [[pristi|PriSTI]] | 原始域 | 有限 | — | ~1.0× |
 | **SpecSTG** | **谱域** | **全局（谱域自然嵌入）** | **$O(N)$** | **3.33×** |
 
 ## 局限性
@@ -159,5 +159,6 @@ SpecSTG 在 CRPS 和 Calibration 指标上均优于扩散基线，提升幅度�
 - [[ragc]] — RAGC，大规模图的高效图卷积方法
 - [[efficient-cosine-operator]] — ECO，另一种 $O(N)$ 图卷积方法（原始域）
 - [[aurora]] — Aurora，流匹配生成式概率预测
+- [[ustd]] — USTD，解耦预训练的统一时空扩散预测与插值框架（SIGSPATIAL 2024）
 
 [^src-2401-08119-specstg]: [[source-2401-08119-specstg]]

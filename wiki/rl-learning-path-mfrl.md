@@ -6,7 +6,7 @@ tags:
   - learning-path
   - textbook-guide
 created: 2026-04-27
-last_updated: 2026-04-27
+last_updated: 2026-05-31
 source_count: 8
 confidence: medium
 status: active

@@ -9,7 +9,7 @@ tags:
   - meta-ai
   - neurips-2023
 created: 2026-04-28
-last_updated: 2026-05-30
+last_updated: 2026-05-31
 source_count: 1
 confidence: medium
 status: active
@@ -17,7 +17,7 @@ status: active
 
 # Flow Matching
 
-**Flow Matching**（流匹配）是由 Meta AI 的 Yaron Lipman、Ricky T. Q. Chen 等人于 2022 年提出的生成模型训练框架，发表于 NeurIPS 2023[^src-flow-matching]。它提供了一种无需模拟（simulation-free）的方式来训练连续归一化流（CNF），同时统一了扩散模型和最优传输路径。
+**Flow Matching**（流匹配）是由 Meta AI 的 Yaron Lipman、Ricky T. Q. Chen 等人于 2022 年提出的生成模型训练框架，发表于 NeurIPS 2023[^src-flow-matching]。它提供了一种无需模拟（simulation-free）的方式来训练连续归一化流（CNF），同时统一了扩散模型和最优传输路径。后续工作 [[rectified-flow|Rectified Flow]] 通过 rectification 进一步拉直轨迹实现少步生成。
 
 ## 背景：连续归一化流 (CNF)
 
@@ -411,6 +411,8 @@ $$
 - [[elf|ELF]] — ELF (Embedded Language Flows)，Flow Matching 在语言建模中的应用（MIT, 2026）
 - [[prototype-guided-flow-matching]] — Aurora 的原型引导流匹配技术
 - [[freqflow-ts|FrèqFlow/SpectFlow]] — 频域流匹配用于时间序列预测，仅 89k 参数 (NeurIPS 2025)
+- [[instaflow]] — InstaFlow，基于 reflow+distill 将 SD 蒸馏为一步模型，FM 在工业生成中的首个大规模应用 (ICLR 2024)
+- [[rectified-flow|Rectified Flow]] — 通过 rectification 学习直线 ODE 轨迹以实现少步生成
 
 ## 引用
 
