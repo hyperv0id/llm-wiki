@@ -2,7 +2,7 @@
 title: Log
 type: concept
 created: 2026-04-26
-last_updated: 2026-05-31
+last_updated: 2026-06-01
 tags:
   - meta
 ---
@@ -10,6 +10,126 @@ tags:
 # Wiki Log
 
 Chronological record of all wiki activity.
+
+## [2026-06-01] ingest | UrbanVerse: Learning Urban Region Representation Across Cities and Tasks (Sun et al., arXiv 2026)
+
+Ingest UrbanVerse paper (Fengze Sun, Egemen Tanin, Shanika Karunasekera, Zuqing Li, Flora D. Salim, Jianzhong Qi; University of Melbourne / UNSW, arXiv:2602.15750, Feb 17 2026). UrbanVerse is a foundation-style model for cross-city urban region representation learning and cross-task urban analytics. Core paradigm shift from city-centric to region-centric: partitions cities into 150m hexagonal grid cells, uses Node2vec random walks + Transformer mask-reconstruct (CELearning) to learn transferable cell embeddings that aggregate into region embeddings via AdaRegionGen (inherited from FlexiReg). Cross-task learning via HCondDiffCT — a heterogeneous conditional diffusion regression module that models p(y|h,u) using region-conditioned prior retrieval (RegCondP, Top-5 cosine-similar neighbors) and task-conditioned denoising (TaskCondD, element-wise modulation of timestep+task embeddings). 3 cities (NYC/CHI/SF) × 6 tasks (Crime/Check-in/Service Call/Population/Carbon/Nightlight), 7 baselines. Cross-city: UrbanVerse consistently outperforms all baselines, R² gains up to +35.89% (SF crime) over FlexiReg. Suburban generalization: Staten Island population R²=0.781 vs FlexiReg 0.609 (+28.2%). HCondDiffCT as plug-and-play module: GURPP-DiffCT nightlight R² 0.035→0.171 (+388.6%), UrbanCLIP-DiffCT carbon R² 0.021→0.204 (+871.4%). Only uses POI+neighbor features (15-dim), minimal feature set maximizes cross-city transfer. Complementary to UrbanFM (traffic sequences vs. region attributes), both arXiv Feb 2026. Limitations: no temporal dimension, requires ≥2 training cities, only continuous regression tasks, US-city training bias. Created source-summary and technique pages; added reciprocal wikilinks to 4 existing pages (urbanfm, urbangpt, urbanpg, spatio-temporal-foundation-model).
+
+创建的页面：[[source-urbanverse]], [[urbanverse]]
+更新的页面：[[urbanfm]], [[urbangpt]], [[urbanpg]], [[spatio-temporal-foundation-model]], [[index]], [[log]]
+
+## [2026-06-01] ingest | UrbanPG: An Efficient Framework with Personalized Context and General Backbone Interaction for Urban Spatio-Temporal Learning (Liu & Zhang, AAAI 2026)
+
+Ingest UrbanPG paper (Aoyu Liu, Yaying Zhang; Tongji University, AAAI 2026). UrbanPG is an efficient and scalable urban spatio-temporal learning framework that decouples personalized context prompts (time/spatial embeddings with random perturbation regularization) from a general backbone (STCA linear spatio-temporal context attention via Performers' random feature mapping, O(N·d²) complexity). This decoupling allows UrbanPG to simultaneously address three challenges: large-scale forecasting (8600 nodes, SOTA with 48-72% efficiency gains over PatchSTG), few-shot generalization (10% training data, fine-tune only prompts), and continual learning (freeze backbone, expand spatial prompts for new nodes — zero forgetting). Three learning paradigms: standard, pre-training+fine-tuning, and continual prompt expansion. Evaluated on 8 datasets across 3 tasks (LargeST SD/GBA/GLA/CA, CA-D3/D5, PEMS-Stream, AIR-Stream). Ablation shows spatial context >> temporal context > random perturbation > STCA in importance. Only limitation: cannot support multi-task parallel training. Created source-summary and technique pages; added reciprocal wikilinks to 7 existing pages (spatio-temporal-foundation-model, traffic-forecasting, urbanfm, urbangpt, opencity, bigcity, linear-attention-unified-framework).
+
+创建的页面：[[source-urbanpg]], [[urbanpg]]
+更新的页面：[[spatio-temporal-foundation-model]], [[traffic-forecasting]], [[urbanfm]], [[urbangpt]], [[opencity]], [[bigcity]], [[linear-attention-unified-framework]], [[index]], [[log]]
+
+## [2026-06-01] ingest | FactoST: Learning to Factorize and Adapt — A Versatile Approach Toward Universal Spatio-Temporal Foundation Models (Zhong et al., NeurIPS 2025 / arXiv 2026)
+
+Ingest FactoST-v2 paper (Siru Zhong, Junjie Qiu, Yangyu Wu, Yiqiu Liu, Yuanpeng He, Zhongwen Rao, Bin Yang, Chenjuan Guo, Hao Xu, Yuxuan Liang; HKUST-GZ / Peking U / Huawei / ECNU, arXiv:2601.12083, Jan 2026 — journal extension of NeurIPS 2025 conference version). FactoST-v2 proposes the Pattern Factorization Hypothesis: effective ST generalization requires decoupling domain-invariant temporal dynamics from domain-specific spatial contexts. Two-stage framework: (1) UTP (Universal Temporal Pretraining) — minimalist encoder-only Transformer with random sequence masking, p-RoPE, gated attention, and quantile prediction, pretrained on 11B+ time points across 8 domains; (2) STA (Spatio-Temporal Adaptation) — lightweight adapter (STMF + STF + DSPA + CMR) injecting spatial awareness into frozen backbone. Achieves linear O(N) complexity vs. quadratic O(N²) for joint STFMs. SOTA on few-shot/full-shot/zero-shot across 9 benchmarks. Key findings: 10% labeled data nears full-shot performance; model scales (2.5M-30.4M params); architectural disentanglement trumps brute-force joint pretraining for zero-shot generalization. Same corresponding author (Yuxuan Liang) as UrbanFM. Created source-summary and technique pages; added reciprocal wikilinks to 6 existing pages.
+
+创建的页面：[[source-factost]], [[factost]]
+更新的页面：[[spatio-temporal-foundation-model]], [[traffic-forecasting]], [[urbanfm]], [[uniflow]], [[bigcity]], [[index]], [[log]]
+
+## [2026-06-01] ingest | BIGCity: A Universal Spatiotemporal Model for Unified Trajectory and Traffic State Data Analysis (Xie Yu et al., arXiv 2024)
+
+Ingest BIGCity paper (Xie Yu, Jingyuan Wang, Yifan Yang, Qian Huang, Ke Qu; Beihang University / Huawei, arXiv:2412.00953, Dec 2024). BIGCity is the first MTMD (Multi-Task, Multi-Data modality) spatio-temporal model — a single model simultaneously handling individual-level trajectory data and population-level traffic state data across 8 heterogeneous tasks. Core innovations: (1) ST-unit — a novel unified representation (static road features + dynamic traffic state + timestamp) that expresses both trajectories and traffic states as identical-format sequences, eliminating the modality gap; (2) ST Tokenizer — four-module pipeline (static GAT + dynamic GAT + fusion cross-attention + temporal MLP with δ_τ) converting ST-units to LLM-consumable tokens; (3) VMTP — GPT-2 backbone (1.5B) with LoRA (r=8) processing task-oriented prompts (text instruction + ST-tokens + [CLAS]/[REG] placeholders) to unify heterogeneous tasks without per-task fine-tuning; (4) two-stage training — masked ST-unit reconstruction pre-training → task-oriented prompt tuning. 3 cities (Beijing 101M trajectories/40K segments, Xi'an 385K/5K, Chengdu 560K/6K), 8 tasks, 18 baselines, SOTA across all. Cross-city generalization: BJ→XA/CD <7% avg performance loss. Ablation ranking: prompt removal (10.5% impact) >> dynamic encoder > static encoder. BIGCity is the first model to prove that trajectories and traffic states can share an atomic representation (ST-unit), and that cross-modal multi-task training yields stronger mutual benefit than same-modal. Created source-summary and technique pages; added reciprocal wikilinks to 8 existing pages (spatio-temporal-foundation-model, traffic-forecasting, urbangpt, unist, uniflow, opencity, urbandit, gpt-st).
+
+创建的页面：[[source-bigcity]], [[bigcity]]
+更新的页面：[[spatio-temporal-foundation-model]], [[traffic-forecasting]], [[urbangpt]], [[unist]], [[uniflow]], [[opencity]], [[urbandit]], [[gpt-st]], [[index]], [[log]]
+
+## [2026-06-01] ingest | UrbanFM: Scaling Urban Spatio-Temporal Foundation Models (Chen et al., arXiv 2026)
+
+Ingest UrbanFM paper (Wei Chen, Yuqian Wu, Junle Chen, Xiaofang Zhou, Yuxuan Liang; HKUST(GZ)/HKUST, arXiv:2602.20677, Feb 2026). UrbanFM is the first scaling-centric urban spatio-temporal foundation model that systematically addresses three dimensions grounded in first-principles: (1) WorldST — data scaling with 100+ cities, 8 domains, 1B+ data points (33-145× larger than UniST/OpenCity/BigCity); (2) MiniST — computation scaling via KD-Tree greedy capacity-constrained clustering unifying sensor and grid data into learnable tokens; (3) UrbanFM architecture — minimalist factorized spatio-temporal attention with ST-RoPE (T-RoPE + S-RoPE) and generative modeling objective unifying forecasting and imputation. Evaluated on EvalST (12 datasets, 22 baselines, 4 countries, 7 cities): zero-shot MAPE improvement 39.0-70.2% over existing foundation models, surpasses full-shot experts in long-term sensor forecasting; few-shot 28.2-65.2% further gains; cross-task imputation without imputation training; power-law scaling with data/model; 4× faster than Chronos, 10× faster than TimeMoE. Created source-summary and entity pages; added reciprocal wikilinks to 6 existing pages (spatio-temporal-foundation-model, opencity, unist, uniflow, urbangpt, traffic-forecasting).
+
+创建的页面：[[source-urbanfm]], [[urbanfm]]
+更新的页面：[[spatio-temporal-foundation-model]], [[opencity]], [[unist]], [[uniflow]], [[urbangpt]], [[traffic-forecasting]], [[index]], [[log]]
+
+## [2026-06-01] ingest | USTD: Towards Unifying Diffusion Models for Probabilistic Spatio-Temporal Graph Learning (Hu et al., SIGSPATIAL 2024)
+
+Ingest USTD paper (Junfeng Hu, Xu Liu, Zhencheng Fan, Yuxuan Liang, Roger Zimmermann; NUS/UTS/HKUST-GZ, SIGSPATIAL 2024, arXiv:2310.17360). USTD is the first framework to unify spatio-temporal forecasting and kriging into a single diffusion model. Core innovations: (1) Pre-trained GWNet-style ST encoder with graph sampling (80% nodes) and masking (75%, MAE-style) — decoupled from denoiser training, solving the "diffusion STG cannot beat deterministic baselines" problem that plagued CSDI/PriSTI/DiffSTG; (2) Task-specific denoising decoders — TGA (Temporal Gated Attention) for forecasting with cross-attention on temporal axis + self-attention across nodes + gated fusion; SGA (Spatial Gated Attention) for kriging with cross-attention on spatial axis; (3) TCN without zero-padding compresses conditions to low-dimensional latent space, enabling ~47% faster inference than CSDI. USTD surpasses all probabilistic baselines on 4 datasets (PEMS-03/BAY, AIR-BJ/GZ), and overturns the consensus by surpassing nearly all deterministic baselines on forecasting (CRPS ↓12% on PEMS-BAY). Kriging: USTD beats ALL baselines (MAE ↓10.5% on AIR-GZ). Created source-summary and entity pages; added reciprocal wikilinks to 6 existing pages (diffstg, specstg, traffic-forecasting, generative-time-series-forecasting, spatio-temporal-foundation-model, uniflow).
+
+创建的页面：[[source-ustd]], [[ustd]]
+更新的页面：[[diffstg]], [[specstg]], [[traffic-forecasting]], [[generative-time-series-forecasting]], [[spatio-temporal-foundation-model]], [[uniflow]], [[index]], [[log]]
+
+## [2026-05-31] ingest | UniFlow: A Foundation Model for Unified Urban Spatio-Temporal Flow Prediction (Yuan et al., arXiv 2024)
+
+Ingest UniFlow paper (Yuan Yuan, Jingtao Ding, Chonghua Han, Zhi Sheng, Depeng Jin, Yong Li, Tsinghua University, arXiv:2411.12972). UniFlow is the first foundation model to unify grid-based and graph-based urban spatio-temporal flow prediction into a single Transformer model. Core innovations: (1) multi-view spatio-temporal patching — 3D-CNN for grid data + METIS graph partitioning for graph data, converting heterogeneous formats into unified sequences; (2) Spatio-Temporal Memory Retrieval Augmentation (ST-MRA) — four structured learnable memory modules (time-domain, frequency-domain, time-spatial, frequency-spatial) that store shared spatio-temporal patterns and generate personalized prompts via cosine-similarity retrieval, enabling cross-learning across different data types; (3) encoder-decoder Transformer with MRA-augmented prompts. 9 datasets (6 grid + 3 graph, >10K nodes), 9.1% average RMSE improvement over best baselines in short-term prediction, 11.9% in long-term, superior few-shot/zero-shot capability, near-immune to noise perturbations (10% noise → only 10% RMSE increase vs baseline 148%). Same lab as UrbanDiT (NeurIPS 2025) and UniST (KDD 2024). Created source-summary and technique pages; added reciprocal wikilinks to 10 existing pages (spatio-temporal-foundation-model, traffic-forecasting, urbandit, urbangpt, opencity, gpt-st, stgcn, dcrnn, gwnet, channel-independence).
+
+创建的页面：[[source-uniflow]], [[uniflow]]
+更新的页面：[[spatio-temporal-foundation-model]], [[traffic-forecasting]], [[urbandit]], [[urbangpt]], [[opencity]], [[gpt-st]], [[stgcn]], [[dcrnn]], [[gwnet]], [[channel-independence]], [[index]], [[log]]
+
+## [2026-05-31] ingest | UrbanGPT: Spatio-Temporal Large Language Models (Li et al., KDD 2024)
+
+Ingest UrbanGPT paper (Zhonghang Li, Lianghao Xia, Jiabin Tang et al., HKU/SCUT/Baidu, KDD 2024 / arXiv:2403.00813). UrbanGPT is the first spatio-temporal large language model, integrating a multi-level gated dilated convolution encoder (graph-free) with Vicuna-7b instruction-tuning paradigm. Core innovations: (1) ST dependency encoder avoids graph structures entirely for zero-shot flexibility; (2) textual POI descriptions let LLM infer spatial semantics instead of using adjacency matrices; (3) regression layer resolves LLM's discrete-output vs continuous-regression mismatch by having LLM output rich hidden vectors Γ (not numbers), fused with raw ST features H to produce precise predictions. Four datasets (NYC-taxi/bike/crime, CHI-taxi), zero-shot superiority over 10 baselines (NYC-taxi inflow MAE=6.16 vs best baseline 9.75, ↓36.8%), crime prediction Recall=0.34 vs baselines≈0. Key limitations: 7B params, 174s inference per sensor, LLM backbone dependency, no graph exploitation when topology is available. Created source-summary and technique pages; added reciprocal wikilinks to ST foundation model, GPT-ST, OpenCity, traffic-forecasting, and related pages.
+
+创建的页面：[[source-urbangpt]], [[urbangpt]]
+更新的页面：[[spatio-temporal-foundation-model]], [[traffic-forecasting]], [[gpt-st]], [[opencity]], [[index]], [[log]]
+
+## [2026-05-31] ingest | Rectified Flow: Flow Straight and Fast (Liu et al., arXiv 2022)
+
+Ingest Rectified Flow paper (Xingchao Liu, Chengyue Gong & Qiang Liu, UT Austin, arXiv 2022 / arXiv:2209.14577). Rectified Flow is an ODE-based generative model that learns straight trajectories from noise to data through "rectification" — an iterative procedure that straightens probability flow ODE paths by learning deterministic mappings between source and target distributions sampled from the current flow. Core contributions: (1) rectification guarantees monotonic path length reduction and convergence to straight-line trajectories; (2) with independent coupling, rectified flow converges to the optimal transport (OT) map under convex cost; (3) Reflow — an unsupervised variant using only source samples — enables 1-2 step high-quality generation (CIFAR-10 FID≈4.85 in 2 steps, 4.23 in 4 steps). This work directly inspired InstaFlow (text-to-image, ICLR 2024), Shortcut Models, and the flow matching adoption in SD3/FLUX. Created source-summary and technique pages; added reciprocal wikilinks to [[flow-matching]], [[optimal-transport]], [[diffusion-model]], [[consistency-models]], [[shortcut-models]], [[urbandit]].
+
+创建的页面：[[source-rectified-flow]], [[rectified-flow]]
+更新的页面：[[flow-matching]], [[optimal-transport]], [[urbandit]], [[shortcut-models]], [[consistency-models]], [[diffusion-model]], [[index]], [[log]]
+
+## [2026-05-31] ingest | InstaFlow: One Step is Enough for High-Quality Diffusion-Based Text-to-Image Generation (Liu et al., ICLR 2024)
+
+Ingest InstaFlow paper (Xingchao Liu, Xiwen Zhang, Jianzhu Ma, Jian Peng, Qiang Liu, UT Austin/UIUC/Tsinghua, ICLR 2024 / arXiv:2309.06380). InstaFlow is the first work to successfully distill large-scale Stable Diffusion into a high-quality one-step text-to-image model. Core discovery: direct distillation of SD fails catastrophically (FID=40.9 vs SD 22.8), but Text-Conditioned Rectified Flow reflow before distillation reduces the teacher-student gap by half. InstaFlow-0.9B achieves FID-5k=23.4, FID-30k=13.1 at 0.09s (first one-step diffusion model to match GAN quality), InstaFlow-1.7B with Stacked U-Net achieves FID-5k=22.4 at 0.12s. Training cost ~199 A100 GPU days (vs SD from scratch ~6250). Key innovations: text-conditioned reflow training formula, two-stage L2+LPIPS distillation, CFG adaptation for rectified flow (optimal α≈1.5 vs SD's 5-7.5), and compatibility with pre-trained ControlNet. This work bridged academic Rectified Flow theory to industrial-scale generation, directly enabling SD3 and FLUX to adopt flow matching/rectified flow paradigms. Created source-summary and technique pages; added reciprocal wikilinks to existing pages.
+
+创建的页面：[[source-instaflow]], [[instaflow]]
+更新的页面：[[index]], [[log]], [[urbandit]], [[source-urbandit]], [[flow-matching]], [[diffusion-model]], [[ddpm]], [[probability-flow-ode]], [[dpm-solver]], [[consistency-models]], [[shortcut-models]], [[classifier-free-guidance]], [[optimal-transport]]
+
+## [2026-05-31] ingest | DiT: Scalable Diffusion Models with Transformers (Peebles & Xie, ICCV 2023)
+
+Ingest DiT paper (Peebles & Xie, UC Berkeley, ICCV 2023 / arXiv:2212.09748). DiT replaces the U-Net backbone in diffusion models with a Vision Transformer (ViT), operating in VAE latent space (reusing Stable Diffusion's pretrained VAE). Core innovations: (1) adaLN-Zero conditioning -- adaptive layer norm with zero-initialized residual scaling that makes each block an identity function at initialization, enabling extremely stable training across all model sizes without lr warmup/dropout/weight decay; (2) Gflops-based scaling analysis across 12 variants (S/B/L/XL x p=8/4/2) showing FID is strongly anti-correlated with Gflops (r=-0.93), not parameter count -- doubling Gflops reduces FID by ~0.3-0.35x; (3) SOTA ImageNet 256x256 FID=2.27 (cfg=1.50) and 512x512 FID=3.04. DiT uses roughly 1/10 the compute of pixel-space ADM to achieve better quality. Became the foundational architecture for Sora, SD3, Flux, PixArt-alpha, and UrbanDiT. Created source-summary and technique pages; added reciprocal wikilinks to 7 existing pages (diffusion-model, ddpm, latent-diffusion-models, classifier-free-guidance, urbandit, mae, source-urbandit).
+
+创建的页面：[[source-dit]], [[dit]]
+更新的页面：[[diffusion-model]], [[ddpm]], [[latent-diffusion-models]], [[classifier-free-guidance]], [[urbandit]], [[mae]], [[index]], [[log]]
+
+## [2026-05-31] ingest | GWNet: Graph WaveNet for Deep Spatial-Temporal Graph Modeling (Wu et al., IJCAI 2019)
+
+Ingest GWNet paper (Wu, Pan, Long, Jiang & Zhang, UTS/Monash, IJCAI 2019, ~1,600+ citations). GWNet is a spatial-temporal graph neural network whose defining contribution is the self-adaptive adjacency matrix — learning hidden spatial dependencies end-to-end via node embeddings E₁E₂ᵀ, without requiring a predefined graph. Combined with stacked dilated causal convolutions (from WaveNet) for exponentially growing temporal receptive fields, and non-autoregressive output (all 12 future steps in one forward pass). SOTA on METR-LA and PEMS-BAY traffic datasets, surpassing DCRNN, STGCN, and GGRU. Training 5× faster than DCRNN; inference 8× faster than STGCN (2.27s). Founded the adaptive graph learning paradigm, later continued by same team's MTGNN (KDD 2020). Created source-summary and technique pages; added wikilinks to 12 existing pages where GWNet appeared in plain text.
+
+创建的页面：[[source-gwnet]], [[gwnet]]
+更新的页面：[[stgcn]], [[hybrid-periodicity-decoupling]], [[diffstg]], [[ragc]], [[pristi]], [[guided-layer-normalization]], [[specstg]], [[dcrnn]], [[node-embedding-regularization]], [[spatiotemporal-mirage]], [[source-2401-08119-specstg]], [[source-2312-00516-std-mae]], [[source-astgcn]], [[index]], [[log]]
+
+## [2026-05-31] ingest | MAE: Masked Autoencoders Are Scalable Vision Learners (He et al., CVPR 2022)
+
+Ingest MAE paper (He, Chen, Xie, Li, Dollár & Girshick, FAIR, CVPR 2022 / arXiv Nov 2021). MAE is a foundational self-supervised vision pretraining method based on masked autoencoding with two core designs: (1) asymmetric encoder-decoder — encoder operates only on visible patches (no mask tokens), lightweight decoder processes full token set; (2) extremely high masking ratio (75%) — eliminates spatial redundancy in images, creating a challenging pretext task requiring holistic scene understanding. ViT-H achieves 87.8% on ImageNet-1K (pure IN1K SOTA at the time), transfer learning on COCO (+4.0 APbox) and ADE20K (+3.7 mIoU) outperforms supervised pretraining. MAE broke contrastive learning's monopoly in vision self-supervision, pivoting the field back toward autoencoding paradigms. Created source-summary and technique pages; cross-linked existing pages referencing MAE/masked autoencoder.
+
+创建的页面：[[source-mae]], [[mae]]
+更新的页面：[[std-mae]], [[patchtst]], [[source-patchtst]], [[inductive-bias-shaping]], [[index]], [[log]]
+
+## [2026-05-31] ingest | DCRNN: Diffusion Convolutional Recurrent Neural Network (Li et al., ICLR 2018)
+
+Ingest DCRNN paper (Li, Yu, Shahabi & Liu, USC/UCLA, ICLR 2018, ~3,000+ citations). DCRNN is the first end-to-end deep learning framework combining diffusion convolution (spatial on directed graphs) + DCGRU (temporal) + Seq2Seq + Scheduled Sampling (long-term prediction). Models traffic flow as a bidirectional K-step diffusion process on directed road networks — key innovation is replacing spectral GCN's undirected constraint with a diffusion operator based on random walks, handling directed graphs naturally. 12-15% improvement over FC-LSTM, advantage grows with horizon. Created source-summary and concept pages; added cross-links to traffic-forecasting, diffstg, specstg.
+
+创建的页面：[[source-dcrnn]], [[dcrnn]]
+更新的页面：[[traffic-forecasting]], [[diffstg]], [[specstg]], [[index]], [[log]]
+
+## [2026-05-31] ingest | STGCN: Spatio-Temporal Graph Convolutional Networks (Yu et al., IJCAI 2018)
+
+Full ingest of STGCN paper (Yu, Yin & Zhu, Peking University, IJCAI 2018, ~2,200 citations). STGCN is the first pure convolutional spatio-temporal graph network for traffic forecasting — replaces RNN with gated 1D causal convolution (GLU) for temporal modeling, uses spectral graph convolution (Chebyshev + 1st-order) for spatial modeling, organized as "sandwich" ST-Conv Blocks (time→space→time). Achieves 14× training speedup over GCGRU (272s vs 3825s on PeMSD7-M), SOTA on BJER4/PeMSD7 datasets across 15/30/45min horizons. Created source-summary and technique pages; added cross-links from 7 existing pages that already referenced STGCN in plain text. Founding paper of the STGNN lineage: STGCN → GWNet → ASTGCN → DiffSTG → SpecSTG → UrbanDiT.
+
+创建的页面：[[source-stgcn]], [[stgcn]]
+更新的页面：[[traffic-forecasting]], [[diffstg]], [[spatio-temporal-foundation-model]], [[most]], [[mtgnn]], [[source-mtgnn]], [[hybrid-periodicity-decoupling]], [[index]], [[log]]
+
+## [2026-05-31] ingest | CSDI + PriSTI (Integration)
+
+Integration ingest: CSDI (Tashiro, Song, Song & Ermon, NeurIPS 2021) and PriSTI (Liu, Huang et al., ICDE 2023). CSDI is the first conditional diffusion model for probabilistic multivariate time series imputation — core innovation is replacing post-hoc conditioning with explicit conditional training via self-supervised masking + dual-axis Transformer attention. PriSTI upgrades CSDI for spatiotemporal settings by separating conditional prior extraction from noise-guided denoising — linear interpolation enhanced conditions + prior-guided attention (Q,K from clean prior, V from noisy input) + virtual node spatial downsampling. Created source-summary and technique pages; updated shared files and cross-links in 7 existing related pages.
+
+创建的页面：[[source-csdi]], [[csdi]], [[source-pristi]], [[pristi]]
+更新的页面：[[index]], [[log]], [[cofill]], [[specstg]], [[traffic-forecasting]], [[imputeformer]], [[freqflow-ts]], [[gsli]], [[generative-time-series-forecasting]]
+
+## [2026-05-31] lint | 全量 Wiki 检查
+
+扫描 404 个 wiki 页面，发现 6 大类共 197 个问题。严重问题 22 个，警告 54 个，信息 121 个。
+
+严重：2 个 YAML 解析错误 + 8 个断链（缺 source 页面）+ 9 个断链（缺 concept/technique 页面）+ 9 个 `\|` 格式错误 + 7 个脚注指向不存在页面
+警告：17 个子目录页面孤立 + 23 个 confidence 过高 + 25 个 source_count 不一致 + 29 个孤立脚注定义
+信息：137 个过期页面（>30 天未更新）+ 2 个概括性陈述缺支撑 + 1 个缺 required 字段
 
 ## [2026-05-31] ingest | S-Mamba: Is Mamba Effective for Time Series Forecasting? (Neurocomputing 2024, arXiv:2403.11144)
 
@@ -667,7 +787,7 @@ Downloaded arXiv PDF (2605.08063) and ingested Flow-OPD paper by Fang, Huang et 
 
 ## [2026-05-13] ingest | FrèqFlow/SpectFlow: Long-term forecasting using lightweight flow matching (NeurIPS 2025)
 
-Downloaded arXiv 2511.16426 PDF 并 ingest。FrèqFlow（别名 SpectFlow）由 Moghadas 等人（Vrije Universiteit Brussel & imec, NeurIPS 2025）提出，首次将条件流匹配（Conditional Flow Matching）引入频域进行多元时间序列确定性预测。核心创新：(1) 复值线性层在频域中插值频谱，通过复乘法建模幅度缩放和相位平移；(2) 低通滤波保留 6 次谐波内低频结构；(3) 流匹配头专用于残差学习，频率插值头提供趋势和季节性。仅 89k 参数（比扩散模型小一个数量级），在 Brussels/PEMS08/PEMS04 三个交通数据集上平均 RMSE 提升 7%，超越 GCRDD/DiffSTG/PriSTI/SpecSTG 和 Moirai-MoE 基础模型。
+Downloaded arXiv 2511.16426 PDF 并 ingest。FrèqFlow（别名 SpectFlow）由 Moghadas 等人（Vrije Universiteit Brussel & imec, NeurIPS 2025）提出，首次将条件流匹配（Conditional Flow Matching）引入频域进行多元时间序列确定性预测。核心创新：(1) 复值线性层在频域中插值频谱，通过复乘法建模幅度缩放和相位平移；(2) 低通滤波保留 6 次谐波内低频结构；(3) 流匹配头专用于残差学习，频率插值头提供趋势和季节性。仅 89k 参数（比扩散模型小一个数量级），在 Brussels/PEMS08/PEMS04 三个交通数据集上平均 RMSE 提升 7%，超越 [[d3vae|GCRDD]]/DiffSTG/PriSTI/SpecSTG 和 Moirai-MoE 基础模型。
 
 创建的页面：[[source-2511-16426]], [[freqflow-ts]]
 更新的页面：[[traffic-forecasting]], [[flow-matching]], [[generative-time-series-forecasting]], [[index]], [[log]]
@@ -676,3 +796,58 @@ Downloaded arXiv 2511.16426 PDF 并 ingest。FrèqFlow（别名 SpectFlow）由 
 4 层向后引文搜索，追溯 UrbanDiT (NeurIPS 2025) 从基础模型到最终产品的完整演化链。
 创建的页面：[[urbandit-paper-river]]
 涉及的源文件：STGCN (IJCAI 2018), DDPM (NeurIPS 2020), MAE (CVPR 2022), PatchTST (ICLR 2023), DiT (ICCV 2023), CSDI (NeurIPS 2021), STD-MAE (IJCAI 2024), GPT-ST (NeurIPS 2023), ST-SSL (AAAI 2023), GPD (ICLR 2024), UniST (KDD 2024), UrbanGPT (KDD 2024), OpenCity (2024)
+
+## [2026-05-31] ingest | TimeGrad: Autoregressive Denoising Diffusion for Multivariate Probabilistic Time Series Forecasting (ICML 2021)
+
+Ingest Rasul, Seward, Schuster & Vollgraf (Zalando Research, ICML 2021) TimeGrad。首个将 DDPM 扩散模型引入多变量时间序列概率预测的方法。核心设计：RNN 自回归时间编码（2 层 LSTM, h=40）+ DDPM 条件扩散去噪（8 块膨胀卷积残差网络, GAU 门控）取代预设参数化输出分布。6 数据集上 5 个 CRPS_sum 第一；消融揭示 N≈10 即接近最优（vs 图像扩散 1000 步）——RNN 隐状态已提供强引导信号。为 CSDI/DiffSTG/SpecSTG 等后续扩散+时序工作奠定范式基础。主要局限：推理需 2400 次前向（24 步×100），自回归串行无并行。
+
+创建的页面：[[source-timegrad]], [[timegrad]]
+更新的页面：[[index]], [[log]]
+
+## [2026-05-31] ingest | DiffSTG: Probabilistic Spatio-Temporal Graph Forecasting with Denoising Diffusion Models (AAAI 2023)
+
+Ingest Wen et al. (北京交通大学/NUS/DAMO Academy/HKUST(GZ), AAAI 2023) DiffSTG。首个将 DDPM 扩散推广到时空图预测的非自回归框架。核心创新：(1) 广义条件扩散——将历史和未来统一为 X^all，通过 mask 使去噪网络同时学习历史重建和未来预测；(2) UGnet——TCN 门控因果卷积 + Unet 多尺度 + vanilla GCN 的三维异构去噪架构；(3) 非自回归一次全窗口生成 + DDIM 子集采样 + 尾步复用，推理加速约 3200× vs TimeGrad。PEMS08/AIR-BJ/AIR-GZ 三数据集 CRPS 降 4.3–14.3%。确定性精度落后最佳 STGNN 约 5–10%（ELBO 系统性局限）。开创扩散+STG 范式，后续催生 SpecSTG/D3/DiffLoad/UrbanDiT。
+
+创建的页面：[[source-diffstg]], [[diffstg]]
+更新的页面：[[index]], [[log]]
+
+## [2026-05-31] integration | TimeGrad + DiffSTG cross-linking and index update
+
+将 TimeGrad 和 DiffSTG wiki 页面接入共享文件，修复交叉链接。更新 [[index]] 添加四个新页面条目，在 [[source-diffstg]] 和 [[diffstg]] 中将 TimeGrad 纯文本提及替换为 [[timegrad|TimeGrad]] wikilink，在 [[specstg]] 和 [[traffic-forecasting]] 中将已有 TimeGrad/DiffSTG 纯文本提及转为 wikilink，在 [[generative-time-series-forecasting]] 中添加 TimeGrad 作为扩散预测路线奠基工作的条目。创建 WHY 报告 `ingest-reports/timegrad-diffstg-2026-05-31.md`。
+
+更新的页面：[[index]], [[source-diffstg]], [[diffstg]], [[specstg]], [[traffic-forecasting]], [[generative-time-series-forecasting]]
+
+## [2026-05-31] ingest | VideoMAE: Masked Autoencoders are Data-Efficient Learners for Self-Supervised Video Pre-Training (Tong et al., NeurIPS 2022)
+
+Ingest VideoMAE paper (Tong, Song, Wang & Wang, Nanjing University / Tencent AI Lab / Shanghai AI Lab, NeurIPS 2022, arXiv:2203.12602). VideoMAE extends MAE's masked autoencoding paradigm to video, introducing two key designs: (1) tube masking — same spatial position masked/kept across all frames to prevent temporal information leakage; (2) extremely high mask ratio (90-95%) exploiting video's spatial + temporal redundancy. Key contributions: vanilla ViT trained from scratch on video data alone achieves 87.4% on Kinetics-400 and 75.4% on SSV2 (no extra data), data-efficient learner works with only 3.5k videos (HMDB51 62.6% vs MoCo v3 39.2%), and data quality > data quantity proven (42k in-domain > 240k cross-domain). Information density ladder: language 15% → image 75% → video 90%+ mask ratio. Created source-summary and technique pages; added wikilinks to 4 existing pages where VideoMAE or masked autoencoding was mentioned.
+
+创建的页面：[[source-videomae]], [[videomae]]
+更新的页面：[[mae]], [[source-mae]], [[std-mae]], [[patchtst]], [[index]], [[log]]
+
+## [2026-05-31] ingest | D³VAE (GCRDD): Generative Time Series Forecasting with Diffusion, Denoise, and Disentanglement (NeurIPS 2022)
+
+Ingest Li, Lu, Wang & Dou (Baidu Research / Zhejiang University, NeurIPS 2022, arXiv:2301.03028) D³VAE paper。首个将耦合扩散（Coupled Diffusion）+ BVAE 逆向过程 + 多尺度降噪得分匹配（DSM）+ 潜变量 Total Correlation 解耦四者统一为端到端框架的生成式时间序列预测模型。核心设计：(1) 耦合扩散——对输入序列 X 和目标序列 Y 以不同方差调度同步扩散，在不增加随机不确定性的前提下扩充数据分布空间，理论保证 Lemma 1-2；(2) BVAE 替换传统扩散的逆向过程，一次前向生成而无需 T 步迭代采样；(3) 多尺度 DSM 通过能量函数梯度跳跃将生成目标矫正回真实方向，同时提供不确定性显式估计；(4) TC 最小化解耦潜变量，不同维度对应不同时序模式（趋势/季节等）。6 真实数据集 + 2 合成数据集上平均 43% MSE 降低、23% CRPS 降低；Traffic 数据集 input-8-predict-8 设定下 MSE 降低 90%、CRPS 降低 73%。在后续 STG 文献（SpecSTG, FrèqFlow 等）中，该模型的图卷积变体被广泛引用为 GCRDD 基线——"当前最高效的 STG 扩散方法"（训练速度 1.0×, SpecSTG 以其为速度基准 3.33×）。D³VAE 区别于 [[timegrad|TimeGrad]]/[[diffstg|DiffSTG]]/[[csdi|CSDI]] 的核心特征在于"扩散作为数据扩充, VAE 作为生成引擎"的非自回归范式。主要局限：扩散偏差控制依赖精细调参（β, ω）、无监督解耦缺乏真实因子标签、GCRDD 形态的空间信息仅编码阶段利用。
+
+创建的页面：[[source-gcrdd]], [[d3vae]]
+更新的页面：[[index]], [[log]], [[traffic-forecasting]], [[generative-time-series-forecasting]], [[specstg]], [[freqflow-ts]], [[source-dcrnn]], [[source-2511-16426]], [[source-2401-08119-specstg]]
+
+## [2026-05-31] ingest | GPT-ST: Generative Pre-Training of Spatio-Temporal Graph Neural Networks (Li et al., NeurIPS 2023)
+
+Ingest GPT-ST paper (Zhonghang Li, Lianghao Xia, Yong Xu, Chao Huang, SCUT / HKU / PAZHOU LAB, NeurIPS 2023, arXiv:2311.04245). GPT-ST is the first general-purpose spatio-temporal pre-training framework that seamlessly integrates with 13 diverse downstream STGNN baselines without architecture modification. Core contributions: (1) customized temporal pattern encoding — time-specific and region-specific parameters generated via a parameter learner, using temporal hypergraph propagation (H_T=8 hyperedges); (2) hierarchical spatial pattern encoding — hypergraph capsule clustering network with dynamic routing soft-assigns regions to H_S=10 cluster centroids, plus a high-level cross-cluster hypergraph (H_M=16 hyperedges) modeling inter-cluster migration patterns; (3) cluster-aware adaptive mask strategy — progressively increases mask difficulty from intra-cluster (easy) to whole-cluster (hard) with rt=0.25 total mask ratio. All 13 baselines improved on all 4 datasets (PEMS08, METR-LA, NYC Taxi, NYC Citi Bike) across all 3 metrics. Classic baselines (STGCN, TGCN) benefit much more than advanced ones (MSDR, STWA). Pre-trains 26× faster (12.5s vs 327.8s/epoch) and outperforms STEP while using only 12-step input. Replaced stub [[source-gpt-st]] with formal source-summary; created [[gpt-st]] technique page; cross-linked [[traffic-forecasting]], [[spatio-temporal-foundation-model]], [[mae]], [[std-mae]], [[urbandit-paper-river]].
+
+创建的页面：[[gpt-st]]
+更新的页面：[[source-gpt-st]] (stub→formal), [[traffic-forecasting]], [[spatio-temporal-foundation-model]], [[mae]], [[std-mae]], [[urbandit-paper-river]], [[index]], [[log]]
+
+## [2026-05-31] ingest | OpenCity: Open Spatio-Temporal Foundation Models for Traffic Prediction (Li et al., arXiv 2024)
+
+Ingest OpenCity paper (Zhonghang Li, Long Xia, Lei Shi, Yong Xu, Dawei Yin, Chao Huang, HKU / SCUT / Baidu, arXiv:2408.10269, August 2024). OpenCity is a spatio-temporal foundation model enabling zero-shot traffic prediction across unseen cities without any fine-tuning. Core innovations: (1) instance normalization replaces Z-score, eliminating dependence on training statistics; (2) patch embedding (P=12, hourly) compresses sequences and improves robustness; (3) TimeShift Transformer (PTTM + DTP dual attention) decouples periodic and dynamic patterns; (4) Laplacian eigenvector spatial encoding provides zero-external-data spatial context; (5) GCN mixed aggregation with α=0.05 for robust cross-city transfer. Pre-trained on 21 datasets (151M observations), achieves zero-shot performance surpassing full-shot baselines on 4/6 test datasets. vs UniST/UrbanGPT on CHI-TAXI: MAE 1.74 (OpenCity_mini 2M) vs 2.94 (UniST) vs 3.26 (UrbanGPT); inference 1.5s vs 45,000s (~30,000×). Fast adaptation with 3-epoch fine-tuning: SZ-DIDI MAE 2.42 vs best baseline 2.87, training 2.8s vs 46.8s. Three scales: mini 2M, base 5M, plus 26M. Replaced stub [[opencity]] (entity→technique) with full page; created formal source-summary; cross-linked [[spatio-temporal-foundation-model]], [[traffic-forecasting]], [[most]], [[gpt-st]].
+
+创建的页面：[[source-opencity]]
+更新的页面：[[opencity]] (stub→full technique page), [[spatio-temporal-foundation-model]], [[traffic-forecasting]], [[most]], [[index]], [[log]]
+
+## [2026-06-01] ingest | GPD: Spatio-Temporal Few-Shot Learning via Diffusive Neural Network Generation (Yuan et al., ICLR 2024)
+
+Ingest GPD paper (Yuan, Shao, Ding, Jin & Li, Tsinghua FIB Lab, ICLR 2024, arXiv:2402.11922)。GPD 是时空少样本学习的生成式预训练框架——核心创新在于参数空间预训练：使用 Transformer-based 扩散模型作为 hypernetwork，在多个 source cities 上学习从 prompt（spatial UKG + temporal MAE-style）条件生成时空预测模型参数的能力。与 DiffSTG/SpecSTG 在数据空间做扩散预测不同，GPD 的扩散过程发生在参数空间。Model-agnostic，兼容 STGCN/GWN/STID 三种 base model。4 数据集平均较最优 baseline 降低 7.87% 误差，长期预测优势显著（Baltimore Step 6 MAE -22.1% vs STGFSL）。位于 Tsinghua FIB Lab 研究脉络中从传统 transfer learning 向参数化少样本生成的过渡节点。
+
+创建的页面：[[source-gpd]], [[gpd]]
+更新的页面：[[source-urbandit]], [[urbandit-paper-river]], [[index]], [[log]]
