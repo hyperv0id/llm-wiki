@@ -9,9 +9,9 @@ tags:
   - 2d-variation
   - foundation-model
 created: 2026-04-28
-last_updated: 2026-05-04
-source_count: 2
-confidence: high
+last_updated: 2026-05-31
+source_count: 1
+confidence: medium
 status: active
 ---
 
@@ -87,4 +87,3 @@ TimesNet also achieves **better efficiency** than most Transformer-based models,
 **Comparison to related work**: TimesNet's 2D reshaping is orthogonal to [[informer|Informer]]'s sparse attention and [[autoformer|Autoformer]]'s autocorrelation — while those operate in 1D, TimesNet reformulates the representation space itself. [[hyperd|HyperD]]'s decoupling of short/long-term periodicity into separate pathways is a specialized alternative to TimesNet's shared 2D convolution over multiple discovered periods. [[cyclenet|CycleNet]]'s explicit cycle parameter learning and residual forecasting is complementary — one could imagine combining TimesNet's 2D representation with CycleNet's learned cycles.
 
 [^src-timesnet]: [[source-timesnet]]
-[^src-zhou-informer-2021]: [[source-zhou-informer-2021]]

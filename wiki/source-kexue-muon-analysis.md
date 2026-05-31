@@ -7,9 +7,9 @@ tags:
  - spectral-norm
  - theory
 created: 2026-04-30
-last_updated: 2026-05-30
-source_count: 2
-confidence: high
+last_updated: 2026-05-31
+source_count: 1
+confidence: medium
 status: active
 ---
 
@@ -63,5 +63,4 @@ Muon 相当于谱范数（2-范数）约束下的梯度下降[^src-kexue-muon-an
 
 ## 参考��献
 
-[^src-muon-optimizer]: [[source-muon-optimizer]]
 [^src-kexue-muon-analysis]: [[source-kexue-muon-analysis]]

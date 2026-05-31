@@ -8,7 +8,7 @@ tags:
   - self-supervised-learning
   - ijcai-2024
 created: 2026-05-12
-last_updated: 2026-05-30
+last_updated: 2026-05-31
 source_count: 1
 confidence: medium
 status: active
@@ -50,12 +50,12 @@ status: active
 
 ## 实验结果
 
-在六个标准基准（PEMS03、PEMS04、PEMS07、PEMS08、METR-LA、PEMS-BAY）上，STD-MAE 以 GWNet 为预测器在所有评价指标上超越所有基线模型（含 PDFormer、STAEformer、STEP 等 SOTA）。关键消融发现[^src-2312-00516-std-mae]：
+在六个标准基准（PEMS03、PEMS04、PEMS07、PEMS08、METR-LA、PEMS-BAY）上，STD-MAE 以 [[gwnet|GWNet]] 为预测器在所有评价指标上超越所有基线模型（含 PDFormer、STAEformer、STEP 等 SOTA）。关键消融发现[^src-2312-00516-std-mae]：
 
 | 结论 | 详情 |
 |------|------|
 | 解耦掩码必要性 | 空间+时间解耦显著优于混合掩码（STM-MAE）和单维度掩码（S-MAE/T-MAE） |
-| 预测器无关性 | 增强 DCRNN、MTGNN、STID、STAEformer、GWNet 五种架构一致提升 |
+| 预测器无关性 | 增强 DCRNN、MTGNN、STID、STAEformer、[[gwnet|GWNet]] 五种架构一致提升 |
 | 最优掩码比例 | $r=0.25$ 优于 $0.5$ 和 $0.75$（低于 CV 的 $75\%$ 和 NLP 的 $15\%$） |
 | 预训练长度 | 3 天（864 步）多数数据集最佳 |
 | 效率优势 | 相比 STEP 等预训练模型加速 $22.6\%-72.5\%$ |

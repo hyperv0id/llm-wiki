@@ -8,7 +8,7 @@ tags:
   - traffic
   - gcn
 created: 2026-04-28
-last_updated: 2026-05-30
+last_updated: 2026-05-31
 source_count: 1
 confidence: medium
 status: active
@@ -44,7 +44,7 @@ The three components' outputs are fused via **learned weight matrices** (Hadamar
 ## Critique
 
 - **Strengths**: The spatial-temporal attention is a genuine innovation — prior models either used static graphs (STGCN) or simple RNN-based dynamics (DCRNN). The three-component temporal decomposition (recent/daily/weekly) is well-motivated and empirically validated. Results are clean and reproducible. The code release and standardized PeMS evaluation became de facto benchmarks for the field.
-- **Limitations**: The Chebyshev graph convolution (spectral method) is less flexible than spatial GCN methods used in later models (e.g., Graph WaveNet, STSGCN). External factors (weather, events) are not incorporated. The three-component design multiplies computation, though the components share the same structure. [[traffic-forecasting|HyperD]] and later works would argue that periodicity decoupling requires more nuanced treatment than three fixed temporal windows.
+- **Limitations**: The Chebyshev graph convolution (spectral method) is less flexible than spatial GCN methods used in later models (e.g., [[gwnet|Graph WaveNet]], STSGCN). External factors (weather, events) are not incorporated. The three-component design multiplies computation, though the components share the same structure. [[traffic-forecasting|HyperD]] and later works would argue that periodicity decoupling requires more nuanced treatment than three fixed temporal windows.
 - **Legacy**: ASTGCN established the paradigm of attention + GCN for spatio-temporal forecasting that directly influenced modern models like STFGNN, STGODE, and D2STGNN. It is consistently used as a baseline in traffic forecasting benchmarks.[^src-source-astgcn]
 
 [^src-source-astgcn]: [[source-astgcn]]

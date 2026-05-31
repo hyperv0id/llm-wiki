@@ -9,7 +9,7 @@ tags:
   - traffic-forecasting
   - rectified-flow
 created: 2026-05-12
-last_updated: 2026-05-30
+last_updated: 2026-06-01
 source_count: 1
 confidence: medium
 status: active
@@ -22,7 +22,7 @@ status: active
 ## 核心贡献
 
 1. **首个多数据类型、多任务统一的城市时空基础模型** — 同时处理 grid-based 和 graph-based 时空数据，支持 5 种任务[^src-urbandit]
-2. **基于 DiT + Rectified Flow 的架构设计** — 使用 temporal attention + spatial attention 的 transformer decoder，训练采用 InstaFlow 提出的 rectified flow（straightened ODE trajectory），相比原始 DDPM 获得 25 倍加速[^src-urbandit]
+2. **基于 DiT + Rectified Flow 的架构设计** — 使用 temporal attention + spatial attention 的 transformer decoder，训练采用 [[instaflow|InstaFlow]] 提出的 rectified flow（straightened ODE trajectory），相比原始 DDPM 获得 25 倍加速[^src-urbandit]
 3. **统一提示学习框架** — 创新性地使用三个 memory pool（时域、频域、空域）生成 data-driven prompts，加上从任务 mask 生成的 task-specific prompts[^src-urbandit]
 4. **强大的零样本泛化** — 在未见城市上零样本性能超越多数有训练数据的基线模型[^src-urbandit]
 
@@ -66,7 +66,7 @@ Prompt 通过 cosine similarity 检索最匹配的 patterns：$P_x = \sum \alpha
 
 ## 训练策略
 
-采用 **rectified flow**（InstaFlow）训练方式，通过 straightened ODE trajectory 对齐噪声和数据分布，相比传统扩散模型的弯曲路径更高效[^src-urbandit]。训练过程在多个数据集和任务间交替采样，每轮随机选取一个数据集 $D_i \sim \text{Uniform}(D)$ 和一个任务 $T_i \sim \text{Uniform}(T)$ 进行梯度下降。
+采用 **rectified flow**（[[instaflow|InstaFlow]]）训练方式，通过 straightened ODE trajectory 对齐噪声和数据分布，相比传统扩散模型的弯曲路径更高效[^src-urbandit]。训练过程在多个数据集和任务间交替采样，每轮随机选取一个数据集 $D_i \sim \text{Uniform}(D)$ 和一个任务 $T_i \sim \text{Uniform}(T)$ 进行梯度下降。
 
 **推理效率**：扩散步数 500，推理步数 20 时达到最优平衡，相比原始 DDPM 实现 25 倍加速。模型采用概率预测，每个样本运行 20 次推理取平均[^src-urbandit]。
 
@@ -114,7 +114,7 @@ UrbanDiT-L 在 data size 从 0.8 增至 1.0 时性能提升斜率（0.011）显�
 
 ## 与现有模型的对比
 
-| 维度 | GPD | UniST | UrbanGPT | CityGPT | **UrbanDiT** |
+| 维度 | [[gpd\|GPD]] | UniST | UrbanGPT | CityGPT | **UrbanDiT** |
 |------|-----|-------|----------|---------|-------------|
 | 初始化方式 | Scratch | Scratch | LLMs | LLMs | Scratch |
 | 数据类型 | Graph | Grid | Grid | Language | **Graph/Grid** |

@@ -9,8 +9,8 @@ tags:
   - forecasting
   - KDD-2020
 created: 2026-05-30
-last_updated: 2026-05-30
-source_count: 1
+last_updated: 2026-05-31
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -38,7 +38,7 @@ status: active
 ## 关键实验结果
 
 - 单步预测：在 Solar-Energy、Traffic、Electricity 三个数据集上达到 SOTA。Traffic 数据上 RSE 较最佳基线降低 7.24%（horizon 3）、3.88%（horizon 12）、4.83%（horizon 24） [^src-mtgnn]
-- 多步预测：在 METR-LA (207 节点) 和 PEMS-BAY (325 节点) 上与 DCRNN、STGCN、Graph WaveNet、GMAN 等持平——关键优势在于*不使用预定义图结构*，而所有对比方法依赖先验图 [^src-mtgnn]
+- 多步预测：在 METR-LA (207 节点) 和 PEMS-BAY (325 节点) 上与 DCRNN、[[stgcn|STGCN]]、Graph WaveNet、GMAN 等持平——关键优势在于*不使用预定义图结构*，而所有对比方法依赖先验图 [^src-mtgnn]
 - 消融：移除图卷积模块 → 误差显著上升（MAE 2.7715→2.8953）；移除 mix-hop → 略有下降；移除 inception → RMSE 上升但 MAE 几乎不变；移除课程学习 → MAPE 升高 [^src-mtgnn]
 - 图学习方法比较：单向 A 优于预定义 A、无向 A、有向 A 和动态 A，RMSE 从 6.1288（预定义 A）降至 5.8070 [^src-mtgnn]
 - 案例研究：学习到的最邻近邻居分布更远但位于相同道路，比预定义邻近邻居更能提前预示极端交通状况 [^src-mtgnn]

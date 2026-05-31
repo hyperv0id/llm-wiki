@@ -9,7 +9,7 @@ tags:
   - periodicity
   - tpami-2026
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-31
 source_count: 1
 confidence: medium
 status: active
@@ -29,7 +29,7 @@ status: active
 
 ### Cross-Period Sparse Forecasting 技术
 
-SparseTSF 的核心创新是 **Cross-Period Sparse Forecasting（跨周期稀疏预测）技术**：
+SparseTSF 的核心创新是 **Cross-Period Sparse Forecasting（跨周期稀疏预测）技术**[^src-sparsetsf]：
 
 1. **下采样**：将原始序列按周期 w 下采样为 w 个子序列
 2. **共享参数预测**：用单一 backbone（Linear 或 MLP）对所有子序列进行预测

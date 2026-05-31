@@ -8,7 +8,7 @@ tags:
   - traffic-forecasting
   - probabilistic-forecasting
 created: 2026-05-08
-last_updated: 2026-05-30
+last_updated: 2026-05-31
 source_count: 1
 confidence: medium
 status: active
@@ -29,11 +29,11 @@ SpecSTG 是首个将图谱域（graph spectral domain）用于概率时空图（
 
 ### 确定性模型的局限
 
-传统交通预测模型（如 DCRNN, GWNet, STAEformer）仅输出点估计，无法量化未来不确定性[^src-2401-08119-specstg]。在交通管理等安全关键应用中，仅有点估计是不够的——决策者需要知道预测的可信程度。
+传统交通预测模型（如 DCRNN, [[gwnet|GWNet]], STAEformer）仅输出点估计，无法量化未来不确定性[^src-2401-08119-specstg]。在交通管理等安全关键应用中，仅有点估计是不够的——决策者需要知道预测的可信程度。
 
 ### 现有扩散方法的不足
 
-已有概率方法（如 TimeGrad, GCRDD, DiffSTG, PriSTI）虽然提供了不确定性量化，但存在两个关键问题[^src-2401-08119-specstg]：
+已有概率方法（如 TimeGrad, [[d3vae|GCRDD]], DiffSTG, PriSTI）虽然提供了不确定性量化，但存在两个关键问题[^src-2401-08119-specstg]：
 
 1. **空间信息利用不足**：这些方法在扩散过程中对每个传感器独立建模，空间信息仅通过条件编码器间接提供，未在概率学习过程中直接利用图结构
 2. **计算效率低**：传统图卷积（如 Chebyshev 卷积）在原始域执行，计算复杂度为 $O(N^2)$，限制了可扩展性
@@ -85,7 +85,7 @@ $$p_\theta(\hat{\mathbf{y}}_{s-1} | \hat{\mathbf{y}}_s) = \mathcal{N}(\hat{\math
 
 1. **首创性**：第一个探索图谱域概率 STG 预测的工作，开辟了谱域扩散建模的新方向[^src-2401-08119-specstg]
 2. **性能**：点估计最高提升 8%（PEMS08S 上的 RMSE），概率预测区间质量提升最高 0.78%[^src-2401-08119-specstg]
-3. **效率**：训练和验证速度是现有最高效扩散方法 GCRDD 的 3.33 倍，采样过程也显著加速[^src-2401-08119-specstg]
+3. **效率**：训练和验证速度是现有最高效扩散方法 [[d3vae|GCRDD]] 的 3.33 倍，采样过程也显著加速[^src-2401-08119-specstg]
 
 ## 实验设置
 
@@ -104,9 +104,9 @@ $$p_\theta(\hat{\mathbf{y}}_{s-1} | \hat{\mathbf{y}}_s) = \mathcal{N}(\hat{\math
 
 **扩散模型基线**[^src-2401-08119-specstg]：
 - TimeGrad — 自回归扩散方法，每步独立采样
-- GCRDD — 图卷积条件扩散，当前最高效的 STG 扩散方法
+- [[d3vae|GCRDD]] — 图卷积条件扩散，当前最高效的 STG 扩散方法
 - DiffSTG — 时空图扩散模型
-- PriSTI — 基于先验引导的扩散方法
+- [[pristi|PriSTI]] — 基于先验引导的扩散方法
 
 **非扩散基线**[^src-2401-08119-specstg]：
 - DeepVAR — 深度向量自回归
@@ -134,7 +134,7 @@ SpecSTG 在 CRPS 和 Calibration 指标上均优于扩散基线，提升幅度�
 
 ### 效率对比
 
-训练+验证速度为 GCRDD 的 3.33 倍，采样速度也有显著提升[^src-2401-08119-specstg]。加速来源：
+训练+验证速度为 [[d3vae|GCRDD]] 的 3.33 倍，采样速度也有显著提升[^src-2401-08119-specstg]。加速来源：
 1. Fast Spectral Graph Convolution 的 $O(N)$ 复杂度
 2. Spectral Graph WaveNet 中 Conv1d → 全连接层的替换
 3. 谱域无需逆变换的开销（仅在最终输出时执行一次）

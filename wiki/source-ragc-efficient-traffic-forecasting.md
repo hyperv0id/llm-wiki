@@ -7,7 +7,7 @@ tags:
   - scalability
   - regularization
 created: 2026-05-07
-last_updated: 2026-05-30
+last_updated: 2026-05-31
 source_count: 1
 confidence: medium
 status: active
@@ -21,7 +21,7 @@ status: active
 
 ## 核心论点
 
-自适应图学习在大规模路网上面临两个根本性问题：(1) 图卷积的 O(N²) 计算复杂度严重限制可扩展性；(2) 占参数主导地位的节点嵌入缺乏正则化，导致过拟合。RAGC 通过三项技术创新协同解决这两个问题。
+自适应图学习在大规模路网上面临两个根本性问题：(1) 图卷积的 O(N²) 计算复杂度严重限制可扩展性；(2) 占参数主导地位的节点嵌入缺乏正则化，导致过拟合。RAGC 通过三项技术创新协同解决这两个问题[^src-ragc-efficient-traffic-forecasting]。
 
 ## 核心贡献
 

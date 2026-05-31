@@ -10,7 +10,7 @@ tags:
   - self-supervised
   - ICLR-2023
 created: 2026-05-30
-last_updated: 2026-05-30
+last_updated: 2026-05-31
 source_count: 1
 confidence: medium
 status: active
@@ -47,7 +47,7 @@ PatchTST 提出两种关键设计显著提升 Transformer 在多元时间序列�
 
 ## 自监督表示学习
 
-PatchTST 的 masked autoencoder 版本：将非重叠 patch 随机掩码（40%），训练重建被掩码的 patch。相比此前 point-wise 掩码（TST/Zerveas et al. 2021），patch-level 掩码避免了"通过插值即可恢复"的问题 [^src-patchtst]。
+PatchTST 的 masked autoencoder 版本（借鉴 CV [[mae|MAE]] 范式）：将非重叠 patch 随机掩码（40%），训练重建被掩码的 patch。相比此前 point-wise 掩码（TST/Zerveas et al. 2021），patch-level 掩码避免了"通过插值即可恢复"的问题 [^src-patchtst]。
 
 关键结果 [^src-patchtst]：
 - **Fine-tuning** 在大数据集上超越 supervised training（Traffic MSE 0.349 vs 0.367）

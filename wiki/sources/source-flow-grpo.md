@@ -6,7 +6,7 @@ tags:
   - reinforcement-learning
   - text-to-image
 created: 2026-05-12
-last_updated: 2026-05-30
+last_updated: 2026-05-31
 source_count: 1
 confidence: medium
 status: active
@@ -14,7 +14,7 @@ status: active
 
 # Flow-GRPO: Training Flow Matching Models via Online RL
 
-> **核心贡献**：首次将 GRPO（Group Relative Policy Optimization）在线强化学习引入流匹配生成模型，通过 ODE-to-SDE 转换引入随机性，并采用 Denoising Reduction 策略加速训练。在 GenEval 上将 SD3.5-M 准确率从 63% 提升至 95%，超越 GPT-4o。
+> **核心贡献**：首次将 GRPO（Group Relative Policy Optimization）在线强化学习引入流匹配生成模型，通过 ODE-to-SDE 转换引入随机性，并采用 Denoising Reduction 策略加速训练。在 GenEval 上将 SD3.5-M 准确率从 63% 提升至 95%，超越 GPT-4o[^src-flow-grpo]。
 
 **论文标识**：arXiv:2505.05470v5 [cs.CV] (NeurIPS 2025)  
 **作者**：Jie Liu, Gongye Liu, Jiajun Liang, Yangguang Li, Jiaheng Liu, Xintao Wang, Pengfei Wan, Di Zhang, Wanli Ouyang  

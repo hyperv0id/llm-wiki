@@ -7,7 +7,7 @@ tags:
   - data-imputation
   - conditional-diffusion
 created: 2026-05-11
-last_updated: 2026-05-30
+last_updated: 2026-05-31
 source_count: 1
 confidence: medium
 status: active
@@ -15,7 +15,7 @@ status: active
 
 # CoFILL 论文摘要
 
-**CoFILL** (Conditional Diffusion Model based on Temporal-Frequency Spatiotemporal Imputation) 是一种用于时空数据填补的新型条件扩散框架。
+**CoFILL** (Conditional Diffusion Model based on Temporal-Frequency Spatiotemporal Imputation) 是一种用于时空数据填补的新型条件扩散框架[^src-cofill-spatiotemporal-imputation]。
 
 ## 核心贡献
 
@@ -33,7 +33,7 @@ status: active
 
 ## 性能
 
-在 MAE、MSE、CRPS 三个指标上，CoFILL 在 15 种配置中的 12 种达到最优，相比 PriSTI 在 METR-LA Block 场景下 MAE/MSE 降低 10.22%。
+在 MAE、MSE、CRPS 三个指标上，CoFILL 在 15 种配置中的 12 种达到最优，相比 [[pristi|PriSTI]] 在 METR-LA Block 场景下 MAE/MSE 降低 10.22%。
 
 ## 代码
 
