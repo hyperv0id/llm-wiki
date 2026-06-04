@@ -49,4 +49,8 @@ $$\text{SNR}_{\text{reverse}}(t) = \frac{\hat{\gamma}^2_t \bar{\alpha}_t}{1 - \b
 
 SNR-t bias 的发现为理解和改进扩散模型提供了新的视角。相比 exposure bias 的 inter-sample 层面分析，SNR-t bias 深入到 sample-timestep 层面，揭示了更根本的误差来源，并且有完整的理论证明支持。这一概念可以推广到任何基于时间步条件化的生成模型中。
 
+## 链接
+
+- [[diffusion-frequency-domain-theory]] — 频域理论统一视角（问题演化叙事）
+
 [^src-snr-t-bias]: [[source-snr-t-bias]]

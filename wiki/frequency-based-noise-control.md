@@ -168,6 +168,7 @@ SAGD（Spectrally Anisotropic Gaussian Diffusion）是同一团队提出的完�
 - [[spectral-bias-training-dynamics]] — 扩散模型训练谱偏置理论
 - [[freqflow]] — FreqFlow，另一种频率感知方法，通过双分支架构在流匹配中显式建模频率（2026）
 - [[frequency-aware-conditioning]] — 频率感知条件化概念
+- [[diffusion-frequency-domain-theory]] — 频域理论统一视角（问题演化叙事）
 
 ## 引用
 

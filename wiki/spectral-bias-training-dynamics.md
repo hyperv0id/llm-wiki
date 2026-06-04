@@ -137,6 +137,7 @@ CNN-UNet 中谱偏置的消失揭示：**卷积架构设计本身重塑了学习
 - [[source-sagd]] — SAGD 完整版论文
 - [[edm-design-space]] — EDM 设计空间
 - [[diffusion-model]] — 扩散模型基础
+- [[diffusion-frequency-domain-theory]] — 频域理论统一视角（问题演化叙事）
 
 ## 引用
 

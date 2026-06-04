@@ -140,6 +140,7 @@ $$\mathbf{x}' = \mathbf{x} + \gamma_c\,\boldsymbol{\epsilon}_{[a_c, b_c]}$$
 - [[spurious-patterns]] — 虚假模式/捷径学习
 - [[spectral-bias-training-dynamics]] — 扩散模型训练谱偏置理论（"偏置为什么存在"的机理）
 - [[source-sagd]] — SAGD 完整版论文
+- [[diffusion-frequency-domain-theory]] — 频域理论统一视角（问题演化叙事）
 
 ## 引用
 

@@ -255,6 +255,7 @@ FlippedSNR 训练失败说明“先高频、后低频”的生成顺序可能很
 - [[inductive-bias-shaping]] — 通过训练过程设计塑造归纳偏置
 - [[diffusion-model]] — 扩散模型基础
 - [[ddpm]] — 标准 DDPM 前向过程
+- [[diffusion-frequency-domain-theory]] — 频域理论统一视角（问题演化叙事）
 
 ## 引用
 

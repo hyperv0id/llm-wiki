@@ -120,6 +120,7 @@ $$
 - [[inductive-bias-shaping]] — 前向信息破坏方式决定模型学习压力
 - [[snr-t-bias]] — 另一个 SNR 视角的扩散模型偏置，但关注推理阶段实际 SNR 与时间步错配
 - [[diffusion-model]] — 扩散模型基础
+- [[diffusion-frequency-domain-theory]] — 频域理论统一视角（问题演化叙事）
 
 ## 引用
 

@@ -107,6 +107,8 @@ Random mode selection consistently outperforms fixed low-frequency selection acr
 
 - **[[ltsf-linear|LTSF-Linear]]** — Zeng et al. (2022) showed that FEDformer is the most competitive Transformer on ETTh1 due to its frequency-based time series inductive bias. However, LTSF-Linear still outperforms FEDformer on most benchmarks by 20%–50%. FEDformer's performance drops 73.28% when input order is shuffled on ETTh1, indicating some temporal information extraction via frequency processing[^src-zeng-2022-are-transformers-effective].
 
+- [[diffusion-frequency-domain-theory]] — 频域理论统一视角（问题演化叙事）
+
 [^src-fedformer]: [[source-fedformer]]
 [^src-zhou-informer-2021]: [[source-zhou-informer-2021]]
 [^src-zeng-2022-are-transformers-effective]: [[source-zeng-2022-are-transformers-effective]]

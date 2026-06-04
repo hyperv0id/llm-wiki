@@ -160,5 +160,6 @@ SpecSTG 在 CRPS 和 Calibration 指标上均优于扩散基线，提升幅度�
 - [[efficient-cosine-operator]] — ECO，另一种 $O(N)$ 图卷积方法（原始域）
 - [[aurora]] — Aurora，流匹配生成式概率预测
 - [[ustd]] — USTD，解耦预训练的统一时空扩散预测与插值框架（SIGSPATIAL 2024）
+- [[diffusion-frequency-domain-theory]] — 频域理论统一视角（问题演化叙事）
 
 [^src-2401-08119-specstg]: [[source-2401-08119-specstg]]

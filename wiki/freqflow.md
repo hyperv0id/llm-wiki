@@ -313,3 +313,7 @@ SiT 将 DiT 架构与 Flow Matching 结合，但仍在纯空域操作。FreqFlow
 ## 引用
 
 [^src-freqflow]: [[source-freqflow]]
+
+## 链接
+
+- [[diffusion-frequency-domain-theory]] — 频域理论统一视角（问题演化叙事）

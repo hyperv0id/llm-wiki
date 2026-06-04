@@ -104,4 +104,9 @@ $\lambda_l$ 和 $\lambda_h$ 对最终 FID 的影响呈先降后升的单峰形�
 - DCW 使用 $\sigma_t$ 动态调度权重，而非固定系数
 - DCW 可在这些方法之上进一步改进（证明其捕捉到了不同/互补的偏置信号）
 
+## 链接
+
+- [[snr-t-bias]] — SNR-t Bias 概念页
+- [[diffusion-frequency-domain-theory]] — 频域理论统一视角（问题演化叙事）
+
 [^src-snr-t-bias]: [[source-snr-t-bias]]

@@ -70,6 +70,11 @@ $$
 - 加速训练收敛（更快达到低频目标）
 - 提升生成图像的结构一致性和细节锐度
 
+## 链接
+
+- [[freqflow]] — FreqFlow，频率感知条件化的代表性实现
+- [[diffusion-frequency-domain-theory]] — 频域理论统一视角（问题演化叙事）
+
 ## 引用
 
 [^src-freqflow]: [[source-freqflow]]
