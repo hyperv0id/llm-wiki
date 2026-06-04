@@ -11,6 +11,20 @@ tags:
 
 Chronological record of all wiki activity.
 
+## [2026-06-01] query | 专题：扩散模型频域理论
+
+创建分析页面 [[diffusion-frequency-domain-theory]]，以倒读法问题演化叙事综合 8 个源文件：谱偏置两种解释（经典 F-Principle 架构偏置 vs Wang & Pehlevan 数据驱动反比方差谱定律）、DDPM 前向加噪制造的频率层级（Falck EqualSNR）、频域噪声控制与 SAGD（归纳偏置塑造）、EqualSNR 的公平加噪与 FlippedSNR 失败、推理阶段 SNR-t Bias 与 DCW 小波域校正、范式转移（FreqFlow 双分支频率引导、SpecSTG 图谱域扩散、FEDformer 频域注意力、Crabbé 频域 SDE 时间序列谱系）。补充了图书管理员发现的 20+ 篇外部文献：Rissanen 逆热方程扩散、Dieleman "谱自回归"框架、Kadkhodaie 几何自适应调和偏置、Guth 小波 SGM、Spectrum Matching 感知价值论证、PaCoDi/StaTS/SpectFlow 时间序列频域扩散新进展。
+
+创建的页面：[[diffusion-frequency-domain-theory]]
+更新的页面：[[index]], [[log]]
+
+## [2026-06-01] query | 专题：时空基础模型全景
+
+创建分析页面 [[spatio-temporal-foundation-model-landscape]]，综合 12 个源文件从设计哲学（三重分裂：Scaling 派/先验注入派/解耦派）、架构范式（六条路线：纯 Transformer、Diffusion Transformer、Transformer+GNN、LLM-Based、因子化两阶段、VFM 重编程）、预训练策略（四象限：联合/解耦 × 重建/预测）、泛化机制（零样本/少样本/持续学习）四维深度解剖时空基础模型领域。揭示深层张力与收敛趋势：解耦派和 Scaling 派正收敛到同一洞察（时间和空间应分别处理）；Prompt → Zero-Shot 适配机制正在简化；单模态 → 多模态是下一代方向。补充了外部文献发现：UniSTD、ST-VFM（VFM 重编程路线）、天气/地球系统 FM 谱系、5 篇综述文献索引。
+
+创建的页面：[[spatio-temporal-foundation-model-landscape]]
+更新的页面：[[index]], [[log]]
+
 ## [2026-06-01] ingest | UrbanVerse: Learning Urban Region Representation Across Cities and Tasks (Sun et al., arXiv 2026)
 
 Ingest UrbanVerse paper (Fengze Sun, Egemen Tanin, Shanika Karunasekera, Zuqing Li, Flora D. Salim, Jianzhong Qi; University of Melbourne / UNSW, arXiv:2602.15750, Feb 17 2026). UrbanVerse is a foundation-style model for cross-city urban region representation learning and cross-task urban analytics. Core paradigm shift from city-centric to region-centric: partitions cities into 150m hexagonal grid cells, uses Node2vec random walks + Transformer mask-reconstruct (CELearning) to learn transferable cell embeddings that aggregate into region embeddings via AdaRegionGen (inherited from FlexiReg). Cross-task learning via HCondDiffCT — a heterogeneous conditional diffusion regression module that models p(y|h,u) using region-conditioned prior retrieval (RegCondP, Top-5 cosine-similar neighbors) and task-conditioned denoising (TaskCondD, element-wise modulation of timestep+task embeddings). 3 cities (NYC/CHI/SF) × 6 tasks (Crime/Check-in/Service Call/Population/Carbon/Nightlight), 7 baselines. Cross-city: UrbanVerse consistently outperforms all baselines, R² gains up to +35.89% (SF crime) over FlexiReg. Suburban generalization: Staten Island population R²=0.781 vs FlexiReg 0.609 (+28.2%). HCondDiffCT as plug-and-play module: GURPP-DiffCT nightlight R² 0.035→0.171 (+388.6%), UrbanCLIP-DiffCT carbon R² 0.021→0.204 (+871.4%). Only uses POI+neighbor features (15-dim), minimal feature set maximizes cross-city transfer. Complementary to UrbanFM (traffic sequences vs. region attributes), both arXiv Feb 2026. Limitations: no temporal dimension, requires ≥2 training cities, only continuous regression tasks, US-city training bias. Created source-summary and technique pages; added reciprocal wikilinks to 4 existing pages (urbanfm, urbangpt, urbanpg, spatio-temporal-foundation-model).
