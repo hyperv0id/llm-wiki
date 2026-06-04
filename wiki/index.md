@@ -162,6 +162,7 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Sources (continued)
 - [[source-urbanverse]] — UrbanVerse: Learning Urban Region Representation Across Cities and Tasks, cross-city/cross-task foundation model (arXiv 2026)
+- [[source-dyffusion]] — DYffusion: A Dynamics-informed Diffusion Model for Spatiotemporal Forecasting (NeurIPS 2023)
 
 ## Entities
 - [[sa-bcp]] — SA-BCP, state-adaptive Bayesian conformal prediction (arXiv 2026)
@@ -182,6 +183,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[dcrnn]] — DCRNN, diffusion convolutional recurrent neural network for traffic forecasting (ICLR 2018)
 - [[diffstg]] — DiffSTG, probabilistic spatio-temporal graph forecasting with denoising diffusion (AAAI 2023)
 - [[dpm-solver]] — DPM-Solver, fast ODE solver for diffusion model (NeurIPS 2022)
+- [[dyffusion]] — DYffusion, dynamics-informed diffusion model for spatiotemporal forecasting (NeurIPS 2023)
 - [[consistency-models]] — Consistency Models, one-step generation via trajectory consistency (ICML 2023)
 - [[shortcut-models]] — Shortcut Models, one-step diffusion via step-size conditioning and self-consistency (arXiv 2025)
 - [[instaflow]] — InstaFlow, reflow+distill pipeline for one-step SD text-to-image (ICLR 2024)
@@ -479,6 +481,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[dcw]] — DCW，小波域差分校正，缓解扩散模型 SNR-t Bias 的即插即用方法 (CVPR 2026)
 
 ## Techniques (continued)
+- [[cold-sampling]] — Cold Sampling, DDIM推广到广义扩散模型的采样算法，与 Euler 方法求解 ODE 等价
 - [[projected-attention]] — low-rank temporal projected attention for linear-complexity time series imputation (KDD 2024)
 - [[embedded-attention]] — low-rank spatial embedded attention using node embedding agents (KDD 2024)
 - [[fourier-imputation-loss]] — Fourier sparsity regularization for signal-noise balanced imputation (KDD 2024)

@@ -8,8 +8,8 @@ tags:
   - flow-matching
   - diffusion-models
 created: 2026-05-03
-last_updated: 2026-06-01
-source_count: 5
+last_updated: 2026-06-04
+source_count: 6
 confidence: high
 status: active
 ---
@@ -43,6 +43,8 @@ status: active
 
 **[[ustd|USTD]]** (SIGSPATIAL 2024) 首次统一时空预测和插值到扩散框架。核心贡献：预训练编码器（GWNet backbone + 75% masking + 80% graph sampling）与任务特定 gated attention denoisers（TGA/SGA）的解耦两阶段训练，打破了此前"diffusion STG 打不过 deterministic baseline"的共识。4 数据集 × 16 baselines，CRPS 最高降低 12%，推理比 CSDI 快 ~47%。
 
+**[[dyffusion|DYffusion]]** (NeurIPS 2023) 是首个将扩散模型的退化和重建过程完全替换为时序插值和预测的框架，不使用高斯噪声[^src-dyffusion]。通过两阶段训练（插值器 $\mathcal{I}_\phi$ → 冻结 → 预测器 $F_\theta$）和 Cold Sampling 推理，实现了常数级训练内存和 $<50$ 步扩散推理。在 SST、Navier-Stokes 和 Spring Mesh 物理系统上全面超越 Dropout/DDPM/MCVD 基线[^src-dyffusion]。
+
 ### 流匹配方法
 
 **[[freqflow-ts|FrèqFlow/SpectFlow]]** (NeurIPS 2025) 首次将条件流匹配引入频域进行确定性 MTS 预测。通过复值线性层在频域中插值频谱，配合流匹配头进行残差学习，仅 89k 参数即达到 SOTA。采用 ODE 单次确定性采样，推理速度远超扩散方法[^src-2511-16426]。
@@ -57,6 +59,7 @@ status: active
 | SpecSTG | Diffusion (谱域) | 仅数值 | ✗ | 概率分布 + 点估计 | **谱域** |
 | **FrèqFlow** | **Flow Matching (频域)** | **仅数值** | **✗** | **点估计（确定性）** | **频域** |
 | Aurora | Flow Matching (OT) | 文本 + 图像 + 数值 | ✓ | 概率分布 | 原始域 |
+| DYffusion | Diffusion (非高斯) | 仅数值 | ✗ | 概率分布 | 原始域 |
 
 ## 优势
 
@@ -77,6 +80,7 @@ status: active
 - [[simdiff]] — 扩散式生成预测模型
 - [[freqflow-ts|FrèqFlow/SpectFlow]] — 频域流匹配确定性预测（NeurIPS 2025）
 - [[ustd]] — USTD，解耦预训练的统一时空扩散预测与插值框架（SIGSPATIAL 2024）
+- [[dyffusion]] — DYffusion，动力学信息扩散模型（NeurIPS 2023）
 - [[flow-matching]] — Flow Matching 理论基础
 - [[diffusion-model]] — 扩散模型理论基础
 - [[multimodal-time-series-forecasting]] — 多模态时间序列预测
@@ -86,3 +90,4 @@ status: active
 [^src-timegrad]: [[source-timegrad]]
 [^src-2401-08119-specstg]: [[source-2401-08119-specstg]]
 [^src-2511-16426]: [[source-2511-16426]]
+[^src-dyffusion]: [[source-dyffusion]]

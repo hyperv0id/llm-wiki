@@ -6,9 +6,9 @@ tags:
   - diffusion
   - deep-learning
 created: 2026-04-28
-last_updated: 2026-05-30
-source_count: 1
-confidence: medium
+last_updated: 2026-06-04
+source_count: 2
+confidence: high
 status: active
 ---
 
@@ -43,12 +43,20 @@ $$
 
 逆向过程对应反向时间 SDE，福克-普朗克方程描述概率密度的演化。[^src-chan-2025-diffusion-tutorial]
 
+## 非高斯扩散（广义扩散模型）
+
+Cold Diffusion（Bansal et al., 2022）提出了"广义扩散模型"框架，将前向过程从高斯加噪推广到任意退化算子 $\mathcal{D}$，反向过程学习逆转该退化[^src-dyffusion]。该框架下：
+
+- **[[dyffusion|DYffusion]]** (NeurIPS 2023)：将扩散前向过程替换为时序插值，反向过程替换为时序预测，将扩散步与物理时间步直接耦合，专门面向时空动力学预测[^src-dyffusion]
+- **[[cold-sampling|Cold Sampling]]**：DDIM 在广义扩散模型上的推广，对应 Euler 方法求解隐式动力系统的 ODE[^src-dyffusion]
+
 ## 应用领域
 
 - 图像生成（DALL-E, Stable Diffusion 的底层技术）
 - 音频合成
 - 药物分子设计
 - 逆问题求解（去模糊、超分辨率、修复）
+- 时空动力学预测（DYffusion）[^src-dyffusion]
 
 ## 挑战与未来方向
 
@@ -61,3 +69,4 @@ $$
 ## 引用
 
 [^src-chan-2025-diffusion-tutorial]: [[source-chan-2025-diffusion-tutorial]]
+[^src-dyffusion]: [[source-dyffusion]]
