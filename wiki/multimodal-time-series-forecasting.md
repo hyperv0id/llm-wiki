@@ -8,7 +8,7 @@ tags:
   - covariate
 created: 2026-04-29
 last_updated: 2026-06-04
-source_count: 7
+source_count: 8
 confidence: high
 status: active
 ---
@@ -157,6 +157,10 @@ UniCA 在多模态场景下的表现：
 
 **[[allspark|AllSpark]]** (Shao et al., 2024) 是一个统一 10 种时空模态的通用智能模型，涵盖语言、代码、表格（1D）、RGB、SAR、多光谱、高光谱、图、轨迹（2D）和点云（3D）[^src-allspark]。其核心设计原则是 **[[language-as-reference-framework|Language as Reference Framework (LaRF)]]**：将异质模态特征通过 modal bridge 映射到统一的语言特征空间，实现跨模态联合解释[^src-allspark]。虽然 AllSpark 侧重遥感/地理空间智能而非纯时间序列预测，但其轨迹和 graph 模态直接覆盖时空预测任务，且 training-free 的 few-shot 能力（RGB 5-way 1-shot 达 95.58%）代表了多模态模型的新方向[^src-allspark]。
 
+## STReasoner：时空推理 TS-LM
+
+**[[streasoner|STReasoner]]** (Ni et al., 2026) 是首个面向时间序列时空推理的 TS-LM，通过 S-GRPO 空间感知强化学习实现多步 CoT 推理[^src-streasoner]。与本章所有其他模型不同，STReasoner 的核心任务不是预测数值，而是回答自然语言查询（如 "哪个节点导致了 Node 2 在 9:00 的拥堵？"），要求模型显式追踪传播路径、识别延时，整合图结构、时序数据和文本语义[^src-streasoner]。在 ST-Bench 四个任务上，STReasoner-8B 以 0.004× proprietary model 成本实现 17-135% 平均提升[^src-streasoner]。
+
 ## 相关概念
 
 - [[heterogeneous-covariates]] — 异构协变量
@@ -179,6 +183,9 @@ UniCA 在多模态场景下的表现：
 - [[allspark]] — AllSpark 10 模态时空通用智能模型
 - [[language-as-reference-framework]] — LaRF 以语言为参考框架的多模态统一原理
 
+- [[streasoner]] — STReasoner 时空推理 TS-LM
+- [[spatio-temporal-reasoning]] — 时空推理概念
+
 ---
 
 ## 引用
@@ -190,3 +197,4 @@ UniCA 在多模态场景下的表现：
 [^src-language-in-the-flow-of-time]: [[source-language-in-the-flow-of-time]]
 [^src-cvpe-2025]: [[source-cvpe-2025]]
 [^src-allspark]: [[source-allspark]]
+[^src-streasoner]: [[source-streasoner]]

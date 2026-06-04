@@ -81,6 +81,7 @@ Time-LLM 是 Jin et al. (ICLR 2024) 提出的框架，首次通过 **model repro
 - 对比：[[chronos]] — 时序 tokenization + 语言模型
 - 关系：[[multimodal-time-series-forecasting]] — LLM+TS 多模态预测
 - 关系：[[timecap]] — 双 LLM agent 时序事件预测
+- 演化：[[streasoner]] — STReasoner, 首个时空推理 TS-LM, 在 Time-LLM 范式上增加 graph + multi-step CoT + spatial-aware RL
 - 概念：[[model-reprogramming]] — 跨域模型重编程范式
 
 [^src-time-llm]: [[source-time-llm]]
