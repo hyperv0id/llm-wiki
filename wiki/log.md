@@ -2,7 +2,7 @@
 title: Log
 type: concept
 created: 2026-04-26
-last_updated: 2026-06-01
+last_updated: 2026-06-04
 tags:
   - meta
 ---
@@ -10,6 +10,13 @@ tags:
 # Wiki Log
 
 Chronological record of all wiki activity.
+
+## [2026-06-04] ingest | Time-LLM: Time Series Forecasting by Reprogramming Large Language Models (Jin et al., ICLR 2024)
+
+Ingest Time-LLM paper (Ming Jin, Shiyu Wang et al., Monash/Ant Group/IBM/Griffith/Alibaba/HKUST-GZ, ICLR 2024 / arXiv:2310.01728). Time-LLM is the first framework to repurpose frozen LLMs (Llama-7B/GPT-2) for general time series forecasting via model reprogramming — no backbone fine-tuning required. Core innovations: (1) Patch Reprogramming — multi-head cross-attention with learned text prototypes aligns time series patches to the LLM's pretrained word embedding space, each patch represented by a sparse combination of text prototypes like "periodic", "seasonal", "quantile"; (2) Prompt-as-Prefix (PaP) — natural language prompts with dataset context, task instructions, and input statistics guide the frozen LLM's transformation of reprogrammed patches; (3) output patches from LLM flattened + projected to forecasts. Only ~6.6M trainable parameters (0.2% of Llama-7B). SOTA on long-term (7/8 datasets MSE best), short-term (M4 benchmark), 10%/5% few-shot, and zero-shot cross-domain forecasting; scaling law preserved across backbones. PaP + Patch Reprogramming jointly essential: ablating either degrades >8% (full-shot) and >17% (few-shot). Key ablation: input statistics are the most critical PaP component (10.2% MSE impact). Created source-summary, entity, technique (patch-reprogramming, prompt-as-prefix), and concept (model-reprogramming) pages; added wikilinks from CVPE, source-cvpe-2025, multimodal-time-series-forecasting.
+
+创建的页面：[[source-time-llm]], [[time-llm]], [[patch-reprogramming]], [[prompt-as-prefix]], [[model-reprogramming]]
+更新的页面：[[cvpe]], [[source-cvpe-2025]], [[multimodal-time-series-forecasting]], [[index]], [[log]]
 
 ## [2026-06-01] query | 专题：扩散模型频域理论
 

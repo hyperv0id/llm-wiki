@@ -7,7 +7,7 @@ tags:
   - forecasting
   - covariate
 created: 2026-04-29
-last_updated: 2026-05-31
+last_updated: 2026-06-04
 source_count: 6
 confidence: high
 status: active
@@ -35,8 +35,8 @@ status: active
 ### 1. 文本增强预测
 
 利用 LLM 的强大时间编码能力：
-- **Time-LLM**：将时间序列 reprogramming 为 LLM 输入
-- **Time-LLM + CVPE**：在 Time-LLM 的 patch embedding 层注入跨变量上下文，Weather ↓4.6% MSE, Traffic ↓6.7% MSE [^src-cvpe-2025]
+- **[[time-llm|Time-LLM]]**：将时间序列 reprogramming 为 LLM 输入
+- **Time-LLM + CVPE**：在 [[time-llm|Time-LLM]] 的 patch embedding 层注入跨变量上下文，Weather ↓4.6% MSE, Traffic ↓6.7% MSE [^src-cvpe-2025]
 - **ChatTime**：结合时间感知提示
 - **LLM4TS**：零样本 LLM 预测
 

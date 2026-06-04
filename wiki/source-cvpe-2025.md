@@ -9,7 +9,7 @@ tags:
   - cross-variate
   - Time-LLM
 created: 2026-05-30
-last_updated: 2026-05-30
+last_updated: 2026-06-04
 source_count: 1
 confidence: medium
 status: active
@@ -21,7 +21,7 @@ Shin & Zhang (arXiv:2505.12761v3, 2025, under review) 提出 Cross-Variate Patch
 
 ## 核心问题
 
-CI 模型（如 PatchTST、Time-LLM）将多元时间序列视为一组单变量预测任务，仅建模时间依赖，忽略了变量间关系。CI 模型在复杂度和鲁棒性上优于许多 CD 模型，但无法捕获跨变量依赖，导致模型容量受限 [^src-cvpe-2025]。另一方面，完全 CD 模型（如 Crossformer、iTransformer、CARD、UniTST）在所有层上建模跨变量依赖，容易过拟合噪声 [^src-cvpe-2025]。
+CI 模型（如 [[patchtst|PatchTST]]、[[time-llm|Time-LLM]]）将多元时间序列视为一组单变量预测任务，仅建模时间依赖，忽略了变量间关系。CI 模型在复杂度和鲁棒性上优于许多 CD 模型，但无法捕获跨变量依赖，导致模型容量受限 [^src-cvpe-2025]。另一方面，完全 CD 模型（如 Crossformer、iTransformer、CARD、UniTST）在所有层上建模跨变量依赖，容易过拟合噪声 [^src-cvpe-2025]。
 
 ## CVPE 方法
 
@@ -33,7 +33,7 @@ CVPE 在 patch embedding 层注入跨变量信息，保留 CI backbone 的鲁棒
 
 ## 实验结果
 
-集成到 Time-LLM（GPT-2 backbone, T=256），在 7 个数据集上评估 [^src-cvpe-2025]：
+集成到 [[time-llm|Time-LLM]]（GPT-2 backbone, T=256），在 7 个数据集上评估 [^src-cvpe-2025]：
 
 | 数据集 | 平均 MSE 改进 | 备注 |
 |---------|--------------|------|

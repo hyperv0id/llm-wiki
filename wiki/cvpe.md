@@ -8,7 +8,7 @@ tags:
   - patch-embedding
   - cross-variate
 created: 2026-05-30
-last_updated: 2026-05-30
+last_updated: 2026-06-04
 source_count: 1
 confidence: medium
 status: active
@@ -20,7 +20,7 @@ CVPE 是一种轻量级模块，将跨变量上下文注入通道独立 (CI) 时
 
 ## 设计动机
 
-CI 模型（如 PatchTST、Time-LLM）仅建模时间依赖而忽略跨变量关系，导致模型容量受限；而完全 CD 模型（如 Crossformer、iTransformer）在所有层建模跨变量依赖，容易过拟合噪声。CVPE 在两者之间找到折中——仅在最轻量的 patch embedding 层注入跨变量信息，保留 CI 的鲁棒性 [^src-cvpe-2025]。
+CI 模型（如 [[patchtst|PatchTST]]、[[time-llm|Time-LLM]]）仅建模时间依赖而忽略跨变量关系，导致模型容量受限；而完全 CD 模型（如 Crossformer、iTransformer）在所有层建模跨变量依赖，容易过拟合噪声。CVPE 在两者之间找到折中——仅在最轻量的 patch embedding 层注入跨变量信息，保留 CI 的鲁棒性 [^src-cvpe-2025]。
 
 ## 架构
 
@@ -45,7 +45,7 @@ $$\hat{Z} = \text{LayerNorm}(X_P + Z), \quad Z' = \text{LayerNorm}(\hat{Z} + \te
 
 ## 实验性能
 
-集成到 Time-LLM（GPT-2 backbone, T=256）[^src-cvpe-2025]：
+集成到 [[time-llm|Time-LLM]]（GPT-2 backbone, T=256）[^src-cvpe-2025]：
 
 - Weather: 平均 MSE ↓4.6%
 - Traffic (Modified): 平均 MSE ↓6.7%

@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-06-01
+last_updated: 2026-06-04
 tags:
   - meta
 ---
@@ -96,6 +96,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-event-driven-ts-forecasting]] — VoT: event-driven reasoning and multi-level alignment for time series forecasting (ICLR 2026)
 - [[source-aurora]] — Aurora: universal generative multimodal time series forecasting (arXiv 2026)
 - [[source-bigcity]] — BIGCity: first MTMD spatio-temporal model unifying trajectory + traffic state (arXiv 2024)
+- [[source-time-llm]] — Time-LLM: Time Series Forecasting by Reprogramming Large Language Models (ICLR 2024)
 - [[source-timecap]] — TimeCAP: contextualize, augment, and predict time series events with LLM agents (AAAI 2025 Oral)
 - [[source-bluuuuue-scaling-factor-intuition]] — 数学直觉系列（一）：缩放因子1/√dₖ——注意力机制的数值稳定性条件 (bluuuuue, 小红书)
 - [[source-bluuuuue-reparameterization-trick]] — 数学直觉系列（二）：VAE与重参数化——将不可逆的随机采样重构为可微的确定性变换 (bluuuuue, 小红书)
@@ -236,6 +237,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[s-mamba]] — S-Mamba, Mamba-based MTS forecasting with bidirectional VC + FFN TD encoding (Neurocomputing 2024)
 - [[timecap]] — TimeCAP, dual LLM agent contextualization + multi-modal encoder event prediction (AAAI 2025 Oral)
 - [[tedm]] — TEDM, elucidated diffusion for time series, diffusion time = physical time O(H) (ICLR 2026)
+- [[time-llm]] — Time-LLM, reprogramming frozen LLMs for time series forecasting (ICLR 2024)
 - [[timecap]] — TimeCAP, dual LLM agent + multi-modal encoder framework for time series event prediction (AAAI 2025 Oral)
 - [[timegrad]] — TimeGrad, first diffusion model for multivariate probabilistic time series forecasting (ICML 2021)
 - [[patchtst]] — PatchTST, patch tokenization + channel independence Transformer for LSTF and self-supervised learning (ICLR 2023)
@@ -313,6 +315,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[generative-time-series-forecasting]] — 生成式时间序列预测，通过概率建模实现不确定性量化的预测范式
 - [[chronological-textual-resonance]] — CTR，时间序列配对文本与数值序列的周期性共振现象 (ICLR 2026)
 - [[lstf]] — Long Sequence Time-Series Forecasting, the problem setting formalized by Informer
+- [[model-reprogramming]] — 模型重编程，冻结预训练模型通过输入变换+输出投影跨域重用的范式
 - [[texts-as-auxiliary-variables]] — 文本作为辅助变量，TaTS 的核心设计概念 (ICLR 2026)
 - [[extreme-weather-forecasting]] — 极端天气预测，对罕见非线性大气极端事件的预报 (arXiv 2025)
 - [[signal-to-noise-ratio-modality-selection]] — SNR-based adaptive modality weighting for multi-modal prediction
@@ -346,8 +349,10 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[router-mechanism-for-cross-dimension]] — Router mechanism reducing cross-dimension attention from O(D²L) to O(DL) (ICLR 2023)
 - [[hierarchical-encoder-decoder-ts]] — HED, hierarchical encoder-decoder for multi-scale time series forecasting (ICLR 2023)
 - [[mpgru]] — MPGRU, message passing GRU unit replacing gating with MPNN for spatial aggregation (ICLR 2022)
+- [[patch-reprogramming]] — Patch Reprogramming，通过 cross-attention to text prototypes 将时序 patch 对齐到 LLM 词嵌入空间 (ICLR 2024)
 - [[spatial-imputation-decoder]] — Spatial Imputation Decoder, neighbor-only two-stage message-passing imputation (ICLR 2022)
 - [[projected-fisher-divergence]] — 投影 Fisher 散度，Flux Matching 中用于学习分布保持向量场的统计散度
+- [[prompt-as-prefix]] — Prompt-as-Prefix (PaP)，通过自然语言提示引导冻结 LLM 对时间序列的推理变换 (ICLR 2024)
 - [[spectral-graph-wavelet-transform]] — SGWT，谱图小波变换用于图信号的多尺度分解
 - [[frequency-enhanced-attention]] — FEA, Fourier/Wavelet-domain cross-attention substituing standard attention in FEDformer (ICML 2022)
 - [[frequency-enhanced-block]] — FEB, frequency-domain self-attention substiution in FEDformer via Fourier or Wavelet (ICML 2022)
