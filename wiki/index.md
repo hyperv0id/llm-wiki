@@ -163,8 +163,10 @@ All wiki pages, organized by type. Updated on every ingest.
 ## Sources (continued)
 - [[source-urbanverse]] — UrbanVerse: Learning Urban Region Representation Across Cities and Tasks, cross-city/cross-task foundation model (arXiv 2026)
 - [[source-dyffusion]] — DYffusion: A Dynamics-informed Diffusion Model for Spatiotemporal Forecasting (NeurIPS 2023)
+- [[source-allspark]] — AllSpark: multimodal spatio-temporal general intelligence model with 10 modalities via LaRF (Shao et al., 2024)
 
 ## Entities
+- [[allspark]] — AllSpark, 10-modality spatio-temporal general intelligence model (Shao et al., 2024)
 - [[sa-bcp]] — SA-BCP, state-adaptive Bayesian conformal prediction (arXiv 2026)
 - [[scale]] — SCALE, spectral conformal prediction via wavelet transform (ICML 2026)
 - [[adaptive-positional-encoding]] — APE, adaptive positional encoding for infinite length extrapolation (2026)
@@ -316,6 +318,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[multi-level-alignment]] — 多级对齐，在表示级和预测级融合文本与时间序列模态 (ICLR 2026)
 - [[generative-time-series-forecasting]] — 生成式时间序列预测，通过概率建模实现不确定性量化的预测范式
 - [[chronological-textual-resonance]] — CTR，时间序列配对文本与数值序列的周期性共振现象 (ICLR 2026)
+- [[language-as-reference-framework]] — LaRF, 以语言为参考框架的多模态统一原理 (Shao et al., 2024)
 - [[lstf]] — Long Sequence Time-Series Forecasting, the problem setting formalized by Informer
 - [[model-reprogramming]] — 模型重编程，冻结预训练模型通过输入变换+输出投影跨域重用的范式
 - [[texts-as-auxiliary-variables]] — 文本作为辅助变量，TaTS 的核心设计概念 (ICLR 2026)

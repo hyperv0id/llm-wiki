@@ -8,7 +8,7 @@ tags:
   - covariate
 created: 2026-04-29
 last_updated: 2026-06-04
-source_count: 6
+source_count: 7
 confidence: high
 status: active
 ---
@@ -153,6 +153,10 @@ UniCA 在多模态场景下的表现：
 
 ---
 
+## AllSpark：多模态时空通用智能模型
+
+**[[allspark|AllSpark]]** (Shao et al., 2024) 是一个统一 10 种时空模态的通用智能模型，涵盖语言、代码、表格（1D）、RGB、SAR、多光谱、高光谱、图、轨迹（2D）和点云（3D）[^src-allspark]。其核心设计原则是 **[[language-as-reference-framework|Language as Reference Framework (LaRF)]]**：将异质模态特征通过 modal bridge 映射到统一的语言特征空间，实现跨模态联合解释[^src-allspark]。虽然 AllSpark 侧重遥感/地理空间智能而非纯时间序列预测，但其轨迹和 graph 模态直接覆盖时空预测任务，且 training-free 的 few-shot 能力（RGB 5-way 1-shot 达 95.58%）代表了多模态模型的新方向[^src-allspark]。
+
 ## 相关概念
 
 - [[heterogeneous-covariates]] — 异构协变量
@@ -172,6 +176,8 @@ UniCA 在多模态场景下的表现：
 - [[event-driven-reasoning]] — 事件驱动推理范式
 - [[multi-level-alignment]] — 多级对齐概念
 - [[cvpe]] — 跨变量 Patch Embedding (CI+CD 折中策略)
+- [[allspark]] — AllSpark 10 模态时空通用智能模型
+- [[language-as-reference-framework]] — LaRF 以语言为参考框架的多模态统一原理
 
 ---
 
@@ -183,3 +189,4 @@ UniCA 在多模态场景下的表现：
 [^src-aurora]: [[source-aurora]]
 [^src-language-in-the-flow-of-time]: [[source-language-in-the-flow-of-time]]
 [^src-cvpe-2025]: [[source-cvpe-2025]]
+[^src-allspark]: [[source-allspark]]

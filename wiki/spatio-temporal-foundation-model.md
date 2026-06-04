@@ -7,8 +7,8 @@ tags:
   - zero-shot
   - generalization
 created: 2026-05-03
-last_updated: 2026-06-01
-source_count: 11
+last_updated: 2026-06-04
+source_count: 12
 confidence: high
 status: active
 ---
@@ -44,6 +44,7 @@ Before the emergence of true foundation models, **[[gpt-st|GPT-ST]]** (NeurIPS 2
 
 ### Multi-Modal
 - **[[most|MoST]]** (KDD 2026): First multi-modality spatio-temporal foundation model. Supports satellite imagery, POI text, location, and time series as input modalities with adaptive SNR-based selection[^src-most].
+- **[[allspark|AllSpark]]** (Shao et al., 2024): Unifies **10 spatio-temporal modalities** (1D: language/code/table, 2D: RGB/SAR/MSI/HSI/graph/trajectory, 3D: point cloud) via the [[language-as-reference-framework|LaRF]] principle, using language as the universal alignment anchor[^src-allspark]. Extends beyond traffic to remote sensing and general geospatial intelligence.
 
 ## Key Challenges
 
@@ -77,6 +78,8 @@ Before the emergence of true foundation models, **[[gpt-st|GPT-ST]]** (NeurIPS 2
 - [[spatio-temporal-foundation-model-landscape]] — 时空基础模型全景分析：设计哲学、架构范式、预训练策略、泛化机制深度比较
 - [[urbanpg]] — UrbanPG, prompt-backbone decoupled ST framework unifying large-scale + few-shot + continual learning (AAAI 2026)
 - [[ustd]] — USTD, task-unified ST diffusion (SIGSPATIAL 2024), complementary to foundation model paradigm
+- [[allspark]] — AllSpark, 10-modality geospatial intelligence via language as reference framework
+- [[language-as-reference-framework]] — LaRF principle
 
 [^src-most]: [[source-most]]
 [^src-urbandit]: [[source-urbandit]]
@@ -88,3 +91,4 @@ Before the emergence of true foundation models, **[[gpt-st|GPT-ST]]** (NeurIPS 2
 [^src-urbanfm]: [[source-urbanfm]]
 [^src-urbanpg]: [[source-urbanpg]]
 [^src-factost]: [[source-factost]]
+[^src-allspark]: [[source-allspark]]
