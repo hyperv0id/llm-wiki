@@ -142,6 +142,7 @@ FactoST is the only STFM that achieves linear complexity through complete **stag
 - [[urbangpt]] — LLM-based approach; FactoST demonstrates pure-parameter approach
 - [[bigcity]] — MTMD model; FactoST could serve as an alternative UTP backbone
 - [[timesfm]] — pure TSFM, FactoST's temporal-only pretraining shares philosophy but adds STA
+- [[spatio-temporal-foundation-model-landscape]] — 时空基础模型全景分析：解耦派代表的深层设计哲学
 - [[source-factost]] — source summary page
 
 [^src-factost]: [[source-factost]]

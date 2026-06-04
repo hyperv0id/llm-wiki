@@ -126,6 +126,7 @@ UniST sits at the intersection of three research threads[^src-unist]:
 - [[std-mae]] — STD-MAE, spatial-temporal-decoupled masked pre-training (IJCAI 2024)
 - [[patchtst]] — PatchTST, origin of patch-based time series tokenization (ICLR 2023)
 - [[bigcity]] — BIGCity, first MTMD ST model, extends beyond UniST's traffic-only scope to include trajectories (arXiv 2024)
+- [[spatio-temporal-foundation-model-landscape]] — 时空基础模型全景分析：先验注入派/prompt-learning 路线代表
 
 [^src-unist]: [[source-unist]]
 [^src-urbandit]: [[source-urbandit]]

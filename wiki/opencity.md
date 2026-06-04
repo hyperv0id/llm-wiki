@@ -137,5 +137,6 @@ OpenCity is the culmination of the HKU DAO Lab's (Chao Huang group) spatio-tempo
 - [[patchtst]] — PatchTST, origin of patch-based time series tokenization
 - [[bigcity]] — BIGCity, first MTMD ST model, extends foundation model scope from OpenCity's traffic-only to trajectory+traffic state (arXiv 2024)
 - [[urbanpg]] — UrbanPG, prompt-backbone decoupled ST framework with O(N·d²) linear attention, unifies large-scale + few-shot + continual learning (AAAI 2026)
+- [[spatio-temporal-foundation-model-landscape]] — 时空基础模型全景分析：Transformer+GNN 混合路线代表
 
 [^src-opencity]: [[source-opencity]]

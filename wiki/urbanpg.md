@@ -95,5 +95,6 @@ UrbanPG 区别于 [[flashst|FlashST]] 的关键点是：FlashST 也做 prompt tu
 - [[gwnet]] — GWNet, traditional O(N²) STGNN baseline compared by UrbanPG
 - [[stid]] — STID, lightweight embedding-only baseline that inspired UrbanPG's context prompts
 - [[urbanverse]] — UrbanVerse, foundation model for cross-city/cross-task region attribute prediction (crime/population/carbon), complementary urban ML paradigm (arXiv 2026)
+- [[spatio-temporal-foundation-model-landscape]] — 时空基础模型全景分析：prompt-backbone 解耦路线
 
 [^src-urbanpg]: [[source-urbanpg]]

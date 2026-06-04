@@ -74,6 +74,7 @@ Before the emergence of true foundation models, **[[gpt-st|GPT-ST]]** (NeurIPS 2
 - [[urbanfm]] — UrbanFM, scaling-centric ST foundation model with WorldST+MiniST+minimalist Transformer (arXiv 2026)
 - [[factost]] — FactoST, factorized ST foundation model with UTP+STA, linear complexity (NeurIPS 2025 / arXiv 2026)
 - [[urbanverse]] — UrbanVerse, complementary model for cross-city/cross-task urban region attribute prediction (crime/population/carbon/nightlight), non-temporal (arXiv 2026)
+- [[spatio-temporal-foundation-model-landscape]] — 时空基础模型全景分析：设计哲学、架构范式、预训练策略、泛化机制深度比较
 - [[urbanpg]] — UrbanPG, prompt-backbone decoupled ST framework unifying large-scale + few-shot + continual learning (AAAI 2026)
 - [[ustd]] — USTD, task-unified ST diffusion (SIGSPATIAL 2024), complementary to foundation model paradigm
 

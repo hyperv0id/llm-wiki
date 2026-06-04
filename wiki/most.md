@@ -72,6 +72,7 @@ MoST is unique in being a **native multi-modality foundation model** for spatio-
 - [[mindts]] — MindTS multimodal anomaly detection (prediction vs. anomaly detection contrast)
 - [[multimodal-time-series-anomaly-detection]] — multimodal TS anomaly detection task
 - [[aurora]] — Aurora generative multimodal TS foundation model
+- [[spatio-temporal-foundation-model-landscape]] — 时空基础模型全景分析：多模态路线代表
 
 [^src-most]: [[source-most]]
 [^src-aurora]: [[source-aurora]]

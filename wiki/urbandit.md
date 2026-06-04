@@ -96,6 +96,7 @@ UrbanDiT-L 展现出最强的扩展行为——数据量增加时性能提升斜
 - [[uniflow]] — UniFlow，同实验室的纯 Transformer + ST-MRA 路线（grid+graph 统一）
 - [[dit]] — DiT，UrbanDiT 的基础架构
 - [[rectified-flow|Rectified Flow]] — 直线 ODE 生成，UrbanDiT 的训练基础
-- [[bigcity]] — BIGCity，首个 MTMD 时空模型，使用 GPT-2+LoRA+Prompt 扩展 UrbanDiT 的 traffic-only 范式到轨迹+交通状态（arXiv 2024）
+- [[bigcity]] — BIGCity,首个 MTMD 时空模型，使用 GPT-2+LoRA+Prompt 扩展 UrbanDiT 的 traffic-only 范式到轨迹+交通状态（arXiv 2024）
+- [[spatio-temporal-foundation-model-landscape]] — 时空基础模型全景分析：扩散路线代表
 
 [^src-urbandit]: [[source-urbandit]]

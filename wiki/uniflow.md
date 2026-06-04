@@ -129,6 +129,7 @@ UniFlow 与以下页面紧密关联：
 - [[channel-independence]] — CI 策略，UniFlow 在两阶段 patching 中采用
 - [[ustd]] — USTD，任务统一型 ST diffusion 框架（SIGSPATIAL 2024），与 UniFlow 的 foundation model 路线互补——USTD 的 GSM 预训练策略可用于 foundation model 编码器训练
 - [[bigcity]] — BIGCity，首个 MTMD 时空模型，将 UniFlow 的 traffic-only 范式扩展到轨迹+交通状态联合处理（arXiv 2024）
+- [[spatio-temporal-foundation-model-landscape]] — 时空基础模型全景分析：先验注入派/纯 Transformer 路线代表
 
 ## 局限性
 

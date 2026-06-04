@@ -203,4 +203,8 @@ BIGCity's core contribution is not a specific SOTA number (though it achieves SO
 
 ST-unit may become the standard representation for spatiotemporal data, analogous to ViT's patch embedding for images and GPT's BPE tokenization for text[^src-bigcity].
 
+## Related Analysis
+
+- [[spatio-temporal-foundation-model-landscape]] — 时空基础模型全景分析：LLM-Based + 多数据类型路线代表
+
 [^src-bigcity]: [[source-bigcity]]

@@ -80,5 +80,6 @@ UrbanFM 受 Sutton 的"苦涩教训"启发——当计算规模超越关键阈�
 - [[urbangpt]] — 基于 LLM 的时空基础模型
 - [[urbanpg]] — UrbanPG, prompt-backbone 解耦实现大规模+小样本+持续学习三合一 (AAAI 2026)
 - [[urbanverse]] — UrbanVerse, 互补方向——区域属性预测基础模型（犯罪/人口/碳排放），跨城市跨任务范式 (arXiv 2026)
+- [[spatio-temporal-foundation-model-landscape]] — 时空基础模型全景分析：Scaling 派代表的深层设计哲学
 
 [^src-urbanfm]: [[source-urbanfm]]

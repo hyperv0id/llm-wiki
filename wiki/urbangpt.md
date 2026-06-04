@@ -144,5 +144,6 @@ UrbanGPT's key limitation is computational cost: 7B parameters and per-sensor pr
 - [[bigcity]] — BIGCity, first MTMD ST model, extends the LLM route from UrbanGPT's traffic-only to simultaneous trajectory+traffic via GPT-2+LoRA+prompt (arXiv 2024)
 - [[urbanpg]] — UrbanPG, prompt-backbone decoupled ST framework with linear attention, unifies large-scale + few-shot + continual learning (AAAI 2026)
 - [[urbanverse]] — UrbanVerse, foundation model for cross-city/cross-task urban region attribute prediction (crime/population/carbon/nightlight), complementary to traffic-focused ST models (arXiv 2026)
+- [[spatio-temporal-foundation-model-landscape]] — 时空基础模型全景分析：LLM-Based 路线代表
 
 [^src-urbangpt]: [[source-urbangpt]]
