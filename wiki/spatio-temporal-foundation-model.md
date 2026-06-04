@@ -8,7 +8,7 @@ tags:
   - generalization
 created: 2026-05-03
 last_updated: 2026-06-04
-source_count: 12
+source_count: 13
 confidence: high
 status: active
 ---
@@ -45,6 +45,7 @@ Before the emergence of true foundation models, **[[gpt-st|GPT-ST]]** (NeurIPS 2
 ### Multi-Modal
 - **[[most|MoST]]** (KDD 2026): First multi-modality spatio-temporal foundation model. Supports satellite imagery, POI text, location, and time series as input modalities with adaptive SNR-based selection[^src-most].
 - **[[allspark|AllSpark]]** (Shao et al., 2024): Unifies **10 spatio-temporal modalities** (1D: language/code/table, 2D: RGB/SAR/MSI/HSI/graph/trajectory, 3D: point cloud) via the [[language-as-reference-framework|LaRF]] principle, using language as the universal alignment anchor[^src-allspark]. Extends beyond traffic to remote sensing and general geospatial intelligence.
+- **E²-CSTP** (NeurIPS 2025): Causal multi-modal ST prediction with cross-modal attention (text+image+ST), dual-branch causal inference via backdoor adjustment, and GCN+Mamba hybrid encoder achieving 17-56% efficiency gains over Transformers[^src-e2-cstp].
 
 ## Key Challenges
 
@@ -92,3 +93,4 @@ Before the emergence of true foundation models, **[[gpt-st|GPT-ST]]** (NeurIPS 2
 [^src-urbanpg]: [[source-urbanpg]]
 [^src-factost]: [[source-factost]]
 [^src-allspark]: [[source-allspark]]
+[^src-e2-cstp]: [[source-e2-cstp]]

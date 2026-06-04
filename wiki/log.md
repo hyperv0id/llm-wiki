@@ -11,6 +11,13 @@ tags:
 
 Chronological record of all wiki activity.
 
+## [2026-06-04] ingest | E²-CSTP: Causal Spatio-Temporal Prediction — An Effective and Efficient Multi-Modal Approach (Huang et al., NeurIPS 2025)
+
+Ingest E²-CSTP paper (Yuting Huang, Ziquan Fang et al., Zhejiang University; NeurIPS 2025). E²-CSTP integrates cross-modal attention (BERT+CNN for text+image), dual-branch causal inference (backdoor adjustment blocking Xst←S→Yst confounders), and GCN+Mamba hybrid ST encoder. Core innovations: (1) DeepSHAP-based causal matrix construction blended with prior graph; (2) Dual-branch design — main branch pure ST, auxiliary multi-modal fused → MLP combined output; (3) Linear O(B·T·N²·d) complexity via GCN+Mamba vs Transformer's O(B·T²·N²·d). SOTA on 4 datasets (Terra, BjTT, GreenEarthNet, BikeNYC) with up to 9.66% MAE improvement and 17.37%-56.11% efficiency gains. Created source-summary and entity pages. Updated spatio-temporal-foundation-model (Multi-Modal entry) and multimodal-time-series-forecasting (cross-link).
+
+创建的页面：[[source-e2-cstp]], [[e2-cstp]]
+更新的页面：[[spatio-temporal-foundation-model]], [[multimodal-time-series-forecasting]], [[index]], [[log]]
+
 ## [2026-06-04] ingest | STReasoner: Empowering LLMs for Spatio-Temporal Reasoning in Time Series via Spatial-Aware Reinforcement Learning (Ni et al., 2026)
 
 Ingest STReasoner paper (Juntong Ni, Shiyu Wang et al., Emory/Microsoft/Griffith; arXiv 2026). STReasoner is the first TS-LM designed for explicit spatio-temporal reasoning — answering queries like "Which source node caused the congestion?" by tracing propagation paths through spatial dependencies and temporal dynamics. Core innovations: (1) ST-Bench — a 4-task benchmark (etiological/entity/correlation/in-context forecasting) built via network SDE-based multi-agent data synthesis; (2) STReasoner architecture — lightweight MLP TS encoder interleaved with LLM text tokens, trained in 3 stages (alignment + SFT-CoT via rejection sampling + spatial-aware RL); (3) S-GRPO — contrastive spatial reward that compares performance with/without spatial structure, explicitly incentivizing spatially grounded reasoning. Key results: 95.65% etiological ACC (GPT-5.2 text: 83.09%), 98.82% zero-shot on real-world CausalRivers, at 0.004× cost ($0.27 vs $22.48). Created source-summary, entity (streasoner), and concept (spatio-temporal-reasoning) pages. Updated time-llm (evolution link) and multimodal-time-series-forecasting (new STReasoner section).

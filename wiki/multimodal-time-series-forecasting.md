@@ -183,6 +183,7 @@ UniCA 在多模态场景下的表现：
 - [[allspark]] — AllSpark 10 模态时空通用智能模型
 - [[language-as-reference-framework]] — LaRF 以语言为参考框架的多模态统一原理
 
+- [[e2-cstp]] — E²-CSTP 因果多模态时空预测框架
 - [[streasoner]] — STReasoner 时空推理 TS-LM
 - [[spatio-temporal-reasoning]] — 时空推理概念
 

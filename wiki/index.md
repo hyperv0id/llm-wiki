@@ -165,8 +165,10 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-dyffusion]] — DYffusion: A Dynamics-informed Diffusion Model for Spatiotemporal Forecasting (NeurIPS 2023)
 - [[source-allspark]] — AllSpark: multimodal spatio-temporal general intelligence model with 10 modalities via LaRF (Shao et al., 2024)
 - [[source-streasoner]] — STReasoner: spatio-temporal reasoning in time series via spatial-aware RL (Ni et al., 2026)
+- [[source-e2-cstp]] — E²-CSTP: causal multi-modal spatio-temporal prediction with GCN+Mamba (NeurIPS 2025)
 
 ## Entities
+- [[e2-cstp]] — E²-CSTP, causal multi-modal ST prediction with dual-branch causal inference + GCN+Mamba (NeurIPS 2025)
 - [[streasoner]] — STReasoner, first TS-LM for spatio-temporal reasoning (Ni et al., 2026)
 - [[allspark]] — AllSpark, 10-modality spatio-temporal general intelligence model (Shao et al., 2024)
 - [[sa-bcp]] — SA-BCP, state-adaptive Bayesian conformal prediction (arXiv 2026)
