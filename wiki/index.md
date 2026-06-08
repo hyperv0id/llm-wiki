@@ -82,6 +82,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-edm]] — EDM: Elucidating the Design Space of Diffusion-Based Generative Models (Karras et al., NeurIPS 2022)
 - [[source-rombach-ldm-2022]] — LDM: High-Resolution Image Synthesis with Latent Diffusion Models (Rombach et al., CVPR 2022)
 - [[source-neural-ode]] — Neural ODE: Neural Ordinary Differential Equations (Chen et al., NeurIPS 2018)
+- [[source-nsdiff]] — NsDiff: Non-stationary Diffusion for Probabilistic Time Series Forecasting (ICML 2025 Spotlight)
 - [[source-opencity]] — OpenCity: Open Spatio-Temporal Foundation Models for Traffic Prediction (arXiv 2024)
 - [[source-cbsa]] — CBSA: Towards Interpretable and Efficient Attention (NeurIPS 2025)
 - [[source-fast-long-horizon-forecasting]] — FaST: Efficient Long-Horizon Forecasting for Large-Scale STG via MoE (KDD 2026)
@@ -276,6 +277,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[crate-white-box-transformer]] — CRATE, White-Box Transformer with interpretable structure
 - [[latent-diffusion-models]] — Latent Diffusion Models (LDM), diffusion in latent space (CVPR 2022)
 - [[ncsn]] — NCSN, Noise Conditional Score Networks (Song & Ermon, 2020)
+- [[nsdiff]] — NsDiff, non-stationary diffusion with LSNM+UANS for probabilistic TS forecasting (ICML 2025 Spotlight)
 - [[neural-ordinary-differential-equation]] — Neural ODE, continuous-depth neural networks (NeurIPS 2018)
 - [[quest-attention]] — QUEST Attention, efficient long-range attention via token clustering
 - [[score-based-sde]] — Score-Based SDE, unified SMLD+DDPM framework (ICLR 2021)
@@ -361,6 +363,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[smld]] — Score-Matching Langevin Dynamics，基于分数匹配和朗之万采样的生成模型
 - [[multivariate-correlation-attention]] — 多变量相关性注意力，iTransformer 中 attention 作用于 variate token 维度 (ICLR 2024)
 - [[over-smoothing-in-gnns]] — GNN 过平滑问题，层级消息传递导致节点表示不可区分的根本限制 (AAAI 2026)
+- [[location-scale-noise-model]] — LSNM，将条件分布的均值和方差同时建模的位置-尺度噪声模型，使扩散模型能感知数据异质性
 
 ## Techniques
 - [[dsw-embedding]] — DSW Embedding, dimension-segment-wise embedding producing 2D vector array for MTS (ICLR 2023)
@@ -493,6 +496,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[two-band-mixture-noise]] — 两频段混合噪声，频域扩散中低频+高频噪声的线性组合方案 (ICLR 2025 Workshop)
 - [[frequency-diffusion]] — 频域扩散，在傅里叶频域中执行扩散过程的生成方法
 - [[langevin-dynamics]] — 朗之万动力学 (Langevin Dynamics)，基于分数函数的 MCMC 采样方法
+- [[uncertainty-aware-noise-schedule]] — UANS，将数据感知的时变方差注入扩散过程以建模非平稳不确定性
 - [[csdi]] — CSDI, conditional score-based diffusion model for probabilistic time series imputation (NeurIPS 2021)
 - [[pristi]] — PriSTI, prior-guided conditional diffusion framework for spatiotemporal imputation (ICDE 2023)
 

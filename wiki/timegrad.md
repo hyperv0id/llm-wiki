@@ -10,7 +10,7 @@ tags:
   - icml-2021
 created: 2026-05-31
 last_updated: 2026-05-31
-source_count: 1
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -111,5 +111,7 @@ TimeGrad 处于多条研究线的交汇点：
 - [[specstg]] — SpecSTG，谱域扩散时空图预测（arXiv 2024）
 - [[tedm]] — TEDM，EDM 框架的 O(H) 采样时序扩散模型（ICLR 2026）
 - [[urbandit]] — UrbanDiT，扩散 Transformer 时空基础模型（NeurIPS 2025）
+- [[nsdiff]] — NsDiff (ICML 2025 Spotlight)，以 LSNM+UANS 超越 TimeGrad 的时序扩散 SOTA[^src-nsdiff]
 
 [^src-timegrad]: [[source-timegrad]]
+[^src-nsdiff]: [[source-nsdiff]]
