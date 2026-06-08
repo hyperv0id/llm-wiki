@@ -45,6 +45,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-siren-rope]] — Learning to Rotate: Temporal and Semantic Rotary Encoding for Sequential Modeling (arXiv 2026)
 - [[source-st-resnet]] — ST-ResNet: deep spatio-temporal residual networks for crowd flow (AAAI 2017)
 - [[source-stgcn]] — STGCN: spatial-temporal graph convolutional networks for traffic forecasting (IJCAI 2018)
+- [[source-metadg]] — MetaDG: Meta Dynamic Graph for Traffic Flow Prediction (AAAI 2026)
 - [[source-timesnet]] — TimesNet: temporal 2D-variation modeling for general time series analysis (ICLR 2023)
 - [[source-timesfm]] — TimesFM: Decoder-Only Foundation Model for Time-Series Forecasting (ICLR 2024)
 - [[source-chronos]] — Chronos: Learning the Language of Time Series (ICLR 2024)
@@ -232,6 +233,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[igstgnn]] — IGSTGNN, incident-guided spatiotemporal graph neural network for traffic forecasting (KDD 2026)
 - [[most]] — MoST, multi-modality spatio-temporal traffic prediction foundation model (KDD 2026)
 - [[mtp]] — MTP, multimodal urban traffic profiling with modality augmentation and spectrum fusion (AAAI 2026)
+- [[metadg]] — MetaDG, meta dynamic graph for traffic flow prediction unifying dynamics and heterogeneity (AAAI 2026)
 - [[mindts]] — MindTS, multimodal time series anomaly detection model (ICLR 2026)
 - [[vot]] — VoT (Value of Text), multimodal time series forecasting model with event-driven reasoning (ICLR 2026)
 - [[aurora]] — Aurora, universal generative multimodal time series foundation model (arXiv 2026)
@@ -309,6 +311,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[multimodal-time-series-anomaly-detection]] — detecting anomalies using multimodal time series and text data (ICLR 2026)
 - [[hybrid-periodicity-decoupling]] — explicitly separating short-term and long-term periodicity in time-series signals
 - [[traffic-forecasting]] — predicting future traffic states from historical sensor data
+- [[meta-dynamic-graph]] — extending dynamics from adjacency matrices to meta-parameters in ST models
+- [[st-unification]] — ST-isolated vs ST-unification spectrum for spatio-temporal modeling
 - [[accident-aware-traffic-forecasting]] — modeling disruptive impact of accidents on traffic prediction
 - [[mdp-formal-definition]] — 马尔可夫决策过程的六要素与马尔可夫性质
 - [[action-value-function]] — 动作值函数 q(s,a) 及其与状态值关系
@@ -458,6 +462,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[classifier-guidance]] — 分类器引导利用分类器梯度引导扩散模型条件生成
 - [[classifier-free-guidance]] — 无分类器引导联合训练条件与无条件扩散模型实现条件控制
 - [[cluster-aware-guidance]] — 聚类感知引导，利用空间注意力聚类为每个节点组定制扩散引导尺度 (AAAI 2026)
+- [[dynamic-graph-qualification]] — DGQ, qualifying edge reliability via cross-time-step similarity for adjacency matrix refinement (AAAI 2026)
 - [[feedback-diffusion-guidance]] — 反馈扩散引导，基于后验似然动态调整扩散模型引导尺度 (AAAI 2026)
 - [[fence]] — FENCE，面向时空交通数据的动态反馈扩散引导插补方法 (AAAI 2026)
 - [[heun-sampler]] — Heun 二阶 ODE 求解器，EDM 采样加速方法

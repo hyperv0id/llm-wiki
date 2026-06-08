@@ -167,5 +167,7 @@ GWNet established a durable design principle: **spatial dependencies should be l
 - [[conformer]] — ConFormer, shows GLN adds 2.63% MAE improvement to GWNet
 - [[fast-spectral-graph-convolution]] — Fast Spectral GC used in SpecSTG's Spectral Graph WaveNet
 - [[uniflow]] — UniFlow, unified grid+graph ST foundation model using GWNet as graph baseline (arXiv 2024)
+- [[metadg]] — MetaDG (AAAI 2026), extends dynamics from adjacency matrices to meta-parameters
+- [[st-unification]] — ST-isolated vs ST-unification: MetaDG's framing of GWNet's ST-separated design
 
 [^src-gwnet]: [[source-gwnet]]

@@ -168,5 +168,7 @@ As of 2026, DCRNN has accumulated 3,000+ citations and remains a standard baseli
 - [[generative-time-series-forecasting]] — Generative forecasting paradigm
 - [[spatio-temporal-foundation-model]] — The next generation beyond single-city models
 - [[uniflow]] — UniFlow, unified grid+graph foundation model, uses DCRNN as graph baseline (arXiv 2024)
+- [[metadg]] — MetaDG (AAAI 2026), extends dynamics beyond spatial topology to meta-parameters
+- [[st-unification]] — ST-unification: MetaDG's framing that pushes beyond DCRNN's ST-coupled design
 
 [^src-dcrnn]: [[source-dcrnn]]

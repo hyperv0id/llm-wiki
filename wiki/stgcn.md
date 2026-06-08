@@ -157,5 +157,7 @@ STGCN 与同年发表的 [[dcrnn|DCRNN]]（ICLR 2018）共同确立了时空图�
 - [[road-network-representation-learning]] — 道路网络表示学习概念
 - [[graph-frequency-decomposition]] — 图频率分解
 - [[std-mae]] — STD-MAE，时空解耦预训练
+- [[metadg]] — MetaDG (AAAI 2026)，通过动态生成 meta-parameters 实现 ST-unification
+- [[st-unification]] — ST-unification：MetaDG 对 STGCN ST-分离设计的批判性框架
 
 [^src-stgcn]: [[source-stgcn]]

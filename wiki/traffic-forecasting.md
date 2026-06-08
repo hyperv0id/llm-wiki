@@ -7,7 +7,7 @@ tags:
   - intelligent-transportation
 created: 2026-04-27
 last_updated: 2026-06-08
-source_count: 29
+source_count: 30
 confidence: high
 status: active
 ---
@@ -65,6 +65,9 @@ While traffic forecasting predicts future values at sensor locations, **road net
 
 ### Flow Matching / Frequency-Domain
 [[freqflow-ts|FrèqFlow/SpectFlow]] (NeurIPS 2025) is the first framework to apply conditional flow matching in the frequency domain for deterministic MTS traffic forecasting. With only 89k parameters, it uses a complex-valued linear layer for frequency interpolation and a flow matching head for residual learning. On Brussels, PEMS08, and PEMS04 datasets, it achieves 7% average RMSE improvement over Moirai-MoE and diffusion baselines ([[d3vae|GCRDD]], [[diffstg|DiffSTG]], [[pristi|PriSTI]], SpecSTG)[^src-2511-16426].
+
+### Dynamic Graph with Meta-Parameters
+[[metadg|MetaDG]] (AAAI 2026) proposes a new paradigm: extending dynamics from only generating dynamic adjacency matrices to also generating **meta-parameters** (node-wise model weights) at each time step. This pushes the field from ST-isolated modeling (where spatial and temporal dimensions use separate base model structures) toward [[st-unification|ST-unification]]. Key components: (1) Dynamic Node Generation (DNG) — time-gated fusion of static embeddings and hidden states; (2) Spatio-Temporal Correlation Enhancement (STCE) — spatial cross-attention + temporal smoothing; (3) [[dynamic-graph-qualification|Dynamic Graph Qualification (DGQ)]] — qualifying edge reliability via cross-time-step similarity. SOTA on PEMS03/04/07/08 across all metrics, with particular advantage in long-term prediction[^src-metadg].
 
 ### Probabilistic / Diffusion-Based
 Deterministic models only output point estimates, lacking uncertainty quantification. Probabilistic methods address this gap:
@@ -147,3 +150,4 @@ The XTraffic benchmark provides incident-aligned traffic datasets for California
 [^src-bigcity]: [[source-bigcity]]
 [^src-mtp]: [[source-mtp]]
 [^src-hifinet]: [[source-hifinet]]
+[^src-metadg]: [[source-metadg]]
