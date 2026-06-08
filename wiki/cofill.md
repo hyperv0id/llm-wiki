@@ -7,8 +7,8 @@ tags:
   - data-imputation
   - dual-stream-architecture
 created: 2026-05-11
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-06-08
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -104,4 +104,10 @@ https://github.com/joyHJL/CoFILL
 - [[generative-time-series-forecasting]] — 生成式时间序列预测
 - [[traffic-forecasting]] — 交通预测
 
+## 另见
+
+- [[sadi]] — SADI，针对 [[partial-blackout|partial blackout]] 的双阶段扩散插补（AAAI 2025），同样超越 CSDI 但采用联合特征-时间建模而非双流架构
+- [[partial-blackout]] — SADI 引入的通用缺失模式，CoFILL 也可在此场景评估
+
 [^src-cofill-spatiotemporal-imputation]: [[source-cofill-spatiotemporal-imputation]]
+[^src-sadi]: [[source-sadi]]

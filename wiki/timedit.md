@@ -92,6 +92,7 @@ F=Forecasting, I=Imputation, A=Anomaly Detection, G=Data Generation
 - [[diffusion-models]] — Diffusion model fundamentals
 - [[chronos]] — Chronos (competing time series FM)
 - [[timesfm]] — TimesFM (competing time series FM)
+- [[dits]] — DiTS, MM-DiT dual-stream approach with joint variate attention, a more advanced DiT-for-TS design (arXiv 2026)
 - [[csdi]] — CSDI, prior diffusion work for time series imputation
 - [[energy-based-model]] — EBM, physics-informed sampling foundation
 

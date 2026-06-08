@@ -7,7 +7,7 @@ tags:
   - intelligent-transportation
 created: 2026-04-27
 last_updated: 2026-06-08
-source_count: 31
+  source_count: 37
 confidence: high
 status: active
 ---
@@ -80,8 +80,38 @@ Deterministic models only output point estimates, lacking uncertainty quantifica
 ### Mamba / SSM-Based
 Mamba 的选择性状态空间模型也被应用于交通预测。Han et al. (NeurIPS 2024) 的统一框架揭示了 Mamba 的遗忘门 $\widetilde{A}_i$ 在交通场景中对应于空间衰减模式——附近传感器的相关性更强，这与遗忘门的局部偏置特性一致。该框架表明，交通特定的位置编码（如道路距离、转向关系）可替代遗忘门的循环计算，在保持并行性的同时捕获局部空间结构[^src-demystify-mamba-linear-attention-2024]。
 
+### Spectral / Topological Methods
+
+A growing line of work applies spectral and topological techniques to address fundamental GNN limitations in traffic forecasting:
+
+**[[hifinet|HiFiNet]]** (AAAI 2026) introduces hierarchical frequency-decomposition GNNs, explicitly separating low-frequency (smooth global) and high-frequency (local variation) graph signals to mitigate over-smoothing[^src-hifinet].
+
+**[[ssf|SSF (Spectral Sheaf Filtering)]]** (ICLR 2026, under review) is the first framework to model spatio-temporal data using **[[cellular-sheaf|cellular sheaves]]** from algebraic topology. Rather than uniformly propagating information along edges like standard GNNs, SSF assigns learnable **restriction maps** per edge that encode context-dependent transformation dynamics. It then applies a **heat kernel spectral filter** over the [[sheaf-laplacian|sheaf Laplacian]] — a generalization of the graph Laplacian that accounts for both topology and edge-specific transformation semantics. The sheaf Laplacian's eigendecomposition enables frequency-aware decomposition, with the heat kernel $e^{-\alpha\lambda}$ suppressing high-frequency noise while preserving low-frequency structural patterns. SSF achieves SOTA on METR-LA, PEMS-BAY, PEMS04, PEMS08, and NAVER-Seoul, with particularly dramatic long-horizon gains — e.g., NAVER-Seoul MAPE 1.03% at 15min vs. best baseline 8.32%. The sheaf structure naturally mitigates [[over-smoothing-in-gnns|over-smoothing]] because restriction maps prevent node representations from converging[^src-ssf].
+
+### Koopman / Micro-Macro Coupled
+
+A fundamentally different paradigm: modeling traffic at two scales simultaneously — microscopic vehicle trajectories and macroscopic flow density — unified under [[micro-macro-coupled-koopman-modeling|Koopman operator theory]] that lifts nonlinear dynamics to linear observation spaces[^src-mmckm].
+
+**[[mmckm|MMCKM]]** (ICLR 2026 Poster) is the first framework to achieve this bidirectional coupling on dynamic vehicle graphs. Key innovations[^src-mmckm]:
+
+- **[[vehicle-centric-graph-traffic-pde|Vehicle-Centric Graph PDE]]**: Discretizes the LWR advection-diffusion equation directly onto vehicles as Lagrangian graph nodes, preserving high-frequency perturbations that Eulerian grid methods lose. Advection operator $C^{\text{adv}}$ is skew-symmetric (energy-preserving), diffusion operator $L^{\text{diff}}$ is PSD (entropy-producing), both parameterized with constructive physical guarantees[^src-mmckm].
+- **History-Free Koopman Evolution**: Both macro (density) and micro (trajectory) dynamics are evolved by time-invariant linear Koopman operators from a single snapshot — eliminating the trajectory tracking overhead of sequence-based methods. Spectral alignment couples Koopman eigenvalues to PDE operator spectra for stability[^src-mmckm].
+- **[[intent-discriminator-koopman|Intent Discriminator]] (MoE)**: Selects among 5 parameter-bounded Koopman operators (free flow, car-following, lane changing, merging, emergency) with distinct spectral radii, oscillation frequencies, and actuation bounds. Koopman control via CrossAttention injects macro flow into micro dynamics with ISS stability guarantees[^src-mmckm].
+
+On NGSIM and HighD, MMCKM achieves history-free trajectory prediction matching history-dependent SOTA methods (BAT, MS-STGCN, Vit-Traj) while outperforming CV at all horizons. Operator interval creates a trade-off: 0.1s excels short-term (RMSE=0.33 at 1s), 1.0s excels long-term via fewer iterations. Ablation: diffusion term critical (removal degrades macro 2.9–4.6%); Intent Discriminator contributes 29% at short horizon; Koopman control reduces error 37% at 5s[^src-mmckm].
+
 ### Mixture of Experts / Adaptive Routing
 [[testam|TESTAM]] (ICLR 2024) is the first MoE-based spatio-temporal attention model for traffic forecasting. It uses three heterogeneous experts — identity (temporal-only), learnable static graph, and spatial attention — adaptively routed via [[memory-augmented-gating|memory-augmented gating]] with two classification losses that solve the MoE routing freeze problem in regression. With only 224K params, TESTAM achieves SOTA on METR-LA, PEMS-BAY, and EXPY-TKY, excelling on large-scale graphs (1,843-node EXPY-TKY) and non-recurring conditions through in-situ spatial modeling[^src-testam]. The [[time-enhanced-attention|time-enhanced attention]] mechanism eliminates autoregressive error propagation by directly attending from source to target time steps.
+
+### Spatial Patching / Efficient Dynamic Spatial Modeling
+
+Dynamic spatial attention (dot-product between all node pairs) has quadratic complexity O(N²d), making it intractable for large-scale networks. Three approaches have emerged to reduce this cost:
+
+- **Linear-based** (e.g., BigST): O(Nd²) complexity by computing Q(K^T V) instead of (QK^T)V. Fast but loses interpretability — spatial correlations cannot be explicitly shown[^src-patchstg].
+- **Low-rank-based** (e.g., STWave, AirFormer): Projects to reduced rank R ≪ N, achieving O(NRd). Loses fidelity — critical information is not guaranteed to survive the low-rank compression[^src-patchstg].
+- **Patching-based** ([[patchstg|PatchSTG]]): O(NRd) complexity but retains both interpretability and fidelity. Borrows the patching idea from vision Transformers (ViT) and adapts it to irregular traffic points via [[leaf-kdtree|leaf KDTree]] spatial partitioning[^src-patchstg].
+
+[[patchstg|PatchSTG]] (KDD 2025) is the first framework to bridge KDTree spatial data management and Transformer patching. It uses [[irregular-spatial-patching|irregular spatial patching]] (leaf KDTree → BFS → cosine-similarity padding → subtree backtracking) to create balanced, non-overlapping patches, then applies interleaved depth (within-patch local) and breadth (cross-patch global) attention. On LargeST (up to 8,600 nodes), PatchSTG achieves SOTA with **10× training speedup** and **4× memory reduction** vs D2STGNN/DSTAGNN[^src-patchstg]. Ablation confirms leaf KDTree is the most critical component — spatial message passing is only beneficial between geographically adjacent points[^src-patchstg].
 
 ### Foundation Model
 
@@ -103,6 +133,19 @@ Mamba 的选择性状态空间模型也被应用于交通预测。Han et al. (Ne
 
 **[[bigcity|BIGCity]]** (arXiv 2024) is the first MTMD (Multi-Task, Multi-Data modality) spatio-temporal model, unifying individual-level trajectory data and population-level traffic state data within a single GPT-2+LoRA framework with task-oriented prompts. It covers 8 heterogeneous tasks across 3 cities, surpassing 18 independently trained baselines. BIGCity represents a fundamental expansion of ST foundation model scope — from traffic-only (MTSD) to trajectory+traffic (MTMD)[^src-bigcity].
 
+### Continual Spatio-Temporal Learning
+
+While foundation models aim for zero-shot cross-city generalization, **[[continual-spatio-temporal-forecasting|CSTF]]** addresses a complementary challenge: sequentially learning from streaming, evolving data within a single domain without catastrophic forgetting. This is critical for real-world deployments where traffic networks continuously expand (new sensors added) and distributions shift over time[^src-stbp].
+
+Key methods in this paradigm:
+
+- **[[trafficstream|TrafficStream]]** (Chen et al., IJCAI 2021): First CSTF framework, using historical data replay and parameter smoothing[^src-stbp].
+- **STKEC** (Wang et al., 2023): Influence-based knowledge expansion and memory-augmented consolidation for expanding graphs[^src-stbp].
+- **[[pecpm|PECPM]]** (Wang et al., KDD 2023): Pattern-matching-based representative pattern bank with conflict detection and traceability mechanisms[^src-stbp].
+- **STRAP** (Zhang et al., NeurIPS 2025): Retrieval-augmented multi-dimensional pattern library for OOD generalization[^src-stbp].
+- **[[eac|EAC]]** (Chen & Liang, ICLR 2025): Dynamic prompt pool with expand-and-compress operations, lightweight parameter-efficient CSTF[^src-stbp].
+- **[[stbp|STBP]]** (Liu & Zhang, ICLR 2026): Fixed general backbone + incrementally expanding [[contextual-pattern-bank|contextual pattern bank]]. Freezes backbone to prevent forgetting, expands only parametric bank for adaptation. Achieves 21.44% MAE reduction over EAC on PEMS-Stream via frequency-domain processing (FreNet) and dual-stream linear graph attention (DLGA)[^src-stbp].
+
 ## Key Models
 
 Several influential models span the development of traffic and spatial-temporal forecasting:
@@ -117,6 +160,16 @@ For a comprehensive overview of deep learning methods for time series, including
 ## Related Tasks
 
 [[multimodal-traffic-profiling|Multimodal Traffic Profiling]] — Unlike forecasting (predicting future values), profiling is a **classification** task that identifies traffic states (smooth/slow/congested) or events (accidents/construction). [[mtp|MTP]] (AAAI 2026) augments numerical time series into visual and textual modalities, processing all three in the frequency domain with hierarchical contrastive fusion for SOTA classification results on 6 traffic datasets[^src-mtp].
+
+### Cross-City Traffic Flow Generation
+
+While traffic forecasting predicts future values from historical data, **traffic flow generation** synthesizes realistic flow data from static geographic features — critical for cities with limited or no historical records[^src-craft]. The task has evolved through three stages: physics-based models (gravity/radiation), static flow generation (DeepGravity, DeepFlowGen), and dynamic flow generation (GANs, diffusion models)[^src-craft].
+
+[[craft|CRAFT]] (NeurIPS 2025) is the first method explicitly designed for **zero-shot cross-city traffic flow generation**. It uses a DDPM backbone with two lightweight plug-in modules: [[geographic-feature-alignment|Geographic Feature Alignment (GFA)]] to solve cross-city domain shift via optimal transport, and [[retrieval-based-condition-augmentation|Retrieval-based Condition Augmentation (RCA)]] to enrich diffusion conditions by retrieving similar flow patterns from source cities[^src-craft]. On four bicycle-sharing datasets (Chicago, DC, Toronto, NYC), CRAFT achieves 59.7% improvement over baseline average and only 10.4% degradation vs. training on real target city data[^src-craft]. See [[cross-city-traffic-flow-generation]] for the problem domain overview.
+
+### Mobile Network Traffic
+
+While the above sections address **vehicle traffic** (road sensors), mobile traffic forecasting addresses **wireless network traffic** — predicting data volumes at cellular base stations. [[uomo|UoMo]] (KDD 2025) is the first universal foundation model for this domain, unifying short-term prediction, long-term prediction, and zero-history generation under a single transformer-based diffusion model with task-oriented masking and contrastive context alignment[^src-uomo]. Deployed on China Mobile's [[jiutian-platform|Jiutian platform]], UoMo achieves +25.3% served users in BS deployment and -40.7% equipment depreciation in BS sleep control[^src-uomo]. See [[mobile-traffic-forecasting]] for the domain page and [[masked-diffusion-pre-training]] for the pre-training technique.
 
 ## Benchmarks
 
@@ -155,3 +208,9 @@ The XTraffic benchmark provides incident-aligned traffic datasets for California
 [^src-hifinet]: [[source-hifinet]]
 [^src-metadg]: [[source-metadg]]
 [^src-testam]: [[source-testam]]
+[^src-uomo]: [[source-uomo]]
+[^src-craft]: [[source-craft]]
+[^src-patchstg]: [[source-patchstg]]
+[^src-stbp]: [[source-stbp]]
+[^src-ssf]: [[source-ssf]]
+[^src-mmckm]: [[source-mmckm]]

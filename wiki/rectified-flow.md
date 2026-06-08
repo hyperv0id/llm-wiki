@@ -7,8 +7,8 @@ tags:
   - ode
   - few-step-generation
 created: 2026-05-31
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-06-08
+source_count: 2
 confidence: high
 status: active
 ---
@@ -77,6 +77,10 @@ Reflow 是 Rectification 的无监督版本，仅使用从 $\pi_0$ 采样的数�
 
 Rectification 思想启发了 [[shortcut-models|Shortcut Models]]（arXiv 2025），后者将自一致性推广到任意流模型，实现 1 步生成 [^src-rectified-flow]。
 
+### FlowTS：第一个时间序列 Rectified Flow 模型
+
+[[flowts|FlowTS]] (arXiv 2025) 是首个将 rectified flow 应用于时间序列生成的工作[^src-flowts]。与图像域需要 reflow 迭代不同，FlowTS 直接在时间序列域学习直线 ODE 轨迹，30 步采样即 SOTA（Context-FID Stocks 0.019 vs Diffusion-TS 0.067）[^src-flowts]。
+
 ## 局限性
 
 - **初始耦合敏感**：独立耦合 vs OT 耦合的性能差异显著 [^src-rectified-flow]
@@ -84,3 +88,4 @@ Rectification 思想启发了 [[shortcut-models|Shortcut Models]]（arXiv 2025�
 - **Reflow 稳定性**：无监督 Reflow 需要仔细调参，可能不稳定
 
 [^src-rectified-flow]: [[source-rectified-flow]]
+[^src-flowts]: [[source-flowts]]

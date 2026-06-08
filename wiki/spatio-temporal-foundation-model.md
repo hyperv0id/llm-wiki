@@ -7,8 +7,8 @@ tags:
   - zero-shot
   - generalization
 created: 2026-05-03
-last_updated: 2026-06-04
-source_count: 13
+last_updated: 2026-06-08
+source_count: 17
 confidence: high
 status: active
 ---
@@ -31,7 +31,9 @@ Foundation models address both by pre-training once on diverse multi-city data a
 
 Before the emergence of true foundation models, **[[gpt-st|GPT-ST]]** (NeurIPS 2023) pioneered the MAE pre-training paradigm for spatio-temporal graphs. It demonstrated that pre-trained representations can universally enhance diverse downstream STGNNs without architecture modification, but remained task-specific (per-dataset pre-training required)[^src-gpt-st]. [[std-mae|STD-MAE]] (IJCAI 2024) further developed this with spatial-temporal-decoupled masking[^src-2312-00516-std-mae].
 
-### Single-Modal
+### Mobile Network Domain
+
+- **[[uomo|UoMo]]** (KDD 2025): First universal foundation model for mobile traffic forecasting, unifying short-term prediction, long-term prediction, and distribution generation under a transformer-based diffusion model with task-oriented masking and contrastive context alignment. Deployed in production on China Mobile's [[jiutian-platform|Jiutian platform]], achieving +25.3% served users and -40.7% equipment depreciation in live network optimization[^src-uomo]. From Tsinghua FIB Lab (same group as [[urbandit|UrbanDiT]], [[unist|UniST]], [[uniflow|UniFlow]]).
 - **[[opencity|OpenCity]]** (2024): Transformer + GNN architecture with instance normalization for zero-shot traffic prediction. Uses TimeShift Transformer (PTTM + DTP dual attention) to decouple periodic and dynamic patterns, and Laplacian eigenvectors for spatial context encoding. Pre-trained on 21 datasets (151M observations), achieves zero-shot performance surpassing full-shot baselines on 4/6 test datasets. Three scales: 2M (mini), 5M (base), 26M (plus)[^src-opencity].
 - **[[urbanpg|UrbanPG]]** (AAAI 2026): Prompt-backbone decoupled architecture with STCA linear attention (O(N·d²)), unifying large-scale, few-shot, and continual learning under one framework. Freeze general backbone, fine-tune/expand only personalized context prompts. SOTA on CA 8600 nodes with 48-72% efficiency gains over PatchSTG[^src-urbanpg].
 - **[[urbandit|UrbanDiT]]** (NeurIPS 2025): Diffusion Transformer (DiT) backbone with unified prompt learning (time/frequency/spatial memory pools). Unifies grid-based and graph-based spatio-temporal data, supports 5 tasks (forward/backward prediction, temporal interpolation, spatial extrapolation, spatio-temporal imputation). Uses rectified flow for 25× inference acceleration. Zero-shot outperforms nearly all trained baselines[^src-urbandit].
@@ -40,7 +42,16 @@ Before the emergence of true foundation models, **[[gpt-st|GPT-ST]]** (NeurIPS 2
 - **[[urbanfm|UrbanFM]]** (arXiv 2026): First scaling-centric ST foundation model with WorldST (100+ cities, 1B+ data points), MiniST (KD-Tree clustering tokenization), and minimalist factorized attention architecture. Achieves 39-70.2% zero-shot improvement over existing foundation models, surpasses full-shot experts. Imputation capability without any imputation training[^src-urbanfm].
 - **[[factost|FactoST]]** (NeurIPS 2025 / arXiv 2026): Factorized two-stage STFM — Universal Temporal Pretraining (UTP, encoder-only, 11B+ time points) + Spatio-Temporal Adaptation (STA, lightweight adapter). First STFM to achieve linear O(N) complexity through complete stage-level factorization. 4 model scales (2.5M-30.4M), SOTA on few-shot/full-shot/zero-shot across 9 benchmarks. Same HKUST-GZ group (Yuxuan Liang) as UrbanFM[^src-factost].
 - **[[urbangpt|UrbanGPT]]** (KDD 2024): First spatio-temporal LLM using Vicuna-7b + instruction-tuning paradigm. Encoder uses multi-level gated dilated convolution (no graph), spatial reasoning delegated to LLM via textual POI descriptions. Processes one sensor at a time, making it computationally expensive (7B parameters, 174s inference)[^src-urbangpt].
+- **[[urbanmind|UrbanMind]]** (KDD 2025): Extends the LLM-based ST paradigm with multifaceted dynamics learning. Core innovations: (1) Muffin-MAE — dual-encoder masked autoencoder with temporal/spatial/global masking that captures inter-correlations across multiple urban dynamics (speed, inflow, demand); (2) selective LLaMA3 fine-tuning — frozen early layers, query-only update in later layers; (3) test-time adaptation — masked reconstruction module that shares layers with predictor, adapting to distributional shifts at inference. SOTA zero-shot across 9 urban dynamics datasets (3 cities × 3 dynamics), 8.5% MAE improvement over UrbanGPT in cross-city transfer, ~33-47% MAE reduction on multiple tasks[^src-urbanmind].
 - **Pangu-Weather / Fengwu**: Weather-specific foundation models on Euclidean grids[^src-most].
+
+### Continuous Learning / Continual Adaptation
+- **[[urbanpg|UrbanPG]]** (AAAI 2026): Prompt-backbone decoupled architecture with STCA linear attention (O(N·d²)), unifying large-scale, few-shot, and continual learning under one framework. Freeze general backbone, fine-tune/expand only personalized context prompts. SOTA on CA 8600 nodes with 48-72% efficiency gains over PatchSTG[^src-urbanpg].
+- **[[stbp|STBP]]** (ICLR 2026): Fixed general backbone + incrementally expanding [[contextual-pattern-bank|contextual pattern bank]] for continual spatio-temporal forecasting. After initial joint training, the backbone is frozen permanently; only the parametric pattern bank expands and fine-tunes as new data arrives. Achieves 21.44% MAE reduction over EAC on PEMS-Stream. The paper explicitly positions this paradigm as a stepping stone toward cross-domain ST foundation models[^src-stbp]. See [[continual-spatio-temporal-forecasting|CSTF]] for the broader paradigm.
+
+### Traffic Flow Generation (Cross-City)
+
+- **[[craft|CRAFT]]** (NeurIPS 2025): First model explicitly targeting zero-shot cross-city traffic flow generation. DDPM diffusion backbone + [[geographic-feature-alignment|GFA]] (geographic representation alignment via optimal transport) + [[retrieval-based-condition-augmentation|RCA]] (RAG-style retrieval of source city flow patterns). 59.7% improvement over baseline average, only 10.4% degradation vs. real data. Cross-city generation is complementary to ST foundation models — it generates data for unseen cities with zero historical records, while foundation models predict from existing data[^src-craft].
 
 ### Multi-Modal
 - **[[most|MoST]]** (KDD 2026): First multi-modality spatio-temporal foundation model. Supports satellite imagery, POI text, location, and time series as input modalities with adaptive SNR-based selection[^src-most].
@@ -81,6 +92,12 @@ Before the emergence of true foundation models, **[[gpt-st|GPT-ST]]** (NeurIPS 2
 - [[ustd]] — USTD, task-unified ST diffusion (SIGSPATIAL 2024), complementary to foundation model paradigm
 - [[allspark]] — AllSpark, 10-modality geospatial intelligence via language as reference framework
 - [[language-as-reference-framework]] — LaRF principle
+- [[urbanmind]] — UrbanMind, multifaceted ST-LLM with Muffin-MAE and test-time adaptation (KDD 2025)
+- [[uomo]] — UoMo, first universal model for mobile traffic forecasting, deployed at China Mobile (KDD 2025)
+- [[mobile-traffic-forecasting]] — mobile traffic forecasting domain
+- [[jiutian-platform]] — China Mobile's AI platform
+- [[stbp]] — STBP, continual ST forecasting with fixed backbone + expandable pattern bank (ICLR 2026)
+- [[continual-spatio-temporal-forecasting]] — CSTF paradigm
 
 [^src-most]: [[source-most]]
 [^src-urbandit]: [[source-urbandit]]
@@ -94,3 +111,7 @@ Before the emergence of true foundation models, **[[gpt-st|GPT-ST]]** (NeurIPS 2
 [^src-factost]: [[source-factost]]
 [^src-allspark]: [[source-allspark]]
 [^src-e2-cstp]: [[source-e2-cstp]]
+[^src-urbanmind]: [[source-urbanmind]]
+[^src-uomo]: [[source-uomo]]
+[^src-craft]: [[source-craft]]
+[^src-stbp]: [[source-stbp]]

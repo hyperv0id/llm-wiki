@@ -7,7 +7,7 @@ tags:
   - linear-complexity
 created: 2026-05-08
 last_updated: 2026-06-08
-source_count: 1
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -44,13 +44,27 @@ $$y_i = C_i h_i + D \odot x_i$$
 - **遗忘门**（+0.8%）提供局部偏置和输入依赖的位置信息，但可通过位置编码替代以保持并行性
 - **归一化的缺失**导致 -5.2% 的准确率下降，说明 Mamba 通过其他机制补偿了归一化
 
+## Mamba as Diffusion Backbone
+
+SSD-TS (KDD 2025) demonstrates Mamba's effectiveness as a denoising backbone in conditional diffusion models for time series imputation, replacing Transformer/S4 backbones with Mamba-based modules [^src-ssdts]. Two key advantages over attention-based diffusion backbones:
+
+1. **Better noise-signal discrimination**: During early diffusion steps when data is mostly noise, attention weights derived from noisy input similarity are misleading. Mamba's state update $h_t = A_t h_{t-1} + B_t x_t$ is independent of content similarity, and its gating mechanism helps filter noise [^src-ssdts].
+
+2. **Controllable frequency response**: SSMs offer frequency response $\hat{K}(\omega) = C(i\omega I-A)^{-1}B$, enabling selective suppression of broadband noise while preserving signal in specific frequency bands — impossible with frequency-unbiased attention [^src-ssdts].
+
+SSD-TS introduces BAM (bidirectional Mamba + temporal attention for intra-channel) and CMB (unidirectional Mamba for inter-channel) as specialized Mamba modules for the diffusion denoising context [^src-ssdts].
+
 ## 相关页面
 
 - [[s-mamba|S-Mamba]] — 首个 Mamba-based 多变量时间序列预测框架 (Neurocomputing 2024)
 - [[dst-mamba|DST-Mamba]] — 分解式时空 Mamba，用于长程交通预测 (AAAI 2025)
+- [[ssd-ts|SSD-TS]] — Mamba 作为扩散模型去噪 backbone 用于时间序列插补 (KDD 2025)
+- [[bam|BAM]] — 双向注意力 Mamba，扩散去噪的通道内建模模块
+- [[cmb|CMB]] — 通道 Mamba 块，扩散去噪的通道间建模模块
 - [[mila|MILA]] — 受 Mamba 启发的线性注意力模型
 - [[linear-attention-unified-framework|Mamba ↔ Linear Attention 统一框架]]
 - [[forget-gate-in-sequential-models|遗忘门在序列模型中的作用]]
 - [[mamba-block-design|Mamba 块设计]]
 
 [^src-demystify-mamba-linear-attention-2024]: [[source-demystify-mamba-linear-attention-2024]]
+[^src-ssdts]: [[source-ssdts]]

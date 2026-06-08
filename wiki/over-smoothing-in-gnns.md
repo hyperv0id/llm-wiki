@@ -7,7 +7,7 @@ tags:
   - deep-learning-theory
 created: 2026-06-08
 last_updated: 2026-06-08
-source_count: 1
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -39,6 +39,8 @@ Over-smoothing is particularly problematic for[^src-hifinet]:
 | Hierarchical modeling | DiffPool, HRNR, [[hifinet|HiFiNet]] | Different resolutions at different hierarchy levels |
 | Graph transformers | GT, Graphormer | Global attention bypasses iterative smoothing |
 | **Frequency decomposition** | [[hifinet|HiFiNet]] | Explicitly model low- and high-frequency components, reconstruct fused representation |
+| **Sheaf Laplacian** | [[ssf|SSF]] | Replace graph Laplacian with [[sheaf-laplacian|sheaf Laplacian]] — edge-specific restriction maps prevent uniform feature averaging, preserving local discriminative signals[^src-ssf] |
+| **Spectral filtering** | [[ssf|SSF]] | Heat kernel $e^{-\alpha\lambda}$ over sheaf Laplacian eigenspectrum suppresses high-frequency noise while retaining low-frequency structure[^src-ssf] |
 
 ## HiFiNet's Solution
 
@@ -50,4 +52,14 @@ Over-smoothing is particularly problematic for[^src-hifinet]:
 
 This makes HiFiNet one of the first GNN frameworks to **structurally** (not just numerically) address over-smoothing through hierarchical graph coarsening[^src-hifinet].
 
+## SSF's Sheaf-Based Solution
+
+[[ssf|SSF]] (ICLR 2026, under review) addresses over-smoothing through a fundamentally different approach — replacing the graph Laplacian entirely[^src-ssf]:
+
+1. **Sheaf Laplacian vs. Graph Laplacian**: Standard GNN diffusion uses the normalized graph Laplacian, which converges all node features to the same value. The [[sheaf-laplacian|sheaf Laplacian]] $L_F$, by incorporating edge-specific restriction maps $F_{v \triangleleft e}$, ensures that feature transformations are **directionally and contextually differentiated** — information does not simply average out[^src-ssf].
+2. **Spectral filtering with heat kernel**: SSF decomposes $L_F = U\Lambda U^T$ and applies $e^{-\alpha\lambda}$ in the spectral domain. This selectively **suppresses high-frequency noise** (which contributes to instability) while preserving low-frequency structural patterns — unlike spatial GNNs where all frequencies are mixed indiscriminately[^src-ssf].
+
+The combined effect: restriction maps provide local protection against over-smoothing, while spectral filtering provides global frequency control. SSF's strong long-horizon performance (60-min MAE degrades only ~80% from 15-min, vs. ~200% for baselines) empirically validates this approach[^src-ssf].
+
 [^src-hifinet]: [[source-hifinet]]
+[^src-ssf]: [[source-ssf]]

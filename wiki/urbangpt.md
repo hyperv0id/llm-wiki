@@ -9,8 +9,8 @@ tags:
   - foundation-model
   - traffic-forecasting
 created: 2026-05-31
-last_updated: 2026-06-01
-source_count: 1
+last_updated: 2026-06-08
+source_count: 2
 confidence: high
 status: active
 ---
@@ -126,7 +126,9 @@ Partitioning regions by flow variance into 4 quartiles: all models perform well 
 | **Modality** | Numerical + text prompts | Numerical only | Numerical only | Numerical only | Numerical only | Numerical only | POI only (15-dim) |
 | **Task type** | Traffic + crime | Traffic flow | Traffic flow (5 tasks) | Traffic flow | Traffic flow | Traffic flow | Region attributes (6 tasks) |
 
-UrbanGPT's key limitation is computational cost: 7B parameters and per-sensor processing make it impractical for large-scale sensor networks (hundreds or thousands of sensors requiring real-time updates)[^src-urbangpt]. [[urbandit|UrbanDiT]] addresses this by training from scratch with parallel processing and 25× inference acceleration via rectified flow.
+[[urbanmind|UrbanMind]] (KDD 2025) extends the LLM-based ST line further with Muffin-MAE multifaceted pre-training (3 masking types for inter-correlated dynamics) and test-time adaptation (masked reconstruction of LLM embeddings), achieving SOTA zero-shot across 9 urban dynamics datasets with cross-city generalization 8.5% MAE better than UrbanGPT[^src-urbanmind].
+
+UrbanGPT's key limitation is computational cost: 7B parameters and per-sensor processing make it impractical for large-scale sensor networks (hundreds or thousands of sensors requiring real-time updates)[^src-urbangpt]. [[urbandit|UrbanDiT]] addresses this by training from scratch with parallel processing and 25× inference acceleration via rectified flow. [[urbanmind|UrbanMind]] (KDD 2025) extends the LLM-based ST paradigm with two critical improvements: (1) Muffin-MAE — a multifaceted masked autoencoder with temporal/spatial/global masking that jointly models inter-correlated urban dynamics (speed, inflow, demand); (2) test-time adaptation — a masked reconstruction mechanism that mitigates distributional shift during inference by adapting shared predictor-reconstructor layers to unseen test regions[^src-urbanmind]. UrbanMind achieves 8.5% lower MAE than UrbanGPT in cross-city zero-shot transfer and ~33-47% MAE reduction on several urban dynamics tasks[^src-urbanmind].
 
 ## Related Pages
 
@@ -145,5 +147,8 @@ UrbanGPT's key limitation is computational cost: 7B parameters and per-sensor pr
 - [[urbanpg]] — UrbanPG, prompt-backbone decoupled ST framework with linear attention, unifies large-scale + few-shot + continual learning (AAAI 2026)
 - [[urbanverse]] — UrbanVerse, foundation model for cross-city/cross-task urban region attribute prediction (crime/population/carbon/nightlight), complementary to traffic-focused ST models (arXiv 2026)
 - [[spatio-temporal-foundation-model-landscape]] — 时空基础模型全景分析：LLM-Based 路线代表
+- [[urbanmind]] — UrbanMind, multifaceted ST-LLM with Muffin-MAE and test-time adaptation (KDD 2025)
+- [[muffin-mae]] — Muffin-MAE, multifaceted masked autoencoder for inter-correlated urban dynamics
 
 [^src-urbangpt]: [[source-urbangpt]]
+[^src-urbanmind]: [[source-urbanmind]]

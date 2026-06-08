@@ -7,8 +7,8 @@ tags:
   - one-step-generation
   - icml-2023
 created: 2026-04-28
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-06-08
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -56,6 +56,12 @@ $$
 - **CIFAR-10**: 1 步 FID 3.55, 2 步 FID 2.93
 - **ImageNet 64×64**: 1 步 FID 6.20, 2 步 FID 4.70
 
+## 应用扩展
+
+### 自回归一致性模型
+
+[[swift|Swift]] (arXiv 2025) 是将一致性模型从独立样本生成扩展到自回归序列预测的开创性工作[^src-swift]。Swift 首次将一致性模型应用于天气预测——每一步的单步采样（NFE=1）替代扩散模型的 20–40 NFE，使多步自回归微调成为可能。通过 [[crps-autoregressive-finetuning|CRPS 自回归微调]]，Swift 在 75 天稳定预报中实现 39× 加速，与 IFS ENS 集合系统竞争[^src-swift]。详见 [[autoregressive-consistency-models|自回归一致性模型]]。
+
 ## 相关页面
 
 - [[diffusion-model]] — 扩散模型概念
@@ -64,7 +70,11 @@ $$
 - [[dpm-solver]] — DPM-Solver，另一快速采样方法
 - [[instaflow]] — InstaFlow，reflow+distill 路线的另一种一步生成方法 (ICLR 2024)
 - [[rectified-flow|Rectified Flow]] — 直线 ODE 生成，与一致性模型同为少步生成方法
+- [[swift]] — Swift，首个自回归一致性模型用于天气预测 (arXiv 2025)
+- [[autoregressive-consistency-models]] — 自回归一致性模型概念
+- [[crps-autoregressive-finetuning]] — CRPS 自回归微调技术
 
 ## 引用
 
 [^src-consistency-models]: [[source-consistency-models]]
+[^src-swift]: [[source-swift]]

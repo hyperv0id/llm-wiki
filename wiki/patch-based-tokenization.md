@@ -8,7 +8,7 @@ tags:
   - patch
 created: 2026-04-28
 last_updated: 2026-05-30
-source_count: 5
+source_count: 6
 confidence: high
 status: active
 ---
@@ -70,9 +70,11 @@ iTransformer 论文指出 PatchTST 在 PEMS 波动序列上表现不佳——pat
 - 相关：[[router-attention-for-cvpe]] — CVPE 的聚合-分发注意力机制
 - 相关：[[learnable-patch-position-encoding]] — CVPE 的可学习位置编码
 - 相关：[[dsw-embedding]] — Crossformer 的 2D 分段嵌入
+- 相关：[[sundial]] — Sundial 使用 patch tokenization (P=16) 实现 patch 级预测，减少自回归步数 (ICML 2025)[^src-sundial]
 
 [^src-simdiff]: [[source-simdiff]]
 [^src-patchtst]: [[source-patchtst]]
 [^src-cvpe-2025]: [[source-cvpe-2025]]
 [^src-crossformer-2023]: [[source-crossformer-2023]]
 [^src-itransformer]: [[source-itransformer]]
+[^src-sundial]: [[source-sundial]]

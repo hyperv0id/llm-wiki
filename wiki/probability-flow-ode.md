@@ -7,8 +7,8 @@ tags:
   - likelihood
   - sde
 created: 2026-04-28
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-06-08
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -80,7 +80,9 @@ $$
 - **DDIM** (Song et al., 2021)：一阶 ODE 求解器，~50 步
 - **RK45** (Song et al., ICLR 2021)：黑盒 ODE 求解器，~60 步
 - **[[instaflow|InstaFlow]]** (Liu et al., ICLR 2024)：通过 reflow 拉直 PF-ODE 轨迹后蒸馏到一步生成
+- **[[swift|Swift]]** (Stock et al., arXiv 2025)：通过 TrigFlow 一致性模型直接单步求解 PF-ODE，每预报步仅需 1 NFE，用于天气预测自回归 rollout，实现 39× 加速[^src-swift]
 
 ## 引用
 
 [^src-sde]: [[source-sde]]
+[^src-swift]: [[source-swift]]

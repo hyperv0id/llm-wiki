@@ -10,7 +10,7 @@ tags:
   - neurips-2021
 created: 2026-05-31
 last_updated: 2026-06-08
-source_count: 8
+source_count: 6
 confidence: medium
 status: active
 ---
@@ -118,10 +118,11 @@ TimeGrad 使用 RNN 处理历史序列，无法直接处理含缺失值的数据
 CSDI 的三个核心设计——(1) 观测值作为条件直接注入去噪网络，(2) 自监督掩码训练，(3) 双轴注意力——成为后续扩散插补工作的标准范式[^src-csdi]：
 
 - **SSSD** (Alcaraz & Strodthoff, 2023)：用 S4 状态空间模型替代 Transformer 注意力，解决 $O(L^2)$ 复杂度问题
+- **[[ssd-ts|SSD-TS]]** (Gao et al., KDD 2025)：用 [[mamba|Mamba]] 选择性 SSM 替代 S4/Transformer 作为去噪 backbone，引入 [[bam|BAM]]（双向 Mamba + temporal attention，通道内）和 [[cmb|CMB]]（单向 Mamba 通道间）模块。在所有高缺失率场景下超越 CSDI 和 SSSD [^src-ssdts]
 - **[[cofill|CoFILL]]** (2025)：将 CSDI 的单流架构扩展为时域+频域双流 Cross-Attention，添加图卷积空间建模
 - **[[fence|FENCE]]** (AAAI 2026)：将 CSDI 的固定 CFG 引导尺度升级为动态反馈引导，解决高缺失率节点的漂移问题
 - **[[lscd|LSCD]]** (ICML 2025)：将 CSDI 的条件扩散框架扩展为频谱条件化——用可微 [[lomb-scargle-periodogram|Lomb–Scargle 周期图]]替代 FFT，消除缺失值预处理带来的频谱失真，并引入 [[spectral-consistency-loss|频谱一致性损失]]强制频域对齐[^src-lscd]
-- **[[prdim|PRDIM]]** (arXiv 2026)：针对 CSDI 的 **MCAR 人工掩码假设**——CSDI 忽略缺失过程，PRDIM 加入模式识别器在 EM 框架下显式建模 $p(M\mid X)$，处理 [[missing-not-at-random|MNAR]] 非随机缺失，并指出插补真实缺失远难于人工缺失[^src-prdim]
+- **[[sadi|SADI]]** (AAAI 2025)：将 CSDI 的双轴分离式 Transformer 替换为联合建模的 [[feature-dependency-encoder|FDE]]（时间感知特征依赖）+ [[gated-temporal-attention|GTA]]（自注意力时间依赖），并引入 [[partial-blackout|partial blackout]] 这一更通用的缺失模式。SADI 在所有 4 个数据集上超越 CSDI，证明了联合建模优于分离式建模[^src-sadi]
 - **CSDI 的 SDE 连续化**：一些后续工作将离散时间框架扩展到连续时间 SDE
 
 ## 局限性
@@ -136,6 +137,9 @@ CSDI 的三个核心设计——(1) 观测值作为条件直接注入去噪网�
 
 - [[diffusion-model]] — 扩散模型概念总览
 - [[ddpm]] — DDPM，CSDI 的扩散模型基础
+- [[ssd-ts|SSD-TS]] — Mamba 作为扩散 backbone 的替代方案 (KDD 2025)
+- [[bam|BAM]] — 双向注意力 Mamba，替代 CSDI 的 Time Transformer
+- [[cmb|CMB]] — 通道 Mamba 块，替代 CSDI 的 Feature Transformer
 - [[timegrad]] — TimeGrad，同期另一扩散+时序工作（预测方向）
 - [[diffstg]] — DiffSTG，时空图扩散预测
 - [[cofill]] — CoFILL，后续扩散时序插补（双流架构）
@@ -143,17 +147,12 @@ CSDI 的三个核心设计——(1) 观测值作为条件直接注入去噪网�
 - [[lscd]] — LSCD，频谱条件化扩散插补，CSDI 的后续发展
 - [[lomb-scargle-periodogram]] — Lomb–Scargle 周期图，LSCD 的频谱条件信号源
 - [[feedback-diffusion-guidance]] — 反馈扩散引导技术
-- [[nuwats]] — NuwaTS，PLM 路线的一统插补基础模型（CSDI 的对比基线之一；两者均用掩码自监督，但 CSDI 走条件扩散、NuwaTS 走预训练语言模型）[^src-nuwats]
-- [[t1]] — T1 (ICLR 2026)，非扩散的 CNN-Transformer 插补，单次前向避免扩散的高推理延迟，参数更少（0.543M vs CSDI 1.195M）[^src-t1]
-- [[prdim]] — PRDIM (arXiv 2026)，将 CSDI 的条件扩散扩展到 MNAR，用模式识别器 + EM 显式建模缺失过程[^src-prdim]
-- [[time-indexed-foundation-model]] — TMLR 2026 零样本基准中，CSDI（监督专用）NMAE 0.664，跨域泛化弱，有时不及简单局部启发式（Linear/LOCF）[^src-time-indexed-imputation]
-- [[generative-time-series-forecasting]] — 生成式时间序列预测范式
+- [[sadi]] — SADI，针对 partial blackout 设计的双阶段扩散插补
+- [[feature-dependency-encoder]] — FDE，SADI 中替代 CSDI Feature Transformer 的特征依赖建模
 
 [^src-csdi]: [[source-csdi]]
 [^src-timegrad]: [[source-timegrad]]
 [^src-fence]: [[source-fence]]
 [^src-lscd]: [[source-lscd]]
-[^src-nuwats]: [[source-nuwats]]
-[^src-t1]: [[source-t1]]
-[^src-prdim]: [[source-prdim]]
-[^src-time-indexed-imputation]: [[source-time-indexed-imputation]]
+[^src-ssdts]: [[source-ssdts]]
+[^src-sadi]: [[source-sadi]]

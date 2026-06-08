@@ -85,6 +85,7 @@ Time-LLM 是 Jin et al. (ICLR 2024) 提出的框架，首次通过 **model repro
 - 关系：[[multimodal-time-series-forecasting]] — LLM+TS 多模态预测
 - 关系：[[timecap]] — 双 LLM agent 时序事件预测
 - 演化：[[streasoner]] — STReasoner, 首个时空推理 TS-LM, 在 Time-LLM 范式上增加 graph + multi-step CoT + spatial-aware RL
+- 演化：[[cogencast]] — CoGenCast (ICML 2026), 在 Time-LLM 的 LLM+TS 思路上将冻结 LLM 重构为 encoder-decoder，增加流匹配条件化生成，实现一步概率预测
 - 概念：[[model-reprogramming]] — 跨域模型重编程范式
 - 反例：[[nuwats]] — NuwaTS 证明文本对齐对不完整序列不如线性嵌入，且复用 NLP 权重做插补基础模型
 
