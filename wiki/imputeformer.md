@@ -9,7 +9,7 @@ tags:
   - kdd-2024
 created: 2026-05-11
 last_updated: 2026-06-08
-source_count: 2
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -164,8 +164,10 @@ L = L_recon + λ · L_FIL
 - [[cofill]] — CoFILL 时空填补扩散模型
 - [[gsli]] — GSLI 多尺度图结构学习填补（AAAI 2025，处理特征异质性）
 - [[nuwats]] — NuwaTS，实现 ImputeFormer 设想的跨域插补基础模型（PLM 路线）
+- [[t1]] — T1 (ICLR 2026)，将 ImputeFormer 归为"双轴 tokenization"类（缺失阻断中间路径时受限），并以 channel-head 绑定的 CNN-Transformer 超越之[^src-t1]
 - [[traffic-forecasting]] — 交通预测
 - [[generative-time-series-forecasting]] — 生成式时序预测
 
 [^src-2312-01728]: [[source-2312-01728]]
 [^src-nuwats]: [[source-nuwats]]
+[^src-t1]: [[source-t1]]

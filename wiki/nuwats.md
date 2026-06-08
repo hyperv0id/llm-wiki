@@ -10,7 +10,7 @@ tags:
   - contrastive-learning
 created: 2026-06-08
 last_updated: 2026-06-08
-source_count: 1
+source_count: 2
 confidence: high
 status: active
 ---
@@ -79,6 +79,9 @@ patch 级融合：$E_{i,(p)} = Z_{i,(p)} + Z_{i,(v_p)} + z_{i,(m)} \times r_i$�
 - 统计嵌入、缺失嵌入、对比学习三者缺一不可；冻结 backbone 表现最差[^src-nuwats]。
 - **不加载 NLP 预训练权重（from scratch）会显著削弱零样本跨域能力**——证明跨模态预训练有意义（NLP 任务训练有益于时序任务）[^src-nuwats]。
 - 对基础模型而言，**数据量比专门模块引入的归纳偏置更关键**（专用 token 与对比学习在小数据集 ETTh1 上增益更明显，在超大 LargeST 上增益弱）[^src-nuwats]。
+
+> [!note] 与 T1 的范式对照
+> [[t1|T1]] (ICLR 2026) 给出相反取向的证据：它主张"鲁棒插补受益于**任务对齐架构**（专门化的时间 CNN + 跨变量注意力 + channel-head 绑定）"，无需预训练即可用单一超参在 11 个数据集上达 SOTA、平均 MSE 较次优降 46%[^src-t1]。NuwaTS 走"复用 NLP 权重 + 大规模多域预训练"的基础模型路线（数据/scale 优先），T1 走"精巧归纳偏置"的 bespoke 架构路线——二者是当前时序插补的两种范式取向。
 - backbone：**GPT-2 > BERT > LLaMA2**（LLaMA2 参数太大、特征稀疏、速度慢，不利边缘部署；BERT 双向注意力略逊于 GPT-2 的因果注意力，因时序具因果性）[^src-nuwats]。
 - **简单线性嵌入 > 文本对齐**（[[patch-reprogramming|Patch Reprogramming]]）：因不完整 patch 缺失比例高且位置多变，模态对齐难以表征复杂缺失序列（表 14）[^src-nuwats]。
 
@@ -97,7 +100,9 @@ patch 级融合：$E_{i,(p)} = Z_{i,(p)} + Z_{i,(v_p)} + z_{i,(m)} \times r_i$�
 - [[patch-reprogramming]] — Time-LLM 的文本对齐机制，被 NuwaTS 证明不适合插补
 - [[model-reprogramming]] — PLM 跨域重用范式（NuwaTS 微调 backbone，非纯重编程）
 - [[imputeformer]] — ImputeFormer 在未来工作中设想的"跨域插补基础模型"，由 NuwaTS 实现
+- [[t1]] — T1，任务对齐 CNN-Transformer 插补架构（与 NuwaTS 的 scale-优先路线形成范式对照）
 - [[csdi]] — 扩散式插补 SOTA，NuwaTS 的对比基线之一
 - [[chronos]] — 从零训练的时序语言模型（NuwaTS 复用 NLP 权重而非从零训练）
 
 [^src-nuwats]: [[source-nuwats]]
+[^src-t1]: [[source-t1]]
