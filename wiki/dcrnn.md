@@ -7,7 +7,7 @@ tags:
   - graph-neural-networks
   - diffusion-convolution
 created: 2026-05-31
-last_updated: 2026-05-31
+last_updated: 2026-06-08
 source_count: 1
 confidence: medium
 status: active
@@ -128,7 +128,7 @@ Key trend: DCRNN's advantage over non-graph methods **grows with the prediction 
 
 ## Limitations
 
-1. **Static, pre-defined graph** — The adjacency matrix is handcrafted and fixed. It cannot adapt to new roads, closures, or changing traffic patterns. This is DCRNN's most fundamental limitation and motivated [[gwnet|GWNet]]'s adaptive adjacency matrix[^src-dcrnn].
+1. **Static, pre-defined graph** — The adjacency matrix is handcrafted and fixed. It cannot adapt to new roads, closures, or changing traffic patterns. This is DCRNN's most fundamental limitation and motivated [[gwnet|GWNet]]'s adaptive adjacency matrix and later [[adaptive-graph-learner|DPGNet's AGL]], which goes further by generating per-timestep dynamic adjacency matrices[^src-dcrnn].
 
 2. **Global K-step truncation** — $K$ is a dataset-wide hyperparameter. Different nodes in a heterogeneous road network (highway vs local street) may need different $K$ values, but DCRNN uses one $K$ for all nodes[^src-dcrnn].
 
@@ -150,6 +150,7 @@ DCRNN established a durable paradigm: **encode physical priors (directed road ne
 | [[diffstg\|DiffSTG]] | AAAI 2023 | Diffusion model for probabilistic STG forecasting |
 | [[specstg\|SpecSTG]] | arXiv 2024 | Spectral domain diffusion with $O(N)$ complexity |
 | RAGC | arXiv 2026 | $O(N)$ graph convolution for large-scale networks |
+| [[dpgnet|DPGNet]] | ICLR 2026 (u.r.) | AGL replaces predefined adjacency with dynamic per-timestep graph + weak connection suppression |
 
 As of 2026, DCRNN has accumulated 3,000+ citations and remains a standard baseline in [[traffic-forecasting]] benchmarks[^src-dcrnn].
 
@@ -170,5 +171,8 @@ As of 2026, DCRNN has accumulated 3,000+ citations and remains a standard baseli
 - [[uniflow]] — UniFlow, unified grid+graph foundation model, uses DCRNN as graph baseline (arXiv 2024)
 - [[metadg]] — MetaDG (AAAI 2026), extends dynamics beyond spatial topology to meta-parameters
 - [[st-unification]] — ST-unification: MetaDG's framing that pushes beyond DCRNN's ST-coupled design
+- [[dpgnet]] — DPGNet (ICLR 2026 u.r.), dynamic graph prediction with AGL + ASL
+- [[adaptive-graph-learner]] — AGL, dynamic per-timestep graph learning via gated self-attention
 
 [^src-dcrnn]: [[source-dcrnn]]
+[^src-dpgnet]: [[source-dpgnet]]
