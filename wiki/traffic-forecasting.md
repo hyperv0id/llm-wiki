@@ -7,7 +7,7 @@ tags:
   - intelligent-transportation
 created: 2026-04-27
 last_updated: 2026-06-08
-source_count: 31
+source_count: 32
 confidence: high
 status: active
 ---
@@ -118,6 +118,10 @@ For a comprehensive overview of deep learning methods for time series, including
 
 [[multimodal-traffic-profiling|Multimodal Traffic Profiling]] — Unlike forecasting (predicting future values), profiling is a **classification** task that identifies traffic states (smooth/slow/congested) or events (accidents/construction). [[mtp|MTP]] (AAAI 2026) augments numerical time series into visual and textual modalities, processing all three in the frequency domain with hierarchical contrastive fusion for SOTA classification results on 6 traffic datasets[^src-mtp].
 
+### Mobile Network Traffic
+
+While the above sections address **vehicle traffic** (road sensors), mobile traffic forecasting addresses **wireless network traffic** — predicting data volumes at cellular base stations. [[uomo|UoMo]] (KDD 2025) is the first universal foundation model for this domain, unifying short-term prediction, long-term prediction, and zero-history generation under a single transformer-based diffusion model with task-oriented masking and contrastive context alignment[^src-uomo]. Deployed on China Mobile's [[jiutian-platform|Jiutian platform]], UoMo achieves +25.3% served users in BS deployment and -40.7% equipment depreciation in BS sleep control[^src-uomo]. See [[mobile-traffic-forecasting]] for the domain page and [[masked-diffusion-pre-training]] for the pre-training technique.
+
 ## Benchmarks
 
 The standard benchmarks are the PeMS (Caltrans Performance Measurement System) datasets from California highways: PEMS03, PEMS04, PEMS07, PEMS08. Standard setup: 12 input steps (1 hour) → 12 output steps (1 hour)[^src-hyperd-hybrid-periodicity-decoupling].
@@ -155,3 +159,4 @@ The XTraffic benchmark provides incident-aligned traffic datasets for California
 [^src-hifinet]: [[source-hifinet]]
 [^src-metadg]: [[source-metadg]]
 [^src-testam]: [[source-testam]]
+[^src-uomo]: [[source-uomo]]

@@ -192,6 +192,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-e2-cstp]] — E²-CSTP: causal multi-modal spatio-temporal prediction with GCN+Mamba (NeurIPS 2025)
 - [[source-hifinet]] — HiFiNet: Hierarchical Frequency-Decomposition GNN for Road Network Representation Learning (AAAI 2026)
 - [[source-rast]] — RAST: Retrieval-Augmented Spatio-Temporal Framework for Traffic Prediction (AAAI 2026)
+- [[source-uomo]] — UoMo: A Universal Model of Mobile Traffic Forecasting for Wireless Network Optimization (KDD 2025 ADS Track)
 
 ## Entities
 - [[e2-cstp]] — E²-CSTP, causal multi-modal ST prediction with dual-branch causal inference + GCN+Mamba (NeurIPS 2025)
@@ -473,6 +474,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[guided-layer-normalization]] — conditional normalization with dynamic affine parameters for accident-aware modeling
 - [[covariate-homogenization]] — UniCA's technique for converting heterogeneous covariates into unified representations (ICLR 2026)
 - [[covariate-fusion-module]] — UniCA's dual-stage attention-based fusion module for covariate integration (ICLR 2026)
+- [[masked-diffusion-pre-training]] — task-oriented spatio-temporal masking + diffusion for multi-task mobile traffic forecasting (UoMo, KDD 2025)
+- [[contrastive-diffusion-alignment]] — InfoNCE-equivalent contrastive fine-tuning aligning mobile traffic with urban context features (UoMo, KDD 2025)
 - [[bellman-equation]] — 贝尔曼方程，强化学习中值函数的递归关系
 - [[temporal-difference-learning]] — 时序差分学习，包括 Sarsa、Q-learning 等算法
 - [[policy-evaluation]] — 给定策略下求解状态值函数的过程
@@ -630,6 +633,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[muon-optimizer]] — Muon, neural network optimizer using Newton-Schulz orthogonalization (2024)
 - [[opencity]] — OpenCity, spatio-temporal traffic foundation model with TimeShift Transformer + instance norm for zero-shot prediction (arXiv 2024)
 - [[staeformer]] — STAEFormer, previous SOTA transformer for traffic forecasting
+- [[uomo]] — UoMo, first universal model for mobile traffic forecasting, diffusion+transformer, deployed at China Mobile (KDD 2025)
+- [[jiutian-platform]] — Jiutian Platform, China Mobile's AI platform for network simulation and optimization, hosts UoMo
 
 ## Concepts
 - [[mm-dit-for-time-series]] — MM-DiT for Time Series, adapting multimodal diffusion transformer to treat covariates as distinct modality streams (arXiv 2026)
@@ -641,6 +646,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[periodicity-modeling-in-time-series]] — analysis of periodic modeling approaches across time-series forecasting architectures
 - [[rl-learning-path-mfrl]] — 基于《Mathematical Foundations of Reinforcement Learning》的系统性 RL 学习路径
 - [[spatiotemporal-mirage]] — 时空幻象，短输入窗口导致模型无法区分不同→相似或相似→不同的预测困境
+- [[mobile-traffic-forecasting]] — mobile traffic forecasting for wireless network optimization, distinct from vehicle traffic forecasting
 
 ## Analyses
 - [[multimodal-semantic-understanding]] — 多模态数据语义理解的对齐范式、融合策略与冗余过滤综合分析
