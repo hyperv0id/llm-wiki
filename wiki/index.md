@@ -3,6 +3,7 @@ title: Index
 type: concept
 created: 2026-04-26
 last_updated: 2026-06-08
+source_count: 0
 tags:
   - meta
 ---
@@ -137,6 +138,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-2511-16426]] — FrèqFlow/SpectFlow: Long-term forecasting using lightweight flow matching (NeurIPS 2025)
 - [[source-cvpe-2025]] — CVPE: Enhancing CI Forecasting via Cross-Variate Patch Embedding (arXiv 2025)
 - [[source-2108-00298]] — GRIN: Filling the G_ap_s — Multivariate Time Series Imputation by Graph Neural Networks (ICLR 2022)
+- [[source-lscd]] — LSCD: Lomb–Scargle Conditioned Diffusion for Time Series Imputation (ICML 2025)
 - [[source-crossformer-2023]] — Crossformer: Transformer Utilizing Cross-Dimension Dependency for MTS Forecasting (ICLR 2023)
 
 ## Sources (continued)
@@ -286,6 +288,9 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[tips]] — TIPS, Transformer with Inductive Prior Synthesis for financial forecasting
 - [[tqn]] — TQNet, Temporal Query Network for efficient multivariate forecasting (ICML 2025)
 - [[tslib]] — TSLib, open-source time series library and benchmark
+
+## Entities
+- [[lscd]] — LSCD, Lomb–Scargle conditioned diffusion for time series imputation (ICML 2025)
 
 ## Entities (continued)
 - [[freqflow-ts]] — FrèqFlow/SpectFlow, lightweight frequency-domain flow matching for time series forecasting (NeurIPS 2025)
@@ -509,6 +514,9 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[factost]] — FactoST, factorized ST foundation model with UTP+STA two-stage design, linear complexity (NeurIPS 2025 / arXiv 2026)
 - [[dcw]] — DCW，小波域差分校正，缓解扩散模型 SNR-t Bias 的即插即用方法 (CVPR 2026)
 
+## Techniques
+- [[spectral-consistency-loss]] — $L_{\text{SCons}}$，频谱一致性损失，强制插补信号与观测信号频谱对齐
+
 ## Techniques (continued)
 - [[cold-sampling]] — Cold Sampling, DDIM推广到广义扩散模型的采样算法，与 Euler 方法求解 ODE 等价
 - [[projected-attention]] — low-rank temporal projected attention for linear-complexity time series imputation (KDD 2024)
@@ -525,6 +533,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[inverted-transformer-architecture]] — Inverted Transformer Architecture，反转 attention/FFN 应用维度而不修改组件 (ICLR 2024)
 
 ## Concepts (continued)
+- [[lomb-scargle-periodogram]] — Lomb–Scargle 周期图，非均匀采样数据的频谱估计方法
 - [[continuous-diffusion-language-model]] — 连续扩散语言模型，在连续 embedding/simplex/latent 空间中做 diffusion 的语言模型类别
 
 ## Entities

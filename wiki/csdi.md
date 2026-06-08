@@ -10,7 +10,7 @@ tags:
   - neurips-2021
 created: 2026-05-31
 last_updated: 2026-06-08
-source_count: 3
+source_count: 4
 confidence: medium
 status: active
 ---
@@ -120,6 +120,7 @@ CSDI 的三个核心设计——(1) 观测值作为条件直接注入去噪网�
 - **SSSD** (Alcaraz & Strodthoff, 2023)：用 S4 状态空间模型替代 Transformer 注意力，解决 $O(L^2)$ 复杂度问题
 - **[[cofill|CoFILL]]** (2025)：将 CSDI 的单流架构扩展为时域+频域双流 Cross-Attention，添加图卷积空间建模
 - **[[fence|FENCE]]** (AAAI 2026)：将 CSDI 的固定 CFG 引导尺度升级为动态反馈引导，解决高缺失率节点的漂移问题
+- **[[lscd|LSCD]]** (ICML 2025)：将 CSDI 的条件扩散框架扩展为频谱条件化——用可微 [[lomb-scargle-periodogram|Lomb–Scargle 周期图]]替代 FFT，消除缺失值预处理带来的频谱失真，并引入 [[spectral-consistency-loss|频谱一致性损失]]强制频域对齐[^src-lscd]
 - **CSDI 的 SDE 连续化**：一些后续工作将离散时间框架扩展到连续时间 SDE
 
 ## 局限性
@@ -138,9 +139,12 @@ CSDI 的三个核心设计——(1) 观测值作为条件直接注入去噪网�
 - [[diffstg]] — DiffSTG，时空图扩散预测
 - [[cofill]] — CoFILL，后续扩散时序插补（双流架构）
 - [[fence]] — FENCE，动态反馈引导扩散插补，解决固定 CFG 尺度问题
+- [[lscd]] — LSCD，频谱条件化扩散插补，CSDI 的后续发展
+- [[lomb-scargle-periodogram]] — Lomb–Scargle 周期图，LSCD 的频谱条件信号源
 - [[feedback-diffusion-guidance]] — 反馈扩散引导技术
 - [[generative-time-series-forecasting]] — 生成式时间序列预测范式
 
 [^src-csdi]: [[source-csdi]]
 [^src-timegrad]: [[source-timegrad]]
 [^src-fence]: [[source-fence]]
+[^src-lscd]: [[source-lscd]]

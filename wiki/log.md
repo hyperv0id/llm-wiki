@@ -3,6 +3,7 @@ title: Log
 type: concept
 created: 2026-04-26
 last_updated: 2026-06-08
+source_count: 0
 tags:
   - meta
 ---
@@ -10,6 +11,13 @@ tags:
 # Wiki Log
 
 Chronological record of all wiki activity.
+
+## [2026-06-08] ingest | LSCD — Lomb–Scargle Conditioned Diffusion for Time Series Imputation (ICML 2025)
+
+Ingest LSCD paper (Fons, Sztrajman, El-Laham, Ferrer, Vyetrenko, Veloso; J.P. Morgan AI Research / Cambridge / UBA / CONICET; ICML 2025 / arXiv:2506.17039). LSCD is the first method to integrate a differentiable Lomb–Scargle periodogram layer into a conditional score-based diffusion model for time series imputation. Core innovations: (1) differentiable Lomb–Scargle layer computes power spectra directly from irregularly-sampled data, eliminating interpolation/zero-filling artifacts that plague FFT-based methods; (2) attention-based spectrum encoder Espec encodes inter-frequency and inter-feature dependencies, injecting spectral conditioning into every denoising step; (3) two-stage training: standard score matching followed by spectral consistency loss LSCons that enforces frequency-domain alignment between imputed and observed signals. SOTA on synthetic sine waves (S-MAE ↓62.5% vs CSDI at 10% missing), PhysioNet (MAE 0.211 vs CSDI 0.219 at 10%), and PM2.5 (MAE 9.069 vs CSDI 9.670). Ablation confirms LS conditioning > Espec > LSCons in importance. Theoretical foundation: conditional entropy of reverse process strictly decreases with spectral conditioning. Created source-summary (source-lscd), entity/technique (lscd), concept (lomb-scargle-periodogram), and technique (spectral-consistency-loss) pages. Updated CSDI with LSCD as follow-up work.
+
+创建的页面：[[source-lscd]], [[lscd]], [[lomb-scargle-periodogram]], [[spectral-consistency-loss]]
+更新的页面：[[csdi]], [[index]], [[log]]
 
 ## [2026-06-08] ingest | NsDiff — Non-stationary Diffusion For Probabilistic Time Series Forecasting (ICML 2025 Spotlight)
 
