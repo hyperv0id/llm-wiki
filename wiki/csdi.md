@@ -10,7 +10,7 @@ tags:
   - neurips-2021
 created: 2026-05-31
 last_updated: 2026-06-08
-source_count: 5
+source_count: 6
 confidence: medium
 status: active
 ---
@@ -122,6 +122,7 @@ CSDI 的三个核心设计——(1) 观测值作为条件直接注入去噪网�
 - **[[cofill|CoFILL]]** (2025)：将 CSDI 的单流架构扩展为时域+频域双流 Cross-Attention，添加图卷积空间建模
 - **[[fence|FENCE]]** (AAAI 2026)：将 CSDI 的固定 CFG 引导尺度升级为动态反馈引导，解决高缺失率节点的漂移问题
 - **[[lscd|LSCD]]** (ICML 2025)：将 CSDI 的条件扩散框架扩展为频谱条件化——用可微 [[lomb-scargle-periodogram|Lomb–Scargle 周期图]]替代 FFT，消除缺失值预处理带来的频谱失真，并引入 [[spectral-consistency-loss|频谱一致性损失]]强制频域对齐[^src-lscd]
+- **[[sadi|SADI]]** (AAAI 2025)：将 CSDI 的双轴分离式 Transformer 替换为联合建模的 [[feature-dependency-encoder|FDE]]（时间感知特征依赖）+ [[gated-temporal-attention|GTA]]（自注意力时间依赖），并引入 [[partial-blackout|partial blackout]] 这一更通用的缺失模式。SADI 在所有 4 个数据集上超越 CSDI，证明了联合建模优于分离式建模[^src-sadi]
 - **CSDI 的 SDE 连续化**：一些后续工作将离散时间框架扩展到连续时间 SDE
 
 ## 局限性
@@ -146,10 +147,12 @@ CSDI 的三个核心设计——(1) 观测值作为条件直接注入去噪网�
 - [[lscd]] — LSCD，频谱条件化扩散插补，CSDI 的后续发展
 - [[lomb-scargle-periodogram]] — Lomb–Scargle 周期图，LSCD 的频谱条件信号源
 - [[feedback-diffusion-guidance]] — 反馈扩散引导技术
-- [[generative-time-series-forecasting]] — 生成式时间序列预测范式
+- [[sadi]] — SADI，针对 partial blackout 设计的双阶段扩散插补
+- [[feature-dependency-encoder]] — FDE，SADI 中替代 CSDI Feature Transformer 的特征依赖建模
 
 [^src-csdi]: [[source-csdi]]
 [^src-timegrad]: [[source-timegrad]]
 [^src-fence]: [[source-fence]]
 [^src-lscd]: [[source-lscd]]
 [^src-ssdts]: [[source-ssdts]]
+[^src-sadi]: [[source-sadi]]

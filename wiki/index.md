@@ -83,6 +83,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-gamma-net]] — GAMMA-Net: GAT + Multi-Axis Mamba Interleaved for traffic forecasting (arXiv 2026)
 - [[source-2312-01728]] — ImputeFormer: Low Rankness-Induced Transformers for Generalizable Spatiotemporal Imputation (KDD 2024)
 - [[source-cofill-spatiotemporal-imputation]] — CoFILL: Spatiotemporal Data Imputation by Conditional Diffusion (arXiv 2025)
+- [[source-sadi]] — SADI: Self-attention-based Diffusion Model for Time-series Imputation in Partial Blackout Scenarios (AAAI 2025)
 - [[source-channelmts]] — ChannelMTS: Multi-modal Time-Series Framework for High-Speed Railway Channel Prediction (KDD 2026)
 - [[source-ncsn]] — NCSN: Generative Modeling by Estimating Gradients of the Data Distribution (Song & Ermon, 2020)
 - [[source-understanding-diffusion-models]] — Understanding Diffusion Models: A Unified Perspective (Luo, 2022)
@@ -267,6 +268,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[specstg]] — SpecSTG, spectral diffusion framework for probabilistic STG traffic forecasting (arXiv 2024)
 - [[ustd]] — USTD, unified ST diffusion framework decoupling pre-trained encoder + task-specific denoisers (SIGSPATIAL 2024)
 - [[cofill]] — CoFILL, conditional diffusion model for spatiotemporal imputation (arXiv 2025)
+- [[sadi]] — SADI, self-attention diffusion model for time-series imputation in partial blackout scenarios (AAAI 2025)
 - [[urbandit]] — UrbanDiT, diffusion transformer for open-world spatiotemporal prediction with unified prompt learning (NeurIPS 2025)
 - [[urbanfm]] — UrbanFM, scaling-centric ST foundation model, WorldST (100+ cities), MiniST, minimalist Transformer (arXiv 2026)
 - [[imputeformer]] — ImputeFormer, low-rankness-induced Transformer with projected/embedded attention and Fourier sparsity loss for generalizable spatiotemporal imputation (KDD 2024)
@@ -403,6 +405,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[mixed-channel-dependency]] — CD encoding + CI denoising hybrid for diffusion TS, inspired by MiDDiR (ICLR 2026 under review)
 - [[over-smoothing-in-gnns]] — GNN 过平滑问题，层级消息传递导致节点表示不可区分的根本限制 (AAAI 2026)
 - [[location-scale-noise-model]] — LSNM，将条件分布的均值和方差同时建模的位置-尺度噪声模型，使扩散模型能感知数据异质性
+- [[partial-blackout]] — 部分停电缺失模式，多特征在连续时间步同时缺失的统一框架 (SADI, AAAI 2025)
 
 ## Techniques
 - [[noise-impact-indicator]] — per-series noise quantification via teacher model predictions for dynamic IB regularization (RSTIB-MLP, ICML 2025)
@@ -508,6 +511,10 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[cluster-aware-guidance]] — 聚类感知引导，利用空间注意力聚类为每个节点组定制扩散引导尺度 (AAAI 2026)
 - [[dynamic-graph-qualification]] — DGQ, qualifying edge reliability via cross-time-step similarity for adjacency matrix refinement (AAAI 2026)
 - [[feedback-diffusion-guidance]] — 反馈扩散引导，基于后验似然动态调整扩散模型引导尺度 (AAAI 2026)
+- [[feature-dependency-encoder]] — FDE，SADI 中显式建模时间感知特征间依赖的编码器 (AAAI 2025)
+- [[gated-temporal-attention]] — GTA，SADI 中用自注意力替代膨胀卷积的门控时序注意力 (AAAI 2025)
+- [[two-stage-imputation]] — 双阶段插补，第一阶段初始插补 + 第二阶段精炼 + 可学习加权组合 (SADI, AAAI 2025)
+- [[mixed-partial-blackout-training]] — MPB 训练策略，RM 预训练 + RM/PB 混合微调 (SADI, AAAI 2025)
 - [[fence]] — FENCE，面向时空交通数据的动态反馈扩散引导插补方法 (AAAI 2026)
 - [[heun-sampler]] — Heun 二阶 ODE 求解器，EDM 采样加速方法
 - [[edm-preconditioning]] — EDM 网络预处理技术 (cskip/cout/cin)
