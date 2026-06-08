@@ -76,6 +76,7 @@ GTR 模块仅 40.1K 参数、4.50M MACs。完整系统（GTR + MLP）0.98M 参�
 - 与 [[cyclenet|CycleNet]] 的可学习循环周期相似，但 GTR 按绝对位置检索而非学习残差周期；GTR 在 Solar-Energy 上 MSE 比 CycleNet 降低 8.2%。[^src-gtr]
 - 与 [[timesnet|TimesNet]] 的 1D→2D 变换共享将时间序列视为 2D 结构的思路，但 GTR 的 2D 用于融合局部与全局参考，而非捕捉周期内和跨周期变化。[^src-gtr]
 - 与 [[phat|PHAT]] 的周期性建模侧重异质周期的分桶策略，GTR 则侧重全局检索。[^src-gtr]
+- **[[rast|RAST]]**（AAAI 2026）同为检索增强的预测方法，但 RAST 在时空双维度（时间+空间）执行 FAISS 向量检索，且面向交通预测场景；GTR 仅在时间维度通过可学习参数 $Q$ 进行全局周期检索。[^src-gtr]
 
 ## 关键参数
 

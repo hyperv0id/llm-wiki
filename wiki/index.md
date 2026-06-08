@@ -173,6 +173,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-streasoner]] — STReasoner: spatio-temporal reasoning in time series via spatial-aware RL (Ni et al., 2026)
 - [[source-e2-cstp]] — E²-CSTP: causal multi-modal spatio-temporal prediction with GCN+Mamba (NeurIPS 2025)
 - [[source-hifinet]] — HiFiNet: Hierarchical Frequency-Decomposition GNN for Road Network Representation Learning (AAAI 2026)
+- [[source-rast]] — RAST: Retrieval-Augmented Spatio-Temporal Framework for Traffic Prediction (AAAI 2026)
 
 ## Entities
 - [[e2-cstp]] — E²-CSTP, causal multi-modal ST prediction with dual-branch causal inference + GCN+Mamba (NeurIPS 2025)
@@ -241,6 +242,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[uniextreme]] — UniExtreme, universal extreme weather forecasting foundation model (arXiv 2025)
 - [[uniflow]] — UniFlow, foundation model for unified grid+graph urban spatio-temporal flow prediction (arXiv 2024)
 - [[ragc]] — RAGC, regularized adaptive graph convolution for large-scale traffic forecasting (arXiv 2026)
+- [[rast]] — RAST, retrieval-augmented spatio-temporal forecasting framework, first RAG-for-STF (AAAI 2026)
 - [[specstg]] — SpecSTG, spectral diffusion framework for probabilistic STG traffic forecasting (arXiv 2024)
 - [[ustd]] — USTD, unified ST diffusion framework decoupling pre-trained encoder + task-specific denoisers (SIGSPATIAL 2024)
 - [[cofill]] — CoFILL, conditional diffusion model for spatiotemporal imputation (arXiv 2025)
@@ -298,6 +300,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[freqflow-ts]] — FrèqFlow/SpectFlow, lightweight frequency-domain flow matching for time series forecasting (NeurIPS 2025)
 
 ## Concepts
+- [[retrieval-augmented-spatio-temporal-forecasting]] — RAG-for-STF 范式，通过外部记忆扩展模型容量以捕获复杂时空依赖 (AAAI 2026)
 - [[conformal-prediction]] — 共形预测，与模型无关的不确定性量化框架
 - [[spatio-temporal-decoupling]] — 时空解耦在在线共形预测中的最优权衡
 - [[spectral-graph-conditional-exchangeability]] — SGCE，谱图条件可交换性 (ICML 2026)
@@ -375,6 +378,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[location-scale-noise-model]] — LSNM，将条件分布的均值和方差同时建模的位置-尺度噪声模型，使扩散模型能感知数据异质性
 
 ## Techniques
+- [[spatio-temporal-retrieval-store]] — 基于 FAISS 的双维度向量记忆库 + 动量 EMA 管理 (RAST, AAAI 2026)
+- [[dual-dimension-feature-disentanglement]] — 时间/空间双流解耦编码，为检索增强提供低秩分解基础 (RAST, AAAI 2026)
 - [[dsw-embedding]] — DSW Embedding, dimension-segment-wise embedding producing 2D vector array for MTS (ICLR 2023)
 - [[mae]] — MAE, masked autoencoder for vision pretraining (75% mask ratio + asymmetric encoder-decoder) (CVPR 2022)
 - [[videomae]] — VideoMAE, video masked autoencoder with tube masking + 90-95% mask ratio (NeurIPS 2022)
