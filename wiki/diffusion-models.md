@@ -7,7 +7,7 @@ tags:
   - deep-learning
 created: 2026-04-28
 last_updated: 2026-06-08
-source_count: 5
+source_count: 6
 confidence: high
 status: active
 ---
@@ -66,6 +66,7 @@ Cold Diffusion（Bansal et al., 2022）提出了"广义扩散模型"框架，将
 - **非平稳时序扩散**：[[nsdiff|NsDiff]] (ICML 2025 Spotlight) 将 DDPM 的固定单位方差假设推广为 [[location-scale-noise-model|LSNM]]，使扩散过程能建模时变不确定性，在 9 个真实数据集上取得 SOTA[^src-nsdiff]
 - **频谱轨迹调度学习**：[[stats|StaTS]] (arXiv 2026) 联合优化噪声调度与去噪过程，通过 [[spectral-trajectory-scheduler|STS]] 学习数据自适应调度、[[frequency-guided-denoiser|FGD]] 估计调度诱导频谱失真调制去噪强度，在 8 个基准上以极低内存（27 MB）超越 NsDiff 等基线[^src-stats]
 - **动态引导机制**：固定 CFG 引导尺度在条件信息不足时会导致漂移到先验分布，[[feedback-diffusion-guidance|反馈扩散引导]]通过后验似然动态调整引导强度来解决此问题[^src-fence]
+- **时间序列扩散基础模型**：[[timedit|TimeDiT]] (KDD 2025) 首次将 DiT 与扩散采样统一为时间序列基础模型，通过统一掩码机制支持预测/插补/异常检测/数据生成四大任务，并以物理信息朗之万采样在推理时注入 PDE 约束（免微调）[^src-timedit]
 
 知识蒸馏和快速 ODE 求解器是加速采样的主要方向。[^src-chan-2025-diffusion-tutorial]
 
@@ -76,3 +77,4 @@ Cold Diffusion（Bansal et al., 2022）提出了"广义扩散模型"框架，将
 [^src-fence]: [[source-fence]]
 [^src-nsdiff]: [[source-nsdiff]]
 [^src-stats]: [[source-stats]]
+[^src-timedit]: [[source-timedit]]

@@ -9,7 +9,7 @@ tags:
   - iccv-2023
 created: 2026-05-31
 last_updated: 2026-05-31
-source_count: 1
+source_count: 2
 confidence: high
 status: active
 ---
@@ -128,6 +128,7 @@ Training is extremely stable: all 12 variants show no loss spikes, attributed to
 - **Stable Diffusion 3 / Flux (2024)**: Text-to-image shifts from U-Net to DiT + text cross-attention[^src-dit]
 - **PixArt-alpha (Huawei, 2023)**: First large-scale text-to-image DiT, T5 encoding + cross-attention[^src-dit]
 - **[[urbandit|UrbanDiT]] (NeurIPS 2025)**: Brings DiT to urban spatiotemporal prediction[^src-dit]
+- **[[timedit|TimeDiT]] (KDD 2025)**: Adapts DiT backbone to time series foundation model, replacing autoregressive forecasting with diffusion probabilistic sampling across forecasting/imputation/anomaly detection/generation[^src-timedit]
 - **Rectified Flow + DiT**: Orthogonal combination -- Rectified Flow compresses sampling steps, DiT improves per-step precision -- becoming the standard recipe for SD3/Flux[^src-dit]
 
 ## Limitations
@@ -145,5 +146,7 @@ Training is extremely stable: all 12 variants show no loss spikes, attributed to
 - [[classifier-free-guidance]] -- CFG, DiT's conditional generation strategy
 - [[urbandit]] -- UrbanDiT, DiT extended to urban spatiotemporal prediction
 - [[mae]] -- MAE, DiT's patchify + Transformer design inspired by ViT/MAE
+- [[timedit]] -- TimeDiT, DiT backbone adapted for time series foundation model (KDD 2025)
 
 [^src-dit]: [[source-dit]]
+[^src-timedit]: [[source-timedit]]

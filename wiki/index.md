@@ -50,6 +50,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-timesfm]] — TimesFM: Decoder-Only Foundation Model for Time-Series Forecasting (ICLR 2024)
 - [[source-chronos]] — Chronos: Learning the Language of Time Series (ICLR 2024)
 - [[source-zhou-informer-2021]] — Informer: Beyond Efficient Transformer for Long Sequence Time-Series Forecasting (AAAI 2021 Best Paper)
+- [[source-timedit]] — TimeDiT: General-purpose Diffusion Transformers for Time Series Foundation Model (KDD 2025)
 - [[source-tips]] — TIPS: transformer with inductive prior synthesis for financial forecasting
 - [[source-tqn]] — TQNet: Temporal Query Network for efficient multivariate forecasting (ICML 2025)
 - [[source-timegrad]] — TimeGrad: autoregressive denoising diffusion for probabilistic time series forecasting (ICML 2021)
@@ -204,6 +205,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[lstnet]] — LSTNet, first cross-dimension deep learning model for MTS, CNN+GRU+Skip-RNN+AR (SIGIR 2018)
 - [[mtgnn]] — MTGNN, adaptive graph learning + dilated inception for MTS forecasting (KDD 2020)
 - [[pyraformer]] — Pyraformer, multi-resolution pyramidal attention Transformer, O(L) complexity + O(1) max path (ICLR 2022 Oral)
+- [[timedit]] — TimeDiT, general-purpose diffusion transformer for time series foundation model (KDD 2025)
 - [[timemixer]] — TimeMixer, fully MLP-based multiscale mixing for long-term and short-term forecasting (ICLR 2024)
 - [[ddpm]] — DDPM, denoising diffusion probabilistic models (NeurIPS 2020)
 - [[d3vae]] — D³VAE (GCRDD), generative time series forecasting with coupled diffusion, denoising score matching, and latent disentanglement (NeurIPS 2022)
@@ -399,6 +401,8 @@ All wiki pages, organized by type. Updated on every ingest.
 ## Techniques
 - [[noise-impact-indicator]] — per-series noise quantification via teacher model predictions for dynamic IB regularization (RSTIB-MLP, ICML 2025)
 - [[memory-augmented-gating]] — memory-based MoE routing with meta-node bank and dual classification losses for regression (TESTAM, ICLR 2024)
+- [[timedit-masking]] — TimeDiT's unified masking mechanism: random/block/stride/reconstruction masks for multi-task time series SSL
+- [[timedit-physics-informed]] — TimeDiT's finetuning-free PDE-guided Langevin dynamics sampling for physics-informed generation
 - [[time-enhanced-attention]] — non-autoregressive attention transferring domain from source to target time steps (TESTAM, ICLR 2024)
 - [[adaptive-graph-learner]] — AGL, plug-and-play dynamic graph generation module with gated self-attention and weak connection suppression (DPGNet, ICLR 2026 under review)
 - [[adaptive-season-learner]] — ASL, multi-scale temporal decomposition + pattern-specific graph construction for seasonal/trend modeling (DPGNet, ICLR 2026 under review)
