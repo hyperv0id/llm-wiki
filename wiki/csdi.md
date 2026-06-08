@@ -10,7 +10,7 @@ tags:
   - neurips-2021
 created: 2026-05-31
 last_updated: 2026-06-08
-source_count: 4
+source_count: 5
 confidence: medium
 status: active
 ---
@@ -142,9 +142,11 @@ CSDI 的三个核心设计——(1) 观测值作为条件直接注入去噪网�
 - [[lscd]] — LSCD，频谱条件化扩散插补，CSDI 的后续发展
 - [[lomb-scargle-periodogram]] — Lomb–Scargle 周期图，LSCD 的频谱条件信号源
 - [[feedback-diffusion-guidance]] — 反馈扩散引导技术
+- [[nuwats]] — NuwaTS，PLM 路线的一统插补基础模型（CSDI 的对比基线之一；两者均用掩码自监督，但 CSDI 走条件扩散、NuwaTS 走预训练语言模型）[^src-nuwats]
 - [[generative-time-series-forecasting]] — 生成式时间序列预测范式
 
 [^src-csdi]: [[source-csdi]]
 [^src-timegrad]: [[source-timegrad]]
 [^src-fence]: [[source-fence]]
 [^src-lscd]: [[source-lscd]]
+[^src-nuwats]: [[source-nuwats]]
