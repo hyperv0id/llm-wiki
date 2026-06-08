@@ -7,8 +7,8 @@ tags:
   - channel-processing
   - multivariate
 created: 2026-04-28
-last_updated: 2026-05-31
-source_count: 7
+last_updated: 2026-06-08
+source_count: 8
 confidence: high
 status: active
 ---
@@ -64,6 +64,10 @@ CPiRi 的通道打乱测试暴露了一个关键问题：大多数 CD 模型在�
 
 [[uniflow|UniFlow]] (arXiv 2024) 在时空 patching 阶段采用 channel-independence 策略：将 T×N×C 的时空流数据拆分为 C 个独立的 T×N 序列，分别送入 patching 模块（grid: 3D-CNN, graph: 1D-CNN+METIS）[^src-uniflow]。这与 PatchTST 的 CI 设计一致——共享权重的 patching 模块增加了有效训练样本数，同时避免了异质变量间的噪声干扰。9 个数据集的 SOTA 结果验证了 CI 在时空基础模型中的有效性 [^src-uniflow]。
 
+## 在 NuwaTS 中的应用
+
+[[nuwats|NuwaTS]] (arXiv 2024) 把 CI 作为其插补基础模型**跨变量/跨域零样本**的关键支撑[^src-nuwats]。因各变量独立处理、对变量数无固定要求，NuwaTS 可在 LargeST（交通）上预训练后零样本迁移到变量数完全不同的 ECL、Weather 等数据集；而 channel-dependent 的 TimesNet、GPT4TS 需固定输入维度，只能在同变量数数据集间零样本[^src-nuwats]。在 NuwaTS 提出的 [[variable-wise-partitioning|变量维度划分基准]]下，CI 模型（NuwaTS、PatchTST）天然契合"训练变量 ≠ 测试变量"的评测设定。这与 [[itransformer|iTransformer]] 的发现一致——CI backbone 学到的序列表示可在变量间迁移[^src-nuwats]。
+
 ## 与其他方法对比
 
 - **Channel-mixing**：传统方法，将所有通道拼接后一起处理
@@ -86,6 +90,7 @@ CPiRi 的通道打乱测试暴露了一个关键问题：大多数 CD 模型在�
 - 相关：[[s-mamba]] — CI backbone + 双向 Mamba 跨变量相关性编码 (Neurocomputing 2024)
 
 - 相关：[[uniflow]] — UniFlow，CI 策略在时空基础模型中的应用 (arXiv 2024)
+- 相关：[[nuwats]] — NuwaTS，CI 支撑插补基础模型的跨变量/跨域零样本 (arXiv 2024)
 
 [^src-simdiff]: [[source-simdiff]]
 [^src-patchtst]: [[source-patchtst]]
@@ -94,3 +99,4 @@ CPiRi 的通道打乱测试暴露了一个关键问题：大多数 CD 模型在�
 [^src-itransformer]: [[source-itransformer]]
 [^src-cpiri]: [[source-cpiri]]
 [^src-uniflow]: [[source-uniflow]]
+[^src-nuwats]: [[source-nuwats]]

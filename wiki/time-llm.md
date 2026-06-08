@@ -8,8 +8,8 @@ tags:
   - forecasting
   - iclr
 created: 2026-06-04
-last_updated: 2026-06-04
-source_count: 1
+last_updated: 2026-06-08
+source_count: 2
 confidence: high
 status: active
 ---
@@ -71,6 +71,9 @@ Time-LLM 是 Jin et al. (ICLR 2024) 提出的框架，首次通过 **model repro
 - 未利用时序专用预训练或图文等多模态知识 [^src-time-llm]
 - 未来方向：最优 reprogramming 表示、时序知识持续预训练、多模态联合推理 [^src-time-llm]
 
+> [!warning] 反例：文本对齐不适合不完整序列
+> [[nuwats|NuwaTS]] (arXiv 2024) 在**插补**场景中给出了与 Time-LLM 相反的证据：对于缺失比例高、缺失位置多变的不完整 patch，把时序 patch 通过 [[patch-reprogramming|Patch Reprogramming]] 对齐到 LLM 词嵌入的"文本对齐"策略**不如简单线性嵌入**[^src-nuwats]。NuwaTS 的表 14 显示，简单线性层在全部 6 个数据集上均优于文本对齐（如 ETTh1 MSE 0.164 vs 0.250）。NuwaTS 据此摒弃硬文本提示，改用统计嵌入 + 缺失嵌入直接编码序列信息[^src-nuwats]。这提示 Time-LLM 的文本对齐增益可能依赖**完整序列**——缺失会破坏 patch 与文本原型的语义匹配。
+
 ## Connections
 
 - 基于：[[patch-based-tokenization]] — Patching + 线性 embedder
@@ -84,5 +87,7 @@ Time-LLM 是 Jin et al. (ICLR 2024) 提出的框架，首次通过 **model repro
 - 演化：[[streasoner]] — STReasoner, 首个时空推理 TS-LM, 在 Time-LLM 范式上增加 graph + multi-step CoT + spatial-aware RL
 - 演化：[[cogencast]] — CoGenCast (ICML 2026), 在 Time-LLM 的 LLM+TS 思路上将冻结 LLM 重构为 encoder-decoder，增加流匹配条件化生成，实现一步概率预测
 - 概念：[[model-reprogramming]] — 跨域模型重编程范式
+- 反例：[[nuwats]] — NuwaTS 证明文本对齐对不完整序列不如线性嵌入，且复用 NLP 权重做插补基础模型
 
 [^src-time-llm]: [[source-time-llm]]
+[^src-nuwats]: [[source-nuwats]]

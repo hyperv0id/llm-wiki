@@ -8,8 +8,8 @@ tags:
   - low-rank
   - kdd-2024
 created: 2026-05-11
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-06-08
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -152,6 +152,9 @@ L = L_recon + λ · L_FIL
 - **大规模预训练**：在跨领域数据上预训练通用填补基础模型
 - **表示学习**：学习不依赖特定缺失模式的更鲁棒的时空表示
 
+> [!note] 由 NuwaTS 实现
+> ImputeFormer 设想的三个方向均被 [[nuwats|NuwaTS]] (arXiv 2024) 落地[^src-nuwats]：(1) **大规模跨域预训练**——NuwaTS 在 17.6M 多域融合样本（乃至 LargeST 100.1M）上训练通用插补基础模型；(2) **多任务**——可将插补模型转为预测模型（追加 masked padding token），并用插补数据提升下游预测；(3) **缺失模式无关表示**——通过缺失模式对比学习获得 mask-invariant 表示[^src-nuwats]。差异在于路线：ImputeFormer 走低秩归纳偏置的专用架构，NuwaTS 走复用 PLM 权重的基础模型路线，且 NuwaTS 发现"数据量比归纳偏置更关键"[^src-nuwats]。
+
 ## 关联页面
 
 - [[projected-attention]] — 时间投影注意力机制
@@ -160,7 +163,11 @@ L = L_recon + λ · L_FIL
 - [[grin]] — GRIN，首个 GNN 填补模型（ICLR 2022）
 - [[cofill]] — CoFILL 时空填补扩散模型
 - [[gsli]] — GSLI 多尺度图结构学习填补（AAAI 2025，处理特征异质性）
+- [[nuwats]] — NuwaTS，实现 ImputeFormer 设想的跨域插补基础模型（PLM 路线）
+- [[t1]] — T1 (ICLR 2026)，将 ImputeFormer 归为"双轴 tokenization"类（缺失阻断中间路径时受限），并以 channel-head 绑定的 CNN-Transformer 超越之[^src-t1]
 - [[traffic-forecasting]] — 交通预测
 - [[generative-time-series-forecasting]] — 生成式时序预测
 
 [^src-2312-01728]: [[source-2312-01728]]
+[^src-nuwats]: [[source-nuwats]]
+[^src-t1]: [[source-t1]]
