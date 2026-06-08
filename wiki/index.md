@@ -198,8 +198,10 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-uomo]] — UoMo: A Universal Model of Mobile Traffic Forecasting for Wireless Network Optimization (KDD 2025 ADS Track)
 - [[source-craft]] — CRAFT: Cross City Traffic Flow Generation via Retrieval Augmented Diffusion Model (NeurIPS 2025)
 - [[source-stbp]] — STBP: General Spatio-Temporal Backbone with Scalable Contextual Pattern Bank for Urban Continual Forecasting (ICLR 2026)
+- [[source-mmckm]] — MMCKM: Micro-Macro Coupled Koopman Modeling for Traffic Flow Prediction (ICLR 2026)
 
 ## Entities
+- [[mmckm]] — MMCKM, history-free micro-macro coupled Koopman model unifying vehicle trajectory + traffic density prediction (ICLR 2026 Poster)
 - [[stbp]] — STBP, continual spatio-temporal forecasting with fixed backbone + scalable contextual pattern bank (ICLR 2026)
 - [[craft]] — CRAFT, cross-city retrieval-augmented diffusion model for zero-shot traffic flow generation (NeurIPS 2025)
 - [[e2-cstp]] — E²-CSTP, causal multi-modal ST prediction with dual-branch causal inference + GCN+Mamba (NeurIPS 2025)
@@ -345,6 +347,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[freqflow-ts]] — FrèqFlow/SpectFlow, lightweight frequency-domain flow matching for time series forecasting (NeurIPS 2025)
 
 ## Concepts
+- [[vehicle-centric-graph-traffic-pde]] — Lagrangian discretization of LWR traffic PDE on dynamic vehicle graphs with skew-symmetric advection + PSD diffusion (ICLR 2026)
+- [[micro-macro-coupled-koopman-modeling]] — unified history-free Koopman operator framework for joint macro flow + micro vehicle prediction (ICLR 2026)
 - [[rstib]] — Robust Spatial-Temporal Information Bottleneck, IB generalization for dual-noise STF (ICML 2025)
 - [[retrieval-augmented-spatio-temporal-forecasting]] — RAG-for-STF 范式，通过外部记忆扩展模型容量以捕获复杂时空依赖 (AAAI 2026)
 - [[generative-time-series-forecasting]] — 生成式时间序列预测，通过概率建模实现不确定性量化的预测范式
@@ -435,6 +439,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[partial-blackout]] — 部分停电缺失模式，多特征在连续时间步同时缺失的统一框架 (SADI, AAAI 2025)
 
 ## Techniques
+- [[intent-discriminator-koopman]] — MoE gating mechanism selecting among 5 parameter-bounded Koopman operators per driving regime (MMCKM, ICLR 2026)
 - [[geographic-feature-alignment]] — GFA, cross-city geographic representation alignment via traffic flow alignment + optimal transport (CRAFT, NeurIPS 2025)
 - [[retrieval-based-condition-augmentation]] — RCA, RAG-style condition enrichment for cross-city diffusion generation (CRAFT, NeurIPS 2025)
 - [[noise-impact-indicator]] — per-series noise quantification via teacher model predictions for dynamic IB regularization (RSTIB-MLP, ICML 2025)

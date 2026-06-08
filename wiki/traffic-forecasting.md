@@ -7,7 +7,7 @@ tags:
   - intelligent-transportation
 created: 2026-04-27
 last_updated: 2026-06-08
-source_count: 36
+  source_count: 37
 confidence: high
 status: active
 ---
@@ -87,6 +87,18 @@ A growing line of work applies spectral and topological techniques to address fu
 **[[hifinet|HiFiNet]]** (AAAI 2026) introduces hierarchical frequency-decomposition GNNs, explicitly separating low-frequency (smooth global) and high-frequency (local variation) graph signals to mitigate over-smoothing[^src-hifinet].
 
 **[[ssf|SSF (Spectral Sheaf Filtering)]]** (ICLR 2026, under review) is the first framework to model spatio-temporal data using **[[cellular-sheaf|cellular sheaves]]** from algebraic topology. Rather than uniformly propagating information along edges like standard GNNs, SSF assigns learnable **restriction maps** per edge that encode context-dependent transformation dynamics. It then applies a **heat kernel spectral filter** over the [[sheaf-laplacian|sheaf Laplacian]] — a generalization of the graph Laplacian that accounts for both topology and edge-specific transformation semantics. The sheaf Laplacian's eigendecomposition enables frequency-aware decomposition, with the heat kernel $e^{-\alpha\lambda}$ suppressing high-frequency noise while preserving low-frequency structural patterns. SSF achieves SOTA on METR-LA, PEMS-BAY, PEMS04, PEMS08, and NAVER-Seoul, with particularly dramatic long-horizon gains — e.g., NAVER-Seoul MAPE 1.03% at 15min vs. best baseline 8.32%. The sheaf structure naturally mitigates [[over-smoothing-in-gnns|over-smoothing]] because restriction maps prevent node representations from converging[^src-ssf].
+
+### Koopman / Micro-Macro Coupled
+
+A fundamentally different paradigm: modeling traffic at two scales simultaneously — microscopic vehicle trajectories and macroscopic flow density — unified under [[micro-macro-coupled-koopman-modeling|Koopman operator theory]] that lifts nonlinear dynamics to linear observation spaces[^src-mmckm].
+
+**[[mmckm|MMCKM]]** (ICLR 2026 Poster) is the first framework to achieve this bidirectional coupling on dynamic vehicle graphs. Key innovations[^src-mmckm]:
+
+- **[[vehicle-centric-graph-traffic-pde|Vehicle-Centric Graph PDE]]**: Discretizes the LWR advection-diffusion equation directly onto vehicles as Lagrangian graph nodes, preserving high-frequency perturbations that Eulerian grid methods lose. Advection operator $C^{\text{adv}}$ is skew-symmetric (energy-preserving), diffusion operator $L^{\text{diff}}$ is PSD (entropy-producing), both parameterized with constructive physical guarantees[^src-mmckm].
+- **History-Free Koopman Evolution**: Both macro (density) and micro (trajectory) dynamics are evolved by time-invariant linear Koopman operators from a single snapshot — eliminating the trajectory tracking overhead of sequence-based methods. Spectral alignment couples Koopman eigenvalues to PDE operator spectra for stability[^src-mmckm].
+- **[[intent-discriminator-koopman|Intent Discriminator]] (MoE)**: Selects among 5 parameter-bounded Koopman operators (free flow, car-following, lane changing, merging, emergency) with distinct spectral radii, oscillation frequencies, and actuation bounds. Koopman control via CrossAttention injects macro flow into micro dynamics with ISS stability guarantees[^src-mmckm].
+
+On NGSIM and HighD, MMCKM achieves history-free trajectory prediction matching history-dependent SOTA methods (BAT, MS-STGCN, Vit-Traj) while outperforming CV at all horizons. Operator interval creates a trade-off: 0.1s excels short-term (RMSE=0.33 at 1s), 1.0s excels long-term via fewer iterations. Ablation: diffusion term critical (removal degrades macro 2.9–4.6%); Intent Discriminator contributes 29% at short horizon; Koopman control reduces error 37% at 5s[^src-mmckm].
 
 ### Mixture of Experts / Adaptive Routing
 [[testam|TESTAM]] (ICLR 2024) is the first MoE-based spatio-temporal attention model for traffic forecasting. It uses three heterogeneous experts — identity (temporal-only), learnable static graph, and spatial attention — adaptively routed via [[memory-augmented-gating|memory-augmented gating]] with two classification losses that solve the MoE routing freeze problem in regression. With only 224K params, TESTAM achieves SOTA on METR-LA, PEMS-BAY, and EXPY-TKY, excelling on large-scale graphs (1,843-node EXPY-TKY) and non-recurring conditions through in-situ spatial modeling[^src-testam]. The [[time-enhanced-attention|time-enhanced attention]] mechanism eliminates autoregressive error propagation by directly attending from source to target time steps.
@@ -201,3 +213,4 @@ The XTraffic benchmark provides incident-aligned traffic datasets for California
 [^src-patchstg]: [[source-patchstg]]
 [^src-stbp]: [[source-stbp]]
 [^src-ssf]: [[source-ssf]]
+[^src-mmckm]: [[source-mmckm]]
