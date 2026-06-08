@@ -9,7 +9,7 @@ tags:
   - diffusion-models
 created: 2026-05-03
 last_updated: 2026-06-08
-source_count: 10
+source_count: 11
 confidence: high
 status: active
 ---
@@ -59,6 +59,10 @@ status: active
 
 **[[aurora|Aurora]]** (arXiv 2026) 提出 Prototype-Guided Flow Matching，使用多模态领域知识生成条件和原型来引导流匹配过程，实现生成式概率预测[^src-aurora]。Aurora 支持多模态输入（文本、图像、数值）和零样本推理。
 
+### 一致性模型方法
+
+**[[swift|Swift]]** (arXiv 2025) 首次将 [[autoregressive-consistency-models|自回归一致性模型]] 应用于天气时间序列预测，单步 NFE=1 取代扩散模型的 20–40 NFE，实现 39× 推理加速[^src-swift]。通过 [[crps-autoregressive-finetuning|CRPS 自回归微调]] 在多步 rollout 上直接优化集合校准度，实现 75 天稳定预报，集合技能与 IFS ENS 竞争[^src-swift]。
+
 ### 方法对比
 
 | 方法 | 生成框架 | 模态支持 | 零样本 | 输出类型 | 操作域 |
@@ -73,6 +77,7 @@ status: active
 | **FlowTS** | **Rectified Flow (ODE)** | **仅数值** | **✗** | **概率分布** | **原始域 + Trend-Season + RoPE** |
 | **TSFlow** | **Flow Matching (OT)** | **仅数值** | **✗** | **概率分布** | **原始域 + GP 先验** |
 | **CoGenCast** | **Flow Matching (平均速度)** | **文本 + 数值** | **✓** | **概率分布 (一步)** | **LLM Encoder-Decoder + 平均速度 JVP** |
+| **Swift** | **Consistency Model (TrigFlow)** | **仅数值 + 静态强迫** | **✗** | **概率分布 (NFE=1)** | **原始域 + CRPS 微调** |
 
 ## 优势
 
@@ -113,6 +118,9 @@ status: active
 - [[hybrid-llm-flow-matching-forecasting]] — 混合 LLM-流匹配预测范式
 - [[one-step-flow-generation]] — 一步流生成，NFE=1 的高效推理技术
 - [[average-velocity-modeling]] — 平均速度建模，JVP 修正的流匹配训练技术
+- [[swift]] — Swift，首个自回归一致性模型用于天气预测，NFE=1 (arXiv 2025)
+- [[autoregressive-consistency-models]] — 自回归一致性模型概念
+- [[crps-autoregressive-finetuning]] — CRPS 自回归微调技术
 
 [^src-aurora]: [[source-aurora]]
 [^src-simdiff]: [[source-simdiff]]
@@ -124,3 +132,4 @@ status: active
 [^src-flowts]: [[source-flowts]]
 [^src-tsflow]: [[source-tsflow]]
 [^src-sundial]: [[source-sundial]]
+[^src-swift]: [[source-swift]]

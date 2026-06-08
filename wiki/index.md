@@ -191,6 +191,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-urbanmind]] — UrbanMind: Urban Dynamics Prediction with Multifaceted Spatial-Temporal Large Language Models (KDD 2025)
 - [[source-dyffusion]] — DYffusion: A Dynamics-informed Diffusion Model for Spatiotemporal Forecasting (NeurIPS 2023)
 - [[source-allspark]] — AllSpark: multimodal spatio-temporal general intelligence model with 10 modalities via LaRF (Shao et al., 2024)
+- [[source-swift]] — Swift: An Autoregressive Consistency Model for Efficient Weather Forecasting (arXiv 2025)
 - [[source-streasoner]] — STReasoner: spatio-temporal reasoning in time series via spatial-aware RL (Ni et al., 2026)
 - [[source-e2-cstp]] — E²-CSTP: causal multi-modal spatio-temporal prediction with GCN+Mamba (NeurIPS 2025)
 - [[source-hifinet]] — HiFiNet: Hierarchical Frequency-Decomposition GNN for Road Network Representation Learning (AAAI 2026)
@@ -239,6 +240,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[dpm-solver]] — DPM-Solver, fast ODE solver for diffusion model (NeurIPS 2022)
 - [[dyffusion]] — DYffusion, dynamics-informed diffusion model for spatiotemporal forecasting (NeurIPS 2023)
 - [[consistency-models]] — Consistency Models, one-step generation via trajectory consistency (ICML 2023)
+- [[swift]] — Swift, first autoregressive consistency model for weather forecasting, 39× acceleration (arXiv 2025)
 - [[shortcut-models]] — Shortcut Models, one-step diffusion via step-size conditioning and self-consistency (arXiv 2025)
 - [[instaflow]] — InstaFlow, reflow+distill pipeline for one-step SD text-to-image (ICLR 2024)
 - [[glow]] — Glow, normalizing flow with invertible 1x1 convolutions (NeurIPS 2018)
@@ -409,6 +411,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[model-reprogramming]] — 模型重编程，冻结预训练模型通过输入变换+输出投影跨域重用的范式
 - [[texts-as-auxiliary-variables]] — 文本作为辅助变量，TaTS 的核心设计概念 (ICLR 2026)
 - [[extreme-weather-forecasting]] — 极端天气预测，对罕见非线性大气极端事件的预报 (arXiv 2025)
+- [[autoregressive-consistency-models]] — 自回归一致性模型，将单步 CM 扩展到序列自回归预测 (arXiv 2025)
 - [[signal-to-noise-ratio-modality-selection]] — SNR-based adaptive modality weighting for multi-modal prediction
 - [[mutual-information]] — 互信息，衡量两个随机变量之间共享信息量的信息论度量
 - [[energy-based-model]] — EBM, energy-based model with unnormalized probability via energy function
@@ -626,6 +629,7 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Techniques (continued)
 - [[cold-sampling]] — Cold Sampling, DDIM推广到广义扩散模型的采样算法，与 Euler 方法求解 ODE 等价
+- [[crps-autoregressive-finetuning]] — CRPS 自回归微调，在多步 rollout 上以 CRPS 损失微调为集合校准 (Swift, arXiv 2025)
 - [[projected-attention]] — low-rank temporal projected attention for linear-complexity time series imputation (KDD 2024)
 - [[embedded-attention]] — low-rank spatial embedded attention using node embedding agents (KDD 2024)
 - [[fourier-imputation-loss]] — Fourier sparsity regularization for signal-noise balanced imputation (KDD 2024)
