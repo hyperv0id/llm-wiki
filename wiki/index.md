@@ -102,6 +102,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-nuwats]] — NuwaTS: a Foundation Model Mending Every Incomplete Time Series, PLM-based one-for-all imputation (arXiv 2024)
 - [[source-t1]] — T1: One-to-One Channel-Head Binding for Multivariate Time-Series Imputation, CNN-Transformer hybrid (ICLR 2026)
 - [[source-prdim]] — PRDIM: Missing Pattern Recognized Diffusion Imputation Model for Missing Not At Random (arXiv 2026)
+- [[source-time-indexed-imputation]] — Are Time-Indexed Foundation Models the Future of Time Series Imputation? TabPFN-TS/MoTM zero-shot benchmark (TMLR 2026)
 
 - [[source-kexue-muon-analysis]] — Muon优化器赏析：从向量到矩阵的本质跨越 (苏剑林, 2024)
 - [[source-incident-guided-st-forecasting]] — IGSTGNN: Incident-Guided Spatiotemporal Graph Neural Network for Traffic Forecasting (KDD 2026)
@@ -272,6 +273,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[nuwats]] — NuwaTS, PLM-based one-for-all foundation model for incomplete time series imputation, cross-variable/cross-domain generalization (arXiv 2024)
 - [[t1]] — T1, CNN-Transformer hybrid for MTS imputation with one-to-one channel-head binding, −46% MSE, robust under heavy missingness (ICLR 2026)
 - [[prdim]] — PRDIM, diffusion imputation with pattern recognizer + EM for Missing Not At Random (MNAR), multi-modal (arXiv 2026)
+- [[tabpfn-ts]] — TabPFN-TS, zero-shot imputation via Fourier features + TabPFN in-context regression; best in TMLR 2026 benchmark (NMAE 0.293) but slow
+- [[motm]] — MoTM (Mixture of TimeFlow Models), zero-shot imputation via modulated INR basis + ridge; 2nd-best, ~100× faster than TabPFN-TS
 - [[crossformer]] — Crossformer, Transformer utilizing cross-dimension dependency for MTS forecasting (ICLR 2023)
 - [[xcpd]] — xCPD, model-agnostic plugin for spectral-domain channel-patch dependency routing (ICLR 2026)
 - [[cpiri]] — CPiRi, CI+CD decoupled with channel shuffling for permutation-invariant MTSF (ICLR 2026)
@@ -337,6 +340,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[message-passing-imputation]] — Message Passing Imputation，利用 GNN 消息传递进行时空缺失值重建 (ICLR 2022)
 - [[variable-wise-partitioning]] — 变量维度划分基准，沿变量而非时间切分 train/val/test 以检验跨变量/跨域插补泛化 (NuwaTS, arXiv 2024)
 - [[missing-not-at-random]] — MNAR 与缺失机制 (MCAR/MAR/MNAR)，可忽略性，及各插补模型的缺失假设 (PRDIM, arXiv 2026)
+- [[time-indexed-foundation-model]] — 时间索引基础模型，每时间戳学 H(t)→x(t) 的连续时间零样本插补范式 (TabPFN-TS/MoTM, TMLR 2026)
 - [[multimodal-time-series-forecasting]] — forecasting tasks involving numerical time series plus images/text (ICLR 2026)
 - [[multimodal-traffic-profiling]] — classification of urban traffic states using multimodal numerical/visual/textual data (AAAI 2026)
 - [[multimodal-time-series-anomaly-detection]] — detecting anomalies using multimodal time series and text data (ICLR 2026)

@@ -10,7 +10,7 @@ tags:
   - neurips-2021
 created: 2026-05-31
 last_updated: 2026-06-08
-source_count: 7
+source_count: 8
 confidence: medium
 status: active
 ---
@@ -146,6 +146,7 @@ CSDI 的三个核心设计——(1) 观测值作为条件直接注入去噪网�
 - [[nuwats]] — NuwaTS，PLM 路线的一统插补基础模型（CSDI 的对比基线之一；两者均用掩码自监督，但 CSDI 走条件扩散、NuwaTS 走预训练语言模型）[^src-nuwats]
 - [[t1]] — T1 (ICLR 2026)，非扩散的 CNN-Transformer 插补，单次前向避免扩散的高推理延迟，参数更少（0.543M vs CSDI 1.195M）[^src-t1]
 - [[prdim]] — PRDIM (arXiv 2026)，将 CSDI 的条件扩散扩展到 MNAR，用模式识别器 + EM 显式建模缺失过程[^src-prdim]
+- [[time-indexed-foundation-model]] — TMLR 2026 零样本基准中，CSDI（监督专用）NMAE 0.664，跨域泛化弱，有时不及简单局部启发式（Linear/LOCF）[^src-time-indexed-imputation]
 - [[generative-time-series-forecasting]] — 生成式时间序列预测范式
 
 [^src-csdi]: [[source-csdi]]
@@ -155,3 +156,4 @@ CSDI 的三个核心设计——(1) 观测值作为条件直接注入去噪网�
 [^src-nuwats]: [[source-nuwats]]
 [^src-t1]: [[source-t1]]
 [^src-prdim]: [[source-prdim]]
+[^src-time-indexed-imputation]: [[source-time-indexed-imputation]]

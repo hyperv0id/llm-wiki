@@ -10,7 +10,7 @@ tags:
   - contrastive-learning
 created: 2026-06-08
 last_updated: 2026-06-08
-source_count: 2
+source_count: 3
 confidence: high
 status: active
 ---
@@ -89,6 +89,11 @@ patch 级融合：$E_{i,(p)} = Z_{i,(p)} + Z_{i,(v_p)} + z_{i,(m)} \times r_i$�
 
 模型在固定长度 96 的片段上训练；处理**更长片段**或**整段完全缺失**时可能需进一步微调——这是作者列出的未来方向[^src-nuwats]。
 
+## 外部评估
+
+> [!warning] 独立基准：落后于时间索引基础模型
+> EDF R&D 的 TMLR 2026 零样本插补基准（[[source-time-indexed-imputation|33 个域外数据集]]）发现：作为零样本方法，**NuwaTS 在所有数据集/设定下显著落后于 [[tabpfn-ts|TabPFN-TS]]，并在 11 个数据集中的 10 个上落后于 [[motm|MoTM]]**（虽优于 MOMENT）[^src-time-indexed-imputation]。这与 NuwaTS 自报的"超越域特定 SOTA"并不直接矛盾（基准/基线不同），但提示：PLM 重编程路线在跨域零样本插补上**弱于** [[time-indexed-foundation-model|时间索引基础模型]]（连续时间 $H(t)\to x(t)$ + in-context 回归）。此外该基准注意到 NuwaTS 公开代码未提供现成预训练模型，仅有固定长度 96 的演示版[^src-time-indexed-imputation]。
+
 ## 关联页面
 
 - [[variable-wise-partitioning]] — NuwaTS 提出的变量维度划分基准
@@ -104,6 +109,9 @@ patch 级融合：$E_{i,(p)} = Z_{i,(p)} + Z_{i,(v_p)} + z_{i,(m)} \times r_i$�
 - [[csdi]] — 扩散式插补 SOTA，NuwaTS 的对比基线之一
 - [[chronos]] — 从零训练的时序语言模型（NuwaTS 复用 NLP 权重而非从零训练）
 - [[missing-not-at-random]] — 缺失机制谱系（NuwaTS 假设随机缺失、忽略缺失过程；PRDIM 处理 MNAR）
+- [[time-indexed-foundation-model]] — 时间索引基础模型范式（TMLR 2026 基准中零样本插补强于 NuwaTS）
+- [[tabpfn-ts]] / [[motm]] — 时间索引零样本插补模型（基准中领先 NuwaTS）
 
 [^src-nuwats]: [[source-nuwats]]
 [^src-t1]: [[source-t1]]
+[^src-time-indexed-imputation]: [[source-time-indexed-imputation]]
