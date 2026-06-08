@@ -77,6 +77,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-paperbench]] — Long Context, Less Focus: A Scaling Gap in LLMs (Gu et al., 2026)
 - [[source-vetcha-2026-towards-infinite-length-extrapolation]] — Vetcha 2026: Towards Infinite Length Extrapolation - A Unified Approach
 - [[source-conformer]] — ConFormer: Conditional Transformer for accident-informed traffic forecasting (KDD 2026)
+- [[source-gamma-net]] — GAMMA-Net: GAT + Multi-Axis Mamba Interleaved for traffic forecasting (arXiv 2026)
 - [[source-2312-01728]] — ImputeFormer: Low Rankness-Induced Transformers for Generalizable Spatiotemporal Imputation (KDD 2024)
 - [[source-cofill-spatiotemporal-imputation]] — CoFILL: Spatiotemporal Data Imputation by Conditional Diffusion (arXiv 2025)
 - [[source-channelmts]] — ChannelMTS: Multi-modal Time-Series Framework for High-Speed Railway Channel Prediction (KDD 2026)
@@ -215,6 +216,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[instaflow]] — InstaFlow, reflow+distill pipeline for one-step SD text-to-image (ICLR 2024)
 - [[glow]] — Glow, normalizing flow with invertible 1x1 convolutions (NeurIPS 2018)
 - [[gpd]] — GPD, generative pre-training on diffusion for spatio-temporal few-shot learning via hypernetwork parameter generation (ICLR 2024)
+- [[gamma-net]] — GAMMA-Net, 交错式 GAT + 多轴 Mamba 时空交通预测模型 (arXiv 2026)
 - [[normalizing-flow]] — Normalizing Flow, invertible transformation based generative models
 - [[flow-matching]] — Flow Matching, simulation-free CNF training with OT paths (NeurIPS 2023)
 - [[optimal-transport]] — Optimal Transport, mathematical theory for probability distribution transformation
@@ -529,6 +531,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[dual-stream-temporal-frequency-processing]] — 双流时频处理，TCN+GCN 时域与 DCT 频域的并行处理与 Cross-Attention 融合 (arXiv 2025)
 - [[forget-gate-in-sequential-models]] — forget gate as multiplicative decay on past hidden states, replaceable by positional encoding
 - [[mamba-block-design]] — Mamba's modified block design with swapped sub-blocks and unified normalization
+- [[interleaved-gat-mamba]] — 交错式 GAT-Mamba 架构，沿时空双轴交替堆叠 GAT 和 Mamba 形成闭环信息流 (GAMMA-Net, arXiv 2026)
 - [[two-band-mixture-noise]] — 两频段混合噪声，频域扩散中低频+高频噪声的线性组合方案 (ICLR 2025 Workshop)
 - [[frequency-diffusion]] — 频域扩散，在傅里叶频域中执行扩散过程的生成方法
 - [[langevin-dynamics]] — 朗之万动力学 (Langevin Dynamics)，基于分数函数的 MCMC 采样方法

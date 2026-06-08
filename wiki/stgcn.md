@@ -8,8 +8,8 @@ tags:
   - convolutional-neural-network
   - spectral-methods
 created: 2026-05-31
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-06-08
+source_count: 2
 confidence: high
 status: active
 ---
@@ -159,5 +159,20 @@ STGCN 与同年发表的 [[dcrnn|DCRNN]]（ICLR 2018）共同确立了时空图�
 - [[std-mae]] — STD-MAE，时空解耦预训练
 - [[metadg]] — MetaDG (AAAI 2026)，通过动态生成 meta-parameters 实现 ST-unification
 - [[st-unification]] — ST-unification：MetaDG 对 STGCN ST-分离设计的批判性框架
+- [[gamma-net|GAMMA-Net]] — arXiv 2026，交错式 GAT + 多轴 Mamba 交通预测，在 STGCN 等六个基准全面 SOTA
+
+## STGCN 演进链：从纯卷积到交错式 Mamba
+
+```
+STGCN (2018)               GWNet (2019)                GAMMA-Net (2026)
+纯卷积 + 预定义图    →    自适应图学习          →    交错式 GAT-Mamba 闭环
+图不可学习                图可学习（自适应邻接）      图动态重加权 + 双轴 Mamba
+                                                    GAT 替代固定图卷积
+                                                     时间理解↔空间理解相互增强
+```
+
+GAMMA-Net 在 STGCN 开创的 METR-LA/PEMS-BAY/PEMS 基准上取得全面 SOTA，其 GAT 组件直接回应了 STGCN"图结构时不变"的局限性——通过动态注意力重加权替代固定的谱域图卷积[^src-gamma]。
+
+[^src-gamma]: [[source-gamma-net]]
 
 [^src-stgcn]: [[source-stgcn]]
