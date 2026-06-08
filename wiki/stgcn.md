@@ -153,6 +153,9 @@ STGCN 与同年发表的 [[dcrnn|DCRNN]]（ICLR 2018）共同确立了时空图�
 - [[source-astgcn]] — ASTGCN，注意力增强图卷积（同年后续）
 - [[mtgnn]] — MTGNN，自适应图学习范式（解决 STGCN 图不可学局限）
 - [[source-conformer]] — ConFormer，事故感知交通预测
+- [[hifinet]] — HiFiNet，层次频率分解 GNN 道路网络表示学习（AAAI 2026）
+- [[road-network-representation-learning]] — 道路网络表示学习概念
+- [[graph-frequency-decomposition]] — 图频率分解
 - [[std-mae]] — STD-MAE，时空解耦预训练
 
 [^src-stgcn]: [[source-stgcn]]

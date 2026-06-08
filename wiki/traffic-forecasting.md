@@ -6,8 +6,8 @@ tags:
   - spatial-temporal
   - intelligent-transportation
 created: 2026-04-27
-last_updated: 2026-06-01
-source_count: 27
+last_updated: 2026-06-08
+source_count: 29
 confidence: high
 status: active
 ---
@@ -58,6 +58,11 @@ Before STD-MAE, [[gpt-st|GPT-ST]] (NeurIPS 2023) pioneered the MAE pre-training 
 ### Regularized Adaptive Graph Convolution
 [[ragc|RAGC]] (arXiv 2026) tackles two limitations of adaptive graph learning for large-scale networks: O(N²) graph convolution complexity and lack of node embedding regularization. It proposes [[efficient-cosine-operator|ECO]] for O(N) graph convolution via cosine similarity decomposition, and integrates [[stochastic-shared-embedding|SSE]] with adaptive graph convolution through a [[residual-difference-mechanism|residual difference mechanism]] that suppresses SSE-induced noise while retaining regularization benefits. On four LargeST datasets (716–8,600 nodes), RAGC consistently achieves the best prediction accuracy with competitive training/inference speed[^src-ragc-efficient-traffic-forecasting].
 
+### Road Network Representation Learning
+While traffic forecasting predicts future values at sensor locations, **road network representation learning** is a related but distinct task: learning reusable vector embeddings for road segments that capture both spatial structure and functional semantics. These embeddings generalize across diverse downstream tasks (next-location prediction, label classification, destination prediction, route planning) rather than being task-specific[^src-hifinet].
+
+[[hifinet|HiFiNet]] (AAAI 2026) introduces hierarchical frequency-decomposition GNNs for this task, constructing a three-level graph (segment→locality→region) where learnable cross-attention assignment matrices enable localized graph frequency decomposition. The model separates low-frequency (smooth global commuting patterns) and high-frequency (local city-center variations) signals, processes them through a [[topology-aware-graph-transformer|Topology-Aware Graph Transformer]], and fuses the enriched components. On Beijing/Chengdu/Xi'an datasets, HiFiNet achieves SOTA across all four tasks, with ablation confirming both hierarchy and frequency decomposition as critical[^src-hifinet]. See [[road-network-representation-learning]] and [[graph-frequency-decomposition]] for detailed treatment.
+
 ### Flow Matching / Frequency-Domain
 [[freqflow-ts|FrèqFlow/SpectFlow]] (NeurIPS 2025) is the first framework to apply conditional flow matching in the frequency domain for deterministic MTS traffic forecasting. With only 89k parameters, it uses a complex-valued linear layer for frequency interpolation and a flow matching head for residual learning. On Brussels, PEMS08, and PEMS04 datasets, it achieves 7% average RMSE improvement over Moirai-MoE and diffusion baselines ([[d3vae|GCRDD]], [[diffstg|DiffSTG]], [[pristi|PriSTI]], SpecSTG)[^src-2511-16426].
 
@@ -103,6 +108,10 @@ Several influential models span the development of traffic and spatial-temporal 
 
 For a comprehensive overview of deep learning methods for time series, including traffic forecasting, the [[source-deep-time-series-survey|TSLib survey]] provides systematic benchmarking across multiple domains[^src-deep-time-series-survey].
 
+## Related Tasks
+
+[[multimodal-traffic-profiling|Multimodal Traffic Profiling]] — Unlike forecasting (predicting future values), profiling is a **classification** task that identifies traffic states (smooth/slow/congested) or events (accidents/construction). [[mtp|MTP]] (AAAI 2026) augments numerical time series into visual and textual modalities, processing all three in the frequency domain with hierarchical contrastive fusion for SOTA classification results on 6 traffic datasets[^src-mtp].
+
 ## Benchmarks
 
 The standard benchmarks are the PeMS (Caltrans Performance Measurement System) datasets from California highways: PEMS03, PEMS04, PEMS07, PEMS08. Standard setup: 12 input steps (1 hour) → 12 output steps (1 hour)[^src-hyperd-hybrid-periodicity-decoupling].
@@ -136,3 +145,5 @@ The XTraffic benchmark provides incident-aligned traffic datasets for California
 [^src-urbanpg]: [[source-urbanpg]]
 [^src-factost]: [[source-factost]]
 [^src-bigcity]: [[source-bigcity]]
+[^src-mtp]: [[source-mtp]]
+[^src-hifinet]: [[source-hifinet]]

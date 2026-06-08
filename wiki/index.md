@@ -92,6 +92,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-kexue-muon-analysis]] — Muon优化器赏析：从向量到矩阵的本质跨越 (苏剑林, 2024)
 - [[source-incident-guided-st-forecasting]] — IGSTGNN: Incident-Guided Spatiotemporal Graph Neural Network for Traffic Forecasting (KDD 2026)
 - [[source-most]] — MoST: A Foundation Model for Multi-modality Spatio-temporal Traffic Prediction (KDD 2026)
+- [[source-mtp]] — MTP: Multimodal Urban Traffic Profiling with Modality Augmentation and Spectrum Fusion (AAAI 2026)
 - [[source-multimodal-ts-anomaly-detection]] — MindTS: multimodal time series anomaly detection with semantic alignment and condensed interaction (ICLR 2026)
 - [[source-event-driven-ts-forecasting]] — VoT: event-driven reasoning and multi-level alignment for time series forecasting (ICLR 2026)
 - [[source-fence]] — FENCE: Spatial-Temporal Feedback Diffusion Guidance for Controlled Traffic Imputation (AAAI 2026)
@@ -167,9 +168,11 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-allspark]] — AllSpark: multimodal spatio-temporal general intelligence model with 10 modalities via LaRF (Shao et al., 2024)
 - [[source-streasoner]] — STReasoner: spatio-temporal reasoning in time series via spatial-aware RL (Ni et al., 2026)
 - [[source-e2-cstp]] — E²-CSTP: causal multi-modal spatio-temporal prediction with GCN+Mamba (NeurIPS 2025)
+- [[source-hifinet]] — HiFiNet: Hierarchical Frequency-Decomposition GNN for Road Network Representation Learning (AAAI 2026)
 
 ## Entities
 - [[e2-cstp]] — E²-CSTP, causal multi-modal ST prediction with dual-branch causal inference + GCN+Mamba (NeurIPS 2025)
+- [[hifinet]] — HiFiNet, hierarchical frequency-decomposition GNN for road network representation learning (AAAI 2026)
 - [[streasoner]] — STReasoner, first TS-LM for spatio-temporal reasoning (Ni et al., 2026)
 - [[allspark]] — AllSpark, 10-modality spatio-temporal general intelligence model (Shao et al., 2024)
 - [[sa-bcp]] — SA-BCP, state-adaptive Bayesian conformal prediction (arXiv 2026)
@@ -225,6 +228,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[channelmts]] — ChannelMTS, multimodal time-series framework for HSR channel prediction (KDD 2026)
 - [[igstgnn]] — IGSTGNN, incident-guided spatiotemporal graph neural network for traffic forecasting (KDD 2026)
 - [[most]] — MoST, multi-modality spatio-temporal traffic prediction foundation model (KDD 2026)
+- [[mtp]] — MTP, multimodal urban traffic profiling with modality augmentation and spectrum fusion (AAAI 2026)
 - [[mindts]] — MindTS, multimodal time series anomaly detection model (ICLR 2026)
 - [[vot]] — VoT (Value of Text), multimodal time series forecasting model with event-driven reasoning (ICLR 2026)
 - [[aurora]] — Aurora, universal generative multimodal time series foundation model (arXiv 2026)
@@ -294,6 +298,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[cross-dimension-dependency]] — Cross-Dimension Dependency，MTS 中不同变量之间的关联关系 (ICLR 2023)
 - [[message-passing-imputation]] — Message Passing Imputation，利用 GNN 消息传递进行时空缺失值重建 (ICLR 2022)
 - [[multimodal-time-series-forecasting]] — forecasting tasks involving numerical time series plus images/text (ICLR 2026)
+- [[multimodal-traffic-profiling]] — classification of urban traffic states using multimodal numerical/visual/textual data (AAAI 2026)
 - [[multimodal-time-series-anomaly-detection]] — detecting anomalies using multimodal time series and text data (ICLR 2026)
 - [[hybrid-periodicity-decoupling]] — explicitly separating short-term and long-term periodicity in time-series signals
 - [[traffic-forecasting]] — predicting future traffic states from historical sensor data
@@ -305,6 +310,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[context-window-extension]] — extending inference context beyond pretraining length for LLMs
 - [[long-context-personalization]] — personalization under long context (1K-256K tokens) with constraint satisfaction
 - [[privacy-reasoning]] — privacy leakage detection and reasoning in long contexts
+- [[road-network-representation-learning]] — 道路网络表示学习，学习可复用的路段嵌入以支持多下游任务 (AAAI 2026)
 - [[generalized-positional-encoding-framework]] — unified framework decomposing attention scores into multiplicative and additive components
 - [[elbo]] — 证据下界（ELBO），潜变量模型中 $\log p(\mathbf{x})$ 的可优化下界
 - [[diffusion-model]] — 扩散模型，通过逐步加噪和去噪学习的生成模型
@@ -348,11 +354,13 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[flow-grpo]] — Flow-GRPO，首个将在线 GRPO 强化学习引入 Flow Matching 模型的方法，通过 ODE-to-SDE 转换和 Denoising Reduction 实现高效 T2I 对齐 (NeurIPS 2025)
 - [[flux-matching]] — Flux Matching，通量匹配生成范式，推广 score matching 到任意分布保持向量场 (Pao-Huang et al., Stanford, 2026)
 - [[generative-vector-field]] — 生成向量场，驱动扩散过程以目标分布为平稳分布的向量场，不限于得分函数
+- [[graph-frequency-decomposition]] — 图频率分解，通过层次图粗化分离低频和高频图信号分量 (AAAI 2026)
 - [[diffusion-models]] — 扩散模型 (Diffusion Models)，包含 DDPM、SMLD、SDE 统一框架与应用
 - [[fokker-planck-equation]] — 福克-普朗克方程 (Fokker-Planck Equation)，描述随机过程概率密度演化的 PDE
 - [[score-matching]] — 得分匹配 (Score Matching)，通过匹配分数函数估计数据分布
 - [[smld]] — Score-Matching Langevin Dynamics，基于分数匹配和朗之万采样的生成模型
 - [[multivariate-correlation-attention]] — 多变量相关性注意力，iTransformer 中 attention 作用于 variate token 维度 (ICLR 2024)
+- [[over-smoothing-in-gnns]] — GNN 过平滑问题，层级消息传递导致节点表示不可区分的根本限制 (AAAI 2026)
 
 ## Techniques
 - [[dsw-embedding]] — DSW Embedding, dimension-segment-wise embedding producing 2D vector array for MTS (ICLR 2023)
@@ -362,6 +370,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[router-mechanism-for-cross-dimension]] — Router mechanism reducing cross-dimension attention from O(D²L) to O(DL) (ICLR 2023)
 - [[hierarchical-encoder-decoder-ts]] — HED, hierarchical encoder-decoder for multi-scale time series forecasting (ICLR 2023)
 - [[mpgru]] — MPGRU, message passing GRU unit replacing gating with MPNN for spatial aggregation (ICLR 2022)
+- [[modality-augmentation]] — Modality Augmentation, converting numerical time series into visual and textual modalities via frequency-domain transforms (AAAI 2026)
+- [[hierarchical-contrastive-fusion]] — hierarchical contrastive learning for multimodal fusion: supervised + InfoNCE + JS divergence (AAAI 2026)
 - [[patch-reprogramming]] — Patch Reprogramming，通过 cross-attention to text prototypes 将时序 patch 对齐到 LLM 词嵌入空间 (ICLR 2024)
 - [[spatial-imputation-decoder]] — Spatial Imputation Decoder, neighbor-only two-stage message-passing imputation (ICLR 2022)
 - [[projected-fisher-divergence]] — 投影 Fisher 散度，Flux Matching 中用于学习分布保持向量场的统计散度
@@ -466,6 +476,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[modality-guided-self-attention]] — Aurora's attention mechanism injecting multimodal domain knowledge into temporal representations (arXiv 2026)
 - [[prototype-guided-flow-matching]] — Aurora's generative probabilistic forecasting via prototype-conditioned flow matching (arXiv 2026)
 - [[tt-wasserstein]] — TT-Wasserstein metric for quantifying CTR alignment quality (ICLR 2026)
+- [[topology-aware-graph-transformer]] — TGT, learnable blend of global self-attention and local graph topology (AAAI 2026)
 - [[adaptive-frequency-modulation]] — AFM, learnable Beta-distribution spectral filters + band aggregation for normal-extreme weather discrimination (arXiv 2025)
 - [[event-prior-augmentation]] — EPA, categorized extreme event memory pool + dual-level attention fusion for hierarchical extreme modeling (arXiv 2025)
 - [[cross-view-text-fusion]] — MindTS's cross-view attention fusing endogenous and exogenous text views (ICLR 2026)

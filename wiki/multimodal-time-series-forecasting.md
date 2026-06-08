@@ -7,8 +7,8 @@ tags:
   - forecasting
   - covariate
 created: 2026-04-29
-last_updated: 2026-06-04
-source_count: 8
+last_updated: 2026-06-08
+source_count: 9
 confidence: high
 status: active
 ---
@@ -153,6 +153,10 @@ UniCA 在多模态场景下的表现：
 
 ---
 
+## MTP：多模态交通状态分类
+
+与本章侧重**预测**的多模态方法不同，[[mtp|MTP]] (Xiang et al., AAAI 2026) 将多模态方法扩展到交通状态的**分类**任务（畅通/缓行/拥堵）[^src-mtp]。MTP 通过频域模态增强：FFT 转换数值序列为频率图像 + 周期性图像（视觉模态），LLM 生成描述性文本（文本模态），三大编码器均在频域处理，通过分层对比学习（监督 + InfoNCE + JS 散度分布对齐）融合三模态[^src-mtp]。6 个数据集 8 个基线 SOTA，首次证明多模态增强对时间序列分类同样有效[^src-mtp]。
+
 ## AllSpark：多模态时空通用智能模型
 
 **[[allspark|AllSpark]]** (Shao et al., 2024) 是一个统一 10 种时空模态的通用智能模型，涵盖语言、代码、表格（1D）、RGB、SAR、多光谱、高光谱、图、轨迹（2D）和点云（3D）[^src-allspark]。其核心设计原则是 **[[language-as-reference-framework|Language as Reference Framework (LaRF)]]**：将异质模态特征通过 modal bridge 映射到统一的语言特征空间，实现跨模态联合解释[^src-allspark]。虽然 AllSpark 侧重遥感/地理空间智能而非纯时间序列预测，但其轨迹和 graph 模态直接覆盖时空预测任务，且 training-free 的 few-shot 能力（RGB 5-way 1-shot 达 95.58%）代表了多模态模型的新方向[^src-allspark]。
@@ -199,3 +203,4 @@ UniCA 在多模态场景下的表现：
 [^src-cvpe-2025]: [[source-cvpe-2025]]
 [^src-allspark]: [[source-allspark]]
 [^src-streasoner]: [[source-streasoner]]
+[^src-mtp]: [[source-mtp]]
