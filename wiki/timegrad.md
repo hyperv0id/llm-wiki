@@ -9,8 +9,8 @@ tags:
   - ddpm
   - icml-2021
 created: 2026-05-31
-last_updated: 2026-05-31
-source_count: 2
+last_updated: 2026-06-08
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -112,6 +112,8 @@ TimeGrad 处于多条研究线的交汇点：
 - [[tedm]] — TEDM，EDM 框架的 O(H) 采样时序扩散模型（ICLR 2026）
 - [[urbandit]] — UrbanDiT，扩散 Transformer 时空基础模型（NeurIPS 2025）
 - [[nsdiff]] — NsDiff (ICML 2025 Spotlight)，以 LSNM+UANS 超越 TimeGrad 的时序扩散 SOTA[^src-nsdiff]
+- [[stats]] — StaTS (arXiv 2026)，联合频谱轨迹调度学习+频率引导去噪，将固定调度推进到自适应调度[^src-stats]
 
 [^src-timegrad]: [[source-timegrad]]
 [^src-nsdiff]: [[source-nsdiff]]
+[^src-stats]: [[source-stats]]

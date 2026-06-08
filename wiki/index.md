@@ -87,6 +87,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-rombach-ldm-2022]] — LDM: High-Resolution Image Synthesis with Latent Diffusion Models (Rombach et al., CVPR 2022)
 - [[source-neural-ode]] — Neural ODE: Neural Ordinary Differential Equations (Chen et al., NeurIPS 2018)
 - [[source-nsdiff]] — NsDiff: Non-stationary Diffusion for Probabilistic Time Series Forecasting (ICML 2025 Spotlight)
+- [[source-stats]] — StaTS: Spectral Trajectory Schedule Learning for Adaptive Time Series Forecasting with Frequency Guided Denoiser (arXiv 2026)
 - [[source-opencity]] — OpenCity: Open Spatio-Temporal Foundation Models for Traffic Prediction (arXiv 2024)
 - [[source-cbsa]] — CBSA: Towards Interpretable and Efficient Attention (NeurIPS 2025)
 - [[source-fast-long-horizon-forecasting]] — FaST: Efficient Long-Horizon Forecasting for Large-Scale STG via MoE (KDD 2026)
@@ -298,6 +299,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[latent-diffusion-models]] — Latent Diffusion Models (LDM), diffusion in latent space (CVPR 2022)
 - [[ncsn]] — NCSN, Noise Conditional Score Networks (Song & Ermon, 2020)
 - [[nsdiff]] — NsDiff, non-stationary diffusion with LSNM+UANS for probabilistic TS forecasting (ICML 2025 Spotlight)
+- [[stats]] — StaTS, spectral trajectory schedule learning + frequency guided denoiser for diffusion TS forecasting (arXiv 2026)
 - [[neural-ordinary-differential-equation]] — Neural ODE, continuous-depth neural networks (NeurIPS 2018)
 - [[quest-attention]] — QUEST Attention, efficient long-range attention via token clustering
 - [[score-based-sde]] — Score-Based SDE, unified SMLD+DDPM framework (ICLR 2021)
@@ -418,6 +420,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[spectral-graph-wavelet-transform]] — SGWT，谱图小波变换用于图信号的多尺度分解
 - [[frequency-enhanced-attention]] — FEA, Fourier/Wavelet-domain cross-attention substituing standard attention in FEDformer (ICML 2022)
 - [[frequency-enhanced-block]] — FEB, frequency-domain self-attention substiution in FEDformer via Fourier or Wavelet (ICML 2022)
+- [[spectral-trajectory-scheduler]] — STS, adaptive noise schedule learning via frequency-domain regularized PGD for diffusion TS forecasting (StaTS, arXiv 2026)
+- [[frequency-guided-denoiser]] — FGD, schedule-induced spectral distortion estimation for modulating denoising strength (StaTS, arXiv 2026)
 - [[moe-decomposition]] — MOEDecomp, input-adaptive mixture-of-experts average filters for seasonal-trend decomposition (ICML 2022)
 - [[newton-schulz-iteration]] — Newton-Schulz iteration for matrix orthogonalization
 - [[glu-gated-linear-unit]] — Gated Linear Unit, activation-modulated linear transformation

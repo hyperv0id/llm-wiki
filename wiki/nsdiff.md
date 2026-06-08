@@ -10,7 +10,7 @@ tags:
   - icml-2025
 created: 2026-06-08
 last_updated: 2026-06-08
-source_count: 1
+source_count: 2
 confidence: high
 status: active
 ---
@@ -62,5 +62,7 @@ NsDiff 从两个维度突破了传统 DDPM 在时序预测中的限制：
 1. 预训练+微调两阶段增加训练复杂性（虽端到端也可行但收敛稍慢）[^src-nsdiff]
 2. 均值估计器默认使用相对重的 Non-stationary Transformer 增加了计算开销（但框架可替换）[^src-nsdiff]
 3. Solar 等低不确定性变化数据集上优势不明显[^src-nsdiff]
+4. 被 [[stats|StaTS]] (arXiv 2026) 在所有 CRPS 和 MAE 上超越，StaTS 以频谱轨迹调度+频率引导去噪在 8 个基准上取得 10.67%–17.43% CRPS 改进[^src-stats]
 
 [^src-nsdiff]: [[source-nsdiff]]
+[^src-stats]: [[source-stats]]
