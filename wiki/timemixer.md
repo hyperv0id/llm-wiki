@@ -90,6 +90,7 @@ GPU 内存和运行时间均优于 PatchTST，在输入长度 192–3072 范围�
 - **[[timesnet|TimesNet]]**：TimesNet 通过 FFT 发现多周期、1D→2D reshape 后用 2D 卷积；TimeMixer 通过下采样获取多尺度、用线性混合取代卷积，计算更高效[^src-timemixer]。
 - **[[cyclenet|CycleNet]]**：CycleNet 显式建模全局周期并将周期分量作为残差；TimeMixer 通过多尺度混合隐式建模周期性（seasonal mixing 的自下而上性质），但允许不同尺度呈现不同周期模式[^src-timemixer]。
 - **[[lstf|LSTF]]**：TimeMixer 在 LSTF 的所有 8 个 benchmark 上均取得 SOTA，是该问题当前最优模型之一[^src-timemixer]。
+- **[[hephestus|HEPHAESTUS]]**：HEPHAESTUS（ICLR 2026 审稿中）将 TimeMixer 的固定下采样多尺度混合替换为输入自适应的 [[ams-moe|AMS-MoE]] 动态路由，并通过 [[periodic-temporal-attention|PTA]] 显式建模日/周周期。两者共享多尺度混合的基本思想，但 HEPHAESTUS 以 MoE 路由取代固定分解策略[^src-timemixer]。
 
 ## 局限性
 

@@ -101,6 +101,7 @@ Two mathematical results support PNA[^src-phat]:
 | [[itransformer|iTransformer]] | iTransformer applies attention on variate dimension; PHAT groups variates by period then applies PNA within each bucket[^src-phat]. |
 | [[cyclenet|CycleNet]] | CycleNet uses a single learnable cycle per channel; PHAT detects and groups by actual heterogeneous periods across variates[^src-phat]. |
 | [[sparsetsf|SparseTSF]] | SparseTSF down-samples by a fixed period for sparsity; PHAT uses period detection for heterogeneous grouping without down-sampling[^src-phat]. |
+| [[hephestus|HEPHAESTUS]] | Both address temporal heterogeneity at ICLR 2026. PHAT uses FFT period detection + bucketing + PNA attention; HEPHAESTUS uses [[ams-moe|AMS-MoE]] dynamic routing with [[periodic-temporal-attention|PTA]] periodic embeddings. Complements rather than competes — PHAT excels at cross-variate period alignment, HEPHAESTUS at input-adaptive scale selection[^src-phat]. |
 
 ## Limitations
 

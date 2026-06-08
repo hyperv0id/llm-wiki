@@ -92,6 +92,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-muon-optimizer]] — Muon: An optimizer for hidden layers in neural networks (Jordan, 2024)
 - [[source-mae]] — MAE: Masked Autoencoders Are Scalable Vision Learners (He et al., CVPR 2022)
 - [[source-phat]] — PHAT: Period Heterogeneity-Aware Transformer for MTS forecasting (ICLR 2026)
+- [[source-hephestus]] — HEPHAESTUS: Hierarchical Periodic Heterogeneous Adaptive Spatio-Temporal Unified System for Traffic Forecasting (ICLR 2026 under review)
 
 - [[source-kexue-muon-analysis]] — Muon优化器赏析：从向量到矩阵的本质跨越 (苏剑林, 2024)
 - [[source-incident-guided-st-forecasting]] — IGSTGNN: Incident-Guided Spatiotemporal Graph Neural Network for Traffic Forecasting (KDD 2026)
@@ -179,6 +180,7 @@ All wiki pages, organized by type. Updated on every ingest.
 ## Entities
 - [[e2-cstp]] — E²-CSTP, causal multi-modal ST prediction with dual-branch causal inference + GCN+Mamba (NeurIPS 2025)
 - [[hifinet]] — HiFiNet, hierarchical frequency-decomposition GNN for road network representation learning (AAAI 2026)
+- [[hephestus]] — HEPHAESTUS, adaptive multi-scale MoE + periodic temporal attention + heterogeneous spatial attention for traffic forecasting (ICLR 2026, under review)
 - [[streasoner]] — STReasoner, first TS-LM for spatio-temporal reasoning (Ni et al., 2026)
 - [[allspark]] — AllSpark, 10-modality spatio-temporal general intelligence model (Shao et al., 2024)
 - [[sa-bcp]] — SA-BCP, state-adaptive Bayesian conformal prediction (arXiv 2026)
@@ -409,6 +411,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[unist]] — UniST, one-for-all spatio-temporal foundation model with MAE pre-training and memory-based prompt learning (KDD 2024)
 - [[bigcity]] — BIGCity, first MTMD spatio-temporal model unifying trajectory + traffic state via GPT-2+LoRA+prompt (arXiv 2024)
 - [[heterogeneous-moe-routing]] — 异质性感知 MoE 路由，FaST 的动态 expert 路由机制
+- [[heterogeneous-spatial-attention]] — HSA: low-rank pattern library + gated fusion for node-specific spatial attention (HEPHAESTUS, ICLR 2026 under review)
 - [[probsparse-self-attention]] — Informer's efficient O(L log L) attention via query sparsity measurement (AAAI 2021)
 - [[generative-style-decoder]] — non-autoregressive one-forward-pass decoding from Informer (AAAI 2021)
 - [[frequency-aware-residual-representation]] — Fourier-based signal decomposition into periodic and residual components
@@ -458,6 +461,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[normalization-independence]] — SimDiff's diffusion-specific technique for handling distribution drift
 - [[median-of-means-ensemble]] — MoM estimator for aggregating probabilistic samples into point predictions
 - [[patch-based-tokenization]] — converting time series into overlapping patch tokens for transformer input
+- [[periodic-temporal-attention]] — PTA: time-aware cross-attention with learnable daily/weekly periodic embedding queries (HEPHAESTUS, ICLR 2026 under review)
 - [[channel-independence]] — processing each channel separately to enhance efficiency and distribution learning
 - [[key-normalization]] — ℓ2 normalization of keys to prevent attention hijacking
 - [[attention-logit-explosion]] — training instability from unbounded attention scores
@@ -484,6 +488,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[contract-and-broadcast-mechanism]] — CBSA's core two-stage operation: contraction + broadcast
 - [[representative-token-extraction]] — extracting representative tokens via cross-attention for efficient compression
 - [[adaptive-graph-agent-attention]] — AGA-Att: using learnable agent tokens to reduce spatial complexity from O(N²) to O(Na)
+- [[ams-moe]] — AMS-MoE: Adaptive Multi-Scale Mixture of Experts with noise-injected Top-K routing for input-adaptive temporal scale selection (HEPHAESTUS, ICLR 2026 under review)
 - [[gated-linear-units]] — GLU: gated linear units as efficient MoE experts with parallel computation
 - [[conditional-attention-pooling]] — CAP: UniCA's conditional attention mechanism for covariate fusion (ICLR 2026)
 - [[content-condenser-reconstruction]] — MindTS's IB-based redundancy filtering and cross-modal reconstruction (ICLR 2026)
