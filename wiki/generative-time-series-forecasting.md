@@ -8,7 +8,7 @@ tags:
   - flow-matching
   - diffusion-models
 created: 2026-05-03
-last_updated: 2026-06-04
+last_updated: 2026-06-08
 source_count: 7
 confidence: high
 status: active
@@ -84,6 +84,8 @@ status: active
 - [[freqflow-ts|FrèqFlow/SpectFlow]] — 频域流匹配确定性预测（NeurIPS 2025）
 - [[ustd]] — USTD，解耦预训练的统一时空扩散预测与插值框架（SIGSPATIAL 2024）
 - [[dyffusion]] — DYffusion，动力学信息扩散模型（NeurIPS 2023）
+- [[dits|DiTS]] — DiTS，MM-DiT 双流架构 + Rectified Flow 用于协变量感知概率预测 (arXiv 2026)
+- [[flow-matching-forecasting]] — Flow Matching 在时间序列预测中的应用范式
 - [[middir]] — MiDDiR，混合通道依赖扩散 + 检索引导（ICLR 2026 under review）
 - [[mixed-channel-dependency]] — 混合通道依赖策略
 - [[retrieval-guidance]] — 扩散采样的检索引导技术

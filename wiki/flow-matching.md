@@ -9,7 +9,7 @@ tags:
   - meta-ai
   - neurips-2023
 created: 2026-04-28
-last_updated: 2026-05-31
+last_updated: 2026-06-08
 source_count: 1
 confidence: medium
 status: active
@@ -410,6 +410,8 @@ $$
 - [[aurora]] — Aurora 使用 Prototype-Guided Flow Matching 进行时间序列概率预测
 - [[elf|ELF]] — ELF (Embedded Language Flows)，Flow Matching 在语言建模中的应用（MIT, 2026）
 - [[prototype-guided-flow-matching]] — Aurora 的原型引导流匹配技术
+- [[dits|DiTS]] — DiTS, 首个将 Rectified Flow + MM-DiT 双流架构用于时间序列协变量感知预测的模型 (arXiv 2026)
+- [[flow-matching-forecasting|Flow Matching for TS Forecasting]] — 流匹配在时间序列预测中的具体应用范式
 - [[freqflow-ts|FrèqFlow/SpectFlow]] — 频域流匹配用于时间序列预测，仅 89k 参数 (NeurIPS 2025)
 - [[instaflow]] — InstaFlow，基于 reflow+distill 将 SD 蒸馏为一步模型，FM 在工业生成中的首个大规模应用 (ICLR 2024)
 - [[rectified-flow|Rectified Flow]] — 通过 rectification 学习直线 ODE 轨迹以实现少步生成

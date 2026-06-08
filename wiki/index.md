@@ -151,6 +151,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-2108-00298]] — GRIN: Filling the G_ap_s — Multivariate Time Series Imputation by Graph Neural Networks (ICLR 2022)
 - [[source-lscd]] — LSCD: Lomb–Scargle Conditioned Diffusion for Time Series Imputation (ICML 2025)
 - [[source-crossformer-2023]] — Crossformer: Transformer Utilizing Cross-Dimension Dependency for MTS Forecasting (ICLR 2023)
+- [[source-dits]] — DiTS: Multimodal Diffusion Transformers Are Time Series Forecasters (arXiv 2026)
 
 ## Sources (continued)
 - [[source-patchtst]] — PatchTST: A Time Series is Worth 64 Words, long-term forecasting with Transformers (ICLR 2023)
@@ -581,12 +582,14 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[learnable-patch-position-encoding]] — 可学习 patch 位置编码，编码时间和变量维度相对位置 (arXiv 2025)
 - [[variate-token-embedding]] — Variate Token Embedding，将整条变量序列嵌入为单个 token (ICLR 2024)
 - [[inverted-transformer-architecture]] — Inverted Transformer Architecture，反转 attention/FFN 应用维度而不修改组件 (ICLR 2024)
+- [[dual-stream-attention-time-series]] — Dual-Stream Attention for Time Series, orthogonal Time + Variate attention as low-rank decomposition (arXiv 2026)
 
 ## Concepts (continued)
 - [[lomb-scargle-periodogram]] — Lomb–Scargle 周期图，非均匀采样数据的频谱估计方法
 - [[continuous-diffusion-language-model]] — 连续扩散语言模型，在连续 embedding/simplex/latent 空间中做 diffusion 的语言模型类别
 
 ## Entities
+- [[dits]] — DiTS, MM-DiT dual-stream flow matching forecaster for covariate-aware time series (arXiv 2026)
 - [[elf]] — ELF (Embedded Language Flows), continuous diffusion LM via Flow Matching (MIT, 2026)
 - [[jit]] — JiT (Just image Transformers), x-prediction pixel-space diffusion on plain ViT (Li & He, MIT, 2025)
 - [[rectified-flow]] — Rectified Flow, ODE-based generative model learning straight trajectories for few-step generation (arXiv 2022)
@@ -595,6 +598,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[staeformer]] — STAEFormer, previous SOTA transformer for traffic forecasting
 
 ## Concepts
+- [[mm-dit-for-time-series]] — MM-DiT for Time Series, adapting multimodal diffusion transformer to treat covariates as distinct modality streams (arXiv 2026)
+- [[flow-matching-forecasting]] — Flow Matching for time series forecasting, rectified flow with 5-step sampling for probabilistic TS prediction
 - [[x-prediction]] — x-prediction，扩散模型中直接预测干净数据的参数化方式，基于流形假设在高维空间中优于 ε-/v-prediction
 - [[gradient-orthogonalization]] — orthogonalizing gradient updates to improve optimization
 - [[mixture-of-experts]] — MoE, mixture of experts architecture with dynamic expert routing
