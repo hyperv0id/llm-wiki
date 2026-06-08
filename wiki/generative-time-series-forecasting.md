@@ -9,7 +9,7 @@ tags:
   - diffusion-models
 created: 2026-05-03
 last_updated: 2026-06-08
-source_count: 9
+source_count: 10
 confidence: high
 status: active
 ---
@@ -49,6 +49,8 @@ status: active
 
 ### 流匹配方法
 
+**[[sundial|Sundial]]** (ICML 2025) 是首个将 Flow Matching 应用于时间序列基础模型的工作，提出了 TimeFlow Loss — 在连续值域中学习的生成式训练目标[^src-sundial]。Sundial 系列（32M/128M/444M）在 1 万亿时间点 (TimeBench) 上预训练，在 TSLib、GIFT-Eval (MASE #1) 和 FEV Leaderboard 上取得 SOTA 零样本性能。使用连续 patch tokenization 避免 Chronos 的离散 tokenization 问题，生成式建模对抗 mode collapse，支持测试时校准。CPU 推理 ~1s。详见 [[sundial]]、[[timeflow-loss]]、[[timebench]]。
+
 **[[flowts|FlowTS]]** (arXiv 2025) 是首个将 rectified flow 用于时间序列生成的 ODE 模型，通过直线概率路径替代迭代式扩散，30 步采样即 SOTA[^src-flowts]。无条件模型可无缝适应条件预测，Context-FID Stocks 0.019 (vs 此前最优 0.067)，Solar 预测 MSE 213 降低 43.2%[^src-flowts]。详见 [[rectified-flow-for-time-series|Rectified Flow for TS]]、[[adaptive-sampling-flow-matching|Adaptive Sampling]]。
 
 **[[tsflow|TSFlow]]** (ICLR 2025) 是首个将条件流匹配 (CFM) 应用于时间序列预测的模型，由 TU Munich 提出[^src-tsflow]。核心创新包括：使用高斯过程先验 (SE/OU/PE 三种核函数) 替代各向同性高斯先验以对齐时序结构、通过 mini-batch 最优传输耦合拉直概率路径、以及提出条件先验采样 (CPS) + 引导实现无条件模型的条件化预测。在 8 个真实数据集上 SOTA（6/8 CRPS 最优），以更少 NFE 全面超越扩散基线 CSDI、SSSD、TSDiff 和 Biloš et al. (2023)[^src-tsflow]。架构使用 DiffWave+S4（3 个残差块，~176k 参数），Euler ODE 32 步采样。
@@ -67,6 +69,7 @@ status: active
 | Aurora | Flow Matching (OT) | 文本 + 图像 + 数值 | ✓ | 概率分布 | 原始域 |
 | DYffusion | Diffusion (非高斯) | 仅数值 | ✗ | 概率分布 | 原始域 |
 | **MiDDiR** | **Diffusion (DDPM)** | **仅数值** | **✗** | **概率分布** | **CI 去噪 + CD 编码** |
+| **Sundial** | **Flow Matching (OT)** | **仅数值** | **✓** | **概率分布** | **原始域 + Patch Token + TimeFlow** |
 | **FlowTS** | **Rectified Flow (ODE)** | **仅数值** | **✗** | **概率分布** | **原始域 + Trend-Season + RoPE** |
 | **TSFlow** | **Flow Matching (OT)** | **仅数值** | **✗** | **概率分布** | **原始域 + GP 先验** |
 
@@ -102,6 +105,9 @@ status: active
 - [[diffusion-model]] — 扩散模型理论基础
 - [[multimodal-time-series-forecasting]] — 多模态时间序列预测
 - [[gaussian-process-prior-flow-matching]] — GP 先验在流匹配中的应用
+- [[sundial]] — Sundial，首个 FM TS 基础模型系列，TimeFlow Loss + TimeBench (ICML 2025)
+- [[timeflow-loss]] — TimeFlow Loss，原生生成式训练目标
+- [[timebench]] — TimeBench，万亿级时序预训练数据集
 
 [^src-aurora]: [[source-aurora]]
 [^src-simdiff]: [[source-simdiff]]
@@ -112,3 +118,4 @@ status: active
 [^src-middir]: [[source-middir]]
 [^src-flowts]: [[source-flowts]]
 [^src-tsflow]: [[source-tsflow]]
+[^src-sundial]: [[source-sundial]]

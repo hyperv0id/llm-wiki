@@ -10,7 +10,7 @@ tags:
   - neurips-2023
 created: 2026-04-28
 last_updated: 2026-06-08
-source_count: 2
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -420,9 +420,12 @@ $$
 - [[rectified-flow-for-time-series]] — Rectified Flow 在时间序列生成中的应用范式
 - [[adaptive-sampling-flow-matching]] — FlowTS 的自适应采样策略
 - [[gaussian-process-prior-flow-matching]] — GP 先验流匹配，在 CFM 中使用非各向同性先验
+- [[sundial]] — Sundial，首个 Flow Matching 时间序列基础模型系列，TimeFlow Loss + TimeBench (ICML 2025)
+- [[timeflow-loss]] — TimeFlow Loss，Sundial 基于 Flow Matching 的生成式训练目标
 
 ## 引用
 
 [^src-flow-matching]: [[source-flow-matching]]
 [^src-tsflow]: [[source-tsflow]]
 [^src-flowts]: [[source-flowts]]
+[^src-sundial]: [[source-sundial]]

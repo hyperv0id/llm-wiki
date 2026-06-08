@@ -8,7 +8,7 @@ tags:
   - iclr2024
 created: 2026-04-29
 last_updated: 2026-05-31
-source_count: 3
+source_count: 4
 confidence: high
 status: active
 ---
@@ -59,6 +59,7 @@ TimesFM 可以通过 UniCA 框架适配到协变量感知预测任务：
 - [[uniextreme]] — UniExtreme 极端天气基础模型（TimesFM: 通用 TS；UniExtreme: 天气极端事件）
 - [[timecap]] — TimeCAP LLM agent 框架，用 LLM 做时间序列上下文理解（AAAI 2025 Oral）
 - [[timedit]] — TimeDiT (KDD 2025)，将 DiT 扩散 Transformer 作为时间序列基础模型，支持预测/插补/异常检测/数据生成四合一，区别于 TimesFM 的纯预测架构[^src-timedit]
+- [[sundial]] — Sundial (ICML 2025)，原生 Flow Matching TS 基础模型。Sundial 在 TSLib 零样本预测上全面超越 TimesFM（Table 9，TimesFM 在所有 24 个指标中仅 1 个获胜），并支持概率预测（TimesFM 仅点估计）[^src-sundial]
 
 ---
 
@@ -67,3 +68,4 @@ TimesFM 可以通过 UniCA 框架适配到协变量感知预测任务：
 [^src-timesfm]: [[source-timesfm]]
 [^src-unca]: [[source-unca]]
 [^src-timedit]: [[source-timedit]]
+[^src-sundial]: [[source-sundial]]

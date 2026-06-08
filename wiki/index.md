@@ -156,6 +156,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-lscd]] — LSCD: Lomb–Scargle Conditioned Diffusion for Time Series Imputation (ICML 2025)
 - [[source-crossformer-2023]] — Crossformer: Transformer Utilizing Cross-Dimension Dependency for MTS Forecasting (ICLR 2023)
 - [[source-dits]] — DiTS: Multimodal Diffusion Transformers Are Time Series Forecasters (arXiv 2026)
+- [[source-sundial]] — Sundial: A Family of Highly Capable Time Series Foundation Models, Flow Matching + TimeFlow Loss (ICML 2025)
 
 ## Sources (continued)
 - [[source-patchtst]] — PatchTST: A Time Series is Worth 64 Words, long-term forecasting with Transformers (ICLR 2023)
@@ -202,6 +203,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[allspark]] — AllSpark, 10-modality spatio-temporal general intelligence model (Shao et al., 2024)
 - [[sa-bcp]] — SA-BCP, state-adaptive Bayesian conformal prediction (arXiv 2026)
 - [[scale]] — SCALE, spectral conformal prediction via wavelet transform (ICML 2026)
+- [[sundial]] — Sundial，首个原生 Flow Matching 时间序列基础模型系列，TimeFlow Loss + TimeBench (ICML 2025)
+- [[timebench]] — TimeBench，Sundial 的万亿级 (1.032T) 时间序列预训练数据集
 - [[adaptive-positional-encoding]] — APE, adaptive positional encoding for infinite length extrapolation (2026)
 - [[long-tiny-stories-dataset]] — LongTinyStories, synthetic dataset for long-context evaluation (2026)
 - [[autoformer]] — Autoformer, decomposition transformer with auto-correlation (NeurIPS 2021)
@@ -331,6 +334,8 @@ All wiki pages, organized by type. Updated on every ingest.
 ## Concepts
 - [[rstib]] — Robust Spatial-Temporal Information Bottleneck, IB generalization for dual-noise STF (ICML 2025)
 - [[retrieval-augmented-spatio-temporal-forecasting]] — RAG-for-STF 范式，通过外部记忆扩展模型容量以捕获复杂时空依赖 (AAAI 2026)
+- [[generative-time-series-forecasting]] — 生成式时间序列预测，通过概率建模实现不确定性量化的预测范式
+- [[timeflow-loss]] — TimeFlow Loss，Sundial 基于 Flow Matching 的生成式训练目标 (ICML 2025)
 - [[conformal-prediction]] — 共形预测，与模型无关的不确定性量化框架
 - [[spatio-temporal-decoupling]] — 时空解耦在在线共形预测中的最优权衡
 - [[spatio-temporal-decomposition]] — 时空分解，将时空序列分解为趋势+季节成分分治建模 (DST-Mamba, AAAI 2025)
@@ -609,6 +614,7 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Entities
 - [[dits]] — DiTS, MM-DiT dual-stream flow matching forecaster for covariate-aware time series (arXiv 2026)
+- [[sundial]] — Sundial，首个原生 Flow Matching TS 基础模型系列，TimeFlow Loss + TimeBench (ICML 2025)
 - [[elf]] — ELF (Embedded Language Flows), continuous diffusion LM via Flow Matching (MIT, 2026)
 - [[jit]] — JiT (Just image Transformers), x-prediction pixel-space diffusion on plain ViT (Li & He, MIT, 2025)
 - [[rectified-flow]] — Rectified Flow, ODE-based generative model learning straight trajectories for few-step generation (arXiv 2022)
