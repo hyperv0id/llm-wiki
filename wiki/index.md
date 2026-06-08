@@ -122,6 +122,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-urbanpg]] — UrbanPG: Personalized Context + General Backbone for Urban Spatio-Temporal Learning (AAAI 2026)
 - [[source-videomae]] — VideoMAE: masked autoencoders are data-efficient learners for self-supervised video pre-training (NeurIPS 2022)
 - [[source-ragc-efficient-traffic-forecasting]] — RAGC: Efficient Traffic Forecasting on Large-Scale Road Network by Regularized Adaptive Graph Convolution (arXiv 2026)
+- [[source-visifold]] — VisiFold: Long-Term Traffic Forecasting via Temporal Folding Graph and Node Visibility (arXiv 2026)
 - [[source-2401-08119-specstg]] — SpecSTG: A Fast Spectral Diffusion Framework for Probabilistic Spatio-Temporal Traffic Forecasting (arXiv 2024)
 - [[source-demystify-mamba-linear-attention-2024]] — Demystify Mamba in Vision: A Linear Attention Perspective (NeurIPS 2024)
 - [[source-2502-10236]] — Shaping Inductive Bias in Diffusion Models through Frequency-Based Noise Control (ICLR 2025 Workshop) ⚠️ superseded by [[source-sagd]]
@@ -254,6 +255,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[uniextreme]] — UniExtreme, universal extreme weather forecasting foundation model (arXiv 2025)
 - [[uniflow]] — UniFlow, foundation model for unified grid+graph urban spatio-temporal flow prediction (arXiv 2024)
 - [[ragc]] — RAGC, regularized adaptive graph convolution for large-scale traffic forecasting (arXiv 2026)
+- [[visifold]] — VisiFold, temporal folding graph + node visibility for efficient long-term traffic forecasting (arXiv 2026)
 - [[rast]] — RAST, retrieval-augmented spatio-temporal forecasting framework, first RAG-for-STF (AAAI 2026)
 - [[specstg]] — SpecSTG, spectral diffusion framework for probabilistic STG traffic forecasting (arXiv 2024)
 - [[ustd]] — USTD, unified ST diffusion framework decoupling pre-trained encoder + task-specific denoisers (SIGSPATIAL 2024)
@@ -532,6 +534,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[forget-gate-in-sequential-models]] — forget gate as multiplicative decay on past hidden states, replaceable by positional encoding
 - [[mamba-block-design]] — Mamba's modified block design with swapped sub-blocks and unified normalization
 - [[interleaved-gat-mamba]] — 交错式 GAT-Mamba 架构，沿时空双轴交替堆叠 GAT 和 Mamba 形成闭环信息流 (GAMMA-Net, arXiv 2026)
+- [[temporal-folding-graph]] — TFG，将时序快照序列折叠为单图表示以消除跨步信息传递 (VisiFold, arXiv 2026)
+- [[node-visibility]] — 节点可见性，节点级掩码 + 子图采样的正则化与加速机制 (VisiFold, arXiv 2026)
 - [[two-band-mixture-noise]] — 两频段混合噪声，频域扩散中低频+高频噪声的线性组合方案 (ICLR 2025 Workshop)
 - [[frequency-diffusion]] — 频域扩散，在傅里叶频域中执行扩散过程的生成方法
 - [[langevin-dynamics]] — 朗之万动力学 (Langevin Dynamics)，基于分数函数的 MCMC 采样方法

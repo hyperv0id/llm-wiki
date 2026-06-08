@@ -83,5 +83,6 @@ RAGC 由三个组件构成[^src-ragc-efficient-traffic-forecasting]：
 - [[traffic-forecasting]] — 交通预测方法概览
 - [[large-scale-spatial-temporal-graph]] — 大规模时空图预测挑战
 - [[rast|RAST]] — 检索增强时空预测（同为大规模路网交通预测方法，RAST 通过外部记忆解决有限上下文容量瓶颈，RAGC 通过正则化图卷积解决 $O(N^2)$ 规模瓶颈——两者从不同角度解决大规模问题）
+- [[visifold|VisiFold]] — 通过 [[temporal-folding-graph|时间折叠图]] 和 [[node-visibility|节点可见性]] 从时间和空间两个维度同时突破资源约束的长期交通预测框架（7× 训练加速、4× GPU 内存节省），与 RAGC 共同推进大规模路网交通预测效率
 
 [^src-ragc-efficient-traffic-forecasting]: [[source-ragc-efficient-traffic-forecasting]]
