@@ -8,7 +8,7 @@ tags:
   - generalization
 created: 2026-05-03
 last_updated: 2026-06-08
-source_count: 15
+source_count: 16
 confidence: high
 status: active
 ---
@@ -44,6 +44,10 @@ Before the emergence of true foundation models, **[[gpt-st|GPT-ST]]** (NeurIPS 2
 - **[[urbangpt|UrbanGPT]]** (KDD 2024): First spatio-temporal LLM using Vicuna-7b + instruction-tuning paradigm. Encoder uses multi-level gated dilated convolution (no graph), spatial reasoning delegated to LLM via textual POI descriptions. Processes one sensor at a time, making it computationally expensive (7B parameters, 174s inference)[^src-urbangpt].
 - **[[urbanmind|UrbanMind]]** (KDD 2025): Extends the LLM-based ST paradigm with multifaceted dynamics learning. Core innovations: (1) Muffin-MAE — dual-encoder masked autoencoder with temporal/spatial/global masking that captures inter-correlations across multiple urban dynamics (speed, inflow, demand); (2) selective LLaMA3 fine-tuning — frozen early layers, query-only update in later layers; (3) test-time adaptation — masked reconstruction module that shares layers with predictor, adapting to distributional shifts at inference. SOTA zero-shot across 9 urban dynamics datasets (3 cities × 3 dynamics), 8.5% MAE improvement over UrbanGPT in cross-city transfer, ~33-47% MAE reduction on multiple tasks[^src-urbanmind].
 - **Pangu-Weather / Fengwu**: Weather-specific foundation models on Euclidean grids[^src-most].
+
+### Traffic Flow Generation (Cross-City)
+
+- **[[craft|CRAFT]]** (NeurIPS 2025): First model explicitly targeting zero-shot cross-city traffic flow generation. DDPM diffusion backbone + [[geographic-feature-alignment|GFA]] (geographic representation alignment via optimal transport) + [[retrieval-based-condition-augmentation|RCA]] (RAG-style retrieval of source city flow patterns). 59.7% improvement over baseline average, only 10.4% degradation vs. real data. Cross-city generation is complementary to ST foundation models — it generates data for unseen cities with zero historical records, while foundation models predict from existing data[^src-craft].
 
 ### Multi-Modal
 - **[[most|MoST]]** (KDD 2026): First multi-modality spatio-temporal foundation model. Supports satellite imagery, POI text, location, and time series as input modalities with adaptive SNR-based selection[^src-most].
@@ -103,3 +107,4 @@ Before the emergence of true foundation models, **[[gpt-st|GPT-ST]]** (NeurIPS 2
 [^src-e2-cstp]: [[source-e2-cstp]]
 [^src-urbanmind]: [[source-urbanmind]]
 [^src-uomo]: [[source-uomo]]
+[^src-craft]: [[source-craft]]

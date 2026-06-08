@@ -193,8 +193,10 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-hifinet]] — HiFiNet: Hierarchical Frequency-Decomposition GNN for Road Network Representation Learning (AAAI 2026)
 - [[source-rast]] — RAST: Retrieval-Augmented Spatio-Temporal Framework for Traffic Prediction (AAAI 2026)
 - [[source-uomo]] — UoMo: A Universal Model of Mobile Traffic Forecasting for Wireless Network Optimization (KDD 2025 ADS Track)
+- [[source-craft]] — CRAFT: Cross City Traffic Flow Generation via Retrieval Augmented Diffusion Model (NeurIPS 2025)
 
 ## Entities
+- [[craft]] — CRAFT, cross-city retrieval-augmented diffusion model for zero-shot traffic flow generation (NeurIPS 2025)
 - [[e2-cstp]] — E²-CSTP, causal multi-modal ST prediction with dual-branch causal inference + GCN+Mamba (NeurIPS 2025)
 - [[hifinet]] — HiFiNet, hierarchical frequency-decomposition GNN for road network representation learning (AAAI 2026)
 - [[hephesteus]] — HEPHAESTUS, adaptive multi-scale MoE + periodic temporal attention + heterogeneous spatial attention for traffic forecasting (ICLR 2026, under review)
@@ -391,6 +393,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[spatio-temporal-reasoning]] — 时空推理：结合图结构、时序动态和文本语义的回答式推理范式 (Ni et al., 2026)
 - [[language-as-reference-framework]] — LaRF, 以语言为参考框架的多模态统一原理 (Shao et al., 2024)
 - [[lstf]] — Long Sequence Time-Series Forecasting, the problem setting formalized by Informer
+- [[cross-city-traffic-flow-generation]] — 跨城市交通流生成，无需目标城市历史数据的零样本流量合成 (NeurIPS 2025)
 - [[model-reprogramming]] — 模型重编程，冻结预训练模型通过输入变换+输出投影跨域重用的范式
 - [[texts-as-auxiliary-variables]] — 文本作为辅助变量，TaTS 的核心设计概念 (ICLR 2026)
 - [[extreme-weather-forecasting]] — 极端天气预测，对罕见非线性大气极端事件的预报 (arXiv 2025)
@@ -423,6 +426,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[partial-blackout]] — 部分停电缺失模式，多特征在连续时间步同时缺失的统一框架 (SADI, AAAI 2025)
 
 ## Techniques
+- [[geographic-feature-alignment]] — GFA, cross-city geographic representation alignment via traffic flow alignment + optimal transport (CRAFT, NeurIPS 2025)
+- [[retrieval-based-condition-augmentation]] — RCA, RAG-style condition enrichment for cross-city diffusion generation (CRAFT, NeurIPS 2025)
 - [[noise-impact-indicator]] — per-series noise quantification via teacher model predictions for dynamic IB regularization (RSTIB-MLP, ICML 2025)
 - [[memory-augmented-gating]] — memory-based MoE routing with meta-node bank and dual classification losses for regression (TESTAM, ICLR 2024)
 - [[timedit-masking]] — TimeDiT's unified masking mechanism: random/block/stride/reconstruction masks for multi-task time series SSL

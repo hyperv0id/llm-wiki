@@ -7,7 +7,7 @@ tags:
   - deep-learning
 created: 2026-04-28
 last_updated: 2026-06-08
-source_count: 6
+source_count: 7
 confidence: high
 status: active
 ---
@@ -57,6 +57,7 @@ Cold Diffusion（Bansal et al., 2022）提出了"广义扩散模型"框架，将
 - 药物分子设计
 - 逆问题求解（去模糊、超分辨率、修复）
 - 时空动力学预测（DYffusion）[^src-dyffusion]
+- **跨城市交通流生成**：[[craft|CRAFT]] (NeurIPS 2025) 使用 DDPM 主干 + [[geographic-feature-alignment|地理特征对齐]] + [[retrieval-based-condition-augmentation|检索增强条件]]实现零样本跨城市交通流生成，59.7% 超越基线平均值[^src-craft]
 
 ## 挑战与未来方向
 
@@ -78,3 +79,4 @@ Cold Diffusion（Bansal et al., 2022）提出了"广义扩散模型"框架，将
 [^src-nsdiff]: [[source-nsdiff]]
 [^src-stats]: [[source-stats]]
 [^src-timedit]: [[source-timedit]]
+[^src-craft]: [[source-craft]]

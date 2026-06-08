@@ -7,7 +7,7 @@ tags:
   - intelligent-transportation
 created: 2026-04-27
 last_updated: 2026-06-08
-source_count: 32
+source_count: 33
 confidence: high
 status: active
 ---
@@ -118,6 +118,12 @@ For a comprehensive overview of deep learning methods for time series, including
 
 [[multimodal-traffic-profiling|Multimodal Traffic Profiling]] — Unlike forecasting (predicting future values), profiling is a **classification** task that identifies traffic states (smooth/slow/congested) or events (accidents/construction). [[mtp|MTP]] (AAAI 2026) augments numerical time series into visual and textual modalities, processing all three in the frequency domain with hierarchical contrastive fusion for SOTA classification results on 6 traffic datasets[^src-mtp].
 
+### Cross-City Traffic Flow Generation
+
+While traffic forecasting predicts future values from historical data, **traffic flow generation** synthesizes realistic flow data from static geographic features — critical for cities with limited or no historical records[^src-craft]. The task has evolved through three stages: physics-based models (gravity/radiation), static flow generation (DeepGravity, DeepFlowGen), and dynamic flow generation (GANs, diffusion models)[^src-craft].
+
+[[craft|CRAFT]] (NeurIPS 2025) is the first method explicitly designed for **zero-shot cross-city traffic flow generation**. It uses a DDPM backbone with two lightweight plug-in modules: [[geographic-feature-alignment|Geographic Feature Alignment (GFA)]] to solve cross-city domain shift via optimal transport, and [[retrieval-based-condition-augmentation|Retrieval-based Condition Augmentation (RCA)]] to enrich diffusion conditions by retrieving similar flow patterns from source cities[^src-craft]. On four bicycle-sharing datasets (Chicago, DC, Toronto, NYC), CRAFT achieves 59.7% improvement over baseline average and only 10.4% degradation vs. training on real target city data[^src-craft]. See [[cross-city-traffic-flow-generation]] for the problem domain overview.
+
 ### Mobile Network Traffic
 
 While the above sections address **vehicle traffic** (road sensors), mobile traffic forecasting addresses **wireless network traffic** — predicting data volumes at cellular base stations. [[uomo|UoMo]] (KDD 2025) is the first universal foundation model for this domain, unifying short-term prediction, long-term prediction, and zero-history generation under a single transformer-based diffusion model with task-oriented masking and contrastive context alignment[^src-uomo]. Deployed on China Mobile's [[jiutian-platform|Jiutian platform]], UoMo achieves +25.3% served users in BS deployment and -40.7% equipment depreciation in BS sleep control[^src-uomo]. See [[mobile-traffic-forecasting]] for the domain page and [[masked-diffusion-pre-training]] for the pre-training technique.
@@ -160,3 +166,4 @@ The XTraffic benchmark provides incident-aligned traffic datasets for California
 [^src-metadg]: [[source-metadg]]
 [^src-testam]: [[source-testam]]
 [^src-uomo]: [[source-uomo]]
+[^src-craft]: [[source-craft]]
