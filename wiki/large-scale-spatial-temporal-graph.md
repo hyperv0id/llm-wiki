@@ -6,8 +6,8 @@ tags:
   - computational-complexity
   - scalability
 created: 2026-04-29
-last_updated: 2026-05-31
-source_count: 3
+last_updated: 2026-06-08
+source_count: 4
 references:
   - [[source-fast-long-horizon-forecasting]]
 confidence: high
@@ -62,7 +62,7 @@ FaST 提出两个核心技术：
 ### 结构感知方法
 - **稀疏聚合** (SGP): 利用图拓扑减少计算
 - **邻居采样** (SAGDFN): 随机采样邻居
-- **图划分** (PatchSTG): 分块处理
+- **图划分 / 空间分块 ([[patchstg|PatchSTG]])**: 使用 [[leaf-kdtree|leaf KDTree]] 将不规则分布的交通点划分为平衡、不重叠的 patches，在 patch 内做 depth attention（局部空间），在 patch 间同索引位置做 breadth attention（全局空间）。复杂度 O(NRd) 但无信息损失，兼具可解释性和保真性。CA 数据集 (8,600 节点) 上实现 10× 训练加速和 4× 内存节省[^src-patchstg]。
 
 局限：依赖准确图结构、丢弃长程依赖
 
@@ -106,8 +106,12 @@ XTraffic 数据集（2024）：基于加州 2023 年交通数据，包含时间�
 - [[adaptive-graph-agent-attention|AGA-Att]] — 空间复杂度优化
 - [[mixture-of-experts|MoE]] — 特征提取与时间压缩
 - [[ragc]] — 正则化自适应图卷积方法
+- [[patchstg]] — KDTree 空间分块 + 双注意力高效建模
+- [[leaf-kdtree]] — 不规则空间数据的平衡分块算法
+- [[irregular-spatial-patching]] — 三步空间分块管道
 - [[efficient-cosine-operator|ECO]] — 余弦相似度线性复杂度图卷积
 
 [^src-incident-guided-st-forecasting]: [[source-incident-guided-st-forecasting]]
 [^src-most]: [[source-most]]
 [^src-ragc-efficient-traffic-forecasting]: [[source-ragc-efficient-traffic-forecasting]]
+[^src-patchstg]: [[source-patchstg]]

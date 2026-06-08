@@ -7,7 +7,7 @@ tags:
   - intelligent-transportation
 created: 2026-04-27
 last_updated: 2026-06-08
-source_count: 33
+source_count: 34
 confidence: high
 status: active
 ---
@@ -82,6 +82,16 @@ Mamba 的选择性状态空间模型也被应用于交通预测。Han et al. (Ne
 
 ### Mixture of Experts / Adaptive Routing
 [[testam|TESTAM]] (ICLR 2024) is the first MoE-based spatio-temporal attention model for traffic forecasting. It uses three heterogeneous experts — identity (temporal-only), learnable static graph, and spatial attention — adaptively routed via [[memory-augmented-gating|memory-augmented gating]] with two classification losses that solve the MoE routing freeze problem in regression. With only 224K params, TESTAM achieves SOTA on METR-LA, PEMS-BAY, and EXPY-TKY, excelling on large-scale graphs (1,843-node EXPY-TKY) and non-recurring conditions through in-situ spatial modeling[^src-testam]. The [[time-enhanced-attention|time-enhanced attention]] mechanism eliminates autoregressive error propagation by directly attending from source to target time steps.
+
+### Spatial Patching / Efficient Dynamic Spatial Modeling
+
+Dynamic spatial attention (dot-product between all node pairs) has quadratic complexity O(N²d), making it intractable for large-scale networks. Three approaches have emerged to reduce this cost:
+
+- **Linear-based** (e.g., BigST): O(Nd²) complexity by computing Q(K^T V) instead of (QK^T)V. Fast but loses interpretability — spatial correlations cannot be explicitly shown[^src-patchstg].
+- **Low-rank-based** (e.g., STWave, AirFormer): Projects to reduced rank R ≪ N, achieving O(NRd). Loses fidelity — critical information is not guaranteed to survive the low-rank compression[^src-patchstg].
+- **Patching-based** ([[patchstg|PatchSTG]]): O(NRd) complexity but retains both interpretability and fidelity. Borrows the patching idea from vision Transformers (ViT) and adapts it to irregular traffic points via [[leaf-kdtree|leaf KDTree]] spatial partitioning[^src-patchstg].
+
+[[patchstg|PatchSTG]] (KDD 2025) is the first framework to bridge KDTree spatial data management and Transformer patching. It uses [[irregular-spatial-patching|irregular spatial patching]] (leaf KDTree → BFS → cosine-similarity padding → subtree backtracking) to create balanced, non-overlapping patches, then applies interleaved depth (within-patch local) and breadth (cross-patch global) attention. On LargeST (up to 8,600 nodes), PatchSTG achieves SOTA with **10× training speedup** and **4× memory reduction** vs D2STGNN/DSTAGNN[^src-patchstg]. Ablation confirms leaf KDTree is the most critical component — spatial message passing is only beneficial between geographically adjacent points[^src-patchstg].
 
 ### Foundation Model
 
@@ -167,3 +177,4 @@ The XTraffic benchmark provides incident-aligned traffic datasets for California
 [^src-testam]: [[source-testam]]
 [^src-uomo]: [[source-uomo]]
 [^src-craft]: [[source-craft]]
+[^src-patchstg]: [[source-patchstg]]

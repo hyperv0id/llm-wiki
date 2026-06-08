@@ -160,6 +160,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-cogencast]] — CoGenCast: A Coupled Autoregressive–Flow Generative Framework for Time Series Forecasting, LLM + FM encoder-decoder hybrid (ICML 2026)
 
 ## Sources (continued)
+- [[source-patchstg]] — PatchSTG: efficient large-scale traffic Transformer via irregular spatial patching and dual attention (KDD 2025)
 - [[source-patchtst]] — PatchTST: A Time Series is Worth 64 Words, long-term forecasting with Transformers (ICLR 2023)
 - [[source-zeng-2022-are-transformers-effective]] — Are Transformers Effective for Time Series Forecasting? LTSF-Linear baseline (Zeng et al., 2022)
 - [[source-itransformer]] — iTransformer: Inverted Transformers Are Effective for Time Series Forecasting (ICLR 2024)
@@ -244,6 +245,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[alibi]] — ALiBi, attention with linear biases for position extrapolation (ICLR 2022)
 - [[yarn]] — YaRN, efficient context window extension for RoPE models (2023)
 - [[paperbench]] — PAPerBench, benchmark for privacy and personalization under long context (2026)
+- [[patchstg]] — PatchSTG, efficient large-scale traffic Transformer with leaf KDTree spatial patching + dual attention (KDD 2025)
 - [[long-context-scaling-gap]] — Long-Context Scaling Gap, fundamental limitation of LLMs under extended context (2026)
 - [[fence]] — FENCE, spatial-temporal feedback diffusion guidance for controlled traffic imputation (AAAI 2026)
 - [[fedformer]] — FEDformer, frequency enhanced decomposed transformer (ICML 2022)
@@ -447,6 +449,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[mpgru]] — MPGRU, message passing GRU unit replacing gating with MPNN for spatial aggregation (ICLR 2022)
 - [[modality-augmentation]] — Modality Augmentation, converting numerical time series into visual and textual modalities via frequency-domain transforms (AAAI 2026)
 - [[hierarchical-contrastive-fusion]] — hierarchical contrastive learning for multimodal fusion: supervised + InfoNCE + JS divergence (AAAI 2026)
+- [[irregular-spatial-patching]] — leaf KDTree → BFS → cosine-similarity padding → subtree backtracking for balanced, non-overlapping patches on irregular traffic points (PatchSTG, KDD 2025)
+- [[leaf-kdtree]] — variant of KDTree ensuring all points in leaf nodes for spatial partitioning + BFS-based spatial locality (PatchSTG, KDD 2025)
 - [[patch-reprogramming]] — Patch Reprogramming，通过 cross-attention to text prototypes 将时序 patch 对齐到 LLM 词嵌入空间 (ICLR 2024)
 - [[spatial-imputation-decoder]] — Spatial Imputation Decoder, neighbor-only two-stage message-passing imputation (ICLR 2022)
 - [[projected-fisher-divergence]] — 投影 Fisher 散度，Flux Matching 中用于学习分布保持向量场的统计散度
