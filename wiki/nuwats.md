@@ -103,6 +103,7 @@ patch 级融合：$E_{i,(p)} = Z_{i,(p)} + Z_{i,(v_p)} + z_{i,(m)} \times r_i$�
 - [[t1]] — T1，任务对齐 CNN-Transformer 插补架构（与 NuwaTS 的 scale-优先路线形成范式对照）
 - [[csdi]] — 扩散式插补 SOTA，NuwaTS 的对比基线之一
 - [[chronos]] — 从零训练的时序语言模型（NuwaTS 复用 NLP 权重而非从零训练）
+- [[missing-not-at-random]] — 缺失机制谱系（NuwaTS 假设随机缺失、忽略缺失过程；PRDIM 处理 MNAR）
 
 [^src-nuwats]: [[source-nuwats]]
 [^src-t1]: [[source-t1]]

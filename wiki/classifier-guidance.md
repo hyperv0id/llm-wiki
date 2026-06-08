@@ -6,8 +6,8 @@ tags:
   - conditional-generation
   - guidance
 created: 2026-04-28
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-06-08
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -62,6 +62,14 @@ $\gamma$ 控制条件生成中**保真度与多样性**之间的权衡[^src-unde
 2. **梯度计算负荷**：采样时每一步都需要计算分类器对输入的梯度，显著增加生成时间。
 3. **噪声鲁棒性要求**：分类器必须在各种噪声水平上都有准确的梯度，这对分类器的架构和训练提出了特殊要求。
 
+## 在缺失插补中的应用：PRDIM 的模式识别器引导
+
+[[pattern-recognizer-guidance|模式识别器引导]]（[[prdim|PRDIM]], arXiv 2026）是分类器引导在缺失插补中的同构应用[^src-prdim]：把条件 $y$ 换成缺失掩码 $M$，把分类器换成预测缺失概率 $p(M\mid X)$ 的**模式识别器** $D_\phi$。反向得分分解为
+
+$$\nabla_{X_t}\log p_{\theta,\phi}(X_t\mid X_0^{obs}, M) \simeq \nabla_{X_t}\log p_\theta(X_t\mid X_0^{obs}) - \nabla_{X_t}\mathcal{L}_{PR}(M, \hat{X}_0, D_\phi^*)$$
+
+其中引导项来自模式识别器的负缺失概率（BCE 损失梯度），把去噪过程拉向与估计缺失模式一致的插补，从而在 [[missing-not-at-random|MNAR]] 设定下显式利用缺失过程信息[^src-prdim]。
+
 ## 后续发展
 
 由于上述局限性，分类器引导在很大程度上被[[classifier-free-guidance|无分类器引导]]（Classifier-Free Guidance, CFG）所取代。CFG 无需额外训练分类器，通过在训练时同时学习条件和无条件模型、采样时对两者进行插值来实现条件控制，已成为扩散模型条件生成的主流方法[^src-understanding-diffusion-models]。
@@ -69,3 +77,4 @@ $\gamma$ 控制条件生成中**保真度与多样性**之间的权衡[^src-unde
 ## 引用
 
 [^src-understanding-diffusion-models]: [[source-understanding-diffusion-models]]
+[^src-prdim]: [[source-prdim]]

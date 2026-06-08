@@ -101,6 +101,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-testam]] — TESTAM: Time-Enhanced Spatio-Temporal Attention Model with Mixture of Experts (ICLR 2024)
 - [[source-nuwats]] — NuwaTS: a Foundation Model Mending Every Incomplete Time Series, PLM-based one-for-all imputation (arXiv 2024)
 - [[source-t1]] — T1: One-to-One Channel-Head Binding for Multivariate Time-Series Imputation, CNN-Transformer hybrid (ICLR 2026)
+- [[source-prdim]] — PRDIM: Missing Pattern Recognized Diffusion Imputation Model for Missing Not At Random (arXiv 2026)
 
 - [[source-kexue-muon-analysis]] — Muon优化器赏析：从向量到矩阵的本质跨越 (苏剑林, 2024)
 - [[source-incident-guided-st-forecasting]] — IGSTGNN: Incident-Guided Spatiotemporal Graph Neural Network for Traffic Forecasting (KDD 2026)
@@ -270,6 +271,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[imputeformer]] — ImputeFormer, low-rankness-induced Transformer with projected/embedded attention and Fourier sparsity loss for generalizable spatiotemporal imputation (KDD 2024)
 - [[nuwats]] — NuwaTS, PLM-based one-for-all foundation model for incomplete time series imputation, cross-variable/cross-domain generalization (arXiv 2024)
 - [[t1]] — T1, CNN-Transformer hybrid for MTS imputation with one-to-one channel-head binding, −46% MSE, robust under heavy missingness (ICLR 2026)
+- [[prdim]] — PRDIM, diffusion imputation with pattern recognizer + EM for Missing Not At Random (MNAR), multi-modal (arXiv 2026)
 - [[crossformer]] — Crossformer, Transformer utilizing cross-dimension dependency for MTS forecasting (ICLR 2023)
 - [[xcpd]] — xCPD, model-agnostic plugin for spectral-domain channel-patch dependency routing (ICLR 2026)
 - [[cpiri]] — CPiRi, CI+CD decoupled with channel shuffling for permutation-invariant MTSF (ICLR 2026)
@@ -334,6 +336,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[cross-dimension-dependency]] — Cross-Dimension Dependency，MTS 中不同变量之间的关联关系 (ICLR 2023)
 - [[message-passing-imputation]] — Message Passing Imputation，利用 GNN 消息传递进行时空缺失值重建 (ICLR 2022)
 - [[variable-wise-partitioning]] — 变量维度划分基准，沿变量而非时间切分 train/val/test 以检验跨变量/跨域插补泛化 (NuwaTS, arXiv 2024)
+- [[missing-not-at-random]] — MNAR 与缺失机制 (MCAR/MAR/MNAR)，可忽略性，及各插补模型的缺失假设 (PRDIM, arXiv 2026)
 - [[multimodal-time-series-forecasting]] — forecasting tasks involving numerical time series plus images/text (ICLR 2026)
 - [[multimodal-traffic-profiling]] — classification of urban traffic states using multimodal numerical/visual/textual data (AAAI 2026)
 - [[multimodal-time-series-anomaly-detection]] — detecting anomalies using multimodal time series and text data (ICLR 2026)
@@ -428,6 +431,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[prompt-as-prefix]] — Prompt-as-Prefix (PaP)，通过自然语言提示引导冻结 LLM 对时间序列的推理变换 (ICLR 2024)
 - [[plug-and-play-prefix-tuning]] — 即插即用前缀微调，P-tuning-v2 式领域前缀注入冻结 PLM 每层，<100KB 可逆 (NuwaTS, arXiv 2024)
 - [[channel-head-binding]] — CHead Attention，CNN 通道与注意力头一对一绑定实现特征级跨变量选择性传递 (T1, ICLR 2026)
+- [[pattern-recognizer-guidance]] — 模式识别器引导，判别器近似 p(M|X) + EM + 扩散反向引导，处理 MNAR (PRDIM, arXiv 2026)
 - [[spectral-graph-wavelet-transform]] — SGWT，谱图小波变换用于图信号的多尺度分解
 - [[frequency-enhanced-attention]] — FEA, Fourier/Wavelet-domain cross-attention substituing standard attention in FEDformer (ICML 2022)
 - [[frequency-enhanced-block]] — FEB, frequency-domain self-attention substiution in FEDformer via Fourier or Wavelet (ICML 2022)

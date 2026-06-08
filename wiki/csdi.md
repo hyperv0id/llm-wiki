@@ -10,7 +10,7 @@ tags:
   - neurips-2021
 created: 2026-05-31
 last_updated: 2026-06-08
-source_count: 6
+source_count: 7
 confidence: medium
 status: active
 ---
@@ -121,6 +121,7 @@ CSDI 的三个核心设计——(1) 观测值作为条件直接注入去噪网�
 - **[[cofill|CoFILL]]** (2025)：将 CSDI 的单流架构扩展为时域+频域双流 Cross-Attention，添加图卷积空间建模
 - **[[fence|FENCE]]** (AAAI 2026)：将 CSDI 的固定 CFG 引导尺度升级为动态反馈引导，解决高缺失率节点的漂移问题
 - **[[lscd|LSCD]]** (ICML 2025)：将 CSDI 的条件扩散框架扩展为频谱条件化——用可微 [[lomb-scargle-periodogram|Lomb–Scargle 周期图]]替代 FFT，消除缺失值预处理带来的频谱失真，并引入 [[spectral-consistency-loss|频谱一致性损失]]强制频域对齐[^src-lscd]
+- **[[prdim|PRDIM]]** (arXiv 2026)：针对 CSDI 的 **MCAR 人工掩码假设**——CSDI 忽略缺失过程，PRDIM 加入模式识别器在 EM 框架下显式建模 $p(M\mid X)$，处理 [[missing-not-at-random|MNAR]] 非随机缺失，并指出插补真实缺失远难于人工缺失[^src-prdim]
 - **CSDI 的 SDE 连续化**：一些后续工作将离散时间框架扩展到连续时间 SDE
 
 ## 局限性
@@ -144,6 +145,7 @@ CSDI 的三个核心设计——(1) 观测值作为条件直接注入去噪网�
 - [[feedback-diffusion-guidance]] — 反馈扩散引导技术
 - [[nuwats]] — NuwaTS，PLM 路线的一统插补基础模型（CSDI 的对比基线之一；两者均用掩码自监督，但 CSDI 走条件扩散、NuwaTS 走预训练语言模型）[^src-nuwats]
 - [[t1]] — T1 (ICLR 2026)，非扩散的 CNN-Transformer 插补，单次前向避免扩散的高推理延迟，参数更少（0.543M vs CSDI 1.195M）[^src-t1]
+- [[prdim]] — PRDIM (arXiv 2026)，将 CSDI 的条件扩散扩展到 MNAR，用模式识别器 + EM 显式建模缺失过程[^src-prdim]
 - [[generative-time-series-forecasting]] — 生成式时间序列预测范式
 
 [^src-csdi]: [[source-csdi]]
@@ -152,3 +154,4 @@ CSDI 的三个核心设计——(1) 观测值作为条件直接注入去噪网�
 [^src-lscd]: [[source-lscd]]
 [^src-nuwats]: [[source-nuwats]]
 [^src-t1]: [[source-t1]]
+[^src-prdim]: [[source-prdim]]
