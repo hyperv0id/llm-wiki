@@ -8,8 +8,8 @@ tags:
   - mlp
   - iclr-2024
 created: 2026-05-31
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-06-08
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -98,5 +98,7 @@ GPU 内存和运行时间均优于 PatchTST，在输入长度 192–3072 范围�
 2. 仅在时间维度混合，未涉及变量维度跨通道交互[^src-timemixer]。
 3. 缺少对多尺度混合设计最优性和完备性的理论分析[^src-timemixer]。
 4. 未来工作方向：探索 attention-based 或 CNN-based 混合以提升参数效率，以及引入变量维度的混合[^src-timemixer]。
+5. 与 [[rstib-mlp|RSTIB-MLP]]（ICML 2025）同属 MLP-based 时序预测模型，但侧重点不同：TimeMixer 聚焦多尺度混合提升预测精度，RSTIB-MLP 聚焦 [[information-bottleneck|信息瓶颈]] 引导的鲁棒表示学习以对抗噪声扰动[^src-rstib]。
 
 [^src-timemixer]: [[source-timemixer]]
+[^src-rstib]: [[source-rstib-mlp]]

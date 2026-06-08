@@ -9,8 +9,8 @@ tags:
   - LTSF
   - transformer-critique
 created: 2026-05-30
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-06-08
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -75,5 +75,7 @@ The paper argues that long-term forecasting depends primarily on capturing **tre
 - DLinear's decomposition inherits from [[autoformer|Autoformer]]
 - NLinear's distribution shift handling relates to [[instance-normalization|RevIN/Instance Normalization]]
 - Supports the value of [[frequency-enhanced-block|domain-specific inductive bias]] (FEDformer's competitiveness on ETTh1)
+- Related to [[rstib-mlp|RSTIB-MLP]]: both demonstrate MLP viability for time series prediction. LTSF-Linear shows MLPs beat Transformers on clean data; RSTIB-MLP extends this lineage by making MLPs robust to noise via [[rstib|information bottleneck-guided regularization]][^src-rstib]
 
 [^src-zeng-2022-are-transformers-effective]: [[source-zeng-2022-are-transformers-effective]]
+[^src-rstib]: [[source-rstib-mlp]]
