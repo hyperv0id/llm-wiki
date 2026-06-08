@@ -422,6 +422,9 @@ $$
 - [[gaussian-process-prior-flow-matching]] — GP 先验流匹配，在 CFM 中使用非各向同性先验
 - [[sundial]] — Sundial，首个 Flow Matching 时间序列基础模型系列，TimeFlow Loss + TimeBench (ICML 2025)
 - [[timeflow-loss]] — TimeFlow Loss，Sundial 基于 Flow Matching 的生成式训练目标
+- [[cogencast]] — CoGenCast，首个混合 LLM + FM 编码器-解码器时间序列预测模型，平均速度建模实现一步生成 (ICML 2026)
+- [[one-step-flow-generation]] — 一步流生成，平均速度建模 + JVP 修正实现 NFE=1 生成
+- [[average-velocity-modeling]] — 平均速度建模，区间条件化速度场 + JVP 修正的 FM 训练技术
 
 ## 引用
 

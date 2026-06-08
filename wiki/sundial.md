@@ -82,6 +82,8 @@ Sundial 是 Fig.1 分类中的**原生连续 tokenization + 灵活无先验分�
 - [[timesfm]] — TimesFM，连续 patch 确定性预测
 - [[timer]] — Timer，生成式预训练 Transformer
 - [[dits]] — DiTS，MM-DiT + Rectified Flow 用于协变量感知概率预测
+- [[cogencast]] — CoGenCast，混合 LLM + FM 编码器-解码器，一步生成预测 (ICML 2026)
+- [[hybrid-llm-flow-matching-forecasting]] — 混合 LLM-流匹配预测范式
 
 [^src-sundial]: [[source-sundial]]
 [^src-sundiel]: [[source-sundial]]

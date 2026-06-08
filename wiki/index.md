@@ -157,6 +157,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-crossformer-2023]] — Crossformer: Transformer Utilizing Cross-Dimension Dependency for MTS Forecasting (ICLR 2023)
 - [[source-dits]] — DiTS: Multimodal Diffusion Transformers Are Time Series Forecasters (arXiv 2026)
 - [[source-sundial]] — Sundial: A Family of Highly Capable Time Series Foundation Models, Flow Matching + TimeFlow Loss (ICML 2025)
+- [[source-cogencast]] — CoGenCast: A Coupled Autoregressive–Flow Generative Framework for Time Series Forecasting, LLM + FM encoder-decoder hybrid (ICML 2026)
 
 ## Sources (continued)
 - [[source-patchtst]] — PatchTST: A Time Series is Worth 64 Words, long-term forecasting with Transformers (ICLR 2023)
@@ -586,6 +587,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[prominence-modeling-gsl]] — 显著度建模，在图结构学习中为节点/特征分配重要性权重 (AAAI 2025)
 
 ## Techniques (continued)
+- [[one-step-flow-generation]] — 一步流生成，学习区间平均速度 + JVP 修正实现单步函数求值的高效流匹配生成 (CoGenCast, ICML 2026)
+- [[average-velocity-modeling]] — 平均速度建模，预测区间条件化平均速度替代瞬时速度 + JVP 修正优化目标 (CoGenCast, ICML 2026)
 - [[factost]] — FactoST, factorized ST foundation model with UTP+STA two-stage design, linear complexity (NeurIPS 2025 / arXiv 2026)
 - [[dcw]] — DCW，小波域差分校正，缓解扩散模型 SNR-t Bias 的即插即用方法 (CVPR 2026)
 
@@ -609,10 +612,12 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[dual-stream-attention-time-series]] — Dual-Stream Attention for Time Series, orthogonal Time + Variate attention as low-rank decomposition (arXiv 2026)
 
 ## Concepts (continued)
+- [[hybrid-llm-flow-matching-forecasting]] — 混合 LLM-流匹配预测，耦合预训练 LLM 语义理解与 FM 连续随机建模的生成式预测范式 (ICML 2026)
 - [[lomb-scargle-periodogram]] — Lomb–Scargle 周期图，非均匀采样数据的频谱估计方法
 - [[continuous-diffusion-language-model]] — 连续扩散语言模型，在连续 embedding/simplex/latent 空间中做 diffusion 的语言模型类别
 
 ## Entities
+- [[cogencast]] — CoGenCast，首个混合 LLM + Flow Matching 编码器-解码器时间序列预测模型，一步生成 (ICML 2026)
 - [[dits]] — DiTS, MM-DiT dual-stream flow matching forecaster for covariate-aware time series (arXiv 2026)
 - [[sundial]] — Sundial，首个原生 Flow Matching TS 基础模型系列，TimeFlow Loss + TimeBench (ICML 2025)
 - [[elf]] — ELF (Embedded Language Flows), continuous diffusion LM via Flow Matching (MIT, 2026)

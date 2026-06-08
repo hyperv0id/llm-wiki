@@ -72,6 +72,7 @@ status: active
 | **Sundial** | **Flow Matching (OT)** | **仅数值** | **✓** | **概率分布** | **原始域 + Patch Token + TimeFlow** |
 | **FlowTS** | **Rectified Flow (ODE)** | **仅数值** | **✗** | **概率分布** | **原始域 + Trend-Season + RoPE** |
 | **TSFlow** | **Flow Matching (OT)** | **仅数值** | **✗** | **概率分布** | **原始域 + GP 先验** |
+| **CoGenCast** | **Flow Matching (平均速度)** | **文本 + 数值** | **✓** | **概率分布 (一步)** | **LLM Encoder-Decoder + 平均速度 JVP** |
 
 ## 优势
 
@@ -108,6 +109,10 @@ status: active
 - [[sundial]] — Sundial，首个 FM TS 基础模型系列，TimeFlow Loss + TimeBench (ICML 2025)
 - [[timeflow-loss]] — TimeFlow Loss，原生生成式训练目标
 - [[timebench]] — TimeBench，万亿级时序预训练数据集
+- [[cogencast]] — CoGenCast，首个混合 LLM + FM 编码器-解码器预测模型，一步生成 (ICML 2026)
+- [[hybrid-llm-flow-matching-forecasting]] — 混合 LLM-流匹配预测范式
+- [[one-step-flow-generation]] — 一步流生成，NFE=1 的高效推理技术
+- [[average-velocity-modeling]] — 平均速度建模，JVP 修正的流匹配训练技术
 
 [^src-aurora]: [[source-aurora]]
 [^src-simdiff]: [[source-simdiff]]
