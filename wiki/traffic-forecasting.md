@@ -7,7 +7,7 @@ tags:
   - intelligent-transportation
 created: 2026-04-27
 last_updated: 2026-06-08
-source_count: 30
+source_count: 31
 confidence: high
 status: active
 ---
@@ -80,6 +80,9 @@ Deterministic models only output point estimates, lacking uncertainty quantifica
 ### Mamba / SSM-Based
 Mamba 的选择性状态空间模型也被应用于交通预测。Han et al. (NeurIPS 2024) 的统一框架揭示了 Mamba 的遗忘门 $\widetilde{A}_i$ 在交通场景中对应于空间衰减模式——附近传感器的相关性更强，这与遗忘门的局部偏置特性一致。该框架表明，交通特定的位置编码（如道路距离、转向关系）可替代遗忘门的循环计算，在保持并行性的同时捕获局部空间结构[^src-demystify-mamba-linear-attention-2024]。
 
+### Mixture of Experts / Adaptive Routing
+[[testam|TESTAM]] (ICLR 2024) is the first MoE-based spatio-temporal attention model for traffic forecasting. It uses three heterogeneous experts — identity (temporal-only), learnable static graph, and spatial attention — adaptively routed via [[memory-augmented-gating|memory-augmented gating]] with two classification losses that solve the MoE routing freeze problem in regression. With only 224K params, TESTAM achieves SOTA on METR-LA, PEMS-BAY, and EXPY-TKY, excelling on large-scale graphs (1,843-node EXPY-TKY) and non-recurring conditions through in-situ spatial modeling[^src-testam]. The [[time-enhanced-attention|time-enhanced attention]] mechanism eliminates autoregressive error propagation by directly attending from source to target time steps.
+
 ### Foundation Model
 
 **[[unist|UniST]]** (KDD 2024) is the first one-for-all spatio-temporal foundation model, using MAE pre-training with four complementary masking strategies and knowledge-guided memory-based prompt learning. A single 6.71M-parameter model covers 20+ datasets across multiple cities and domains with zero-shot prediction surpassing few-shot baselines — e.g., Crowd zero-shot RMSE 14.67 vs ACFM 1%-shot 21.17[^src-unist].
@@ -151,3 +154,4 @@ The XTraffic benchmark provides incident-aligned traffic datasets for California
 [^src-mtp]: [[source-mtp]]
 [^src-hifinet]: [[source-hifinet]]
 [^src-metadg]: [[source-metadg]]
+[^src-testam]: [[source-testam]]
