@@ -57,6 +57,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-timegrad]] — TimeGrad: autoregressive denoising diffusion for probabilistic time series forecasting (ICML 2021)
 - [[source-diffstg]] — DiffSTG: probabilistic spatio-temporal graph forecasting with diffusion models (AAAI 2023)
 - [[source-csdi]] — CSDI: Conditional Score-based Diffusion Models for Probabilistic Time Series Imputation (NeurIPS 2021)
+- [[source-ssdts]] — SSD-TS: Mamba as diffusion denoising backbone for time series imputation (KDD 2025)
 - [[source-pristi]] — PriSTI: A Conditional Diffusion Framework for Spatiotemporal Imputation (arXiv 2023 / ICDE 2023)
 - [[source-sparsetsf]] — SparseTSF: lightweight LTSF with <1k parameters via sparse modeling (TPAMI 2026 & ICML 2024 Oral)
 - [[source-tedm]] — TEDM: first EDM-based TS forecasting framework with O(H) sampling via diffusion-physical time alignment (ICLR 2026)
@@ -289,6 +290,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[grin]] — GRIN, first GNN-based multivariate time series imputation model with message-passing spatial decoder (ICLR 2022)
 - [[gtr]] — GTR, lightweight plug-and-play global temporal retrieval module for MTSF, extends cycle awareness beyond look-back window (ICLR 2026)
 - [[mamba]] — Mamba, selective state space model reformulated as linear attention variant (NeurIPS 2024)
+- [[ssd-ts]] — SSD-TS, Mamba as diffusion denoising backbone with BAM+CMB for probabilistic time series imputation (KDD 2025)
 - [[mila]] — MILA, Mamba-Inspired Linear Attention model (NeurIPS 2024)
 - [[gsli]] — GSLI, multi-scale graph structure learning for spatiotemporal imputation with feature heterogeneity (AAAI 2025)
 - [[gwnet]] — GWNet, Graph WaveNet: self-adaptive adjacency matrix + dilated causal convolutions for STG forecasting (IJCAI 2019)
@@ -554,6 +556,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[langevin-dynamics]] — 朗之万动力学 (Langevin Dynamics)，基于分数函数的 MCMC 采样方法
 - [[uncertainty-aware-noise-schedule]] — UANS，将数据感知的时变方差注入扩散过程以建模非平稳不确定性
 - [[csdi]] — CSDI, conditional score-based diffusion model for probabilistic time series imputation (NeurIPS 2021)
+- [[bam]] — BAM, Bidirectional Attention Mamba for intra-channel dependency in diffusion denoising (KDD 2025)
+- [[cmb]] — CMB, Channel Mamba Block for inter-channel dependency in diffusion denoising (KDD 2025)
 - [[pristi]] — PriSTI, prior-guided conditional diffusion framework for spatiotemporal imputation (ICDE 2023)
 
 ## Techniques (continued)

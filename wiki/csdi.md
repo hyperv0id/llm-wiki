@@ -10,7 +10,7 @@ tags:
   - neurips-2021
 created: 2026-05-31
 last_updated: 2026-06-08
-source_count: 4
+source_count: 5
 confidence: medium
 status: active
 ---
@@ -118,6 +118,7 @@ TimeGrad 使用 RNN 处理历史序列，无法直接处理含缺失值的数据
 CSDI 的三个核心设计——(1) 观测值作为条件直接注入去噪网络，(2) 自监督掩码训练，(3) 双轴注意力——成为后续扩散插补工作的标准范式[^src-csdi]：
 
 - **SSSD** (Alcaraz & Strodthoff, 2023)：用 S4 状态空间模型替代 Transformer 注意力，解决 $O(L^2)$ 复杂度问题
+- **[[ssd-ts|SSD-TS]]** (Gao et al., KDD 2025)：用 [[mamba|Mamba]] 选择性 SSM 替代 S4/Transformer 作为去噪 backbone，引入 [[bam|BAM]]（双向 Mamba + temporal attention，通道内）和 [[cmb|CMB]]（单向 Mamba 通道间）模块。在所有高缺失率场景下超越 CSDI 和 SSSD [^src-ssdts]
 - **[[cofill|CoFILL]]** (2025)：将 CSDI 的单流架构扩展为时域+频域双流 Cross-Attention，添加图卷积空间建模
 - **[[fence|FENCE]]** (AAAI 2026)：将 CSDI 的固定 CFG 引导尺度升级为动态反馈引导，解决高缺失率节点的漂移问题
 - **[[lscd|LSCD]]** (ICML 2025)：将 CSDI 的条件扩散框架扩展为频谱条件化——用可微 [[lomb-scargle-periodogram|Lomb–Scargle 周期图]]替代 FFT，消除缺失值预处理带来的频谱失真，并引入 [[spectral-consistency-loss|频谱一致性损失]]强制频域对齐[^src-lscd]
@@ -135,6 +136,9 @@ CSDI 的三个核心设计——(1) 观测值作为条件直接注入去噪网�
 
 - [[diffusion-model]] — 扩散模型概念总览
 - [[ddpm]] — DDPM，CSDI 的扩散模型基础
+- [[ssd-ts|SSD-TS]] — Mamba 作为扩散 backbone 的替代方案 (KDD 2025)
+- [[bam|BAM]] — 双向注意力 Mamba，替代 CSDI 的 Time Transformer
+- [[cmb|CMB]] — 通道 Mamba 块，替代 CSDI 的 Feature Transformer
 - [[timegrad]] — TimeGrad，同期另一扩散+时序工作（预测方向）
 - [[diffstg]] — DiffSTG，时空图扩散预测
 - [[cofill]] — CoFILL，后续扩散时序插补（双流架构）
@@ -148,3 +152,4 @@ CSDI 的三个核心设计——(1) 观测值作为条件直接注入去噪网�
 [^src-timegrad]: [[source-timegrad]]
 [^src-fence]: [[source-fence]]
 [^src-lscd]: [[source-lscd]]
+[^src-ssdts]: [[source-ssdts]]

@@ -10,7 +10,7 @@ tags:
   - mtsf
 created: 2026-05-31
 last_updated: 2026-06-08
-source_count: 2
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -92,6 +92,9 @@ S-Mamba 采用两阶段编码设计[^src-s-mamba]：
 ## 相关页面
 
 - [[mamba|Mamba]] — 选择性状态空间模型，S-Mamba 的基础构建块
+- [[ssd-ts|SSD-TS]] — Mamba 作为扩散模型去噪 backbone，BAM+CMB 架构 (KDD 2025)
+- [[bam|BAM]] — 双向注意力 Mamba 模块，扩散去噪的通道内建模
+- [[cmb|CMB]] — 通道 Mamba 块，扩散去噪的通道间建模
 - [[mila|MILA]] — Mamba 启发的线性注意力视觉模型
 - [[channel-independence|Channel Independence]] — 各通道独立处理的策略
 - [[patchtst|PatchTST]] — ICLR 2023，首个 CI + patching 的 Transformers 时序模型
@@ -100,18 +103,7 @@ S-Mamba 采用两阶段编码设计[^src-s-mamba]：
 - [[dst-mamba|DST-Mamba]] — AAAI 2025，将 Mamba 扩展至时空交通预测，引入分解 + 空间视角的双向 Mamba
 - [[gamma-net|GAMMA-Net]] — arXiv 2026，交错式 GAT + 多轴 Mamba 时空交通预测，以闭环信息流突破三难困境
 
-## Mamba 家族演进
-
-截至 2026 年 6 月，Mamba 在时序预测领域的演进路径：
-
-| 模型 | 年份 | 核心创新 | Mamba 应用 |
-|------|------|---------|-----------|
-| S-Mamba | 2024 | 首个 Mamba MTSF baseline | 双向 Mamba 编码变量间相关性 |
-| DST-Mamba | 2025 | 趋势-季节分解 + 双向 Mamba | 空间视角的季节成分 Mamba 编码 |
-| GAMMA-Net | 2026 | **交错式 GAT-Mamba 闭环** | 时间轴 + 空间轴双轴 Mamba，与 GAT 交替堆叠 |
-
-GAMMA-Net 是首次将 Mamba 以**交错闭环**方式与 GAT 结合的时空交通预测模型，通过 (GAT → Mamba_Temporal) → (GAT → Mamba_Spatial) 的交替设计，使时间理解与空间理解相互增强[^src-gamma]。
-
 [^src-gamma]: [[source-gamma-net]]
 
 [^src-s-mamba]: [[source-s-mamba]]
+[^src-ssdts]: [[source-ssdts]]
