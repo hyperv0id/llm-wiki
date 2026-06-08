@@ -9,7 +9,7 @@ tags:
   - multivariate
   - mtsf
 created: 2026-05-31
-last_updated: 2026-05-31
+last_updated: 2026-06-08
 source_count: 1
 confidence: medium
 status: active
@@ -97,5 +97,6 @@ S-Mamba 采用两阶段编码设计[^src-s-mamba]：
 - [[patchtst|PatchTST]] — ICLR 2023，首个 CI + patching 的 Transformers 时序模型
 - [[itransformer|iTransformer]] — ICLR 2024，反转 attention/FFN 维度，S-Mamba 的主要对比基线
 - [[lstf|LSTF]] — 长序列时间序列预测问题设定
+- [[dst-mamba|DST-Mamba]] — AAAI 2025，将 Mamba 扩展至时空交通预测，引入分解 + 空间视角的双向 Mamba
 
 [^src-s-mamba]: [[source-s-mamba]]
