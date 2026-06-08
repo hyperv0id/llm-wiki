@@ -11,8 +11,8 @@ tags:
   - foundation-model
   - traffic-forecasting
 created: 2026-06-01
-last_updated: 2026-06-01
-source_count: 1
+last_updated: 2026-06-08
+source_count: 2
 confidence: high
 status: active
 ---
@@ -77,6 +77,8 @@ UrbanPG 在 LargeST 四子集（SD 716 节点、GBA 2352、GLA 3834、CA 8600）
 
 UrbanPG 区别于 [[flashst|FlashST]] 的关键点是：FlashST 也做 prompt tuning，但骨干和提示的耦合度更高，迁移需要更复杂的分布映射机制[^src-urbanpg]。UrbanPG 的提示-骨干解耦更彻底，且额外支持持续学习范式。UrbanPG 最大的局限性是无法像 [[urbanfm|UrbanFM]] 那样支持多任务并行训练——本文明确自曝这一点是走向时空基础模型的核心障碍[^src-urbanpg]。
 
+[[urbanmind|UrbanMind]] (KDD 2025) takes an orthogonal approach within the LLM-based ST paradigm, using multifaceted dynamics pre-training (Muffin-MAE) and test-time adaptation rather than prompt-backbone decoupling. While UrbanPG focuses on efficiency through linear attention and personalized prompts, UrbanMind focuses on generalization through inter-correlated dynamics learning and inference-time domain alignment[^src-urbanmind].
+
 ## Related Pages
 
 - [[source-urbanpg]] — source summary page
@@ -96,5 +98,7 @@ UrbanPG 区别于 [[flashst|FlashST]] 的关键点是：FlashST 也做 prompt tu
 - [[stid]] — STID, lightweight embedding-only baseline that inspired UrbanPG's context prompts
 - [[urbanverse]] — UrbanVerse, foundation model for cross-city/cross-task region attribute prediction (crime/population/carbon), complementary urban ML paradigm (arXiv 2026)
 - [[spatio-temporal-foundation-model-landscape]] — 时空基础模型全景分析：prompt-backbone 解耦路线
+- [[urbanmind]] — UrbanMind, multifaceted ST-LLM with Muffin-MAE and test-time adaptation (KDD 2025)
 
 [^src-urbanpg]: [[source-urbanpg]]
+[^src-urbanmind]: [[source-urbanmind]]

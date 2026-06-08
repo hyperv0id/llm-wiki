@@ -7,8 +7,8 @@ tags:
   - zero-shot
   - generalization
 created: 2026-05-03
-last_updated: 2026-06-04
-source_count: 13
+last_updated: 2026-06-08
+source_count: 14
 confidence: high
 status: active
 ---
@@ -40,6 +40,7 @@ Before the emergence of true foundation models, **[[gpt-st|GPT-ST]]** (NeurIPS 2
 - **[[urbanfm|UrbanFM]]** (arXiv 2026): First scaling-centric ST foundation model with WorldST (100+ cities, 1B+ data points), MiniST (KD-Tree clustering tokenization), and minimalist factorized attention architecture. Achieves 39-70.2% zero-shot improvement over existing foundation models, surpasses full-shot experts. Imputation capability without any imputation training[^src-urbanfm].
 - **[[factost|FactoST]]** (NeurIPS 2025 / arXiv 2026): Factorized two-stage STFM — Universal Temporal Pretraining (UTP, encoder-only, 11B+ time points) + Spatio-Temporal Adaptation (STA, lightweight adapter). First STFM to achieve linear O(N) complexity through complete stage-level factorization. 4 model scales (2.5M-30.4M), SOTA on few-shot/full-shot/zero-shot across 9 benchmarks. Same HKUST-GZ group (Yuxuan Liang) as UrbanFM[^src-factost].
 - **[[urbangpt|UrbanGPT]]** (KDD 2024): First spatio-temporal LLM using Vicuna-7b + instruction-tuning paradigm. Encoder uses multi-level gated dilated convolution (no graph), spatial reasoning delegated to LLM via textual POI descriptions. Processes one sensor at a time, making it computationally expensive (7B parameters, 174s inference)[^src-urbangpt].
+- **[[urbanmind|UrbanMind]]** (KDD 2025): Extends the LLM-based ST paradigm with multifaceted dynamics learning. Core innovations: (1) Muffin-MAE — dual-encoder masked autoencoder with temporal/spatial/global masking that captures inter-correlations across multiple urban dynamics (speed, inflow, demand); (2) selective LLaMA3 fine-tuning — frozen early layers, query-only update in later layers; (3) test-time adaptation — masked reconstruction module that shares layers with predictor, adapting to distributional shifts at inference. SOTA zero-shot across 9 urban dynamics datasets (3 cities × 3 dynamics), 8.5% MAE improvement over UrbanGPT in cross-city transfer, ~33-47% MAE reduction on multiple tasks[^src-urbanmind].
 - **Pangu-Weather / Fengwu**: Weather-specific foundation models on Euclidean grids[^src-most].
 
 ### Multi-Modal
@@ -81,6 +82,7 @@ Before the emergence of true foundation models, **[[gpt-st|GPT-ST]]** (NeurIPS 2
 - [[ustd]] — USTD, task-unified ST diffusion (SIGSPATIAL 2024), complementary to foundation model paradigm
 - [[allspark]] — AllSpark, 10-modality geospatial intelligence via language as reference framework
 - [[language-as-reference-framework]] — LaRF principle
+- [[urbanmind]] — UrbanMind, multifaceted ST-LLM with Muffin-MAE and test-time adaptation (KDD 2025)
 
 [^src-most]: [[source-most]]
 [^src-urbandit]: [[source-urbandit]]
@@ -94,3 +96,4 @@ Before the emergence of true foundation models, **[[gpt-st|GPT-ST]]** (NeurIPS 2
 [^src-factost]: [[source-factost]]
 [^src-allspark]: [[source-allspark]]
 [^src-e2-cstp]: [[source-e2-cstp]]
+[^src-urbanmind]: [[source-urbanmind]]

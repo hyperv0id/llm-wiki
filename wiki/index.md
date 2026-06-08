@@ -185,6 +185,7 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Sources (continued)
 - [[source-urbanverse]] — UrbanVerse: Learning Urban Region Representation Across Cities and Tasks, cross-city/cross-task foundation model (arXiv 2026)
+- [[source-urbanmind]] — UrbanMind: Urban Dynamics Prediction with Multifaceted Spatial-Temporal Large Language Models (KDD 2025)
 - [[source-dyffusion]] — DYffusion: A Dynamics-informed Diffusion Model for Spatiotemporal Forecasting (NeurIPS 2023)
 - [[source-allspark]] — AllSpark: multimodal spatio-temporal general intelligence model with 10 modalities via LaRF (Shao et al., 2024)
 - [[source-streasoner]] — STReasoner: spatio-temporal reasoning in time series via spatial-aware RL (Ni et al., 2026)
@@ -308,6 +309,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[std-mae]] — STD-MAE, spatial-temporal-decoupled masked autoencoder for spatiotemporal pre-training (IJCAI-2024)
 - [[urbanpg]] — UrbanPG, prompt-backbone decoupled ST framework for large-scale prediction + few-shot + continual learning (AAAI 2026)
 - [[urbanverse]] — UrbanVerse, cross-city/cross-task urban region representation learning foundation model (arXiv 2026)
+- [[urbanmind]] — UrbanMind, multifaceted ST-LLM with Muffin-MAE and test-time adaptation for urban dynamics (KDD 2025)
 
 - [[cvpe]] — CVPE, Cross-Variate Patch Embedding for CI model enhancement (arXiv 2025)
 - [[cbsa]] — CBSA, Contract-and-Broadcast Self-Attention (NeurIPS 2025)
@@ -453,6 +455,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[newton-schulz-iteration]] — Newton-Schulz iteration for matrix orthogonalization
 - [[glu-gated-linear-unit]] — Gated Linear Unit, activation-modulated linear transformation
 - [[gpt-st]] — GPT-ST, plug-and-play MAE pre-training framework for spatio-temporal GNNs (NeurIPS 2023)
+- [[muffin-mae]] — Muffin-MAE, multifaceted masked autoencoder with temporal/spatial/global masking for inter-correlated urban dynamics (UrbanMind, KDD 2025)
+- [[test-time-adaptation-st]] — test-time adaptation for spatio-temporal domain shift via masked reconstruction (UrbanMind, KDD 2025)
 - [[urbangpt]] — UrbanGPT, spatio-temporal large language model with instruction-tuning paradigm (KDD 2024)
 - [[urbanpg]] — UrbanPG, efficient framework with personalized context prompts + general backbone for large-scale/few-shot/continual ST learning (AAAI 2026)
 - [[unist]] — UniST, one-for-all spatio-temporal foundation model with MAE pre-training and memory-based prompt learning (KDD 2024)
