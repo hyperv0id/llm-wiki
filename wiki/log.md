@@ -12,6 +12,11 @@ tags:
 
 Chronological record of all wiki activity.
 
+## [2026-06-08] lint | confidence 校正
+
+Lint 检查发现本批次插补 ingest 中 4 个单源页面 `confidence: high` 但 `source_count: 1`，违反 CLAUDE.md 规则（confidence: high 需 ≥2 源）及仓库惯例（单源 entity/concept/technique 应为 medium）。修正为 `medium`。
+更新的页面：[[t1]], [[channel-head-binding]], [[prdim]], [[tabpfn-ts]]
+
 ## [2026-06-08] ingest | Are Time-Indexed Foundation Models the Future of Time Series Imputation? — TabPFN-TS / MoTM zero-shot benchmark (TMLR 2026)
 
 Ingest TMLR 2026 benchmark paper (Etienne Le Naour, Tahar Nabil, Adrien Petralia, Ghislain Agoua; EDF R&D, France; arXiv:2511.05980v2, TMLR 01/2026). First large-scale empirical study of time-indexed foundation models — TabPFN-TS and MoTM — for zero-shot time series imputation. Time-indexed FMs learn a contextual representation H(t) at every timestamp, then a regressor maps H(t)→x(t); this continuous-time design (vs patch-based forecasters) handles irregular series, arbitrary missing regions, and inference-time covariate integration. Two inverse instantiations: TabPFN-TS (Hoo et al. 2025) = handcrafted features (normalized time index + Fourier basis) + powerful pretrained TabPFN transformer doing in-context regression in one forward pass; MoTM (Le Naour et al. 2025) = learned modulated-INR basis + simple ridge regression. Benchmark: 33 OoD datasets, 1.3M+ windows, 4 missing scenarios (50/70% pointwise, 2/4-day block). Aggregate NMAE: TabPFN-TS 0.293 (best, avg rank 1.35, statistically superior to all), MoTM 0.371, SAITS 0.386, BRITS 0.470, Linear 0.506, CSDI 0.664, TimesNet 0.677. Findings: (1) time-indexed FMs lead, beating all supervised + local baselines fully zero-shot; (2) supervised models (BRITS/CSDI/TimesNet) lack robustness, sometimes worse than local heuristics; (3) Linear interpolation resilient under sparse pointwise but FMs dominate under block missing; (4) both FMs integrate covariates without retraining; (5) NuwaTS (zero-shot PLM) beats MOMENT but lags significantly behind TabPFN-TS (all settings) and MoTM (10/11) — strengthening time-indexed over Transformer/PLM approaches. Key trade-off: TabPFN-TS most accurate but ~1s/672-step chunk on H100; MoTM up to TWO ORDERS OF MAGNITUDE faster → scalable alternative. Added external-evaluation note to NuwaTS and CSDI. Note: this is a benchmark/survey, not the TabPFN-TS method paper itself.

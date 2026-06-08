@@ -10,7 +10,7 @@ tags:
 created: 2026-06-08
 last_updated: 2026-06-08
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
