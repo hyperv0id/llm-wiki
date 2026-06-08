@@ -145,6 +145,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-chan-2025-diffusion-tutorial]] — Diffusion model comprehensive tutorial (Chan, 2025)
 - [[source-chan-diffusion-tutorial]] — Diffusion model tutorial (Chan, earlier version)
 - [[source-flow-matching]] — Flow Matching: simulation-free CNF training with OT paths (ICLR 2023)
+- [[source-flowts]] — FlowTS: Time Series Generation via Rectified Flow (arXiv 2025)
 - [[source-quest]] — QUEST: efficient long-range attention via token clustering
 - [[source-unca]] — UniCA: Unified Covariate Adaptation (alternate source page)
 
@@ -228,6 +229,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[gpd]] — GPD, generative pre-training on diffusion for spatio-temporal few-shot learning via hypernetwork parameter generation (ICLR 2024)
 - [[gamma-net]] — GAMMA-Net, 交错式 GAT + 多轴 Mamba 时空交通预测模型 (arXiv 2026)
 - [[normalizing-flow]] — Normalizing Flow, invertible transformation based generative models
+- [[flowts]] — FlowTS，首个 rectified flow 时间序列生成模型，30 步采样 SOTA (arXiv 2025)
 - [[flow-matching]] — Flow Matching, simulation-free CNF training with OT paths (NeurIPS 2023)
 - [[optimal-transport]] — Optimal Transport, mathematical theory for probability distribution transformation
 - [[dualsformer]] — Dualformer, time-frequency dual domain learning with hierarchical frequency sampling (2026)
@@ -372,6 +374,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[spatio-temporal-foundation-model]] — 时空基础模型，跨城市零样本预测范式
 - [[event-driven-reasoning]] — 事件驱动推理，利用 LLM 从外生文本中提取预测信号 (ICLR 2026)
 - [[gaussian-process-prior-flow-matching]] — GP 先验流匹配，在 CFM 中使用非各向同性高斯过程先验
+- [[rectified-flow-for-time-series]] — Rectified Flow 在时间序列生成中的应用范式 (FlowTS, 2025)
 - [[multi-level-alignment]] — 多级对齐，在表示级和预测级融合文本与时间序列模态 (ICLR 2026)
 - [[multi-scale-linear-prediction]] — 多尺度线性预测，下采样 + 自上而下混合提取多粒度趋势模式 (DST-Mamba, AAAI 2025)
 - [[generative-time-series-forecasting]] — 生成式时间序列预测，通过概率建模实现不确定性量化的预测范式
@@ -433,6 +436,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[patch-reprogramming]] — Patch Reprogramming，通过 cross-attention to text prototypes 将时序 patch 对齐到 LLM 词嵌入空间 (ICLR 2024)
 - [[spatial-imputation-decoder]] — Spatial Imputation Decoder, neighbor-only two-stage message-passing imputation (ICLR 2022)
 - [[projected-fisher-divergence]] — 投影 Fisher 散度，Flux Matching 中用于学习分布保持向量场的统计散度
+- [[adaptive-sampling-flow-matching]] — FlowTS 的自适应采样策略，探索-利用权衡驱动的时间步缩放
 - [[prompt-as-prefix]] — Prompt-as-Prefix (PaP)，通过自然语言提示引导冻结 LLM 对时间序列的推理变换 (ICLR 2024)
 - [[spectral-graph-wavelet-transform]] — SGWT，谱图小波变换用于图信号的多尺度分解
 - [[frequency-enhanced-attention]] — FEA, Fourier/Wavelet-domain cross-attention substituing standard attention in FEDformer (ICML 2022)

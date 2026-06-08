@@ -416,9 +416,13 @@ $$
 - [[tsflow]] — TSFlow，首个 CFM 时间序列预测模型，GP 先验 + OT 路径 + 条件先验采样 (ICLR 2025)
 - [[instaflow]] — InstaFlow，基于 reflow+distill 将 SD 蒸馏为一步模型，FM 在工业生成中的首个大规模应用 (ICLR 2024)
 - [[rectified-flow|Rectified Flow]] — 通过 rectification 学习直线 ODE 轨迹以实现少步生成
+- [[flowts]] — FlowTS，首个将 rectified flow 用于时间序列生成的模型，30 步采样 SOTA (arXiv 2025)
+- [[rectified-flow-for-time-series]] — Rectified Flow 在时间序列生成中的应用范式
+- [[adaptive-sampling-flow-matching]] — FlowTS 的自适应采样策略
 - [[gaussian-process-prior-flow-matching]] — GP 先验流匹配，在 CFM 中使用非各向同性先验
 
 ## 引用
 
 [^src-flow-matching]: [[source-flow-matching]]
 [^src-tsflow]: [[source-tsflow]]
+[^src-flowts]: [[source-flowts]]

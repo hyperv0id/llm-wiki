@@ -9,7 +9,7 @@ tags:
   - diffusion-models
 created: 2026-05-03
 last_updated: 2026-06-08
-source_count: 8
+source_count: 9
 confidence: high
 status: active
 ---
@@ -49,6 +49,8 @@ status: active
 
 ### 流匹配方法
 
+**[[flowts|FlowTS]]** (arXiv 2025) 是首个将 rectified flow 用于时间序列生成的 ODE 模型，通过直线概率路径替代迭代式扩散，30 步采样即 SOTA[^src-flowts]。无条件模型可无缝适应条件预测，Context-FID Stocks 0.019 (vs 此前最优 0.067)，Solar 预测 MSE 213 降低 43.2%[^src-flowts]。详见 [[rectified-flow-for-time-series|Rectified Flow for TS]]、[[adaptive-sampling-flow-matching|Adaptive Sampling]]。
+
 **[[tsflow|TSFlow]]** (ICLR 2025) 是首个将条件流匹配 (CFM) 应用于时间序列预测的模型，由 TU Munich 提出[^src-tsflow]。核心创新包括：使用高斯过程先验 (SE/OU/PE 三种核函数) 替代各向同性高斯先验以对齐时序结构、通过 mini-batch 最优传输耦合拉直概率路径、以及提出条件先验采样 (CPS) + 引导实现无条件模型的条件化预测。在 8 个真实数据集上 SOTA（6/8 CRPS 最优），以更少 NFE 全面超越扩散基线 CSDI、SSSD、TSDiff 和 Biloš et al. (2023)[^src-tsflow]。架构使用 DiffWave+S4（3 个残差块，~176k 参数），Euler ODE 32 步采样。
 
 **[[freqflow-ts|FrèqFlow/SpectFlow]]** (NeurIPS 2025) 首次将条件流匹配引入频域进行确定性 MTS 预测。通过复值线性层在频域中插值频谱，配合流匹配头进行残差学习，仅 89k 参数即达到 SOTA。采用 ODE 单次确定性采样，推理速度远超扩散方法[^src-2511-16426]。
@@ -65,6 +67,7 @@ status: active
 | Aurora | Flow Matching (OT) | 文本 + 图像 + 数值 | ✓ | 概率分布 | 原始域 |
 | DYffusion | Diffusion (非高斯) | 仅数值 | ✗ | 概率分布 | 原始域 |
 | **MiDDiR** | **Diffusion (DDPM)** | **仅数值** | **✗** | **概率分布** | **CI 去噪 + CD 编码** |
+| **FlowTS** | **Rectified Flow (ODE)** | **仅数值** | **✗** | **概率分布** | **原始域 + Trend-Season + RoPE** |
 | **TSFlow** | **Flow Matching (OT)** | **仅数值** | **✗** | **概率分布** | **原始域 + GP 先验** |
 
 ## 优势
@@ -93,6 +96,8 @@ status: active
 - [[mixed-channel-dependency]] — 混合通道依赖策略
 - [[retrieval-guidance]] — 扩散采样的检索引导技术
 - [[tsflow]] — TSFlow，首个 CFM 时间序列模型，GP 先验 + OT 路径 (ICLR 2025)
+- [[flowts]] — FlowTS，首个 rectified flow TS 生成模型，30 步 SOTA (arXiv 2025)
+- [[rectified-flow-for-time-series]] — Rectified Flow 在 TS 生成中的应用范式
 - [[flow-matching]] — Flow Matching 理论基础
 - [[diffusion-model]] — 扩散模型理论基础
 - [[multimodal-time-series-forecasting]] — 多模态时间序列预测
@@ -105,4 +110,5 @@ status: active
 [^src-2511-16426]: [[source-2511-16426]]
 [^src-dyffusion]: [[source-dyffusion]]
 [^src-middir]: [[source-middir]]
+[^src-flowts]: [[source-flowts]]
 [^src-tsflow]: [[source-tsflow]]

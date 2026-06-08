@@ -66,6 +66,8 @@ TSFlow 使用 DiffWave 风格的残差架构，搭配 S4 层沿时间维度建�
 - [[optimal-transport]] — 最优传输理论
 - [[timegrad]] — TimeGrad，首个时序扩散预测模型
 - [[csdi]] — CSDI，条件得分扩散插补/预测
+- [[flowts]] — FlowTS，首个 rectified flow TS 生成模型 (arXiv 2025)
+- [[rectified-flow-for-time-series]] — Rectified Flow in TS generation
 - [[freqflow-ts|FrèqFlow/SpectFlow]] — 频域流匹配 (NeurIPS 2025)
 - [[aurora]] — Aurora，原型引导流匹配 (arXiv 2026)
 
