@@ -104,6 +104,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-tsflow]] — TSFlow: Flow Matching with Gaussian Process Priors for Probabilistic Time Series Forecasting (ICLR 2025)
 - [[source-testam]] — TESTAM: Time-Enhanced Spatio-Temporal Attention Model with Mixture of Experts (ICLR 2024)
 
+- [[source-ssf]] — SSF: Spectral Sheaf Filtering — A Topological Approach to Spatio-Temporal Modeling (ICLR 2026 under review)
+
 - [[source-kexue-muon-analysis]] — Muon优化器赏析：从向量到矩阵的本质跨越 (苏剑林, 2024)
 - [[source-incident-guided-st-forecasting]] — IGSTGNN: Incident-Guided Spatiotemporal Graph Neural Network for Traffic Forecasting (KDD 2026)
 - [[source-most]] — MoST: A Foundation Model for Multi-modality Spatio-temporal Traffic Prediction (KDD 2026)
@@ -208,6 +210,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[streasoner]] — STReasoner, first TS-LM for spatio-temporal reasoning (Ni et al., 2026)
 - [[rstib-mlp]] — RSTIB-MLP, information bottleneck-guided robust MLP for spatial-temporal forecasting (ICML 2025)
 - [[testam]] — TESTAM, MoE-based spatio-temporal attention model with 3 heterogeneous experts (ICLR 2024)
+- [[ssf]] — SSF, Spectral Sheaf Filtering: cellular sheaf + spectral filtering for spatio-temporal modeling (ICLR 2026 under review)
 - [[allspark]] — AllSpark, 10-modality spatio-temporal general intelligence model (Shao et al., 2024)
 - [[sa-bcp]] — SA-BCP, state-adaptive Bayesian conformal prediction (arXiv 2026)
 - [[scale]] — SCALE, spectral conformal prediction via wavelet transform (ICML 2026)
@@ -427,6 +430,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[multivariate-correlation-attention]] — 多变量相关性注意力，iTransformer 中 attention 作用于 variate token 维度 (ICLR 2024)
 - [[mixed-channel-dependency]] — CD encoding + CI denoising hybrid for diffusion TS, inspired by MiDDiR (ICLR 2026 under review)
 - [[over-smoothing-in-gnns]] — GNN 过平滑问题，层级消息传递导致节点表示不可区分的根本限制 (AAAI 2026)
+- [[cellular-sheaf]] — 胞腔层 (Cellular Sheaf)，代数拓扑中为图节点和边赋予向量空间与限制映射的结构 (ICLR 2026 under review)
 - [[location-scale-noise-model]] — LSNM，将条件分布的均值和方差同时建模的位置-尺度噪声模型，使扩散模型能感知数据异质性
 - [[partial-blackout]] — 部分停电缺失模式，多特征在连续时间步同时缺失的统一框架 (SADI, AAAI 2025)
 
@@ -440,6 +444,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[time-enhanced-attention]] — non-autoregressive attention transferring domain from source to target time steps (TESTAM, ICLR 2024)
 - [[adaptive-graph-learner]] — AGL, plug-and-play dynamic graph generation module with gated self-attention and weak connection suppression (DPGNet, ICLR 2026 under review)
 - [[adaptive-season-learner]] — ASL, multi-scale temporal decomposition + pattern-specific graph construction for seasonal/trend modeling (DPGNet, ICLR 2026 under review)
+- [[sheaf-laplacian]] — 层拉普拉斯算子 (Sheaf Laplacian)，推广图拉普拉斯以编码边特定的变换语义，用于谱域滤波 (ICLR 2026 under review)
 - [[spatio-temporal-retrieval-store]] — 基于 FAISS 的双维度向量记忆库 + 动量 EMA 管理 (RAST, AAAI 2026)
 - [[conditional-prior-sampling]] — 条件先验采样，Langevin 动力学 + 引导实现无条件模型的条件化预测 (TSFlow, ICLR 2025)
 - [[dual-dimension-feature-disentanglement]] — 时间/空间双流解耦编码，为检索增强提供低秩分解基础 (RAST, AAAI 2026)

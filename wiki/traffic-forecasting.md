@@ -7,7 +7,7 @@ tags:
   - intelligent-transportation
 created: 2026-04-27
 last_updated: 2026-06-08
-source_count: 35
+source_count: 36
 confidence: high
 status: active
 ---
@@ -79,6 +79,14 @@ Deterministic models only output point estimates, lacking uncertainty quantifica
 
 ### Mamba / SSM-Based
 Mamba 的选择性状态空间模型也被应用于交通预测。Han et al. (NeurIPS 2024) 的统一框架揭示了 Mamba 的遗忘门 $\widetilde{A}_i$ 在交通场景中对应于空间衰减模式——附近传感器的相关性更强，这与遗忘门的局部偏置特性一致。该框架表明，交通特定的位置编码（如道路距离、转向关系）可替代遗忘门的循环计算，在保持并行性的同时捕获局部空间结构[^src-demystify-mamba-linear-attention-2024]。
+
+### Spectral / Topological Methods
+
+A growing line of work applies spectral and topological techniques to address fundamental GNN limitations in traffic forecasting:
+
+**[[hifinet|HiFiNet]]** (AAAI 2026) introduces hierarchical frequency-decomposition GNNs, explicitly separating low-frequency (smooth global) and high-frequency (local variation) graph signals to mitigate over-smoothing[^src-hifinet].
+
+**[[ssf|SSF (Spectral Sheaf Filtering)]]** (ICLR 2026, under review) is the first framework to model spatio-temporal data using **[[cellular-sheaf|cellular sheaves]]** from algebraic topology. Rather than uniformly propagating information along edges like standard GNNs, SSF assigns learnable **restriction maps** per edge that encode context-dependent transformation dynamics. It then applies a **heat kernel spectral filter** over the [[sheaf-laplacian|sheaf Laplacian]] — a generalization of the graph Laplacian that accounts for both topology and edge-specific transformation semantics. The sheaf Laplacian's eigendecomposition enables frequency-aware decomposition, with the heat kernel $e^{-\alpha\lambda}$ suppressing high-frequency noise while preserving low-frequency structural patterns. SSF achieves SOTA on METR-LA, PEMS-BAY, PEMS04, PEMS08, and NAVER-Seoul, with particularly dramatic long-horizon gains — e.g., NAVER-Seoul MAPE 1.03% at 15min vs. best baseline 8.32%. The sheaf structure naturally mitigates [[over-smoothing-in-gnns|over-smoothing]] because restriction maps prevent node representations from converging[^src-ssf].
 
 ### Mixture of Experts / Adaptive Routing
 [[testam|TESTAM]] (ICLR 2024) is the first MoE-based spatio-temporal attention model for traffic forecasting. It uses three heterogeneous experts — identity (temporal-only), learnable static graph, and spatial attention — adaptively routed via [[memory-augmented-gating|memory-augmented gating]] with two classification losses that solve the MoE routing freeze problem in regression. With only 224K params, TESTAM achieves SOTA on METR-LA, PEMS-BAY, and EXPY-TKY, excelling on large-scale graphs (1,843-node EXPY-TKY) and non-recurring conditions through in-situ spatial modeling[^src-testam]. The [[time-enhanced-attention|time-enhanced attention]] mechanism eliminates autoregressive error propagation by directly attending from source to target time steps.
@@ -192,3 +200,4 @@ The XTraffic benchmark provides incident-aligned traffic datasets for California
 [^src-craft]: [[source-craft]]
 [^src-patchstg]: [[source-patchstg]]
 [^src-stbp]: [[source-stbp]]
+[^src-ssf]: [[source-ssf]]

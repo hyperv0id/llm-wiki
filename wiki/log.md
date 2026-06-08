@@ -3,14 +3,13 @@ title: Log
 type: concept
 created: 2026-04-26
 last_updated: 2026-06-08
-source_count: 0
-tags:
-  - meta
----
 
-# Wiki Log
+## [2026-06-08] ingest | SSF — Spectral Sheaf Filtering: A Topological Approach to Spatio-Temporal Modeling (ICLR 2026 under review)
 
-Chronological record of all wiki activity.
+Ingest SSF paper (Anonymous authors, under double-blind review at ICLR 2026; code: github.com/anonymous-submisssion/SSF). SSF is the first framework to bridge cellular sheaf theory (algebraic topology) with spectral graph filtering for spatio-temporal traffic forecasting. Core innovations: (1) Cellular Sheaf Construction — assigns stalk vector spaces and learnable restriction maps to graph edges, encoding context-dependent, non-uniform information propagation that addresses fundamental GNN limitations; (2) Sheaf Laplacian — generalizes the combinatorial graph Laplacian, incorporating edge-specific transformation semantics; (3) Heat Kernel Spectral Filtering — eigendecomposition of sheaf Laplacian ($L_F = U\Lambda U^T$) followed by $e^{-\alpha\lambda}$ filtering that suppresses high-frequency noise while preserving low-frequency structural patterns. Evaluated on 5 benchmarks (METR-LA, PEMS-BAY, PEMS04, PEMS08, NAVER-Seoul) across 15/30/60min horizons, achieving SOTA on all, with dramatic long-horizon gains — NAVER-Seoul MAPE 1.03% at 15min vs. best baseline 8.32%. Ablation: spectral filtering is critical (removing it causes RMSE 20.72 vs 3.89 at 60min on NAVER-Seoul); optimal $k=3$ eigenvalues; stalk dimension $d$ trades accuracy for computation. Theoretical contribution: Theorem 1 proves sheaf Laplacian eigendecomposition properties, extending spectral graph theory to sheaf setting. Under review — confidence: medium.
+
+Created pages: [[source-ssf]], [[ssf]], [[cellular-sheaf]], [[sheaf-laplacian]]
+Updated pages: [[traffic-forecasting]], [[over-smoothing-in-gnns]], [[index]], [[log]]
 
 ## [2026-06-08] ingest | STBP — A General Spatio-Temporal Backbone with Scalable Contextual Pattern Bank for Urban Continual Forecasting (ICLR 2026)
 
