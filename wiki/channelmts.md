@@ -14,7 +14,7 @@ status: active
 
 # ChannelMTS
 
-**ChannelMTS** (Channel Multi-modal Time-Series) 是香港科技大学（广州）赵海虹、郑子楠、自动化和李佳教授团队提出的高铁多模态信道预测框架，发表于 KDD 2026[^source]。[^src-channelmts]
+**ChannelMTS** (Channel Multi-modal Time-Series) 是香港科技大学（广州）赵海虹、郑子楠、自动化和李佳教授团队提出的高铁多模态信道预测框架，发表于 KDD 2026[^src-channelmts]。
 
 ## 核心问题
 
@@ -74,5 +74,4 @@ $$\hat{E} = \frac{E - \mu_E}{\sigma_E} \times \sigma_C + \mu_C$$
 
 ## 引用
 
-[^source]: [[source-source]]
 [^src-channelmts]: [[source-channelmts]]

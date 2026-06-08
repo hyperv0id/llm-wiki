@@ -23,14 +23,14 @@ status: active
 
 ### 1.1 高铁通信挑战
 
-高铁（High-Speed Railway, HSR）通信在 5G/6G 时代面临核心挑战：**环境动态（environmental dynamics）**导致信道状态快速变化[^sec1]。[^src-source-channelmts]
+高铁（High-Speed Railway, HSR）通信在 5G/6G 时代面临核心挑战：**环境动态（environmental dynamics）**导致信道状态快速变化[^sec1]。[^src-channelmts]
 
 - **环境动态来源**：列车高速移动（300 km/h）导致通过的地理环境不断变化（平原→农村→城市→隧道）
 - **信道状态定义**：信道状态是一个高维张量 $C \in \mathbb{R}^{F \times M \times N \times 2}$
   - $F$：资源块（Resource Block, RB）数量
   - $M$：基站发射天线数
   - $N$：用户设备接收天线数
-  - 最后一维（2）：复数的实部和虚部，代表信号幅度和相位[^sec2.1][^src-source-channelmts]
+  - 最后一维（2）：复数的实部和虚部，代表信号幅度和相位[^sec2.1][^src-channelmts]
 
 ### 1.2 现有方法局限性
 
@@ -201,7 +201,7 @@ $$\mathcal{L} = \sum_{i=1}^{T} \|C_{t+i} - \hat{C}_{t+i}\|_2$$
 
 - 频谱效率：从 ~4 bps/Hz 提升到 **8.75 bps/Hz**
 - 下行峰值速率：从 ~80 Mbps 提升到 **>175 Mbps**
-- 隧道场景：从近乎 0 bps/Hz 提升到可支持稳定语音和视频通话[^src-source-channelmts]
+- 隧道场景：从近乎 0 bps/Hz 提升到可支持稳定语音和视频通话[^src-channelmts]
 
 ---
 
@@ -220,7 +220,7 @@ $$\mathcal{L} = \sum_{i=1}^{T} \|C_{t+i} - \hat{C}_{t+i}\|_2$$
 
 - **UniCA**：针对时间序列基础模型（TSFM）的协变量适应框架，将异构协变量（分类/图像/文本）同质化后融入 TSFM
 - **ChannelMTS**：专门针对高铁信道预测，核心是环境-信道对齐，而非协变量同质化
-- **共性**：都处理多模态融合和分布对齐问题[^src-source-channelmts]
+- **共性**：都处理多模态融合和分布对齐问题[^src-channelmts]
 
 ---
 
@@ -243,7 +243,7 @@ $$\mathcal{L} = \sum_{i=1}^{T} \|C_{t+i} - \hat{C}_{t+i}\|_2$$
 大多数基站是 CPU 设备（仅几 TFLOPs vs GPU 数十 TFLOPs）。输入长度 L 是关键参数：
 - L 越小，吞吐量越高
 - L 过小，性能下降
-- 折中：L=50，达到数百序列/秒吞吐量[^src-source-channelmts]
+- 折中：L=50，达到数百序列/秒吞吐量[^src-channelmts]
 
 ---
 
@@ -263,20 +263,20 @@ $$\mathcal{L} = \sum_{i=1}^{T} \|C_{t+i} - \hat{C}_{t+i}\|_2$$
 - **DLinear**：线性回归直接预测
 - **PatchTST**：Transformer + patch + channel-independent
 - **Autoformer**：Transformer + auto-correlation 机制
-- **iTransformer**：对 variable 维度应用 attention（跨变量相关性）[^src-source-channelmts]
+- **iTransformer**：对 variable 维度应用 attention（跨变量相关性）[^src-channelmts]
 
 ---
 
 ## 8. 引用说明
 
-[^sec1]: [[source-sec1]]
-[^sec2.1]: [[source-sec2.1]]
-[^sec4.1]: [[source-sec4.1]]
-[^sec4.2.1]: [[source-sec4.2.1]]
-[^sec4.2.2]: [[source-sec4.2.2]]
-[^sec4.2.4]: [[source-sec4.2.4]]
-[^sec4.3.1]: [[source-sec4.3.1]]
-[^sec4.3.2]: [[source-sec4.3.2]]
-[^sec4.5]: [[source-sec4.5]]
-[^sec6]: [[source-sec6]]
-[^src-source-channelmts]: [[source-channelmts]]
+[^sec1]: [[source-channelmts]]
+[^sec2.1]: [[source-channelmts]]
+[^sec4.1]: [[source-channelmts]]
+[^sec4.2.1]: [[source-channelmts]]
+[^sec4.2.2]: [[source-channelmts]]
+[^sec4.2.4]: [[source-channelmts]]
+[^sec4.3.1]: [[source-channelmts]]
+[^sec4.3.2]: [[source-channelmts]]
+[^sec4.5]: [[source-channelmts]]
+[^sec6]: [[source-channelmts]]
+[^src-channelmts]: [[source-channelmts]]

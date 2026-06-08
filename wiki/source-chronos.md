@@ -22,20 +22,20 @@ status: active
 - **论文**：Chronos: Learning the Language of Time Series
 - **作者**：Amazon Research
 - **会议**：ICLR 2024
-- **arXiv**：arXiv:2403.07815[^src-source-chronos]
+- **arXiv**：arXiv:2403.07815[^src-chronos]
 
 ## 简介
 
-Chronos 是 Amazon 提出的预训练时间序列语言模型，通过将时间序列量化为离散 token，并使用类似 T5 的语言模型架构进行训练。[^src-source-chronos]
+Chronos 是 Amazon 提出的预训练时间序列语言模型，通过将时间序列量化为离散 token，并使用类似 T5 的语言模型架构进行训练。[^src-chronos]
 
 ## 相关页面
 
 - [[chronos]] — Chronos 实体页面
-- [[unified-covariate-adaptation]] — UniCA 框架[^src-source-chronos]
+- [[unified-covariate-adaptation]] — UniCA 框架[^src-chronos]
 
 ---
 
 ## 引用
 
 由于源文件未 ingest，此页面 source_count 为 0。
-[^src-source-chronos]: [[source-chronos]]
+[^src-chronos]: [[source-chronos]]

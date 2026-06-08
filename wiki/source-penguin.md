@@ -19,7 +19,7 @@ status: active
 
 ## Overview
 
-Published at AISTATS 2026 by Tian Sun, Yuqi Chen, and Weiwei Sun (Fudan University), PENGUIN addresses the controversial effectiveness of Transformers for long-term time series forecasting (LTSF). Rather than replacing Transformers with simpler linear models (as advocated by DLinear, CycleNet, etc.), the paper demonstrates that Transformers can be highly effective when the self-attention mechanism is enhanced with **explicit periodicity modeling**. The key insight is to integrate periodic inductive biases directly into the attention structure via a novel **periodic-nested group attention** mechanism.[^src-source-penguin]
+Published at AISTATS 2026 by Tian Sun, Yuqi Chen, and Weiwei Sun (Fudan University), PENGUIN addresses the controversial effectiveness of Transformers for long-term time series forecasting (LTSF). Rather than replacing Transformers with simpler linear models (as advocated by DLinear, CycleNet, etc.), the paper demonstrates that Transformers can be highly effective when the self-attention mechanism is enhanced with **explicit periodicity modeling**. The key insight is to integrate periodic inductive biases directly into the attention structure via a novel **periodic-nested group attention** mechanism.[^src-penguin]
 
 ## Key Method
 
@@ -39,4 +39,4 @@ PENGUIN achieves **state-of-the-art** on nine LTSF benchmarks (ETTh1, ETTh2, ETT
 
 PENGUIN requires **known period lengths** as input, which limits applicability to datasets without clear a priori periodic structure. The paper acknowledges this limitation: on non-stationary data like the Electricity dataset, CATS performs better. The periodic bias design assumes periods align with patch stride — this constraint may not hold for irregularly sampled or multi-frequency data. While PENGUIN demonstrates strong results as a plug-in for encoder-decoder architectures, its reliance on grouped attention introduces hyperparameters (number of groups, period assignments) that require tuning. Compared to [[hybrid-periodicity-decoupling|Hybrid Periodicity Decoupling]], PENGUIN models multiple periods in parallel within attention rather than separating signals into distinct encoder pathways — a more integrated but less specialized design.
 
-[^src-source-penguin]: [[source-penguin]]
+[^src-penguin]: [[source-penguin]]

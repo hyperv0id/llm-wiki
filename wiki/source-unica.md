@@ -15,7 +15,7 @@ status: active
 
 # UniCA 源文件摘要
 
-**来源**: Han, Lu, Yu Liu, Lan Li, Qiwen Deng, Jian Jiang, Yinbo Sun, Zhe Yu, Binfeng Wang, Xingyu Lu, Lintao Ma, Han-Jia Ye, De-Chuan Zhan. *UniCA: Unified Covariate Adaptation for Time Series Foundation Model.* ICLR 2026 (Poster). arXiv:2506.22039.[^src-source-unica]
+**来源**: Han, Lu, Yu Liu, Lan Li, Qiwen Deng, Jian Jiang, Yinbo Sun, Zhe Yu, Binfeng Wang, Xingyu Lu, Lintao Ma, Han-Jia Ye, De-Chuan Zhan. *UniCA: Unified Covariate Adaptation for Time Series Foundation Model.* ICLR 2026 (Poster). arXiv:2506.22039.[^src-unica]
 
 ## 核心论点
 
@@ -31,13 +31,13 @@ UniCA 提出了一套统一框架来解决异构协变量适应问题，包含�
 
 将异构协变量（categorical、image、text）通过简单的线性投影器转换为统一的高层次序列表示，弥合模态鸿沟。具体而言：
 - **分类变量**：通过嵌入表（embedding table）编码为密集向量
-- **图像/文本**：通过预训练的编码器（图像用 CLIP，文本用 BERT）提取特征，再经线性投影映射到统一表示空间[^sec4.1][^src-source-unica]
+- **图像/文本**：通过预训练的编码器（图像用 CLIP，文本用 BERT）提取特征，再经线性投影映射到统一表示空间[^sec4.1][^src-unica]
 
 #### (2) 注意力双融合模块（Attention-based Dual Fusion）
 
 - **预融合模块（Pre-fusion）**：在 TSFM 编码器之前，使用条件注意力池化（conditional attention pooling）聚合协变量信息
 - **后融合模块（Post-fusion）**：在 TSFM 编码器之后，通过自注意力机制融合已编码的历史协变量和未来协变量
-- 关键设计：**保持 TSFM 主干网络冻结**，仅训练新增的轻量级融合模块，从而保留预训练模型的泛化能力[^sec4.2][^src-source-unica]
+- 关键设计：**保持 TSFM 主干网络冻结**，仅训练新增的轻量级融合模块，从而保留预训练模型的泛化能力[^sec4.2][^src-unica]
 
 ### 3. 即插即用兼容性
 
@@ -45,7 +45,7 @@ UniCA 的设计是 **架构无关的**，已在多种主流 TSFMs 上验证有�
 - Chronos-Bolt-base
 - TimesFM-2-500m
 - Time-MoE
-- Moirai[^src-source-unica]
+- Moirai[^src-unica]
 
 实验表明，UniCA 仅带来极少的计算开销，却能在多种模态的协变量场景下显著提升预测性能[^sec5]。
 
@@ -73,11 +73,11 @@ $$h^{(i)} = W_i \cdot E_i(c^{(i)})$$
 
 **预融合模块**：
 - 对历史协变量序列 $C_{past}$ 应用条件注意力池化，生成上下文向量 $c_{ctx}$
-- 将 $c_{ctx}$ 注入 TSFM 编码器的输入层（通过残差连接或层归一化调节）[^src-source-unica]
+- 将 $c_{ctx}$ 注入 TSFM 编码器的输入层（通过残差连接或层归一化调节）[^src-unica]
 
 **后融合模块**：
 - 对 TSFM 编码后的表示 $Z$ 和未来协变量 $C_{future}$ 执行自注意力融合
-- 允许模型同时利用历史和未来可用的协变量信息[^sec4.2][^src-source-unica]
+- 允许模型同时利用历史和未来可用的协变量信息[^sec4.2][^src-unica]
 
 ### 训练策略
 
@@ -91,14 +91,14 @@ $$h^{(i)} = W_i \cdot E_i(c^{(i)})$$
 
 UniCA 在能源、交通、医疗等领域的时序预测数据集上相比：
 - 专用模型（专门针对每个数据集调优的模型）
-- 适应方法（ChronosX、TTM-R2、线性回归）[^src-source-unica]
+- 适应方法（ChronosX、TTM-R2、线性回归）[^src-unica]
 
 在 MAE、MAPE、MSE、CRPS 等指标上取得一致提升[^sec5.1]。
 
 ### 多模态基准
 
 - **MMSP**（图像 + 时间序列）：在预测准确率上显著超越基线
-- **Time-MMD**（文本 + 时间序列）：验证了文本协变量的有效利用[^sec5.2][^src-source-unica]
+- **Time-MMD**（文本 + 时间序列）：验证了文本协变量的有效利用[^sec5.2][^src-unica]
 
 ## 局限性（来自论文附录 I）
 
@@ -124,11 +124,11 @@ UniCA 在能源、交通、医疗等领域的时序预测数据集上相比：
 
 ## 引用
 
-[^abstract]: [[source-abstract]]
-[^sec4.1]: [[source-sec4.1]]
-[^sec4.2]: [[source-sec4.2]]
-[^sec5]: [[source-sec5]]
-[^sec5.1]: [[source-sec5.1]]
-[^sec5.2]: [[source-sec5.2]]
-[^appI]: [[source-appI]]
-[^src-source-unica]: [[source-unica]]
+[^abstract]: [[source-unica]]
+[^sec4.1]: [[source-unica]]
+[^sec4.2]: [[source-unica]]
+[^sec5]: [[source-unica]]
+[^sec5.1]: [[source-unica]]
+[^sec5.2]: [[source-unica]]
+[^appI]: [[source-unica]]
+[^src-unica]: [[source-unica]]

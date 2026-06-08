@@ -18,7 +18,7 @@ status: active
 
 ## Overview
 
-ST-ResNet, proposed by Zhang, Zheng, and Qi (Microsoft Research, AAAI 2017), tackles the problem of predicting citywide crowd inflows and outflows — critical for traffic management and public safety. The task is challenging due to three interacting factors: spatial dependencies between distant regions, temporal dependencies at multiple scales (closeness, daily period, weekly trend), and external influences (weather, holidays). ST-ResNet is one of the earliest deep learning models to jointly address all three factors in a unified architecture.[^src-source-st-resnet]
+ST-ResNet, proposed by Zhang, Zheng, and Qi (Microsoft Research, AAAI 2017), tackles the problem of predicting citywide crowd inflows and outflows — critical for traffic management and public safety. The task is challenging due to three interacting factors: spatial dependencies between distant regions, temporal dependencies at multiple scales (closeness, daily period, weekly trend), and external influences (weather, holidays). ST-ResNet is one of the earliest deep learning models to jointly address all three factors in a unified architecture.[^src-st-resnet]
 
 ## Key Method
 
@@ -34,19 +34,19 @@ Each of the first three components shares the same structure: a convolutional la
 Key design choices:
 - No pooling/subsampling — preserves spatial resolution throughout
 - Residual learning enables stacking 12+ residual units (effectively 25+ convolutional layers) without degradation
-- Batch normalization further improves depth stability[^src-source-st-resnet]
+- Batch normalization further improves depth stability[^src-st-resnet]
 
 ## Results
 
 - **TaxiBJ** (Beijing taxi GPS): ST-ResNet achieves RMSE 16.69 (L12-E-BN), significantly outperforming HA (57.69), ARIMA (22.78), VAR (22.88), and DeepST (18.18)
 - **BikeNYC** (NYC bike sharing): RMSE 6.33 vs. DeepST-CPTM's 7.43 (14.8% improvement)
 - Deeper networks consistently improve accuracy (L2 → L4 → L12), validating residual learning's effectiveness
-- External factors, parametric fusion, and batch normalization each contribute measurable gains[^src-source-st-resnet]
+- External factors, parametric fusion, and batch normalization each contribute measurable gains[^src-st-resnet]
 
 ## Critique
 
 - **Strengths**: Elegant decomposition of temporal dynamics into closeness/period/trend — a design pattern later adopted by many spatio-temporal models including [[traffic-forecasting|ASTGCN]] and HyperD. The parametric-matrix fusion is a simple but effective way to let the model learn region-specific temporal preferences. The grid-based CNN approach is computationally efficient relative to graph-based alternatives.
 - **Limitations**: The fixed grid partition is arbitrary — it does not respect natural region boundaries (administrative districts, road networks). The model lacks an explicit mechanism for dynamic spatial correlations (addressed later by ASTGCN's attention). External factors are limited to what can be manually featurized. Training on 2-channel (inflow, outflow) tensors does not generalize to other spatio-temporal settings with different feature dimensions.
-- **Historical significance**: ST-ResNet was among the first to combine ResNet with spatio-temporal forecasting, demonstrating that deep residual learning can capture citywide spatial dependencies. It directly influenced later works like [[traffic-forecasting|ASTGCN]] and [[hyperd|HyperD]] in their multi-component temporal decomposition design.[^src-source-st-resnet]
+- **Historical significance**: ST-ResNet was among the first to combine ResNet with spatio-temporal forecasting, demonstrating that deep residual learning can capture citywide spatial dependencies. It directly influenced later works like [[traffic-forecasting|ASTGCN]] and [[hyperd|HyperD]] in their multi-component temporal decomposition design.[^src-st-resnet]
 
-[^src-source-st-resnet]: [[source-st-resnet]]
+[^src-st-resnet]: [[source-st-resnet]]

@@ -19,7 +19,7 @@ status: active
 **Title**: Towards Multimodal Time Series Anomaly Detection with Semantic Alignment and Condensed Interaction  
 **Authors**: Shiyan Hu, Jianxin Jin, Yang Shu, Peng Chen, Bin Yang, Chenjuan Guo (East China Normal University)  
 **Conference**: ICLR 2026  
-**arXiv**: 2603.21612[^src-source-multimodal-ts-anomaly-detection]
+**arXiv**: 2603.21612[^src-multimodal-ts-anomaly-detection]
 
 ## Core Contribution
 
@@ -33,7 +33,7 @@ Unlike previous unimodal anomaly detection methods (DADA, GDN, DCdetector) which
 
 The model decomposes text into two complementary views:
 - **Exogenous text**: External background information (e.g., news, weather reports, policies) that is shared across time steps
-- **Endogenous text**: Statistical descriptions generated per patch (mean, extrema, trend) that capture time-specific characteristics[^src-source-multimodal-ts-anomaly-detection]
+- **Endogenous text**: Statistical descriptions generated per patch (mean, extrema, trend) that capture time-specific characteristics[^src-multimodal-ts-anomaly-detection]
 
 Cross-view fusion uses endogenous text as query and exogenous text as key/value, producing semantically aligned text representations. Contrastive learning explicitly aligns time and text representations in a shared embedding space.
 
@@ -48,7 +48,7 @@ Condensed text then reconstructs **masked** time series, forcing cross-modal int
 - **Time encoder**: Patch-based Transformer (patch size p=6 typical)
 - **Text encoder**: Open-source LLM (DeepSeek default, GPT2/BERT/LLAMA as ablations)
 - **Loss**: L_total = L_MA (multimodal alignment) + L_CL (condenser KL + smoothness) + L_Rec (reconstruction MSE)
-- **Hyperparameters**: μ (compression strength, robust 0.1–0.9), mask ratio ≈0.5[^src-source-multimodal-ts-anomaly-detection]
+- **Hyperparameters**: μ (compression strength, robust 0.1–0.9), mask ratio ≈0.5[^src-multimodal-ts-anomaly-detection]
 
 ## Results
 
@@ -77,6 +77,6 @@ MindTS outperforms both unimodal baselines (DCdetector, Anomaly Transformer, Pat
 - Extends [[multimodal-time-series-forecasting]] to anomaly detection task
 - Complements [[most]] (multi-modality ST prediction) with different task focus
 - Similar cross-modal alignment concerns as [[channelmts]] but with text instead of environmental features
-- Content condenser shares Information Bottleneck philosophy with [[conditional-attention-pooling]] (UniCA) but applies to redundancy filtering[^src-source-multimodal-ts-anomaly-detection]
+- Content condenser shares Information Bottleneck philosophy with [[conditional-attention-pooling]] (UniCA) but applies to redundancy filtering[^src-multimodal-ts-anomaly-detection]
 
-[^src-source-multimodal-ts-anomaly-detection]: [[source-multimodal-ts-anomaly-detection]]
+[^src-multimodal-ts-anomaly-detection]: [[source-multimodal-ts-anomaly-detection]]

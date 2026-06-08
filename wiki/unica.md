@@ -15,7 +15,7 @@ status: active
 
 # UniCA (Unified Covariate Adaptation)
 
-**UniCA** 是南京大学与蚂蚁集团联合提出的时间序列基础模型（Time Series Foundation Model, TSFM）协变量适应框架，发表于 ICLR 2026。论文由陆涵、刘宇、李岚等作者共同完成，南京大学的叶瀚嘉、湛德川担任通讯作者[^source]。
+**UniCA** 是南京大学与蚂蚁集团联合提出的时间序列基础模型（Time Series Foundation Model, TSFM）协变量适应框架，发表于 ICLR 2026。论文由陆涵、刘宇、李岚等作者共同完成，南京大学的叶瀚嘉、湛德川担任通讯作者[^src-unica]。
 
 ## 背景与问题
 
@@ -86,4 +86,3 @@ UniCA 在以下基准上验证有效性：
 ## 参考文献
 
 [^src-unica]: [[source-unica]]
-[^source]: [[source-source]]
