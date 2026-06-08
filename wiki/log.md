@@ -2,7 +2,7 @@
 title: Log
 type: concept
 created: 2026-04-26
-last_updated: 2026-06-04
+last_updated: 2026-06-08
 tags:
   - meta
 ---
@@ -10,6 +10,13 @@ tags:
 # Wiki Log
 
 Chronological record of all wiki activity.
+
+## [2026-06-08] ingest | FENCE: Spatial-Temporal Feedback Diffusion Guidance for Controlled Traffic Imputation (Mao et al., AAAI 2026)
+
+Ingest FENCE paper (Xiaowei Mao, Huihu Ding et al., Beijing Jiaotong University/Aalborg University/中国地质大学/华东师范大学; AAAI 2026 / arXiv:2601.04572). FENCE is a dynamic feedback diffusion guidance method for spatio-temporal traffic data imputation that solves the fixed CFG guidance scale problem. Core innovations: (1) Feedback guidance — guidance scale λ(x_k, k) is dynamically computed from posterior likelihood p(c|x_k), increasing when imputed values diverge from observations; (2) Cluster-aware guidance — nodes clustered by spatial attention scores at each denoising step with cluster-level posteriors aggregated for stable estimation; (3) Two-stage training — first unconditional model for prior, then fine-tuned for conditional imputation. SOTA on PEMS04/07/08 with 80% missing rate, MAPE avg 6.26% improvement over CSDI/PriSTI/ImputeFormer. Created source-summary, entity (fence), and technique (feedback-diffusion-guidance, cluster-aware-guidance) pages. Updated CSDI, PriSTI, classifier-free-guidance, diffusion-models with FENCE cross-references.
+
+创建的页面：[[source-fence]], [[fence]], [[feedback-diffusion-guidance]], [[cluster-aware-guidance]]
+更新的页面：[[csdi]], [[pristi]], [[classifier-free-guidance]], [[diffusion-models]], [[index]], [[log]]
 
 ## [2026-06-04] ingest | E²-CSTP: Causal Spatio-Temporal Prediction — An Effective and Efficient Multi-Modal Approach (Huang et al., NeurIPS 2025)
 

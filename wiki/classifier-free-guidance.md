@@ -6,8 +6,8 @@ tags:
   - conditional-generation
   - guidance
 created: 2026-04-28
-last_updated: 2026-05-31
-source_count: 4
+last_updated: 2026-06-08
+source_count: 5
 confidence: high
 status: active
 ---
@@ -58,11 +58,19 @@ $$
 - **文本到视频/3D 生成**：扩散模型在视频和 3D 生成中同样采用 CFG 技术。
 - **其他条件生成任务**：任何需要条件控制（如类别条件、布局条件）的扩散模型都可以使用 CFG。
 
+## 动态 CFG（反馈引导）
+
+标准 CFG 使用固定引导尺度 $w$（或 $\lambda$），但在高缺失率条件生成场景下（如时空插补），固定尺度会在条件信息不足时导致生成过程漂移到先验分布，远离条件观测[^src-fence]。[[feedback-diffusion-guidance|反馈扩散引导]] 和 [[fence|FENCE]] 将 $\lambda$ 变为去噪步 $k$ 和样本 $x_k$ 的函数[^src-fence]：
+
+$$\lambda(x_k, k) \approx \frac{p_{\theta,k}(c|x_k)}{p_{\theta,k}(c|x_k) - (1-\pi)}$$
+
+通过追踪扩散反向马尔可夫链估计后验似然 $p(c|x_k)$，实现引导尺度的动态调整——后验降低时增大引导，后验升高时减小引导[^src-fence]。
+
 ## 局限性
 
 - 两次前向传播使推理成本翻倍。
 - 高引导尺度（$w$ 过大）会导致样本质量下降、颜色饱和度过高、出现伪影。
-- 无法像分类器引导那样提供显式的分类置信度信号。
+- 固定尺度无法应对不同数据点条件满足程度的差异（[[fence|FENCE]] 通过聚类感知引导解决此问题）。
 
 ## LDM 中的应用
 
@@ -72,3 +80,4 @@ LDM 成功将无分类器引导应用于文本到图像生成[^src-rombach-ldm-2
 [^src-rombach-ldm-2022]: [[source-rombach-ldm-2022]]
 [^src-dit]: [[source-dit]]
 [^src-instaflow]: [[source-instaflow]]
+[^src-fence]: [[source-fence]]

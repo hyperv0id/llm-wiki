@@ -10,8 +10,8 @@ tags:
   - air-quality
   - traffic
 created: 2026-05-31
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-06-08
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -181,7 +181,13 @@ PriSTI 与 [[diffstg|DiffSTG]] 虽然都是"条件扩散+空间建模"，但任�
 
 ## 后续影响
 
-PriSTI 建立了"条件先验与去噪过程分离"的设计范式——这个核心洞察在 2023 年后逐渐成为高层次时空扩散模型的标准配置，其影响可见于 [[diffstg|DiffSTG]]、[[specstg|SpecSTG]] 后续时空扩散方法[^src-pristi]。更广泛地，"粗先验提取 + 精去噪建模"的信息处理结构在图像修复、3D 点云补全、视频预测等条件生成任务中反复出现[^src-pristi]。从 [[csdi|CSDI]] 到 PriSTI 的演化也折射出一个更广泛的趋势：扩散模型在非图像域的落地，关键挑战往往不在扩散过程本身，而在条件信息的处理和注入方式[^src-pristi]。
+PriSTI 建立了"条件先验与去噪过程分离"的设计范式——这个核心洞察在 2023 年后逐渐成为高层次时空扩散模型的标准配置，其影响可见于 [[diffstg|DiffSTG]]、[[specstg|SpecSTG]] 后续时空扩散方法[^src-pristi]。更广泛地，"粗先验提取 + 精去噪建模"的信息处理结构在图像修复、3D 点云补全、视频预测等条件生成任务中反复出现[^src-pristi]。
+
+从 CSDI 到 PriSTI 再到 [[fence|FENCE]]（AAAI 2026）的演化反映了扩散插补方法的改进路径[^src-fence]：
+- **CSDI → PriSTI**：条件信息处理方式的升级（简单拼接 → 分离式先验引导）
+- **PriSTI → FENCE**：引导机制的升级（固定 CFG 尺度 → 动态反馈引导 + 聚类感知）
+
+FENCE 进一步指出 PriSTI 的固定引导尺度在低条件信息场景（如高缺失率节点）下同样面临漂移到先验分布的问题，并通过 [[feedback-diffusion-guidance|反馈扩散引导]] 和 [[cluster-aware-guidance|聚类感知引导]] 两个机制解决[^src-fence]。
 
 ## 关联页面
 
@@ -196,5 +202,7 @@ PriSTI 建立了"条件先验与去噪过程分离"的设计范式——这个�
 - [[traffic-forecasting]] — 时空图交通预测总览
 - [[cofill]] — 基于 PriSTI 的几何增强条件扩散插补
 - [[imputeformer]] — 基于 Transformer 的扩散插补
+- [[fence]] — FENCE，动态反馈引导扩散插补，PriSTI 的后续升级
 
 [^src-pristi]: [[source-pristi]]
+[^src-fence]: [[source-fence]]

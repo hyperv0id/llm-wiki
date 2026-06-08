@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-06-04
+last_updated: 2026-06-08
 tags:
   - meta
 ---
@@ -94,6 +94,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-most]] — MoST: A Foundation Model for Multi-modality Spatio-temporal Traffic Prediction (KDD 2026)
 - [[source-multimodal-ts-anomaly-detection]] — MindTS: multimodal time series anomaly detection with semantic alignment and condensed interaction (ICLR 2026)
 - [[source-event-driven-ts-forecasting]] — VoT: event-driven reasoning and multi-level alignment for time series forecasting (ICLR 2026)
+- [[source-fence]] — FENCE: Spatial-Temporal Feedback Diffusion Guidance for Controlled Traffic Imputation (AAAI 2026)
 - [[source-aurora]] — Aurora: universal generative multimodal time series forecasting (arXiv 2026)
 - [[source-bigcity]] — BIGCity: first MTMD spatio-temporal model unifying trajectory + traffic state (arXiv 2024)
 - [[source-time-llm]] — Time-LLM: Time Series Forecasting by Reprogramming Large Language Models (ICLR 2024)
@@ -203,6 +204,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[yarn]] — YaRN, efficient context window extension for RoPE models (2023)
 - [[paperbench]] — PAPerBench, benchmark for privacy and personalization under long context (2026)
 - [[long-context-scaling-gap]] — Long-Context Scaling Gap, fundamental limitation of LLMs under extended context (2026)
+- [[fence]] — FENCE, spatial-temporal feedback diffusion guidance for controlled traffic imputation (AAAI 2026)
 - [[fedformer]] — FEDformer, frequency enhanced decomposed transformer (ICML 2022)
 - [[grid-world-environment]] — 网格世界环境，强化学习教学示例
 - [[hyperd]] — Hybrid Periodicity Decoupling framework for traffic forecasting
@@ -436,6 +438,9 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[probability-flow-ode]] — deterministic neural ODE sampling with exact likelihood computation
 - [[classifier-guidance]] — 分类器引导利用分类器梯度引导扩散模型条件生成
 - [[classifier-free-guidance]] — 无分类器引导联合训练条件与无条件扩散模型实现条件控制
+- [[cluster-aware-guidance]] — 聚类感知引导，利用空间注意力聚类为每个节点组定制扩散引导尺度 (AAAI 2026)
+- [[feedback-diffusion-guidance]] — 反馈扩散引导，基于后验似然动态调整扩散模型引导尺度 (AAAI 2026)
+- [[fence]] — FENCE，面向时空交通数据的动态反馈扩散引导插补方法 (AAAI 2026)
 - [[heun-sampler]] — Heun 二阶 ODE 求解器，EDM 采样加速方法
 - [[edm-preconditioning]] — EDM 网络预处理技术 (cskip/cout/cin)
 - [[edm-stochastic-sampler]] — EDM 随机采样器，带 churn 参数
