@@ -45,6 +45,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-siren-rope]] — Learning to Rotate: Temporal and Semantic Rotary Encoding for Sequential Modeling (arXiv 2026)
 - [[source-st-resnet]] — ST-ResNet: deep spatio-temporal residual networks for crowd flow (AAAI 2017)
 - [[source-stgcn]] — STGCN: spatial-temporal graph convolutional networks for traffic forecasting (IJCAI 2018)
+- [[source-middir]] — MiDDiR: Mixed Channel Dependency Diffusion Model with Retrieval Guidance (ICLR 2026 under review)
 - [[source-metadg]] — MetaDG: Meta Dynamic Graph for Traffic Flow Prediction (AAAI 2026)
 - [[source-timesnet]] — TimesNet: temporal 2D-variation modeling for general time series analysis (ICLR 2023)
 - [[source-timesfm]] — TimesFM: Decoder-Only Foundation Model for Time-Series Forecasting (ICLR 2024)
@@ -187,7 +188,8 @@ All wiki pages, organized by type. Updated on every ingest.
 ## Entities
 - [[e2-cstp]] — E²-CSTP, causal multi-modal ST prediction with dual-branch causal inference + GCN+Mamba (NeurIPS 2025)
 - [[hifinet]] — HiFiNet, hierarchical frequency-decomposition GNN for road network representation learning (AAAI 2026)
-- [[hephestus]] — HEPHAESTUS, adaptive multi-scale MoE + periodic temporal attention + heterogeneous spatial attention for traffic forecasting (ICLR 2026, under review)
+- [[hephesteus]] — HEPHAESTUS, adaptive multi-scale MoE + periodic temporal attention + heterogeneous spatial attention for traffic forecasting (ICLR 2026, under review)
+- [[middir]] — MiDDiR, mixed channel dependency diffusion with retrieval guidance for probabilistic MTS forecasting (ICLR 2026, under review)
 - [[dpgnet]] — DPGNet, dynamic graph prediction network with plug-and-play AGL + multi-scale ASL for spatiotemporal forecasting (ICLR 2026, under review)
 - [[streasoner]] — STReasoner, first TS-LM for spatio-temporal reasoning (Ni et al., 2026)
 - [[rstib-mlp]] — RSTIB-MLP, information bottleneck-guided robust MLP for spatial-temporal forecasting (ICML 2025)
@@ -395,6 +397,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[score-matching]] — 得分匹配 (Score Matching)，通过匹配分数函数估计数据分布
 - [[smld]] — Score-Matching Langevin Dynamics，基于分数匹配和朗之万采样的生成模型
 - [[multivariate-correlation-attention]] — 多变量相关性注意力，iTransformer 中 attention 作用于 variate token 维度 (ICLR 2024)
+- [[mixed-channel-dependency]] — CD encoding + CI denoising hybrid for diffusion TS, inspired by MiDDiR (ICLR 2026 under review)
 - [[over-smoothing-in-gnns]] — GNN 过平滑问题，层级消息传递导致节点表示不可区分的根本限制 (AAAI 2026)
 - [[location-scale-noise-model]] — LSNM，将条件分布的均值和方差同时建模的位置-尺度噪声模型，使扩散模型能感知数据异质性
 
@@ -463,6 +466,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[cross-period-sparse-forecasting]] — cross-period downsampling for extreme model compression
 - [[reparameterization-trick]] — 重参数化技巧，将随机采样重构为可微确定性变换+固定噪声
 - [[residual-cycle-forecasting]] — RCF technique using learnable recurrent cycles for explicit periodicity modeling
+- [[retrieval-guidance]] — inference-time retrieval of similar history to analytically tilt diffusion score estimation (MiDDiR, ICLR 2026 under review)
 - [[learnable-recurrent-cycles]] — trainable cycle parameters Q ∈ ℝ^(W×D) for periodicity representation
 - [[instance-normalization]] — RevIN strategy for handling distributional shifts in time series
 - [[linear-attention-bias]] — ALiBi's core mechanism: adding distance-proportional penalty to attention scores

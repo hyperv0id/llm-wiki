@@ -9,7 +9,7 @@ tags:
   - diffusion-models
 created: 2026-05-03
 last_updated: 2026-06-04
-source_count: 6
+source_count: 7
 confidence: high
 status: active
 ---
@@ -45,6 +45,8 @@ status: active
 
 **[[dyffusion|DYffusion]]** (NeurIPS 2023) 是首个将扩散模型的退化和重建过程完全替换为时序插值和预测的框架，不使用高斯噪声[^src-dyffusion]。通过两阶段训练（插值器 $\mathcal{I}_\phi$ → 冻结 → 预测器 $F_\theta$）和 Cold Sampling 推理，实现了常数级训练内存和 $<50$ 步扩散推理。在 SST、Navier-Stokes 和 Spring Mesh 物理系统上全面超越 Dropout/DDPM/MCVD 基线[^src-dyffusion]。
 
+**[[middir|MiDDiR]]** (ICLR 2026 under review) 提出混合通道依赖扩散模型，核心创新包括 CD 编码 + CI 去噪的混合策略和推理时检索引导[^src-middir]。CD 编码器捕获跨通道信息后，CI 去噪降低联合分布的建模复杂度；检索引导通过训练集相似样本分析性偏置得分估计，改善低密度区域采样。7 数据集 SOTA，CRPS 超越 NsDiff 约 21.9%，参数效率对通道数不敏感。[^src-middir]
+
 ### 流匹配方法
 
 **[[freqflow-ts|FrèqFlow/SpectFlow]]** (NeurIPS 2025) 首次将条件流匹配引入频域进行确定性 MTS 预测。通过复值线性层在频域中插值频谱，配合流匹配头进行残差学习，仅 89k 参数即达到 SOTA。采用 ODE 单次确定性采样，推理速度远超扩散方法[^src-2511-16426]。
@@ -60,6 +62,7 @@ status: active
 | **FrèqFlow** | **Flow Matching (频域)** | **仅数值** | **✗** | **点估计（确定性）** | **频域** |
 | Aurora | Flow Matching (OT) | 文本 + 图像 + 数值 | ✓ | 概率分布 | 原始域 |
 | DYffusion | Diffusion (非高斯) | 仅数值 | ✗ | 概率分布 | 原始域 |
+| **MiDDiR** | **Diffusion (DDPM)** | **仅数值** | **✗** | **概率分布** | **CI 去噪 + CD 编码** |
 
 ## 优势
 
@@ -81,6 +84,9 @@ status: active
 - [[freqflow-ts|FrèqFlow/SpectFlow]] — 频域流匹配确定性预测（NeurIPS 2025）
 - [[ustd]] — USTD，解耦预训练的统一时空扩散预测与插值框架（SIGSPATIAL 2024）
 - [[dyffusion]] — DYffusion，动力学信息扩散模型（NeurIPS 2023）
+- [[middir]] — MiDDiR，混合通道依赖扩散 + 检索引导（ICLR 2026 under review）
+- [[mixed-channel-dependency]] — 混合通道依赖策略
+- [[retrieval-guidance]] — 扩散采样的检索引导技术
 - [[flow-matching]] — Flow Matching 理论基础
 - [[diffusion-model]] — 扩散模型理论基础
 - [[multimodal-time-series-forecasting]] — 多模态时间序列预测
@@ -91,3 +97,4 @@ status: active
 [^src-2401-08119-specstg]: [[source-2401-08119-specstg]]
 [^src-2511-16426]: [[source-2511-16426]]
 [^src-dyffusion]: [[source-dyffusion]]
+[^src-middir]: [[source-middir]]

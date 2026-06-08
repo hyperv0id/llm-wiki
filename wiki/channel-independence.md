@@ -82,6 +82,7 @@ CPiRi 的通道打乱测试暴露了一个关键问题：大多数 CD 模型在�
 - 相关：[[crossformer]] — 首个全 CD Transformer
 - 相关：[[cross-dimension-dependency]] — 跨维度依赖概念
 - 相关：[[cpiri]] — CI+CD 深度融合框架 (ICLR 2026)
+- 相关：[[mixed-channel-dependency]] — CD 编码 + CI 去噪混合策略 (MiDDiR, ICLR 2026 under review)
 - 相关：[[s-mamba]] — CI backbone + 双向 Mamba 跨变量相关性编码 (Neurocomputing 2024)
 
 - 相关：[[uniflow]] — UniFlow，CI 策略在时空基础模型中的应用 (arXiv 2024)
