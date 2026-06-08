@@ -101,6 +101,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-hephestus]] — HEPHAESTUS: Hierarchical Periodic Heterogeneous Adaptive Spatio-Temporal Unified System for Traffic Forecasting (ICLR 2026 under review)
 - [[source-dpgnet]] — DPGNet: Dynamic Graph Prediction Network with AGL + ASL for spatiotemporal forecasting (ICLR 2026 under review)
 - [[source-rstib-mlp]] — RSTIB-MLP: Information Bottleneck-guided MLPs for Robust Spatial-temporal Forecasting (ICML 2025)
+- [[source-tsflow]] — TSFlow: Flow Matching with Gaussian Process Priors for Probabilistic Time Series Forecasting (ICLR 2025)
 - [[source-testam]] — TESTAM: Time-Enhanced Spatio-Temporal Attention Model with Mixture of Experts (ICLR 2024)
 
 - [[source-kexue-muon-analysis]] — Muon优化器赏析：从向量到矩阵的本质跨越 (苏剑林, 2024)
@@ -239,6 +240,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[grid-world-environment]] — 网格世界环境，强化学习教学示例
 - [[hyperd]] — Hybrid Periodicity Decoupling framework for traffic forecasting
 - [[conformer]] — ConFormer, conditional transformer for accident-aware traffic forecasting (KDD 2026)
+- [[tsflow]] — TSFlow，首个 CFM 时间序列预测模型，GP 先验 + OT 路径 (ICLR 2025)
 - [[math-foundation-of-reinforcement-learning]] — 《Mathematical Foundations of Reinforcement Learning》教材（Springer, 2025）
 - [[shiyu-zhao]] — 赵世钰，强化学习教材作者，西湖大学教授
 - [[s-mamba]] — S-Mamba, first Mamba-based MTSF baseline with bidirectional Mamba VC + FFN TD encoding (Neurocomputing 2024)
@@ -369,6 +371,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[large-scale-spatial-temporal-graph]] — 大规模时空图预测的计算复杂度与解决方案
 - [[spatio-temporal-foundation-model]] — 时空基础模型，跨城市零样本预测范式
 - [[event-driven-reasoning]] — 事件驱动推理，利用 LLM 从外生文本中提取预测信号 (ICLR 2026)
+- [[gaussian-process-prior-flow-matching]] — GP 先验流匹配，在 CFM 中使用非各向同性高斯过程先验
 - [[multi-level-alignment]] — 多级对齐，在表示级和预测级融合文本与时间序列模态 (ICLR 2026)
 - [[multi-scale-linear-prediction]] — 多尺度线性预测，下采样 + 自上而下混合提取多粒度趋势模式 (DST-Mamba, AAAI 2025)
 - [[generative-time-series-forecasting]] — 生成式时间序列预测，通过概率建模实现不确定性量化的预测范式
@@ -416,6 +419,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[adaptive-graph-learner]] — AGL, plug-and-play dynamic graph generation module with gated self-attention and weak connection suppression (DPGNet, ICLR 2026 under review)
 - [[adaptive-season-learner]] — ASL, multi-scale temporal decomposition + pattern-specific graph construction for seasonal/trend modeling (DPGNet, ICLR 2026 under review)
 - [[spatio-temporal-retrieval-store]] — 基于 FAISS 的双维度向量记忆库 + 动量 EMA 管理 (RAST, AAAI 2026)
+- [[conditional-prior-sampling]] — 条件先验采样，Langevin 动力学 + 引导实现无条件模型的条件化预测 (TSFlow, ICLR 2025)
 - [[dual-dimension-feature-disentanglement]] — 时间/空间双流解耦编码，为检索增强提供低秩分解基础 (RAST, AAAI 2026)
 - [[dsw-embedding]] — DSW Embedding, dimension-segment-wise embedding producing 2D vector array for MTS (ICLR 2023)
 - [[mae]] — MAE, masked autoencoder for vision pretraining (75% mask ratio + asymmetric encoder-decoder) (CVPR 2022)

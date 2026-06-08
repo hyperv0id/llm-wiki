@@ -10,7 +10,7 @@ tags:
   - neurips-2023
 created: 2026-04-28
 last_updated: 2026-06-08
-source_count: 1
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -413,9 +413,12 @@ $$
 - [[dits|DiTS]] — DiTS, 首个将 Rectified Flow + MM-DiT 双流架构用于时间序列协变量感知预测的模型 (arXiv 2026)
 - [[flow-matching-forecasting|Flow Matching for TS Forecasting]] — 流匹配在时间序列预测中的具体应用范式
 - [[freqflow-ts|FrèqFlow/SpectFlow]] — 频域流匹配用于时间序列预测，仅 89k 参数 (NeurIPS 2025)
+- [[tsflow]] — TSFlow，首个 CFM 时间序列预测模型，GP 先验 + OT 路径 + 条件先验采样 (ICLR 2025)
 - [[instaflow]] — InstaFlow，基于 reflow+distill 将 SD 蒸馏为一步模型，FM 在工业生成中的首个大规模应用 (ICLR 2024)
 - [[rectified-flow|Rectified Flow]] — 通过 rectification 学习直线 ODE 轨迹以实现少步生成
+- [[gaussian-process-prior-flow-matching]] — GP 先验流匹配，在 CFM 中使用非各向同性先验
 
 ## 引用
 
 [^src-flow-matching]: [[source-flow-matching]]
+[^src-tsflow]: [[source-tsflow]]

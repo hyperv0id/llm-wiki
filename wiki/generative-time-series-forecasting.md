@@ -9,7 +9,7 @@ tags:
   - diffusion-models
 created: 2026-05-03
 last_updated: 2026-06-08
-source_count: 7
+source_count: 8
 confidence: high
 status: active
 ---
@@ -49,6 +49,8 @@ status: active
 
 ### 流匹配方法
 
+**[[tsflow|TSFlow]]** (ICLR 2025) 是首个将条件流匹配 (CFM) 应用于时间序列预测的模型，由 TU Munich 提出[^src-tsflow]。核心创新包括：使用高斯过程先验 (SE/OU/PE 三种核函数) 替代各向同性高斯先验以对齐时序结构、通过 mini-batch 最优传输耦合拉直概率路径、以及提出条件先验采样 (CPS) + 引导实现无条件模型的条件化预测。在 8 个真实数据集上 SOTA（6/8 CRPS 最优），以更少 NFE 全面超越扩散基线 CSDI、SSSD、TSDiff 和 Biloš et al. (2023)[^src-tsflow]。架构使用 DiffWave+S4（3 个残差块，~176k 参数），Euler ODE 32 步采样。
+
 **[[freqflow-ts|FrèqFlow/SpectFlow]]** (NeurIPS 2025) 首次将条件流匹配引入频域进行确定性 MTS 预测。通过复值线性层在频域中插值频谱，配合流匹配头进行残差学习，仅 89k 参数即达到 SOTA。采用 ODE 单次确定性采样，推理速度远超扩散方法[^src-2511-16426]。
 
 **[[aurora|Aurora]]** (arXiv 2026) 提出 Prototype-Guided Flow Matching，使用多模态领域知识生成条件和原型来引导流匹配过程，实现生成式概率预测[^src-aurora]。Aurora 支持多模态输入（文本、图像、数值）和零样本推理。
@@ -63,6 +65,7 @@ status: active
 | Aurora | Flow Matching (OT) | 文本 + 图像 + 数值 | ✓ | 概率分布 | 原始域 |
 | DYffusion | Diffusion (非高斯) | 仅数值 | ✗ | 概率分布 | 原始域 |
 | **MiDDiR** | **Diffusion (DDPM)** | **仅数值** | **✗** | **概率分布** | **CI 去噪 + CD 编码** |
+| **TSFlow** | **Flow Matching (OT)** | **仅数值** | **✗** | **概率分布** | **原始域 + GP 先验** |
 
 ## 优势
 
@@ -89,9 +92,11 @@ status: active
 - [[middir]] — MiDDiR，混合通道依赖扩散 + 检索引导（ICLR 2026 under review）
 - [[mixed-channel-dependency]] — 混合通道依赖策略
 - [[retrieval-guidance]] — 扩散采样的检索引导技术
+- [[tsflow]] — TSFlow，首个 CFM 时间序列模型，GP 先验 + OT 路径 (ICLR 2025)
 - [[flow-matching]] — Flow Matching 理论基础
 - [[diffusion-model]] — 扩散模型理论基础
 - [[multimodal-time-series-forecasting]] — 多模态时间序列预测
+- [[gaussian-process-prior-flow-matching]] — GP 先验在流匹配中的应用
 
 [^src-aurora]: [[source-aurora]]
 [^src-simdiff]: [[source-simdiff]]
@@ -100,3 +105,4 @@ status: active
 [^src-2511-16426]: [[source-2511-16426]]
 [^src-dyffusion]: [[source-dyffusion]]
 [^src-middir]: [[source-middir]]
+[^src-tsflow]: [[source-tsflow]]
