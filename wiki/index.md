@@ -195,8 +195,10 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-rast]] — RAST: Retrieval-Augmented Spatio-Temporal Framework for Traffic Prediction (AAAI 2026)
 - [[source-uomo]] — UoMo: A Universal Model of Mobile Traffic Forecasting for Wireless Network Optimization (KDD 2025 ADS Track)
 - [[source-craft]] — CRAFT: Cross City Traffic Flow Generation via Retrieval Augmented Diffusion Model (NeurIPS 2025)
+- [[source-stbp]] — STBP: General Spatio-Temporal Backbone with Scalable Contextual Pattern Bank for Urban Continual Forecasting (ICLR 2026)
 
 ## Entities
+- [[stbp]] — STBP, continual spatio-temporal forecasting with fixed backbone + scalable contextual pattern bank (ICLR 2026)
 - [[craft]] — CRAFT, cross-city retrieval-augmented diffusion model for zero-shot traffic flow generation (NeurIPS 2025)
 - [[e2-cstp]] — E²-CSTP, causal multi-modal ST prediction with dual-branch causal inference + GCN+Mamba (NeurIPS 2025)
 - [[hifinet]] — HiFiNet, hierarchical frequency-decomposition GNN for road network representation learning (AAAI 2026)
@@ -358,6 +360,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[multimodal-time-series-anomaly-detection]] — detecting anomalies using multimodal time series and text data (ICLR 2026)
 - [[hybrid-periodicity-decoupling]] — explicitly separating short-term and long-term periodicity in time-series signals
 - [[traffic-forecasting]] — predicting future traffic states from historical sensor data
+- [[continual-spatio-temporal-forecasting]] — CSTF, incremental learning on streaming evolving ST graphs without catastrophic forgetting (ICLR 2026)
 - [[meta-dynamic-graph]] — extending dynamics from adjacency matrices to meta-parameters in ST models
 - [[st-unification]] — ST-isolated vs ST-unification spectrum for spatio-temporal modeling
 - [[accident-aware-traffic-forecasting]] — modeling disruptive impact of accidents on traffic prediction
@@ -626,6 +629,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[variate-token-embedding]] — Variate Token Embedding，将整条变量序列嵌入为单个 token (ICLR 2024)
 - [[inverted-transformer-architecture]] — Inverted Transformer Architecture，反转 attention/FFN 应用维度而不修改组件 (ICLR 2024)
 - [[dual-stream-attention-time-series]] — Dual-Stream Attention for Time Series, orthogonal Time + Variate attention as low-rank decomposition (arXiv 2026)
+- [[contextual-pattern-bank]] — incrementally expandable parametric memory with prompt-based gating and dual-stream attention keys for CSTF (STBP, ICLR 2026)
 
 ## Concepts (continued)
 - [[hybrid-llm-flow-matching-forecasting]] — 混合 LLM-流匹配预测，耦合预训练 LLM 语义理解与 FM 连续随机建模的生成式预测范式 (ICML 2026)

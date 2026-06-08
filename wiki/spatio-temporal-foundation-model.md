@@ -8,7 +8,7 @@ tags:
   - generalization
 created: 2026-05-03
 last_updated: 2026-06-08
-source_count: 16
+source_count: 17
 confidence: high
 status: active
 ---
@@ -44,6 +44,10 @@ Before the emergence of true foundation models, **[[gpt-st|GPT-ST]]** (NeurIPS 2
 - **[[urbangpt|UrbanGPT]]** (KDD 2024): First spatio-temporal LLM using Vicuna-7b + instruction-tuning paradigm. Encoder uses multi-level gated dilated convolution (no graph), spatial reasoning delegated to LLM via textual POI descriptions. Processes one sensor at a time, making it computationally expensive (7B parameters, 174s inference)[^src-urbangpt].
 - **[[urbanmind|UrbanMind]]** (KDD 2025): Extends the LLM-based ST paradigm with multifaceted dynamics learning. Core innovations: (1) Muffin-MAE — dual-encoder masked autoencoder with temporal/spatial/global masking that captures inter-correlations across multiple urban dynamics (speed, inflow, demand); (2) selective LLaMA3 fine-tuning — frozen early layers, query-only update in later layers; (3) test-time adaptation — masked reconstruction module that shares layers with predictor, adapting to distributional shifts at inference. SOTA zero-shot across 9 urban dynamics datasets (3 cities × 3 dynamics), 8.5% MAE improvement over UrbanGPT in cross-city transfer, ~33-47% MAE reduction on multiple tasks[^src-urbanmind].
 - **Pangu-Weather / Fengwu**: Weather-specific foundation models on Euclidean grids[^src-most].
+
+### Continuous Learning / Continual Adaptation
+- **[[urbanpg|UrbanPG]]** (AAAI 2026): Prompt-backbone decoupled architecture with STCA linear attention (O(N·d²)), unifying large-scale, few-shot, and continual learning under one framework. Freeze general backbone, fine-tune/expand only personalized context prompts. SOTA on CA 8600 nodes with 48-72% efficiency gains over PatchSTG[^src-urbanpg].
+- **[[stbp|STBP]]** (ICLR 2026): Fixed general backbone + incrementally expanding [[contextual-pattern-bank|contextual pattern bank]] for continual spatio-temporal forecasting. After initial joint training, the backbone is frozen permanently; only the parametric pattern bank expands and fine-tunes as new data arrives. Achieves 21.44% MAE reduction over EAC on PEMS-Stream. The paper explicitly positions this paradigm as a stepping stone toward cross-domain ST foundation models[^src-stbp]. See [[continual-spatio-temporal-forecasting|CSTF]] for the broader paradigm.
 
 ### Traffic Flow Generation (Cross-City)
 
@@ -92,6 +96,8 @@ Before the emergence of true foundation models, **[[gpt-st|GPT-ST]]** (NeurIPS 2
 - [[uomo]] — UoMo, first universal model for mobile traffic forecasting, deployed at China Mobile (KDD 2025)
 - [[mobile-traffic-forecasting]] — mobile traffic forecasting domain
 - [[jiutian-platform]] — China Mobile's AI platform
+- [[stbp]] — STBP, continual ST forecasting with fixed backbone + expandable pattern bank (ICLR 2026)
+- [[continual-spatio-temporal-forecasting]] — CSTF paradigm
 
 [^src-most]: [[source-most]]
 [^src-urbandit]: [[source-urbandit]]
@@ -108,3 +114,4 @@ Before the emergence of true foundation models, **[[gpt-st|GPT-ST]]** (NeurIPS 2
 [^src-urbanmind]: [[source-urbanmind]]
 [^src-uomo]: [[source-uomo]]
 [^src-craft]: [[source-craft]]
+[^src-stbp]: [[source-stbp]]

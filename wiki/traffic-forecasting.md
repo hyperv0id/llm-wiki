@@ -7,7 +7,7 @@ tags:
   - intelligent-transportation
 created: 2026-04-27
 last_updated: 2026-06-08
-source_count: 34
+source_count: 35
 confidence: high
 status: active
 ---
@@ -113,6 +113,19 @@ Dynamic spatial attention (dot-product between all node pairs) has quadratic com
 
 **[[bigcity|BIGCity]]** (arXiv 2024) is the first MTMD (Multi-Task, Multi-Data modality) spatio-temporal model, unifying individual-level trajectory data and population-level traffic state data within a single GPT-2+LoRA framework with task-oriented prompts. It covers 8 heterogeneous tasks across 3 cities, surpassing 18 independently trained baselines. BIGCity represents a fundamental expansion of ST foundation model scope — from traffic-only (MTSD) to trajectory+traffic (MTMD)[^src-bigcity].
 
+### Continual Spatio-Temporal Learning
+
+While foundation models aim for zero-shot cross-city generalization, **[[continual-spatio-temporal-forecasting|CSTF]]** addresses a complementary challenge: sequentially learning from streaming, evolving data within a single domain without catastrophic forgetting. This is critical for real-world deployments where traffic networks continuously expand (new sensors added) and distributions shift over time[^src-stbp].
+
+Key methods in this paradigm:
+
+- **[[trafficstream|TrafficStream]]** (Chen et al., IJCAI 2021): First CSTF framework, using historical data replay and parameter smoothing[^src-stbp].
+- **STKEC** (Wang et al., 2023): Influence-based knowledge expansion and memory-augmented consolidation for expanding graphs[^src-stbp].
+- **[[pecpm|PECPM]]** (Wang et al., KDD 2023): Pattern-matching-based representative pattern bank with conflict detection and traceability mechanisms[^src-stbp].
+- **STRAP** (Zhang et al., NeurIPS 2025): Retrieval-augmented multi-dimensional pattern library for OOD generalization[^src-stbp].
+- **[[eac|EAC]]** (Chen & Liang, ICLR 2025): Dynamic prompt pool with expand-and-compress operations, lightweight parameter-efficient CSTF[^src-stbp].
+- **[[stbp|STBP]]** (Liu & Zhang, ICLR 2026): Fixed general backbone + incrementally expanding [[contextual-pattern-bank|contextual pattern bank]]. Freezes backbone to prevent forgetting, expands only parametric bank for adaptation. Achieves 21.44% MAE reduction over EAC on PEMS-Stream via frequency-domain processing (FreNet) and dual-stream linear graph attention (DLGA)[^src-stbp].
+
 ## Key Models
 
 Several influential models span the development of traffic and spatial-temporal forecasting:
@@ -178,3 +191,4 @@ The XTraffic benchmark provides incident-aligned traffic datasets for California
 [^src-uomo]: [[source-uomo]]
 [^src-craft]: [[source-craft]]
 [^src-patchstg]: [[source-patchstg]]
+[^src-stbp]: [[source-stbp]]
