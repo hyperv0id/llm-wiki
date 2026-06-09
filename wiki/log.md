@@ -1113,3 +1113,10 @@ Ingest GPD paper (Yuan, Shao, Ding, Jin & Li, Tsinghua FIB Lab, ICLR 2024, arXiv
 
 创建的页面：[[source-gpd]], [[gpd]]
 更新的页面：[[source-urbandit]], [[urbandit-paper-river]], [[index]], [[log]]
+
+## [2026-06-08] query | 多模态外生信息引导的长期时空预测：研究路线分析
+
+结合用户提供的《2026 AI/ML 顶会论文汇编》（2048 篇 ICLR/ICML/CVPR/AAAI Oral/Highlight/最佳候选，2026-06-05 快照）与本知识库，对研究方向"多模态外生信息引导的长期时空预测"做系统调研与方向规划。方法：17 路并行挖掘（11 个 PDF 分区 + 6 个 wiki 集群，~1.8M tokens）综合出现状地图与缺口结构，再综合为分层研究议程。核心结论：(1) 中心缺口——无任何工作同时具备〔多模态外生融合〕＋〔显式长期影响机制〕＋〔因果去混杂〕＋〔可解释归因〕且在长 horizon 验证（E²-CSTP/IGSTGNN/VoT/FactoST/VisiFold/Swift 各缺一角）；(2) 重构——时空幻象本质是"消歧"问题，外生信息是未被点名的消歧器，可把 STD-MAE 掩码预训练扩出跨模态第三轴；(3) 统一架构论点——分解骨干 + 晚注入外生适配器 + 分模态分频滞后核 + 因果双分支 + 可靠性闸门；(4) 分层方向（快赢/核心赌注/登月/横切基础设施）与优先级（先做基准 EN1 + 滞后核 QW1，主线 CB2→CB1）。归档为 analysis 页，source_count=25，confidence=medium（描述性高、处方性为提案）。
+
+创建的页面：[[multimodal-exogenous-guided-long-term-st-forecasting]]
+更新的页面：[[index]], [[log]], [[spatiotemporal-mirage]], [[spatio-temporal-foundation-model-landscape]]

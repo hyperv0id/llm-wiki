@@ -7,7 +7,7 @@ tags:
   - heterogeneity
   - time-series
 created: 2026-05-12
-last_updated: 2026-05-31
+last_updated: 2026-06-08
 source_count: 1
 confidence: medium
 status: active
@@ -62,6 +62,7 @@ flowchart LR
 ## 关联概念
 
 - [[std-mae]] — 时空解耦掩码预训练框架，直接应对时空幻象
+- [[multimodal-exogenous-guided-long-term-st-forecasting]] — 将时空幻象重构为"消歧问题"、提出外生信息作为消歧器的研究路线分析
 - [[traffic-forecasting]] — 交通预测综述
 - [[heterogeneity-in-spatiotemporal-data]] — 时空数据异质性（待创建）
 
