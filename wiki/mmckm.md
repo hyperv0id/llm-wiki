@@ -8,8 +8,8 @@ tags:
   - graph-pde
   - iclr
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-06-09
+source_count: 2
 confidence: high
 status: active
 ---
@@ -47,4 +47,7 @@ SOTA history-free trajectory prediction on NGSIM and HighD, matching history-dep
 - [[micro-macro-coupled-koopman-modeling]] — unified Koopman framework
 - [[intent-discriminator-koopman]] — MoE-based driving mode selection
 
+另一种基于 Koopman 的时间序列模型是 [[k2vae|K²VAE]]（ICML 2025），它用 KoopmanNet（MLP 测量函数 + one-step eDMD）+ KalmanNet 做通用长期概率预测，与 MMCKM 一样在 Koopman 演化中引入可学习控制输入 $B u$，但目标是精炼不确定性而非耦合双尺度交通动力学[^src-k2vae]。
+
 [^src-mmckm]: [[source-mmckm]]
+[^src-k2vae]: [[source-k2vae]]

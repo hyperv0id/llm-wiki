@@ -7,8 +7,8 @@ tags:
   - missing-data
   - diffusion-models
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-06-09
+source_count: 2
 confidence: high
 status: active
 ---
@@ -52,12 +52,16 @@ SADI 在 4 个数据集上系统测试了不同缺失特征数（1-100）和固�
 - SADI [[feature-dependency-encoder|FDE]] 显式建模特征间联合时间序列级别依赖，在 partial blackout 下具有决定性优势
 - [[mixed-partial-blackout-training|MPB]] 训练策略通过交替暴露于随机缺失和 partial blackout 模式进一步提升鲁棒性
 
+[[stamimputer|STAMImputer]] (arXiv 2025) 针对交通数据的块缺失 (block missing) 设计——多节点在连续时间步同时缺失（如传感器长时间断电），其消融显示这正是 LrSGAT 空间专家最不可替代的场景[^src-stamimputer]。
+
 ## 关联页面
 
 - [[sadi]] — SADI，首个针对 partial blackout 设计的扩散插补模型
 - [[mixed-partial-blackout-training]] — MPB 训练策略
 - [[feature-dependency-encoder]] — FDE，捕获特征间依赖以应对 partial blackout
 - [[csdi]] — CSDI，在 partial blackout 下的比较基线
+- [[stamimputer]] — STAMImputer，针对交通块缺失设计的时空插补模型
 - [[time-series-imputation]] — 时间序列插补方法总览
 
 [^src-sadi]: [[source-sadi]]
+[^src-stamimputer]: [[source-stamimputer]]

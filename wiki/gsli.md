@@ -8,8 +8,8 @@ tags:
   - feature-heterogeneity
   - aaai-2025
 created: 2026-05-11
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-06-09
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -85,6 +85,8 @@ GSLI 由四个模块组成：
 | ImputeFormer | 无图（节点嵌入） | ❌ | ❌ | ❌ |
 | **GSLI** | **双尺度学习** | **✅** | **✅** | **✅** |
 
+[[stamimputer|STAMImputer]] (arXiv 2025) 同样为时空填补构建动态图结构，但通过采样注意力 + 折射向量生成半自适应动态图 (DGSL)，与 GSLI 的多尺度图结构学习路线不同[^src-stamimputer]。
+
 ## Connections
 
 - [[node-scale-graph-structure-learning]] — 节点尺度图结构学习
@@ -99,3 +101,4 @@ GSLI 由四个模块组成：
 - [[embedded-attention]] — ImputeFormer 的空间嵌入注意力
 
 [^src-yang-gsli-2025]: [[source-yang-gsli-2025]]
+[^src-stamimputer]: [[source-stamimputer]]

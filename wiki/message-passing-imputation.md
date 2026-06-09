@@ -8,8 +8,8 @@ tags:
   - spatio-temporal
   - inductive-bias
 created: 2026-05-30
-last_updated: 2026-05-30
-source_count: 1
+last_updated: 2026-06-09
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -35,6 +35,9 @@ status: active
 | **GSLI** | 图扩散卷积 | 双尺度学习图 | 自适应学习（节点+特征） | AAAI 2025 |
 | **ImputeFormer** | 嵌入注意力 | 隐式（节点嵌入代理） | 无显式图 | KDD 2024 |
 | **CoFILL** | GCN（条件编码） | 显式 GCN | 预定义 | 2025 |
+| **MagiNet** | 掩码加权 Chebyshev 图卷积 | 显式（图卷积）| 预定义图 | arXiv 2024 |
+
+MagiNet 与上述方法的关键区别是**根本不预填充**：缺失位置由可学习嵌入占位，掩码进一步乘入注意力分数，而非把掩码拼接到预填充输入上[^src-maginet]。
 
 ## 图结构的归纳偏置
 
@@ -63,3 +66,4 @@ GRIN 的图结构消融实验直接证明了图约束的正面归纳偏置[^src-
 3. **非平稳场景**：当前方法假设平稳性，非平稳过程下的消息传递填补尚未被系统研究
 
 [^src-2108-00298]: [[source-2108-00298]]
+[^src-maginet]: [[source-maginet]]

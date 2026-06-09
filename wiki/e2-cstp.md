@@ -9,8 +9,8 @@ tags:
   - gcn
   - neurips
 created: 2026-06-04
-last_updated: 2026-06-04
-source_count: 1
+last_updated: 2026-06-09
+source_count: 2
 confidence: high
 status: active
 ---
@@ -108,6 +108,8 @@ All six components measurable; causal inference and spatial encoding most critic
 
 E²-CSTP is the first to combine **multi-modal fusion**, **dual-branch causal inference**, and **linear-complexity GCN+Mamba** in a unified ST framework[^src-e2-cstp].
 
+与 E²-CSTP 通过后门路径阻断处理混杂不同，[[doflow|DoFlow]]（ICLR 2026）在已知因果 DAG 上用连续归一化流统一观测、干预与反事实时间序列预测，并假设因果充分性（无隐藏混杂）[^src-doflow]。
+
 ## Related Pages
 
 - [[source-e2-cstp]] — source summary
@@ -118,3 +120,4 @@ E²-CSTP is the first to combine **multi-modal fusion**, **dual-branch causal in
 - [[conformer]] — ConFormer causality-informed
 
 [^src-e2-cstp]: [[source-e2-cstp]]
+[^src-doflow]: [[source-doflow]]

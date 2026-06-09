@@ -10,8 +10,8 @@ tags:
   - swin-transformer
   - arxiv-2025
 created: 2026-05-03
-last_updated: 2026-05-03
-source_count: 1
+last_updated: 2026-06-09
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -93,6 +93,8 @@ MSL 变量上正常-极端差距缩小约 37%（vs 最佳基线）[^src-uniextre
 - [[most]] — MoST 多模态 ST 基础模型（不同领域）
 - [[aurora]] — Aurora 生成式多模态 TS 基础模型（不同领域）
 - [[simdiff]] — SimDiff 扩散模型（频域相关）
+- [[weathergfm|WeatherGFM]] — 天气**通用**基础模型，通过视觉 in-context learning 在单一 ViT 上统一 10+ 种天气理解任务（预报/超分/翻译/后处理）；与 UniExtreme 互补——前者横向统一多任务多模态，后者纵向深耕极端事件预测，二者均为判别式、不做概率预报[^src-weathergfm]。
 - [[traffic-forecasting]] — 交通预测（事故感知相关）
 
 [^src-uniextreme]: [[source-uniextreme]]
+[^src-weathergfm]: [[source-weathergfm]]

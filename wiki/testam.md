@@ -9,8 +9,8 @@ tags:
   - attention
   - iclr-2024
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-06-09
+source_count: 2
 confidence: high
 status: active
 ---
@@ -61,4 +61,7 @@ The model is particularly strong on large-scale graphs (EXPY-TKY, 1,843 nodes) a
 - [[mixture-of-experts-routing]] — broader MoE routing paradigm
 - See also: [[gwnet|GWNet]], [[dcrnn|DCRNN]], [[source-astgcn|ASTGCN]], [[hephestus|HEPHAESTUS]]
 
+[[stamimputer|STAMImputer]] (arXiv 2025) 是 MoE-based 时空注意力的姊妹工作，但面向**填补**而非预测：专家按维度分工（时间 vs 空间），路由由观测专家依据稀疏度特征裁决，区别于 TESTAM 的记忆增强门控与异质 expert 设计[^src-stamimputer]。
+
 [^src-testam]: [[source-testam]]
+[^src-stamimputer]: [[source-stamimputer]]

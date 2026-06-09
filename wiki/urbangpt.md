@@ -9,8 +9,8 @@ tags:
   - foundation-model
   - traffic-forecasting
 created: 2026-05-31
-last_updated: 2026-06-08
-source_count: 2
+last_updated: 2026-06-09
+source_count: 4
 confidence: high
 status: active
 ---
@@ -130,6 +130,10 @@ Partitioning regions by flow variance into 4 quartiles: all models perform well 
 
 UrbanGPT's key limitation is computational cost: 7B parameters and per-sensor processing make it impractical for large-scale sensor networks (hundreds or thousands of sensors requiring real-time updates)[^src-urbangpt]. [[urbandit|UrbanDiT]] addresses this by training from scratch with parallel processing and 25× inference acceleration via rectified flow. [[urbanmind|UrbanMind]] (KDD 2025) extends the LLM-based ST paradigm with two critical improvements: (1) Muffin-MAE — a multifaceted masked autoencoder with temporal/spatial/global masking that jointly models inter-correlated urban dynamics (speed, inflow, demand); (2) test-time adaptation — a masked reconstruction mechanism that mitigates distributional shift during inference by adapting shared predictor-reconstructor layers to unseen test regions[^src-urbanmind]. UrbanMind achieves 8.5% lower MAE than UrbanGPT in cross-city zero-shot transfer and ~33-47% MAE reduction on several urban dynamics tasks[^src-urbanmind].
 
+[[fstllm|FSTLLM]] (ICML 2025) shares UrbanGPT's goal of injecting LLM contextual knowledge into spatio-temporal forecasting but differs in two ways: it keeps a swappable STGNN backbone (UrbanGPT discards graphs for POI text) and targets few-shot calibration rather than zero-shot cross-city transfer, QLoRA-fine-tuning LLaMA-2-7B to refine the backbone's numerical predictions[^src-fstllm].
+
+[[st-vision-llm|ST-Vision-LLM]] (arXiv 2025) takes a different route from UrbanGPT's separate-encoder strategy: instead of a temporal-conv encoder plus textual POI prompts feeding a node-based LLM, it renders the whole grid history as images for a Vision-LLM's visual encoder, arguing that node-centric LLM approaches like UrbanGPT and ST-LLM become computationally prohibitive on large dense grids[^src-st-vision-llm].
+
 ## Related Pages
 
 - [[source-urbangpt]] — source summary page
@@ -149,6 +153,10 @@ UrbanGPT's key limitation is computational cost: 7B parameters and per-sensor pr
 - [[spatio-temporal-foundation-model-landscape]] — 时空基础模型全景分析：LLM-Based 路线代表
 - [[urbanmind]] — UrbanMind, multifaceted ST-LLM with Muffin-MAE and test-time adaptation (KDD 2025)
 - [[muffin-mae]] — Muffin-MAE, multifaceted masked autoencoder for inter-correlated urban dynamics
+- [[fstllm]] — FSTLLM, LLM-augmented few-shot ST forecasting keeping a swappable STGNN backbone (ICML 2025)
+- [[st-vision-llm]] — ST-Vision-LLM, grid-rendered Vision-LLM approach contrasting UrbanGPT's node-based separate encoder (arXiv 2025)
 
 [^src-urbangpt]: [[source-urbangpt]]
 [^src-urbanmind]: [[source-urbanmind]]
+[^src-fstllm]: [[source-fstllm]]
+[^src-st-vision-llm]: [[source-st-vision-llm]]

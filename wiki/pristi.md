@@ -10,8 +10,8 @@ tags:
   - air-quality
   - traffic
 created: 2026-05-31
-last_updated: 2026-06-08
-source_count: 2
+last_updated: 2026-06-09
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -204,5 +204,10 @@ FENCE 进一步指出 PriSTI 的固定引导尺度在低条件信息场景（如
 - [[imputeformer]] — 基于 Transformer 的扩散插补
 - [[fence]] — FENCE，动态反馈引导扩散插补，PriSTI 的后续升级
 
+## 相关工作
+
+- [[maginet|MagiNet]] (arXiv 2024) 将 PriSTI 列为基线，并发现 PriSTI 仅在低方差的 PEMS-BAY 数据集上略优于 MagiNet（归因于扩散多步生成更适合低方差数据）；其余四个数据集 MagiNet 更优[^src-maginet]。
+
 [^src-pristi]: [[source-pristi]]
 [^src-fence]: [[source-fence]]
+[^src-maginet]: [[source-maginet]]

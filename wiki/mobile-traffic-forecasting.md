@@ -7,8 +7,8 @@ tags:
   - traffic-analysis
   - network-planning
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-06-09
+source_count: 2
 confidence: high
 status: active
 ---
@@ -48,6 +48,8 @@ Early methods used statistical approaches (ARIMA, HA) and simulation techniques[
 
 [[uomo|UoMo]] (KDD 2025) is the first universal model unifying all three tasks under one framework, deployed at China Mobile. Prior to UoMo, models were task-specific (one model per forecasting type), increasing deployment complexity and computational overhead[^src-uomo].
 
+[[st-vision-llm|ST-Vision-LLM]] (Yang et al., arXiv 2025) addresses grid-based mobile traffic forecasting on the Telecom Italia dataset (Milan, Trentino) by reframing it as a vision-language task — rendering global traffic matrices as images for a Vision-LLM and generating per-cell forecasts as single numerical tokens, with strong few-shot, cross-domain, and zero-shot transfer[^src-st-vision-llm].
+
 ## Related Pages
 
 - [[uomo]] — UoMo, first universal mobile traffic forecasting model
@@ -56,3 +58,4 @@ Early methods used statistical approaches (ARIMA, HA) and simulation techniques[
 - [[jiutian-platform]] — China Mobile's AI deployment platform
 
 [^src-uomo]: [[source-uomo]]
+[^src-st-vision-llm]: [[source-st-vision-llm]]

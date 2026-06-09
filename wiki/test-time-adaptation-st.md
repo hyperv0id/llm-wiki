@@ -8,8 +8,8 @@ tags:
   - masked-reconstruction
   - zero-shot
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-06-09
+source_count: 2
 confidence: high
 status: active
 ---
@@ -84,6 +84,8 @@ In ablation study (Table 3, UrbanMind)[^src-urbanmind]:
 
 UrbanMind's TTA is the **first** test-time adaptation mechanism specifically designed for LLM-based spatio-temporal prediction, combining masked reconstruction with weight sharing between a reconstructor and predictor[^src-urbanmind].
 
+A complementary inference-time paradigm is **test-time computing**: [[st-ttc|ST-TTC]] (NeurIPS 2025) appends a lightweight [[spectral-domain-calibration|spectral-domain calibrator]] to a frozen backbone and, unlike UrbanMind's label-free masked reconstruction, exploits the label autocorrelation of spatio-temporal data to perform *supervised* calibration on historical test labels via a leakage-free single-step update[^src-st-ttc].
+
 ## Related Pages
 
 - [[urbanmind]] — UrbanMind, the full model that introduces this technique
@@ -93,3 +95,4 @@ UrbanMind's TTA is the **first** test-time adaptation mechanism specifically des
 - [[muffin-mae]] — Muffin-MAE, the pre-training stage of UrbanMind
 
 [^src-urbanmind]: [[source-urbanmind]]
+[^src-st-ttc]: [[source-st-ttc]]

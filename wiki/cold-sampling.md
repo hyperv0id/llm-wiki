@@ -7,8 +7,8 @@ tags:
   - sampling-algorithm
   - ode-solver
 created: 2026-06-04
-last_updated: 2026-06-04
-source_count: 1
+last_updated: 2026-06-09
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -41,4 +41,9 @@ DYffusion 证明了 Cold Sampling 可以从 ODE 视角理解：整个过程等�
 
 Cold Sampling 是 DDIM 的推广：当退化算子 $\mathcal{D}$ 为高斯加噪时，Cold Sampling 退化为 DDIM[^src-dyffusion]。
 
+## 相关工作
+
+同属"用退化/中间态替代噪声"的广义扩散思路，[[armd|ARMD]]（AAAI 2025）把退化算子设为时间轴上的窗口滑动，将历史与未来序列嵌入同一确定性扩散链用于时间序列预测[^src-armd]。
+
 [^src-dyffusion]: [[source-dyffusion]]
+[^src-armd]: [[source-armd]]

@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-06-08
+last_updated: 2026-06-09
 source_count: 0
 tags:
   - meta
@@ -211,7 +211,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[craft]] — CRAFT, cross-city retrieval-augmented diffusion model for zero-shot traffic flow generation (NeurIPS 2025)
 - [[e2-cstp]] — E²-CSTP, causal multi-modal ST prediction with dual-branch causal inference + GCN+Mamba (NeurIPS 2025)
 - [[hifinet]] — HiFiNet, hierarchical frequency-decomposition GNN for road network representation learning (AAAI 2026)
-- [[hephesteus]] — HEPHAESTUS, adaptive multi-scale MoE + periodic temporal attention + heterogeneous spatial attention for traffic forecasting (ICLR 2026, under review)
+- [[hephestus]] — HEPHAESTUS, adaptive multi-scale MoE + periodic temporal attention + heterogeneous spatial attention for traffic forecasting (ICLR 2026, under review)
 - [[middir]] — MiDDiR, mixed channel dependency diffusion with retrieval guidance for probabilistic MTS forecasting (ICLR 2026, under review)
 - [[dpgnet]] — DPGNet, dynamic graph prediction network with plug-and-play AGL + multi-scale ASL for spatiotemporal forecasting (ICLR 2026, under review)
 - [[streasoner]] — STReasoner, first TS-LM for spatio-temporal reasoning (Ni et al., 2026)
@@ -696,3 +696,75 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[spatio-temporal-foundation-model-landscape]] — 时空基础模型全景：设计哲学三重分裂、架构范式六条路线、预训练策略四象限、泛化机制深度比较
 - [[diffusion-frequency-domain-theory]] — 扩散模型为什么先学低频——频域理论的统一视角：谱偏置→频率层级→频域噪声控制→EqualSNR→SNR-t Bias→范式转移
 
+
+## Sources (continued)
+- [[source-stop]] — STOP: Robust Spatio-Temporal Centralized Interaction for OOD Learning (ICML 2025)
+- [[source-fstllm]] — FSTLLM: Spatio-Temporal LLM for Few Shot Time Series Forecasting, plug-and-play LLM augmentation (ICML 2025)
+- [[source-st-ttc]] — ST-TTC: Learning with Calibration, test-time computing of spatio-temporal forecasting via spectral-domain calibration (NeurIPS 2025 Spotlight)
+- [[source-s2dbm]] — S²DBM: Series-to-Series Diffusion Bridge Model, Brownian bridge pins both endpoints for deterministic point forecasting (arXiv 2024)
+- [[source-ratd]] — RATD: Retrieval-Augmented Diffusion Models for Time Series Forecasting, k-NN references guide denoising via RMA (NeurIPS 2024)
+- [[source-armd]] — ARMD: Auto-Regressive Moving Diffusion Models for Time Series Forecasting, ARMA-inspired sliding-window diffusion (AAAI 2025)
+- [[source-doflow]] — DoFlow: Flow-based Generative Models for Interventional and Counterfactual Forecasting on Time Series (ICLR 2026)
+- [[source-k2vae]] — K²VAE: Koopman-Kalman Enhanced VAE for Probabilistic Time Series Forecasting (ICML 2025 Spotlight)
+- [[source-weathergfm]] — WeatherGFM: Learning A Weather Generalist Foundation Model via In-context Learning (ICLR 2025)
+- [[source-maginet]] — MagiNet: Mask-Aware Graph Imputation Network for Incomplete Traffic Data, learnable missing encoding without pre-filling (arXiv 2024 / ACM TKDD 2025)
+- [[source-stamimputer]] — STAMImputer: Spatio-Temporal Attention MoE for Traffic Data Imputation (arXiv 2025 / IJCAI 2025)
+- [[source-st-vision-llm]] — ST-Vision-LLM: Vision-LLMs for Spatiotemporal Traffic Forecasting, TS-as-image + GRPO for mobile traffic (arXiv 2025)
+- [[source-motm]] — MoTM: Towards a Foundation Model for Time Series Imputation based on Continuous Modeling，连续时间 INR 插补基础模型 (AALTD/ECML 2025 口头报告)
+
+## Entities (continued)
+- [[stop]] — STOP (Spatio-Temporal OOD Processor), centralized ConAU messaging + GenPU perturbation + DRO for OOD traffic forecasting, +17.01% (ICML 2025)
+- [[fstllm]] — FSTLLM, LLM-augmented few-shot ST forecaster: LLM graph construction + STGNN backbone + QLoRA domain-knowledge injection, plug-and-play (ICML 2025)
+- [[st-ttc]] — ST-TTC, inference-time test-time computing for STF via plug-and-play spectral calibrator on a frozen backbone (NeurIPS 2025 Spotlight)
+- [[s2dbm]] — S²DBM, Brownian-bridge diffusion model pinning both endpoints (y0 and prior h) to reduce reverse-process stochasticity for point/probabilistic TS forecasting (arXiv 2024)
+- [[ratd]] — RATD, first retrieval-augmented time series diffusion model; embedding-based k-NN retrieval + Reference Modulated Attention (RMA) guides denoising (NeurIPS 2024)
+- [[armd]] — ARMD, first continuous sequential diffusion TSF model; sliding-window evolution + linear distance-based devolution, unconditional, >10x faster (AAAI 2025)
+- [[doflow]] — DoFlow, flow-based generative model on a causal DAG with per-node time-conditioned CNFs unifying observational/interventional/counterfactual forecasting + likelihood anomaly detection (ICLR 2026)
+- [[k2vae]] — K²VAE, VAE-based one-step generative model linearizing TS via KoopmanNet + refining uncertainty via KalmanNet for long-term probabilistic forecasting (ICML 2025)
+- [[weathergfm]] — WeatherGFM, first weather generalist foundation model unifying 10+ weather understanding tasks via visual in-context learning on a plain ViT (ICLR 2025)
+- [[maginet]] — MagiNet, mask-aware graph imputation network replacing pre-filling with learnable missing encoding + mask-weighted Chebyshev graph convolution (arXiv 2024)
+- [[stamimputer]] — STAMImputer, outer-layer MoE with temporal (MSAT) + spatial (LrSGAT) attention experts + observation-expert routing for traffic data imputation under block missing (arXiv 2025)
+- [[st-vision-llm]] — ST-Vision-LLM, vision-language fusion framework rendering 2D traffic grids as images for a Vision-LLM with single-token numerical encoding + SFT/GRPO (arXiv 2025)
+
+## Concepts (continued)
+- [[ood-generalization]] — out-of-distribution generalization: maintaining accuracy under temporal (T-OOD) and structural (S-OOD) distribution shift beyond the IID assumption
+- [[distributionally-robust-optimization]] — DRO, worst-case optimization over an uncertainty set of distributions; equivalent to ERM + variance regularization for OOD robustness
+- [[few-shot-traffic-forecasting]] — few-shot / data-scarce spatio-temporal forecasting, where STGNNs and TSFMs fail and contextual/transfer methods help (ICML 2025)
+- [[test-time-computing-st]] — test-time computing paradigm for STF: online calibration of a frozen backbone exploiting label autocorrelation (NeurIPS 2025)
+- [[arma-inspired-diffusion]] — ARMA-Inspired Diffusion, using ARMA theory (AR + MA) as the design principle for continuous-sequential diffusion forecasting (AAAI 2025)
+- [[causal-time-series-forecasting]] — 因果时间序列预测，超越观测的干预与反事实查询范式 (ICLR 2026)
+- [[koopman-linearization-for-forecasting]] — Koopman 线性化预测范式，把非线性 TS 提升到测量空间用线性算子 (DMD/eDMD/神经网络) 建模 (K²VAE/MMCKM)
+- [[kalman-filter]] — Kalman 滤波，线性动力系统状态估计的递归 Predict/Update 算法 + 不确定性建模
+- [[weather-foundation-model]] — 天气基础模型，在大规模气象数据上预训练、服务多种天气/气候任务的通用模型范式 (ICLR 2025)
+- [[mask-aware-imputation-no-prefilling]] — 无预填充的掩码感知填补，用可学习缺失嵌入直接表征缺失值而非零初始化 (MagiNet, arXiv 2024)
+- [[vision-language-traffic-forecasting]] — reframing 2D grid traffic forecasting as a vision-language fusion problem via traffic-matrix-as-image (arXiv 2025)
+- [[in-context-learning]] — ICL，冻结基础模型仅凭上下文演示适配新任务的范式；WeatherGFM 视觉 ICL 的基础 (2026)
+
+## Techniques (continued)
+- [[centralized-message-passing]] — centralized message passing: nodes interact only with K shared Context-Aware Units via O(KN) low-rank attention, blocking node-to-node messages (STOP, ICML 2025)
+- [[context-aware-units]] — ConAU, K≪N learnable shared context vectors forming STOP's centralized interaction hub for OOD robustness + inductive learning (ICML 2025)
+- [[generalized-perturbation-unit]] — GenPU, multinomial-mask message perturbation generating variant environments, optimized via worst-case DRO selection (STOP, ICML 2025)
+- [[alpha-entmax]] — α-Entmax, sparsity-controllable softmax generalization (α=1 softmax, α=2 sparsemax) for sparse graph-attention adjacency (ICML 2025)
+- [[spectral-domain-calibration]] — SD-Calibrator, per-node rFFT + group-wise amplitude/phase modulation correcting periodic non-stationarity at test time (ST-TTC, NeurIPS 2025)
+- [[flash-gradient-update]] — single-sample single-step calibrator update on the dequeued FIFO-queue sample to avoid information leakage (ST-TTC, NeurIPS 2025)
+- [[brownian-bridge-diffusion]] — 布朗桥扩散，钉住数据与先验两端的扩散桥 + 后验方差缩放(s)切换确定性/概率采样 (S²DBM, arXiv 2024)
+- [[sliding-window-diffusion]] — Sliding-Window Diffusion, ARMD's deterministic intermediate-state generation that slides the series window instead of adding noise (AAAI 2025)
+- [[distance-based-devolution]] — Distance-Based Devolution, ARMD's linear-backbone denoising predicting intermediate-to-target distance with step-adaptive weighting (AAAI 2025)
+- [[causal-counterfactual-recovery]] — abduction-action-prediction via CNF encode-decode with DoFlow's pointwise counterfactual recovery theorem under monotone SCMs (ICLR 2026)
+- [[kalmannet-uncertainty-modeling]] — KalmanNet, neuralized Kalman Predict/Update refining KoopmanNet's biased linear system and defining the VAE variational posterior (K²VAE, ICML 2025)
+- [[weather-prompt]] — Weather Prompt, three visual prompt formats (single/multi/temporal modal) for in-context weather task specification (WeatherGFM, ICLR 2025)
+- [[mixed-modal-masked-image-modeling]] — MMIM, VQA-style masked-target reconstruction (75% block-wise) unifying weather tasks; target full-masking at inference (WeatherGFM, ICLR 2025)
+- [[lrsgat]] — LrSGAT, low-rank guided sampling graph attention: significance-scored hybrid node sampling + low-rank re-attention + semi-adaptive dynamic graph (STAMImputer, arXiv 2025)
+- [[direct-numerical-encoding]] — Direct Numerical Encoding, single-token float vocabulary ⟨|FP m/b|⟩ + two-stage numerical alignment fine-tuning (ST-Vision-LLM, arXiv 2025)
+- [[grpo-for-forecasting]] — GRPO for forecasting, NRMSE-reward RL stage with length/decode penalties for traffic-accuracy optimization (ST-Vision-LLM, arXiv 2025)
+- [[motm-ridge-orchestrator]] — MoTM 在 TimeFlow 调制 INR 基的隐藏表示上逐序列拟合 ridge 回归的零样本编排机制
+
+## Sources (continued)
+- [[source-bigst]] — BigST: Linear Complexity Spatio-Temporal GNN for Traffic Forecasting on Large-Scale Road Networks (PVLDB 2024)
+
+## Entities (continued)
+- [[bigst]] — BigST, linear-complexity STGNN scaling to ~100K nodes via PRF-kernel linearized spatial conv + cached long-sequence features (PVLDB 2024)
+
+## Techniques (continued)
+- [[linearized-spatial-convolution]] — LSC, O(N) graph message passing via PRF-kernel adjacency factorization, avoids materializing the N×N matrix (BigST, PVLDB 2024)
+- [[long-sequence-feature-extractor]] — LSFE, BigST cached pre-processing: linearized Transformer (PRF) + periodic feature sampling for long-history encoding (PVLDB 2024)

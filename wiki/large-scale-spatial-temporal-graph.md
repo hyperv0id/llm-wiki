@@ -6,8 +6,8 @@ tags:
   - computational-complexity
   - scalability
 created: 2026-04-29
-last_updated: 2026-06-08
-source_count: 4
+last_updated: 2026-06-09
+source_count: 5
 references:
   - [[source-fast-long-horizon-forecasting]]
 confidence: high
@@ -67,7 +67,7 @@ FaST 提出两个核心技术：
 局限：依赖准确图结构、丢弃长程依赖
 
 ### 无结构方法
-- **线性注意力** (BigST): 绕过成对节点计算
+- **线性注意力** ([[bigst|BigST]]): 用正随机特征 (PRF) 核近似 + [[linearized-spatial-convolution|线性化空间卷积]]降到 O(N)，绕过成对节点计算[^src-bigst]
 - **随机投影** (RPMixer): MLPs 融合空间特征
 - **空间标识** (STID): 消除空间交互
 
@@ -76,7 +76,7 @@ FaST 提出两个核心技术：
 ### 余弦相似度线性化方法
 - **[[efficient-cosine-operator|ECO]]** (RAGC, 2026): 基于余弦相似度的图卷积算子，通过矩阵结合律将 O(N²) 复杂度降至 O(N)，避免近似噪声
 
-与 BigST 的随机特征映射近似 softmax 不同，ECO 直接使用余弦相似度度量节点相似性，无需非线性激活，因此不引入近似噪声。通过门控机制（softmax + ReLU 逐元素乘积）确保邻接矩阵非负性和稀疏性[^src-ragc-efficient-traffic-forecasting]。
+与 [[bigst|BigST]] 的随机特征映射近似 softmax 不同，ECO 直接使用余弦相似度度量节点相似性，无需非线性激活，因此不引入近似噪声。通过门控机制（softmax + ReLU 逐元素乘积）确保邻接矩阵非负性和稀疏性[^src-ragc-efficient-traffic-forecasting]。
 
 ### 异质性感知方法
 - **HA-MoE**: 动态选择专家适配节点和时间异质性
@@ -110,8 +110,10 @@ XTraffic 数据集（2024）：基于加州 2023 年交通数据，包含时间�
 - [[leaf-kdtree]] — 不规则空间数据的平衡分块算法
 - [[irregular-spatial-patching]] — 三步空间分块管道
 - [[efficient-cosine-operator|ECO]] — 余弦相似度线性复杂度图卷积
+- [[bigst]] — 线性注意力 (PRF 核) 的大规模 STGNN，可扩展到 ~10 万节点
 
 [^src-incident-guided-st-forecasting]: [[source-incident-guided-st-forecasting]]
 [^src-most]: [[source-most]]
 [^src-ragc-efficient-traffic-forecasting]: [[source-ragc-efficient-traffic-forecasting]]
 [^src-patchstg]: [[source-patchstg]]
+[^src-bigst]: [[source-bigst]]

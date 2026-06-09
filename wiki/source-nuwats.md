@@ -9,8 +9,8 @@ tags:
   - contrastive-learning
   - prefix-tuning
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-06-09
+source_count: 2
 confidence: high
 status: active
 ---
@@ -41,4 +41,7 @@ Statistical, missing, and contrastive components are all necessary; freezing the
 
 Trained on fixed length-96 segments; longer segments or entirely-missing segments may require further fine-tuning[^src-nuwats].
 
+MoTM（AALTD 2025）将 NuwaTS 归类为依赖**固定长度输入段**的插补基础模型，认为这限制了其处理不规则采样/变分辨率数据及利用跨数据集共享周期模式的能力，并在实验中以 MOMENT 作为同类固定段零样本基线进行对比[^src-motm]。
+
 [^src-nuwats]: [[source-nuwats]]
+[^src-motm]: [[source-motm]]

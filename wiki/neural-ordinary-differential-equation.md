@@ -7,8 +7,8 @@ tags:
   - ode-solver
   - neurips-2018
 created: 2026-04-28
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-06-09
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -55,6 +55,10 @@ $$\frac{\partial \log p(z(t))}{\partial t} = -tr\left(\frac{\partial f}{\partial
 - 密度估计：CNF 在 Two Circle/Two Moons 数据集上优于离散 NF
 - 时间序列预测：不规则采样螺旋数据 RMSE 显著低于 RNN
 
+## 相关工作
+
+[[doflow|DoFlow]] 把 Neural ODE 的时间依赖动力学用作因果时间序列预测的骨干：每个 DAG 节点一个时间条件化 Neural ODE，ODE 时间 $s\in[0,1]$ 与时序索引 $t$ 解耦，通过前向/反向积分实现编码与解码[^src-doflow]。
+
 ## 链接
 
 - [[source-neural-ode]] — 论文摘要
@@ -62,3 +66,4 @@ $$\frac{\partial \log p(z(t))}{\partial t} = -tr\left(\frac{\partial f}{\partial
 - [[continuous-normalizing-flow]] — 连续归一化流
 
 [^src-neural-ode]: [[source-neural-ode]]
+[^src-doflow]: [[source-doflow]]

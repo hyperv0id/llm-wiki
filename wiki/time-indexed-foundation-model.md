@@ -8,8 +8,8 @@ tags:
   - zero-shot
   - continuous-time
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-06-09
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -29,6 +29,8 @@ status: active
 
 > [!note] 为什么 patch-based 预测模型不适合插补
 > patch-based 预测器（及 xLSTM 类）需要稠密完整的上下文，难以应对插补任务固有的多样缺失模式；时间索引模型直接在观测时间戳上拟合 $H(t)\to x(t)$，对缺失天然鲁棒[^src-time-indexed-imputation]。
+
+MoTM 的原始论文（AALTD 2025）进一步表明：其连续时间公式使同一模型可原生处理 10min/30min/1h/2h 等不同采样率，并在仅含日、周周期的数据上预训练后零样本泛化到日+周混合周期的未见数据集[^src-motm]。
 
 ## 两种互逆的实例化
 
@@ -62,3 +64,4 @@ status: active
 - [[missing-not-at-random]] — 缺失机制谱系
 
 [^src-time-indexed-imputation]: [[source-time-indexed-imputation]]
+[^src-motm]: [[source-motm]]

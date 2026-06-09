@@ -8,8 +8,8 @@ tags:
   - spatio-temporal
   - kdd-2026
 created: 2026-05-03
-last_updated: 2026-05-31
-source_count: 2
+last_updated: 2026-06-09
+source_count: 3
 confidence: high
 status: active
 ---
@@ -60,6 +60,8 @@ Ablation studies confirm that removing the modality selector, spatial expert rou
 
 MoST is unique in being a **native multi-modality foundation model** for spatio-temporal prediction, rather than adapting existing single-modal TSFMs (like UniCA) or being task-specific (like ConFormer/IGSTGNN)[^src-most]. [[aurora|Aurora]] is a related multi-modal foundation model but focuses on general time series forecasting (not spatio-temporal) and uses a generative Flow Matching approach rather than MoST's discriminative approach[^src-aurora].
 
+[[st-vision-llm|ST-Vision-LLM]] (arXiv 2025) is a related vision-language traffic model but differs fundamentally in its use of images: where MoST consumes real satellite imagery as a genuine modality, ST-Vision-LLM renders the numerical traffic matrix itself as a grayscale pseudo-RGB image to exploit a visual encoder's 2D inductive bias, and adds a GRPO RL stage to optimize forecasting accuracy[^src-st-vision-llm].
+
 ## Related Pages
 
 - [[source-most]] — source summary
@@ -76,3 +78,4 @@ MoST is unique in being a **native multi-modality foundation model** for spatio-
 
 [^src-most]: [[source-most]]
 [^src-aurora]: [[source-aurora]]
+[^src-st-vision-llm]: [[source-st-vision-llm]]

@@ -9,8 +9,8 @@ tags:
   - neurips-2023
   - ucsd
 created: 2026-06-04
-last_updated: 2026-06-04
-source_count: 1
+last_updated: 2026-06-09
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -57,5 +57,7 @@ DYffusion 采用 Cold Sampling 算法（源于 Cold Diffusion），交替执行�
 - **vs TEDM**：二者都将扩散步与物理时间对齐，但 TEDM 保留了高斯噪声框架，DYffusion 完全替换为插值[^src-dyffusion]
 - **vs SimDiff**：SimDiff 是端到端扩散点预测模型，DYffusion 专门针对概率多步动力学预测[^src-dyffusion]
 - **vs 时空基础模型**：DYffusion 聚焦于复杂物理系统的动力学演化，时空基础模型（UrbanDiT、Aurora 等）侧重于城市交通/天气等大规模预测[^src-dyffusion]
+- **vs [[armd|ARMD]]**：[[armd|ARMD]]（AAAI 2025）与 DYffusion 共享"用确定性变换替代加噪作为扩散步"的思路——DYffusion 用时间插值、ARMD 用序列窗口滑动——但 ARMD 面向单序列 TSF 而非时空动力学预测[^src-armd]
 
 [^src-dyffusion]: [[source-dyffusion]]
+[^src-armd]: [[source-armd]]

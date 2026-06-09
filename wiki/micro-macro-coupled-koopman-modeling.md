@@ -7,8 +7,8 @@ tags:
   - traffic-prediction
   - history-free-prediction
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-06-09
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -41,6 +41,8 @@ $$z_t = \phi_z(x_t^e), \quad z_{t+1} = K_z z_t + B_z u_t, \quad p_{t+1}^e = \psi
 
 where $u_t = \text{CA}(z_t, Z_t)$ is a CrossAttention block injecting macroscopic flow influence. The CrossAttention design — rather than a simple linear projection — captures the context-dependent nature of traffic influence: vehicles in different positions contribute unequally[^src-mmckm].
 
+同样基于 Koopman 线性化的 [[k2vae|K²VAE]]（ICML 2025）把这一思想用于通用概率时间序列预测：用 MLP 测量函数 + one-step eDMD 拟合 Koopman 算子构造"有偏线性系统"，再用引入控制输入的 KalmanNet 精炼——与 MMCKM 的微观 Koopman 控制项 $z_{t+1}=K_zz_t+B_zu_t$ 共享"Koopman 线性系统 + 控制项"的通用模式[^src-k2vae]。
+
 ## Spectral Alignment
 
 A spectral alignment loss $L_{\text{spec}}$ couples the Koopman operator $K$ with the graph-PDE operators[^src-mmckm]:
@@ -58,3 +60,4 @@ $$\exists c \geq 1, \lambda \in (0,1): \|z_t\| \leq c\lambda^t\|z_0\| + \frac{c 
 Enforced by: (1) $\kappa(K_z) < 1$ via bounded spectral radius (parameterized as $R = \kappa_{\text{max}} \cdot \sigma(\eta)$ where each real/complex block eigenvalue modulus < 1); (2) Bounded $u_t$ via Sigmoid on CrossAttention output; (3) Constrained $B_z = B_{\text{max}} \cdot \tanh(B_z)$ to prevent unbounded actuation gains during training[^src-mmckm]. This guarantees errors decay geometrically with rate $\kappa(K_z)$ and external influences remain bounded — no unbounded error growth over iterative Koopman applications[^src-mmckm].
 
 [^src-mmckm]: [[source-mmckm]]
+[^src-k2vae]: [[source-k2vae]]

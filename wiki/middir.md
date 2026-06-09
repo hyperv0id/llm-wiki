@@ -10,8 +10,8 @@ tags:
   - multivariate
   - iclr-2026
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-06-09
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -68,6 +68,7 @@ GIFT-Eval：全部 39 个模型中 MSE/NMRSE 第 3，MAPE 非基础模型第 1�
 - [[gtr|GTR]] — 全局时序检索模块 (ICLR 2026)
 - [[patchtst|PatchTST]] — CI 策略的开创者 (ICLR 2023)
 - [[itransformer|iTransformer]] — attention 捕获跨变量相关 (ICLR 2024)
+- [[ratd|RATD]] — 首个检索增强时序扩散模型（NeurIPS 2024），但以 RMA 注意力将检索结果作为条件特征输入，区别于 MiDDiR 的分析性得分倾斜[^src-ratd]
 
 ## 注意
 
@@ -75,3 +76,4 @@ GIFT-Eval：全部 39 个模型中 MSE/NMRSE 第 3，MAPE 非基础模型第 1�
 - 代码未公开
 
 [^src-middir]: [[source-middir]]
+[^src-ratd]: [[source-ratd]]

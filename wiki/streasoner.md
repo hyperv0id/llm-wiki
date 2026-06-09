@@ -9,8 +9,8 @@ tags:
   - reinforcement-learning
   - benchmark
 created: 2026-06-04
-last_updated: 2026-06-04
-source_count: 1
+last_updated: 2026-06-09
+source_count: 2
 confidence: high
 status: active
 ---
@@ -101,6 +101,8 @@ All three stages are essential; removing S-GRPO costs ~3.9% on etiological reaso
 
 STReasoner is unique in combining **explicit spatial graph reasoning**, **multi-step CoT**, and **spatial-aware RL**[^src-streasoner].
 
+[[st-vision-llm|ST-Vision-LLM]] (Yang et al., arXiv 2025) is a sibling LLM-for-traffic model that, like STReasoner, uses **GRPO reinforcement learning** on top of a fine-tuned LLM, but optimizes a regression reward (NRMSE) for numerical traffic forecasting rather than STReasoner's S-GRPO for multi-step natural-language spatio-temporal reasoning[^src-st-vision-llm].
+
 ## Related Pages
 
 - [[source-streasoner]] — source summary
@@ -111,3 +113,4 @@ STReasoner is unique in combining **explicit spatial graph reasoning**, **multi-
 - [[vot]] — VoT, LLM event-driven reasoning
 
 [^src-streasoner]: [[source-streasoner]]
+[^src-st-vision-llm]: [[source-st-vision-llm]]

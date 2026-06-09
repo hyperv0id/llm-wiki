@@ -9,8 +9,8 @@ tags:
   - dilated-convolution
   - wavenet
 created: 2026-05-31
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-06-09
+source_count: 2
 confidence: high
 status: active
 ---
@@ -132,7 +132,7 @@ Training matches STGCN speed (~5× faster than DCRNN); inference is **8× faster
 
 1. **Static, input-independent adjacency** — The learned $\tilde{A}_{adp}$ is fixed after training regardless of time-of-day or traffic conditions. It cannot model dynamic spatial dependencies (e.g., different influence patterns during rush hour vs midnight)[^src-gwnet]. This limitation is directly addressed by [[adaptive-graph-learner|DPGNet's AGL]], which generates per-timestep dynamic adjacency matrices via gated self-attention and plug-and-play replacement of GWNet's static graph generator with 3.52%–5.51% MAE improvement[^src-dpgnet].
 
-2. **Scalability bottleneck** — Building the $N \times N$ adaptive adjacency matrix via SoftMax over all node pairs costs $O(N^2)$; node embeddings contribute ~72% of total parameters[^src-gwnet]. For large-scale networks (8,000+ nodes), this becomes prohibitive.
+2. **Scalability bottleneck** — Building the $N \times N$ adaptive adjacency matrix via SoftMax over all node pairs costs $O(N^2)$; node embeddings contribute ~72% of total parameters[^src-gwnet]. For large-scale networks (8,000+ nodes), this becomes prohibitive. [[bigst|BigST]] (PVLDB 2024) directly linearizes this adaptive adjacency to $O(N)$ via PRF-kernel factorization ($A\approx D^{-1}\phi(E_1)\phi(E_2)^\top$), scaling to ~100K-node road networks[^src-bigst].
 
 3. **Best performance requires predefined graph** — Adaptive-only underperforms the combined forward-backward-adaptive configuration, meaning GWNet still benefits from explicit road network topology[^src-gwnet].
 
@@ -149,6 +149,7 @@ GWNet established a durable design principle: **spatial dependencies should be l
 | [[mtgnn|MTGNN]] | KDD 2020 | Same team; generalizes to arbitrary MTS + curriculum learning |
 | AGCRN | NeurIPS 2020 | Couples graph learning with node-specific pattern discovery |
 | [[ragc|RAGC]] | arXiv 2026 | $O(N)$ cosine-similarity graph convolution + node embedding regularization (addressing GWNet's 72% parameter concentration) |
+| [[bigst|BigST]] | PVLDB 2024 | Linearizes the adaptive adjacency to $O(N)$ via PRF kernel ($A\approx D^{-1}\phi(E_1)\phi(E_2)^\top$) + cached long-sequence features; scales to ~100K nodes |
 | [[specstg|SpecSTG]] | arXiv 2024 | Adapts WaveNet as Spectral Graph WaveNet for spectral-domain diffusion |
 | [[std-mae|STD-MAE]] | IJCAI 2024 | Uses GWNet as one of five predictor backbones in pre-training framework |
 | [[dpgnet|DPGNet]] | ICLR 2026 (u.r.) | AGL plug-and-play replaces GWNet's static $E_1E_2^\top$ with dynamic per-timestep graph + weak connection suppression |
@@ -172,6 +173,8 @@ GWNet established a durable design principle: **spatial dependencies should be l
 - [[st-unification]] — ST-isolated vs ST-unification: MetaDG's framing of GWNet's ST-separated design
 - [[dpgnet]] — DPGNet (ICLR 2026 u.r.), AGL plug-and-play replaces GWNet's graph generator
 - [[adaptive-graph-learner]] — AGL, dynamic graph learning with gated self-attention and weak connection suppression
+- [[bigst]] — BigST (PVLDB 2024), linearizes GWNet's adaptive adjacency to $O(N)$ for ~100K-node networks
 
 [^src-gwnet]: [[source-gwnet]]
 [^src-dpgnet]: [[source-dpgnet]]
+[^src-bigst]: [[source-bigst]]

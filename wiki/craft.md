@@ -8,8 +8,8 @@ tags:
   - retrieval-augmented-generation
   - neurips-2025
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-06-09
+source_count: 2
 confidence: high
 status: active
 ---
@@ -69,6 +69,8 @@ Source Cities (geo + flow) + Target City (geo only)
 
 Unlike [[rast|RAST]] (AAAI 2026) which uses RAG for traffic **prediction** within the same city, CRAFT uses RAG for cross-city traffic flow **generation** — a fundamentally different task with a stronger emphasis on zero-shot transfer[^src-craft]. Unlike foundation models like [[most|MoST]] or [[unist|UniST]] which predict from historical data, CRAFT **generates** flow data from scratch for cities with no historical records[^src-craft].
 
+Unlike [[ratd|RATD]] (NeurIPS 2024), the first retrieval-augmented time series diffusion model that retrieves k-NN references to guide denoising for univariate/multivariate forecasting, CRAFT applies retrieval augmentation to cross-city flow generation rather than same-distribution forecasting[^src-ratd].
+
 ## Limitations
 
 - Validated on in-out flow only; OD flows not explored[^src-craft]
@@ -87,3 +89,4 @@ Unlike [[rast|RAST]] (AAAI 2026) which uses RAG for traffic **prediction** withi
 - [[spatio-temporal-foundation-model]] — ST foundation model landscape
 
 [^src-craft]: [[source-craft]]
+[^src-ratd]: [[source-ratd]]

@@ -8,8 +8,8 @@ tags:
   - low-rank
   - kdd-2024
 created: 2026-05-11
-last_updated: 2026-06-08
-source_count: 3
+last_updated: 2026-06-09
+source_count: 5
 confidence: medium
 status: active
 ---
@@ -165,9 +165,14 @@ L = L_recon + λ · L_FIL
 - [[gsli]] — GSLI 多尺度图结构学习填补（AAAI 2025，处理特征异质性）
 - [[nuwats]] — NuwaTS，实现 ImputeFormer 设想的跨域插补基础模型（PLM 路线）
 - [[t1]] — T1 (ICLR 2026)，将 ImputeFormer 归为"双轴 tokenization"类（缺失阻断中间路径时受限），并以 channel-head 绑定的 CNN-Transformer 超越之[^src-t1]
+- [[maginet|MagiNet]] (arXiv 2024)，与 ImputeFormer 同为交通时空填补，但取消预填充（可学习缺失嵌入）并用掩码加权 Chebyshev 图卷积，是另一条缓解过平滑的路线[^src-maginet]。
 - [[traffic-forecasting]] — 交通预测
 - [[generative-time-series-forecasting]] — 生成式时序预测
+
+[[stamimputer|STAMImputer]] (arXiv 2025) 在论文中将 ImputeFormer 选为主要 SOTA 基线，并继承其低秩诱导思想到 [[lrsgat|LrSGAT]] 空间专家中，但用显式节点采样替代纯可学习 embedding agents[^src-stamimputer]。
 
 [^src-2312-01728]: [[source-2312-01728]]
 [^src-nuwats]: [[source-nuwats]]
 [^src-t1]: [[source-t1]]
+[^src-maginet]: [[source-maginet]]
+[^src-stamimputer]: [[source-stamimputer]]
