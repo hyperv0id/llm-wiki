@@ -8,8 +8,8 @@ tags:
   - forecasting
   - iclr
 created: 2026-06-04
-last_updated: 2026-06-08
-source_count: 2
+last_updated: 2026-06-09
+source_count: 4
 confidence: high
 status: active
 ---
@@ -88,6 +88,10 @@ Time-LLM 是 Jin et al. (ICLR 2024) 提出的框架，首次通过 **model repro
 - 演化：[[cogencast]] — CoGenCast (ICML 2026), 在 Time-LLM 的 LLM+TS 思路上将冻结 LLM 重构为 encoder-decoder，增加流匹配条件化生成，实现一步概率预测
 - 概念：[[model-reprogramming]] — 跨域模型重编程范式
 - 反例：[[nuwats]] — NuwaTS 证明文本对齐对不完整序列不如线性嵌入，且复用 NLP 权重做插补基础模型
+- 演化/对比：[[fstllm|FSTLLM]] (ICML 2025) — 针对 Time-LLM 等方法"通用任务提示 + 数值微调"未充分利用 LLM 推理的批评，FSTLLM 改用节点专属描述、时序模式总结与 STGNN 预测 token 构成的六段 prompt 对 LLaMA-2-7B 做 QLoRA 微调，并以 LLM 构图增强空间相关性，专攻 few-shot 时空预测[^src-fstllm]
+- 对比：[[st-vision-llm|ST-Vision-LLM]] (arXiv 2025) uses Time-LLM as an LLM baseline and frames it as a representative 1D-sequence reprogramming approach that, despite strong temporal modeling, lacks mechanisms for the 2D topological/spatial structure of grid-based traffic; on the Telecom Italia mobile-traffic benchmark ST-Vision-LLM substantially outperforms Time-LLM (which uses a Qwen2.5-7B backbone)[^src-st-vision-llm]
 
 [^src-time-llm]: [[source-time-llm]]
 [^src-nuwats]: [[source-nuwats]]
+[^src-fstllm]: [[source-fstllm]]
+[^src-st-vision-llm]: [[source-st-vision-llm]]

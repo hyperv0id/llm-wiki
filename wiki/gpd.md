@@ -9,8 +9,8 @@ tags:
   - transfer-learning
   - tsinghua-fib-lab
 created: 2026-06-01
-last_updated: 2026-06-01
-source_count: 2
+last_updated: 2026-06-09
+source_count: 3
 confidence: high
 status: active
 ---
@@ -100,6 +100,8 @@ GPD 与这些工作的关系是**互补**而非替代——GPD 生成的 base mo
 
 GPD 的"参数空间预训练"思想影响了后续 FIB Lab 的路线，但其 region-level 训练和 graph-only 限制在 [[unist|UniST]] 和 [[urbandit|UrbanDiT]] 中被逐步解除[^src-urbandit]。
 
+FSTLLM（ICML 2025）则代表另一条少样本时空路线：不在参数空间做生成式迁移，而是用 LLM 编码节点文本构建语义邻接矩阵，并通过 QLoRA 微调 LLM 对 STGNN 预测做上下文校准，在 3 天数据上即超越用 30 天数据训练的 baseline[^src-fstllm]。
+
 ## 局限性
 
 - **graph-only**：仅支持 graph-structured 时空数据（路网传感器），不支持 grid 数据[^src-gpd]
@@ -109,3 +111,4 @@ GPD 的"参数空间预训练"思想影响了后续 FIB Lab 的路线，但其 r
 
 [^src-gpd]: [[source-gpd]]
 [^src-urbandit]: [[source-urbandit]]
+[^src-fstllm]: [[source-fstllm]]

@@ -9,8 +9,8 @@ tags:
   - meta-ai
   - neurips-2023
 created: 2026-04-28
-last_updated: 2026-06-08
-source_count: 3
+last_updated: 2026-06-09
+source_count: 4
 confidence: medium
 status: active
 ---
@@ -193,6 +193,8 @@ $$
 因此两项关于 $\theta$ 的梯度相等。$\square$
 
 **重要意义**：CFM 目标可以直接计算和采样，无需知道边缘概率路径或边缘向量场！
+
+[[doflow|DoFlow]] 将 Conditional Flow Matching 用于因果时间序列：为 DAG 中每个节点训练一个时间条件化 CNF，以直线插值参考速度场 $\partial_s\phi = z - x$ 回归学习每节点速度场，实现观测、干预与反事实预测[^src-doflow]。
 
 ---
 
@@ -432,3 +434,4 @@ $$
 [^src-tsflow]: [[source-tsflow]]
 [^src-flowts]: [[source-flowts]]
 [^src-sundial]: [[source-sundial]]
+[^src-doflow]: [[source-doflow]]

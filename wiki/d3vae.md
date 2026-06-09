@@ -12,8 +12,8 @@ tags:
   - neurips-2022
   - spatial-temporal-graph
 created: 2026-05-31
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-06-09
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -57,6 +57,10 @@ D³VAE（GCRDD）是首个将**耦合扩散 + VAE 逆向过程 + 降噪得分匹
 
 D³VAE 区别于其他扩散时序方法的核心特征在于**在非自回归的 VAE 框架内完成扩散**——它不是"先扩散再采样"，而是"扩散作为数据扩充，VAE 作为生成引擎"。这使得 D³VAE 在理论上同时享有扩散的表达力和 VAE 的推断效率。
 
+在 [[armd|ARMD]]（AAAI 2025）的 7 数据集扩散基线对比中，D³VAE 是多个设置下的次优模型，但 ARMD 在 ETTm1 上较 D³VAE 进一步降低 47.7% MSE、30.1% MAE[^src-armd]。
+
+与 [[k2vae|K²VAE]]（ICML 2025）的关系：两者同属"VAE 一步生成"家族，但 D³VAE 面向短期概率预测、用耦合扩散扩充分布空间；K²VAE 面向长期 (LPTSF)，用 KoopmanNet 线性化 + KalmanNet 精炼不确定性，并在 ProbTS 基准上将 D³VAE 列为生成式基线之一[^src-k2vae]。
+
 ## 关键贡献
 
 1. **生成式短时序建模**：首次系统地论证了耦合扩散对降低时序随机不确定性的理论价值（Lemmas 1 & 2），为有限数据场景下的概率预测提供了新思路[^src-gcrdd]
@@ -87,3 +91,5 @@ D³VAE 区别于其他扩散时序方法的核心特征在于**在非自回归�
 
 [^src-gcrdd]: [[source-gcrdd]]
 [^src-2401-08119-specstg]: [[source-2401-08119-specstg]]
+[^src-armd]: [[source-armd]]
+[^src-k2vae]: [[source-k2vae]]

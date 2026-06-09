@@ -6,8 +6,8 @@ tags:
   - generative-model
   - neural-ode
 created: 2026-04-28
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-06-09
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -54,6 +54,7 @@ CNF 前后向变换成本相近[^src-neural-ode]，可以训练最大似然并�
 
 - 密度估计：Two Circle、Two Moons 数据集
 - 生成建模：与 VAE 结合的潜在变量模型
+- 因果反事实生成：[[doflow|DoFlow]] 利用 CNF 的可逆编码-解码机制，在时间序列因果 DAG 上实现 abduction–action–prediction，证明了反事实恢复定理（编码潜变量是外生噪声的双射函数）[^src-doflow]。
 
 ## 链接
 
@@ -62,3 +63,4 @@ CNF 前后向变换成本相近[^src-neural-ode]，可以训练最大似然并�
 - [[variational-autoencoder]] — 变分自编码器
 
 [^src-neural-ode]: [[source-neural-ode]]
+[^src-doflow]: [[source-doflow]]

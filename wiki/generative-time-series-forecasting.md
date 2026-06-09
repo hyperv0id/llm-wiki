@@ -8,8 +8,8 @@ tags:
   - flow-matching
   - diffusion-models
 created: 2026-05-03
-last_updated: 2026-06-08
-source_count: 11
+last_updated: 2026-06-09
+source_count: 13
 confidence: high
 status: active
 ---
@@ -59,6 +59,10 @@ status: active
 
 **[[aurora|Aurora]]** (arXiv 2026) 提出 Prototype-Guided Flow Matching，使用多模态领域知识生成条件和原型来引导流匹配过程，实现生成式概率预测[^src-aurora]。Aurora 支持多模态输入（文本、图像、数值）和零样本推理。
 
+### VAE 方法
+
+**[[k2vae|K²VAE]]** (ICML 2025 Spotlight) 是 VAE 路线 + 一步生成的代表，把概率预测重构为在 Koopman 测量空间中对线性动力系统的过程不确定性建模：KoopmanNet 线性化 + KalmanNet 精炼并输出协方差作为变分后验。短期 CRPS 较 CSDI 降低 7.3%，长期 CRPS 较 PatchTST 提升 20.9%，且因 VAE 一步生成而显存最低、推理最快——克服了扩散/流模型在长期预测下崩溃且低效的问题[^src-k2vae]。
+
 ### 一致性模型方法
 
 **[[swift|Swift]]** (arXiv 2025) 首次将 [[autoregressive-consistency-models|自回归一致性模型]] 应用于天气时间序列预测，单步 NFE=1 取代扩散模型的 20–40 NFE，实现 39× 推理加速[^src-swift]。通过 [[crps-autoregressive-finetuning|CRPS 自回归微调]] 在多步 rollout 上直接优化集合校准度，实现 75 天稳定预报，集合技能与 IFS ENS 竞争[^src-swift]。
@@ -90,6 +94,10 @@ status: active
 1. **计算成本**：生成式方法通常需要多步采样（扩散模型）或 ODE 求解（流匹配）
 2. **训练稳定性**：扩散/流匹配训练比判别式回归更复杂
 3. **评估指标**：概率预测需要 CRPS、NLL 等分布级指标，而非简单的 MSE/MAE
+
+## 相关工作
+
+- [[s2dbm]] — S²DBM，布朗桥扩散桥模型，s=0 时退化为无噪声确定性生成器以做点对点预测、s=1 时做概率预测（arXiv 2024）[^src-s2dbm]
 
 ## 相关页面
 
@@ -133,3 +141,5 @@ status: active
 [^src-tsflow]: [[source-tsflow]]
 [^src-sundial]: [[source-sundial]]
 [^src-swift]: [[source-swift]]
+[^src-k2vae]: [[source-k2vae]]
+[^src-s2dbm]: [[source-s2dbm]]

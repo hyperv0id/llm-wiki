@@ -7,8 +7,8 @@ tags:
   - rag
   - traffic-forecasting
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-06-09
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -40,6 +40,7 @@ STF 场景的核心挑战在于时空纠缠——一个 $N \times T \times d$ �
 - **[[gtr|GTR]]**（ICLR 2026）：同为检索增强的时序预测方法，但 GTR 仅在时间维度检索全局周期模式（单维度），而 RAST 执行双维度（时间+空间）检索。[^src-rast]
 - **[[ragc|RAGC]]**（arXiv 2026）：名称中含 "R"，但 RAGC 是正则化自适应图卷积，并非 RAG 范式——RAST 是首个将 RAG 显式应用于 STF 的工作。[^src-rast]
 - **[[uniflow|UniFlow]]**（arXiv 2024）：使用时空记忆检索增强（ST-MRA），但 RAST 的检索基于 FAISS 向量索引和 L2 距离，不同于 UniFlow 的余弦相似度记忆检索。
+- RAG 范式同样被引入纯时间序列（非时空图）的生成式预测：[[ratd|RATD]]（NeurIPS 2024）是首个检索增强的时间序列扩散模型，从数据库检索 k 个最近邻参照引导扩散去噪，早于 RAST 将 RAG 应用于预测[^src-ratd]。
 
 ## 开放问题
 
@@ -48,3 +49,4 @@ STF 场景的核心挑战在于时空纠缠——一个 $N \times T \times d$ �
 3. 联邦检索增强——跨组织共享检索库同时保护数据隐私。[^src-rast]
 
 [^src-rast]: [[source-rast]]
+[^src-ratd]: [[source-ratd]]

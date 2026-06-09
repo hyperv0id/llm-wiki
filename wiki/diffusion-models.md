@@ -6,8 +6,8 @@ tags:
   - diffusion
   - deep-learning
 created: 2026-04-28
-last_updated: 2026-06-08
-source_count: 8
+last_updated: 2026-06-09
+source_count: 10
 confidence: high
 status: active
 ---
@@ -50,6 +50,10 @@ Cold Diffusion（Bansal et al., 2022）提出了"广义扩散模型"框架，将
 - **[[dyffusion|DYffusion]]** (NeurIPS 2023)：将扩散前向过程替换为时序插值，反向过程替换为时序预测，将扩散步与物理时间步直接耦合，专门面向时空动力学预测[^src-dyffusion]
 - **[[cold-sampling|Cold Sampling]]**：DDIM 在广义扩散模型上的推广，对应 Euler 方法求解隐式动力系统的 ODE[^src-dyffusion]
 
+扩散桥（diffusion bridge）类方法把前向过程钉在确定性终点而非纯高斯噪声，[[brownian-bridge-diffusion|布朗桥扩散]]是其代表——[[s2dbm|S²DBM]] 据此把后验方差缩放为 0 即得无噪声确定性采样，用于时间序列点预测[^src-s2dbm]。
+
+扩散范式也被重新诠释用于时间序列预测：[[armd|ARMD]]（AAAI 2025）以"演化—去演化"取代"加噪—去噪"，用[[sliding-window-diffusion|滑动窗口]]产生的确定性中间态替代白高斯噪声，使扩散采样过程本身即预测过程[^src-armd]。
+
 ## 应用领域
 
 - 图像生成（DALL-E, Stable Diffusion 的底层技术）
@@ -82,3 +86,5 @@ Cold Diffusion（Bansal et al., 2022）提出了"广义扩散模型"框架，将
 [^src-timedit]: [[source-timedit]]
 [^src-craft]: [[source-craft]]
 [^src-swift]: [[source-swift]]
+[^src-s2dbm]: [[source-s2dbm]]
+[^src-armd]: [[source-armd]]

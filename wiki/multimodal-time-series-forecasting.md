@@ -7,8 +7,8 @@ tags:
   - forecasting
   - covariate
 created: 2026-04-29
-last_updated: 2026-06-08
-source_count: 9
+last_updated: 2026-06-09
+source_count: 10
 confidence: high
 status: active
 ---
@@ -165,6 +165,10 @@ UniCA 在多模态场景下的表现：
 
 **[[streasoner|STReasoner]]** (Ni et al., 2026) 是首个面向时间序列时空推理的 TS-LM，通过 S-GRPO 空间感知强化学习实现多步 CoT 推理[^src-streasoner]。与本章所有其他模型不同，STReasoner 的核心任务不是预测数值，而是回答自然语言查询（如 "哪个节点导致了 Node 2 在 9:00 的拥堵？"），要求模型显式追踪传播路径、识别延时，整合图结构、时序数据和文本语义[^src-streasoner]。在 ST-Bench 四个任务上，STReasoner-8B 以 0.004× proprietary model 成本实现 17-135% 平均提升[^src-streasoner]。
 
+## ST-Vision-LLM：时间序列即图像
+
+**[[st-vision-llm|ST-Vision-LLM]]** (Yang et al., arXiv 2025) 代表多模态预测中一条独特路线：它不引入外部模态，而是将数值交通矩阵本身渲染为灰度伪RGB图像，用 Vision-LLM (Qwen2.5-VL-7B) 的原生视觉编码器感知整个网格的全局时空场景，再逐格生成数值 token 预测[^src-st-vision-llm]。与 MoST（使用真实卫星图像作为模态）不同，ST-Vision-LLM 的"图像"是数值场的视觉表示，选择视觉编码器纯粹为利用其 2D 网格归纳偏置，并配合 SFT + GRPO 两阶段训练直接优化预测精度[^src-st-vision-llm]。
+
 ## 相关概念
 
 - [[heterogeneous-covariates]] — 异构协变量
@@ -204,3 +208,4 @@ UniCA 在多模态场景下的表现：
 [^src-allspark]: [[source-allspark]]
 [^src-streasoner]: [[source-streasoner]]
 [^src-mtp]: [[source-mtp]]
+[^src-st-vision-llm]: [[source-st-vision-llm]]

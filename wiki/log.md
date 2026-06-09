@@ -1120,3 +1120,14 @@ Ingest GPD paper (Yuan, Shao, Ding, Jin & Li, Tsinghua FIB Lab, ICLR 2024, arXiv
 
 创建的页面：[[multimodal-exogenous-guided-long-term-st-forecasting]]
 更新的页面：[[index]], [[log]], [[spatiotemporal-mirage]], [[spatio-temporal-foundation-model-landscape]]
+
+## [2026-06-09] ingest | 批量摄入时空/时序预测论文（13 成功 / 2 跳过）
+通过 workflow 一次只开 2 个并发子代理，下载并摄入用户提供的 15 篇候选论文。
+跳过 (2)：**pi-stgnn**（ICML 2025 *workshop*，仅 OpenReview 且 /pdf 返回 403，无 arXiv/PMLR 镜像）；**bigst**（VLDB host 从沙箱不可达 / TLS error 35，非 arXiv，ACM/ResearchGate 受阻）。
+创建源页面 (13)：[[source-stop]]、[[source-fstllm]]、[[source-st-ttc]]、[[source-s2dbm]]、[[source-ratd]]、[[source-armd]]、[[source-doflow]]、[[source-k2vae]]、[[source-weathergfm]]、[[source-maginet]]、[[source-stamimputer]]、[[source-st-vision-llm]]、[[source-motm]]
+创建实体页 (12)：[[stop]]、[[fstllm]]、[[st-ttc]]、[[s2dbm]]、[[ratd]]、[[armd]]、[[doflow]]、[[k2vae]]、[[weathergfm]]、[[maginet]]、[[stamimputer]]、[[st-vision-llm]]
+创建概念/技术页 (28)：含 [[ood-generalization]]、[[distributionally-robust-optimization]]、[[kalman-filter]]、[[koopman-linearization-for-forecasting]]、[[causal-time-series-forecasting]]、[[weather-foundation-model]]、[[mask-aware-imputation-no-prefilling]]、[[few-shot-traffic-forecasting]]、[[test-time-computing-st]]、[[vision-language-traffic-forecasting]]、[[brownian-bridge-diffusion]]、[[sliding-window-diffusion]]、[[spectral-domain-calibration]]、[[centralized-message-passing]] 等。
+更新页面 (~44)：为 43 个既有页面添加引用反向链接（[[traffic-forecasting]]、[[diffusion-models]]、[[timegrad]]、[[csdi]]、[[time-llm]]、[[imputeformer]]、[[urbangpt]]、[[continuous-normalizing-flow]] 等）；[[motm]] 富化为主要来源。
+
+## [2026-06-09] contradiction | [[motm]] | 解决方案：corroboration（增强，非矛盾）
+既有 [[motm]] 由评测论文（TMLR 2026）建立；新增原始论文 [[source-motm]]（AALTD 2025）与之一致 → 采用情况 1 式增强（非历史论断）；source_count 1→2，confidence medium→high。

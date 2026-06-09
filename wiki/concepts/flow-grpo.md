@@ -7,8 +7,8 @@ tags:
   - text-to-image
   - grpo
 created: 2026-05-12
-last_updated: 2026-05-30
-source_count: 2
+last_updated: 2026-06-09
+source_count: 3
 confidence: high
 status: active
 ---
@@ -85,6 +85,8 @@ PickScore 从 21.72 → 23.31（w/ KL 约束，保持画质和多样性）。
 
 相比 DPO 等离线方法，在线交互能持续自我改进（online DPO 也优于 offline DPO，但 Flow-GRPO 稳定性和性能更优）。
 
+Beyond image generation, GRPO is also used to optimize forecasting accuracy directly: [[grpo-for-forecasting|ST-Vision-LLM]] (arXiv 2025) applies GRPO with an NRMSE-based reward (plus length-mismatch and decode-failure penalties) and a KL penalty to a frozen SFT reference, to refine numerical traffic predictions after supervised fine-tuning[^src-st-vision-llm].
+
 ## 关键设计选择
 
 | 参数 | 推荐值 | 影响 |
@@ -112,3 +114,4 @@ PickScore 从 21.72 → 23.31（w/ KL 约束，保持画质和多样性）。
 
 [^src-flow-grpo]: [[source-flow-grpo]]
 [^src-flow-opd]: [[source-flow-opd]]
+[^src-st-vision-llm]: [[source-st-vision-llm]]

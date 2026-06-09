@@ -8,8 +8,8 @@ tags:
   - inference-time
   - guidance
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-06-09
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -76,6 +76,7 @@ $$\nabla_{\hat{x}^p_n} \log p_\theta(\hat{x}^p_n|e) = \nabla_{x^p_n} \log p_\the
 |------|---------|---------|---------|
 | [[gtr|GTR]] | 全局时间嵌入 | 训练+推理 | 2D 卷积残差融合 |
 | RAST | 时空双维度向量 | 推理 | Cross-attention 融合 |
+| [[ratd\|RATD]] | 数据库 k-NN 参照（未来段） | 推理（仅一次检索） | RMA 注意力（条件特征输入） |
 | **Retrieval Guidance** | 通道级训练样本 | 推理（仅一次） | **分析性偏置得分估计** |
 
 关键区别：Retrieval Guidance 直接修改采样过程的得分函数（数学分析性），而非将检索结果作为模型输入特征[^src-middir]。
@@ -89,3 +90,4 @@ $$\nabla_{\hat{x}^p_n} \log p_\theta(\hat{x}^p_n|e) = \nabla_{x^p_n} \log p_\the
 - [[retrieval-augmented-spatio-temporal-forecasting]] — RAG-for-STF 范式
 
 [^src-middir]: [[source-middir]]
+[^src-ratd]: [[source-ratd]]

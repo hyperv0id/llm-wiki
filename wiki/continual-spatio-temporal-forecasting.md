@@ -8,8 +8,8 @@ tags:
   - catastrophic-forgetting
   - traffic-forecasting
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-06-09
+source_count: 2
 confidence: high
 status: active
 ---
@@ -77,6 +77,8 @@ CSTF and [[spatio-temporal-foundation-model|spatio-temporal foundation models]] 
 
 STBP explicitly positions its fixed-backbone + expandable-bank paradigm as a stepping stone toward foundation models: "extending its application to cross-domain continual spatio-temporal forecasting... will be a crucial step towards developing a foundational spatio-temporal model"[^src-stbp].
 
+Continual fine-tuning is critiqued by OOD-learning work such as [[stop|STOP]] (ICML 2025), which argues these methods only succeed under near-IID conditions (fine-tuning on ~21 days of new-distribution data) and underperform traditional models when tested directly on shifted future years[^src-stop].
+
 ## Related Pages
 
 - [[stbp]] — STBP framework
@@ -88,3 +90,4 @@ STBP explicitly positions its fixed-backbone + expandable-bank paradigm as a ste
 - [[trafficstream]] — TrafficStream
 
 [^src-stbp]: [[source-stbp]]
+[^src-stop]: [[source-stop]]

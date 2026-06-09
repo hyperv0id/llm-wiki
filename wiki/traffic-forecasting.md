@@ -6,8 +6,8 @@ tags:
   - spatial-temporal
   - intelligent-transportation
 created: 2026-04-27
-last_updated: 2026-06-08
-  source_count: 37
+last_updated: 2026-06-09
+source_count: 40
 confidence: high
 status: active
 ---
@@ -133,6 +133,9 @@ Dynamic spatial attention (dot-product between all node pairs) has quadratic com
 
 **[[bigcity|BIGCity]]** (arXiv 2024) is the first MTMD (Multi-Task, Multi-Data modality) spatio-temporal model, unifying individual-level trajectory data and population-level traffic state data within a single GPT-2+LoRA framework with task-oriented prompts. It covers 8 heterogeneous tasks across 3 cities, surpassing 18 independently trained baselines. BIGCity represents a fundamental expansion of ST foundation model scope — from traffic-only (MTSD) to trajectory+traffic (MTMD)[^src-bigcity].
 
+### LLM-Augmented Few-Shot
+[[fstllm|FSTLLM]] (ICML 2025) targets the data-scarce regime where STGNNs and TSFMs fail: it encodes node-specific text (e.g., car-park descriptions, reviews) with a frozen LLaMA-2-7B to build a semantically meaningful adjacency matrix via α-Entmax, runs a swappable graph-diffusion-convolution STGNN backbone, then QLoRA-fine-tunes an LLM to calibrate the numerical predictions with six-part prompts (task, node description, node pattern, history, prediction token, future token). It is plug-and-play — wrapping GPT4TS and [[itransformer|iTransformer]] improves them without retraining — and FSTLLM trained on 3 days of data beats baselines trained on 30 days, with ~30% MAPE reduction on Nottingham parking and >50% on ECL[^src-fstllm].
+
 ### Continual Spatio-Temporal Learning
 
 While foundation models aim for zero-shot cross-city generalization, **[[continual-spatio-temporal-forecasting|CSTF]]** addresses a complementary challenge: sequentially learning from streaming, evolving data within a single domain without catastrophic forgetting. This is critical for real-world deployments where traffic networks continuously expand (new sensors added) and distributions shift over time[^src-stbp].
@@ -145,6 +148,13 @@ Key methods in this paradigm:
 - **STRAP** (Zhang et al., NeurIPS 2025): Retrieval-augmented multi-dimensional pattern library for OOD generalization[^src-stbp].
 - **[[eac|EAC]]** (Chen & Liang, ICLR 2025): Dynamic prompt pool with expand-and-compress operations, lightweight parameter-efficient CSTF[^src-stbp].
 - **[[stbp|STBP]]** (Liu & Zhang, ICLR 2026): Fixed general backbone + incrementally expanding [[contextual-pattern-bank|contextual pattern bank]]. Freezes backbone to prevent forgetting, expands only parametric bank for adaptation. Achieves 21.44% MAE reduction over EAC on PEMS-Stream via frequency-domain processing (FreNet) and dual-stream linear graph attention (DLGA)[^src-stbp].
+
+### Out-of-Distribution Generalization
+
+Recent work argues the node-to-node message-passing core of STGNNs is itself a source of out-of-distribution fragility: [[stop|STOP]] (ICML 2025) blocks node-to-node messages and routes all interaction through a small set of shared Context-Aware Units, improving OOD generalization by up to 17.01% and inductive performance on new sensors by up to 18.44%[^src-stop].
+
+### Test-Time Calibration / Distribution Shift
+[[st-ttc|ST-TTC]] (NeurIPS 2025 Spotlight) corrects non-stationary distribution shift at inference time without retraining: it appends a lightweight [[spectral-domain-calibration|spectral-domain calibrator]] (per-node amplitude/phase modulation) after a frozen backbone and updates it via a leakage-free [[flash-gradient-update|flash gradient update]] on historical labels, yielding consistent ~1–2% MAE/RMSE gains across 6 backbones on PEMS03/04/07/08, KnowAir, and UrbanEV (METR-LA RMSE 7.43→7.21 with GWNet), and complementing OOD and continual learning methods[^src-st-ttc].
 
 ## Key Models
 
@@ -214,3 +224,6 @@ The XTraffic benchmark provides incident-aligned traffic datasets for California
 [^src-stbp]: [[source-stbp]]
 [^src-ssf]: [[source-ssf]]
 [^src-mmckm]: [[source-mmckm]]
+[^src-stop]: [[source-stop]]
+[^src-fstllm]: [[source-fstllm]]
+[^src-st-ttc]: [[source-st-ttc]]

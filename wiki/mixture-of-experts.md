@@ -6,8 +6,8 @@ tags:
   - architecture
   - scalability
 created: 2026-04-29
-last_updated: 2026-05-03
-source_count: 2
+last_updated: 2026-06-09
+source_count: 3
 references:
   - [[source-fast-long-horizon-forecasting]]
 confidence: high
@@ -72,6 +72,10 @@ FaST 首次将 MoE 应用于大规模长视野时空图预测：
 
 [[most|MoST]] (KDD 2026) 将 MoE 应用于空间依赖建模，提出 [[multi-modality-guided-spatial-expert|多模态引导空间专家]]：使用两类专家——模态共享专家（每种激活模态一个）和路由专家（由路由器基于模态融合嵌入选择）——来捕获区域特定的局部空间模式[^src-most]。每个专家通过交叉注意力建模传感器与其 top-k 最近邻的交互，而非全图关系[^src-most]。与 FaST 的 Dense MoE 不同，MoST 使用 Top-1 稀疏路由并引入负载均衡损失防止专家坍塌[^src-most]。
 
+## 相关工作
+
+- [[stamimputer|STAMImputer]] (arXiv 2025) 将 MoE 上移到框架外层，用观测专家 (O-Expert) 依据稀疏度特征动态路由时间/空间注意力专家，号称首次把 MoE 用于交通数据填补[^src-stamimputer]。
+
 ## 相关技术
 
 - [[glu-gated-linear-unit|Gated Linear Units (GLU)]]
@@ -81,3 +85,4 @@ FaST 首次将 MoE 应用于大规模长视野时空图预测：
 
 [^src-fast-long-horizon-forecasting]: [[source-fast-long-horizon-forecasting]]
 [^src-most]: [[source-most]]
+[^src-stamimputer]: [[source-stamimputer]]

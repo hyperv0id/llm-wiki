@@ -10,8 +10,8 @@ tags:
   - arxiv-2025
   - diffusion-models
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-06-09
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -81,5 +81,7 @@ Swift 的 **[[crps-autoregressive-finetuning|CRPS 自回归微调]]** 是使其�
 - [[ensemble-forecasting-calibration]] — 集合预报校准
 - [[uniextreme]] — 通用极端天气基础模型
 - [[extreme-weather-forecasting]] — 极端天气预测
+- [[weathergfm|WeatherGFM]] — 天气通用基础模型，用视觉 in-context learning 统一 10+ 种天气理解任务；与 Swift 互补——Swift 专注生成式概率集合预报，WeatherGFM 为判别式多任务统一框架[^src-weathergfm]。
 
 [^src-swift]: [[source-swift]]
+[^src-weathergfm]: [[source-weathergfm]]

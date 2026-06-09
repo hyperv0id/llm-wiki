@@ -8,8 +8,8 @@ tags:
   - message-passing
   - iclr-2022
 created: 2026-05-30
-last_updated: 2026-05-30
-source_count: 1
+last_updated: 2026-06-09
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -100,6 +100,10 @@ GRIN 作为 GNN 填补的开山之作，确立了空间解码和消息传递填�
 3. 仅在平稳过程假设下评估
 4. 扩散卷积的 O(E) 复杂度在大规模图上有开销
 
+## 相关工作
+
+- [[maginet|MagiNet]] (arXiv 2024) 直接批判 GRIN 的预填充 + 消息传递路线：它认为零预填充注入噪声、且 GRIN 在动态/连续缺失位置产生过平滑插值，转而用可学习缺失嵌入完全取消预填充[^src-maginet]
+
 ## 关联页面
 
 - [[message-passing-imputation]] — 消息传递填补范式
@@ -111,3 +115,4 @@ GRIN 作为 GNN 填补的开山之作，确立了空间解码和消息传递填�
 - [[traffic-forecasting]] — 交通预测
 
 [^src-2108-00298]: [[source-2108-00298]]
+[^src-maginet]: [[source-maginet]]

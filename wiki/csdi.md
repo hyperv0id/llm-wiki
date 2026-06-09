@@ -9,8 +9,8 @@ tags:
   - probabilistic-modeling
   - neurips-2021
 created: 2026-05-31
-last_updated: 2026-06-08
-source_count: 6
+last_updated: 2026-06-09
+source_count: 8
 confidence: medium
 status: active
 ---
@@ -123,6 +123,8 @@ CSDI 的三个核心设计——(1) 观测值作为条件直接注入去噪网�
 - **[[fence|FENCE]]** (AAAI 2026)：将 CSDI 的固定 CFG 引导尺度升级为动态反馈引导，解决高缺失率节点的漂移问题
 - **[[lscd|LSCD]]** (ICML 2025)：将 CSDI 的条件扩散框架扩展为频谱条件化——用可微 [[lomb-scargle-periodogram|Lomb–Scargle 周期图]]替代 FFT，消除缺失值预处理带来的频谱失真，并引入 [[spectral-consistency-loss|频谱一致性损失]]强制频域对齐[^src-lscd]
 - **[[sadi|SADI]]** (AAAI 2025)：将 CSDI 的双轴分离式 Transformer 替换为联合建模的 [[feature-dependency-encoder|FDE]]（时间感知特征依赖）+ [[gated-temporal-attention|GTA]]（自注意力时间依赖），并引入 [[partial-blackout|partial blackout]] 这一更通用的缺失模式。SADI 在所有 4 个数据集上超越 CSDI，证明了联合建模优于分离式建模[^src-sadi]
+- **[[ratd|RATD]]** (NeurIPS 2024)：在 CSDI 的双轴 Transformer / DiffWave 架构基础上加入检索增强——从外部数据库检索 k 个最近邻历史样本作为参照，经 Reference Modulated Attention (RMA) 注入去噪过程，并改用 $x_0$-预测；在罕见/复杂任务（如 Wind、MIMIC 罕见病例）上显著超越 CSDI[^src-ratd]
+- **[[s2dbm|S²DBM]]** (arXiv 2024)：直接沿用 CSDI 的去噪网络架构但移除其原有掩码条件机制，改用独立的线性先验预测器 F 与条件编码器 E，并把 CSDI 作为点/概率预测的主要扩散基线全面对比[^src-s2dbm]
 - **CSDI 的 SDE 连续化**：一些后续工作将离散时间框架扩展到连续时间 SDE
 
 ## 局限性
@@ -156,3 +158,5 @@ CSDI 的三个核心设计——(1) 观测值作为条件直接注入去噪网�
 [^src-lscd]: [[source-lscd]]
 [^src-ssdts]: [[source-ssdts]]
 [^src-sadi]: [[source-sadi]]
+[^src-ratd]: [[source-ratd]]
+[^src-s2dbm]: [[source-s2dbm]]

@@ -9,8 +9,8 @@ tags:
   - mutual-information
   - theory
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-06-09
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -52,6 +52,8 @@ where[^src-rstib]:
 | RGIB (Zhou, 2023) | Bilateral edge noise | Graph link prediction only; hard to generalize to MLPs |
 | **RSTIB** | X–Z–Y (relaxed from Z–X–Y) | Input + Target noise, general to any model type |
 
+A contemporaneous ICML 2025 approach, [[stop|STOP]], targets the same spatio-temporal OOD-robustness goal from a different angle — replacing node-to-node messaging with centralized Context-Aware Unit interaction plus distributionally robust optimization rather than an information-bottleneck objective[^src-stop].
+
 ## Instantiation in RSTIB-MLP
 
 The [[rstib-mlp|RSTIB-MLP]] model instantiates RSTIB on pure MLP networks through data reparameterization and three KL-divergence regularizers (all analytically solvable as ½(−log σ² + μ² + σ² − 1)) combined with a standard regression loss serving as a variational lower bound for I(Z;Ỹ). The [[noise-impact-indicator|noise impact indicator]] α̂ further balances these terms dynamically per time series[^src-rstib].
@@ -61,3 +63,4 @@ The [[rstib-mlp|RSTIB-MLP]] model instantiates RSTIB on pure MLP networks throug
 RSTIB is shown to not reduce to degenerate IB solutions (Z=Y or zero information). By maintaining only X–Z–Y and prohibiting Y→Z edges in the underlying DAG, RSTIB preserves IB's core property of learning a compressed but predictive representation[^src-rstib].
 
 [^src-rstib]: [[source-rstib-mlp]]
+[^src-stop]: [[source-stop]]

@@ -7,8 +7,8 @@ tags:
   - foundation-model
   - frequency-domain
 created: 2026-05-03
-last_updated: 2026-05-03
-source_count: 1
+last_updated: 2026-06-09
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -54,5 +54,7 @@ status: active
 - [[traffic-forecasting|交通预测]]中的事故感知方法（如 [[conformer|ConFormer]]、[[igstgnn|IGSTGNN]]）同样面对罕见事件建模问题，但领域和时序特性不同
 - [[multimodal-time-series-forecasting|多模态时间序列预测]]关注文本/图像辅助，而极端天气预测关注频域和事件先验
 - [[generative-time-series-forecasting|生成式时间序列预测]]关注不确定性量化，极端天气预测当前以判别式方法为主
+- [[weathergfm|WeatherGFM]]（ICLR 2025）走的是另一条路线：不专攻极端事件，而是用视觉 in-context learning 在单一模型内统一天气预报、超分、图像翻译、后处理等 10+ 种天气理解任务，并展示对未见任务的泛化[^src-weathergfm]。
 
 [^src-uniextreme]: [[source-uniextreme]]
+[^src-weathergfm]: [[source-weathergfm]]
