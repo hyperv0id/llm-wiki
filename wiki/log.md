@@ -1131,3 +1131,9 @@ Ingest GPD paper (Yuan, Shao, Ding, Jin & Li, Tsinghua FIB Lab, ICLR 2024, arXiv
 
 ## [2026-06-09] contradiction | [[motm]] | 解决方案：corroboration（增强，非矛盾）
 既有 [[motm]] 由评测论文（TMLR 2026）建立；新增原始论文 [[source-motm]]（AALTD 2025）与之一致 → 采用情况 1 式增强（非历史论断）；source_count 1→2，confidence medium→high。
+
+## [2026-06-09] ingest | BigST（补摄入，用户提供 PDF）
+此前因 VLDB host 从沙箱不可达而跳过的 BigST，用户提供 PDF（raw/bigst-pvldb2024.pdf，ACM DOI 10.14778/3641204.3641217）后补摄入。
+创建：[[source-bigst]]、[[bigst]]、[[linearized-spatial-convolution]]、[[long-sequence-feature-extractor]]
+更新（反向链接）：[[gwnet]]（直接前身，O(N²) 自适应邻接→O(N)）、[[large-scale-spatial-temporal-graph]]、[[ragc]]、[[traffic-forecasting]]、[[centralized-message-passing]]（恢复 BigST 链接）
+仍跳过：PI-STGNN（用户无访问权限）。

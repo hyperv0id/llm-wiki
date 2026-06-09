@@ -7,7 +7,7 @@ tags:
   - intelligent-transportation
 created: 2026-04-27
 last_updated: 2026-06-09
-source_count: 40
+source_count: 41
 confidence: high
 status: active
 ---
@@ -181,6 +181,10 @@ While traffic forecasting predicts future values from historical data, **traffic
 
 While the above sections address **vehicle traffic** (road sensors), mobile traffic forecasting addresses **wireless network traffic** — predicting data volumes at cellular base stations. [[uomo|UoMo]] (KDD 2025) is the first universal foundation model for this domain, unifying short-term prediction, long-term prediction, and zero-history generation under a single transformer-based diffusion model with task-oriented masking and contrastive context alignment[^src-uomo]. Deployed on China Mobile's [[jiutian-platform|Jiutian platform]], UoMo achieves +25.3% served users in BS deployment and -40.7% equipment depreciation in BS sleep control[^src-uomo]. See [[mobile-traffic-forecasting]] for the domain page and [[masked-diffusion-pre-training]] for the pre-training technique.
 
+### Large-Scale Linear-Complexity Modeling
+
+As road networks grow to tens of thousands of nodes, the $O(N^2)$ adaptive-adjacency cost of [[gwnet|GWNet]]-style STGNNs becomes prohibitive. [[bigst|BigST]] (PVLDB 2024) decouples long-sequence modeling into a cached [[long-sequence-feature-extractor|feature extractor]] and replaces dense graph convolution with [[linearized-spatial-convolution|linearized spatial convolution]] (PRF-kernel factorization), achieving $O(N)$ complexity and scaling to ~100K nodes (Beijing, 99,716 segments) while beating GWNet/AGCRN/DCRNN by 6–9% MAE[^src-bigst]. Related scalable approaches include [[ragc|RAGC]] (cosine-similarity $O(N)$ graph conv) and [[patchstg|PatchSTG]] (KDTree spatial patching); see [[large-scale-spatial-temporal-graph]] for the full landscape[^src-bigst].
+
 ## Benchmarks
 
 The standard benchmarks are the PeMS (Caltrans Performance Measurement System) datasets from California highways: PEMS03, PEMS04, PEMS07, PEMS08. Standard setup: 12 input steps (1 hour) → 12 output steps (1 hour)[^src-hyperd-hybrid-periodicity-decoupling].
@@ -227,3 +231,4 @@ The XTraffic benchmark provides incident-aligned traffic datasets for California
 [^src-stop]: [[source-stop]]
 [^src-fstllm]: [[source-fstllm]]
 [^src-st-ttc]: [[source-st-ttc]]
+[^src-bigst]: [[source-bigst]]

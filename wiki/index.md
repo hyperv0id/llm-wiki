@@ -758,3 +758,13 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[direct-numerical-encoding]] — Direct Numerical Encoding, single-token float vocabulary ⟨|FP m/b|⟩ + two-stage numerical alignment fine-tuning (ST-Vision-LLM, arXiv 2025)
 - [[grpo-for-forecasting]] — GRPO for forecasting, NRMSE-reward RL stage with length/decode penalties for traffic-accuracy optimization (ST-Vision-LLM, arXiv 2025)
 - [[motm-ridge-orchestrator]] — MoTM 在 TimeFlow 调制 INR 基的隐藏表示上逐序列拟合 ridge 回归的零样本编排机制
+
+## Sources (continued)
+- [[source-bigst]] — BigST: Linear Complexity Spatio-Temporal GNN for Traffic Forecasting on Large-Scale Road Networks (PVLDB 2024)
+
+## Entities (continued)
+- [[bigst]] — BigST, linear-complexity STGNN scaling to ~100K nodes via PRF-kernel linearized spatial conv + cached long-sequence features (PVLDB 2024)
+
+## Techniques (continued)
+- [[linearized-spatial-convolution]] — LSC, O(N) graph message passing via PRF-kernel adjacency factorization, avoids materializing the N×N matrix (BigST, PVLDB 2024)
+- [[long-sequence-feature-extractor]] — LSFE, BigST cached pre-processing: linearized Transformer (PRF) + periodic feature sampling for long-history encoding (PVLDB 2024)

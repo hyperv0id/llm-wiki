@@ -139,3 +139,9 @@ _AALTD (ECML workshop) 2025 — Oral · https://arxiv.org/abs/2507.13207 → `ra
 ## 特别处理
 - **[[motm]] 富化**: 既有实体页由评测论文 (TMLR 2026) 建立; 本批新增其原始论文 [[source-motm]] (AALTD 2025) 作为主要来源 → source_count 1→2, confidence medium→high (corroboration, 非矛盾)。
 
+
+## 补充（2026-06-09）：BigST 补摄入
+用户提供 PDF（ACM DOI 10.14778/3641204.3641217）后，补摄入此前跳过的 **BigST**（PVLDB 2024）。
+- **创建**：[[source-bigst]]、[[bigst]]、[[linearized-spatial-convolution]]（LSC）、[[long-sequence-feature-extractor]]（LSFE）
+- **反向链接**：[[gwnet]]（直接前身，BigST 线性化其 O(N²) 自适应邻接）、[[large-scale-spatial-temporal-graph]]、[[ragc]]、[[traffic-forecasting]]、[[centralized-message-passing]]（恢复链接）
+- **仍跳过**：PI-STGNN（用户无访问权限）。

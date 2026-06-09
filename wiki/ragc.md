@@ -8,8 +8,8 @@ tags:
   - scalability
   - regularization
 created: 2026-05-07
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-06-09
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -63,7 +63,7 @@ RAGC 由三个组件构成[^src-ragc-efficient-traffic-forecasting]：
 | GLA | 3,834 | 17.75 | PatchSTG 18.96 | 6.4% |
 | CA | 8,600 | 16.40 | PatchSTG 17.35 | 5.5% |
 
-效率排名：训练速度第 2 快，推理速度第 3 快（仅次于 GSNet 和 BigST，但 GSNet 精度较差）。
+效率排名：训练速度第 2 快，推理速度第 3 快（仅次于 GSNet 和 [[bigst|BigST]]，但 GSNet 精度较差）。
 
 ## 消融实验
 
@@ -84,5 +84,7 @@ RAGC 由三个组件构成[^src-ragc-efficient-traffic-forecasting]：
 - [[large-scale-spatial-temporal-graph]] — 大规模时空图预测挑战
 - [[rast|RAST]] — 检索增强时空预测（同为大规模路网交通预测方法，RAST 通过外部记忆解决有限上下文容量瓶颈，RAGC 通过正则化图卷积解决 $O(N^2)$ 规模瓶颈——两者从不同角度解决大规模问题）
 - [[visifold|VisiFold]] — 通过 [[temporal-folding-graph|时间折叠图]] 和 [[node-visibility|节点可见性]] 从时间和空间两个维度同时突破资源约束的长期交通预测框架（7× 训练加速、4× GPU 内存节省），与 RAGC 共同推进大规模路网交通预测效率
+- [[bigst]] — 同期线性复杂度大规模交通 STGNN（PRF 核近似 GWNET 自适应邻接）；RAGC 的 ECO 用余弦相似度避免其近似噪声[^src-bigst]
 
 [^src-ragc-efficient-traffic-forecasting]: [[source-ragc-efficient-traffic-forecasting]]
+[^src-bigst]: [[source-bigst]]

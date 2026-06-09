@@ -33,6 +33,6 @@ Because the full attention score factors as S = S_d × S_a, its rank is bounded 
 
 ## Role in STOP
 
-Centralized message passing forms STOP's spatial prediction component. It is perturbed at training time by [[generalized-perturbation-unit|GenPU]] (masking the aggregation step) and optimized with a worst-case [[distributionally-robust-optimization|DRO]] objective; ablating the low-rank attention back to vanilla self-attention ("w/o LA") sharply degrades OOD accuracy, confirming the centralized design is what delivers robustness[^src-stop]. The mechanism contrasts with prior efficient-attention traffic models such as BigST (linear attention over nodes) — STOP's units act as a shared low-dimensional bottleneck rather than a kernel approximation of pairwise attention[^src-stop].
+Centralized message passing forms STOP's spatial prediction component. It is perturbed at training time by [[generalized-perturbation-unit|GenPU]] (masking the aggregation step) and optimized with a worst-case [[distributionally-robust-optimization|DRO]] objective; ablating the low-rank attention back to vanilla self-attention ("w/o LA") sharply degrades OOD accuracy, confirming the centralized design is what delivers robustness[^src-stop]. The mechanism contrasts with prior efficient-attention traffic models such as [[bigst|BigST]] (linear attention over nodes) — STOP's units act as a shared low-dimensional bottleneck rather than a kernel approximation of pairwise attention[^src-stop].
 
 [^src-stop]: [[source-stop]]
