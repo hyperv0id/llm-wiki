@@ -4,6 +4,13 @@ type: concept
 created: 2026-04-26
 last_updated: 2026-06-10
 
+## [2026-06-10] ingest | TEAM — Topological Evolution-aware Framework for Traffic Forecasting (PVLDB 2024)
+
+Ingest TEAM paper (Duc Kieu, Tung Kieu, Peng Han, Bin Yang, Christian S. Jensen, Bac Le; U. of Science HCM/Aalborg U/UESTC/ECNU; PVLDB 18(2): 265-278, 2024; code: github.com/kvmduc/TEAM-topo-evo-traffic-forecasting). TEAM is the first framework for traffic forecasting on evolving road networks. Core innovations: (1) Problem formalization — traffic forecasting as graph snapshot sequence with add/remove nodes and edges; (2) CAST — hybrid Conv+Attention architecture (ChebNetII + GAT + dilated TCN + temporal attention) with doubly residual stacks for efficient learning on small-scale incremental data; (3) Continual learning module — Wasserstein/EMD-based node stability measurement, dual buffers (consolidation Bc + update Bu), elastic weight consolidation. On PEMS03-Evolve and PEMS04-Evolve (7-month evolution), TEAM achieves 4× faster training than full retraining while maintaining competitive accuracy. First work to handle both RN expansion and shrinkage with rehearsal-based continual learning for regression. PVLDB 2024 published paper — confidence: high.
+
+Created pages: [[source-team]], [[team]], [[evolving-rn-traffic-forecasting]]
+Updated pages: [[traffic-forecasting]], [[index]], [[log]]
+
 ## [2026-06-10] ingest | GraphSparseNet — A Novel Method for Large Scale Traffic Flow Prediction (PVLDB 2025)
 
 Ingest GraphSparseNet paper (Weiyang Kong, Kaiqi Wu, Sen Zhang, Yubao Liu; Sun Yat-Sen University; PVLDB 18(7): 2295-2307, 2025; code: github.com/PolynomeK/GSNet). GSNet is a scalable GNN framework that replaces full N×N adjacency matrix learning with low-dimensional (C×C) compressed graph operations. Core innovations: (1) Theoretical proof (Theorem 3.1) that rank-C adjacency can be equivalently expressed by two small matrices K and U; (2) Feature Extractor — compress-decompress pipeline based on node embeddings for node feature learning; (3) Relational Compressor — compress input to C-dim → concatenate coefficient U → feature fusion via K → decompress, all O(N). Evaluated on 4 datasets (up to 8,600-node CA) vs 13 baselines. On CA: SOTA MAE 19.76, 3.51× faster training than BigST, 64-70× faster than GWNet/AGCRN. Ablation confirms RC module and K matrix are most critical. PVLDB 2025 published paper — confidence: high.

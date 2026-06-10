@@ -206,10 +206,12 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-mmckm]] — MMCKM: Micro-Macro Coupled Koopman Modeling for Traffic Flow Prediction (ICLR 2026)
 - [[source-bist]] — BiST: A Lightweight and Efficient Bi-Directional Model for Spatiotemporal Prediction (PVLDB 2025)
 - [[source-graphsparsenet]] — GraphSparseNet: A Novel Method for Large Scale Traffic Flow Prediction (PVLDB 2025)
+- [[source-team]] — TEAM: Topological Evolution-aware Framework for Traffic Forecasting (PVLDB 2024)
 
 ## Entities
 - [[bist]] — BiST, lightweight bidirectional spatio-temporal prediction with MLP backbone + residual correction (PVLDB 2025)
 - [[graphsparsenet]] — GraphSparseNet (GSNet), scalable GNN with low-dimensional compressed adjacency for large-scale traffic (PVLDB 2025)
+- [[team]] — TEAM, first framework for traffic forecasting on evolving road networks with continual learning (PVLDB 2024)
 - [[mmckm]] — MMCKM, history-free micro-macro coupled Koopman model unifying vehicle trajectory + traffic density prediction (ICLR 2026 Poster)
 - [[stbp]] — STBP, continual spatio-temporal forecasting with fixed backbone + scalable contextual pattern bank (ICLR 2026)
 - [[craft]] — CRAFT, cross-city retrieval-augmented diffusion model for zero-shot traffic flow generation (NeurIPS 2025)
@@ -374,6 +376,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[spatiotemporal-deviation]] — 时空偏差，输入数据与标签之间时空相关性的不一致现象 (BiST, PVLDB 2025)
 - [[bidirectional-spatiotemporal-prediction]] — 双向时空预测，前向基预测+后向残差校正的学习范式 (BiST, PVLDB 2025)
 - [[low-dimensional-graph-adjacency]] — 低维图邻接建模，将 N×N 邻接矩阵的学习迁移到 C×C 压缩空间 (GSNet, PVLDB 2025)
+- [[evolving-rn-traffic-forecasting]] — 演化道路网络交通预测，拓扑持续变化下的增量预测问题 (TEAM, PVLDB 2024)
 - [[spectral-graph-conditional-exchangeability]] — SGCE，谱图条件可交换性 (ICML 2026)
 - [[bayesian-conformal-prediction]] — Bayesian 共形预测，时间折扣历史权重
 - [[adaptive-conformal-inference]] — ACI，在线误差反馈驱动的共形预测

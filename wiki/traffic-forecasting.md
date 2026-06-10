@@ -7,7 +7,7 @@ tags:
   - intelligent-transportation
 created: 2026-04-27
 last_updated: 2026-06-10
-source_count: 43
+source_count: 44
 confidence: high
 status: active
 ---
@@ -150,6 +150,8 @@ Dynamic spatial attention (dot-product between all node pairs) has quadratic com
 
 While foundation models aim for zero-shot cross-city generalization, **[[continual-spatio-temporal-forecasting|CSTF]]** addresses a complementary challenge: sequentially learning from streaming, evolving data within a single domain without catastrophic forgetting. This is critical for real-world deployments where traffic networks continuously expand (new sensors added) and distributions shift over time[^src-stbp].
 
+**[[team|TEAM]]** (PVLDB 2024) is the first framework to address traffic forecasting on **evolving RNs** — where nodes and edges can be both added and removed over time[^src-team]. TEAM formalizes the problem as a graph snapshot sequence, uses a hybrid Conv+Attention architecture (CAST) for efficient learning on small-scale incremental data, and introduces a continual learning module based on the [[wasserstein-metric|Wasserstein metric]] (EMD). The module measures per-node stability by comparing data histograms before/after evolution: stable nodes (low EMD) go to a consolidation buffer for rehearsal, unstable nodes (high EMD) go to an update buffer for re-training. With elastic weight consolidation (EWC) regularization, TEAM achieves 4× faster training than full retraining while maintaining competitive accuracy[^src-team]. See [[evolving-rn-traffic-forecasting]] for the problem formulation.
+
 Key methods in this paradigm:
 
 - **[[trafficstream|TrafficStream]]** (Chen et al., IJCAI 2021): First CSTF framework, using historical data replay and parameter smoothing[^src-stbp].
@@ -243,4 +245,5 @@ The XTraffic benchmark provides incident-aligned traffic datasets for California
 [^src-st-ttc]: [[source-st-ttc]]
 [^src-bist]: [[source-bist]]
 [^src-graphsparsenet]: [[source-graphsparsenet]]
+[^src-team]: [[source-team]]
 [^src-bigst]: [[source-bigst]]
