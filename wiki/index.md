@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-06-09
+last_updated: 2026-06-10
 source_count: 0
 tags:
   - meta
@@ -204,8 +204,10 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-craft]] — CRAFT: Cross City Traffic Flow Generation via Retrieval Augmented Diffusion Model (NeurIPS 2025)
 - [[source-stbp]] — STBP: General Spatio-Temporal Backbone with Scalable Contextual Pattern Bank for Urban Continual Forecasting (ICLR 2026)
 - [[source-mmckm]] — MMCKM: Micro-Macro Coupled Koopman Modeling for Traffic Flow Prediction (ICLR 2026)
+- [[source-bist]] — BiST: A Lightweight and Efficient Bi-Directional Model for Spatiotemporal Prediction (PVLDB 2025)
 
 ## Entities
+- [[bist]] — BiST, lightweight bidirectional spatio-temporal prediction with MLP backbone + residual correction (PVLDB 2025)
 - [[mmckm]] — MMCKM, history-free micro-macro coupled Koopman model unifying vehicle trajectory + traffic density prediction (ICLR 2026 Poster)
 - [[stbp]] — STBP, continual spatio-temporal forecasting with fixed backbone + scalable contextual pattern bank (ICLR 2026)
 - [[craft]] — CRAFT, cross-city retrieval-augmented diffusion model for zero-shot traffic flow generation (NeurIPS 2025)
@@ -367,6 +369,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[conformal-prediction]] — 共形预测，与模型无关的不确定性量化框架
 - [[spatio-temporal-decoupling]] — 时空解耦在在线共形预测中的最优权衡
 - [[spatio-temporal-decomposition]] — 时空分解，将时空序列分解为趋势+季节成分分治建模 (DST-Mamba, AAAI 2025)
+- [[spatiotemporal-deviation]] — 时空偏差，输入数据与标签之间时空相关性的不一致现象 (BiST, PVLDB 2025)
+- [[bidirectional-spatiotemporal-prediction]] — 双向时空预测，前向基预测+后向残差校正的学习范式 (BiST, PVLDB 2025)
 - [[spectral-graph-conditional-exchangeability]] — SGCE，谱图条件可交换性 (ICML 2026)
 - [[bayesian-conformal-prediction]] — Bayesian 共形预测，时间折扣历史权重
 - [[adaptive-conformal-inference]] — ACI，在线误差反馈驱动的共形预测

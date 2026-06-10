@@ -2,7 +2,14 @@
 title: Log
 type: concept
 created: 2026-04-26
-last_updated: 2026-06-08
+last_updated: 2026-06-10
+
+## [2026-06-10] ingest | BiST — A Lightweight and Efficient Bi-Directional Model for Spatiotemporal Prediction (PVLDB 2025)
+
+Ingest BiST paper (Jiaming Ma, Binwu Wang, Pengkun Wang, Zhengyang Zhou, Xu Wang, Yang Wang; USTC; PVLDB 18(6): 1663-1676, 2025; code: github.com/PoorOtterBob/BiST). BiST is a lightweight bidirectional spatiotemporal prediction model that challenges the input-label consistency assumption of existing STGNNs. Core innovations: (1) Spatiotemporal dynamics theory via GMRF proving optimal prediction = base prediction + diffusion-smoothed correction term; (2) Bidirectional architecture — forward MLP-only process for base prediction + backward residual correction process with label representations; (3) Residual decoupling module decomposing features into context (virtual clusters) and personalized features; (4) Adaptive diffusion kernel for residual smoothing. Evaluated on 13 datasets (up to 16,972-node XTraffic, 20-year XXLTraffic) vs 26 baselines — 8.13% improvement over SOTA with only 1.86% training time and 7.36% memory. Excels at handling sudden data surges and plummets (spatiotemporal deviation). PVLDB 2025 published paper — confidence: high.
+
+Created pages: [[source-bist]], [[bist]], [[spatiotemporal-deviation]], [[bidirectional-spatiotemporal-prediction]]
+Updated pages: [[traffic-forecasting]], [[index]], [[log]]
 
 ## [2026-06-08] ingest | Swift — An Autoregressive Consistency Model for Efficient Weather Forecasting (arXiv 2025)
 

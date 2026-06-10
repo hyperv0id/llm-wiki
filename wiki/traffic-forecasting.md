@@ -6,8 +6,8 @@ tags:
   - spatial-temporal
   - intelligent-transportation
 created: 2026-04-27
-last_updated: 2026-06-09
-source_count: 41
+last_updated: 2026-06-10
+source_count: 42
 confidence: high
 status: active
 ---
@@ -102,6 +102,14 @@ On NGSIM and HighD, MMCKM achieves history-free trajectory prediction matching h
 
 ### Mixture of Experts / Adaptive Routing
 [[testam|TESTAM]] (ICLR 2024) is the first MoE-based spatio-temporal attention model for traffic forecasting. It uses three heterogeneous experts — identity (temporal-only), learnable static graph, and spatial attention — adaptively routed via [[memory-augmented-gating|memory-augmented gating]] with two classification losses that solve the MoE routing freeze problem in regression. With only 224K params, TESTAM achieves SOTA on METR-LA, PEMS-BAY, and EXPY-TKY, excelling on large-scale graphs (1,843-node EXPY-TKY) and non-recurring conditions through in-situ spatial modeling[^src-testam]. The [[time-enhanced-attention|time-enhanced attention]] mechanism eliminates autoregressive error propagation by directly attending from source to target time steps.
+
+### Lightweight / MLP-Based
+
+A growing direction challenges the dominance of heavy Transformer-based STGNNs, prioritizing efficiency without sacrificing accuracy:
+
+**[[bist|BiST]]** (PVLDB 2025) is the first model to break the input-label spatiotemporal consistency assumption via a **bidirectional learning paradigm**[^src-bist]. The forward process uses pure MLP layers with temporal decomposition and spatiotemporal embedding prompts to generate base predictions. The backward process explicitly models [[spatiotemporal-deviation|spatiotemporal deviation]] between input and label representations through a residual decoupling module (context features via virtual clusters + personalized features) and adaptive diffusion smoothing. On 13 datasets (up to 16,972-node XTraffic, 20-year XXLTraffic) vs 26 baselines, BiST achieves **8.13% improvement over SOTA** while using only **1.86% of training time** and **7.36% of memory**[^src-bist]. The GMRF-based spatiotemporal dynamics theory proves that optimal prediction = base prediction + diffusion-smoothed correction term[^src-bist].
+
+STID (Shao et al., CIKM 2022) uses learnable node embeddings to characterize spatiotemporal structure, assisting pure MLP in learning — a strong yet simple baseline for large-scale data.
 
 ### Spatial Patching / Efficient Dynamic Spatial Modeling
 
@@ -231,4 +239,5 @@ The XTraffic benchmark provides incident-aligned traffic datasets for California
 [^src-stop]: [[source-stop]]
 [^src-fstllm]: [[source-fstllm]]
 [^src-st-ttc]: [[source-st-ttc]]
+[^src-bist]: [[source-bist]]
 [^src-bigst]: [[source-bigst]]
