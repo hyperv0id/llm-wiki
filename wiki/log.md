@@ -4,6 +4,13 @@ type: concept
 created: 2026-04-26
 last_updated: 2026-06-10
 
+## [2026-06-10] ingest | GraphSparseNet — A Novel Method for Large Scale Traffic Flow Prediction (PVLDB 2025)
+
+Ingest GraphSparseNet paper (Weiyang Kong, Kaiqi Wu, Sen Zhang, Yubao Liu; Sun Yat-Sen University; PVLDB 18(7): 2295-2307, 2025; code: github.com/PolynomeK/GSNet). GSNet is a scalable GNN framework that replaces full N×N adjacency matrix learning with low-dimensional (C×C) compressed graph operations. Core innovations: (1) Theoretical proof (Theorem 3.1) that rank-C adjacency can be equivalently expressed by two small matrices K and U; (2) Feature Extractor — compress-decompress pipeline based on node embeddings for node feature learning; (3) Relational Compressor — compress input to C-dim → concatenate coefficient U → feature fusion via K → decompress, all O(N). Evaluated on 4 datasets (up to 8,600-node CA) vs 13 baselines. On CA: SOTA MAE 19.76, 3.51× faster training than BigST, 64-70× faster than GWNet/AGCRN. Ablation confirms RC module and K matrix are most critical. PVLDB 2025 published paper — confidence: high.
+
+Created pages: [[source-graphsparsenet]], [[graphsparsenet]], [[low-dimensional-graph-adjacency]]
+Updated pages: [[traffic-forecasting]], [[index]], [[log]]
+
 ## [2026-06-10] ingest | BiST — A Lightweight and Efficient Bi-Directional Model for Spatiotemporal Prediction (PVLDB 2025)
 
 Ingest BiST paper (Jiaming Ma, Binwu Wang, Pengkun Wang, Zhengyang Zhou, Xu Wang, Yang Wang; USTC; PVLDB 18(6): 1663-1676, 2025; code: github.com/PoorOtterBob/BiST). BiST is a lightweight bidirectional spatiotemporal prediction model that challenges the input-label consistency assumption of existing STGNNs. Core innovations: (1) Spatiotemporal dynamics theory via GMRF proving optimal prediction = base prediction + diffusion-smoothed correction term; (2) Bidirectional architecture — forward MLP-only process for base prediction + backward residual correction process with label representations; (3) Residual decoupling module decomposing features into context (virtual clusters) and personalized features; (4) Adaptive diffusion kernel for residual smoothing. Evaluated on 13 datasets (up to 16,972-node XTraffic, 20-year XXLTraffic) vs 26 baselines — 8.13% improvement over SOTA with only 1.86% training time and 7.36% memory. Excels at handling sudden data surges and plummets (spatiotemporal deviation). PVLDB 2025 published paper — confidence: high.

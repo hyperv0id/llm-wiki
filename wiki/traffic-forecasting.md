@@ -7,7 +7,7 @@ tags:
   - intelligent-transportation
 created: 2026-04-27
 last_updated: 2026-06-10
-source_count: 42
+source_count: 43
 confidence: high
 status: active
 ---
@@ -110,6 +110,8 @@ A growing direction challenges the dominance of heavy Transformer-based STGNNs, 
 **[[bist|BiST]]** (PVLDB 2025) is the first model to break the input-label spatiotemporal consistency assumption via a **bidirectional learning paradigm**[^src-bist]. The forward process uses pure MLP layers with temporal decomposition and spatiotemporal embedding prompts to generate base predictions. The backward process explicitly models [[spatiotemporal-deviation|spatiotemporal deviation]] between input and label representations through a residual decoupling module (context features via virtual clusters + personalized features) and adaptive diffusion smoothing. On 13 datasets (up to 16,972-node XTraffic, 20-year XXLTraffic) vs 26 baselines, BiST achieves **8.13% improvement over SOTA** while using only **1.86% of training time** and **7.36% of memory**[^src-bist]. The GMRF-based spatiotemporal dynamics theory proves that optimal prediction = base prediction + diffusion-smoothed correction term[^src-bist].
 
 STID (Shao et al., CIKM 2022) uses learnable node embeddings to characterize spatiotemporal structure, assisting pure MLP in learning — a strong yet simple baseline for large-scale data.
+
+**[[graphsparsenet|GraphSparseNet (GSNet)]]** (PVLDB 2025) addresses GNN scalability from a different angle: it observes that well-trained adaptive adjacency matrices are highly sparse, so learning the full N×N matrix is wasteful[^src-graphsparsenet]. GSNet replaces it with two small matrices — K (C×C low-dimensional adjacency) and U (combination coefficients) — performing all graph operations in a compressed C-dimensional space where C ≪ N. Two O(N) modules (Feature Extractor + Relational Compressor) achieve linear complexity while theoretically preserving the expressiveness of full-rank adjacency via Theorem 3.1[^src-graphsparsenet]. On CA (8,600 nodes), GSNet achieves SOTA MAE 19.76 with 3.51× faster training than BigST and 64–70× faster than GWNet/AGCRN[^src-graphsparsenet]. See [[low-dimensional-graph-adjacency]] for the compressed adjacency concept.
 
 ### Spatial Patching / Efficient Dynamic Spatial Modeling
 
@@ -240,4 +242,5 @@ The XTraffic benchmark provides incident-aligned traffic datasets for California
 [^src-fstllm]: [[source-fstllm]]
 [^src-st-ttc]: [[source-st-ttc]]
 [^src-bist]: [[source-bist]]
+[^src-graphsparsenet]: [[source-graphsparsenet]]
 [^src-bigst]: [[source-bigst]]
