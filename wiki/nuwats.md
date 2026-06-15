@@ -9,8 +9,8 @@ tags:
   - channel-independence
   - contrastive-learning
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 3
+last_updated: 2026-06-15
+source_count: 4
 confidence: high
 status: active
 ---
@@ -111,7 +111,9 @@ patch 级融合：$E_{i,(p)} = Z_{i,(p)} + Z_{i,(v_p)} + z_{i,(m)} \times r_i$�
 - [[missing-not-at-random]] — 缺失机制谱系（NuwaTS 假设随机缺失、忽略缺失过程；PRDIM 处理 MNAR）
 - [[time-indexed-foundation-model]] — 时间索引基础模型范式（TMLR 2026 基准中零样本插补强于 NuwaTS）
 - [[tabpfn-ts]] / [[motm]] — 时间索引零样本插补模型（基准中领先 NuwaTS）
+- 演化：[[std-plm|STD-PLM]] (AAAI 2025) — 同为 PLM-for-ST，但增加空间 token（CI→ST-aware）+ 时间 token（NuwaTS 仅 patch 时间信息），并统一预测+插补[^src-std-plm]
 
 [^src-nuwats]: [[source-nuwats]]
 [^src-t1]: [[source-t1]]
 [^src-time-indexed-imputation]: [[source-time-indexed-imputation]]
+[^src-std-plm]: [[source-std-plm]]

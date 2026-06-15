@@ -186,6 +186,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-lstnet]] — LSTNet: modeling long- and short-term temporal patterns with deep neural networks (SIGIR 2018)
 - [[source-s-mamba]] — S-Mamba: Mamba-based framework for multivariate time series forecasting (Neurocomputing 2024)
 - [[source-tedm]] — TEDM: diffusion time = physical time, O(H) sampling for TS forecasting (ICLR 2026)
+- [[source-std-plm]] — STD-PLM: PLM-based unified ST forecasting+imputation with spatial-temporal tokenizer + sandglass attention (AAAI 2025)
 - [[source-ustd]] — USTD: Unified Spatio-Temporal Diffusion for probabilistic forecasting and kriging (SIGSPATIAL 2024)
 - [[source-factost]] — FactoST: factorized ST foundation model, universal temporal pretraining + lightweight spatial adaptation (NeurIPS 2025 / arXiv 2026)
 - [[source-urbanfm]] — UrbanFM: Scaling Urban Spatio-Temporal Foundation Models, WorldST+MiniST+minimalist Transformer (arXiv 2026)
@@ -209,6 +210,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-team]] — TEAM: Topological Evolution-aware Framework for Traffic Forecasting (PVLDB 2024)
 
 ## Entities
+- [[std-plm]] — STD-PLM, unified PLM-based ST forecasting+imputation with spatial+time dual tokenizer (AAAI 2025)
 - [[bist]] — BiST, lightweight bidirectional spatio-temporal prediction with MLP backbone + residual correction (PVLDB 2025)
 - [[graphsparsenet]] — GraphSparseNet (GSNet), scalable GNN with low-dimensional compressed adjacency for large-scale traffic (PVLDB 2025)
 - [[team]] — TEAM, first framework for traffic forecasting on evolving road networks with continual learning (PVLDB 2024)
@@ -474,8 +476,11 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[time-enhanced-attention]] — non-autoregressive attention transferring domain from source to target time steps (TESTAM, ICLR 2024)
 - [[adaptive-graph-learner]] — AGL, plug-and-play dynamic graph generation module with gated self-attention and weak connection suppression (DPGNet, ICLR 2026 under review)
 - [[adaptive-season-learner]] — ASL, multi-scale temporal decomposition + pattern-specific graph construction for seasonal/trend modeling (DPGNet, ICLR 2026 under review)
+- [[sandglass-attention]] — SGA, precoder-decoder 注意力模块，聚合区域 token 捕获高阶时空相关性 + 降开销 (AAAI 2025)
 - [[sheaf-laplacian]] — 层拉普拉斯算子 (Sheaf Laplacian)，推广图拉普拉斯以编码边特定的变换语义，用于谱域滤波 (ICLR 2026 under review)
+- [[spatial-temporal-tokenizer]] — 空间+时间双维度 token 生成，激活 PLM 对时空数据的理解 (AAAI 2025)
 - [[spatio-temporal-retrieval-store]] — 基于 FAISS 的双维度向量记忆库 + 动量 EMA 管理 (RAST, AAAI 2026)
+- [[topology-aware-node-embedding]] — 基于拉普拉斯特征向量的归纳式节点嵌入，支持跨图结构迁移 (AAAI 2025)
 - [[conditional-prior-sampling]] — 条件先验采样，Langevin 动力学 + 引导实现无条件模型的条件化预测 (TSFlow, ICLR 2025)
 - [[dual-dimension-feature-disentanglement]] — 时间/空间双流解耦编码，为检索增强提供低秩分解基础 (RAST, AAAI 2026)
 - [[dsw-embedding]] — DSW Embedding, dimension-segment-wise embedding producing 2D vector array for MTS (ICLR 2023)
