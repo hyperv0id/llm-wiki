@@ -4,6 +4,13 @@ type: concept
 created: 2026-04-26
 last_updated: 2026-06-15
 
+## [2026-06-15] ingest | PAST — Primary-Auxiliary Spatio-Temporal Network for Traffic Time Series Imputation (PVLDB)
+
+Ingest PAST paper (Hanwen Hu, Zimo Wen, Shiyou Qian, Jian Cao; Shanghai Jiao Tong University; PVLDB, arXiv:2511.13414, 2025; code: github.com/Hanwen-Hu/PAST). PAST is a traffic time series imputation model that disentangles spatio-temporal patterns into primary (internal data relationships) and auxiliary (external features like timestamps and node attributes). Core innovations: (1) Graph-Integrated Module (GIM) — pure GNN with dynamic directed temporal graphs, interval-aware dropout, and multi-order spatial convolutions for primary pattern extraction; (2) Cross-Gated Module (CGM) — bidirectional sigmoid+tanh gating on temporal and spatial embeddings for auxiliary pattern extraction; (3) Ensemble self-supervised training framework (GBDT-inspired residual fitting). Evaluated on METR-LA, PeMS-Bay, LargeST-SD across 27 missing conditions vs 7 baselines: up to 26.2% RMSE reduction and 31.6% MAE reduction in block missing scenarios.
+
+创建的页面：[[source-past]], [[past]], [[primary-auxiliary-patterns]], [[interval-aware-dropout]], [[cross-gated-mechanism]]
+更新的页面：[[index]], [[log]]
+
 ## [2026-06-15] ingest | STD-PLM — Understanding Both Spatial and Temporal Properties of Spatial-Temporal Data with PLM (AAAI 2025)
 
 Ingest STD-PLM paper (Yiheng Huang, Xiaowei Mao, Shengnan Guo, Yubin Chen, Junfeng Shen, Tiankuo Li, Youfang Lin, Huaiyu Wan; Beijing Jiaotong University; AAAI 2025; code: github.com/Hyheng/STD-PLM). STD-PLM is a unified PLM-based framework for both spatial-temporal forecasting and imputation, using GPT-2 backbone (first 3 layers) with LoRA fine-tuning. Core innovations: (1) Spatial-Temporal Tokenizer — generates tokens from both spatial (node-level) and temporal (system-level) dimensions, a first among PLM-based ST models; (2) Topology-Aware Node Embedding — uses Laplacian eigenvector embeddings for inductive cross-graph transfer; (3) Sandglass Attention (SGA) — precoder-decoder attention module that aggregates N node tokens into M region tokens (M<N) then recovers, capturing high-order correlations while reducing compute; (4) Unified forecasting+imputation in one model with mask tokens for missing awareness. On PEMS03/04/07/08: SOTA or runner-up for forecasting, SOTA for imputation (RM 70% + CM 70%). Remarkable few-shot: 5% training data matches full LSTM, 20% surpasses full ASTGCN. Zero-shot cross-dataset transfer maintains acceptable accuracy.

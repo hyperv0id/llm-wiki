@@ -90,6 +90,7 @@ GRIN 的空间解码器归纳偏置使其可用于虚拟感知（virtual sensing
 | 图结构学习 | [[gsli]] (AAAI 2025) | 为每个特征独立学习元图，解决固定图限制 |
 | 低秩 Transformer | [[imputeformer]] (KDD 2024) | 低秩归纳偏置替代 GNN，训练快 15× |
 | 扩散填补 | [[cofill]] (2025) | 非递归扩散解决误差累积 |
+| Primary-Auxiliary | [[past]] (PVLDB 2025) | 外部信息辅助模式增强纤维/块缺失填补 |
 
 GRIN 作为 GNN 填补的开山之作，确立了空间解码和消息传递填补的基本范式，但其固定图结构和自回归误差累积的局限催生了后续改进。
 
@@ -112,6 +113,7 @@ GRIN 作为 GNN 填补的开山之作，确立了空间解码和消息传递填�
 - [[imputeformer]] — ImputeFormer，低秩 Transformer 填补
 - [[cofill]] — CoFILL，条件扩散填补
 - [[gsli]] — GSLI，多尺度图结构学习填补
+- [[past]] — PAST，primary-auxiliary 时空填补 (PVLDB 2025)
 - [[traffic-forecasting]] — 交通预测
 
 [^src-2108-00298]: [[source-2108-00298]]

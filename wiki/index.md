@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-06-10
+last_updated: 2026-06-15
 source_count: 0
 tags:
   - meta
@@ -754,6 +754,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[mask-aware-imputation-no-prefilling]] — 无预填充的掩码感知填补，用可学习缺失嵌入直接表征缺失值而非零初始化 (MagiNet, arXiv 2024)
 - [[vision-language-traffic-forecasting]] — reframing 2D grid traffic forecasting as a vision-language fusion problem via traffic-matrix-as-image (arXiv 2025)
 - [[in-context-learning]] — ICL，冻结基础模型仅凭上下文演示适配新任务的范式；WeatherGFM 视觉 ICL 的基础 (2026)
+- [[primary-auxiliary-patterns]] — 主-辅模式分类框架，将时空模式按信息源（内部/外部）划分为主模式和辅助模式，对齐不同缺失类型 (PAST, arXiv 2025)
 
 ## Techniques (continued)
 - [[centralized-message-passing]] — centralized message passing: nodes interact only with K shared Context-Aware Units via O(KN) low-rank attention, blocking node-to-node messages (STOP, ICML 2025)
@@ -776,10 +777,14 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Sources (continued)
 - [[source-bigst]] — BigST: Linear Complexity Spatio-Temporal GNN for Traffic Forecasting on Large-Scale Road Networks (PVLDB 2024)
+- [[source-past]] — PAST: Primary-Auxiliary Spatio-Temporal Network for Traffic Time Series Imputation, primary+auxiliary pattern disentanglement with GIM+CGM (PVLDB, arXiv 2025)
 
 ## Entities (continued)
 - [[bigst]] — BigST, linear-complexity STGNN scaling to ~100K nodes via PRF-kernel linearized spatial conv + cached long-sequence features (PVLDB 2024)
+- [[past]] — PAST, primary-auxiliary spatio-temporal network for traffic imputation, GIM+CGM dual-module architecture (PVLDB, SJTU, 2025)
 
 ## Techniques (continued)
 - [[linearized-spatial-convolution]] — LSC, O(N) graph message passing via PRF-kernel adjacency factorization, avoids materializing the N×N matrix (BigST, PVLDB 2024)
 - [[long-sequence-feature-extractor]] — LSFE, BigST cached pre-processing: linearized Transformer (PRF) + periodic feature sampling for long-history encoding (PVLDB 2024)
+- [[interval-aware-dropout]] — 基于时间距离的图边 dropout 策略，近邻边更高概率丢弃，迫使模型学习更广范围依赖 (PAST, arXiv 2025)
+- [[cross-gated-mechanism]] — 交叉门控机制，双向 sigmoid+tanh 门控实现时空嵌入的跨域特征选择与交互 (PAST, arXiv 2025)
