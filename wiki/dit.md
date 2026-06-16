@@ -8,8 +8,8 @@ tags:
   - scaling-law
   - iccv-2023
 created: 2026-05-31
-last_updated: 2026-06-08
-source_count: 3
+last_updated: 2026-06-16
+source_count: 4
 confidence: high
 status: active
 ---
@@ -130,6 +130,7 @@ Training is extremely stable: all 12 variants show no loss spikes, attributed to
 - **[[urbandit|UrbanDiT]] (NeurIPS 2025)**: Brings DiT to urban spatiotemporal prediction[^src-dit]
 - **[[timedit|TimeDiT]] (KDD 2025)**: Adapts DiT backbone to time series foundation model, replacing autoregressive forecasting with diffusion probabilistic sampling across forecasting/imputation/anomaly detection/generation[^src-timedit]
 - **[[dits|DiTS]] (arXiv 2026)**: Adapts MM-DiT dual-stream architecture to time series, treating exogenous/endogenous variates as distinct modalities with joint variate attention[^src-dits]
+- **[[diffusionblocks|DiffusionBlocks]] (ICLR 2026)**: Enables block-wise training of DiT with 3× memory reduction while maintaining performance; demonstrates DiT as ideal testbed for residual-connection-based block training[^src-diffusionblocks]
 - **Rectified Flow + DiT**: Orthogonal combination -- Rectified Flow compresses sampling steps, DiT improves per-step precision -- becoming the standard recipe for SD3/Flux[^src-dit]
 
 ## Limitations
@@ -148,9 +149,10 @@ Training is extremely stable: all 12 variants show no loss spikes, attributed to
 - [[urbandit]] -- UrbanDiT, DiT extended to urban spatiotemporal prediction
 - [[mae]] -- MAE, DiT's patchify + Transformer design inspired by ViT/MAE
 - [[timedit]] -- TimeDiT, DiT backbone adapted for time series foundation model (KDD 2025)
-
 - [[dits]] -- DiTS, MM-DiT dual-stream adaptation for time series forecasting (arXiv 2026)
+- [[diffusionblocks]] -- DiffusionBlocks, block-wise training framework demonstrated on DiT (ICLR 2026)
 
 [^src-dit]: [[source-dit]]
 [^src-timedit]: [[source-timedit]]
 [^src-dits]: [[source-dits]]
+[^src-diffusionblocks]: [[source-diffusionblocks]]

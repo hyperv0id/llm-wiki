@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-06-15
+last_updated: 2026-06-16
 source_count: 0
 tags:
   - meta
@@ -727,6 +727,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-st-vision-llm]] — ST-Vision-LLM: Vision-LLMs for Spatiotemporal Traffic Forecasting, TS-as-image + GRPO for mobile traffic (arXiv 2025)
 - [[source-motm]] — MoTM: Towards a Foundation Model for Time Series Imputation based on Continuous Modeling，连续时间 INR 插补基础模型 (AALTD/ECML 2025 口头报告)
 
+- [[source-diffusionblocks]] — DiffusionBlocks: Block-wise Neural Network Training via Diffusion Interpretation (Sakana AI, ICLR 2026)
+
 ## Entities (continued)
 - [[stop]] — STOP (Spatio-Temporal OOD Processor), centralized ConAU messaging + GenPU perturbation + DRO for OOD traffic forecasting, +17.01% (ICML 2025)
 - [[fstllm]] — FSTLLM, LLM-augmented few-shot ST forecaster: LLM graph construction + STGNN backbone + QLoRA domain-knowledge injection, plug-and-play (ICML 2025)
@@ -740,6 +742,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[maginet]] — MagiNet, mask-aware graph imputation network replacing pre-filling with learnable missing encoding + mask-weighted Chebyshev graph convolution (arXiv 2024)
 - [[stamimputer]] — STAMImputer, outer-layer MoE with temporal (MSAT) + spatial (LrSGAT) attention experts + observation-expert routing for traffic data imputation under block missing (arXiv 2025)
 - [[st-vision-llm]] — ST-Vision-LLM, vision-language fusion framework rendering 2D traffic grids as images for a Vision-LLM with single-token numerical encoding + SFT/GRPO (arXiv 2025)
+
+- [[diffusionblocks]] — DiffusionBlocks, principled block-wise training framework via diffusion interpretation, 3× memory reduction with competitive performance (Sakana AI, ICLR 2026)
 
 ## Concepts (continued)
 - [[ood-generalization]] — out-of-distribution generalization: maintaining accuracy under temporal (T-OOD) and structural (S-OOD) distribution shift beyond the IID assumption
@@ -755,6 +759,10 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[vision-language-traffic-forecasting]] — reframing 2D grid traffic forecasting as a vision-language fusion problem via traffic-matrix-as-image (arXiv 2025)
 - [[in-context-learning]] — ICL，冻结基础模型仅凭上下文演示适配新任务的范式；WeatherGFM 视觉 ICL 的基础 (2026)
 - [[primary-auxiliary-patterns]] — 主-辅模式分类框架，将时空模式按信息源（内部/外部）划分为主模式和辅助模式，对齐不同缺失类型 (PAST, arXiv 2025)
+
+- [[block-wise-training]] — 块级训练，将网络分割为独立可训练组件以减少内存消耗的训练范式 (ICLR 2026)
+- [[residual-connections-as-diffusion]] — 残差连接作为逆扩散的欧拉步，理论桥接残差网络与连续时间扩散模型 (ICLR 2026)
+- [[memory-efficient-training]] — 内存高效训练，对比激活检查点、块级训练、混合精度等内存优化技术 (ICLR 2026)
 
 ## Techniques (continued)
 - [[centralized-message-passing]] — centralized message passing: nodes interact only with K shared Context-Aware Units via O(KN) low-rank attention, blocking node-to-node messages (STOP, ICML 2025)
@@ -788,3 +796,6 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[long-sequence-feature-extractor]] — LSFE, BigST cached pre-processing: linearized Transformer (PRF) + periodic feature sampling for long-history encoding (PVLDB 2024)
 - [[interval-aware-dropout]] — 基于时间距离的图边 dropout 策略，近邻边更高概率丢弃，迫使模型学习更广范围依赖 (PAST, arXiv 2025)
 - [[cross-gated-mechanism]] — 交叉门控机制，双向 sigmoid+tanh 门控实现时空嵌入的跨域特征选择与交互 (PAST, arXiv 2025)
+
+- [[equi-probability-noise-partitioning]] — 均概率噪声划分，基于累积概率质量的扩散模型噪声水平划分策略，确保块间学习难度均衡 (ICLR 2026)
+- [[activation-checkpointing]] — 激活检查点，通过选择性存储与重计算以内存换计算的训练优化技术 (ICLR 2026)

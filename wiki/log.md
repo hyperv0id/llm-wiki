@@ -2,7 +2,14 @@
 title: Log
 type: concept
 created: 2026-04-26
-last_updated: 2026-06-15
+last_updated: 2026-06-16
+
+## [2026-06-16] ingest | DiffusionBlocks — Block-wise Neural Network Training via Diffusion Interpretation (ICLR 2026)
+
+Ingest DiffusionBlocks paper (Makoto Shing, Masanori Koyama, Takuya Akiba; Sakana AI, University of Tokyo; ICLR 2026; arXiv:2506.14202v4; code: github.com/SakanaAI/DiffusionBlocks). DiffusionBlocks provides the first theoretically grounded framework for block-wise neural network training by interpreting residual connections as discretized steps of continuous-time diffusion processes. Core insight: residual updates z_ℓ = z_{ℓ-1} + f(z_{ℓ-1}) naturally correspond to Euler discretization of the probability flow ODE in diffusion models, enabling partitioning networks into blocks that each handle specific noise-level ranges and train independently via score matching. Key innovations: (1) Equi-probability partitioning — divide noise range by equal cumulative probability mass (not uniform spacing) to ensure balanced learning difficulty across blocks; (2) Independent block training — each block trains with gradients for only L/B layers, achieving B× memory reduction for ALL components (parameters, gradients, optimizer states, activations); (3) Systematic conversion recipe for transformer architectures — partition layers, assign noise ranges, add noise conditioning. Experimental results across diverse architectures while matching/exceeding end-to-end performance: ViT (CIFAR-100: 59.30% vs 60.25%, 3× memory, vastly outperforms Forward-Forward 7.85%), DiT (ImageNet FID 9.00 vs 9.01, 3× training+inference memory), Masked Diffusion (text8: 1.45 vs 1.56 BPC — better), Autoregressive LMs (comparable MAUVE, 4× memory), Recurrent-depth (Huginn: 0.70 vs 0.49 MAUVE while eliminating 32 iterations). Surprising finding: moderate partitioning (B=2-3) sometimes outperforms end-to-end due to specialization-induced curriculum learning. Wall-time overhead minimal (~7% from noise conditioning). Composable with activation checkpointing. First method achieving continuous-time + block-wise + competitive performance. 高质量论文，理论扎实，实验全面，影响深远。
+
+创建的页面：[[source-diffusionblocks]], [[diffusionblocks]], [[block-wise-training]], [[residual-connections-as-diffusion]], [[equi-probability-noise-partitioning]], [[memory-efficient-training]], [[activation-checkpointing]]
+更新的页面：[[edm]], [[dit]], [[index]], [[log]]
 
 ## [2026-06-15] ingest | PAST — Primary-Auxiliary Spatio-Temporal Network for Traffic Time Series Imputation (PVLDB)
 
