@@ -4,6 +4,43 @@ type: concept
 created: 2026-04-26
 last_updated: 2026-06-16
 
+## [2026-06-16] maintenance | SB ingest 补充：交叉链接、frontmatter 修复与重复页面处理
+
+修复 SB ingest 的多项遗漏：
+- 为 [[diffusion-models]], [[optimal-transport]], [[flow-matching]], [[score-based-generative-modeling]] 添加 SB 交叉链接
+- 将 [[stochastic-optimal-control]] 标记为 superseded → [[stochastic-optimal-control-sb]]
+- 修复 index.md 中 hopf-cole-transform 双分类重复
+- 统一修正所有单 source 页面的 confidence: high → medium，补全缺失的 frontmatter 字段（confidence, status, last_updated）
+- 更新受影响页面的 last_updated 和 source_count
+
+## [2026-06-16] maintenance | Rewrote 5 SB pages to full Chinese with all formulas
+
+重写了 5 个 Schrödinger bridge 相关页面，将正文改为中文，保留所有技术公式，加入 `> [!note]` callout。所有页面格式完整：frontmatter、wikilinks、公式、[[cross-links]]、脚注。
+
+更新的页面：[[stochastic-optimal-control-sb]], [[girsanov-theorem]], [[diffusion-schrodinger-bridge-matching]], [[adjoint-matching]], [[gaussian-schrodinger-bridge]]
+
+## [2026-06-16] ingest | Foundations of Schrödinger Bridges for Generative Modeling (Tang, 2026)
+
+Ingested arXiv:2603.18992, a 220-page comprehensive tutorial unifying SB theory for generative modeling. Paper was fully read (all 9 sections + appendices). Created source-summary + 22 concept/technique pages in Chinese (正文中文，技术名词英文)，each with complete mathematical formulations.
+
+创建的页面：[[source-schrodinger-bridges-generative-modeling]], [[schrodinger-bridge]], [[entropic-optimal-transport]], [[sinkhorn-algorithm]], [[hopf-cole-transform]], [[girsanov-theorem]], [[building-schrodinger-bridges]], [[stochastic-optimal-control-sb]], [[doob-h-transform]], [[iterative-markovian-fitting]], [[diffusion-schrodinger-bridge-matching]], [[adjoint-matching]], [[adjoint-schrodinger-bridge-sampler]], [[conditional-score-flow-matching]], [[gaussian-schrodinger-bridge]], [[discrete-schrodinger-bridge]], [[fractional-schrodinger-bridge]], [[multi-marginal-schrodinger-bridge]], [[unbalanced-schrodinger-bridge]], [[generalized-schrodinger-bridge]], [[branched-schrodinger-bridge]]
+更新的页面：[[index]]
+
+
+## [2026-06-16] creation | SB Generative Modeling Algorithms and Variations
+
+Created four detailed technique/concept pages with complete mathematical formulations from the source "Foundations of Schrödinger Bridges for Generative Modeling" (Tang, 2026). These pages provide all key formulas for the generative modeling algorithms and problem variations in the SB framework.
+
+创建的页面：[[diffusion-schrodinger-bridge-matching]] (rewritten with full DSBM loss formulas), [[adjoint-matching]] (lean AM, SB-AM, corrector matching, adjoint sampling), [[gaussian-schrodinger-bridge]] (closed-form Gaussian SB with Bures-Wasserstein geometry), [[fractional-schrodinger-bridge]] (fBM, OU approximation, Doob's h-transform in augmented space)
+更新的页面：[[index]], [[log]]
+
+## [2026-06-16] creation | Schrödinger Bridge Technique Pages
+
+Created four technique/concept pages from the source "Foundations of Schrödinger Bridges for Generative Modeling". These cover the core mathematical machinery of the SB framework: the Hopf-Cole linearization, stochastic optimal control formulation, Doob's h-transform construction, and Iterative Markovian Fitting algorithm.
+
+创建的页面：[[hopf-cole-transform]], [[stochastic-optimal-control]], [[doob-h-transform]], [[iterative-markovian-fitting]]
+更新的页面：[[index]], [[log]]
+
 ## [2026-06-16] ingest | Benamou-Brenier 算法（博客笔记）
 
 Ingest Better_Yu 的博客园笔记《最优传输算法——Benamou Brenier算法》(2021-05-09). The blog introduces the Benamou-Brenier algorithm — a continuous numerical method for optimal transport that reformulates the OT problem as a convex variational problem in (d+1)-dimensional space-time. Key ideas: (1) Dynamic OT formulation — find Wasserstein geodesics μ_t instead of static map T; (2) Variable substitution E_t = v_t ϱ_t to convert a non-convex, nonlinearly-constrained problem into a convex optimization with linear constraints; (3) Numerical solution via augmented Lagrangian — three-step iteration (Laplace solve O(N log N) + pointwise projection O(N) + dual ascent). Strengths: handles vanishing densities without special assumptions, works with general convex costs, supports density constraints and multi-population extensions. 与 Flow Matching 中的 OT 路径有深层联系（连续性方程 → Fokker-Planck 的无噪声版）。

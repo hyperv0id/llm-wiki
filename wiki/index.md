@@ -108,6 +108,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-t1]] — T1: One-to-One Channel-Head Binding for Multivariate Time-Series Imputation, CNN-Transformer hybrid (ICLR 2026)
 - [[source-prdim]] — PRDIM: Missing Pattern Recognized Diffusion Imputation Model for Missing Not At Random (arXiv 2026)
 - [[source-time-indexed-imputation]] — Are Time-Indexed Foundation Models the Future of Time Series Imputation? TabPFN-TS/MoTM zero-shot benchmark (TMLR 2026)
+- [[source-schrodinger-bridges-generative-modeling]] — Foundations of Schrödinger Bridges for Generative Modeling, 220 页综合性教程，统一 SB 理论与算法 (Tang, 2026)
 
 - [[source-ssf]] — SSF: Spectral Sheaf Filtering — A Topological Approach to Spatio-Temporal Modeling (ICLR 2026 under review)
 
@@ -465,10 +466,29 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[cellular-sheaf]] — 胞腔层 (Cellular Sheaf)，代数拓扑中为图节点和边赋予向量空间与限制映射的结构 (ICLR 2026 under review)
 - [[location-scale-noise-model]] — LSNM，将条件分布的均值和方差同时建模的位置-尺度噪声模型，使扩散模型能感知数据异质性
 - [[partial-blackout]] — 部分停电缺失模式，多特征在连续时间步同时缺失的统一框架 (SADI, AAAI 2025)
+- [[schrodinger-bridge]] — Schrödinger bridge, entropy-regularized optimal transport in path space unifying diffusion, score, and flow models
+- [[gaussian-schrodinger-bridge]] — Gaussian SB, closed-form solution via Bures-Wasserstein geometry for Gaussian marginals
+- [[fractional-schrodinger-bridge]] — Fractional SB, long-range temporal dependencies via fractional Brownian motion and OU approximation
+- [[entropic-optimal-transport]] — 熵正则最优传输，经典 OMT 的 KL-正则化推广，等价于静态 SB
+- [[discrete-schrodinger-bridge]] — 离散 SB，将 SB 扩展到 CTMC 有限状态空间，用转移速率矩阵替代 drift
+- [[multi-marginal-schrodinger-bridge]] — 多边际 SB，K 个中间时间点约束的 SB 扩展
+- [[unbalanced-schrodinger-bridge]] — 非平衡 SB，允许质量沿轨迹产生/消灭的变体
+- [[generalized-schrodinger-bridge]] — 广义 SB，含 mean-field 交互项的 SB 扩展
+- [[branched-schrodinger-bridge]] — 分支 SB，处理多模态终端分布的轨迹分叉模型
+- [[building-schrodinger-bridges]] — 六种 SB 构造方法综述：条件桥、时间反演、FBSDE、h-变换、IMF、随机插值
 
 ## Techniques
 - [[benamou-brenier-algorithm]] — OT 的动态公式化，转化为时空凸优化问题并以增广拉格朗日方法求解
-- [[intent-discriminator-koopman]] — MoE gating mechanism selecting among 5 parameter-bounded Koopman operators per driving regime (MMCKM, ICLR 2026)
+- [[hopf-cole-transform]] — Hopf-Cole 变换，将非线性 HJB-FP 系统线性化为 Kolmogorov PDE 对
+- [[girsanov-theorem]] — Girsanov 定理，路径空间测度变换的基石，连接控制漂移与 path-space KL
+- [[sinkhorn-algorithm]] — Sinkhorn/IPF 算法，交替优化对偶 Schrödinger potentials 求解静态 SB
+- [[doob-h-transform]] — Doob's h-变换，通过 h-函数倾斜参考测度构造条件随机过程
+- [[iterative-markovian-fitting]] — IMF，交替 Markovian/reciprocal KL 投影求解动态 SB
+- [[stochastic-optimal-control-sb]] — SB 的 SOC 视角，HJB 方程、值函数及三种损失族
+- [[diffusion-schrodinger-bridge-matching]] — DSBM，参数化 IMF：forward/reverse Markov drift matching + consistency loss
+- [[adjoint-matching]] — Adjoint matching，通过 adjoint state + corrector matching 学习 SB 控制
+- [[adjoint-schrodinger-bridge-sampler]] — Adjoint SB sampler，从 Boltzmann 分布采样的交替半桥优化
+- [[conditional-score-flow-matching]] — [SF]²M，给定 entropic OT coupling 的免仿真 SB 学习
 - [[geographic-feature-alignment]] — GFA, cross-city geographic representation alignment via traffic flow alignment + optimal transport (CRAFT, NeurIPS 2025)
 - [[retrieval-based-condition-augmentation]] — RCA, RAG-style condition enrichment for cross-city diffusion generation (CRAFT, NeurIPS 2025)
 - [[noise-impact-indicator]] — per-series noise quantification via teacher model predictions for dynamic IB regularization (RSTIB-MLP, ICML 2025)

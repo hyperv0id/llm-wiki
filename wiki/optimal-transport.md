@@ -8,7 +8,7 @@ tags:
   - wasserstein-distance
 created: 2026-04-28
 last_updated: 2026-06-16
-source_count: 2
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -107,6 +107,8 @@ OT 的求解方法可分为两大类：
 
 [[benamou-brenier-algorithm|Benamou-Brenier 算法]] 将 OT 转化为 $(d+1)$ 维时空上的凸变分问题，通过变量替换 $E = \mathbf{v}\varrho$ 使约束线性化，再以增广拉格朗日方法迭代求解[^src-benamou-brenier-blog]。
 
+在路径空间层面，[[schrodinger-bridge|Schrödinger bridge (SB)]] 将 OT 推广为 **entropy-regularized optimal transport in path space**：最小化相对于 reference stochastic process 的 KL divergence，以 entropy 参数控制确定性与随机性之间的权衡[^src-schrodinger-bridges-generative-modeling]。经典 OT（$\varepsilon \to 0$）和纯扩散（$\varepsilon \to \infty$）是 SB 的两个极限。[[entropic-optimal-transport]] 给出了 static SB 的完整形式化，[[sinkhorn-algorithm|Sinkhorn/IPF 算法]] 是其核心求解器。
+
 ## 在生成模型中的应用
 
 ### Flow Matching
@@ -139,8 +141,12 @@ $$
 - [[instaflow]] — InstaFlow，reflow 通过降低凸传输代价改善噪声-图像配对 (ICLR 2024)
 - [[rectified-flow|Rectified Flow]] — 通过独立耦合收敛到 OT 映射的直线 ODE 生成模型
 - [[benamou-brenier-algorithm]] — Benamou-Brenier 算法，OT 的动态公式化
+- [[schrodinger-bridge]] — Schrödinger bridge，路径空间中的熵正则最优传输
+- [[entropic-optimal-transport]] — 熵正则最优传输的完整形式化
+- [[sinkhorn-algorithm]] — Sinkhorn/IPF 求解静态 SB 的迭代算法
 
 ## 引用
 
 [^src-flow-matching]: [[source-flow-matching]]
 [^src-benamou-brenier-blog]: [[source-benamou-brenier-blog]]
+[^src-schrodinger-bridges-generative-modeling]: [[source-schrodinger-bridges-generative-modeling]]

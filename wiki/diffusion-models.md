@@ -6,8 +6,8 @@ tags:
   - diffusion
   - deep-learning
 created: 2026-04-28
-last_updated: 2026-06-09
-source_count: 10
+last_updated: 2026-06-16
+source_count: 11
 confidence: high
 status: active
 ---
@@ -42,6 +42,10 @@ $$
 - **SMLD**：对应方差保持型 (VP) SDE
 
 逆向过程对应反向时间 SDE，福克-普朗克方程描述概率密度的演化。[^src-chan-2025-diffusion-tutorial]
+
+### Schrödinger Bridge 统一视角
+
+[[schrodinger-bridge|Schrödinger bridge (SB)]] 提供了一个统一的路径空间变分框架，将 diffusion models、score-based models 和 flow matching 统一在同一个原理下：在边缘分布约束下，最小化相对于 reference path measure 的 KL divergence[^src-schrodinger-bridges-generative-modeling]。扩散模型对应固定前向过程（OU/VE/VP）的特殊情况，而 SB 通过 [[entropic-optimal-transport|entropy-regularized optimal transport]] 在路径空间中推广了这一范式。
 
 ## 非高斯扩散（广义扩散模型）
 
@@ -88,3 +92,4 @@ Cold Diffusion（Bansal et al., 2022）提出了"广义扩散模型"框架，将
 [^src-swift]: [[source-swift]]
 [^src-s2dbm]: [[source-s2dbm]]
 [^src-armd]: [[source-armd]]
+[^src-schrodinger-bridges-generative-modeling]: [[source-schrodinger-bridges-generative-modeling]]

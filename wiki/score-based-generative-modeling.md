@@ -7,8 +7,8 @@ tags:
   - langevin-dynamics
   - machine-learning
 created: 2026-04-28
-last_updated: 2026-05-13
-source_count: 2
+last_updated: 2026-06-16
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -82,6 +82,7 @@ NCSN 通过以下技术解决上述挑战：
 - **Score-Based SDE** (Song et al., 2021)：用随机微分方程统一框架
 - **Diffusion Models** (2022-)：成为主流生成模型
 - **Flux Matching** (Pao-Huang et al., 2026)：将分数匹配推广到任意生成向量场，不再限于保守的得分函数[^src-2605-07319]
+- **Schrödinger Bridge** (Tang, 2026)：将 score-based models、diffusion models 和 flow matching 统一在路径空间熵正则最优传输框架下。Score matching 对应 $\sigma_t \nabla \log p_t$ 的 learning by matching 特例[^src-schrodinger-bridges-generative-modeling]
 
 ## 相关页面
 
@@ -91,8 +92,10 @@ NCSN 通过以下技术解决上述挑战：
 - [[score-matching]] — 分数匹配训练方法
 - [[langevin-dynamics]] — 朗之万动力学采样基础
 - [[annealed-langevin-dynamics]] — 退火朗之万动力学
+- [[schrodinger-bridge]] — SB 统一框架，path-space entropy-regularized OT
 
 ## 引用
 
 [^src-ncsn]: [[source-ncsn]]
 [^src-2605-07319]: [[source-2605-07319]]
+[^src-schrodinger-bridges-generative-modeling]: [[source-schrodinger-bridges-generative-modeling]]

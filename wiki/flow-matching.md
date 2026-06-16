@@ -9,8 +9,8 @@ tags:
   - meta-ai
   - neurips-2023
 created: 2026-04-28
-last_updated: 2026-06-09
-source_count: 4
+last_updated: 2026-06-16
+source_count: 5
 confidence: medium
 status: active
 ---
@@ -397,6 +397,10 @@ $$
 - 直线轨迹是 OT 解的几何性质
 - 边缘流不必是全局最优传输
 
+### vs Schrödinger Bridge
+
+[[schrodinger-bridge|Schrödinger bridge (SB)]] 为 flow matching 提供了更底层的统一理论。Flow matching 可以视为 SB 在 $\sigma_t \to 0$ 极限下的特例（recovering deterministic OT），而 diffusion models 是 $\sigma_t > 0$ 时固定前向过程的另一个特例[^src-schrodinger-bridges-generative-modeling]。SB 的 [[entropic-optimal-transport|entropy-regularized path-space OT]] 形式化揭示了 flow matching 和 diffusion models 本质上是同一变分问题的不同参数化。[[building-schrodinger-bridges|六种 SB 构造方法]] 中的 stochastic interpolant 视角与 flow matching 的条件构造有直接对应关系。
+
 ---
 
 ## 相关页面
@@ -427,6 +431,8 @@ $$
 - [[cogencast]] — CoGenCast，首个混合 LLM + FM 编码器-解码器时间序列预测模型，平均速度建模实现一步生成 (ICML 2026)
 - [[one-step-flow-generation]] — 一步流生成，平均速度建模 + JVP 修正实现 NFE=1 生成
 - [[average-velocity-modeling]] — 平均速度建模，区间条件化速度场 + JVP 修正的 FM 训练技术
+- [[schrodinger-bridge]] — Schrödinger bridge，统一 diffusion/score/flow 的路径空间变分框架
+- [[building-schrodinger-bridges]] — 六种 SB 构造方法，包含 stochastic interpolant 视角
 
 ## 引用
 
@@ -435,3 +441,4 @@ $$
 [^src-flowts]: [[source-flowts]]
 [^src-sundial]: [[source-sundial]]
 [^src-doflow]: [[source-doflow]]
+[^src-schrodinger-bridges-generative-modeling]: [[source-schrodinger-bridges-generative-modeling]]
