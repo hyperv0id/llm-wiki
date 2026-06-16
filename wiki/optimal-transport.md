@@ -7,8 +7,8 @@ tags:
   - probability
   - wasserstein-distance
 created: 2026-04-28
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-06-16
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -96,6 +96,17 @@ $$
 
 ---
 
+## 求解方法
+
+### 静态 vs 动态公式化
+
+OT 的求解方法可分为两大类：
+
+- **静态方法**：直接寻找映射 $T$ 或对偶势（如 Kantorovich 对偶、Sinkhorn 算法）
+- **动态方法**：将 OT 转化为 Wasserstein 测地线的连续演化问题，代表为 Benamou-Brenier 算法
+
+[[benamou-brenier-algorithm|Benamou-Brenier 算法]] 将 OT 转化为 $(d+1)$ 维时空上的凸变分问题，通过变量替换 $E = \mathbf{v}\varrho$ 使约束线性化，再以增广拉格朗日方法迭代求解[^src-benamou-brenier-blog]。
+
 ## 在生成模型中的应用
 
 ### Flow Matching
@@ -127,7 +138,9 @@ $$
 - [[diffusion-model]] — 扩散模型
 - [[instaflow]] — InstaFlow，reflow 通过降低凸传输代价改善噪声-图像配对 (ICLR 2024)
 - [[rectified-flow|Rectified Flow]] — 通过独立耦合收敛到 OT 映射的直线 ODE 生成模型
+- [[benamou-brenier-algorithm]] — Benamou-Brenier 算法，OT 的动态公式化
 
 ## 引用
 
 [^src-flow-matching]: [[source-flow-matching]]
+[^src-benamou-brenier-blog]: [[source-benamou-brenier-blog]]

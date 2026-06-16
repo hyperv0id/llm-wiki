@@ -16,6 +16,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[overview]] — wiki scope and current state
 
 ## Sources
+- [[source-benamou-brenier-blog]] — Benamou-Brenier 算法（博客笔记），最优传输的动态公式化与增广拉格朗日求解
 - [[source-sa-bcp]] — SA-BCP: Optimal Spatio-Temporal Decoupling for Bayesian Conformal Prediction (arXiv 2026)
 - [[source-s-mamba]] — S-Mamba: first Mamba-based MTSF baseline, bidirectional Mamba for VC + FFN for TD (Neurocomputing 2024)
 - [[source-scale]] — SCALE: Spectral Conformal Prediction via Wavelet Transform (ICML 2026)
@@ -466,6 +467,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[partial-blackout]] — 部分停电缺失模式，多特征在连续时间步同时缺失的统一框架 (SADI, AAAI 2025)
 
 ## Techniques
+- [[benamou-brenier-algorithm]] — OT 的动态公式化，转化为时空凸优化问题并以增广拉格朗日方法求解
 - [[intent-discriminator-koopman]] — MoE gating mechanism selecting among 5 parameter-bounded Koopman operators per driving regime (MMCKM, ICLR 2026)
 - [[geographic-feature-alignment]] — GFA, cross-city geographic representation alignment via traffic flow alignment + optimal transport (CRAFT, NeurIPS 2025)
 - [[retrieval-based-condition-augmentation]] — RCA, RAG-style condition enrichment for cross-city diffusion generation (CRAFT, NeurIPS 2025)
