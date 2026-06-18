@@ -2,7 +2,26 @@
 title: Log
 type: concept
 created: 2026-04-26
-last_updated: 2026-06-16
+last_updated: 2026-06-18
+
+## [2026-06-18] ingest | Multimodal Spatial Reasoning in the Large Model Era: A Survey and Benchmarks (Zheng et al.)
+
+Ingested arXiv 2510.25760 — a comprehensive survey covering multimodal spatial reasoning with MLLMs across 2D, 3D, embodied AI, and novel modalities (video, audio). The paper provides a systematic taxonomy, evaluates methods across four dimensions (test-time scaling, post-training, architecture, explainability), and introduces open benchmarks.
+
+Created: [[source-2510-25760]], [[multimodal-spatial-reasoning]], [[multimodal-large-language-model]], [[3d-visual-grounding]], [[vision-language-action]], [[vision-language-navigation]], [[embodied-question-answering]]
+Updated: [[index]]
+
+Key insights captured:
+- 10 types of spatial reasoning + 6 evaluation dimensions
+- Three 3D grounding approaches: 3D input, multi-view, hybrid
+- Four VLA enhancement directions: spatial modalities, multi-task co-training, explicit reasoning, backbone evaluation
+- VLN taxonomy: environment understanding → intention interpretation → path planning
+- Root causes of MLLM spatial failures: representation imbalance, attention bias (only 15-20% on spatial relations), lack of geometric priors
+
+## [2026-06-18] maintenance | 交叉链接补充：multimodal-spatial-reasoning ↔ spatio-temporal-reasoning
+
+收录后 lint 发现 [[multimodal-spatial-reasoning]] 与既有 [[spatio-temporal-reasoning]] 应为双向交叉链接——二者分属同一空间推理概念谱系的不同层次（前者是 MLLM 通用框架，后者是图结构时序数据的特化）。已为双方添加反向链接。
+更新的页面：[[multimodal-spatial-reasoning]], [[spatio-temporal-reasoning]]
 
 ## [2026-06-16] maintenance | SB ingest 补充：交叉链接、frontmatter 修复与重复页面处理
 

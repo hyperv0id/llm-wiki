@@ -83,6 +83,7 @@ As of 2026, STReasoner is the only model that explicitly performs spatio-tempora
 - [[source-streasoner]] — source summary
 - [[spatio-temporal-foundation-model]] — ST foundation model concept
 - [[multimodal-time-series-forecasting]] — multimodal TS forecasting
+- [[multimodal-spatial-reasoning]] — broader MLLM spatial reasoning framework (2D/3D/embodied)
 - [[time-llm]] — Time-LLM, predecessor TS-LLM
 - [[vot]] — VoT, event-driven reasoning model
 

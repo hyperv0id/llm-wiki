@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-06-16
+last_updated: 2026-06-18
 source_count: 0
 tags:
   - meta
@@ -821,3 +821,18 @@ All wiki pages, organized by type. Updated on every ingest.
 
 - [[equi-probability-noise-partitioning]] — 均概率噪声划分，基于累积概率质量的扩散模型噪声水平划分策略，确保块间学习难度均衡 (ICLR 2026)
 - [[activation-checkpointing]] — 激活检查点，通过选择性存储与重计算以内存换计算的训练优化技术 (ICLR 2026)
+
+## Sources (continued)
+- [[source-2510-25760]] — Multimodal Spatial Reasoning in the Large Model Era: A Survey and Benchmarks, Zheng et al. (arXiv 2025)
+
+## Entities (continued)
+- [[multimodal-large-language-model]] — MLLM, 多模态大语言模型的标准三段式架构与空间推理增强策略 (Zheng et al., 2025)
+
+## Concepts (continued)
+- [[multimodal-spatial-reasoning]] — 多模态空间推理，从异构输入推断空间关系、位置与动作的能力框架 (Zheng et al., 2025)
+- [[vision-language-action]] — VLA, 视觉-语言-动作模型，从多模态输入生成可执行动作的具身 AI 核心范式 (Zheng et al., 2025)
+- [[vision-language-navigation]] — VLN, 视觉-语言导航，在 3D 环境中遵循语言指令进行导航的协作式多模态任务 (Zheng et al., 2025)
+- [[embodied-question-answering]] — EQA, 具身问答，agent 主动探索环境收集视觉证据并回答问题的基准任务 (Zheng et al., 2025)
+
+## Techniques (continued)
+- [[3d-visual-grounding]] — 3D 视觉定位，从自然语言描述在 3D 场景中定位目标物体的三类方法（3D/多视图/混合）(Zheng et al., 2025)
