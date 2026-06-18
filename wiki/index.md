@@ -17,6 +17,7 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Sources
 - [[source-benamou-brenier-blog]] — Benamou-Brenier 算法（博客笔记），最优传输的动态公式化与增广拉格朗日求解
+- [[source-beyond-imitation-mobility]] — Beyond Imitation: Generating Human Mobility from Context-aware Reasoning with LLMs (MobiGeaR)
 - [[source-sa-bcp]] — SA-BCP: Optimal Spatio-Temporal Decoupling for Bayesian Conformal Prediction (arXiv 2026)
 - [[source-s-mamba]] — S-Mamba: first Mamba-based MTSF baseline, bidirectional Mamba for VC + FFN for TD (Neurocomputing 2024)
 - [[source-scale]] — SCALE: Spectral Conformal Prediction via Wavelet Transform (ICML 2026)
@@ -32,9 +33,11 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-deep-time-series-survey]] — Deep Time Series Models: comprehensive survey and benchmark (TSLib)
 - [[source-dualformer]] — Dualformer: time-frequency dual domain learning for long-term forecasting
 - [[source-fedformer]] — FEDformer: frequency enhanced decomposed transformer (ICML 2022)
+- [[source-flightdiff]] — FlightDiff: Dual-Constraint Guided Two-Phase Diffusion Framework for Flight Prediction
 - [[source-frets]] — FreTS: frequency-domain MLPs for time series forecasting (NeurIPS 2023)
 - [[source-grid-world-code-readme]] — 网格世界环境官方代码说明（Zhao, Mi & Li）
 - [[source-gcrdd]] — D³VAE (GCRDD): generative time series forecasting with coupled diffusion, denoise, and disentanglement (NeurIPS 2022)
+- [[source-geolocation-llm-st]] — LLMGeovec: Geolocation Representation from LLMs for Spatio-Temporal Learning (AAAI 2025)
 - [[source-gpd]] — GPD: generative pre-training on diffusion for spatio-temporal few-shot learning via hypernetwork (ICLR 2024)
 - [[source-gpt-st]] — GPT-ST: spatio-temporal MAE pre-training framework with hypergraph capsule clustering (NeurIPS 2023)
 - [[source-gtr]] — GTR: Global Temporal Retriever, plug-and-play global cycle retrieval for MTSF (ICLR 2026)
@@ -55,6 +58,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-timedit]] — TimeDiT: General-purpose Diffusion Transformers for Time Series Foundation Model (KDD 2025)
 - [[source-tips]] — TIPS: transformer with inductive prior synthesis for financial forecasting
 - [[source-tqn]] — TQNet: Temporal Query Network for efficient multivariate forecasting (ICML 2025)
+- [[source-trajectory-dl-survey]] — Comprehensive Survey of Deep Learning for Trajectory Data Management and Mining
 - [[source-timegrad]] — TimeGrad: autoregressive denoising diffusion for probabilistic time series forecasting (ICML 2021)
 - [[source-diffstg]] — DiffSTG: probabilistic spatio-temporal graph forecasting with diffusion models (AAAI 2023)
 - [[source-csdi]] — CSDI: Conditional Score-based Diffusion Models for Probabilistic Time Series Imputation (NeurIPS 2021)
@@ -67,8 +71,10 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-unica]] — UniCA: Unified Covariate Adaptation for Time Series Foundation Model (ICLR 2026)
 - [[source-ddpm]] — DDPM: Denoising Diffusion Probabilistic Models (NeurIPS 2020)
 - [[source-dcrnn]] — DCRNN: Diffusion Convolutional Recurrent Neural Network for Traffic Forecasting (ICLR 2018)
+- [[source-deepfec]] — DeepFEC: Energy Consumption Prediction under Real-World Driving Conditions for Smart Cities
 - [[source-dst-mamba]] — DST-Mamba: Decomposed Spatio-Temporal Mamba for Long-Term Traffic Prediction (AAAI 2025)
 - [[source-sde]] — Score-Based SDE: Unified framework for SMLD and DDPM (ICLR 2021)
+- [[source-select-then-balance]] — Select, then Balance: Exogenous Variable Modeling for Spatio-Temporal Forecasting
 - [[source-dpm-solver]] — DPM-Solver: Fast ODE solver for diffusion models (NeurIPS 2022)
 - [[source-consistency-models]] — Consistency Models: one-step generation (ICML 2023)
 - [[source-glow]] — Glow: Generative Flow with Invertible 1×1 Convolutions (NeurIPS 2018)
@@ -86,6 +92,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-cofill-spatiotemporal-imputation]] — CoFILL: Spatiotemporal Data Imputation by Conditional Diffusion (arXiv 2025)
 - [[source-sadi]] — SADI: Self-attention-based Diffusion Model for Time-series Imputation in Partial Blackout Scenarios (AAAI 2025)
 - [[source-channelmts]] — ChannelMTS: Multi-modal Time-Series Framework for High-Speed Railway Channel Prediction (KDD 2026)
+- [[source-clmtr]] — CLMTR: Contrastive Learning for Multi-modal Trajectory Representation
 - [[source-ncsn]] — NCSN: Generative Modeling by Estimating Gradients of the Data Distribution (Song & Ermon, 2020)
 - [[source-understanding-diffusion-models]] — Understanding Diffusion Models: A Unified Perspective (Luo, 2022)
 - [[source-edm]] — EDM: Elucidating the Design Space of Diffusion-Based Generative Models (Karras et al., NeurIPS 2022)
@@ -95,6 +102,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-stats]] — StaTS: Spectral Trajectory Schedule Learning for Adaptive Time Series Forecasting with Frequency Guided Denoiser (arXiv 2026)
 - [[source-opencity]] — OpenCity: Open Spatio-Temporal Foundation Models for Traffic Prediction (arXiv 2024)
 - [[source-cbsa]] — CBSA: Towards Interpretable and Efficient Attention (NeurIPS 2025)
+- [[source-causal-llm]] — Causal-LLM: Spatiotemporal Foundation Model with Predictive and Interpretable Capabilities
+- [[source-causal-st-prediction]] — E²-CSTP: Causal Spatio-Temporal Prediction via Multi-Modal Approach (NeurIPS 2025)
 - [[source-fast-long-horizon-forecasting]] — FaST: Efficient Long-Horizon Forecasting for Large-Scale STG via MoE (KDD 2026)
 - [[source-muon-optimizer]] — Muon: An optimizer for hidden layers in neural networks (Jordan, 2024)
 - [[source-mae]] — MAE: Masked Autoencoders Are Scalable Vision Learners (He et al., CVPR 2022)
@@ -116,6 +125,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-incident-guided-st-forecasting]] — IGSTGNN: Incident-Guided Spatiotemporal Graph Neural Network for Traffic Forecasting (KDD 2026)
 - [[source-most]] — MoST: A Foundation Model for Multi-modality Spatio-temporal Traffic Prediction (KDD 2026)
 - [[source-mtp]] — MTP: Multimodal Urban Traffic Profiling with Modality Augmentation and Spectrum Fusion (AAAI 2026)
+- [[source-multimodal-spatial-reasoning-survey]] — Multimodal Spatial Reasoning in the Large Model Era: A Survey and Benchmarks (Zheng et al., 2025)
 - [[source-multimodal-ts-anomaly-detection]] — MindTS: multimodal time series anomaly detection with semantic alignment and condensed interaction (ICLR 2026)
 - [[source-event-driven-ts-forecasting]] — VoT: event-driven reasoning and multi-level alignment for time series forecasting (ICLR 2026)
 - [[source-fence]] — FENCE: Spatial-Temporal Feedback Diffusion Guidance for Controlled Traffic Imputation (AAAI 2026)
@@ -126,6 +136,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-bluuuuue-scaling-factor-intuition]] — 数学直觉系列（一）：缩放因子1/√dₖ——注意力机制的数值稳定性条件 (bluuuuue, 小红书)
 - [[source-bluuuuue-reparameterization-trick]] — 数学直觉系列（二）：VAE与重参数化——将不可逆的随机采样重构为可微的确定性变换 (bluuuuue, 小红书)
 - [[source-2605-07319]] — Generative Modeling with Flux Matching：全新生成建模范式，推广得分函数为任意生成向量场 (Pao-Huang et al., Stanford, arXiv 2026)
+- [[source-language-flow-time]] — Language in the Flow of Time: TaTS Framework (ICLR 2026)
 - [[source-language-in-the-flow-of-time]] — Language in the Flow of Time: TaTS framework for multimodal TS (ICLR 2026)
 - [[source-uniextreme]] — UniExtreme: universal extreme weather forecasting foundation model (arXiv 2025)
 - [[source-uniflow]] — UniFlow: foundation model for unified urban spatio-temporal flow prediction (arXiv 2024)
@@ -172,6 +183,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-patchtst]] — PatchTST: A Time Series is Worth 64 Words, long-term forecasting with Transformers (ICLR 2023)
 - [[source-zeng-2022-are-transformers-effective]] — Are Transformers Effective for Time Series Forecasting? LTSF-Linear baseline (Zeng et al., 2022)
 - [[source-itransformer]] — iTransformer: Inverted Transformers Are Effective for Time Series Forecasting (ICLR 2024)
+- [[source-jstc]] — JSTC: Travel Time Prediction with Joint Spatial-Temporal Correlation Mechanism
 - [[source-logtrans]] — LogTrans: convolutional self-attention + LogSparse Transformer (NeurIPS 2019)
 - [[source-mtgnn]] — MTGNN: graph neural network for MTS forecasting with learned graph structure (KDD 2020)
 - [[source-pyraformer]] — Pyraformer: pyramidal attention with O(L) complexity + O(1) path length (ICLR 2022 Oral)
@@ -203,6 +215,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-e2-cstp]] — E²-CSTP: causal multi-modal spatio-temporal prediction with GCN+Mamba (NeurIPS 2025)
 - [[source-hifinet]] — HiFiNet: Hierarchical Frequency-Decomposition GNN for Road Network Representation Learning (AAAI 2026)
 - [[source-rast]] — RAST: Retrieval-Augmented Spatio-Temporal Framework for Traffic Prediction (AAAI 2026)
+- [[source-retrieval-augmented-st-traffic]] — RAST: Retrieval-Augmented Spatio-Temporal Traffic Forecasting
 - [[source-uomo]] — UoMo: A Universal Model of Mobile Traffic Forecasting for Wireless Network Optimization (KDD 2025 ADS Track)
 - [[source-craft]] — CRAFT: Cross City Traffic Flow Generation via Retrieval Augmented Diffusion Model (NeurIPS 2025)
 - [[source-stbp]] — STBP: General Spatio-Temporal Backbone with Scalable Contextual Pattern Bank for Urban Continual Forecasting (ICLR 2026)

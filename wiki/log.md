@@ -18,6 +18,39 @@ Key insights captured:
 - VLN taxonomy: environment understanding → intention interpretation → path planning
 - Root causes of MLLM spatial failures: representation imbalance, attention bias (only 15-20% on spatial relations), lack of geometric priors
 
+## [2026-06-18] ingest | Bulk Ingest: 13 Exogenous Multimodal Spatio-Temporal Papers
+
+批量收录 13 篇外生变量驱动/多模态时空预测与轨迹建模论文：
+
+Exogenous Variables & Causal:
+- [[source-select-then-balance]] — Select, then Balance: Exogenous Variable Modeling for ST Forecasting
+- [[source-causal-st-prediction]] — E²-CSTP: Causal Spatio-Temporal Prediction via Multi-Modal Approach (NeurIPS 2025)
+- [[source-causal-llm]] — Causal-LLM: Spatiotemporal Foundation Model
+
+LLM + Geolocation & Mobility:
+- [[source-geolocation-llm-st]] — LLMGeovec: Geolocation Representation from LLMs for ST Learning (AAAI 2025)
+- [[source-beyond-imitation-mobility]] — Beyond Imitation: Human Mobility from LLM Reasoning (MobiGeaR)
+
+Prediction Applications:
+- [[source-jstc]] — JSTC: Travel Time Prediction with Joint Spatial-Temporal Correlation
+- [[source-flightdiff]] — FlightDiff: Dual-Constraint Guided Diffusion for Flight Prediction
+- [[source-deepfec]] — DeepFEC: Energy Consumption Prediction for Smart Cities
+
+Language & Text Integration:
+- [[source-language-flow-time]] — Language in the Flow of Time: TaTS Framework (ICLR 2026)
+
+Surveys:
+- [[source-multimodal-spatial-reasoning-survey]] — Multimodal Spatial Reasoning Survey (Zheng et al., 2025)
+- [[source-trajectory-dl-survey]] — Deep Learning for Trajectory Data Management Survey
+
+Representation & Retrieval:
+- [[source-clmtr]] — CLMTR: Contrastive Multi-modal Trajectory Representation
+- [[source-retrieval-augmented-st-traffic]] — RAST: Retrieval Augmented Spatio-Temporal Framework for Traffic
+
+已创建页面：[[source-select-then-balance]], [[source-causal-st-prediction]], [[source-causal-llm]], [[source-geolocation-llm-st]], [[source-beyond-imitation-mobility]], [[source-jstc]], [[source-flightdiff]], [[source-deepfec]], [[source-language-flow-time]], [[source-multimodal-spatial-reasoning-survey]], [[source-trajectory-dl-survey]], [[source-clmtr]], [[source-retrieval-augmented-st-traffic]]
+已更新页面：[[index]]
+修复 frontmatter：日期修正（3 页 2025→2026）、confidence high→medium（9 页）、补 status: active（1 页）
+
 ## [2026-06-18] maintenance | 交叉链接补充：multimodal-spatial-reasoning ↔ spatio-temporal-reasoning
 
 收录后 lint 发现 [[multimodal-spatial-reasoning]] 与既有 [[spatio-temporal-reasoning]] 应为双向交叉链接——二者分属同一空间推理概念谱系的不同层次（前者是 MLLM 通用框架，后者是图结构时序数据的特化）。已为双方添加反向链接。
