@@ -72,6 +72,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-unica]] — UniCA: Unified Covariate Adaptation for Time Series Foundation Model (ICLR 2026)
 - [[source-ddpm]] — DDPM: Denoising Diffusion Probabilistic Models (NeurIPS 2020)
 - [[source-dcrnn]] — DCRNN: Diffusion Convolutional Recurrent Neural Network for Traffic Forecasting (ICLR 2018)
+- [[source-ddim]] — DDIM: Denoising Diffusion Implicit Models (ICLR 2021), 确定性 ODE 加速采样
+- [[source-ddim-ode-spaces-ac-cn]] — 生成扩散模型漫谈（六）：一般框架之 ODE 篇 (苏剑林, 2022), F-P 方程视角下的概率流 ODE 与 DDIM
 - [[source-deepfec]] — DeepFEC: Energy Consumption Prediction under Real-World Driving Conditions for Smart Cities
 - [[source-dst-mamba]] — DST-Mamba: Decomposed Spatio-Temporal Mamba for Long-Term Traffic Prediction (AAAI 2025)
 - [[source-sde]] — Score-Based SDE: Unified framework for SMLD and DDPM (ICLR 2021)
@@ -619,6 +621,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[spurious-patterns]] — model learning shortcut features instead of semantic features
 - [[annealed-langevin-dynamics]] — 退火朗之万动力学，多噪声水平逐步采样的方法
 - [[ddpm-simplified-training-objective]] — DDPM's L_simple, simplified noise prediction loss for diffusion models
+- [[ddim]] — DDIM, 概率流 ODE 的一阶 Euler 离散化 (ICLR 2021)
 - [[dit]] — DiT (Diffusion Transformer), ViT-based diffusion backbone with adaLN-Zero conditioning (ICCV 2023)
 - [[predictor-corrector-sampling]] — PC sampling, combining SDE solvers with score-based MCMC
 - [[probability-flow-ode]] — deterministic neural ODE sampling with exact likelihood computation

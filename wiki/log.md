@@ -6,6 +6,11 @@ last_updated: 2026-06-22
 
 ## [2026-06-22] ingest | Classifier-Free Diffusion Guidance (Ho & Salimans, 2022)
 
+## [2026-06-22] ingest | DDIM (ODE 视角) + 苏剑林博客
+创建的页面：[[source-ddim]], [[source-ddim-ode-spaces-ac-cn]], [[ddim]]
+更新的页面：[[probability-flow-ode]], [[diffusion-model]], [[ddpm]], [[index]]
+核心视角：从 Fokker-Planck 方程的等价变换推导概率流 ODE，DDIM 本质 = PF-ODE 在 VP SDE 下的一阶 Euler 离散化。加速采样 = ODE 大步长离散化，一致性 = ODE 确定性，可逆性 = ODE 双向求解。
+
 Ingested the original classifier-free guidance paper by Ho & Salimans (Google Research Brain, arXiv:2207.12598, July 2022). This is the foundational work that introduced CFG — the dominant conditional generation technique for diffusion models, used in Stable Diffusion, DALL-E 2, Imagen, and virtually all modern diffusion pipelines.
 
 Created: [[source-classifier-free-diffusion-guidance]]

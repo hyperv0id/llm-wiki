@@ -7,8 +7,8 @@ tags:
   - vae
   - score-based
 created: 2026-04-28
-last_updated: 2026-05-31
-source_count: 14
+last_updated: 2026-06-22
+source_count: 16
 confidence: high
 status: active
 ---
@@ -127,6 +127,7 @@ Falck 等人（Microsoft Research, 2025）从 SNR 角度给出另一种频域解
 ## 关键实现
 
 - **[[ddpm|DDPM]]**：2020 年 NeurIPS 论文，首次证明扩散模型可生成高质量图像，建立了与得分匹配的等价性[^src-ddpm]
+- **[[ddim|DDIM]]**：2021 年 ICLR 论文，从 ODE 视角揭示扩散模型的确定性结构——本质是概率流 ODE 的一阶 Euler 离散化，实现 10×–50× 加速采样、一致性生成和可逆编码[^src-ddim][^src-ddim-ode-spaces-ac-cn]
 - **[[ncsn|NCSN]]**：NCSN，DDPM 的重要前身，使用退火朗之万动力学采样
 - **[[score-based-sde|Score-Based SDE]]**：2021 年 ICLR 论文，用 SDE 统一了 NCSN (SMLD) 和 DDPM，引入 PC 采样和概率流 ODE[^src-sde]
 - **[[dpm-solver|DPM-Solver]]**：2022 年 NeurIPS，专用快速 ODE 求解器，利用半线性结构在约 10 步内生成高质量样本[^src-dpm-solver]
@@ -154,7 +155,9 @@ Falck 等人（Microsoft Research, 2025）从 SNR 角度给出另一种频域解
 - [[x-prediction]] — x-prediction，扩散模型中直接预测干净数据的参数化方式
 - [[jit|JiT]] — JiT (Just image Transformers)，基于 x-prediction 的像素空间扩散模型
 - [[dit]] — DiT，用 Transformer 替换 U-Net 的扩散模型架构
+- [[ddim]] — DDIM，概率流 ODE 的一阶 Euler 离散化，确定性加速采样与可逆编码
 - [[rectified-flow|Rectified Flow]] — 通过 rectification 学习直线 ODE 轨迹实现少步生成
+- [[probability-flow-ode]] — 概率流 ODE，确定性 ODE 采样与精确似然计算
 
 ## 引用
 
@@ -172,3 +175,5 @@ Falck 等人（Microsoft Research, 2025）从 SNR 角度给出另一种频域解
 [^src-equal-snr]: [[source-equal-snr]]
 [^src-back-to-basics-let-denoising-generative-models-denoise]: [[source-back-to-basics-let-denoising-generative-models-denoise]]
 [^src-instaflow]: [[source-instaflow]]
+[^src-ddim]: [[source-ddim]]
+[^src-ddim-ode-spaces-ac-cn]: [[source-ddim-ode-spaces-ac-cn]]
