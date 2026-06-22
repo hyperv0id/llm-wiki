@@ -2,7 +2,20 @@
 title: Log
 type: concept
 created: 2026-04-26
-last_updated: 2026-06-18
+last_updated: 2026-06-22
+
+## [2026-06-22] ingest | mHC: Manifold-Constrained Hyper-Connections (Xie et al., 2026)
+
+Ingested arXiv 2512.24880v2 from DeepSeek-AI — proposes Manifold-Constrained Hyper-Connections, a framework that constrains Hyper-Connections' residual mapping $H_l^{res}$ to the Birkhoff polytope of doubly stochastic matrices via Sinkhorn-Knopp projection, restoring the identity-mapping property and enabling stable large-scale LLM pretraining.
+
+Created: [[source-mhc-manifold-constrained-hyper-connections]], [[manifold-constrained-hyper-connections]], [[hyper-connections]], [[birkhoff-polytope]], [[identity-mapping-property]]
+Updated: [[sinkhorn-algorithm]], [[residual-connections-as-diffusion]], [[index]]
+
+Key insights captured:
+- HC expands residual stream width but breaks identity mapping; composite $H_l^{res}$ gain peaks near 3000 in 27B models
+- mHC constrains $H_l^{res}$ to doubly stochastic matrices: spectral norm $\leq 1$, closed under multiplication, preserves mean/norm
+- Infrastructure: TileLang kernel fusion, selective recomputation with $L_r^* \approx \sqrt{nL/(n+2)}$, DualPipe communication overlap
+- 27B MoE results: loss -0.021 vs baseline, 6.7% time overhead for expansion rate $n=4$
 
 ## [2026-06-18] ingest | Multimodal Spatial Reasoning in the Large Model Era: A Survey and Benchmarks (Zheng et al.)
 

@@ -7,7 +7,7 @@ tags:
   - neural-ode
   - theoretical-insight
 created: 2026-06-16
-last_updated: 2026-06-16
+last_updated: 2026-06-22
 source_count: 1
 confidence: high
 status: active
@@ -109,5 +109,6 @@ This connection reveals that the widespread use of residual connections in moder
 - [[score-matching]] — training objective enabled by this connection
 - [[block-wise-training]] — practical application
 - [[diffusion-model]] — theoretical foundation
+- [[manifold-constrained-hyper-connections]] — manifold-constrained residual stream design
 
 [^src-diffusionblocks]: [[source-diffusionblocks]]

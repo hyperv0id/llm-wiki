@@ -6,9 +6,10 @@ tags:
   - iterative-algorithm
   - entropy-regularization
   - schrödinger-bridge
+  - doubly-stochastic
 created: 2026-06-16
-last_updated: 2026-06-16
-source_count: 1
+last_updated: 2026-06-22
+source_count: 2
 confidence: high
 status: active
 ---
@@ -76,4 +77,15 @@ Sinkhorn's algorithm 的交替优化结构在现代生成建模中反复出现�
 
 与 [[iterative-markovian-fitting]] 的关系：两者都是交替投影，Sinkhorn 作用于 coupling 空间，IMF 作用于 path measure 空间。
 
+## 双随机矩阵缩放（Sinkhorn-Knopp 矩阵缩放）
+
+除了求解 Schrödinger bridge，Sinkhorn-Knopp 迭代也常用于将非负矩阵投影到 Birkhoff 多面体上，即生成行和、列和均为 1 的双随机矩阵[^src-mhc-manifold-constrained-hyper-connections]。给定矩阵 $\tilde{M}$，算法先通过指数化得到正矩阵 $M^{(0)} = \exp(\tilde{M})$，然后交替进行行归一化与列归一化：
+
+$$M^{(t)} = T_r(T_c(M^{(t-1)}))$$
+
+其中 $T_r, T_c$ 分别表示逐行、逐列 rescale 到和为 1。当 $t \to \infty$ 时，$M^{(t)}$ 收敛到一个双随机矩阵[^src-mhc-manifold-constrained-hyper-connections]。
+
+在 [[manifold-constrained-hyper-connections|mHC]] 中，这一操作被用来约束残差流之间的混合矩阵 $H_l^{res}$，使其保持恒等映射的稳定性质[^src-mhc-manifold-constrained-hyper-connections]。
+
 [^src-schrodinger-bridges-generative-modeling]: [[source-schrodinger-bridges-generative-modeling]]
+[^src-mhc-manifold-constrained-hyper-connections]: [[source-mhc-manifold-constrained-hyper-connections]]

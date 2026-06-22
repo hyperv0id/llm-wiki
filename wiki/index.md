@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-06-18
+last_updated: 2026-06-22
 source_count: 0
 tags:
   - meta
@@ -43,6 +43,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-gtr]] — GTR: Global Temporal Retriever, plug-and-play global cycle retrieval for MTSF (ICLR 2026)
 - [[source-hyperd-hybrid-periodicity-decoupling]] — "HyperD: Hybrid Periodicity Decoupling Framework for Traffic Forecasting" (Wen & Feng, 2025)
 - [[source-math-foundation-rl-readme]] — "Mathematical Foundations of Reinforcement Learning" 配套 Readme（Zhao, 2025）
+- [[source-mhc-manifold-constrained-hyper-connections]] — mHC: Manifold-Constrained Hyper-Connections (DeepSeek-AI, arXiv 2026)
 - [[source-penguin]] — PENGUIN: periodic-nested group attention for long-term forecasting (AISTATS 2026)
 - [[source-prnet]] — PRNet: periodic residual learning for crowd flow forecasting
 - [[source-simdiff]] — SimDiff: simpler yet better diffusion model for time series point forecasting (AAAI 2026)
@@ -846,6 +847,10 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[vision-language-action]] — VLA, 视觉-语言-动作模型，从多模态输入生成可执行动作的具身 AI 核心范式 (Zheng et al., 2025)
 - [[vision-language-navigation]] — VLN, 视觉-语言导航，在 3D 环境中遵循语言指令进行导航的协作式多模态任务 (Zheng et al., 2025)
 - [[embodied-question-answering]] — EQA, 具身问答，agent 主动探索环境收集视觉证据并回答问题的基准任务 (Zheng et al., 2025)
+- [[birkhoff-polytope]] — $n \times n$ 双随机矩阵构成的 Birkhoff 多面体，mHC 的残差映射流形
+- [[identity-mapping-property]] — 残差连接中浅层信号直通深层的恒等映射性质
 
 ## Techniques (continued)
 - [[3d-visual-grounding]] — 3D 视觉定位，从自然语言描述在 3D 场景中定位目标物体的三类方法（3D/多视图/混合）(Zheng et al., 2025)
+- [[hyper-connections]] — 可学习的多流残差连接设计，扩展残差流宽度以提升拓扑复杂度
+- [[manifold-constrained-hyper-connections]] — 将 Hyper-Connections 的残差映射投影到 Birkhoff 多面体以恢复恒等映射稳定性
