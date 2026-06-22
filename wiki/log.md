@@ -4,6 +4,22 @@ type: concept
 created: 2026-04-26
 last_updated: 2026-06-22
 
+## [2026-06-22] ingest | Classifier-Free Diffusion Guidance (Ho & Salimans, 2022)
+
+Ingested the original classifier-free guidance paper by Ho & Salimans (Google Research Brain, arXiv:2207.12598, July 2022). This is the foundational work that introduced CFG — the dominant conditional generation technique for diffusion models, used in Stable Diffusion, DALL-E 2, Imagen, and virtually all modern diffusion pipelines.
+
+Created: [[source-classifier-free-diffusion-guidance]]
+Updated: [[classifier-free-guidance]], [[classifier-guidance]], [[index]]
+
+Key insights captured:
+- Original CFG formulation: $\tilde{\epsilon}_\theta = (1+w)\epsilon_\theta(z_\lambda,c) - w\epsilon_\theta(z_\lambda)$
+- Joint training with $p_\text{uncond}$ random conditioning dropout; $p_\text{uncond} \in \{0.1, 0.2\}$ optimal
+- Implicit classifier motivation: $p^i(c|z) \propto p(z|c)/p(z)$, but actual scores need not be conservative → CFG is not an adversarial attack
+- Continuous-time framework (log SNR $\lambda$, hyperbolic secant distribution)
+- 128×128 ImageNet: FID=2.43 at $w=0.3$ beats classifier-guided ADM-G (FID=2.97); IS=421 at $w=4.0$
+- Intuitive explanation: decreases unconditional likelihood while increasing conditional likelihood
+- Updated [[classifier-guidance]] with the paper's critique of classifier guidance (adversarial attack concerns, GAN similarity)
+
 ## [2026-06-22] ingest | RoFormer: Rotary Position Embedding (Su et al., 2021/2023)
 
 Ingested the original RoPE paper by Su Jianlin (苏剑林) et al. from Zhuiyi Technology (arXiv:2104.09864v5, Nov 2023). This is the foundational work that introduced Rotary Position Embedding — the multiplicative position encoding scheme now used by virtually all major LLMs (LLaMA, Mistral, Qwen, DeepSeek, etc.).

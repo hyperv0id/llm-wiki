@@ -95,6 +95,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-sadi]] — SADI: Self-attention-based Diffusion Model for Time-series Imputation in Partial Blackout Scenarios (AAAI 2025)
 - [[source-channelmts]] — ChannelMTS: Multi-modal Time-Series Framework for High-Speed Railway Channel Prediction (KDD 2026)
 - [[source-clmtr]] — CLMTR: Contrastive Learning for Multi-modal Trajectory Representation
+- [[source-classifier-free-diffusion-guidance]] — Classifier-Free Diffusion Guidance (Ho & Salimans, 2022), original CFG paper
 - [[source-ncsn]] — NCSN: Generative Modeling by Estimating Gradients of the Data Distribution (Song & Ermon, 2020)
 - [[source-understanding-diffusion-models]] — Understanding Diffusion Models: A Unified Perspective (Luo, 2022)
 - [[source-edm]] — EDM: Elucidating the Design Space of Diffusion-Based Generative Models (Karras et al., NeurIPS 2022)

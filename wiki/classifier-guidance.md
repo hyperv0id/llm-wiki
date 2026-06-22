@@ -6,8 +6,8 @@ tags:
   - conditional-generation
   - guidance
 created: 2026-04-28
-last_updated: 2026-06-08
-source_count: 2
+last_updated: 2026-06-22
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -61,6 +61,7 @@ $\gamma$ 控制条件生成中**保真度与多样性**之间的权衡[^src-unde
 1. **额外分类器训练成本**：需要训练一个与扩散模型独立的分类器，该分类器必须能处理扩散过程中任意噪声水平的输入，这增加了训练复杂度和计算开销[^src-understanding-diffusion-models]。
 2. **梯度计算负荷**：采样时每一步都需要计算分类器对输入的梯度，显著增加生成时间。
 3. **噪声鲁棒性要求**：分类器必须在各种噪声水平上都有准确的梯度，这对分类器的架构和训练提出了特殊要求。
+4. **对抗性疑虑**（Ho & Salimans, 2022）：分类器引导在采样时将得分估计与分类器梯度混合，可解释为用梯度对抗攻击迷惑分类器。Stepping in the direction of classifier gradients 也与 GAN 训练相似。这引发了疑问：分类器引导提升 FID 和 IS 是否只是因为对抗了分类器，或因为变得像 GAN？[^src-classifier-free-diffusion-guidance]
 
 ## 在缺失插补中的应用：PRDIM 的模式识别器引导
 
@@ -78,3 +79,4 @@ $$\nabla_{X_t}\log p_{\theta,\phi}(X_t\mid X_0^{obs}, M) \simeq \nabla_{X_t}\log
 
 [^src-understanding-diffusion-models]: [[source-understanding-diffusion-models]]
 [^src-prdim]: [[source-prdim]]
+[^src-classifier-free-diffusion-guidance]: [[source-classifier-free-diffusion-guidance]]

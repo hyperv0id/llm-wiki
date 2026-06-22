@@ -6,7 +6,7 @@ tags:
   - conditional-generation
   - guidance
 created: 2026-04-28
-last_updated: 2026-06-08
+last_updated: 2026-06-22
 source_count: 5
 confidence: high
 status: active
@@ -14,42 +14,72 @@ status: active
 
 # 无分类器引导
 
-无分类器引导（Classifier-Free Guidance, CFG）是一种用于扩散模型的条件生成技术，它不需要独立的分类器来引导生成过程。取而代之的是，它联合训练条件模型和无条件模型，在推理时通过插值来控制条件信号的影响强度。[^src-understanding-diffusion-models]
+无分类器引导（Classifier-Free Guidance, CFG）由 Ho & Salimans (2022) 提出，是一种不需要独立分类器的扩散模型条件生成技术。它联合训练条件模型和无条件模型，在推理时通过对两者的得分估计进行线性插值来实现条件控制。[^src-classifier-free-diffusion-guidance]
 
 ## 核心思想
 
-传统条件扩散模型需要额外的分类器在推理时提供梯度信号来引导生成（即分类器引导）。无分类器引导则通过训练一个**单一扩散模型**，使其既能接受条件信息 $y$，也能接受一个空标记 $\varnothing$（表示无条件）。这样，同一个模型既可以做条件预测，也可以做无条件预测。[^src-understanding-diffusion-models]
+CFG 的动机源于对[[classifier-guidance|分类器引导]]（Dhariwal & Nichol, 2021）的三点质疑：[^src-classifier-free-diffusion-guidance]
 
-在训练时，以一定概率将条件信息 $y$ 替换为空标记 $\varnothing$，使模型学会在有无条件两种模式下工作。在推理时，同时计算条件预测和无条件预测，然后对二者进行插值。
+1. **额外训练成本**：分类器必须训练在噪声数据上，无法复用预训练分类器[^src-classifier-free-diffusion-guidance]；
+2. **对抗性疑虑**：分类器引导等同于用梯度对抗攻击欺骗分类器，可能只是对抗性地提升基于分类器的指标（FID、IS）[^src-classifier-free-diffusion-guidance]；
+3. **与 GAN 相似性**：沿分类器梯度方向更新生成器近似 GAN 训练，可能只是复用 GAN 对分类器指标的优势[^src-classifier-free-diffusion-guidance]。
+
+CFG 的解决方案：训练**单一扩散模型**同时参数化条件模型 $\epsilon_\theta(x_t, c)$ 和无条件模型 $\epsilon_\theta(x_t, \varnothing)$。训练时以概率 $p_\text{uncond}$ 随机丢弃条件信息，使模型同时在两种模式下工作。[^src-classifier-free-diffusion-guidance]
 
 ## 数学形式
 
-设 $\epsilon_\theta(x_t, y)$ 为给定条件 $y$ 时的噪声预测，$\epsilon_\theta(x_t, \varnothing)$ 为无条件噪声预测。无分类器引导的修正预测为：
+CFG 使用修改后的得分估计进行采样：[^src-classifier-free-diffusion-guidance]
 
 $$
-\tilde{\epsilon} = \epsilon_\theta(x_t, \varnothing) + w \cdot \big(\epsilon_\theta(x_t, y) - \epsilon_\theta(x_t, \varnothing)\big)
+\tilde{\epsilon}_\theta(z_\lambda, c) = (1 + w)\,\epsilon_\theta(z_\lambda, c) - w\,\epsilon_\theta(z_\lambda)
 $$
 
-其中 $w$ 是**引导尺度**（guidance scale），控制条件信号的影响强度。[^src-understanding-diffusion-models]
+其中 $w \geq 0$ 是**引导强度**。$w=0$ 退化为标准条件生成，$w>0$ 放大条件影响。注意这与常见的形式 $\epsilon_\varnothing + w(\epsilon_c - \epsilon_\varnothing)$ 等价（令 $w = w'+1$）。
 
-## 引导尺度 $w$ 的行为
+### 隐式分类器解释
 
-- **$w = 0$**：退化为无条件生成，完全忽略条件信息。
-- **$w = 1$**：标准的条件生成，相当于直接使用 $\epsilon_\theta(x_t, y)$。
-- **$w > 1$**：放大条件信号的影响，使生成结果更严格地遵循条件信息，但会降低多样性。典型取值在 $3$ 到 $15$ 之间，具体取决于任务和模型。[^src-understanding-diffusion-models]
+公式受隐式分类器 $p^i(c|z_\lambda) \propto p(z_\lambda|c)/p(z_\lambda)$ 的启发。若得分估计是精确的保守向量场（即存在标量势），则 $\epsilon^*(z_\lambda, c) - \epsilon^*(z_\lambda)$ 正比于该隐式分类器的梯度。但实际中神经网络产生的得分不一定是保守场，因此 CFG 的修正方向**不一定对应任何分类器的梯度**——这证明 CFG 不是对分类器的对抗攻击，而是纯生成方法。[^src-classifier-free-diffusion-guidance]
 
-随着 $w$ 增大，模型会更"听话"地遵循条件（如文本提示），但样本多样性下降，可能出现伪影或过度饱和。
+### 联合训练
+
+训练时以概率 $p_\text{uncond}$ 将条件 $c$ 设为空标记 $\varnothing$。Ho & Salimans 实验发现 $p_\text{uncond} \in \{0.1, 0.2\}$ 表现相当且显著优于 $0.5$——只需将少量模型容量分配给无条件任务即可获得有效引导信号。[^src-classifier-free-diffusion-guidance]
+
+## 引导强度 $w$ 的行为
+
+- **$w = 0$**：退化为标准条件生成，相当于直接使用 $\epsilon_\theta(x_t, c)$。[^src-classifier-free-diffusion-guidance]
+- **$w > 0$**：放大条件信号的影响，降低多样性同时提高样本保真度。在 ImageNet 上，$w=0.1\sim0.3$ 取得最优 FID，$w\geq4$ 取得最优 IS——随着 $w$ 单调增加，FID 单调下降、IS 单调上升，形成清晰的保真度-多样性权衡曲线。[^src-classifier-free-diffusion-guidance]
+- **典型取值**：文本到图像生成中 $w$ 通常在 $3\sim15$（等价于常见形式中的 $w'=2\sim14$）；类别条件 ImageNet 中 $w=1.5$ 左右。[^src-classifier-free-diffusion-guidance][^src-dit]
+
+随着 $w$ 增大，模型生成结果更严格遵循条件，颜色趋向饱和，但样本多样性下降。[^src-classifier-free-diffusion-guidance]
+
+## 原始基准结果（ImageNet, Ho & Salimans 2022）
+
+| 设置 | $w$ | FID (↓) | IS (↑) |
+|------|-----|---------|--------|
+| 64×64, $p_\text{uncond}=0.1$ | 0.0 | 1.80 | 53.71 |
+| 64×64, $p_\text{uncond}=0.1$ | 0.3 | **1.55** | 66.11 |
+| 64×64, $p_\text{uncond}=0.1$ | 4.0 | 24.83 | **250.4** |
+| 128×128, $T=256$ | 0.0 | 7.27 | 82.45 |
+| 128×128, $T=256$ | 0.3 | **2.43** | 158.47 |
+| 128×128, $T=256$ | 4.0 | 21.53 | **421.03** |
+
+128×128 在 $w=0.3$ 时 FID **超越**分类器引导的 ADM-G（FID=2.97）；在 $w=4.0$ 时同时超越 BigGAN-deep 的最佳 IS 水平。[^src-classifier-free-diffusion-guidance]
 
 ## 与分类器引导的对比
 
 | 特性 | 分类器引导 | 无分类器引导 |
 |------|-----------|-------------|
-| 是否需要额外分类器 | 是，需要训练一个噪声鲁棒的分类器 | 否，仅需扩散模型本身 |
-| 训练复杂度 | 需要额外训练分类器 | 只需在训练时随机丢弃条件 |
-| 推理计算量 | 每次采样需额外计算分类器梯度 | 需两次前向传播（条件+无条件） |
-| 实际效果 | 较好，但受限于分类器质量 | 更优，广泛用于主流模型 |
+| 是否需要额外分类器 | 是，需训练噪声鲁棒分类器 | 否，仅需扩散模型本身 |
+| 训练复杂度 | 需额外训练分类器 | 只需随机丢弃条件（一行代码） |
+| 推理计算量 | 需计算分类器梯度 | 需两次前向传播（条件+无条件） |
+| 对抗性疑虑 | 是（分类器梯度=对抗攻击） | 否（得分不一定保守，无可解释的分类器） |
+| 实际效果 | 受限于分类器质量 | 更优，广泛用于主流模型 |
 
-无分类器引导在实践中表现更优，已成为现代扩散模型的标准技术。它被广泛应用于 Stable Diffusion、DALL-E 2、Imagen 等主流文本到图像模型。[^src-understanding-diffusion-models]
+CFG 已完全取代分类器引导成为扩散模型条件生成的标准技术。[^src-classifier-free-diffusion-guidance]
+
+## 直觉解释：降低无条件似然
+
+CFG 的效果可直觉理解为：在增大条件似然 $p(x|c)$ 的同时**降低无条件似然** $p(x)$，从而将生成推向条件分布的高密度区域而远离边缘分布的典型样本。这一"降低无条件似然"的负得分项（$-w\,\epsilon_\theta(z_\lambda)$）在此前文献中未被探索，可能有其他应用。[^src-classifier-free-diffusion-guidance]
 
 ## 应用
 
@@ -68,15 +98,15 @@ $$\lambda(x_k, k) \approx \frac{p_{\theta,k}(c|x_k)}{p_{\theta,k}(c|x_k) - (1-\p
 
 ## 局限性
 
-- 两次前向传播使推理成本翻倍。
-- 高引导尺度（$w$ 过大）会导致样本质量下降、颜色饱和度过高、出现伪影。
-- 固定尺度无法应对不同数据点条件满足程度的差异（[[fence|FENCE]] 通过聚类感知引导解决此问题）。
+- **推理成本翻倍**：每步需两次模型前向传播（条件+无条件）。Ho & Salimans 建议后期注入条件可能缓解——但 $T=128$ 的 CFG（等价于 $T=256$ 的单次前传）FID 仍略逊于 ADM-G。[^src-classifier-free-diffusion-guidance]
+- **高 $w$ 导致饱和伪影**：强引导下样本颜色过饱和、多样性急剧下降。在分布不平衡的应用中，低概率区域的样本可能被完全压制。[^src-classifier-free-diffusion-guidance]
+- **固定尺度限制**：不同数据点对条件的满足程度不同，固定 $w$ 无法适配（[[fence|FENCE]] 通过动态反馈引导解决）。[^src-fence]
 
 ## LDM 中的应用
 
 LDM 成功将无分类器引导应用于文本到图像生成[^src-rombach-ldm-2022]。在 MS-COCO 数据集上，CFG 将 FID 从 23.31 提升到 12.63（引导尺度 s=1.5）。典型引导尺度在 1.5 到 10.0 之间。[[instaflow|InstaFlow]] 为 Rectified Flow 设计了 CFG 等效机制 $v^\alpha = \alpha\cdot v(\cdot|T) + (1-\alpha)\cdot v(\cdot|\text{NULL})$，最佳 $\alpha\approx 1.5$ 远低于 SD 的 5-7.5[^src-instaflow]。
 
-[^src-understanding-diffusion-models]: [[source-understanding-diffusion-models]]
+[^src-classifier-free-diffusion-guidance]: [[source-classifier-free-diffusion-guidance]]
 [^src-rombach-ldm-2022]: [[source-rombach-ldm-2022]]
 [^src-dit]: [[source-dit]]
 [^src-instaflow]: [[source-instaflow]]
