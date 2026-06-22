@@ -4,6 +4,20 @@ type: concept
 created: 2026-04-26
 last_updated: 2026-06-22
 
+## [2026-06-22] ingest | RoFormer: Rotary Position Embedding (Su et al., 2021/2023)
+
+Ingested the original RoPE paper by Su Jianlin (苏剑林) et al. from Zhuiyi Technology (arXiv:2104.09864v5, Nov 2023). This is the foundational work that introduced Rotary Position Embedding — the multiplicative position encoding scheme now used by virtually all major LLMs (LLaMA, Mistral, Qwen, DeepSeek, etc.).
+
+Created: [[source-roformer]], [[rope]], [[roformer]]
+Updated: [[siren-rope]], [[temporal-rotation]], [[learnable-frequency-scaling]], [[index]]
+
+Key insights captured:
+- Core formulation: encode absolute position with rotation matrices → self-attention inner product depends only on relative position
+- θ_i = 10000^{-2(i-1)/d} frequency schedule inherited from sinusoidal PE
+- Three key properties: long-term decay, sequence length flexibility, linear attention compatibility
+- Experiments: WMT EN-DE, BERT pre-training (faster convergence), GLUE, Performer+RoPE, Chinese long text
+- First relative position encoding compatible with linear (O(N)) self-attention
+
 ## [2026-06-22] ingest | mHC: Manifold-Constrained Hyper-Connections (Xie et al., 2026)
 
 Ingested arXiv 2512.24880v2 from DeepSeek-AI — proposes Manifold-Constrained Hyper-Connections, a framework that constrains Hyper-Connections' residual mapping $H_l^{res}$ to the Birkhoff polytope of doubly stochastic matrices via Sinkhorn-Knopp projection, restoring the identity-mapping property and enabling stable large-scale LLM pretraining.

@@ -7,15 +7,15 @@ tags:
   - frequency
   - learnable
 created: 2026-04-29
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-06-22
+source_count: 2
 confidence: medium
 status: active
 ---
 
 # Learnable Frequency Scaling
 
-**可学习频率缩放** 是 SIREN-RoPE 的一项技术创新，用可学习的每维频率缩放 $\omega_j^s$ 替代标准 RoPE 中的固定逆频率常数[^src-siren-rope]。
+**可学习频率缩放** 是 SIREN-RoPE 的一项技术创新，用可学习的每维频率缩放 $\omega_j^s$ 替代标准 RoPE[^src-roformer] 中的固定逆频率常数[^src-siren-rope]。
 
 ## 背景：标准 RoPE 频率
 
@@ -59,10 +59,12 @@ $$\Theta_j(T_i) = f_\phi(T_i)_j \cdot \omega_j^s + p_i \cdot \theta_j \cdot \lam
 
 ## 相关页面
 
+- [[rope]] — 标准 RoPE 技术详解
 - [[siren-rope]] — 主 entity 页面
 - [[ordinal-temporal-fusion]] — 融合公式
 - [[dual-branch-siren]] — 架构详情
 - [[ntk-aware-interpolation]] — 另一种 RoPE 频率调整方法
 - [[yarn]] — 上下文扩展方法
 
+[^src-roformer]: [[source-roformer]]
 [^src-siren-rope]: [[source-siren-rope]]

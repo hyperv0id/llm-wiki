@@ -7,15 +7,15 @@ tags:
   - rotary-position-embedding
   - continuous-time
 created: 2026-04-29
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-06-22
+source_count: 2
 confidence: medium
 status: active
 ---
 
 # Temporal Rotation
 
-**时间旋转** 是指将连续时间戳（非离散序数位置）映射为 RoPE 旋转角的技术，使注意力机制能够直接建模时间维度的依赖关系[^src-siren-rope]。
+**时间旋转** 是指将连续时间戳（非离散序数位置）映射为 RoPE 旋转角的技术，使注意力机制能够直接建模时间维度的依赖关系。标准 RoPE[^src-roformer] 使用离散序数索引和固定逆频率[^src-siren-rope]。
 
 ## 背景
 
@@ -58,9 +58,11 @@ $$\Theta_j(T_i) = f_\phi(T_i)_j \cdot \omega_j^s$$
 
 ## 相关页面
 
+- [[rope]] — 标准 RoPE 技术详解
 - [[siren-rope]] — 主 entity 页面
 - [[dual-branch-siren]] — 架构详情
 - [[ordinal-temporal-fusion]] — 序数-时间融合
 - [[learnable-frequency-scaling]] — 可学习频率缩放
 
+[^src-roformer]: [[source-roformer]]
 [^src-siren-rope]: [[source-siren-rope]]

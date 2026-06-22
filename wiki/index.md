@@ -84,6 +84,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-rectified-flow]] — Rectified Flow: Flow Straight and Fast, ODE-based generation with few-step sampling (arXiv 2022)
 - [[source-instaflow]] — InstaFlow: One Step is Enough, reflow+distill SD to one-step generation (ICLR 2024)
 - [[source-alibi]] — ALiBi: attention with linear biases enables input length extrapolation (ICLR 2022)
+- [[source-roformer]] — RoFormer: Enhanced Transformer with Rotary Position Embedding (Su et al., arXiv 2021/2023)
 - [[source-yarn]] — YaRN: efficient context window extension of large language models (2023)
 - [[source-paperbench]] — Long Context, Less Focus: A Scaling Gap in LLMs (Gu et al., 2026)
 - [[source-vetcha-2026-towards-infinite-length-extrapolation]] — Vetcha 2026: Towards Infinite Length Extrapolation - A Unified Approach
@@ -281,6 +282,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[dualsformer]] — Dualformer, time-frequency dual domain learning with hierarchical frequency sampling (2026)
 - [[alibi]] — ALiBi, attention with linear biases for position extrapolation (ICLR 2022)
 - [[yarn]] — YaRN, efficient context window extension for RoPE models (2023)
+- [[roformer]] — RoFormer, Transformer with Rotary Position Embedding (Su et al., 2021/2023)
 - [[paperbench]] — PAPerBench, benchmark for privacy and personalization under long context (2026)
 - [[patchstg]] — PatchSTG, efficient large-scale traffic Transformer with leaf KDTree spatial patching + dual attention (KDD 2025)
 - [[long-context-scaling-gap]] — Long-Context Scaling Gap, fundamental limitation of LLMs under extended context (2026)
@@ -591,6 +593,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[position-extrapolation]] — Transformer model's ability to handle longer sequences at inference than training
 - [[geometric-slope-schedule]] — ALiBi's slope assignment method for multi-head attention
 - [[ntk-aware-interpolation]] — RoPE interpolation by changing base parameter to preserve high-frequency info
+- [[rope]] — Rotary Position Embedding, 乘法型相对位置编码，现代 LLM 的标准方案
 - [[ntk-by-parts-interpolation]] — wavelength-based piecewise RoPE interpolation
 - [[attention-temperature-scaling]] — YaRN's technique to control attention entropy via temperature
 - [[dynamic-scaling]] — inference-time technique to dynamically adjust RoPE scaling factor

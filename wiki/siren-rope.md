@@ -9,15 +9,15 @@ tags:
   - sequential-recommendation
   - linkedin
 created: 2026-04-29
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-06-22
+source_count: 2
 confidence: medium
 status: active
 ---
 
 # SIREN-RoPE
 
-SIREN-RoPE (Sinusoidal Representation Network Rotary Position Embedding) 是 LinkedIn 研究团队提出的一种新型旋转位置编码方法，将 RoPE 的固定旋转流形扩展为可学习的、时间信号条件化的空间[^src-siren-rope]。
+SIREN-RoPE (Sinusoidal Representation Network Rotary Position Embedding) 是 LinkedIn 研究团队提出的一种新型旋转位置编码方法，将标准 RoPE[^src-roformer] 的固定旋转流形扩展为可学习的、时间信号条件化的空间[^src-siren-rope]。
 
 ## 核心思想
 
@@ -70,9 +70,11 @@ $$\Theta_j(T_i, p_i) = f_\phi(T_i)_j \cdot \omega_j^s + p_i \cdot \theta_j \cdot
 
 ## 相关页面
 
-- [[source-siren-rope]] — 论文 source-summary
+- [[rope]] — 标准 RoPE 技术详解
+- [[source-roformer]] — RoPE 原始论文
 - [[yarn]] — 另一种 RoPE 上下文扩展方法
 - [[alibi]] — 另一种位置编码方法
 - [[generalized-positional-encoding-framework]] — 统一位置编码理论框架
 
+[^src-roformer]: [[source-roformer]]
 [^src-siren-rope]: [[source-siren-rope]]
