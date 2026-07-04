@@ -747,12 +747,14 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[rl-learning-path-mfrl]] — 基于《Mathematical Foundations of Reinforcement Learning》的系统性 RL 学习路径
 - [[spatiotemporal-mirage]] — 时空幻象，短输入窗口导致模型无法区分不同→相似或相似→不同的预测困境
 - [[mobile-traffic-forecasting]] — mobile traffic forecasting for wireless network optimization, distinct from vehicle traffic forecasting
+- [[zero-initialized-adaptation]] — 零初始化适配，LoRA/DiT/CoRA 跨领域的设计原则，确保适配起点与预训练模型等价
 
 ## Analyses
 - [[multimodal-exogenous-guided-long-term-st-forecasting]] — 多模态外生信息引导长期时空预测的研究路线：中心缺口（四拼图无人拼合）、消歧重构、统一架构论点、分层研究方向与优先级议程
 - [[multimodal-semantic-understanding]] — 多模态数据语义理解的对齐范式、融合策略与冗余过滤综合分析
 - [[spatio-temporal-foundation-model-landscape]] — 时空基础模型全景：设计哲学三重分裂、架构范式六条路线、预训练策略四象限、泛化机制深度比较
 - [[diffusion-frequency-domain-theory]] — 扩散模型为什么先学低频——频域理论的统一视角：谱偏置→频率层级→频域噪声控制→EqualSNR→SNR-t Bias→范式转移
+- [[tsfm-covariate-adaptation-comparison]] — TSFM 协变量适配方法全景对比：CoRA vs UniCA vs DiTS vs ChronosX vs AdaPTS vs Gen-P-Tuning 六种路线的系统比较
 
 
 ## Sources (continued)

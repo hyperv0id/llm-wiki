@@ -8,9 +8,9 @@ tags:
   - granger-causality
   - iclr-2026
 created: 2026-05-31
-last_updated: 2026-05-31
+last_updated: 2026-07-04
 source_count: 1
-confidence: medium
+confidence: high
 status: active
 ---
 
@@ -55,7 +55,7 @@ CoRA 已验证与多种 TSFM 兼容：Sundial、TimesFM、Chronos-Bolt、FlowSta
 
 ## 与 UniCA 的关键差异
 
-UniCA 将协变量在 TSFM 编码器前注入（通过 CAP + 自注意力），而 CoRA 将协变量作为外部条件注入预测头。CoRA 的三个增量优势：(1) 严格保持预训练嵌入空间不变；(2) 因果嵌入实现可解释的协变量选择；(3) 零初始化保证渐进适配[^src-cora]。此外，CoRA 在 Time-MMD 和 RT-1 上均优于 UniCA。
+UniCA 将协变量在 TSFM 编码器前注入（通过 CAP + 自注意力），而 CoRA 将协变量作为外部条件注入预测头[^src-unica]。CoRA 的三个增量优势：(1) 严格保持预训练嵌入空间不变；(2) 因果嵌入实现可解释的协变量选择；(3) 零初始化保证渐进适配[^src-cora]。此外，CoRA 在 Time-MMD 和 RT-1 上均优于 UniCA。详见 [[tsfm-covariate-adaptation-comparison|TSFM 协变量适配全景对比]]。
 
 ## 局限性（隐性）
 
@@ -69,10 +69,11 @@ UniCA 将协变量在 TSFM 编码器前注入（通过 CAP + 自注意力），�
 |------|-----------------|
 | ChronosX | 前置注入协变量，无零初始化，CoRA 优于它 |
 | AdaPTS | 前置注入，CoRA 将协变量保留在预测头 |
-| UniCA | 同为 ICLR 2026，CAP 前置融合 vs CoRA 零初始化后置注入 |
-| LoRA | 低秩适配，CoRA 借鉴了其零初始化思想 |
-| DiT (Peebles & Xie) | CoRA 的 adaLN 机制直接来源于此 |
+| [[unica|UniCA]] | 同为 ICLR 2026，CAP 前置融合 vs CoRA 零初始化后置注入 |
+| LoRA | 低秩适配，CoRA 借鉴了其零初始化思想，详见 [[zero-initialized-adaptation|零初始化适配]] |
+| [[dit|DiT]] (Peebles & Xie) | CoRA 的 adaLN 机制直接来源于此 |
 
 ## 引用
 
-[^src-cora]: [[cora-tsfm]]
+[^src-cora]: [[source-cora]]
+[^src-unica]: [[source-unica]]

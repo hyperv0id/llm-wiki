@@ -1323,3 +1323,14 @@ Ingest GPD paper (Yuan, Shao, Ding, Jin & Li, Tsinghua FIB Lab, ICLR 2024, arXiv
 创建：[[source-bigst]]、[[bigst]]、[[linearized-spatial-convolution]]、[[long-sequence-feature-extractor]]
 更新（反向链接）：[[gwnet]]（直接前身，O(N²) 自适应邻接→O(N)）、[[large-scale-spatial-temporal-graph]]、[[ragc]]、[[traffic-forecasting]]、[[centralized-message-passing]]（恢复 BigST 链接）
 仍跳过：PI-STGNN（用户无访问权限）。
+
+## [2026-07-04] ingest (cross-linking) | CoRA 全方位整合：从孤立论文到方法全景
+
+原始 CoRA ingest（2026-05-31）仅创建了 source-summary 和 entity 页面，缺乏与 wiki 中相关工作的交叉链接。本次执行"全方位 ingest"——将 CoRA 置于 TSFM 协变量适配方法的全景图中：
+- 创建跨方法分析页面 [[tsfm-covariate-adaptation-comparison]]（CoRA/UniCA/DiTS/ChronosX/AdaPTS/Gen-P-Tuning 六路线系统对比）
+- 创建通用概念页 [[zero-initialized-adaptation]]（LoRA→DiT→CoRA 的零初始化适配谱系）
+- 为 CoRA/UniCA/Sundial/DiTS 等 7 个实体页面及 5 个技术页面添加双向交叉链接（共 30+ 新链接）
+- CoRA 页面 source_count 从 1→4（新增 source-unica/source-dit/source-dits/source-sundial 引证），confidence 从 medium→high
+
+创建的页面：[[tsfm-covariate-adaptation-comparison]], [[zero-initialized-adaptation]]
+更新的页面：[[cora-tsfm]], [[source-cora]], [[unica]], [[dits]], [[mm-dit-for-time-series]], [[sundial]], [[heterogeneous-covariates]], [[covariate-homogenization]], [[covariate-fusion-module]], [[conditional-attention-pooling]]

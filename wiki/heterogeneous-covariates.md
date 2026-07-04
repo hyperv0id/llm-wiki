@@ -206,6 +206,8 @@ UniCA 提出的核心解决方案是**协变量同质化 (Covariate Homogenizati
 - [[multimodal-time-series-forecasting]] — 多模态时间序列预测
 - [[conditional-attention-pooling]] — CAP 融合机制
 - [[timesnet]] — 时间序列基础模型
+- [[cora-tsfm|CoRA]] — 替代处理路线：冻结 FM 特征提取 + 因果嵌入选择
+- [[tsfm-covariate-adaptation-comparison]] — 各适配路线的系统对比
 
 ---
 

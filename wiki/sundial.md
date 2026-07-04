@@ -9,7 +9,8 @@ tags:
   - tsinghua
   - icml-2025
 created: 2026-06-08
-last_updated: 2026-06-08
+created: 2026-06-08
+last_updated: 2026-07-04
 source_count: 1
 confidence: high
 status: active
@@ -83,6 +84,9 @@ Sundial 是 Fig.1 分类中的**原生连续 tokenization + 灵活无先验分�
 - [[timer]] — Timer，生成式预训练 Transformer
 - [[dits]] — DiTS，MM-DiT + Rectified Flow 用于协变量感知概率预测
 - [[cogencast]] — CoGenCast，混合 LLM + FM 编码器-解码器，一步生成预测 (ICML 2026)
+- [[cora-tsfm|CoRA]] — Sundial 上的协变量适配框架（CoRA 实验以 Sundial 为主 backbone，MSE 降低 14.2%）
+- [[tsfm-covariate-adaptation-comparison]] — TSFM 适配方法全景对比（含 CoRA 基于 Sundial 的详细结果）
+- [[hybrid-llm-flow-matching-forecasting]] — 混合 LLM-流匹配预测范式
 - [[hybrid-llm-flow-matching-forecasting]] — 混合 LLM-流匹配预测范式
 
 [^src-sundial]: [[source-sundial]]

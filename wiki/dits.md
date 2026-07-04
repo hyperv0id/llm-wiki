@@ -10,7 +10,8 @@ tags:
   - arxiv-2026
   - tsinghua
 created: 2026-06-08
-last_updated: 2026-06-08
+created: 2026-06-08
+last_updated: 2026-07-04
 source_count: 1
 confidence: medium
 status: active
@@ -44,6 +45,7 @@ DiTS differs from prior DiT-based time series models[^src-dits]:
 - **TimeDiT** (KDD 2025): Uses single-stream DiT with AdaLN-only conditioning — no explicit covariate stream.
 - **LDT** (AAAI 2024): Latent diffusion transformer with single-stream structure, no sophisticated exogenous variate fusion.
 - **Sundial** (2025): Asymmetric encoder-denoiser design (MAR-style), not conventional DiT architecture.
+- **CoRA** (ICLR 2026): Freezes pre-trained TSFMs (including Sundial) and injects covariates post-hoc via adaLN — an orthogonal adaptation paradigm that does not require building a new backbone.
 
 ## Performance
 
@@ -59,3 +61,11 @@ DiTS differs from prior DiT-based time series models[^src-dits]:
 - Only univariate target evaluated on FEV-Bench[^src-dits].
 
 [^src-dits]: [[source-dits]]
+
+## Related Pages
+
+- [[mm-dit-for-time-series]] — MM-DiT paradigm for time series
+- [[cora-tsfm|CoRA]] — alternative covariate-aware approach (freeze backbone + post-head injection)
+- [[tsfm-covariate-adaptation-comparison]] — systematic comparison of adaptation methods
+- [[dual-stream-attention-time-series]] — the attention mechanism behind DiTS
+- [[sundial]] — backbone reused by CoRA for covariate-aware forecasting

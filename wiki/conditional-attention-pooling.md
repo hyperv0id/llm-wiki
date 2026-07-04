@@ -235,6 +235,8 @@ CAP 的注意力权重揭示了模型如何动态选择协变量：
 ## 相关技术
 
 - [[unified-covariate-adaptation]] — UniCA 框架
+- [[cora-tsfm|CoRA]] — 替代方案：Causality Embedding 实现可解释的协变量选择
+- [[tsfm-covariate-adaptation-comparison]] — 各适配路线的系统对比
 - [[gated-linear-units]] — GLU 机制
 - [[timesnet]] — 时间序列基础模型
 - [[covariate-homogenization]] — 协变量同质化

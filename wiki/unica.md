@@ -7,8 +7,9 @@ tags:
   - multimodal-time-series
   - iclr-2026
 created: 2026-04-29
-last_updated: 2026-05-30
-source_count: 1
+created: 2026-04-29
+last_updated: 2026-07-04
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -45,7 +46,7 @@ UniCA 包含两个核心模块来解决异构协变量适应问题：
 - **预融合模块**：在 TSFM 编码器之前，使用条件注意力池化聚合协变量信息
 - **后融合模块**：在 TSFM 编码器之后，通过自注意力融合已编码的历史和未来协变量
 
-关键设计：**保持 TSFM 主干冻结**，仅训练轻量级融合模块，保留预训练模型的泛化能力[^src-unica]。
+关键设计：**保持 TSFM 主干冻结**，仅训练轻量级融合模块，保留预训练模型的泛化能力[^src-unica]。与同期 ICLR 2026 的 [[cora-tsfm|CoRA]] 不同，UniCA 在编码器前注入协变量（前置融合），且未采用零初始化——这一设计差异在实验中导致 UniCA 的 MSE 比 CoRA 高出 23.5%（相同 Sundial backbone）[^src-cora].
 
 ## 主要特性
 
@@ -70,11 +71,15 @@ UniCA 在以下基准上验证有效性：
 1. 假设协变量与目标序列时间对齐
 2. 对噪声协变量敏感
 3. 无不确定性感知融合
+3. 无不确定性感知融合
 4. 不支持非对齐或部分观测协变量
+5. 前置注入协变量扰乱了预训练嵌入空间，缺乏零初始化，在与 [[cora-tsfm|CoRA]] 的直接对比中处于劣势[^src-cora]
 
 ## 相关页面
 
 - [[source-unica]] — 源文件摘要
+- [[cora-tsfm|CoRA]] — 同期 ICLR 2026 的竞争框架，后置注入 + 零初始化 + 因果嵌入
+- [[tsfm-covariate-adaptation-comparison]] — 六种 TSFM 适配方法的系统对比
 - [[unified-covariate-adaptation]] — 统一协变量适应概念
 - [[covariate-homogenization]] — 协变量同质化技术
 - [[covariate-fusion-module]] — 协变量融合模块技术
@@ -86,3 +91,4 @@ UniCA 在以下基准上验证有效性：
 ## 参考文献
 
 [^src-unica]: [[source-unica]]
+[^src-cora]: [[source-cora]]

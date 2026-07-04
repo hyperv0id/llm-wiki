@@ -94,6 +94,7 @@ status: active
 | Cross-attention conditioning | 跨注意力条件化 | 可选 | LDM 等条件生成 |
 | Guided Layer Normalization | 条件归一化参数 | 可选 | ConFormer 事故预测 |
 | **Covariate Fusion Module** | 预融合 + 后融合双阶段 | **是** | UniCA 异构协变量适应 |
+| **CoRA adaLN Injection** | 后置 adaLN scale/shift 调制预测头 | **是** | CoRA 协变量适配（不修改编码器输入） |
 
 ## 参考文献
 

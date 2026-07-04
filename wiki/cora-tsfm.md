@@ -8,9 +8,9 @@ tags:
   - multimodal
   - iclr-2026
 created: 2026-05-31
-last_updated: 2026-05-31
-source_count: 1
-confidence: medium
+last_updated: 2026-07-04
+source_count: 4
+confidence: high
 status: active
 ---
 
@@ -20,7 +20,7 @@ status: active
 
 ## 动机
 
-大多数 TSFMs（[[timesfm|TimesFM]]、[[chronos|Chronos]]、Sundial、Moirai）在单变量时间序列上预训练，天然忽略了对真实预测任务至关重要的外生协变量——包括时间序列、文本、图像等多模态信息[^src-cora]。现有适配方法（ChronosX、AdaPTS、[[unica|UniCA]]）虽然在 TSFM 编码器前注入协变量，但这一设计改变了预训练嵌入空间，且缺乏零初始化，导致训练不稳定和灾难性遗忘[^src-cora]。
+大多数 TSFMs（[[timesfm|TimesFM]]、[[chronos|Chronos]]、[[sundial|Sundial]]、Moirai）在单变量时间序列上预训练，天然忽略了对真实预测任务至关重要的外生协变量——包括时间序列、文本、图像等多模态信息[^src-cora]。现有适配方法（ChronosX、AdaPTS、[[unica|UniCA]]）虽然在 TSFM 编码器前注入协变量，但这一设计改变了预训练嵌入空间，且缺乏零初始化，导致训练不稳定和灾难性遗忘[^src-cora][^src-unica]。
 
 CoRA 被设计来解决一个更根本的问题：**如何在保持预训练模型完整性的前提下，渐进式地融合异构协变量信息。**
 
@@ -49,7 +49,7 @@ CoRA 不修改任何预训练模型的主干网络。对每种协变量模态，
 
 ### 原则 3：零初始化条件注入，渐进式融合
 
-CoRA 通过 adaLN（adaptive layer normalization，源自 DiT）将统一协变量嵌入注入 TSFM 的预测头：
+CoRA 通过 adaLN（adaptive layer normalization，源自 [[dit|DiT]]）将统一协变量嵌入注入 TSFM 的预测头：
 
 ```
 H → MLP → γ (shift), β (scale), α (output scaling)
@@ -57,7 +57,7 @@ H → MLP → γ (shift), β (scale), α (output scaling)
 预测头后：(1+α) × head_output
 ```
 
-所有新增参数（投影矩阵、MLP）均零初始化，保证适配起点与原始 TSFM 完全等价。这意味着模型从预训练的零样本能力出发，逐渐融合协变量信息，避免了灾难性遗忘[^src-cora]。消融实验证明：替换零初始化为 Xavier 初始化导致性能退化 4.3%[^src-cora]。
+所有新增参数（投影矩阵、MLP）均零初始化，保证适配起点与原始 TSFM 完全等价。这意味着模型从预训练的零样本能力出发，逐渐融合协变量信息，避免了灾难性遗忘[^src-cora]。消融实验证明：替换零初始化为 Xavier 初始化导致性能退化 4.3%[^src-cora]。该设计遵循 [[zero-initialized-adaptation|零初始化适配]] 原则，与 LoRA 的 B 矩阵零初始化和 DiT 的 adaLN-Zero 一脉相承[^src-dit]。
 
 ## 协变量处理的三条路径
 
@@ -72,7 +72,7 @@ CoRA 通过 `[[channel-independence|Channel Independence]]` 机制处理多元�
 
 ### 单模态协变量预测（TSLib 基准）
 
-在以 Sundial 为 backbone 的对比中，CoRA 在 ETTh1/ETTh2/ETTm1/ETTm2/Weather/ECL/Traffic 七个数据集上全面超越所有适配方法和监督深度模型：
+在以 [[sundial|Sundial]] 为 backbone 的对比中，CoRA 在 ETTh1/ETTh2/ETTm1/ETTm2/Weather/ECL/Traffic 七个数据集上全面超越所有适配方法和监督深度模型：
 
 | 对比方法 | avg MSE | CoRA 相对降低 |
 |----------|---------|---------------|
@@ -94,7 +94,7 @@ CoRA 通过 `[[channel-independence|Channel Independence]]` 机制处理多元�
 
 ### 多元预测
 
-CoRA 在 7 个多元数据集上平均 MSE 降低 14.5%，超越 TimeXer。优势来源：预训练 TSFM 已内化通用时间模式，CoRA 在此基础上精准捕获跨变量依赖[^src-cora]。
+CoRA 在 7 个多元数据集上平均 MSE 降低 14.5%，超越 TimeXer。优势来源：预训练 TSFM 已内化通用时间模式，CoRA 在此基础上精准捕获跨变量依赖[^src-cora]。CoRA 与 [[dits|DiTS]] 代表了协变量感知预测的两种不同路线：前者冻结现有 TSFM 后置注入，后者从头构建 MM-DiT 双流架构[^src-dits]。
 
 ### 跨 Backbone 泛化
 
@@ -125,9 +125,14 @@ CoRA 在 7 个多元数据集上平均 MSE 降低 14.5%，超越 TimeXer。优�
 
 - [[timesfm]] — 核心兼容 TSFM backbone 之一
 - [[chronos]] — 核心兼容 TSFM backbone 之一
+- [[sundial]] — 实验主要 backbone，CoRA 在其上取得最佳适配效果
+- [[dits]] — 协变量感知预测的替代路线（MM-DiT 双流架构）
+- [[tsfm-covariate-adaptation-comparison]] — 六种 TSFM 适配方法的系统对比
+- [[zero-initialized-adaptation]] — CoRA 零初始化设计的理论基础
 - [[channel-independence]] — CoRA 在多元预测中采用的策略
 - [[cross-dimension-dependency]] — CoRA 通过 CI 隐式处理的跨变量依赖概念
-- [[mixture-of-experts]] — Moirai-MoE 等 TSFM 的相关架构
+- [[heterogeneous-covariates]] — 异构协变量的分类与处理挑战
+- [[multimodal-time-series-forecasting]] — 多模态预测的总体概念
 - [[unified-covariate-adaptation]] — UniCA 的详细介绍（对比方法）
 - [[covariate-homogenization]] — UniCA 的协变量同质化技术（对比）
 - [[conditional-attention-pooling]] — UniCA 的融合机制（对比）
@@ -135,3 +140,7 @@ CoRA 在 7 个多元数据集上平均 MSE 降低 14.5%，超越 TimeXer。优�
 ## 引用
 
 [^src-cora]: [[source-cora]]
+[^src-unica]: [[source-unica]]
+[^src-dit]: [[source-dit]]
+[^src-dits]: [[source-dits]]
+[^src-sundial]: [[source-sundial]]

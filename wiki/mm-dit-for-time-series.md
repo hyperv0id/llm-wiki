@@ -9,7 +9,8 @@ tags:
   - dual-stream
   - mm-dit
 created: 2026-06-08
-last_updated: 2026-06-08
+created: 2026-06-08
+last_updated: 2026-07-04
 source_count: 1
 confidence: medium
 status: active
@@ -54,6 +55,8 @@ Unlike MM-DiT which uses separate FFNs per stream, DiTS uses a **shared FFN** be
 - [[dual-stream-attention-time-series|Dual-Stream Attention]] — the specific attention mechanism implementing MM-DiT for time series
 - [[dits|DiTS]] — the model that introduces this paradigm
 - [[dit|DiT]] — the original Diffusion Transformer
+- [[cora-tsfm|CoRA]] — alternative covariate-aware approach (post-head adaLN injection on frozen TSFMs)
+- [[tsfm-covariate-adaptation-comparison]] — systematic comparison of covariate-aware adaptation methods
 - [[flow-matching|Flow Matching]] — the generative framework used by DiTS
 
 [^src-dits]: [[source-dits]]

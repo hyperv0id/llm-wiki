@@ -208,6 +208,8 @@ UniCA 的融合模块通过注意力机制动态选择协变量：
 
 - [[unified-covariate-adaptation]] — UniCA 框架
 - [[heterogeneous-covariates]] — 异构协变量
+- [[cora-tsfm|CoRA]] — 替代方案：冻结 FM 提取特征，不经同质化而直接注入预测头
+- [[tsfm-covariate-adaptation-comparison]] — 各适配路线的系统对比
 - [[conditional-attention-pooling]] — CAP 融合机制
 - [[multimodal-time-series-forecasting]] — 多模态时间序列预测
 - [[gated-linear-units]] — GLU 机制
