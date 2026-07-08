@@ -9,7 +9,7 @@ tags:
   - gcn
   - neurips
 created: 2026-06-04
-last_updated: 2026-06-09
+last_updated: 2026-07-05
 source_count: 2
 confidence: high
 status: active
@@ -48,17 +48,24 @@ S (confounder)
 └──→ E (image), C (text) —— auxiliary modalities
 ```
 
-The **backdoor path** Xst ← S → Yst is blocked through intervention[^src-e2-cstp]:
+The **backdoor path** Xst ← S → Yst is blocked through intervention. The backdoor-adjusted target distribution is estimated by integrating over the confounder S[^src-e2-cstp]:
+
+```
+P(Yst | do(Xst=x), E, C) = ∫_S P(Yst | Xst=x, S=sᵢ, E, C) · P(S=sᵢ | E, C) dS
+```
+
+Realized via the intervention adjustment[^src-e2-cstp]:
 
 ```
 x̂ = x + x ⊙ W[α₁·h(S) + α₂·p(E) + α₃·q(C)]
-∂x̂/∂S → 0  (training objective)
+∂x̂/∂S → 0  (adversarial training objective, ensures x̂ ⊥ S | E,C)
 ```
 
 - **Causal matrix**: DeepSHAP estimates node-wise influence → hybrid adjacency `A = λ·A^(0) + (1-λ)·A_SHAP`, updated via EMA every 5 epochs[^src-e2-cstp]
 - **Main branch**: Pure ST → minimizes spurious correlations
 - **Auxiliary branch**: Multi-modal fused → captures external context
 - **Final**: `ŷ_final = MLP(f(x_st, A); f(F_fused, A))`
+- **Loss**: `L_all = L_pred + β·L_st + (1-β)·L_mm`, where `L_st` supervises the raw ST branch and `L_mm` the causally-adjusted multi-modal branch[^src-e2-cstp]
 
 ### 3. STED: GCN + Mamba
 
@@ -94,6 +101,11 @@ Efficiency: **17.37%–56.11%** faster than Transformer baselines[^src-e2-cstp].
 | Mamba | Temporal modeling degrades |
 
 All six components measurable; causal inference and spatial encoding most critical[^src-e2-cstp].
+
+## Parameter Sensitivity
+
+- **λ (graph fusion factor)**: 0.25 on remote-sensing tasks (leans on the SHAP-derived causal graph), 0.5 on urban traffic (balances prior structure and causal graph)[^src-e2-cstp].
+- **β (loss balancing factor)**: 0.5–0.75 depending on the strength of exogenous influence in the dataset[^src-e2-cstp].
 
 ## Comparison with Related Models
 

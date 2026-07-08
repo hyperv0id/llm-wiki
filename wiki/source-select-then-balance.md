@@ -9,13 +9,19 @@ tags:
   - traffic-prediction
   - air-quality
 created: 2026-06-18
-last_updated: 2026-06-18
+last_updated: 2026-07-08
 source_count: 1
 confidence: medium
-status: active
+status: superseded
+superseded_by: [[source-exost]]
 ---
 
+> [!warning] 已取代
+> 本页面已被 [[source-exost]] 取代。此页面保留仅用于引用历史。
+
 # Select, Then Balance: Exogenous Variable Modeling for Spatio-Temporal Forecasting
+
+arXiv:2509.05779, 2025. **arXiv only，未经同行评审（截至 2026-07）。**
 
 该论文首次系统性地研究了外生变量（exogenous variables）在时空预测中的建模挑战，并提出 ExoST 框架。[^src-select-then-balance]
 

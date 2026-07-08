@@ -9,9 +9,9 @@ tags:
   - traffic-forecasting
   - neurips
 created: 2026-06-04
-last_updated: 2026-06-04
-source_count: 0
-confidence: high
+last_updated: 2026-07-05
+source_count: 1
+confidence: medium
 status: active
 ---
 

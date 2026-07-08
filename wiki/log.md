@@ -2,7 +2,47 @@
 title: Log
 type: concept
 created: 2026-04-26
-last_updated: 2026-06-22
+last_updated: 2026-07-08
+---
+
+## [2026-07-08] ingest | ST Foundation Models Survey (2501.09045)
+创建的页面：[[source-st-foundation-models-survey]]
+更新的页面：[[index]]
+核心贡献：提出 STFMs 系统愿景与 4 维泛化能力框架（领域/空间/时间/尺度），定性评估 6 个现有 STFM（UniST/OpenCity/UrbanGPT/ClimaX/Pangu/W-MAE），指出碎片化与空间偏差问题，展望统一架构/跨域协同/多模态训练/分布偏移适应。A*STAR 2025。
+
+## [2026-07-08] ingest | Multi-modal Time Series Survey (2503.13709)
+创建的页面：[[source-multimodal-ts-survey]]
+更新的页面：[[index]]
+核心贡献：系统综述多模态时间序列分析，提出统一跨模态交互框架（融合/对齐/迁移），覆盖 40+ 方法和多领域数据集（Terra/Time-MMD/MIMIC/FNSPID），讨论推理/决策/泛化/偏见的未来方向。arXiv 2025。
+
+
+## [2026-07-07] ingest | STFM Pipeline Review — Unraveling Spatio-Temporal Foundation Models via the Pipeline Lens
+创建的页面：[[source-stfm-pipeline-review]]
+更新的页面：[[index]]
+核心贡献：Pipeline 视角 STFM 综述，覆盖数据协调→模型设计（原始/迁移分类法）→训练目标→迁移适配→应用，涵盖 UniST/UrbanDiT/ClimaX/Moirai/Chronos。arXiv 2025 / TKDE。
+---
+## [2026-07-07] ingest | Multimodal PINN for Mean Radiant Temperature Modeling
+创建的页面：[[source-multimodal-pinn]]
+更新的页面：[[index]]
+核心贡献：多模态 PINN 框架融合数值特征 + 鱼眼图像（ResNet-50）+ 辐射传输物理损失函数，MaRTy 数据集上 RMSE 3.50 / R² 0.88，阴影预测准确率 94%。arXiv 2025。
+---
+## [2026-07-07] ingest | What If TSF (WIT) — Scenario-Guided Multimodal Forecasting Benchmark
+创建的页面：[[source-whatif-tsf]]
+更新的页面：[[index]]
+核心贡献：首个场景引导多模态时序预测基准，5352 样本覆盖 4 领域，含可能/反事实场景，方向准确率评估，LLM 利用场景引导显著优于纯时序方法。arXiv 2026。
+---
+## [2026-07-07] ingest | CaST: Deciphering Spatio-Temporal Graph Forecasting — A Causal Lens and Treatment
+创建的页面：[[source-cast]]
+更新的页面：[[index]]
+核心贡献：首次将 SCM + do-calculus 系统应用于 STG 预测，后门调整处理时序 OoD（环境解缠 + VQ codebook），前门调整 + Hodge-Laplacian 边卷积建模动态空间因果关系的涟漪效应。NeurIPS 2023。
+## [2026-07-07] ingest | ClimaX: A Foundation Model for Weather and Climate
+创建的页面：[[source-climax]]
+更新的页面：[[index]]
+核心贡献：首个气象/气候基础模型，variable tokenization + cross-attention aggregation 处理异构数据，CMIP6 预训练 + randomized forecasting objective，WeatherBench 与 IFS 竞争，ClimateBench SOTA。ICML 2023。
+## [2026-07-07] ingest | DP-GPT4MTS: Dual-Prompt LLM for Textual-Numerical Time Series Forecasting
+创建的页面：[[source-gpt4mts]]
+更新的页面：[[index]]
+核心贡献：双提示机制（explicit-hard prompt + textual-soft prompt via BERT）解耦任务指令与文本上下文，frozen GPT-2 骨干仅微调位置/层归一化，GDELT/Time-MMD 上 SOTA。
 
 ## [2026-06-22] ingest | Classifier-Free Diffusion Guidance (Ho & Salimans, 2022)
 
@@ -1334,3 +1374,73 @@ Ingest GPD paper (Yuan, Shao, Ding, Jin & Li, Tsinghua FIB Lab, ICLR 2024, arXiv
 
 创建的页面：[[tsfm-covariate-adaptation-comparison]], [[zero-initialized-adaptation]]
 更新的页面：[[cora-tsfm]], [[source-cora]], [[unica]], [[dits]], [[mm-dit-for-time-series]], [[sundial]], [[heterogeneous-covariates]], [[covariate-homogenization]], [[covariate-fusion-module]], [[conditional-attention-pooling]]
+
+## [2026-07-07] ingest | ExoST (arXiv:2509.05779)
+ExoST 框架：首次系统研究时空预测外生变量建模的两大挑战（不一致变量效应 + 不平衡类型效应），提出 select-then-balance 即插即用范式。旧 slug 页面 [[source-select-then-balance]] 已被本页面取代。
+创建的页面：[[source-exost]]
+更新的页面：[[source-select-then-balance]]（标注 superseded → [[source-exost]]），[[index]]
+## [2026-07-07] ingest | ExoLLM (WWW 2025)
+首个 LLM-driven 外生变量预测方法。Meta-task Instruction 激活 LLM 从 NLP 到 FEV 的跨任务迁移，Multi-grained Prompts 捕获外生变量的多粒度影响，Dual TS-Text Attention 对齐文本-数值特征空间。
+创建的页面：[[source-exollm]]
+更新的页面：[[index]]
+## [2026-07-07] ingest | Solar-VLM (arXiv:2604.04145)
+Solar-VLM: unified multimodal VLM framework fusing satellite imagery, text weather reports, and time series with GAT + cross-site attention for multi-site solar power spatiotemporal prediction. Evaluated on 8 PV stations in Hebei, China — outperforms 7 baselines across all horizons (T=3 to 96).
+
+创建的页面：[[source-solar-vlm]]
+更新的页面：[[index]]
+
+## [2026-07-07] ingest | From News to Forecast (NeurIPS 2024)
+From News to Forecast: LLM generative agent iteratively filters news/event text, uses reflection + CoT-style reasoning to assess impact on time series, fuses with numerical data for prediction. Cross-linked with [[source-exollm]].
+
+创建的页面：[[source-from-news-to-forecast]]
+更新的页面：[[index]]
+
+## [2026-07-07] ingest | STLLM (arXiv:2507.05258)
+Spatio-Temporal LLM: multimodal STLLM fusing point cloud, video, and text for reasoning about environments and actions. REA dataset (5 tasks, 24K+ samples) + two STLLM baselines (STLLM-3D and STLLM-Aligner). Cross-linked with [[source-st-vision-llm]].
+
+创建的页面：[[source-stllm]]
+更新的页面：[[index]]
+
+## [2026-07-07] ingest | Terra (NeurIPS 2024)
+Terra: large-scale multimodal Earth spatiotemporal dataset — 6.48M global grids × 45 years hourly meteorological time series, geo-images, and LLM-generated explanatory text. Critical benchmark enabling multimodal exogenous ST research. Cross-linked with [[source-exost]], [[source-aurora]].
+
+创建的页面：[[source-terra]]
+更新的页面：[[index]]
+
+## [2026-07-07] ingest | PI-MFM (2512.23056)
+PI-MFM: Physics-informed multimodal foundation model for solving PDEs by M. Zhu, J. Sun, Z. Zhang, H. Schaeffer, L. Lu (Yale, JHU, Notre Dame, UCLA, 2025). First PDE-encoding MOL framework that directly enforces governing equations as physics losses during pretraining and adaptation, with automatic vectorized PDE residual computation from symbolic expressions. On 13 parametric 1D time-dependent PDE families, consistently outperforms purely data-driven counterparts especially under sparse data and enables zero-shot physics-informed fine-tuning to unseen PDE families (~1% error). PROSE backbone.
+
+创建的页面：[[source-pi-mfm]]
+更新的页面：[[index]]
+
+## [2026-07-07] ingest | ExoTST (2410.12184)
+ExoTST: Exogenous-Aware Temporal Sequence Transformer for Time Series Prediction by K. Tayal, A. Renganathan, X. Jia, V. Kumar, D. Lu (ORNL, UMN, Pitt, 2024). Treats past and future exogenous variables as distinct modalities with a cross-temporal fusion module (aggregation token + cross-attention), enabling autoregressive Transformer to incorporate current/projected exogenous drivers. Outperforms TiDE, PatchTST, iTransformer by 8-12% on carbon flux datasets. Robust to missing/noisy exogenous drivers.
+
+创建的页面：[[source-exotst]]
+更新的页面：[[index]]
+
+## [2026-07-07] ingest | TimeXer — Empowering Transformers for Time Series Forecasting with Exogenous Variables
+
+Ingested TimeXer paper (Wang et al., Tsinghua; NeurIPS 2024; arXiv:2402.19072). TimeXer proposes a dual-granularity representation: patch-wise self-attention for endogenous variables and variate-wise cross-attention for exogenous variables, with a learnable global token bridging the two. Achieves consistent SOTA on 12 benchmarks for forecasting with exogenous variables.
+
+Created: [[source-timexer]]
+Updated: [[index]]
+Cross-linked: [[source-patchtst]], [[source-exost]]
+
+## [2026-07-07] ingest | STG-Mamba — Spatial-Temporal Graph Learning via Selective State Space Model
+
+Ingested STG-Mamba paper (Li et al., UNSW; arXiv:2403.12418). First exploration of selective SSM (Mamba) for STG prediction. Proposes GS3B (Graph Selective State Space Block) + KFGN (Kalman Filtering GNN) for adaptive graph structure upgrading with linear complexity. Surpasses Transformer-based SOTA on PeMS04, HZMetro, and KnowAir.
+
+Created: [[source-stg-mamba]]
+Updated: [[index]]
+Cross-linked: [[source-diffstg]], [[source-s-mamba]], [[source-dst-mamba]]
+
+## [2026-07-07] ingest | RAF — Retrieval Augmented Time Series Forecasting
+
+Ingested RAF paper (Tire, Taga, Ildiz, Oymak; UT Austin / U. Michigan; arXiv:2411.08249). First principled RAG framework for time series foundation models. Formulates TS-R (Time-Series Retrieval) problem, proves two-layer Transformer can solve it. Shows RAF improves zero-shot forecasting across Chronos, Moirai, TimesFM, Lag-Llama with gains scaling with model size.
+
+Created: [[source-raf]]
+Updated: [[index]]
+Cross-linked: [[source-time-llm]], [[chronos]], [[retrieval-augmented-spatio-temporal-forecasting]]
+## [2026-07-08] 勘误 | ExoST
+确认 ExoST (arXiv:2509.05779) 截至 2026-07 仅发布于 arXiv，未经同行评审。已更新 source-exost、source-select-then-balance、research-gaps-analysis、research-multimodal-exogenous-spatiotemporal、paper-river 笔记中的相关标注。
