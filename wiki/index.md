@@ -894,3 +894,12 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Analysis (continued)
 - [[kite-manifold-guidance-chain]] — KITE 三件套串联：流形改起点、知识改条件、CFG 拧剂量
+
+## Sources (continued)
+- [[source-dag]] — DAG: A Dual Correlation Network for TS Forecasting with Exogenous Variables（时间+通道双相关发现—注入，IJCAI 2026）
+
+## Entities (continued)
+- [[dag]] — DAG，确定性外生预测框架：双相关发现—注入，gating 融合
+
+## Techniques (continued)
+- [[dual-correlation-injection]] — Dual Correlation Injection，跨模块提取 Wq',Wk' 并注入内生预测注意力

@@ -70,5 +70,6 @@ p_\theta(Y_{\text{endo}} \mid X_{\text{endo}}, X_{\text{exo}}, Y_{\text{exo}}).
 - [[flow-matching-forecasting]] — 流匹配预测总览
 - [[gaussian-process-prior-flow-matching]] — TSFlow 的 GP 源路线
 - [[multimodal-exogenous-guided-long-term-st-forecasting]] — 外生引导长期时空预测议程
+- [[dag]] / [[source-dag]] — 确定性双相关外生预测对照（IJCAI 2026，同 ECNU 组）
 
 [^src-kite]: [[source-kite]]

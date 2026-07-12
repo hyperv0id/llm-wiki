@@ -85,6 +85,7 @@ KITE 把**外生变量条件下的概率时序预测**做成端到端生成框�
 - [[kite-manifold-guidance-chain]] — 三模块串联分析
 - [[tsflow]] / [[source-tsflow]] — GP 先验流匹配前驱
 - [[source-timexer]] / [[source-exotst]] / [[source-exost]] — 外生确定性预测谱系
+- [[source-dag]] / [[dag]] — DAG 双相关确定性外生预测（IJCAI 2026，同 ECNU 组）
 - [[flow-matching-forecasting]] — 流匹配时序预测总览
 
 [^src-kite]: [[source-kite]]

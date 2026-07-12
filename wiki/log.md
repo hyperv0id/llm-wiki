@@ -1451,3 +1451,10 @@ KITE: Knowledge-Guided Probabilistic Modeling for Time Series Forecasting with E
 创建的页面：[[source-kite]], [[kite]], [[history-conditional-manifold]], [[knowledge-guided-conditioning]], [[kite-manifold-guidance-chain]]
 更新的页面：[[classifier-free-guidance]], [[flow-matching-forecasting]], [[tsflow]], [[gaussian-process-prior-flow-matching]], [[source-timexer]], [[index]]
 源文件：raw/kite-cheng-2026.pdf（不可变拷贝自 Zotero BM79KEZT）
+
+## [2026-07-12] ingest | DAG (IJCAI 2026)
+DAG: A Dual Correlation Network for Time Series Forecasting with Exogenous Variables (Qiu, Zhu, Li, Wu, Yang, Hu; ECNU). 沿时间+通道双维发现并注入外生-内生相关性。
+
+创建的页面：[[source-dag]], [[dag]], [[dual-correlation-injection]]
+更新的页面：[[kite]], [[source-kite]], [[index]]
+源文件：raw/dag-qiu-2026.pdf（不可变拷贝自 Zotero 3MBN63QI）
