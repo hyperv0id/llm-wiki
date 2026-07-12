@@ -1444,3 +1444,10 @@ Updated: [[index]]
 Cross-linked: [[source-time-llm]], [[chronos]], [[retrieval-augmented-spatio-temporal-forecasting]]
 ## [2026-07-08] 勘误 | ExoST
 确认 ExoST (arXiv:2509.05779) 截至 2026-07 仅发布于 arXiv，未经同行评审。已更新 source-exost、source-select-then-balance、research-gaps-analysis、research-multimodal-exogenous-spatiotemporal、paper-river 笔记中的相关标注。
+
+## [2026-07-12] ingest | KITE (ICML 2026)
+KITE: Knowledge-Guided Probabilistic Modeling for Time Series Forecasting with Exogenous Variables (Cheng, Zhou, Shu, Guo; ECNU). 全维度 ingest，并显式串联 History-Conditional Manifold、Knowledge-Guided Conditioning、Classifier-Free Guidance。
+
+创建的页面：[[source-kite]], [[kite]], [[history-conditional-manifold]], [[knowledge-guided-conditioning]], [[kite-manifold-guidance-chain]]
+更新的页面：[[classifier-free-guidance]], [[flow-matching-forecasting]], [[tsflow]], [[gaussian-process-prior-flow-matching]], [[source-timexer]], [[index]]
+源文件：raw/kite-cheng-2026.pdf（不可变拷贝自 Zotero BM79KEZT）

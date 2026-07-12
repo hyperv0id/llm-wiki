@@ -7,7 +7,7 @@ tags:
   - time-series
   - 2024
 created: 2026-07-07
-last_updated: 2026-07-07
+last_updated: 2026-07-12
 source_count: 1
 confidence: medium
 status: active
@@ -60,5 +60,6 @@ TimeXer 的核心洞见在于：内生变量和外生变量需要不同粒度的
 - [[source-exost|ExoST]] — 同期外生变量建模框架，采用 Select-then-Balance 范式
 - [[source-patchtst|PatchTST]] — Patch 化时序预测奠基工作
 - [[source-dits|DiTS]] — 多模态扩散 Transformer 时序预测，采用类似双流设计
+- [[source-kite|KITE]] — 外生条件下的概率流匹配（HCM + KGC + CFG），确定性外生基准上对比 TimeXer
 
 [^src-timexer]: [[source-timexer]]

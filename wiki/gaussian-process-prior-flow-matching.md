@@ -8,7 +8,7 @@ tags:
   - optimal-transport
   - time-series
 created: 2026-06-08
-last_updated: 2026-06-08
+last_updated: 2026-07-12
 source_count: 1
 confidence: high
 status: active
@@ -71,6 +71,8 @@ $$
 - [[gaussian-process-regression]] — 高斯过程回归
 - [[optimal-transport]] — 最优传输理论
 - [[conditional-prior-sampling]] — 条件先验采样技术
+- [[history-conditional-manifold]] — KITE 的可学历史条件流形源，另一条信息源路线
+- [[kite]] — 外生条件概率预测中的 HCM 应用
 - [[guided-generation]] — 引导生成
 
 [^src-tsflow]: [[source-tsflow]]

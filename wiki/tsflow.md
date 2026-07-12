@@ -8,7 +8,7 @@ tags:
   - probabilistic-model
   - iclr-2025
 created: 2026-06-08
-last_updated: 2026-06-08
+last_updated: 2026-07-12
 source_count: 1
 confidence: high
 status: active
@@ -70,5 +70,8 @@ TSFlow 使用 DiffWave 风格的残差架构，搭配 S4 层沿时间维度建�
 - [[rectified-flow-for-time-series]] — Rectified Flow in TS generation
 - [[freqflow-ts|FrèqFlow/SpectFlow]] — 频域流匹配 (NeurIPS 2025)
 - [[aurora]] — Aurora，原型引导流匹配 (arXiv 2026)
+- [[kite]] — KITE：可学历史条件流形源 + 外生知识引导 + CFG（ICML 2026）
+- [[history-conditional-manifold]] — 相对 GP 固定核的可学信息源
+- [[kite-manifold-guidance-chain]] — HCM–KGC–CFG 串联
 
 [^src-tsflow]: [[source-tsflow]]

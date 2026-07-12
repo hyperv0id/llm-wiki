@@ -8,8 +8,8 @@ tags:
   - probabilistic-forecasting
   - rectified-flow
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-07-12
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -77,6 +77,7 @@ DiTS uses **v-prediction** parameterization and the conditional flow matching v-
 | TEDM | EDM-style diffusion | $O(H)$ | Yes |
 | StaTS | DDPM (adaptive schedule) | ~10 | Yes |
 | **DiTS** | **Rectified flow** | **~5** | **Yes** |
+| **KITE** | **Flow matching + HCM source** | multi-step ODE | **Yes (exogenous-conditioned)** |
 
 DiTS achieves the fewest inference steps among probabilistic forecasters while maintaining SOTA uncertainty quantification[^src-dits].
 
@@ -86,5 +87,10 @@ DiTS achieves the fewest inference steps among probabilistic forecasters while m
 - [[dits|DiTS]] — the model that applies flow matching to time series
 - [[diffusion-models|Diffusion Models]] — the broader class of generative models
 - [[generative-time-series-forecasting|Generative Time Series Forecasting]] — the forecasting paradigm
+- [[kite|KITE]] — exogenous-conditioned FM with history-conditional manifold source + knowledge-guided attention + CFG[^src-kite]
+- [[history-conditional-manifold]] / [[knowledge-guided-conditioning]] / [[kite-manifold-guidance-chain]]
+- [[tsflow|TSFlow]] — GP-prior conditional flow matching
+- [[gaussian-process-prior-flow-matching]] — informative source alternative to HCM
 
 [^src-dits]: [[source-dits]]
+[^src-kite]: [[source-kite]]

@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-07-08
+last_updated: 2026-07-12
 source_count: 0
 tags:
   - meta
@@ -881,3 +881,16 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[3d-visual-grounding]] — 3D 视觉定位，从自然语言描述在 3D 场景中定位目标物体的三类方法（3D/多视图/混合）(Zheng et al., 2025)
 - [[hyper-connections]] — 可学习的多流残差连接设计，扩展残差流宽度以提升拓扑复杂度
 - [[manifold-constrained-hyper-connections]] — 将 Hyper-Connections 的残差映射投影到 Birkhoff 多面体以恢复恒等映射稳定性
+
+## Sources (continued)
+- [[source-kite]] — KITE: Knowledge-Guided Probabilistic Modeling for Time Series Forecasting with Exogenous Variables（HCM + KGC + CFG，ICML 2026）
+
+## Entities (continued)
+- [[kite]] — KITE，外生条件概率时序预测框架：历史条件流形源 + 知识引导条件化 + CFG
+
+## Techniques (continued)
+- [[history-conditional-manifold]] — History-Conditional Manifold，用历史内生构造可学 Flow Matching 源分布
+- [[knowledge-guided-conditioning]] — Knowledge-Guided Conditioning，统计先验双线性调制内生–外生注意力
+
+## Analysis (continued)
+- [[kite-manifold-guidance-chain]] — KITE 三件套串联：流形改起点、知识改条件、CFG 拧剂量
