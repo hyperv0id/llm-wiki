@@ -10,8 +10,8 @@ tags:
   - diffusion-models
   - iclr-2025
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-07-13
+source_count: 2
 confidence: high
 status: active
 ---
@@ -25,7 +25,7 @@ status: active
 
 ## 核心贡献
 
-TSFlow 是首个将条件流匹配 (Conditional Flow Matching, CFM) 应用于概率时间序列预测的模型[^src-tsflow]。它引入三个关键创新：
+TSFlow 是首个将条件流匹配 (Conditional Flow Matching, CFM) 应用于概率时间序列预测的模型[^src-tsflow]。它在 [[tsdiff|TSDiff]]（同系“无条件训练 → 推理条件化”路线）之后，引入三个关键创新：
 
 1. **高斯过程先验**：替代扩散模型中默认的各向同性高斯先验，使用三种 GP 核函数——平方指数 (SE)、Ornstein-Uhlenbeck (OU) 和周期 (PE) 核——将先验分布与数据的时序结构对齐[^src-tsflow]。
 2. **最优传输耦合**：通过 mini-batch 最优传输在训练时配对先验样本与数据样本，缩短概率路径、降低训练方差[^src-tsflow]。
@@ -54,7 +54,7 @@ TSFlow 在 CFM 框架中定义两个正交时间维度：流匹配时间 $t \in 
 在 8 个真实数据集（Electricity、Exchange、KDDCup、M4-Hourly、Solar、Traffic、UberTLC、Wikipedia）上评估[^src-tsflow]：
 
 - **无条件生成**：GP 先验在 4 NFE 下超越各向同性先验在 16 NFE 下的性能。周期核 (PE) 在 6/8 数据集上 LPS 最优[^src-tsflow]。
-- **概率预测**：TSFlow-Cond. 在 6/8 数据集上取得 SOTA CRPS，较第二优方法提升最高 14%。OU 核条件模型全面超越 CSDI、SSSD、TSDiff 和 Biloš et al. (2023)，且 NFE 更少[^src-tsflow]。
+- **概率预测**：TSFlow-Cond. 在 6/8 数据集上取得 SOTA CRPS，较第二优方法提升最高 14%。OU 核条件模型全面超越 [[csdi|CSDI]]、SSSD、[[tsdiff|TSDiff]] 和 Biloš et al. (2023)，且 NFE 更少[^src-tsflow]。
 - **无条件→条件桥接**：TSFlow-Uncond. 通过 CPS + 引导在 7/8 数据集上达到或超越仅引导的模型[^src-tsflow]。
 
 ## 局限性
@@ -64,3 +64,4 @@ TSFlow 在 CFM 框架中定义两个正交时间维度：流匹配时间 $t \in 
 - 未来方向：扩展到多元时间序列（多元 GP）、使用更复杂的先验分布（如基于数据统计的先验）[^src-tsflow]
 
 [^src-tsflow]: [[source-tsflow]]
+[^src-prs]: [[source-prs]]

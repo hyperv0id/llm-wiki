@@ -8,7 +8,7 @@ tags:
   - self-supervised-learning
   - neurips-2021
 created: 2026-05-31
-last_updated: 2026-05-31
+last_updated: 2026-07-13
 source_count: 1
 confidence: medium
 status: active
@@ -41,7 +41,7 @@ CSDI 是首个将条件扩散模型显式用于时间序列缺失值插补的工
 
 1. 开创了"条件扩散模型 + 自监督训练 + 时间序列插补"的方向，证明条件建模相比无条件扩散+事后约束有实质性收益（实验差值约 28% CRPS 改善）
 2. 证明 T=50 步扩散对时间序列插补足够，远低于图像的 T=1000
-3. 为后续工作（SSSD、CSDI 变体等）奠定了标准范式
+3. 为后续工作（SSSD、[[tsdiff|TSDiff]] 中的条件对照、CSDI 变体等）奠定了标准范式；TSDiff 在预测基准上直接与 CSDI 比较，并强调无条件 + 推理引导的任务无关替代路线
 
 ## 局限性
 

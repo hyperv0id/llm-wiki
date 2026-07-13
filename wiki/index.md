@@ -74,6 +74,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-probts]] — ProbTS: unified benchmark for point and distributional forecasting across short/long horizons (NeurIPS 2024 D&B, arXiv:2310.07446)
 - [[source-diffstg]] — DiffSTG: probabilistic spatio-temporal graph forecasting with diffusion models (AAAI 2023)
 - [[source-csdi]] — CSDI: Conditional Score-based Diffusion Models for Probabilistic Time Series Imputation (NeurIPS 2021)
+- [[source-prs]] — Predict, Refine, Synthesize / TSDiff: unconditional diffusion + observation self-guidance for probabilistic TS forecasting (NeurIPS 2023, arXiv:2307.11494)
 - [[source-ssdts]] — SSD-TS: Mamba as diffusion denoising backbone for time series imputation (KDD 2025)
 - [[source-pristi]] — PriSTI: A Conditional Diffusion Framework for Spatiotemporal Imputation (arXiv 2023 / ICDE 2023)
 - [[source-sparsetsf]] — SparseTSF: lightweight LTSF with <1k parameters via sparse modeling (TPAMI 2026 & ICML 2024 Oral)
@@ -372,6 +373,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[time-llm]] — Time-LLM, reprogramming frozen LLMs for time series forecasting (ICLR 2024)
 - [[timecap]] — TimeCAP, dual LLM agent + multi-modal encoder framework for time series event prediction (AAAI 2025 Oral)
 - [[timegrad]] — TimeGrad, first diffusion model for multivariate probabilistic time series forecasting (ICML 2021)
+- [[tsdiff]] — TSDiff, unconditional time-series diffusion with observation self-guidance (NeurIPS 2023)
 - [[patchtst]] — PatchTST, patch tokenization + channel independence Transformer for LSTF and self-supervised learning (ICLR 2023)
 - [[phat]] — PHAT, Period Heterogeneity-Aware Transformer with positive-negative attention and periodic bucket structure (ICLR 2026)
 - [[ltsf-linear]] — LTSF-Linear, embarrassingly simple linear baseline that outperforms Transformer LTSF models (Zeng et al., 2022)
@@ -711,6 +713,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[langevin-dynamics]] — 朗之万动力学 (Langevin Dynamics)，基于分数函数的 MCMC 采样方法
 - [[uncertainty-aware-noise-schedule]] — UANS，将数据感知的时变方差注入扩散过程以建模非平稳不确定性
 - [[csdi]] — CSDI, conditional score-based diffusion model for probabilistic time series imputation (NeurIPS 2021)
+- [[observation-self-guidance]] — Observation self-guidance: inference-time conditioning of unconditional TS diffusion without auxiliary nets (TSDiff, NeurIPS 2023)
+- [[linear-predictive-score]] — LPS: train-on-synthetic ridge CRPS for evaluating generative time-series samples (TSDiff, NeurIPS 2023)
 - [[bam]] — BAM, Bidirectional Attention Mamba for intra-channel dependency in diffusion denoising (KDD 2025)
 - [[cmb]] — CMB, Channel Mamba Block for inter-channel dependency in diffusion denoising (KDD 2025)
 - [[pristi]] — PriSTI, prior-guided conditional diffusion framework for spatiotemporal imputation (ICDE 2023)

@@ -10,7 +10,7 @@ tags:
   - neurips-2021
 created: 2026-05-31
 last_updated: 2026-07-13
-source_count: 9
+source_count: 10
 confidence: medium
 status: active
 ---
@@ -127,6 +127,7 @@ CSDI 的三个核心设计——(1) 观测值作为条件直接注入去噪网�
 - **[[s2dbm|S²DBM]]** (arXiv 2024)：直接沿用 CSDI 的去噪网络架构但移除其原有掩码条件机制，改用独立的线性先验预测器 F 与条件编码器 E，并把 CSDI 作为点/概率预测的主要扩散基线全面对比[^src-s2dbm]
 - **CSDI 的 SDE 连续化**：一些后续工作将离散时间框架扩展到连续时间 SDE
 - **[[probts|ProbTS]] 基准视角**：CSDI 作为 **NAR 概率** 代表在短程 CRPS 上常最强，并作为复杂分布下相对 TSFM（MOIRAI/Chronos）的参照；长程上面临显存与学习效率问题，且 RevIN 不总是优于均值缩放（如 Weather）[^src-probts]
+- **[[tsdiff|TSDiff]]** (NeurIPS 2023)：在 8 个单变量基准上直接与 CSDI 对比 CRPS；主张**无条件**训练 + [[observation-self-guidance|observation self-guidance]] 可在不按任务重训的情况下接近条件扩散，并保留合成数据生成能力[^src-prs]
 
 ## 局限性
 
@@ -144,6 +145,8 @@ CSDI 的三个核心设计——(1) 观测值作为条件直接注入去噪网�
 - [[bam|BAM]] — 双向注意力 Mamba，替代 CSDI 的 Time Transformer
 - [[cmb|CMB]] — 通道 Mamba 块，替代 CSDI 的 Feature Transformer
 - [[timegrad]] — TimeGrad，同期另一扩散+时序工作（预测方向）
+- [[tsdiff]] — TSDiff，无条件扩散 + self-guidance，Table 1 直接对比 CSDI[^src-prs]
+- [[observation-self-guidance]] — 推理期软条件化，对照 CSDI 的训练期硬条件
 - [[diffstg]] — DiffSTG，时空图扩散预测
 - [[cofill]] — CoFILL，后续扩散时序插补（双流架构）
 - [[fence]] — FENCE，动态反馈引导扩散插补，解决固定 CFG 尺度问题
@@ -162,3 +165,4 @@ CSDI 的三个核心设计——(1) 观测值作为条件直接注入去噪网�
 [^src-ratd]: [[source-ratd]]
 [^src-s2dbm]: [[source-s2dbm]]
 [^src-probts]: [[source-probts]]
+[^src-prs]: [[source-prs]]

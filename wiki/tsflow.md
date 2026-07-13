@@ -8,8 +8,8 @@ tags:
   - probabilistic-model
   - iclr-2025
 created: 2026-06-08
-last_updated: 2026-07-12
-source_count: 1
+last_updated: 2026-07-13
+source_count: 2
 confidence: high
 status: active
 ---
@@ -40,10 +40,10 @@ TSFlow 使用 DiffWave 风格的残差架构，搭配 S4 层沿时间维度建�
 
 在 8 个单变量真实数据集上评估[^src-tsflow]：
 
-- **无条件生成 (W₂)**：GP 先验以 4 NFE 超越 TSDiff（100 NFE）。PE 核在 Solar 数据集上 W₂=4.362 (vs 各向同性 5.193)[^src-tsflow]。
+- **无条件生成 (W₂)**：GP 先验以 4 NFE 超越 [[tsdiff|TSDiff]]（100 NFE）。PE 核在 Solar 数据集上 W₂=4.362 (vs 各向同性 5.193)[^src-tsflow]。
 - **下游 LPS**：PE 核在 6/8 数据集上最优[^src-tsflow]。
 - **概率预测 (CRPS)**：TSFlow-Cond. 在 6/8 数据集上 SOTA。OU 核在 KDDCup (0.278) 和 Exchange (0.008) 上最佳[^src-tsflow]。
-- **vs 扩散模型**：在 7/8 数据集上超越 CSDI、SSSD、TSDiff 和 Biloš et al. (2023)，且 NFE 更少[^src-tsflow]。
+- **vs 扩散模型**：在 7/8 数据集上超越 [[csdi|CSDI]]、SSSD、[[tsdiff|TSDiff]] 和 Biloš et al. (2023)，且 NFE 更少[^src-tsflow]。
 
 ## 局限性
 
@@ -62,7 +62,9 @@ TSFlow 使用 DiffWave 风格的残差架构，搭配 S4 层沿时间维度建�
 - [[generative-time-series-forecasting]] — 生成式时间序列预测概念
 - [[gaussian-process-prior-flow-matching]] — GP 先验流匹配概念
 - [[conditional-prior-sampling]] — 条件先验采样技术
-- [[tsdiff]] — TSDiff，TSFlow 的前驱无条件扩散预测模型
+- [[tsdiff]] — TSDiff，TSFlow 的前驱无条件扩散预测模型（NeurIPS 2023）[^src-prs]
+- [[observation-self-guidance]] — TSDiff 的推理期自引导；TSFlow 的 CPS+向量场引导是其流匹配对应物
+- [[linear-predictive-score]] — LPS，TSDiff 提出、TSFlow 沿用的合成样本预测质量指标
 - [[optimal-transport]] — 最优传输理论
 - [[timegrad]] — TimeGrad，首个时序扩散预测模型
 - [[csdi]] — CSDI，条件得分扩散插补/预测
@@ -73,5 +75,5 @@ TSFlow 使用 DiffWave 风格的残差架构，搭配 S4 层沿时间维度建�
 - [[kite]] — KITE：可学历史条件流形源 + 外生知识引导 + CFG（ICML 2026）
 - [[history-conditional-manifold]] — 相对 GP 固定核的可学信息源
 - [[kite-manifold-guidance-chain]] — HCM–KGC–CFG 串联
-
 [^src-tsflow]: [[source-tsflow]]
+[^src-prs]: [[source-prs]]

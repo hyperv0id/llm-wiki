@@ -10,7 +10,7 @@ tags:
   - icml-2021
 created: 2026-05-31
 last_updated: 2026-07-13
-source_count: 7
+source_count: 8
 confidence: medium
 status: active
 ---
@@ -92,7 +92,7 @@ TimeGrad 处于多条研究线的交汇点：
 - **继承自 [[ddpm|DDPM]]**：$\varepsilon$ 预测参数化、$L_{\text{simple}}$ 简化目标、$\beta$ 调度、$\bar\alpha_t$ 累积积、N 步 Markov 链——全部直接搬用；区别仅在于条件扩展为 $(n, h_{t-1})$[^src-timegrad]
 - **继承自 DeepAR**：自回归 RNN 架构和均值缩放归一化，但将预设参数化输出分布替换为更灵活的扩散模型[^src-timegrad]
 - **对标 Vec-LSTM**：Vec-LSTM 用低秩高斯 Copula 建模跨维度依赖，TimeGrad 用扩散模型隐式学习任意复杂度的联合分布[^src-timegrad]
-- **后续推动**：[[generative-time-series-forecasting|生成式时间序列预测]]整个方向的奠基之作——CSDI（插补）、DiffSTG（时空图）、[[specstg|SpecSTG]]（谱域扩散）、[[urbandit|UrbanDiT]]（扩散 Transformer）均以 TimeGrad 的条件扩散范式为理论起点
+- **后续推动**：[[generative-time-series-forecasting|生成式时间序列预测]]整个方向的奠基之作——[[csdi|CSDI]]（插补）、[[tsdiff|TSDiff]]（无条件 + observation self-guidance，NeurIPS 2023）[^src-prs]、DiffSTG（时空图）、[[specstg|SpecSTG]]（谱域扩散）、[[urbandit|UrbanDiT]]（扩散 Transformer）均以 TimeGrad 的条件扩散范式为理论起点或对照基线
 
 ## 局限性
 
@@ -117,6 +117,7 @@ TimeGrad 处于多条研究线的交汇点：
 - [[ratd|RATD]] (NeurIPS 2024)，检索增强的时序扩散模型——从数据库检索最近邻参照引导去噪，非自回归采样使其速度甚至略优于 TimeGrad 的自回归解码[^src-ratd]
 - [[probts|ProbTS]]（NeurIPS 2024）将 TimeGrad 作为 **AR 概率预测** 代表：短程分布估计强，但长程 CRPS 随 horizon/趋势恶化（误差累积）；在强季节（如 Traffic）上 AR 可反超 PatchTST；均值缩放是短程默认可靠归一化，RevIN 对长程 AR 更有帮助[^src-probts]
 - [[armd|ARMD]]（AAAI 2025）将 TimeGrad 这类"把真实序列扩散成白高斯噪声、再以历史为条件去噪"的范式视为扩散机制与 TSF 目标的失配，转而用滑动窗口产生确定性中间态、把历史→未来直接构造成扩散链，并在 7 个数据集上显著超越 TimeGrad[^src-armd]
+- [[tsdiff|TSDiff]]（NeurIPS 2023）改走**无条件**训练 + 推理期 [[observation-self-guidance|observation self-guidance]]，在相关工作中将 TimeGrad 定位为条件扩散预测代表，并与 CSDI/SSSD 对照任务专用性[^src-prs]
 
 [^src-timegrad]: [[source-timegrad]]
 [^src-nsdiff]: [[source-nsdiff]]
@@ -125,3 +126,4 @@ TimeGrad 处于多条研究线的交汇点：
 [^src-ratd]: [[source-ratd]]
 [^src-armd]: [[source-armd]]
 [^src-probts]: [[source-probts]]
+[^src-prs]: [[source-prs]]

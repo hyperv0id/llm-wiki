@@ -6,8 +6,8 @@ tags:
   - conditional-generation
   - guidance
 created: 2026-04-28
-last_updated: 2026-06-22
-source_count: 3
+last_updated: 2026-07-13
+source_count: 4
 confidence: medium
 status: active
 ---
@@ -75,8 +75,11 @@ $$\nabla_{X_t}\log p_{\theta,\phi}(X_t\mid X_0^{obs}, M) \simeq \nabla_{X_t}\log
 
 由于上述局限性，分类器引导在很大程度上被[[classifier-free-guidance|无分类器引导]]（Classifier-Free Guidance, CFG）所取代。CFG 无需额外训练分类器，通过在训练时同时学习条件和无条件模型、采样时对两者进行插值来实现条件控制，已成为扩散模型条件生成的主流方法[^src-understanding-diffusion-models]。
 
+在时间序列上，[[observation-self-guidance|observation self-guidance]]（[[tsdiff|TSDiff]]，NeurIPS 2023）提供第三条路线：不训练辅助分类器、也不做 CFG 式条件丢弃，而是用无条件去噪网络自身的一步重构参数化 $p(y_{\mathrm{obs}}\mid x_t)$，对任意观测时间子集做推理期软条件化[^src-prs]。
+
 ## 引用
 
 [^src-understanding-diffusion-models]: [[source-understanding-diffusion-models]]
 [^src-prdim]: [[source-prdim]]
 [^src-classifier-free-diffusion-guidance]: [[source-classifier-free-diffusion-guidance]]
+[^src-prs]: [[source-prs]]

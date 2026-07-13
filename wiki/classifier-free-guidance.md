@@ -6,8 +6,8 @@ tags:
   - conditional-generation
   - guidance
 created: 2026-04-28
-last_updated: 2026-07-12
-source_count: 6
+last_updated: 2026-07-13
+source_count: 7
 confidence: high
 status: active
 ---
@@ -88,6 +88,7 @@ CFG 的效果可直觉理解为：在增大条件似然 $p(x|c)$ 的同时**降�
 - **文本到视频/3D 生成**：扩散模型在视频和 3D 生成中同样采用 CFG 技术。
 - **其他条件生成任务**：任何需要条件控制（如类别条件、布局条件）的扩散模型都可以使用 CFG。
 - **外生条件时序概率预测**：[[kite|KITE]] 将 CFG 接到 Flow Matching 速度场上，条件为历史/未来外生变量；训练时以概率丢弃协变量集合，推理用 $\hat v=(1+\gamma)v(c)-\gamma v(\varnothing)$ 控制外生驱动强度（经验最优 $\gamma\approx 1.2$–$1.4$）。与 [[knowledge-guided-conditioning|KGC]]、[[history-conditional-manifold|HCM]] 的串联见 [[kite-manifold-guidance-chain]]。[^src-kite]
+- **与 observation self-guidance 的区分**：[[tsdiff|TSDiff]] 的 [[observation-self-guidance|observation self-guidance]] **不**联合训练条件/无条件分支，也不做条件 dropout；它用无条件去噪网络的一步重构构造 $p(y_{\mathrm{obs}}\mid x_t)$ 引导项，属于“纯无条件训练 + 推理期自引导”，与 CFG 正交[^src-prs]。
 
 ## 动态 CFG（反馈引导）
 
@@ -113,3 +114,4 @@ LDM 成功将无分类器引导应用于文本到图像生成[^src-rombach-ldm-2
 [^src-instaflow]: [[source-instaflow]]
 [^src-fence]: [[source-fence]]
 [^src-kite]: [[source-kite]]
+[^src-prs]: [[source-prs]]

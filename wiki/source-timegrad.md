@@ -9,7 +9,7 @@ tags:
   - ddpm
   - icml-2021
 created: 2026-05-31
-last_updated: 2026-05-31
+last_updated: 2026-07-13
 source_count: 1
 confidence: medium
 status: active
@@ -47,7 +47,7 @@ TimeGrad 是首个将[[ddpm|DDPM]]扩散模型应用于多变量时间序列概�
 1. 率先将扩散模型跨界引入时间序列概率预测领域[^src-timegrad]
 2. 证明"概率预测不需要预设输出分布家族"——MSE 噪声回归可隐式学习任意复杂联合分布[^src-timegrad]
 3. 证明 $N=100$ 步扩散对时序已足够（vs 图像的 1000 步）[^src-timegrad]
-4. 为后续 CSDI、DiffSTG、SpecSTG 等扩散+时序工作奠定了范式基础[^src-timegrad]
+4. 为后续 [[csdi|CSDI]]、[[tsdiff|TSDiff]]（无条件 + self-guidance）、DiffSTG、SpecSTG 等扩散+时序工作奠定了范式基础或对照点[^src-timegrad]
 
 ## 局限性
 

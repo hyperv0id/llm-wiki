@@ -1,3 +1,10 @@
+## [2026-07-13] ingest | Predict, Refine, Synthesize / TSDiff (NeurIPS 2023, arXiv:2307.11494)
+创建的页面：[[source-prs]], [[tsdiff]], [[observation-self-guidance]], [[linear-predictive-score]]
+更新的页面：[[index]], [[generative-time-series-forecasting]], [[source-timegrad]], [[timegrad]], [[source-csdi]], [[csdi]], [[source-tsflow]], [[tsflow]], [[classifier-guidance]], [[classifier-free-guidance]]
+核心贡献：无条件 DiffWave+S4 时序扩散 TSDiff；observation self-guidance（MS/分位）推理期条件化；能量先验精炼基预测；LPS 评合成样本；Predict/Refine/Synthesize 三用例。与 [[source-timegrad]]、[[source-csdi]]、[[source-tsflow]] 交叉链接。
+源文件：raw/2307.11494.pdf（不可变；外部路径 `/run/media/jcheng/WD-Data/yjs/INSIS/多模态外生信息引导的长期时空预测/2307.11494.pdf`）
+---
+
 ## [2026-07-13] ingest | ProbTS: Benchmarking Point and Distributional Forecasting across Diverse Prediction Horizons
 创建的页面：[[source-probts]], [[probts]], [[ar-vs-nar-decoding]], [[non-gaussianity]]
 更新的页面：[[index]], [[instance-normalization]], [[timegrad]], [[csdi]], [[patchtst]], [[timesfm]], [[chronos]], [[generative-time-series-forecasting]]
