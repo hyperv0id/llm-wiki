@@ -39,6 +39,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-dualformer]] — Dualformer: time-frequency dual domain learning for long-term forecasting
 - [[source-fedformer]] — FEDformer: frequency enhanced decomposed transformer (ICML 2022)
 - [[source-flightdiff]] — FlightDiff: Dual-Constraint Guided Two-Phase Diffusion Framework for Flight Prediction
+- [[source-fredf]] — FreDF: Frequency-enhanced Direct Forecast, learns multi-step DF in the frequency domain to mitigate label autocorrelation (arXiv 2024 / ICLR 2025 labeled)
 - [[source-frets]] — FreTS: frequency-domain MLPs for time series forecasting (NeurIPS 2023)
 - [[source-from-news-to-forecast]] — From News to Forecast: LLM generative agent iteratively filters news events with reflection + CoT for time series prediction (NeurIPS 2024)
 - [[source-grid-world-code-readme]] — 网格世界环境官方代码说明（Zhao, Mi & Li）
@@ -309,6 +310,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[long-context-scaling-gap]] — Long-Context Scaling Gap, fundamental limitation of LLMs under extended context (2026)
 - [[fence]] — FENCE, spatial-temporal feedback diffusion guidance for controlled traffic imputation (AAAI 2026)
 - [[fedformer]] — FEDformer, frequency enhanced decomposed transformer (ICML 2022)
+- [[fredf]] — FreDF, frequency-enhanced direct forecast training paradigm for multi-step TS (arXiv 2024)
 - [[grid-world-environment]] — 网格世界环境，强化学习教学示例
 - [[hyperd]] — Hybrid Periodicity Decoupling framework for traffic forecasting
 - [[conformer]] — ConFormer, conditional transformer for accident-aware traffic forecasting (KDD 2026)
@@ -878,7 +880,9 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[embodied-question-answering]] — EQA, 具身问答，agent 主动探索环境收集视觉证据并回答问题的基准任务 (Zheng et al., 2025)
 - [[birkhoff-polytope]] — $n \times n$ 双随机矩阵构成的 Birkhoff 多面体，mHC 的残差映射流形
 - [[identity-mapping-property]] — 残差连接中浅层信号直通深层的恒等映射性质
-- [[autocorrelation-bias]] — MSE 作为时序预测学习目标时的自相关偏差，源于标签序列的条件自相关被忽略 (DistDF, ICLR 2026)
+- [[autocorrelation-bias]] — MSE 作为时序预测学习目标时的自相关偏差，源于标签序列的条件自相关被忽略 (DistDF, ICLR 2026; 问题由 FreDF 先系统提出)
+- [[label-autocorrelation]] — 多步标签序列在给定历史条件下的时间步依赖，破坏 DF 的条件独立假设 (FreDF)
+- [[direct-forecast]] — Direct Forecast 多输出多步预测范式，与 iterative forecast 相对 (FreDF)
 
 ## Techniques (continued)
 - [[3d-visual-grounding]] — 3D 视觉定位，从自然语言描述在 3D 场景中定位目标物体的三类方法（3D/多视图/混合）(Zheng et al., 2025)
@@ -908,3 +912,4 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Techniques (continued)
 - [[dual-correlation-injection]] — Dual Correlation Injection，跨模块提取 Wq',Wk' 并注入内生预测注意力
+- [[frequency-enhanced-direct-forecast]] — FreDF 训练技术：时域 MSE + 频域模长损失混合，模型无关的 DF 升级 (FreDF)

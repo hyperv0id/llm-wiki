@@ -3,6 +3,13 @@ title: Log
 type: concept
 created: 2026-04-26
 last_updated: 2026-07-13
+## [2026-07-13] ingest | FreDF: Learning to Forecast in Frequency Domain
+创建的页面：[[source-fredf]], [[fredf]], [[label-autocorrelation]], [[direct-forecast]], [[frequency-enhanced-direct-forecast]]
+更新的页面：[[index]], [[autocorrelation-bias]]
+核心贡献：指出 DF 多步预测忽略标签自相关（Theorem 3.1），提出在频域对齐预测与标签的模型无关训练范式 L_α = α·L_feq + (1-α)·L_tmp；在 ETT/ECL/Traffic/Weather 与 M4 上提升 iTransformer/FreTS 等骨干。arXiv:2402.02399（源文件标注 ICLR 2025）。
+源文件：raw/FreDF_Wang_2025_ICLR.pdf（不可变，仅读取外部 PDF 路径）
+---
+
 ## [2026-07-12] query | ICML 2026 Spotlight 与多模态外生信息引导长期时空预测的相关分析
 从 OpenReview 抓取 ICML 2026 全部 538 篇 spotlight 论文的标题+摘要，按方向“多模态外生信息引导的长期时空预测”分三层筛选：直接相关、方法可迁移、基础设施。
 创建的页面：[[source-icml-2026-spotlight-papers]], [[icml-2026-spotlight-vs-multimodal-exogenous-spatiotemporal]]

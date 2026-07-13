@@ -8,7 +8,7 @@ tags:
   - mse
 created: 2026-07-13
 last_updated: 2026-07-13
-source_count: 1
+source_count: 2
 confidence: high
 status: active
 ---
@@ -27,12 +27,16 @@ Standard MSE treats each future step independently, ignoring that y_t depends on
 
 ## Relationship to Existing Methods
 
-Existing likelihood-based methods attempt to eliminate this bias by transforming labels into decorrelated components:
+[[source-fredf|FreDF]] first formulated the mismatch between DF's conditional-independence training assumption and [[label-autocorrelation|label autocorrelation]], and proposed frequency-domain alignment as a remedy under the direct forecast paradigm.[^src-fredf]
 
-- **FreDF** uses Fourier transform → guarantees marginal decorrelation, not conditional
-- **Time-o1** uses PCA → guarantees marginal decorrelation, not conditional
+Later, DistDF reframes the same phenomenon as **autocorrelation bias** of MSE as a likelihood estimator, and argues that likelihood-based transforms still leave residual bias:
+
+- **[[fredf|FreDF]]** uses Fourier transform → guarantees *marginal* decorrelation, not conditional
+
+- **Time-o1** uses PCA → guarantees *marginal* decorrelation, not conditional
 
 Both fail to fully eliminate autocorrelation bias because they cannot guarantee the required *conditional* decorrelation (diagonal Σ|x).[^src-distdf]
+
 
 ## Resolution via DistDF
 
@@ -41,3 +45,4 @@ DistDF bypasses likelihood estimation entirely by directly aligning conditional 
 ---
 
 [^src-distdf]: [[source-distdf]]
+[^src-fredf]: [[source-fredf]]
