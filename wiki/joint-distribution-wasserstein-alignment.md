@@ -52,6 +52,7 @@ The Bures-Wasserstein metric captures only first- and second-order moments. Real
 ## Related Techniques
 
 - [[source-fredf|FreDF]]: frequency-domain likelihood-based method (marginal decorrelation only)
+- [[source-qdf|QDF]]: learned quadratic $L_\Sigma$ (autocorrelation + heterogeneous task weights; still likelihood family)
 - [[source-time-o1|Time-o1]]: PCA-based transformed label alignment
 - [[source-exost|ExoST]]: exogenous variable modeling for spatiotemporal forecasting
 

@@ -33,7 +33,7 @@ Long-term forecast (ETT×4, ECL, Traffic, Weather; horizons 96/192/336/720) uses
 
 ## Limitations
 
-Fourier bases are fixed and may not adapt to data geometry; data-adaptive orthogonal transforms (e.g., PCA) are suggested. Label-structure correlations beyond 1D series (images, speech, point clouds) are left open. Later DistDF argues that Fourier/PCA only guarantee *marginal* decorrelation, not the *conditional* independence needed to fully remove MSE likelihood bias.[^src-fredf]
+Fourier bases are fixed and may not adapt to data geometry; data-adaptive orthogonal transforms (e.g., PCA) are suggested. Label-structure correlations beyond 1D series (images, speech, point clouds) are left open. Later [[source-distdf|DistDF]] argues that Fourier/PCA only guarantee *marginal* decorrelation, not the *conditional* independence needed to fully remove MSE likelihood bias; [[source-qdf|QDF]] (same author group) similarly shows residual partial correlations after FreDF/Time-o1 and instead learns a quadratic weighting matrix $\Sigma$.[^src-fredf]
 
 ## Key Terminology
 
@@ -41,6 +41,11 @@ Fourier bases are fixed and may not adapt to data geometry; data-adaptive orthog
 - **Direct forecast (DF)**: multi-output multi-step prediction under step-wise loss (vs iterative forecast)
 - **Frequency loss $L^{(\mathrm{feq})}$**: modulus-based alignment of FFT(forecast) and FFT(label)
 - **FreDF**: plug-and-play frequency-enhanced DF training with mix weight $\alpha$
+
+## Sibling Objectives
+
+- [[source-distdf|DistDF]] — joint-distribution Wasserstein alignment (ICLR 2026)
+- [[source-qdf|QDF]] — quadratic direct forecast with learned $\Sigma$ (ICLR 2026 preprint)
 
 ---
 

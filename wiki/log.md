@@ -3,6 +3,13 @@ title: Log
 type: concept
 created: 2026-04-26
 last_updated: 2026-07-13
+## [2026-07-13] ingest | QDF: Quadratic Direct Forecast for Training Multi-Step Time-Series Forecast Models
+创建的页面：[[source-qdf]], [[qdf]], [[quadratic-form-weighted-objective]], [[heterogeneous-task-weights]]
+更新的页面：[[index]], [[source-fredf]], [[source-distdf]], [[fredf]], [[label-autocorrelation]], [[direct-forecast]], [[autocorrelation-bias]], [[joint-distribution-wasserstein-alignment]]
+核心贡献：在 DF 学习目标中同时处理标签自相关（Σ^{-1} 非对角）与异质任务权重（Σ^{-1} 非均匀对角）；双层优化学习 PSD 加权矩阵后以二次型 NLL 训练，模型无关；相对 FreDF/Time-o1/DistDF 的同组兄弟工作。arXiv:2511.00053（ICLR 2026 preprint）。
+源文件：外部 PDF（不可变 raw/ 策略；路径见 ingest-reports/qdf-why.md）
+---
+
 ## [2026-07-13] ingest | GCGNet: Graph-Consistent Generative Network for Time Series Forecasting with Exogenous Variables
 创建的页面：[[source-gcgnet]], [[gcgnet]], [[joint-temporal-channel-correlation]], [[graph-structure-aligner]], [[graph-refiner]], [[variational-generator-exogenous]]
 更新的页面：[[index]], [[source-timexer]], [[source-kite]], [[kite]], [[dag]]

@@ -40,6 +40,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-fedformer]] — FEDformer: frequency enhanced decomposed transformer (ICML 2022)
 - [[source-flightdiff]] — FlightDiff: Dual-Constraint Guided Two-Phase Diffusion Framework for Flight Prediction
 - [[source-fredf]] — FreDF: Frequency-enhanced Direct Forecast, learns multi-step DF in the frequency domain to mitigate label autocorrelation (arXiv 2024 / ICLR 2025 labeled)
+- [[source-qdf]] — QDF: Quadratic Direct Forecast, learns PSD weighting matrix Σ for quadratic NLL objective addressing label autocorrelation + heterogeneous task weights (ICLR 2026 preprint, arXiv:2511.00053)
 - [[source-frets]] — FreTS: frequency-domain MLPs for time series forecasting (NeurIPS 2023)
 - [[source-from-news-to-forecast]] — From News to Forecast: LLM generative agent iteratively filters news events with reflection + CoT for time series prediction (NeurIPS 2024)
 - [[source-grid-world-code-readme]] — 网格世界环境官方代码说明（Zhao, Mi & Li）
@@ -311,6 +312,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[fence]] — FENCE, spatial-temporal feedback diffusion guidance for controlled traffic imputation (AAAI 2026)
 - [[fedformer]] — FEDformer, frequency enhanced decomposed transformer (ICML 2022)
 - [[fredf]] — FreDF, frequency-enhanced direct forecast training paradigm for multi-step TS (arXiv 2024)
+- [[qdf]] — QDF, quadratic direct forecast with bilevel-learned weighting matrix Σ for multi-step TS training (ICLR 2026)
 - [[grid-world-environment]] — 网格世界环境，强化学习教学示例
 - [[hyperd]] — Hybrid Periodicity Decoupling framework for traffic forecasting
 - [[conformer]] — ConFormer, conditional transformer for accident-aware traffic forecasting (KDD 2026)
@@ -883,6 +885,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[autocorrelation-bias]] — MSE 作为时序预测学习目标时的自相关偏差，源于标签序列的条件自相关被忽略 (DistDF, ICLR 2026; 问题由 FreDF 先系统提出)
 - [[label-autocorrelation]] — 多步标签序列在给定历史条件下的时间步依赖，破坏 DF 的条件独立假设 (FreDF)
 - [[direct-forecast]] — Direct Forecast 多输出多步预测范式，与 iterative forecast 相对 (FreDF)
+- [[heterogeneous-task-weights]] — 多步预测中对未来各步赋予非均匀任务权重（QDF 用 Σ^{-1} 对角元建模）
 
 ## Techniques (continued)
 - [[3d-visual-grounding]] — 3D 视觉定位，从自然语言描述在 3D 场景中定位目标物体的三类方法（3D/多视图/混合）(Zheng et al., 2025)
@@ -913,6 +916,7 @@ All wiki pages, organized by type. Updated on every ingest.
 ## Techniques (continued)
 - [[dual-correlation-injection]] — Dual Correlation Injection，跨模块提取 Wq',Wk' 并注入内生预测注意力
 - [[frequency-enhanced-direct-forecast]] — FreDF 训练技术：时域 MSE + 频域模长损失混合，模型无关的 DF 升级 (FreDF)
+- [[quadratic-form-weighted-objective]] — QDF 二次型加权目标 L_Σ 与双层学习 Σ 的训练技术 (ICLR 2026)
 
 ## Sources (continued)
 - [[source-gcgnet]] — GCGNet: Graph-Consistent Generative Network for TS forecasting with exogenous variables (joint graph alignment + VAE generator + Graph Refiner, ICLR 2026)

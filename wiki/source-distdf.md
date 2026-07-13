@@ -34,13 +34,18 @@ DistDF is evaluated on ETT, ECL, and Weather datasets with forecasting horizons 
 
 ## Limitations
 
-The Bures-Wasserstein discrepancy under a Gaussian assumption captures only first- and second-order moments. Real-world data may exhibit non-Gaussian characteristics requiring higher-order statistics for full characterization. Extending to higher-order discrepancies while maintaining computational tractability is a future direction.[^src-distdf]
+The Bures-Wasserstein discrepancy under a Gaussian assumption captures only first- and second-order moments. Real-world data may exhibit non-Gaussian characteristics requiring higher-order statistics for full characterization. Extending to higher-order discrepancies while maintaining computational tractability is a future direction. Sibling work [[source-qdf|QDF]] (same author group) instead remains in the quadratic-likelihood family and learns $\Sigma$ for autocorrelation + heterogeneous step weights rather than switching to OT alignment.[^src-distdf]
 
 ## Key Terminology
 
 - **Autocorrelation bias**: the bias in MSE as a negative log-likelihood estimator when label sequences have conditional autocorrelation
 - **Joint-distribution Wasserstein discrepancy**: Wp(Px,y, Px,ŷ) as a tractable upper bound on expected conditional Wasserstein discrepancy
 - **Bures-Wasserstein discrepancy**: closed-form W2 metric under Gaussian assumption, matching mean and covariance
+
+## Sibling Objectives
+
+- [[source-fredf|FreDF]] — frequency-domain likelihood alignment (marginal decorrelation)
+- [[source-qdf|QDF]] — learned quadratic $L_\Sigma$ for autocorrelation + hetero task weights
 
 ---
 

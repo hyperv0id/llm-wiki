@@ -7,7 +7,7 @@ tags:
   - learning-objective
 created: 2026-07-13
 last_updated: 2026-07-13
-source_count: 1
+source_count: 2
 confidence: high
 status: active
 ---
@@ -29,15 +29,16 @@ DF became dominant for long-horizon tasks because of faster inference, simpler i
 
 ## Likelihood Gap
 
-FreDF's Theorem 3.1: the DF MSE objective equals the conditional negative log-likelihood only if $Y_t \perp Y_{t'} \mid L$. When labels are autocorrelated, DF training diverges from maximum-likelihood principles. [[fredf|FreDF]] mitigates this by supervising in an orthogonal frequency domain; [[source-distdf|DistDF]] later attacks residual [[autocorrelation-bias]] via distributional alignment.[^src-fredf]
+FreDF's Theorem 3.1: the DF MSE objective equals the conditional negative log-likelihood only if $Y_t \perp Y_{t'} \mid L$. When labels are autocorrelated, DF training diverges from maximum-likelihood principles. [[fredf|FreDF]] mitigates this by supervising in an orthogonal frequency domain; [[qdf|QDF]] learns a quadratic $L_\Sigma$ with adaptive $\Sigma$ (autocorrelation + heterogeneous step weights); [[source-distdf|DistDF]] later attacks residual [[autocorrelation-bias]] via distributional alignment.[^src-fredf][^src-qdf]
 
 ## Related
 
-- [[label-autocorrelation]]
-- [[frequency-enhanced-direct-forecast]]
-- [[fredf]]
-- [[source-fredf]]
+- [[label-autocorrelation]], [[heterogeneous-task-weights]]
+- [[frequency-enhanced-direct-forecast]], [[quadratic-form-weighted-objective]]
+- [[fredf]], [[qdf]]
+- [[source-fredf]], [[source-qdf]]
 
 ---
 
 [^src-fredf]: [[source-fredf]]
+[^src-qdf]: [[source-qdf]]

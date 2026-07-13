@@ -8,7 +8,7 @@ tags:
   - mse
 created: 2026-07-13
 last_updated: 2026-07-13
-source_count: 2
+source_count: 3
 confidence: high
 status: active
 ---
@@ -38,11 +38,15 @@ Later, DistDF reframes the same phenomenon as **autocorrelation bias** of MSE as
 Both fail to fully eliminate autocorrelation bias because they cannot guarantee the required *conditional* decorrelation (diagonal Σ|x).[^src-distdf]
 
 
-## Resolution via DistDF
+## Resolution Paths
 
-DistDF bypasses likelihood estimation entirely by directly aligning conditional distributions of forecasts and labels via a joint-distribution Wasserstein discrepancy, avoiding autocorrelation bias at the source.[^src-distdf]
+Two ICLR-2026-era siblings take different routes after diagnosing residual bias in FreDF/Time-o1:
+
+- **[[source-distdf|DistDF]]** bypasses likelihood estimation entirely by aligning conditional distributions via a joint-distribution Wasserstein discrepancy.[^src-distdf]
+- **[[source-qdf|QDF]]** stays in the NLL/quadratic family but *learns* a PSD weighting matrix $\Sigma$ (bilevel, generalization-targeted) so off-diagonals capture residual dependence and diagonals capture [[heterogeneous-task-weights|heterogeneous task weights]].[^src-qdf]
 
 ---
 
 [^src-distdf]: [[source-distdf]]
 [^src-fredf]: [[source-fredf]]
+[^src-qdf]: [[source-qdf]]

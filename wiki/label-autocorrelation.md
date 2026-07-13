@@ -8,7 +8,7 @@ tags:
   - direct-forecast
 created: 2026-07-13
 last_updated: 2026-07-13
-source_count: 1
+source_count: 2
 confidence: high
 status: active
 ---
@@ -37,16 +37,19 @@ Using double machine learning (DML) with history as confounder (to remove fork-s
 |----------|-----------|--------|
 | Iterative forecast (IF) | Recursive one-step prediction | Respects label structure but suffers error propagation |
 | [[fredf|FreDF]] | Align DF outputs with labels in an orthogonal (e.g., Fourier) domain | Mitigates label dependence under DF; model-agnostic |
+| [[qdf|QDF]] | Learn PSD $\Sigma$ in quadratic $L_\Sigma=\|Y-\hat Y\|_{\Sigma^{-1}}^2$ (off-diagonals) | Models residual conditional dependence + [[heterogeneous-task-weights]] |
 | [[source-distdf|DistDF]] | Joint-distribution Wasserstein alignment | Avoids likelihood factorization; targets residual [[autocorrelation-bias]] |
 
-FreDF is the first systematic use of frequency analysis to upgrade the *forecast paradigm* (not just architecture) for label autocorrelation.[^src-fredf]
+FreDF is the first systematic use of frequency analysis to upgrade the *forecast paradigm* (not just architecture) for label autocorrelation.[^src-fredf] Later [[qdf|QDF]] keeps the DF multi-output head but learns a quadratic weighting matrix $\Sigma$ so off-diagonals of $\Sigma^{-1}$ model residual conditional dependence (and diagonals model [[heterogeneous-task-weights|heterogeneous task weights]]).[^src-qdf]
 
 ## Related
 
 - [[autocorrelation-bias]] — DistDF's formal bias of MSE under conditional label dependence
 - [[frequency-enhanced-direct-forecast]] — FreDF training recipe
-- [[source-fredf]]
+- [[source-fredf]], [[source-qdf]]
+- [[qdf]], [[quadratic-form-weighted-objective]], [[heterogeneous-task-weights]]
 
 ---
 
 [^src-fredf]: [[source-fredf]]
+[^src-qdf]: [[source-qdf]]
