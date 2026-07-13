@@ -1,3 +1,10 @@
+## [2026-07-13] ingest | SRSNet: Enhancing Time Series Forecasting through Selective Representation Spaces
+创建的页面：[[source-srsnet]], [[srsnet]], [[selective-representation-space]], [[selective-patching]], [[dynamic-reassembly]], [[adaptive-fusion]]
+更新的页面：[[index]], [[patchtst]], [[patch-based-tokenization]], [[crossformer]]
+核心贡献：批评固定 adjacent patching 的表示空间；提出可微 Selective Patching + Dynamic Reassembly + Adaptive Fusion 的即插即用 SRS 模块；SRSNet=SRS+MLP 在多域 LTSF 上 SOTA，并可提升 PatchTST/Crossformer 等 patch 骨干。NeurIPS 2025 / arXiv:2510.14510。
+源文件：外部 PDF（不可变 raw/ 策略；路径见 ingest-reports/srsnet-why.md）
+---
+
 ---
 title: Log
 type: concept

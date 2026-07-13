@@ -10,8 +10,8 @@ tags:
   - self-supervised
   - ICLR-2023
 created: 2026-05-30
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-07-13
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -86,7 +86,7 @@ Patch-level masked autoencoder（借鉴 CV [[mae|MAE]] 的范式）：非重叠 
 PatchTST 是 LSTF 领域的关键转折点 [^src-patchtst]：
 
 - **回击"Transformer 无用论"**：在 DLinear (Zeng et al., 2022) 质疑 Transformer 有效性后，PatchTST 证明正确设计下的 Transformer 可超越线性模型
-- **Patching 成为标配**：后续模型 [[simdiff|SimDiff]], [[cvpe|CVPE]], [[sparsetsf|SparseTSF]] 等均采用 patch tokenization
+- **Patching 成为标配**：后续模型 [[simdiff|SimDiff]], [[cvpe|CVPE]], [[sparsetsf|SparseTSF]], [[srsnet|SRSNet]] 等均采用 patch tokenization；[[selective-representation-space|SRS]] 进一步将固定 adjacent patching 升级为自适应选择与重排 [^src-srsnet]
 - **CI 成为默认策略**：大多数后续 Transformer 采独立处理各通道，跨变量交互仅作可选增强
 - **自监督 + Transfer 潜力**：为时序基础模型（[[timesfm|TimesFM]], [[chronos|Chronos]]）提供预训练范式参考
 
@@ -99,8 +99,9 @@ PatchTST 是 LSTF 领域的关键转折点 [^src-patchtst]：
 ## Connections
 
 - **前驱/基线**：[[informer|Informer]], [[autoformer|Autoformer]], [[fedformer|FEDformer]], DLinear
-- **后续/继承**：[[simdiff|SimDiff]]（patch + CI + diffusion）, [[cvpe|CVPE]]（CI + CD 折中）, [[sparsetsf|SparseTSF]]（patch + 极致压缩）
+- **后续/继承**：[[simdiff|SimDiff]]（patch + CI + diffusion）, [[cvpe|CVPE]]（CI + CD 折中）, [[sparsetsf|SparseTSF]]（patch + 极致压缩）, [[srsnet|SRSNet]] / [[selective-representation-space|SRS]]（自适应 patch 表示空间插件）
 - **核心概念**：[[patch-based-tokenization]], [[channel-independence]], [[instance-normalization]], [[lstf]]
 - **自监督/预训练**：[[mae|MAE]], [[videomae]], [[timesfm|TimesFM]], [[chronos]]
 
 [^src-patchtst]: [[source-patchtst]]
+[^src-srsnet]: [[source-srsnet]]

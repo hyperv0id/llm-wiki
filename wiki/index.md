@@ -920,14 +920,20 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Sources (continued)
 - [[source-gcgnet]] — GCGNet: Graph-Consistent Generative Network for TS forecasting with exogenous variables (joint graph alignment + VAE generator + Graph Refiner, ICLR 2026)
+- [[source-srsnet]] — SRSNet / SRS: Selective Representation Space, adaptive patch selection + reassembly plugin for LTSF (NeurIPS 2025, arXiv:2510.14510)
 
 ## Entities (continued)
 - [[gcgnet]] — GCGNet, graph-consistent generative network for exogenous TS forecasting (ICLR 2026, ECNU)
+- [[srsnet]] — SRSNet, SRS + MLP for long-term MTS forecasting via adaptive patch representation spaces (NeurIPS 2025, ECNU)
 
 ## Concepts (continued)
 - [[joint-temporal-channel-correlation]] — 联合时间–通道相关建模，反对外生预测中的两步串行相关学习 (GCGNet)
+- [[selective-representation-space]] — Selective Representation Space (SRS)，自适应选择/重排 patch 以替代固定 adjacent patching 的表示空间 (NeurIPS 2025)
 
 ## Techniques (continued)
 - [[graph-structure-aligner]] — Graph Structure Aligner：patch 图 VAE + L1 结构对齐约束生成器 (GCGNet)
 - [[graph-refiner]] — Graph Refiner：top-k 稀疏邻接 + GCN 精炼并防止 Graph VAE 退化 (GCGNet)
 - [[variational-generator-exogenous]] — Variational Generator：VAE 粗预测 + 可选未来外生替换 (GCGNet)
+- [[selective-patching]] — Selective Patching：stride-1 候选上可微 Argmax 选 patch（可重复采样）(SRS, NeurIPS 2025)
+- [[dynamic-reassembly]] — Dynamic Reassembly：对选中 patch 可微 Argsort 学习顺序 (SRS, NeurIPS 2025)
+- [[adaptive-fusion]] — Adaptive Fusion (SRS)：常规 adjacent 与 selective patch 嵌入的凸组合 (NeurIPS 2025)

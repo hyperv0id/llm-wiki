@@ -8,8 +8,8 @@ tags:
   - multivariate
   - ICLR-2023
 created: 2026-05-30
-last_updated: 2026-05-30
-source_count: 3
+last_updated: 2026-07-13
+source_count: 4
 confidence: high
 status: active
 ---
@@ -39,7 +39,7 @@ Crossformer 由三个组件构成 [^src-crossformer-2023]：
 
 ## 后续影响
 
-Crossformer 的 Router 机制（路由向量聚合-分发）被 [[cvpe|CVPE]] 借鉴，用于 patch embedding 层的轻量跨变量信息注入 [^src-cvpe-2025]。
+Crossformer 的 Router 机制（路由向量聚合-分发）被 [[cvpe|CVPE]] 借鉴，用于 patch embedding 层的轻量跨变量信息注入 [^src-cvpe-2025]。[[selective-representation-space|SRS]] 将其作为 patch 骨干之一：接入 Selective Patching / Dynamic Reassembly 后在 ETTm2 等上约有 5–10% 级误差下降，并验证插件开销可控 [^src-srsnet]。
 
 ## 与 iTransformer 的对比
 
@@ -65,9 +65,10 @@ iTransformer 论文指出 Crossformer 的跨变量 patch 交互引入**时间不
 - 对比：[[channel-independence]] — CI 策略（不建模跨维度依赖）
 - 对比：[[informer]] — 仅建模跨时间依赖
 - 对比：[[autoformer]] — 仅建模跨时间依赖
-- 后续：[[cvpe]] — 借鉴 Router 机制
+- 后续：[[cvpe]] — 借鉴 Router 机制；[[srsnet|SRSNet]] / [[selective-representation-space|SRS]] — 自适应 patch 表示空间插件
 - 对比：[[itransformer]] — 不修改组件的反转架构，variety token 交互
 
 [^src-crossformer-2023]: [[source-crossformer-2023]]
 [^src-cvpe-2025]: [[source-cvpe-2025]]
 [^src-itransformer]: [[source-itransformer]]
+[^src-srsnet]: [[source-srsnet]]

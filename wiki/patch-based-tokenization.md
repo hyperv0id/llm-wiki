@@ -7,8 +7,8 @@ tags:
   - tokenization
   - patch
 created: 2026-04-28
-last_updated: 2026-05-30
-source_count: 6
+last_updated: 2026-07-13
+source_count: 7
 confidence: high
 status: active
 ---
@@ -71,6 +71,7 @@ iTransformer 论文指出 PatchTST 在 PEMS 波动序列上表现不佳——pat
 - 相关：[[learnable-patch-position-encoding]] — CVPE 的可学习位置编码
 - 相关：[[dsw-embedding]] — Crossformer 的 2D 分段嵌入
 - 相关：[[sundial]] — Sundial 使用 patch tokenization (P=16) 实现 patch 级预测，减少自回归步数 (ICML 2025)[^src-sundial]
+- **固定 → 自适应**：[[selective-representation-space|SRS]] / [[selective-patching|Selective Patching]] 批评固定 stride 的 representation space，以可微选 patch + 重排 + 融合增强 patch 骨干（含 [[srsnet|SRSNet]]）[^src-srsnet]
 
 [^src-simdiff]: [[source-simdiff]]
 [^src-patchtst]: [[source-patchtst]]
@@ -78,3 +79,4 @@ iTransformer 论文指出 PatchTST 在 PEMS 波动序列上表现不佳——pat
 [^src-crossformer-2023]: [[source-crossformer-2023]]
 [^src-itransformer]: [[source-itransformer]]
 [^src-sundial]: [[source-sundial]]
+[^src-srsnet]: [[source-srsnet]]
