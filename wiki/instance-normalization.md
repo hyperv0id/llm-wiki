@@ -6,8 +6,8 @@ tags:
   - normalization
   - distribution-shift
 created: 2026-04-28
-last_updated: 2026-06-08
-source_count: 4
+last_updated: 2026-07-13
+source_count: 5
 confidence: high
 status: active
 ---
@@ -59,12 +59,22 @@ pred = pred * (std + eps) + mean
 
 RevIN 已被多种主流模型采用：iTransformer、PatchTST、SparseTSF 等[^src-cyclenet]。**PatchTST** 在 patching 前对每个单变量序列做零均值单位方差归一化，预测后将均值和标准差加回，与 [[channel-independence|Channel Independence]] 配合使用 [^src-patchtst]。**[[nuwats|NuwaTS]]** 在插补场景中对每个变量先做 RevIN（**缺失值置零**后再归一化）以消除跨域幅度/分布差异，存储原始均值方差供反归一化[^src-nuwats]。
 
+### ProbTS 对 RevIN vs 均值缩放的跨场景结论
+
+[[probts|ProbTS]] 将归一化作为与 [[ar-vs-nar-decoding|AR/NAR 解码]]、分布估计并列的第三方法轴，并系统对比了长程点预测线常用的 RevIN 与短程概率线常用的**均值缩放**（mean scaling）[^src-probts]：
+
+- **长程**：RevIN 显著改善多数模型（尤其 AR 概率模型），掩盖趋势引起的分布漂移与误差累积；ETTh1 上 GRU-NVP+RevIN 甚至可超过 PatchTST+RevIN。但在强季节、弱趋势的 Traffic 上 RevIN 有负作用，暗示其主要对冲的是趋势效应[^src-probts]。
+- **短程概率**：RevIN 对 CSDI / TimeGrad / GRU-NVP 等不稳定占优；**均值缩放更可靠**。完全不做实例级归一化有时可行，但在 Wikipedia/Solar （TimeGrad）、Electricity（GRU-NVP）上会导致严重失败[^src-probts]。
+- **NAR 概率**：RevIN 与 CSDI 类 NAR 不总是好搭档（如 Weather 上 CSDI+RevIN 差于 CSDI+Scaling），NAR 概率模型的有效归一化仍是开放问题[^src-probts]。
+
 ## 相关页面
 
 - [[unica|UniCA]] — 统一的协变量适应框架，被设计为RevIN的广义扩展，可处理异构协变量（分类/图像/文本）而不仅是数值序列的分布漂移[^src-unica]
 - [[unified-covariate-adaptation]] — 统一协变量适应概念，RevIN 是其处理分布漂移的子技术
 - [[patchtst|PatchTST]] — 在 patching 前使用 RevIN 与 CI 配合[^src-patchtst]
 - [[nuwats|NuwaTS]] — 插补基础模型，对缺失值置零后做 RevIN 消除跨域分布差异[^src-nuwats]
+- [[probts|ProbTS]] — 统一基准下 RevIN vs 均值缩放的系统对比[^src-probts]
+- [[ar-vs-nar-decoding]] — 与归一化交互的解码方案轴
 
 ## 引用
 
@@ -72,3 +82,4 @@ RevIN 已被多种主流模型采用：iTransformer、PatchTST、SparseTSF 等[^
 [^src-cyclenet]: [[source-cyclenet]]
 [^src-patchtst]: [[source-patchtst]]
 [^src-nuwats]: [[source-nuwats]]
+[^src-probts]: [[source-probts]]

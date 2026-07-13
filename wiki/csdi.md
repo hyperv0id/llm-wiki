@@ -9,8 +9,8 @@ tags:
   - probabilistic-modeling
   - neurips-2021
 created: 2026-05-31
-last_updated: 2026-06-09
-source_count: 8
+last_updated: 2026-07-13
+source_count: 9
 confidence: medium
 status: active
 ---
@@ -126,6 +126,7 @@ CSDI 的三个核心设计——(1) 观测值作为条件直接注入去噪网�
 - **[[ratd|RATD]]** (NeurIPS 2024)：在 CSDI 的双轴 Transformer / DiffWave 架构基础上加入检索增强——从外部数据库检索 k 个最近邻历史样本作为参照，经 Reference Modulated Attention (RMA) 注入去噪过程，并改用 $x_0$-预测；在罕见/复杂任务（如 Wind、MIMIC 罕见病例）上显著超越 CSDI[^src-ratd]
 - **[[s2dbm|S²DBM]]** (arXiv 2024)：直接沿用 CSDI 的去噪网络架构但移除其原有掩码条件机制，改用独立的线性先验预测器 F 与条件编码器 E，并把 CSDI 作为点/概率预测的主要扩散基线全面对比[^src-s2dbm]
 - **CSDI 的 SDE 连续化**：一些后续工作将离散时间框架扩展到连续时间 SDE
+- **[[probts|ProbTS]] 基准视角**：CSDI 作为 **NAR 概率** 代表在短程 CRPS 上常最强，并作为复杂分布下相对 TSFM（MOIRAI/Chronos）的参照；长程上面临显存与学习效率问题，且 RevIN 不总是优于均值缩放（如 Weather）[^src-probts]
 
 ## 局限性
 
@@ -160,3 +161,4 @@ CSDI 的三个核心设计——(1) 观测值作为条件直接注入去噪网�
 [^src-sadi]: [[source-sadi]]
 [^src-ratd]: [[source-ratd]]
 [^src-s2dbm]: [[source-s2dbm]]
+[^src-probts]: [[source-probts]]

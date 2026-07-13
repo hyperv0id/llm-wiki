@@ -71,6 +71,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-tqn]] — TQNet: Temporal Query Network for efficient multivariate forecasting (ICML 2025)
 - [[source-trajectory-dl-survey]] — Comprehensive Survey of Deep Learning for Trajectory Data Management and Mining
 - [[source-timegrad]] — TimeGrad: autoregressive denoising diffusion for probabilistic time series forecasting (ICML 2021)
+- [[source-probts]] — ProbTS: unified benchmark for point and distributional forecasting across short/long horizons (NeurIPS 2024 D&B, arXiv:2310.07446)
 - [[source-diffstg]] — DiffSTG: probabilistic spatio-temporal graph forecasting with diffusion models (AAAI 2023)
 - [[source-csdi]] — CSDI: Conditional Score-based Diffusion Models for Probabilistic Time Series Imputation (NeurIPS 2021)
 - [[source-ssdts]] — SSD-TS: Mamba as diffusion denoising backbone for time series imputation (KDD 2025)
@@ -327,6 +328,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[timesnet]] — TimesNet, task-general time series foundation model (ICLR 2023)
 - [[timesfm]] — TimesFM, decoder-only foundation model for time-series forecasting (ICLR 2024)
 - [[chronos]] — Chronos, pretrained time series language model with tokenizer (ICLR 2024)
+- [[probts]] — ProbTS, unified point+distributional time-series forecasting benchmark tool (NeurIPS 2024)
 - [[unified-prompt-learning]] — UrbanDiT 的三个 memory pool（时域/频域/空域）+任务掩码 prompt 的自适应引导机制
 - [[cora-tsfm]] — CoRA, covariate-aware adaptation framework for TSFMs with Causality Embedding and zero-initialization (ICLR 2026)
 - [[unified-covariate-adaptation]] — UniCA, unified covariate adaptation framework for TSFMs (ICLR 2026)
@@ -472,6 +474,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[multi-level-alignment]] — 多级对齐，在表示级和预测级融合文本与时间序列模态 (ICLR 2026)
 - [[multi-scale-linear-prediction]] — 多尺度线性预测，下采样 + 自上而下混合提取多粒度趋势模式 (DST-Mamba, AAAI 2025)
 - [[generative-time-series-forecasting]] — 生成式时间序列预测，通过概率建模实现不确定性量化的预测范式
+- [[ar-vs-nar-decoding]] — AR vs NAR multi-step decoding schemes and their horizon/seasonality trade-offs (ProbTS)
+- [[non-gaussianity]] — window-level non-Gaussianity (JS vs Gaussian) as distribution complexity for forecasting (ProbTS)
 - [[chronological-textual-resonance]] — CTR，时间序列配对文本与数值序列的周期性共振现象 (ICLR 2026)
 - [[spatio-temporal-reasoning]] — 时空推理：结合图结构、时序动态和文本语义的回答式推理范式 (Ni et al., 2026)
 - [[language-as-reference-framework]] — LaRF, 以语言为参考框架的多模态统一原理 (Shao et al., 2024)

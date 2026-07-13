@@ -11,7 +11,7 @@ tags:
   - ICLR-2023
 created: 2026-05-30
 last_updated: 2026-07-13
-source_count: 2
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -95,6 +95,7 @@ PatchTST 是 LSTF 领域的关键转折点 [^src-patchtst]：
 - Channel Independence 完全忽略跨变量依赖 [^src-patchtst]
 - 小数据集（ETT 系列）优势不明显
 - CI 的跨变量建模能力有限——[[cvpe|CVPE]] 和 [[crossformer|Crossformer]] 尝试补充此缺陷
+- [[probts|ProbTS]] 显示：作为长程 **NAR 点预测** 代表，PatchTST 在长程趋势/季节场景强势，但短程高 [[non-gaussianity|非高斯性]] 上优势收缩；强季节 Traffic 上可被 AR 概率模型（TimeGrad）超过[^src-probts]
 
 ## Connections
 
@@ -105,3 +106,4 @@ PatchTST 是 LSTF 领域的关键转折点 [^src-patchtst]：
 
 [^src-patchtst]: [[source-patchtst]]
 [^src-srsnet]: [[source-srsnet]]
+[^src-probts]: [[source-probts]]

@@ -8,8 +8,8 @@ tags:
   - flow-matching
   - diffusion-models
 created: 2026-05-03
-last_updated: 2026-06-09
-source_count: 13
+last_updated: 2026-07-13
+source_count: 14
 confidence: high
 status: active
 ---
@@ -94,6 +94,7 @@ status: active
 1. **计算成本**：生成式方法通常需要多步采样（扩散模型）或 ODE 求解（流匹配）
 2. **训练稳定性**：扩散/流匹配训练比判别式回归更复杂
 3. **评估指标**：概率预测需要 CRPS、NLL 等分布级指标，而非简单的 MSE/MAE
+4. **长程分布预测**：[[probts|ProbTS]] 表明既有概率方法（AR 扩散/流与 NAR 扩散）在长 horizon 上 CRPS 显著恶化——AR 误差累积，NAR 显存与学习效率受限；同时高 [[non-gaussianity|非高斯性]] 场景仍需要比预定义分布头更强的表达力[^src-probts]
 
 ## 相关工作
 
@@ -129,6 +130,9 @@ status: active
 - [[swift]] — Swift，首个自回归一致性模型用于天气预测，NFE=1 (arXiv 2025)
 - [[autoregressive-consistency-models]] — 自回归一致性模型概念
 - [[crps-autoregressive-finetuning]] — CRPS 自回归微调技术
+- [[probts|ProbTS]] — 点+分布、短+长 horizon 统一基准与 AR/NAR 分析
+- [[ar-vs-nar-decoding]] — 多步解码方案权衡
+- [[non-gaussianity]] — 窗口分布复杂度指标
 
 [^src-aurora]: [[source-aurora]]
 [^src-simdiff]: [[source-simdiff]]
@@ -143,3 +147,4 @@ status: active
 [^src-swift]: [[source-swift]]
 [^src-k2vae]: [[source-k2vae]]
 [^src-s2dbm]: [[source-s2dbm]]
+[^src-probts]: [[source-probts]]

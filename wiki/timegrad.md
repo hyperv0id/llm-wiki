@@ -9,8 +9,8 @@ tags:
   - ddpm
   - icml-2021
 created: 2026-05-31
-last_updated: 2026-06-09
-source_count: 6
+last_updated: 2026-07-13
+source_count: 7
 confidence: medium
 status: active
 ---
@@ -115,6 +115,7 @@ TimeGrad 处于多条研究线的交汇点：
 - [[stats]] — StaTS (arXiv 2026)，联合频谱轨迹调度学习+频率引导去噪，将固定调度推进到自适应调度[^src-stats]
 - [[s2dbm]] — S²DBM (arXiv 2024)，用[[brownian-bridge-diffusion|布朗桥]]把扩散过程两端钉住、以 s=0 实现无噪声确定性采样，在点对点预测上系统性超越 TimeGrad 范式的含噪条件扩散[^src-s2dbm]
 - [[ratd|RATD]] (NeurIPS 2024)，检索增强的时序扩散模型——从数据库检索最近邻参照引导去噪，非自回归采样使其速度甚至略优于 TimeGrad 的自回归解码[^src-ratd]
+- [[probts|ProbTS]]（NeurIPS 2024）将 TimeGrad 作为 **AR 概率预测** 代表：短程分布估计强，但长程 CRPS 随 horizon/趋势恶化（误差累积）；在强季节（如 Traffic）上 AR 可反超 PatchTST；均值缩放是短程默认可靠归一化，RevIN 对长程 AR 更有帮助[^src-probts]
 - [[armd|ARMD]]（AAAI 2025）将 TimeGrad 这类"把真实序列扩散成白高斯噪声、再以历史为条件去噪"的范式视为扩散机制与 TSF 目标的失配，转而用滑动窗口产生确定性中间态、把历史→未来直接构造成扩散链，并在 7 个数据集上显著超越 TimeGrad[^src-armd]
 
 [^src-timegrad]: [[source-timegrad]]
@@ -123,3 +124,4 @@ TimeGrad 处于多条研究线的交汇点：
 [^src-s2dbm]: [[source-s2dbm]]
 [^src-ratd]: [[source-ratd]]
 [^src-armd]: [[source-armd]]
+[^src-probts]: [[source-probts]]

@@ -1,3 +1,10 @@
+## [2026-07-13] ingest | ProbTS: Benchmarking Point and Distributional Forecasting across Diverse Prediction Horizons
+创建的页面：[[source-probts]], [[probts]], [[ar-vs-nar-decoding]], [[non-gaussianity]]
+更新的页面：[[index]], [[instance-normalization]], [[timegrad]], [[csdi]], [[patchtst]], [[timesfm]], [[chronos]], [[generative-time-series-forecasting]]
+核心贡献：统一点/分布、短/长 horizon 基准；趋势/季节/非高斯性数据特征；AR vs NAR 与 RevIN vs 均值缩放方法轴；发现长程概率预测仍是开放问题，AR 误差累积与复杂分布建模是 TSFM 共性短板。NeurIPS 2024 D&B / arXiv:2310.07446。
+源文件：raw/2310.07446.pdf（不可变；外部路径见 ingest-reports/probts-why.md）
+---
+
 ## [2026-07-13] ingest | CrossLinear: Plug-and-Play Cross-Correlation Embedding for Time Series Forecasting with Exogenous Variables
 创建的页面：[[source-crosslinear]], [[crosslinear]], [[cross-correlation-embedding]]
 更新的页面：[[index]], [[source-timexer]], [[source-exost]], [[source-exollm]], [[source-exotst]], [[source-gcgnet]], [[gcgnet]], [[channel-independence]]

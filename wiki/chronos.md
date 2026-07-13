@@ -7,8 +7,8 @@ tags:
   - tokenizer
   - iclr2024
 created: 2026-04-29
-last_updated: 2026-05-31
-source_count: 3
+last_updated: 2026-07-13
+source_count: 4
 confidence: high
 status: active
 ---
@@ -68,6 +68,8 @@ Sundial (ICML 2025) 提出了与 Chronos 形成鲜明对比的设计选择[^src-
 
 Sundial 团队在 Table 8 中报告：使用相同 94B 预训练数据子集时，Sundial 在 TSLib 上的零样本性能已超过 Chronos[^src-sundial]。
 
+[[probts|ProbTS]] 进一步从统一点/分布基准指出：Chronos 通过量化 bin + Softmax 支持分布近似，但在高 [[non-gaussianity|非高斯性]] 短程场景相对领域专用概率模型（如 CSDI）的 CRPS 落差更大，预定义/离散分布头对复杂分布表达仍不足[^src-probts]。
+
 ## 相关页面
 
 - [[unified-covariate-adaptation]] — UniCA 框架
@@ -86,3 +88,4 @@ Sundial 团队在 Table 8 中报告：使用相同 94B 预训练数据子集时�
 [^src-chronos]: [[source-chronos]]
 [^src-unca]: [[source-unca]]
 [^src-sundial]: [[source-sundial]]
+[^src-probts]: [[source-probts]]
