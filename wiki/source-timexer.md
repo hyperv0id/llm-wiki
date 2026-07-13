@@ -63,5 +63,6 @@ TimeXer 的核心洞见在于：内生变量和外生变量需要不同粒度的
 - [[source-kite|KITE]] — 外生条件下的概率流匹配（HCM + KGC + CFG），确定性外生基准上对比 TimeXer
 - [[source-gcgnet|GCGNet]] — 将 TimeXer 归为 temporal→channel 两步策略，提出图一致联合相关生成网络 (ICLR 2026)
 - [[source-crosslinear|CrossLinear]] — KDD 2025 Linear 外生模型：1D conv 交叉相关嵌入 + patch/linear head，同协议 many-to-one 基准上与 TimeXer 对照且更轻量
+- [[source-nbeatsx|NBEATSx]] — 早期可解释外生神经基扩展（IJF 2022 EPF）；TimeXer 在同族 EPF 市场上用 Transformer 外生融合刷新
 
 [^src-timexer]: [[source-timexer]]

@@ -48,7 +48,7 @@ Numerical exogenous series only (no image/text multimodal ST). Models time-invar
 
 - Entity: [[crosslinear]]
 - Technique: [[cross-correlation-embedding]]
-- Related exogenous work: [[source-timexer]], [[source-exost]], [[source-exollm]], [[source-exotst]], [[source-gcgnet]]
+- Related exogenous work: [[source-timexer]], [[source-exost]], [[source-exollm]], [[source-exotst]], [[source-gcgnet]], [[source-nbeatsx]]
 - Related CI/CD context: [[channel-independence]], [[patch-based-tokenization]], [[source-sparsetsf]]
 
 ---

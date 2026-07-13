@@ -77,6 +77,7 @@ ExoST 以"select-then-balance"为核心理念，包含两个完全可微分且�
 - [[source-crosslinear]] — Linear 外生 many-to-one：即插即用交叉相关嵌入 (KDD 2025)
 - [[source-exollm]] — LLM-driven 外生预测
 - [[source-exotst]] — 过去/未来外生模态分离 + 跨时融合
+- [[source-nbeatsx]] — 早期外生神经基扩展（NBEATSx，EPF 可解释分解）
 
 ## 引用
 

@@ -51,7 +51,8 @@ Transformers remain more parameter-efficient while being memory/compute heavier;
 - Entity: [[tide]]
 - Technique: [[temporal-decoder]]
 - Concepts: [[lstf]], [[channel-independence]], [[direct-forecast]], [[instance-normalization]]
-- Related models: [[ltsf-linear]], [[patchtst]]
+- Related models: [[ltsf-linear]], [[patchtst]], [[nbeatsx]]
+- Early exogenous residual MLP: [[source-nbeatsx]] (NBEATSx; EPF short-horizon, interpretable basis stacks)
 
 ---
 

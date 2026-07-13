@@ -55,5 +55,6 @@ ExoTST systematically bridges the gap between autoregressive and forward modelin
 - [[source-crosslinear|CrossLinear]] — plug-and-play 1D-conv cross-correlation embedding for historical exo (KDD 2025)
 - [[source-exost|ExoST]] — select-then-balance past/future exo for ST backbones
 - [[source-exollm|ExoLLM]] — LLM multi-grained prompts for exogenous forecasting
+- [[source-nbeatsx|NBEATSx]] — early residual neural basis expansion with exogenous stacks (EPF)
 
 [^src-exotst]: [[source-exotst]]

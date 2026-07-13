@@ -1541,3 +1541,10 @@ TiDE: Time-series Dense Encoder for Long-term Forecasting (Das, Kong, Leach, Mat
 创建的页面：[[source-tide]], [[tide]], [[temporal-decoder]]
 更新的页面：[[lstf]], [[ltsf-linear]], [[patchtst]], [[channel-independence]], [[instance-normalization]], [[direct-forecast]], [[index]]
 源文件：raw/2304.08424.pdf
+
+## [2026-07-13] ingest | NBEATSx (arXiv:2104.05522)
+NBEATSx: Neural basis expansion analysis with exogenous variables for electricity price forecasting (Olivares, Challu, Marcjasz, Weron & Dubrawski; CMU / Wrocław; IJF 2022). Extends NBEATS with interpretable (trend/seasonality/exogenous bases) and generic (TCN/WaveNet exo encoder) stacks; ~20% over NBEATS/ESRNN without time-dependent covariates and up to ~5% over LEAR/DNN on five EPF markets.
+
+创建的页面：[[source-nbeatsx]], [[nbeatsx]]
+更新的页面：[[source-exost]], [[source-exotst]], [[source-timexer]], [[source-crosslinear]], [[source-tide]], [[tide]], [[source-exollm]], [[heterogeneous-covariates]], [[index]]
+源文件：raw/2104.05522.pdf（不可变；外部路径 `/run/media/jcheng/WD-Data/yjs/INSIS/多模态外生信息引导的长期时空预测/2104.05522.pdf`）
