@@ -1,0 +1,1430 @@
+             DAG: A Dual Correlation Network for Time Series Forecasting with
+                                Exogenous Variables
+
+
+                 Xiangfei Qiu 1 Yuhan Zhu 1 Zhengyu Li 1 Xingjian Wu 1 Bin Yang 1 Jilin Hu 1 2 3
+
+
+                         Abstract                                             𝑿𝒆𝒙𝒐          (a) PatchTST, DUET, …   (b) TimeXer, CrossLinear, …
+
+                                                                              𝒀𝒆𝒙𝒐           𝑿𝒆𝒙𝒐           𝒀𝒆𝒙𝒐       𝑿𝒆𝒙𝒐              𝒀𝒆𝒙𝒐
+     Time series forecasting is essential in various do-
+                                                                              𝑿𝒆𝒏𝒅𝒐                                               𝓕𝜽
+     mains. Compared to relying solely on endoge-
+                                                                              #
+                                                                              𝒀𝒆𝒏𝒅𝒐         𝑿𝒆𝒏𝒅𝒐    𝓕𝜽     #
+                                                                                                            𝒀𝒆𝒏𝒅𝒐     𝑿𝒆𝒏𝒅𝒐              #
+                                                                                                                                         𝒀𝒆𝒏𝒅𝒐
+     nous variables (i.e., target variables), consider-
+     ing exogenous variables (i.e., covariates) pro-                    𝓕𝜽    Forecaster
+                                                                                             𝑿𝒆𝒙𝒐           𝒀𝒆𝒙𝒐       𝑿𝒆𝒙𝒐       𝓕𝜽     𝒀𝒆𝒙𝒐
+     vides additional predictive information and often                        Data Flow
+                                                                              Channel                𝓕𝜽                 𝓕𝜽                𝓕𝜽
+     leads to more accurate predictions. However, ex-
+                                                                              Correlation                   #
+     isting methods for time series forecasting with                                        𝑿𝒆𝒏𝒅𝒐           𝒀𝒆𝒏𝒅𝒐     𝑿𝒆𝒏𝒅𝒐       𝓕𝜽    #
+                                                                                                                                        𝒀𝒆𝒏𝒅𝒐
+                                                                              Temporal
+     exogenous variables (TSF-X) have the following                           Correlation      (c) TiDE, TFT, …               (d) DAG (Ours)
+     shortcomings: 1) they do not leverage future ex-
+     ogenous variables, 2) they fail to fully account for             Figure 1. Time series forecasting algorithms can be classified as
+                                                                      follows: (a) univariate/multivariate algorithms without exogenous
+     the correlation between endogenous and exoge-                    variables, e.g., PatchTST (Nie et al., 2023) and DUET (Qiu et al.,
+     nous variables. In this study, to better leverage                2025c); (b) algorithms considering only historical exogenous vari-
+     exogenous variables, especially future exogenous                 ables, e.g., TimeXer (Wang et al., 2024) and CrossLinear (Zhou
+     variables, we propose DAG, which utilizes Dual                   et al., 2025); (c) algorithms that account for both historical and
+     correlAtion network along both the temporal and                  future exogenous variables, e.g., TiDE (Das et al., 2023) and
+                                                                      TFT (Lim et al., 2021); and (d) algorithms that consider both
+     channel dimensions for time series forecasting                   exogenous variables and correlation relationships.
+     with exoGenous variables. Specifically, we pro-
+     pose two core components: the Temporal Correla-
+     tion Module and the Channel Correlation Module.
+                                                                      et al., 2025; Huang et al., 2022), traffic (Qiu et al., 2026; Xu
+     Both modules consist of a correlation discovery
+                                                                      et al., 2023; Wang et al., 2026b; Wu et al., 2026; Shao et al.,
+     submodule and a correlation injection submodule.
+                                                                      2025), health (Wu et al., 2025a; Wang et al., 2026c; Cheng
+     The former is designed to capture the correlation
+                                                                      et al., 2026; Miao et al., 2021), energy (Alvarez et al., 2011;
+     effects of historical exogenous variables on fu-
+                                                                      Wang et al., 2026a; Liu et al., 2026a), and AIOps (Wang
+     ture exogenous variables and on historical endoge-
+                                                                      et al., 2023; Qi et al., 2023; Yu et al., 2025a). Given histor-
+     nous variables, respectively. The latter injects the
+                                                                      ical observations, it is valuable if we can know the future
+     discovered correlation relationships into the pro-
+                                                                      values ahead of time (Yu et al., 2025b; Qiu et al., 2025b;a;
+     cesses of forecasting future endogenous variables
+                                                                      Liu et al., 2026b; Wu et al., 2025c;b;d). With the rapid de-
+     based on historical endogenous variables and fu-
+                                                                      velopment of deep learning, numerous forecasting methods
+     ture exogenous variables.
+                                                                      have been proposed, most of which focus on univariate or
+                                                                      multivariate time series and rely on learning the temporal de-
+                                                                      pendencies within a single endogenous (i.e., target) variable
+1. Introduction
+                                                                      or across multiple endogenous variables—see Figure 1a.
+Time series forecasting plays a vital role in many real-world
+                                                                      However, beyond endogenous variables themselves, many
+applications, including economic (Wu et al., 2024; Wang
+                                                                      practical scenarios involve another type of informa-
+    1
+      School of Data Science and Engineering, ECNU 2 Shanghai         tion that significantly influences the accuracy of predic-
+Engineering Research Center of Big Data Management 3 National         tions—exogenous variables (i.e., covariates). Particularly
+Institutes of Educational Policy Research, ECNU. Correspondence       in scenarios where future exogenous variables are available,
+to: Jilin Hu <jlhu@dase.ecnu.edu.cn>.                                 effectively leveraging such auxiliary information can sub-
+Proceedings of the 43 rd International Conference on Machine          stantially enhance forecasting performance. For example,
+Learning, Seoul, South Korea. PMLR 306, 2026. Copyright 2026          in traffic prediction, having access to future weather condi-
+by the author(s).                                                     tions can improve the estimation of future traffic volume; in
+
+                                                                  1
+                                A Dual Correlation Network for Time Series Forecasting with Exogenous Variables
+                          �� : i-th segment                                    �� : i-th channel
+                                                                                                       Based on the analysis of existing work and our observa-
+  ����
+   �1     ����
+           �2     ����
+                   �3      ����
+                            �4      ����
+                                     �5         ����
+                                                 �1       ����
+                                                           �2        ����
+                                                                      �3       ����
+                                                                                �4  ����
+                                                                                     �5                tions in real-world data, we propose a general framework,
+  0.970   0.507   0.998    0.650    0.980       0.510     0.300      0.880     0.900    0.141
+                                                                                                       DAG, which utilizes Dual correlAtion network along both
+                  ����     Granger ca
+                                      usality   Pearson co
+                                                             rrelatio �
+                                                                        ����
+                                                                    n                                  the temporal and channel dimensions for time series fore-
+   Exogenous Temporal Correlation                   Historical Channel Correlation
+                                                                                                       casting with exoGenous variables, enabling high-quality
+    Similar Temporal Correlation                   Similar Channel Correlation
+                                                                                                       predictions of future endogenous variables. Specifically,
+   Endogenous Temporal Correlation                      Future Channel Correlation
+  ����� ����� ����� ����� �����                 ���� ���� ���� ���� ����
+                                                                                                       we first introduce the Temporal Correlation Module. Since
+   �1    �2    �3    �4    �5                    �1   �2   �3   �4   �5
+  0.884   0.543   0.974    0.524     0.994      0.690     0.120      0.850     0.950    0.200          the influence of historical exogenous variables on future
+                  �����               usality   Pearson co           �����                             exogenous variables structurally resembles the evolution of
+                           Granger ca                        rrelation
+                                                                                                       historical endogenous variables into future endogenous vari-
+ (a) Similar Temporal Correlation               (b) Similar Channel Correlation
+                                                                                                       ables, we design a correlation discovery module to capture
+Figure 2. Diagram of Temporal Correlation and Channel Correla-                                         how historical exogenous variables affect future exogenous
+tion. Granger causality is used to measure the correlation between                                     variables. We then construct a correlation injection module
+historical data and future data. Pearson correlation is used to mea-                                   that incorporates the discovered correlation relationships
+sure the correlation between exogenous and endogenous variables.
+                                                                                                       into the process of forecasting future endogenous variables
+                                                                                                       based on historical endogenous variables. Next, we propose
+retail sales forecasting, incorporating holiday schedules and                                          the Channel Correlation Module, which follows a similar
+promotional campaigns can lead to better inventory plan-                                               design principle, where a correlation discovery module mod-
+ning. Although these covariates are not part of the prediction                                         els how historical exogenous variables influence historical
+target itself, they often contain strong predictive signals.                                           endogenous variables, and a correlation injection module
+                                                                                                       incorporates the discovered relationships to enhance the
+From a temporal perspective, covariates can be categorized                                             prediction of future endogenous variables based on future
+into two types: historical exogenous variables, which are                                              exogenous variables. Finally, we combine the temporal cor-
+exogenous information observed during the historical pe-                                               relation loss, channel correlation loss, and the forecasting
+riod, and future exogenous variables, which are exogenous                                              loss of future endogenous variables as the overall loss func-
+information known for the forecast horizon. Despite their                                              tion, enabling end-to-end optimization of the forecasting
+high predictive value, current deep learning approaches still                                          task. Our contributions are summarized as:
+underutilize future exogenous variables. As shown in Fig-
+ure 1, existing exogenous-aware forecasting methods can be                                             • We propose a general framework called DAG, which im-
+broadly divided into the following two categories: 1) Meth-                                              proves forecasting accuracy by discovering and injecting
+ods using only historical information (Figure 1b): These                                                 correlation relationships across both temporal and chan-
+approaches rely solely on historical endogenous and ex-                                                  nel dimensions, fully leveraging exogenous variables.
+ogenous variables to forecast future endogenous variables.
+Representative models include TimeXer (Wang et al., 2024)                                              • We design a correlation module to capture historical ex-
+and CrossLinear (Zhou et al., 2025). By entirely ignoring                                                ogenous impacts on future exogenous and historical en-
+future covariates, these methods may underperform in sce-                                                dogenous variables.
+narios where such information is available in advance. 2)                                              • We design a correlation injection module that integrates
+Methods that use both historical and future exogenous vari-                                              the discovered temporal and channel correlation into the
+ables (Figure 1c): For instance, TiDE (Das et al., 2023) and                                             forecasting process of future endogenous variables.
+TFT (Lim et al., 2021) use historical information and future
+exogenous variables to forecast future endogenous variables.                                           • We open-source our own collected TSF-X datasets and
+However, without fully modeling correlation constraints,                                                 conduct extensive experiments on both public and newly
+such approaches are susceptible to spurious correlations.                                                released datasets. The results demonstrate that DAG
+                                                                                                         outperforms state-of-the-art methods. Additionally, all
+Further analysis—see Figure 2, reveals that forecasting with
+                                                                                                         datasets and code are available at: https://github.
+known future covariates involves correlation dependencies
+                                                                                                         com/decisionintelligence/DAG.
+across both temporal and channel dimensions. Temporally,
+the influence of historical exogenous variables on future
+exogenous variables mirrors the evolution from historical                                              2. Related works
+to future endogenous variables. In terms of channels, the
+                                                                                                       2.1. Univariate and Multivariate Forecasting
+interaction patterns between historical exogenous and en-
+dogenous variables are often transferable to those between                                             Existing time series forecasting models are typically clas-
+future exogenous and endogenous variables. This dual corre-                                            sified into univariate and multivariate forecasting methods
+lation structure remains an underexplored but critical feature                                         based on the number of input and output variables. Uni-
+that is insufficiently addressed by existing methods.                                                  variate time series forecasting models rely solely on the
+
+                                                                                                   2
+                      A Dual Correlation Network for Time Series Forecasting with Exogenous Variables
+
+historical values of a single variable to predict future val-         rate exogenous covariates without strict temporal alignment.
+ues. Traditional univariate forecasting methods, such as              ExoTST (Tayal et al., 2024) utilizes innovative embedding,
+ARIMA (Box & Pierce, 1970), ETS (Hyndman et al., 2008),               cross-attention, and cross-temporal fusion within an atten-
+and Theta (Federico Garza, 2022) are classical and widely             tion framework to robustly handle time lags and missing
+used techniques. However, these methods still depend on               data. On the other hand, GCGNet (Li et al., 2026c) models
+manual feature engineering and model design, which limits             correlations using a graph structure, but does not explicitly
+their flexibility and automation. With the rapid advance-             distinguish past and future variables or endogenous and ex-
+ment of deep learning technologies, methods like N-BEATS              ogenous variables. However, these methods generally rely
+and DeepAR can automatically learn patterns from histori-             on relatively simple combinations of historical inputs and
+cal data, excelling at capturing nonlinear relationships and          future exogenous, without fully modeling the complex inter-
+long-term dependencies. On the other hand, multivariate               actions among historical endogenous, historical exogenous,
+time series forecasting models use multiple input variables           and future exogenous variables.
+to predict the corresponding output variables. The clas-
+sic methods include VAR (Godahewa et al., 2021), Ran-                 3. Preliminaries
+dom Forests(Breiman, 2001) and LightGBM (Ke et al.,
+2017). In recent years, with the rise of deep learning, var-          3.1. Definitions
+ious architectural approaches have gained widespread at-
+                                                                      Definition 3.1 (Time Series). A time series Z ∈ RN ×T
+tention. For instance, Transformer architectures, such as
+                                                                      contains T equal-spaced time points with N channels. If
+Informer (Zhou et al., 2021), FEDformer (Zhou et al., 2022),
+                                                                      N = 1, the time series is called univariate; otherwise, it is
+Autoformer (Wu et al., 2021), Triformer (Cirstea et al.,
+                                                                      multivariate when N > 1. For clarity, we denote Xi,j as
+2022), and PatchTST (Nie et al., 2023), can more accu-
+                                                                      the j-th time point of the i-th channel.
+rately capture the complex relationships between temporal
+tokens. MLP-based methods, such as SparseTSF (Lin et al.,             Definition 3.2 (Endogenous Time Series). An endogenous
+2024a), CycleNet (Lin et al., 2024b), DUET (Qiu et al.,               time series, denoted as X endo ∈ RN ×T , refers to the pri-
+2025c), NLinear (Zeng et al., 2023), and DLinear (Zeng                mary target variable(s) whose future values we aim to fore-
+et al., 2023), utilize simpler architectures with fewer parame-       cast. These variables are determined by internal system
+ters but still achieve highly competitive forecasting accuracy.       dynamics and may depend on their own past as well as other
+However, all those methods overlook an important practi-              external inputs.
+cal factor—exogenous (historical or future exogenous). In             Definition 3.3 (Exogenous Time Series). An exogenous
+many real-world scenarios, exogenous data is known or can             time series refers to covariate variables that are not the
+be approximately known, and utilizing exogenous data can              direct forecasting targets but may influence the endogenous
+significantly improve the accuracy of predictions.                    time series. These variables are often known or can be
+                                                                      estimated in advance, such as weather, calendar events, or
+2.2. Forecasting with Exogenous Variables                             holidays. We denote the exogenous variates as two parts:
+                                                                      the past exogenous variables X exo ∈ RD×T and the future
+Time series forecasting with exogenous variables has been
+                                                                      exogenous variables Y exo ∈ RD×F , where D is the number
+extensively discussed in classical statistical methods. Some
+                                                                      of exogenous variates, T is the number of past time steps,
+statistical methods have been extended to incorporate ex-
+                                                                      and F is the forecasting horizon.
+ogenous variables as part of the input. Methods like ARI-
+MAX (Williams, 2001) and SARIMAX (Vagropoulos et al.,
+                                                                      3.2. Problem Statement
+2016) have long utilized exogenous variables to enhance
+forecasting accuracy. More recently, deep learning ap-                Exogenous-Aware Time Series Forecasting. Given a his-
+proaches have advanced this area: CrossLinear (Zhou et al.,           torical endogenous time series X endo ∈ RN ×T , along with
+2025) uses cross-correlation embeddings to capture depen-             corresponding past exogenous variables X exo ∈ RD×T and
+dencies between historical endogenous and exogenous vari-             future exogenous variables Y exo ∈ RD×F , the objective is
+ables; NBEATSx (Olivares et al., 2023) extends N-BEATS                to predict the future values of the endogenous time series
+with dedicated branches to utilize both past and future exoge-        over a forecasting horizon of length F . Formally, the goal is
+nous inputs; TiDE (Das et al., 2023) employs an MLP-based             to design a function Fθ parameterized by θ, which models
+architecture to integrate static and future covariates by con-        the input time series to get the forecasted future:
+catenation with endogenous features at each time step. The
+Temporal Fusion Transformer (TFT) (Lim et al., 2021) in-                            Ŷ endo = Fθ (X endo , X exo , Y exo ),       (1)
+tegrates historical and current exogenous variables using
+attention mechanisms. Furthermore, TimeXer(Wang et al.,               where Ŷ endo ∈ RN ×F denotes the predicted future endoge-
+2024) introduces patch-wise embeddings to flexibly incorpo-           nous variables. X endo , X exo , Y exo denote historical endoge-
+                                                                      nous variables, historical exogenous variables, and future
+
+                                                                  3
+                      A Dual Correlation Network for Time Series Forecasting with Exogenous Variables
+
+exogenous variables, respectively.                                     and each patch is projected into a temporal token.
+
+                                                                         Si = PatchEmbed(Patchify(Xiexo , i ∈ {1, ..., D})), (2)
+4. Methodology
+4.1. Structure Overview                                                where Si = [si,1 , si,2 , ..., si,M ] ∈ RM ×d denotes all tokens
+                                                                       of the i-th channel. M is the number of patches. si,j ∈
+Figure 3 illustrates the overall architecture of DAG, which            Rd denotes the j-th token of i-th channel. PatchEmbed
+effectively improves forecasting accuracy by discovering               maps each patch, added by its position embedding, into a d-
+and injecting correlation relationships along both the tem-            dimensional vector via a linear projector. We then employ a
+poral and channel dimensions, thereby fully leveraging the             standard Transformer block to model the influence weights
+information contained in exogenous variables. Specifically,            of different patches on the future exogenous variable.
+we first introduce the Temporal Correlation Module. Since
+the influence of historical exogenous variables on future                     Q = Si · Wq′ , K = Si · Wk′ , V = Si · Wv′ ,          (3)
+exogenous variables structurally resembles the evolution of                                           T
+                                                                                            Q·K
+historical endogenous variables into future endogenous vari-                      score = σ( √ ), Si′ = score · V,                  (4)
+ables, we design a correlation discovery module to capture                                    d
+how historical exogenous variables affect future exogenous
+                                                                       where Si′ ∈ RM ×d is the representations processed by MSA
+variables. We then construct a correlation injection module
+                                                                       and σ is the softmax operation.
+that incorporates the discovered correlation relationships
+into the process of forecasting future endogenous variables            To enhance robustness, instead of directly passing the gen-
+based on historical endogenous variables. Next, we propose             erated attention score to the Temporal Correlation Injec-
+the Channel Correlation Module, which follows a similar                tion Module, we extract and transfer the learnable param-
+design principle, where a correlation discovery module mod-            eters—specifically the query (Wq′ ) and key (Wk′ ) matri-
+els how historical exogenous variables influence historical            ces—of the Multi-Head Self-Attention (MSA) mechanism
+endogenous variables, and a correlation injection module               that generates the attention score. These parameters serve
+incorporates the discovered relationships to enhance the               as the temporal correlation representation to be injected.
+prediction of future endogenous variables based on future
+                                                                       Finally, the temporal tokens Si′ pass through a FeedForward
+exogenous variables. Finally, we combine the temporal
+                                                                       layer to yield Ŝi ∈ RM ×d , which is subsequently flattened
+correlation loss, channel correlation loss, and the forecast-
+                                                                       and projected to forecast future exogenous variables Ŷ exo .
+ing loss of future endogenous variables as the overall loss
+function, enabling end-to-end optimization of the task.                                Ŷiexo = Linear(Flatten(Ŝi )).              (5)
+
+4.2. Temporal Correlation Module                                       The prediction loss of the future exogenous variables is used
+As analyzed in Section 1, the influence mechanism of his-              as the temporal correlation loss during training:
+torical exogenous variables on future exogenous variables
+shares a structural similarity with the evolution process                                Lt = Y exo − Ŷ exo         .              (6)
+                                                                                                                 1
+from historical endogenous variables to future endogenous
+variables. Therefore, the Temporal Correlation Module is               4.2.2. T EMPORAL C ORRELATION I NJECTION
+designed to uncover the correlation between historical and
+future exogenous variables (Temporal Correlation Discov-               Consistent with the approach used in the Temporal Correla-
+ery Module), and to inject the discovered correlation into             tion Discovery Module, we first obtain patch-wise represen-
+the modeling process of forecasting future endogenous vari-            tations of the historical endogenous variables.
+ables based on historical endogenous variables (Temporal
+Correlation Injection Module), thereby improving accuracy.               Pi = PatchEmbed(Patchify(Xiendo , i ∈ {1, ..., N })), (7)
+
+4.2.1. T EMPORAL C ORRELATION D ISCOVERY                               where Pi = [pi,1 , pi,2 , ..., pi,M ] ∈ RM ×d denotes all tokens
+                                                                       of the i-th channel. pi,j ∈ Rd denotes the j-th token of i-th
+To extract the correlation between historical and future ex-           channel.
+ogenous variables, the Temporal Correlation Discovery
+Module adopts a patch-wise representation strategy (Nie                Then, we employ the Correlation Transformer Block
+et al., 2023; Cirstea et al., 2022). Specifically, each histori-       to model the influence of different endogenous variable
+cal exogenous variable is segmented into multiple patches,             patches on the future endogenous variable, while incorpo-
+                                                                       rating the correlation information passed from the Temporal
+                                                                       Correlation Discovery Module. Specifically, in the atten-
+                                                                       tion mechanism, the input tokens are projected via original
+
+                                                                   4
+                           A Dual Correlation Network for Time Series Forecasting with Exogenous Variables
+
+               (a) Overview                                (b) Temporal Correlation Module                                       (d) Loss Function
+                                               Correlation Discovery                     Correlation Injection            𝑳𝒕 =    𝒀𝒆𝒙𝒐 − &
+                                                                                                                                         𝒀&𝒙𝒐 𝟏
+     𝑿𝒆𝒙𝒐            𝓕𝜽𝟏            𝒀𝒆𝒙𝒐                   "
+                                                           𝒀)𝒙𝒐                              𝒀̈𝒆𝒏𝒅𝒐                       𝑳𝒄 =            & &𝒏𝒅𝒐
+                                                                                                                                  𝑿𝒆𝒏𝒅𝒐 − 𝑿      𝟏
+                                                     Flatten Head                            Flatten Head             & 𝒆𝒏𝒅𝒐
+                                                                                                                      𝒀      = 𝝀𝟏 ⋅ 𝒀̈&𝒏𝒅𝒐 + (𝟏 − 𝝀𝟏 ) ⋅ 𝒀̇𝒆𝒏𝒅𝒐
+     𝓕𝜽𝟑                            𝓖𝜽𝟒                                      𝑾𝒒! , 𝑾𝒌!
+                                                      Trmblock                             Corr. Trmblock                 𝑳𝒇 = 𝒀𝒆𝒏𝒅𝒐 − &   𝒀&𝒏𝒅𝒐 𝟏
+                                                                                   𝛼
+                     𝓖𝜽𝟐                𝒆𝒏𝒅𝒐                                                                          𝑳𝒕𝒐𝒕𝒂𝒍 = 𝑳𝒇 + 𝝀𝟐 ⋅ (𝑳𝒕 + 𝑳𝒄 )
+                                    𝒀
+                                                                              Gating
+    𝑿𝒆𝒏𝒅𝒐                                       Patch Embedding                           Patch Embedding
+            Channel            Temporal
+            Correlation        Correlation     𝓕𝜽𝟏             𝑿𝒆𝒙𝒐                          𝑿𝒆𝒏𝒅𝒐           𝓖𝜽𝟐       (c2) Correlation Trmblock
+                                                                                                                                           Output
+                                                           (c) Channel Correlation Module                                           LayerNorm
+   (c1) Trmblock
+                           Output              Correlation Discovery                     Correlation Injection
+                                                           " 𝒆𝒏𝒅𝒐
+                                                           𝑿                                 𝒀̇𝒆𝒏𝒅𝒐                                    Feed-forward
+                 LayerNorm                                                                                                L×
+                                                      Projection                              Projection
+                                                                             𝑾𝒒! , 𝑾𝒌!                                                  LayerNorm
+                Feed-forward                          Trmblock                             Corr. Trmblock
+                                                                                   𝛼
+    L×                                                                                                                                   MatMul
+                 LayerNorm
+                                                                              Gating
+                                                Series Embedding                          Series Embedding
+                                                                                                                                 𝛼
+                                               𝓕𝜽𝟑         𝑿𝒆𝒙𝒐                              𝒀𝒆𝒙𝒐            𝓖𝜽𝟒                     Scale     Scale
+                     MSA
+                                                           𝑿𝒆𝒙𝒐               MLP                                                MatMul MatMul
+                Input                                                                                 𝛼                          𝑸′      𝑲′    𝑸       𝑲   𝑽
+                                                           𝒀𝒆𝒙𝒐               MLP
+                                                                                                                                       Input
+
+
+Figure 3. The architecture of DAG. (a) Overview of the DAG framework, which comprises Temporal Correlation Modules (Fθ1 and Gθ2 )
+and Channel Correlation Modules (Fθ3 and Gθ4 ). (b) Detailed structure of the Temporal Correlation Module. (c) Detailed structure of the
+Channel Correlation Module. (c1) The standard Transformer block (Trmblock). (c2) The Correlation Trmblock, which injects learned
+correlation into the Trmblock. (d) The loss function. Note that the Gating, Trmblock, and Correlation Trmblock used in (b) and (c) share
+the same architecture.
+
+
+query and key matrices (Wq , Wk and Wv ) within the Corre-                             through two separate multilayer perceptrons (MLPs) to ob-
+lation Trmblock to obtain Q, K and V , and simultaneously                              tain nonlinear representations. The outputs of the two MLPs
+through (Wq′ and Wk′ ) extracted from the Temporal Corre-                              are then fused via a dot product operation to produce a scalar
+lation Discovery Module to generate Q′ and K ′ .                                       weight α. This weight α is used to adaptively combine the
+                                                                                       attention scores, guiding the model to integrate information
+                Q′ = Pi · Wq′ , K ′ = Pi · Wk′ ,                       (8)             dynamically based on the actual influence strength between
+         Q = Pi · Wq , K = Pi · Wk , V = Pi · Wv .                     (9)             historical exogenous and endogenous variable, thereby im-
+                                                                                       proving modeling accuracy and robustness.
+We then compute two sets of attention scores, followed by
+scaling and softmax operations (σ). A learnable weighting                                            α = MLP(Xiexo )⊤ · MLP(Xiendo ).                          (12)
+factor α is then introduced to fuse the two attention scores,
+                                                                                       Finally, the temporal tokens Pi′ output by the Attention
+resulting in the final fused attention score. This mecha-
+                                                                                       mechanism are then processed by Feedforward layer to
+nism explicitly injects temporal correlation structure into
+                                                                                       obtain P̂i ∈ RF ×d and fed into the flatten prediction head
+the attention computation, enabling the model to capture
+                                                                                       to generate forecasts of future endogenous variables.
+Correlation informed dependencies among tokens along the
+temporal dimension.                                                                                       Ÿ endo = Linear(Flatten(P̂i )).                     (13)
+                                                          ′T
+                 Q · KT                 Q′ · K
+  Sfused = α · σ( √ ) + (1 − α) · σ( √                         ), (10)                 4.3. Channel Correlation Module
+                     d                       d
+                     ′                                                                 Similar to the temporal dimension, the Channel Correla-
+                   Pi = σ(Sfused ) · V.                               (11)
+                                                                                       tion Module aims to model and inject correlation along the
+Gating Mechanism: To adaptively weight the two sets of                                 variable (channel) dimension. This module focuses on how
+attention scores along the temporal dimension, we design                               historical exogenous variables influence historical endoge-
+a Gating mechanism—see Equation 12. This module takes                                  nous variables and how such correlation patterns can be
+the historical exogenous variables X exo and the historical                            transferred to enhance the prediction of future endogenous
+endogenous variables X endo as input, and encodes them                                 variables using future exogenous variables.
+
+                                                                              5
+                      A Dual Correlation Network for Time Series Forecasting with Exogenous Variables
+
+4.3.1. C HANNEL C ORRELATION D ISCOVERY                                       Gating Mechanism: Similar to the gating mechanism in
+                                                                              Section 4.2.2. This gating mechanism takes the historical
+To capture the correlation effects from historical exogenous
+                                                                              exogenous variable X exo and future exogenous variable
+variables to historical endogenous variables, the Channel
+                                                                              Y exo as input, and encodes them using two separate MLPs.
+Correlation Discovery Module employs a series-wise repre-
+                                                                              The outputs of the two MLPs are then fused via a dot prod-
+sentation. Specifically, we encode each historical exogenous
+                                                                              uct operation to compute a scalar weight α. This weight
+variables Xiexo over time into a series-wise token through a
+                                                                              α is subsequently used to adaptively combine the attention
+series embedding layer.
+                                                                              scores, dynamically adjusting the model’s focus on the his-
+    U = SeriesEmbedding(Xiexo , i ∈ {1, ..., D}),                  (14)       torical and future exogenous information based on their
+                                                                              relative influence strength.
+The embedded historical exogenous variables U =
+[u1 , u2, · · · , uD ] ∈ RD×d are then fed into a standard                    The final fused attention is then used to refine the represen-
+Transformer block (Trmblock):                                                 tation of the series token. The refined tokens are processed
+                                                                              through FeedForward layer to obtain Ô and then passed into
+     Q = U · Wq′ , K = U · Wk′ , V = U · Wv′ ,                     (15)       the prediction head to generate a prediction Ẏ endo for the
+                           Q·K      T                                         future endogenous variables:
+                   U ′ = σ( √ ) · V,                               (16)
+                             d                                                                Ẏ endo = Linear(MLP(Ô)).                 (25)
+                        ′
+then the series token U is processed through FeedForward
+layer and obtain Û ∈ RD×d and passed through a projec-                       4.4. Loss Function
+tion layer to generate a prediction X̂ endo for the historical                The training objective of DAG consists of three compo-
+endogenous variables:                                                         nents: 1) the temporal correlation loss Lt introduced in
+                X̂ endo = Linear(MLP(Û )).                        (17)       Section 4.2.1, which measures how well the model captures
+                                                                              temporal correlation structures when forecasting future ex-
+Similar to Section 4.2.1, the Channel Correlation Discovery                   ogenous variables. 2) the channel correlation loss Lc from
+Module serves two purposes: (1) it is used to define the                      Section 4.3.1, which reflects the modeling error in capturing
+channel correlation loss, and (2) its underlying attention                    the correlation relationships between historical exogenous
+mechanism’s learnable parameters (query and key matrices                      and endogenous variables. 3) the final forecasting loss Lf .
+Wq′ and Wk′ ) are extracted to be injected into the following
+channel correlation injection module.                                         The final prediction is derived by fusing two candidates with
+                                                                              a fusion weight λ1 :
+The prediction loss of the historical endogenous variables is
+used as the channel correlation loss during training:                                  Ŷ endo = λ1 · Ÿ endo + (1 − λ1 ) · Ẏ endo ,    (26)
+                                                                              where Ÿ endo and Ẏ endo are prediction outputs from Tempo-
+                Lc = X endo − X̂ endo         .                    (18)
+                                          1                                   ral Correlation Injection Module and Channel Correlation
+                                                                              Injection Module. The forecasting loss is defined as:
+4.3.2. C HANNEL C ORRELATION I NJECTION
+                                                                                               Lf = Y endo − Ŷ endo          .          (27)
+This module uses future exogenous variables to predict fu-                                                                1
+ture endogenous variables, while incorporating the channel-                   The total loss combines forecasting and correlation losses:
+level correlation representations extracted in the previous
+step. First, the future exogenous variables are encoded using                                Ltotal = Lf + λ2 · (Lt + Lc ),              (28)
+the same series embedding strategy:
+                                                                              where λ2 is a correlation weight that balances the contribu-
+    O = SeriesEmbedding(Yiexo , i ∈ {1, ..., D}),                  (19)       tion of correlation modeling during training.
+The Correlation Trmblock is then used to model channel de-
+pendencies while injecting learned correlation information.                   5. Experiments
+               Q′ = O · Wq′ , K′ = O · Wk′ ,                       (20)       In Section 5.1, we introduce the datasets, baselines, and
+                                                                              implementation details. Section 5.2 presents the main ex-
+         Q = O · Wq , K = O · Wk , V = O · Wv ,                    (21)
+                                                                              perimental results, while Section 5.3 provides detailed anal-
+                            exo T          exo
+             α = MLP(X        ) · MLP(Y               ),           (22)       yses, including experiments without future exogenous vari-
+                 Q·K    T
+                                       Q ·K       ′        ′T                 ables 5.3.1, parameter sensitivity studies 5.3.2, ablation stud-
+  Sfused = α · σ( √ ) + (1 − α) · σ( √                          ), (23)       ies 5.3.3, and extended lookback experiments 5.3.4. Due to
+                   d                      d
+                                                                              space limitations, visualization experiments and full results
+                  O′ = σ(Sfused ) · V.                             (24)       are provided in Appendices C.1 and C.2, respectively.
+
+                                                                          6
+                                    A Dual Correlation Network for Time Series Forecasting with Exogenous Variables
+
+    Table 1. Statistics of datasets. Ex. and En. are abbreviations for the Exogenous variable and Endogenous variable, respectively.
+
+    Dataset        #Num                           Ex. Descriptions                                          En. Descriptions                      Sampling Frequency       Lengths    Split
+     ETTh              6                      Power Load Feature                                             Oil Temperature                            1 Hour             14,400     6:2:2
+     ETTm              6                      Power Load Feature                                             Oil Temperature                          15 Minutes           57,600     6:2:2
+    Weather           20                        Climate Feature                                            CO2-Concentration                          10 Minutes           52,696     7:1:2
+    Exhange            7                        Exchange Rate                                                Exchange Rate                              1 Day              7,588      7:1:2
+   Electricity        320                   Electricity Consumption                                      Electricity Consumption                        1 Hour             26,304     7:1:2
+     Traffic          861                   Road Occupancy Rates                                         Road Occupancy Rates                           1 Hour             17,544     7:1:2
+      NP              2                      Grid Load, Wind Power                                 Nord Pool Electricity Price                          1 Hour             52,416     7:1:2
+     PJM              2               System Load, SyZonal COMED load                   Pennsylvania-New Jersey-MarylandElectricity Price               1 Hour             52416      7:1:2
+      BE              2                     Generation, System Load                                Belgium’s Electricity Price                          1 Hour             52,416     7:1:2
+      FR              2                     Generation, System Load                                 France’s Electricity Price                          1 Hour             52,416     7:1:2
+      DE              2                 Wind power, Ampirion zonal load                             German’s Electricity Price                          1 Hour             52,416     7:1:2
+    Energy            5          Battery, Geothermal, Hydroelectric, Solar, Wind                        Thermoelectric                                  1 Hour             13,064     7:1:2
+    Colbún            2                   Precipitation, Tributary Inflow                                 Water Level                                   1 Day               2,958     7:1:2
+     Rapel            2                   Precipitation, Tributary Inflow                                 Water Level                                   1 Day               3,366     7:1:2
+    Sdwpfh            6                          Climate Feature                                         Active Power                                   1 Hour             1,4641     7:1:2
+    Sdwpfm            6                          Climate Feature                                         Active Power                                 30 Minutes           2,9281     7:1:2
+
+
+Table 2. Average results on 12 real-world datasets that satisfy the TSF-X task, where the inputs are (X endo , X exo , and Y exo ). Red: the best,
+Blue: the 2nd best. Full results are available in Table 5 in Appendix C.2.
+
+  Models         DAG (ours)           GCGNet           TimeXer              TFT              TiDE              DUET            CrossLinear    Amplifier       TimeKAN           PatchTST
+  Metrics        mse   mae           mse  mae         mse   mae       mse         mae     mse    mae         mse  mae          mse    mae    mse    mae      mse   mae         mse    mae
+    NP        0.362       0.344     0.370   0.348     0.418   0.371   0.379   0.375      0.443   0.400      0.411   0.408   0.371    0.387   0.420   0.418   0.405   0.419    0.390    0.396
+   PJM        0.093       0.180     0.095   0.187     0.108   0.198   0.114   0.207      0.142   0.246      0.102   0.197   0.112    0.223   0.137   0.246   0.139   0.262    0.133    0.259
+    BE        0.423       0.279     0.431   0.294     0.452   0.290   0.454   0.291      0.498   0.325      0.515   0.354   0.479    0.337   0.559   0.413   0.548   0.407    0.577    0.432
+    FR        0.414       0.219     0.415   0.234     0.427   0.241   0.504   0.257      0.484   0.281      0.496   0.327   0.483    0.298   0.554   0.408   0.547   0.374    0.588    0.410
+    DE        0.370       0.370     0.401   0.389     0.475   0.418   0.489   0.446      0.499   0.447      0.482   0.430   0.485    0.452   0.473   0.441   0.473   0.445    0.501    0.455
+  Energy      0.124       0.267     0.131   0.277     0.163   0.315   0.130   0.283      0.153   0.302      0.203   0.367   0.239    0.402   0.233   0.389   0.218   0.381    0.226    0.377
+ Sdwpfm1      0.423       0.461     0.424   0.457     0.701   0.609   0.482   0.474      0.483   0.507      0.599   0.570   0.426    0.502   0.437   0.490   0.447   0.534    0.435    0.502
+ Sdwpfm2      0.477       0.485     0.475   0.486     0.803   0.653   0.476   0.488      0.486   0.516      0.514   0.490   0.533    0.573   0.491   0.512   0.497   0.564    0.510    0.547
+  Sdwpfh1     0.448       0.486     0.450   0.500     0.746   0.643   0.479   0.491      0.453   0.508      0.539   0.516   0.557    0.593   0.537   0.598   0.577   0.638    0.468    0.527
+  Sdwpfh2     0.523       0.530     0.520   0.536     0.891   0.719   0.566   0.521      0.599   0.583      0.647   0.566   0.538    0.574   0.521   0.581   0.647   0.672    0.549    0.580
+  Colbun      0.098       0.154     0.107   0.175     0.145   0.235   0.238   0.297      0.164   0.227      0.198   0.266   0.126    0.195   0.173   0.246   0.128   0.175    0.239    0.309
+   Rapel      0.230       0.305     0.306   0.307     0.344   0.362   0.305   0.333      0.320   0.351      0.269   0.326   0.252    0.313   0.257   0.321   0.249   0.311    0.269    0.332
+ 1st Count       10         10        2       1         0      0       0           1       0         0        0       0         0      0      0       0       0        0        0        0
+
+
+
+
+5.1. Experimental Settings                                                                               the datasets are provided in Table 1.
+5.1.1. DATASETS
+                                                                                                         5.1.2. BASELINES
+To ensure comprehensive and fair comparisons across dif-
+                                                                                                         We comprehensively compare our model against 9 base-
+ferent models, 1) we conduct experiments on 12 real-world
+                                                                                                         lines, including 1) methods that inherently support future
+datasets that satisfy the TSF-X conditions, including 5
+                                                                                                         exogenous variables, such as GCGNet (Li et al., 2026c),
+EPF (Lago et al., 2021; Wang et al., 2024) datasets and
+                                                                                                         TimeXer (Wang et al., 2024), TFT (Lim et al., 2021),
+7 datasets we sourced ourselves. The future exogenous vari-
+                                                                                                         and TiDE (Das et al., 2023), 2) as well as methods that
+ables in these datasets are either approximately known or
+                                                                                                         do not originally support future exogenous variables, like
+highly accurate. 2) Following TimeXer (Wang et al., 2024)
+                                                                                                         DUET (Qiu et al., 2025c), CrossLinear (Zhou et al., 2025),
+and CrossLinear (Zhou et al., 2025), we also perform exper-
+                                                                                                         Amplifier (Fei et al., 2025), TimeKAN (Huang et al., 2025),
+iments on eight common multivariate forecasting datasets
+                                                                                                         and PatchTST (Nie et al., 2023). For methods that do not
+(ETT with 4 subsets, Weather, Exchange, Electricity, and
+                                                                                                         support future exogenous variables, we adapt them to in-
+Traffic). Notably, although the future exogenous variables
+                                                                                                         corporate future exogenous variables using an MLP fusion
+in these datasets are not known, we conduct vanilla forecast-
+                                                                                                         approach—see Algorithm 1 in Appendix A.3.
+ing with exogenous variables by treating the last dimension
+of the multivariate data as the endogenous series and the                                                5.1.3. I MPLEMENTATION D ETAILS
+remaining dimensions as exogenous variables. Due to space
+limitations, the experimental results for this part are pro-                                             1) To keep consistent with previous works, we adopt Mean
+vided in Tables 7 and 8 of the appendix. More details about                                              Squared Error (mse) and Mean Absolute Error (mae) as
+
+
+                                                                                                 7
+                             A Dual Correlation Network for Time Series Forecasting with Exogenous Variables
+
+Table 3. Average results under the setting where only historical exogenous variables are used, without future exogenous variables. The
+inputs are (X endo and X exo ). Red: the best, Blue: the 2nd best. Full results are available in Table 6 in Appendix C.2.
+
+  Models        DAG           GCGNet          TimeXer              TFT            TiDE              DUET          CrossLinear      Amplifier       TimeKAN         PatchTST
+  Metrics    mse   mae       mse  mae        mse   mae       mse         mae   mse    mae         mse  mae        mse    mae      mse    mae      mse   mae       mse    mae
+    NP       0.419   0.380   0.430   0.381   0.440   0.383   0.647   0.488     0.467   0.416      0.444   0.383   0.451   0.394   0.520   0.448   0.484   0.435   0.457   0.401
+   PJM       0.126   0.210   0.131   0.216   0.141   0.229   0.200   0.270     0.158   0.253      0.140   0.226   0.147   0.241   0.152   0.245   0.175   0.270   0.148   0.243
+    BE       0.462   0.297   0.459   0.306   0.477   0.301   0.563   0.354     0.547   0.348      0.473   0.305   0.477   0.300   0.502   0.325   0.488   0.315   0.485   0.309
+    FR       0.435   0.249   0.435   0.246   0.454   0.247   0.535   0.288     0.494   0.290      0.468   0.262   0.476   0.257   0.494   0.286   0.491   0.276   0.470   0.264
+    DE       0.603   0.487   0.614   0.501   0.659   0.507   0.684   0.515     0.644   0.519      0.660   0.513   0.635   0.508   0.712   0.548   0.669   0.526   0.696   0.527
+  Energy     0.150   0.300   0.154   0.305   0.172   0.326   0.376   0.480     0.162   0.311      0.160   0.308   0.201   0.336   0.180   0.327   0.147   0.296   0.203   0.341
+ Sdwpfm1     0.689   0.604   0.711   0.595   0.701   0.609   0.984   0.728     0.713   0.633      0.724   0.583   0.809   0.694   0.843   0.685   0.725   0.672   0.733   0.651
+ Sdwpfm2     0.786   0.657   0.807   0.643   0.803   0.653   1.044   0.767     0.816   0.682      0.820   0.641   0.800   0.687   0.942   0.732   0.836   0.701   0.834   0.714
+ Sdwpfh1     0.733   0.643   0.741   0.628   0.746   0.643   0.793   0.698     0.808   0.699      0.779   0.644   0.768   0.702   1.100   0.820   0.804   0.720   0.804   0.717
+ Sdwpfh2     0.870   0.695   0.886   0.701   0.891   0.719   0.926   0.746     0.919   0.751      1.007   0.715   0.956   0.774   0.980   0.768   0.941   0.782   1.025   0.802
+  Colbun     0.117   0.155   0.119   0.165   0.132   0.219   0.556   0.386     0.188   0.240      0.147   0.198   0.129   0.195   0.152   0.210   0.201   0.253   0.150   0.221
+   Rapel     0.261   0.281   0.265   0.284   0.344   0.362   0.308   0.334     0.323   0.357      0.304   0.306   0.240   0.299   0.337   0.348   0.342   0.337   0.325   0.334
+ 1st Count    9       7       1       2       0       1       0           0     0          0       0       2       1       0       0       0       1       1       0       0
+
+
+
+
+evaluation metrics. 2) We conduct both long-term and short-                                    5.3. Model Analyses
+term prediction experiments. For the Colbun and Raperl
+                                                                                               5.3.1. N OT U SING F UTURE E XOGENOUS VARIABLES
+datasets, the short-term prediction uses a lookback window
+of 60 with a prediction horizon of 10, while the long-term                                     Considering that not all datasets have access to future ex-
+prediction uses a lookback window of 180 with a predic-                                        ogenous variables, we conduct experiments using only his-
+tion horizon of 30. For the other datasets, the short-term                                     torical exogenous variables, excluding future exogenous
+prediction uses a lookback window of 168 with a prediction                                     variables, to validate the practicality of DAG—see Table 3.
+horizon of 24, and the long-term prediction uses a lookback                                    Specifically, for DAG, during inference, we use the Ŷ exo
+window of 720 with a prediction horizon of 360. 3) We                                          predicted by Fθ1 to replace the actual value Y exo used in
+utilize the TFB (Qiu et al., 2024) code repository for unified                                 Gθ4 for predicting Y endo , thus avoiding the issue of unavail-
+evaluation, with all baseline results also derived from TFB.                                   able future exogenous variables. For other baseline models,
+Following the settings in TFB (Qiu et al., 2024) and TSFM-                                     we also uniformly use only historical exogenous variables.
+Bench (Li et al., 2025), we do not apply the “Drop Last”                                       The experimental results show that DAG continues to per-
+trick to ensure a fair comparison. Further implementation                                      form excellently. Methods that consider historical exoge-
+details can be found in the Appendix A.2.                                                      nous variable modeling, such as TimeXer and CrossLinear,
+                                                                                               also perform well. DUET, which flexibly models channel
+5.2. Main Results                                                                              relationships, also achieves good results, while the channel-
+                                                                                               independent algorithm PatchTST performs poorly.
+Comprehensive forecasting results are presented in Table 2
+to demonstrate the performance of DAG on the TSF-X task.
+                                                                                               5.3.2. PARAMETER S ENSITIVITY
+We have the following observations: 1) Compared with
+forecasters of various structures, DAG achieves outstand-                                      We also conduct parameter sensitivity studies of DAG, with
+ing predictive performance. In terms of absolute metrics,                                      the following observations: 1) Figure 4a and Figure 4b illus-
+Table 2 shows that DAG achieves the highest number of first-                                   trate the performance variations of the DAG model under
+place rankings 10 for MSE and 11 for MAE demonstrating                                         different settings of the fusion weight λ1 and the correlation
+clear superiority over other methods such as TimeXer and                                       weight λ2 . Overall, the model remains stable across a wide
+TFT. 2) Methods that natively support future exogenous                                         range of values, with the optimal range for both λ1 and λ2
+variables (e.g., TFT, TimeXer) generally perform better than                                   typically falling between 0.3 and 0.7, indicating that moder-
+those that do not (e.g., PatchTST, DLinear), even when                                         ate weighting is beneficial for improving performance. 2)
+enhanced via MLP fusion. DAG, by explicitly modeling                                           Figure 4c shows that model dimension has a certain impact
+correlation relationships while leveraging exogenous inputs,                                   on performance, but DAG maintains good stability across
+not only competes with these top baselines but surpasses                                       different configurations. Smaller dimensions help reduce
+them in nearly all metrics. This demonstrates the strength                                     computational cost, while dimensions in the range of 64 to
+of incorporating correlation-aware mechanisms in TSF-X                                         256 generally achieve a good balance between prediction
+tasks.                                                                                         accuracy and model complexity. 3) Figure 4d explores the
+                                                                                               effect of patch length on model performance. Due to differ-
+
+                                                                                       8
+                                            A Dual Correlation Network for Time Series Forecasting with Exogenous Variables
+
+                                                                                                                                           0.55                                                            0.50
+      0.45                                                                 0.45                                                            0.50                                                            0.45                    Electricity         DE
+      0.40                  Electricity               DE                   0.40                   Electricity           DE                 0.45
+                                                                                                                                                                  Electricity            DE                0.40                    PJM                 Energy
+      0.35                  PJM                       Energy               0.35                   PJM                   Energy             0.40
+                                                                                                                                                                  PJM                    Energy            0.35
+MSE                                                                  MSE                                                                                                                             MSE
+                                                                                                                                           0.35
+      0.30                                                                 0.30                                                      MSE   0.30                                                            0.30
+      0.25                                                                 0.25                                                                                                                            0.25
+                                                                                                                                           0.25
+      0.20                                                                 0.20                                                            0.20                                                            0.20
+      0.15                                                                 0.15                                                            0.15                                                            0.15
+             0.1      0.3       0.5             0.7          0.9                  0.1     0.3         0.5         0.7          0.9                32        64        128          256       512                     4        8         16        32        64
+                                    1                                                                   2                                                  Model dimension                                                     Patch length
+             (a) Fusion weight λ1                                          (b) Correlation weight λ2                                              (c) Model dimension                                                     (d) Patch length
+                                                              Figure 4. Parameter sensitivity studies of main hyper-parameters in DAG.
+
+
+                            Table 4. Ablation studies for DAG.                                                                                                    Electricity F=720                                                Energy F=360
+                                                                                                                                               0.34
+                                                                                                                                                                                                               0.8
+         Datasets             Electricity                   PJM              DE              Energy              Average                       0.32                                                            0.7
+         Metrics             mse        mae           mse      mae     mse         mae    mse        mae        mse      mae
+                                                                                                                                               0.30                                                            0.6
+         (a) Gθ2            0.512       0.514     0.191       0.264   0.846       0.586   0.263     0.408   0.453        0.443
+                                                                                                                                         MSE                                                             MSE   0.5
+         (b) Gθ4            0.488       0.510     0.169       0.254   0.483       0.443   0.637     0.661   0.444        0.467                 0.28                                                            0.4
+      (c) Gθ2 + Gθ4         0.313       0.412     0.131       0.219   0.480       0.429   0.169     0.320   0.273        0.345
+   (d) Fθ1 + Gθ2 +                                                                                                                             0.26                                                            0.3
+                            0.504       0.509     0.189       0.261   0.855       0.585   0.240     0.389   0.447        0.436
+ Temporal Correlation                                                                                                                                                                                          0.2
+                                                                                                                                               0.24
+   (e) Fθ3 + Gθ4 +
+                            0.392       0.459     0.170       0.255   0.473       0.438   0.350     0.467   0.346        0.405                        48         96      192          336          720               48      96        192        336       720
+ Channel Correlation                                                                                                                                                        H                                                           H
+       DAG (ours)           0.246       0.370     0.130       0.218   0.462       0.418   0.169     0.320   0.252        0.331                               DAG                TimeXer            DUET              CrossLinear         PatchTST
+
+                                                                                                                                         Figure 5. Forecasting performance (MSE) with varying look-back
+                                                                                                                                         windows on 2 datasets: Electricity and Energy. The look-back
+                                                                                                                                         windows are H = 48, 96, 192, 336 and 720, and the forecasting
+ences in temporal dependencies across datasets, the optimal                                                                              horizons are F = 720 and 360.
+patch length varies; however, a patch size between 8 and
+32 tends to yield favorable results. It is worth noting that
+very small patch lengths may lead to increased computa-                                                                                  5.3.4. I NCREASING L OOK - BACK W INDOWS
+tional complexity, while excessively large patch lengths may                                                                             In time series forecasting tasks, the size of the look-back
+weaken the model’s ability to capture local dependencies.                                                                                window determines how much historical information the
+                                                                                                                                         model receives. We select models with better predictive
+5.3.3. A BLATION S TUDIES                                                                                                                performance from the main experiments as baselines. We
+We compare the full version of DAG with the following                                                                                    configure different look-back windows to evaluate the ef-
+variants. The Electricity has a lookback length of 96 and                                                                                fectiveness of DAG and visualize the prediction results for
+forecasts 720 steps, while the other three datasets have a                                                                               look-back window H of 48, 96, 192, 336, 720, and the fore-
+lookback length of 720 steps and forecast 360 steps—see                                                                                  casting horizons are F = 720, 360. From Figure 5, DAG
+Table 4. We make the following observations: 1) using                                                                                    consistently outperforms the baselines on the Electricity,
+only historical endogenous variables Gθ2 or only future ex-                                                                              and Energy. As the look-back window increases, the predic-
+ogenous variables Gθ4 results in suboptimal forecasting per-                                                                             tion metrics of DAG continue to decrease, indicating that it
+formance, indicating that relying on a single input source                                                                               is capable of modeling longer sequences.
+is insufficient for high-quality predictions. 2) Combining
+both Gθ2 + Gθ4 leads to a significant performance improve-                                                                               6. Conclusion
+ment, highlighting their complementary roles in modeling.
+3) Furthermore, introducing temporal correlation module                                                                                  This study proposes DAG, which utilizes Dual correlAtion
+(Fθ1 + Gθ2 + Temporal Correlation) improves performance                                                                                  network along both the temporal and channel dimensions
+compared to using only historical endogenous variables Gθ2 ;                                                                             for time series forecasting with exoGenous variables, espe-
+similarly, incorporating channel correlation module (Fθ3 +                                                                               cially by leveraging future exogenous variable information.
+Gθ4 + Channel Correlation) outperforms the variant that uses                                                                             Specifically, DAG introduces a Temporal Correlation Mod-
+only future exogenous variables Gθ4 . These results validate                                                                             ule to capture the influence of historical exogenous variables
+the effectiveness of both correlation modeling mechanisms                                                                                on future exogenous variables and inject these correlations
+in DAG. 4) Ultimately, the full DAG model, which inte-                                                                                   into endogenous forecasting. In addition, a Channel Corre-
+grates both temporal and channel correlation, achieves the                                                                               lation Module models the relationships between historical
+best results, demonstrating the importance of modeling dual                                                                              exogenous and endogenous variables to further enhance
+correlation structures for TSF-X tasks.                                                                                                  forecasting with future exogenous information.
+
+                                                                                                                                     9
+                     A Dual Correlation Network for Time Series Forecasting with Exogenous Variables
+
+Acknowledgements                                                     Fang, X., Liu, D., Zhou, P., Xu, Z., and Li, R. Hierarchical
+                                                                       local-global transformer for temporal sentence grounding.
+This work was partially supported by National Natural Sci-             IEEE Transactions on Multimedia, 2023.
+ence Foundation of China (62472174) and ECNU Multi-
+functional Platform for Innovation (001). Jilin Hu is the            Fang, X., Easwaran, A., Genest, B., and Suganthan, P. N.
+corresponding author of the work.                                      Your data is not perfect: Towards cross-domain out-of-
+                                                                       distribution detection in class-imbalanced data. Expert
+Impact Statement                                                       Systems with Applications, 2025.
+
+This paper presents work whose goal is to advance the field          Federico Garza, Max Mergenthaler Canseco, C. C. K. G. O.
+of Machine Learning. There are many potential societal                 StatsForecast: Lightning fast forecasting with statistical
+consequences of our work, none which we feel must be                   and econometric models. PyCon Salt Lake City, Utah,
+specifically highlighted here.                                         US 2022, 2022.
+
+                                                                     Fei, J., Yi, K., Fan, W., Zhang, Q., and Niu, Z. Amplifier:
+References                                                             Bringing attention to neglected low-energy components
+                                                                       in time series forecasting. In AAAI, volume 39, pp. 11645–
+Alvarez, F. M., Troncoso, A., Riquelme, J. C., and Ruiz,
+                                                                       11653, 2025.
+  J. S. A. Energy time series forecasting based on pattern
+  sequence similarity. IEEE Trans. Knowl. Data Eng., 23              Godahewa, R., Bergmeir, C., Webb, G. I., Hyndman, R. J.,
+  (8):1230–1243, 2011.                                                 and Montero-Manso, P. Monash time series forecasting
+Box, G. E. and Pierce, D. A. Distribution of residual auto-            archive. arXiv preprint arXiv:2105.06643, 2021.
+  correlations in autoregressive-integrated moving average           Hersbach, H., Bell, B., Berrisford, P., Hirahara, S., Horányi,
+  time series models. Journal of the American statistical              A., Muñoz-Sabater, J., Nicolas, J., Peubey, C., Radu, R.,
+  Association, 65(332):1509–1526, 1970.                                Schepers, D., et al. The era5 global reanalysis. Quarterly
+Breiman, L. Random forests. Machine learning, 45:5–32,                 journal of the royal meteorological society, 146(730):
+  2001.                                                               1999–2049, 2020.
+
+Chen, L., Chen, D., Shang, Z., Wu, B., Zheng, C., Wen, B.,           Hu, Y., Yang, J., Zhou, T., Liu, P., Tang, Y., Jin, R., and
+  and Zhang, W. Multi-scale adaptive graph neural network              Sun, L. Bridging past and future: Distribution-aware
+  for multivariate time series forecasting. TKDE, 35(10):              alignment for time series forecasting. In ICLR, 2026.
+  10748–10761, 2023.
+                                                                     Huang, S., Zhao, Z., Li, C., and Bai, L. Timekan: Kan-
+Chen, Y., Huang, X., Zhang, Q., Li, W., Zhu, M., Yan, Q., Li,          based frequency decomposition learning architecture for
+  S., Chen, H., Hu, H., Yang, J., et al. Gim: A million-scale          long-term time series forecasting. In ICLR, 2025.
+  benchmark for generative image manipulation detection
+  and localization. In AAAI, volume 39, pp. 2311–2319,               Huang, X., Yang, Y., Wang, Y., Wang, C., Zhang, Z., Xu,
+  2025.                                                               J., Chen, L., and Vazirgiannis, M. Dgraph: A large-scale
+                                                                       financial dataset for graph anomaly detection. In NeurIPS,
+Cheng, F., Liu, H., and Lv, X. Metagnsdformer: Meta-                   pp. 22765–22777, 2022.
+  learning enhanced gated non-stationary informer with
+  frequency-aware attention for point-interval remaining             Hyndman, R., Koehler, A. B., Ord, J. K., and Snyder, R. D.
+  useful life prediction of lithium-ion batteries. Advanced           Forecasting with exponential smoothing: the state space
+  Engineering Informatics, 69:103798, 2026.                            approach. 2008.
+
+Cirstea, R., Guo, C., Yang, B., Kieu, T., Dong, X., and Pan,         Ke, G., Meng, Q., Finley, T., Wang, T., Chen, W., Ma,
+  S. Triformer: Triangular, variable-specific attentions for           W., Ye, Q., and Liu, T.-Y. Lightgbm: A highly efficient
+  long sequence multivariate time series forecasting. In               gradient boosting decision tree. Advances in Neural In-
+  IJCAI, pp. 1994–2001, 2022.                                          formation Processing Systems, 30, 2017.
+
+Das, A., Kong, W., Leach, A., Mathur, S., Sen, R., and Yu,           Lago, J., Marcjasz, G., De Schutter, B., and Weron, R.
+  R. Long-term forecasting with tide: Time-series dense                Forecasting day-ahead electricity prices: A review of
+  encoder. arXiv preprint arXiv:2304.08424, 2023.                      state-of-the-art algorithms, best practices and an open-
+                                                                       access benchmark. Applied Energy, 293:116983, 2021.
+Fang, X., Liu, D., Zhou, P., and Hu, Y. Multi-modal cross-
+  domain alignment network for video moment retrieval.               Li, Z., Qiu, X., Chen, P., Wang, Y., Cheng, H., Shu, Y.,
+  IEEE Transactions on Multimedia, 25:7517–7532, 2022.                 Hu, J., Guo, C., Zhou, A., Wen, Q., et al. TSFM-Bench:
+
+                                                                10
+                      A Dual Correlation Network for Time Series Forecasting with Exogenous Variables
+
+  A comprehensive and unified benchmark of foundation                 Ma, Y., Feng, K., Zhang, X., Liu, H., Zhang, D. J., Xing,
+  models for time series forecasting. In SIGKDD, 2025.                 J., Zhang, Y., Yang, A., Wang, Z., and Chen, Q. Follow-
+                                                                       your-creation: Empowering 4d creation through video
+Li, Z., Hu, Y., Chen, Z., Huang, Q., Qiu, G., Fu, Z., and
+                                                                       inpainting. arXiv preprint arXiv:2506.04590, 2025a.
+  Liu, M. Retrack: Evidence-driven dual-stream directional
+  anchor calibration network for composed video retrieval.            Ma, Y., He, Y., Wang, H., Wang, A., Shen, L., Qi, C.,
+  In AAAI, volume 40, pp. 23373–23381, 2026a.                          Ying, J., Cai, C., Li, Z., Shum, H.-Y., et al. Follow-your-
+Li, Z., Hu, Y., Chen, Z., Zhang, M., Fu, Z., and Nie, L.               click: Open-domain regional image animation via motion
+  Conesep: Cone-based robust noise-unlearning compo-                   prompts. In AAAI, volume 39, pp. 6018–6026, 2025b.
+  sitional network for composed image retrieval. arXiv                Ma, Y., Wang, X., Ma, Q., Wang, Q., Zheng, M., Yang,
+  preprint arXiv:2604.20358, 2026b.                                    X., Li, H., Zhao, C., Ying, J., Yang, H., et al. Group
+Li, Z., Qiu, X., Zhu, Y., Wu, X., Hu, J., Guo, C., and Yang,           editing: Edit multiple images in one go. arXiv preprint
+  B. GCGNet: Graph-consistent generative network for                   arXiv:2603.22883, 2026.
+  time series forecasting with exogenous variables. In ICLR,
+                                                                      Miao, X., Wu, Y., Wang, J., Gao, Y., Mao, X., and Yin, J.
+  2026c.
+                                                                       Generative semi-supervised learning for multivariate time
+Lim, B., Arık, S. Ö., Loeff, N., and Pfister, T. Temporal              series imputation. In AAAI, volume 35, pp. 8983–8991,
+  fusion transformers for interpretable multi-horizon time             2021.
+  series forecasting. 37(4):1748–1764, 2021.
+                                                                      Ni, J., Zhang, Q., Jiang, D., Lv, K., Zhang, K., and Yuan, C.
+Lin, S., Lin, W., Wu, W., Chen, H., and Yang, J. SparseTSF:             Fcl-cod: Weakly supervised camouflaged object detection
+  Modeling long-term time series forecasting with 1k pa-                with frequency-aware and contrastive learning. arXiv
+  rameters. In ICML, pp. 30211–30226, 2024a.                            preprint arXiv:2603.22969, 2026.
+Lin, S., Lin, W., Xinyi, H., Wu, W., Mo, R., and Zhong,               Nie, Y., Nguyen, N. H., Sinthong, P., and Kalagnanam, J.
+  H. Cyclenet: Enhancing time series forecasting through                A time series is worth 64 words: Long-term forecasting
+  modeling periodic patterns. In NeurIPS, 2024b.                        with transformers. In ICLR, 2023.
+Liu, X., Qiu, X., Cheng, H., Wu, X., Guo, C., Yang, B., and
+                                                                      Olivares, K. G., Challu, C., Marcjasz, G., Weron, R., and
+  Hu, J. Astgi: Adaptive spatio-temporal graph interactions
+                                                                        Dubrawski, A. Neural basis expansion analysis with
+  for irregular multivariate time series forecasting. In ICLR,
+                                                                        exogenous variables: Forecasting electricity prices with
+  2026a.
+                                                                        nbeatsx. 39(2):884–900, 2023.
+Liu, X., Qiu, X., Wu, X., Li, Z., Guo, C., Hu, J., and Yang,
+  B. Rethinking irregular time series forecasting: A simple           Paszke, A., Gross, S., Massa, F., Lerer, A., Bradbury, J.,
+  yet effective baseline. In AAAI, 2026b.                               Chanan, G., Killeen, T., Lin, Z., Gimelshein, N., Antiga,
+                                                                        L., Desmaison, A., Köpf, A., Yang, E. Z., DeVito, Z.,
+Lu, S., Liu, Y., and Kong, A. W.-K. Tf-icon: Diffusion-                 Raison, M., Tejani, A., Chilamkurthy, S., Steiner, B.,
+  based training-free cross-domain image composition. In                Fang, L., Bai, J., and Chintala, S. Pytorch: An imperative
+  CVPR, pp. 2294–2305, 2023.                                            style, high-performance deep learning library. In NeurIPS,
+                                                                        pp. 8024–8035, 2019.
+Lu, S., Wang, Z., Li, L., Liu, Y., and Kong, A. W.-K. Mace:
+  Mass concept erasure in diffusion models. In CVPR, pp.              Qi, X., Hu, H., Guo, J., Huang, C., Zhou, X., Xu, N., Fu,
+  6430–6440, 2024a.                                                     Y., and Zhou, A. High-availability in-memory key-value
+Lu, S., Zhou, Z., Lu, J., Zhu, Y., and Kong, A. W.-K. Ro-               store using rdma and optane dcpmm. Frontiers of Com-
+  bust watermarking using generative priors against image               puter Science, 17(1):171603, 2023.
+  editing: From benchmarking to advances. arXiv preprint              Qi, Y., Zhang, Q., Lin, X., Su, X., Zhu, J., Wang, J., and Li,
+  arXiv:2410.18775, 2024b.                                              J. Seeing beyond noise: Joint graph structure evaluation
+Ma, Y., Wang, Y., Wu, Y., Lyu, Z., Chen, S., Li, X., and Qiao,          and denoising for multimodal recommendation. In AAAI,
+ Y. Visual knowledge graph for human action reasoning                   volume 39, pp. 12461–12469, 2025.
+ in videos. In ACM MM, pp. 4132–4141, 2022.
+                                                                      Qiu, X., Hu, J., Zhou, L., Wu, X., Du, J., Zhang, B., Guo,
+Ma, Y., He, Y., Cun, X., Wang, X., Chen, S., Li, X., and                C., Zhou, A., Jensen, C. S., Sheng, Z., and Yang, B. TFB:
+ Chen, Q. Follow your pose: Pose-guided text-to-video                   towards comprehensive and fair benchmarking of time
+ generation using pose-free videos. In AAAI, volume 38,                 series forecasting methods. Proc. VLDB Endow., 17(9):
+ pp. 4117–4125, 2024.                                                   2363–2377, 2024.
+
+                                                                 11
+                      A Dual Correlation Network for Time Series Forecasting with Exogenous Variables
+
+Qiu, X., Li, Z., Qiu, W., Hu, S., Zhou, L., Wu, X., Li,               Wang, H., Pan, L., Lu, Y., Chu, Z., Li, X., He, S., Chen,
+  Z., Guo, C., Zhou, A., Sheng, Z., Hu, J., Jensen, C. S.,             Z., Li, H., Wen, Q., and Lin, Z. Distdf: time-series
+  and Yang, B. TAB: Unified benchmarking of time series                forecasting needs joint-distribution wasserstein alignment.
+  anomaly detection methods. In Proc. VLDB Endow.,                     In ICLR, 2026c.
+  2025a.
+                                                                      Wang, H., Wu, H., Wu, T., Sun, Y., Liu, J., Yu, D., Ma, Y.,
+Qiu, X., Wu, X., Cheng, H., Liu, X., Guo, C., Hu, J., and              He, J., He, Z., Hong, D., et al. Ernie 5.0 technical report.
+  Yang, B. DBLoss: Decomposition-based loss function                   arXiv preprint arXiv:2602.04705, 2026d.
+  for time series forecasting. In NeurIPS, 2025b.
+                                                                      Wang, J., Li, T., Wang, A., Liu, X., Chen, L., Chen, J., Liu,
+Qiu, X., Wu, X., Lin, Y., Guo, C., Hu, J., and Yang, B.                J., Wu, J., Li, F., and Gao, Y. Real-time workload pattern
+  DUET: Dual clustering enhanced multivariate time series              analysis for large-scale cloud databases. arXiv preprint
+  forecasting. In SIGKDD, pp. 1185–1196, 2025c.                        arXiv:2307.02626, 2023.
+Qiu, X., Cheng, H., Wu, X., Lu, J., Hu, J., Guo, C., Jensen,          Wang, Y., Wu, H., Dong, J., Qin, G., Zhang, H., Liu, Y.,
+  C. S., and Yang, B. A comprehensive survey of deep                   Qiu, Y., Wang, J., and Long, M. Timexer: Empowering
+  learning for multivariate time series forecasting: A chan-           transformers for time series forecasting with exogenous
+  nel strategy perspective. In IJCAI, 2026.                            variables. In NeurIPS, volume 37, pp. 469–498, 2024.
+Shang, Z. and Chen, L. MSHyper: Multi-scale hypergraph                Williams, B. M. Multivariate vehicular traffic flow predic-
+  transformer for long-range time series forecasting. arXiv            tion: Evaluation of arimax modeling. 1776(1):194–200,
+  preprint arXiv:2401.09261, 2024.                                     2001.
+Shang, Z., Chen, L., Wu, B., and Cui, D. Ada-MSHyper:                 Wu, B., Chen, W., Wang, W., Peng, B., Sun, L., and Chen, L.
+  Adaptive multi-scale hypergraph transformer for time                 Weathergnn: exploiting meteo- and spatial-dependencies
+  series forecasting. In NeurIPS, volume 37, pp. 33310–                for local numerical weather prediction bias-correction. In
+  33337, 2024.                                                         IJCAI, pp. 2433–2441, 2024.
+Shang, Z., Cui, D., Wu, B., and Chen, L. Multi-scale
+                                                                      Wu, B., Shang, Z., Huang, J., and Chen, L. Millgnn: Learn-
+  hypergraph meets LLMs: Aligning large language models
+                                                                       ing multi-scale lead-lag dependencies for multi-variate
+  for time series analysis. In ICLR, 2026.
+                                                                       time series forecasting. In CIKM, pp. 3344–3354, 2025a.
+Shao, W., Fang, Z., Chen, L., and Gao, Y. Towards trajec-
+  tory anomaly detection: a fine-grained and noise-resilient          Wu, B., Shang, Z., Liu, S., Huang, J., Xu, J., and Chen, L.
+  framework. In SIGKDD, pp. 2490–2501, 2025.                           Airdde: Multifactor neural delay differential equations
+                                                                       for air quality forecasting. In AAAI, pp. 15941–15949,
+Tayal, K., Renganathan, A., Jia, X., Kumar, V., and Lu, D.             2026.
+  Exotst: Exogenous-aware temporal sequence transformer
+  for time series prediction. In ICDM, pp. 857–862, 2024.             Wu, H., Xu, J., Wang, J., and Long, M. Autoformer: Decom-
+                                                                       position transformers with auto-correlation for long-term
+Vagropoulos, S. I., Chouliaras, G., Kardakos, E. G.,                   series forecasting. In NeurIPS, pp. 22419–22430, 2021.
+  Simoglou, C. K., and Bakirtzis, A. G. Comparison of sari-
+  max, sarima, modified sarima and ann-based models for               Wu, X., Qiu, X., Cheng, H., Li, Z., Hu, J., Guo, C., and
+  short-term pv generation forecasting. In ENERGYCON,                  Yang, B. Enhancing time series forecasting through se-
+  pp. 1–6, 2016.                                                       lective representation spaces: A patch perspective. In
+                                                                       NeurIPS, 2025b.
+Wang, H., Pan, L., Shen, Y., Chen, Z., Yang, D., Yang, Y.,
+ Zhang, S., Liu, X., Li, H., and Tao, D. Fredf: learning to           Wu, X., Qiu, X., Gao, H., Hu, J., Yang, B., and Guo, C.
+ forecast in the frequency domain. In ICLR, 2025.                      K2 VAE: A koopman-kalman enhanced variational au-
+                                                                       toencoder for probabilistic time series forecasting. In
+Wang, H., Pan, L., Chen, Z., Chen, X., Dai, Q., Wang, L., Li,          ICML, 2025c.
+ H., and Lin, Z. Time-o1: Time-series forecasting needs
+ transformed label alignment. In NeurIPS, volume 38, pp.              Wu, X., Qiu, X., Li, Z., Wang, Y., Hu, J., Guo, C., Xiong,
+ 8660–8690, 2026a.                                                     H., and Yang, B. CATCH: Channel-aware multivariate
+                                                                       time series anomaly detection via frequency patching. In
+Wang, H., Pan, L., Lu, Y., Chen, Z., Liu, T., He, S., Chu, Z.,         ICLR, 2025d.
+ Wen, Q., Li, H., and Lin, Z. Quadratic direct forecast for
+ training multi-step time-series forecast models. In ICLR,            Xu, R., Chen, M., Gong, Y., Liu, Y., Yu, X., and Nie, L.
+ 2026b.                                                                Tme: Tree-guided multi-task embedding learning towards
+
+                                                                 12
+                      A Dual Correlation Network for Time Series Forecasting with Exogenous Variables
+
+  semantic venue annotation. ACM Transactions on Infor-                Zhang, Q., Qi, Y., Tang, X., Fang, J., Lin, X., Zhang, K.,
+  mation Systems, 41(4):1–24, 2023.                                      and Yuan, C. Imdprompter: Adapting sam to image
+                                                                         manipulation detection by cross-view automated prompt
+Yang, J., Hu, Y., Zhang, K., Niu, L., Yu, P. S., and Ding,               learning. arXiv preprint arXiv:2502.02454, 2025b.
+  K. Revisiting multivariate time series forecasting with
+  missing values. arXiv preprint arXiv:2509.23494, 2025a.              Zhang, Q., Qi, Y., Tang, X., Yuan, R., Lin, X., Zhang,
+                                                                         K., and Yuan, C. Rethinking pseudo-label guided learn-
+Yang, J., Zhang, K., Zhang, G., Yu, P. S., and Ding, K.                  ing for weakly supervised temporal action localization
+  Glocal information bottleneck for time series imputation.              from the perspective of noise correction. arXiv preprint
+  arXiv preprint arXiv:2510.04910, 2025b.                                arXiv:2501.11124, 2025c.
+Yang, J., Hu, Y., Li, Y., Zhang, K., Ding, K., and Yu, P. S.           Zhou, H., Zhang, S., Peng, J., Zhang, S., Li, J., Xiong, H.,
+  From observations to states: Latent time series forecast-              and Zhang, W. Informer: Beyond efficient transformer
+  ing. In ICML, 2026.                                                    for long sequence time-series forecasting. In AAAI, vol-
+Yu, C., Wang, F., Shao, Z., Qian, T., Zhang, Z., Wei, W., An,            ume 35, pp. 11106–11115, 2021.
+  Z., Wang, Q., and Xu, Y. Ginar+: A robust end-to-end                 Zhou, P., Liu, Y., Liang, J., Song, Q., and Li, X. Crosslin-
+  framework for multivariate time series forecasting with                ear: Plug-and-play cross-correlation embedding for time
+  missing values. IEEE Transactions on Knowledge and                     series forecasting with exogenous variables. In SIGKDD,
+  Data Engineering, 37(8):4635–4648, 2025a.                              2025.
+Yu, C., Wang, F., Yang, C., Shao, Z., Sun, T., Qian, T., Wei,          Zhou, T., Ma, Z., Wen, Q., Wang, X., Sun, L., and Jin,
+  W., An, Z., and Xu, Y. Merlin: Multi-view representation               R. Fedformer: Frequency enhanced decomposed trans-
+  learning for robust multivariate time series forecasting               former for long-term series forecasting. In ICML, pp.
+  with unfixed missing rates. In SIGKDD, pp. 3633–3644,                  27268–27286, 2022.
+  2025b.
+
+Yu, X., Xu, C., Chen, Z., Zhang, Y., Lu, S., Yang, C., Zhang,
+  J., Yan, S., and Hu, X. Visual document understanding
+  and reasoning: A multi-agent collaboration framework
+  with agent-wise adaptive test-time scaling. arXiv preprint
+  arXiv:2508.03404, 2025c.
+
+Yu, X., Xu, C., Zhang, G., Chen, Z., Zhang, Y., He, Y.,
+  Jiang, P.-T., Zhang, J., Hu, X., and Yan, S. Vismem: La-
+  tent vision memory unlocks potential of vision-language
+  models. arXiv preprint arXiv:2511.11007, 2025d.
+
+Yu, X., Xu, C., Zhang, G., He, Y., Chen, Z., Xue, Z., Zhang,
+  J., Liao, Y., Hu, X., Jiang, Y.-G., et al. Visual multi-agent
+  system: Mitigating hallucination snowballing via visual
+  flow. arXiv preprint arXiv:2509.21789, 2025e.
+
+Zeng, A., Chen, M., Zhang, L., and Xu, Q. Are transformers
+  effective for time series forecasting? In AAAI, volume 37,
+  pp. 11121–11128, 2023.
+
+Zhang, Q., Liu, X., Li, W., Chen, H., Liu, J., Hu, J., Xiong,
+  Z., Yuan, C., and Wang, Y. Distilling semantic priors from
+  sam to efficient image restoration models. In Proceedings
+  of the IEEE/CVF Conference on Computer Vision and
+  Pattern Recognition, pp. 25409–25419, 2024.
+
+Zhang, Q., Fang, J., Yuan, R., Tang, X., Qi, Y., Zhang,
+  K., and Yuan, C. Weakly supervised temporal action
+  localization via dual-prior collaborative learning guided
+  by multimodal large language models. In CVPR, pp.
+  24139–24148, 2025a.
+
+                                                                  13
+                     A Dual Correlation Network for Time Series Forecasting with Exogenous Variables
+
+A. Experimental Details                                              Algorithm 1 MLP Fusion Approach
+A.1. Datasets                                                        Input: model parameters θModel , MLP parameters θMLP ;
+                                                                     learning rate η; iterations N ; training dataset D; historical
+We perform experiments on eight common multivariate fore-            endogenous variables X endo ; historical exogenous variables
+casting datasets: (1) ETT includes four subsets: ETTh1               X exo ; future exogenous variables Y exo
+and ETTh2 provide hourly recordings, while ETTm1 and                 Output: prediction Ŷ endo
+ETTm2 contain data collected every 15 minutes. The en-
+dogenous variable is oil temperature, and the six power               1: Training Phase:
+load features are used as exogenous variables. (2) Weather            2: For i = 1 to N do
+                                                                                      endo    exo       endo       exo
+consists of 21 meteorological variables recorded every 10             3: For (Xtrain       , Xtrain , Ytrain  , Ytrain  ) in D
+                                                                                                 endo      exo
+minutes during 2020 at the Weather Station of the Max                 4:       z ← θModel (Xtrain , Xtrain )
+Planck Biogeochemistry Institute. The endogenous variable             5:       Ŷ endo ← θMLP (Concat(z, Ytrain     exo
+                                                                                                                         ))
+is the Wet Bulb factor, while the remaining indicators are            6:       L ← Loss(Ŷ      endo     endo
+                                                                                                     , Ytrain )
+used as exogenous variables. (3) Electricity consists of              7:       θModel ← θModel − η ∂θ∂L          , θMLP ← θMLP − η ∂θ∂L
+                                                                                                           Model                      MLP
+hourly electricity consumption data from 321 clients. The             8: EndFor
+electricity consumption of the last client is the endogenous
+                                                                      9: EndFor
+variable, and the consumption data from the other clients are
+                                                                     10: Inference Phase:
+used as exogenous variables. (4) Exchange collects daily
+                                                                     11: z ← θModel (X endo , X exo )
+exchange rates of eight countries from 1990 to 2016. The
+exchange rate of the last country is the endogenous variable,        12: Ŷ endo ← θMLP (Concat(z, Y exo ))
+and the exchange rates of the others serve as exogenous              13: return Ŷ endo
+variables. (5) Traffic records hourly road occupancy rates
+from 862 sensors on Bay Area freeways. We use the last
+sensor as the endogenous variable and others as exogenous            electric generation is used as the endogenous variable, while
+variables.                                                           the remaining energy types serve as exogenous variables.
+                                                                     (2 & 3) Colbun and Rapel represent two daily-resolution
+we conduct experiments on 12 real-world datasets that sat-
+                                                                     hydropower datasets from Chile, containing water level, pre-
+isfy the TSF-X conditions, including 5 EPF (Lago et al.,
+                                                                     cipitation, and tributary inflow measurements for the Colbún
+2021; Wang et al., 2024) datasets and 7 datasets we sourced
+                                                                     and Rapel reservoirs. The water level is treated as the en-
+ourselves: (1) NP records Nord Pool market with hourly
+                                                                     dogenous variable, while precipitation and inflow are used
+electricity price as the endogenous variable, and grid load
+                                                                     as exogenous variables. (4-7) Sdwpf comprises four wind
+and wind power forecast as exogenous features. (2) PJM
+                                                                     power generation datasets collected from two turbines in the
+records the Pennsylvania–New Jersey–Maryland Intercon-
+                                                                     Longyuan wind farm, including Sdwpfm1 and Sdwpfm2
+nection market, with zonal electricity price in the Common-
+                                                                     with hourly resolution, and Sdwpfh1 and Sdwpfh2 with
+wealth Edison (COMED) area as the endogenous variable,
+                                                                     half-hourly resolution. The active power output (Patv) is
+and corresponding system load and COMED load forecasts
+                                                                     used as the endogenous variable. The exogenous variables
+as exogenous variables. (3) BE records Belgium’s electric-
+                                                                     include external weather environment data collected from
+ity market, with hourly electricity price as the endogenous
+                                                                     the ERA5 (Hersbach et al., 2020), such as temperature, sur-
+variable, and load forecast in Belgium together with gen-
+                                                                     face pressure, relative humidity, wind speed, wind direction,
+eration forecast from France as exogenous variables. (4)
+                                                                     and total precipitation.
+FR records the electricity market in France, where the elec-
+tricity price is the endogenous variable, and generation and
+load forecasts are used as exogenous variables. (5) DE               A.2. Implementation Details
+records the German electricity market, with hourly electric-         1) To keep consistent with previous works, we adopt Mean
+ity price as the endogenous variable, and zonal load forecast        Squared Error (mse) and Mean Absolute Error (mae) as
+in the Amprion area along with wind and solar generation             evaluation metrics.
+forecasts as exogenous variables.
+                                                                     2) For the 12 real-world datasets that satisfy the TSF-X
+In addition to the 5 EPF (Lago et al., 2021; Wang et al.,            conditions, we conduct both long-term and short-term pre-
+2024) datasets, we also conduct experiments on 7 datasets            diction experiments. For the Colbun and Raperl datasets, the
+that we sourced ourselves, which satisfy the TSF-X condi-            short-term prediction uses a lookback window of 60 with
+tions. (1) Energy provides hourly power generation data col-         a prediction horizon of 10, while the long-term prediction
+lected from the national grid operator in Chile, encompass-          uses a lookback window of 180 with a prediction horizon
+ing multiple energy sources such as battery storage, wind,           of 30. For the other datasets, the short-term prediction uses
+hydro, solar, and thermoelectric generation. The thermo-             a lookback window of 168 with a prediction horizon of 24,
+
+                                                                14
+                       A Dual Correlation Network for Time Series Forecasting with Exogenous Variables
+
+and the long-term prediction uses a lookback window of                    have gained widespread attention. For instance, Transformer
+720 with a prediction horizon of 360.                                     architectures, such as Informer (Zhou et al., 2021), FED-
+                                                                          former (Zhou et al., 2022), Autoformer (Wu et al., 2021),
+3) We utilize the TFB (Qiu et al., 2024) code repository
+                                                                          Triformer (Cirstea et al., 2022), and PatchTST (Nie et al.,
+for unified evaluation, with all baseline results also derived
+                                                                          2023), can more accurately capture the complex relation-
+from TFB. Following the settings in TFB (Qiu et al., 2024)
+                                                                          ships between temporal tokens. MLP-based methods, such
+and TSFM-Bench (Li et al., 2025), we do not apply the
+                                                                          as SparseTSF (Lin et al., 2024a), CycleNet (Lin et al.,
+“Drop Last” trick to ensure a fair comparison.
+                                                                          2024b), DUET (Qiu et al., 2025c), NLinear (Zeng et al.,
+4) All experiments of DAG are conducted using Py-                         2023), and DLinear (Zeng et al., 2023), utilize simpler ar-
+Torch (Paszke et al., 2019) in Python 3.8 and executed on an              chitectures with fewer parameters but still achieve highly
+NVIDIA Tesla-A800 GPU. The training process is guided                     competitive forecasting accuracy. However, all those meth-
+by the L1 loss function and employs the ADAM optimizer.                   ods overlook an important practical factor—exogenous (his-
+The initial batch size is set to 64, with the flexibility to halve        torical or future exogenous). In many real-world scenarios,
+it (down to a minimum of 8) in case of an Out-Of-Memory                   exogenous data is known or can be approximately known,
+issue.                                                                    and utilizing exogenous data can significantly improve the
+                                                                          accuracy of predictions.
+A.3. MLP Fusion Approach
+                                                                          B.2. Forecasting with Exogenous Variables
+For methods that do not support future covariates, we adapt
+them to incorporate future exogenous variables using an                   Time series forecasting with exogenous variables has been
+MLP fusion approach—see Algorithm 1. Note that, for fair-                 extensively discussed in classical statistical methods. Some
+ness, all methods in our experiments use historical endoge-               statistical methods have been extended to incorporate ex-
+nous variables, historical exogenous variables, and future                ogenous variables as part of the input. Methods like ARI-
+exogenous variables.                                                      MAX (Williams, 2001) and SARIMAX (Vagropoulos et al.,
+                                                                          2016) have long utilized exogenous variables to enhance
+B. Related works                                                          forecasting accuracy. More recently, deep learning ap-
+                                                                          proaches have advanced this area (Yang et al., 2025a; Hu
+B.1. Univariate and Multivariate Forecasting                              et al., 2026; Yang et al., 2025b; 2026; Shang et al., 2026;
+                                                                          2024; Chen et al., 2023; Shang & Chen, 2024): CrossLin-
+Existing time series forecasting models are typically clas-
+                                                                          ear (Zhou et al., 2025) uses cross-correlation embeddings
+sified into univariate and multivariate forecasting methods
+                                                                          to capture dependencies between historical endogenous and
+based on the number of input and output variables. Uni-
+                                                                          exogenous variables; NBEATSx (Olivares et al., 2023) ex-
+variate time series forecasting models rely solely on the
+                                                                          tends N-BEATS with dedicated branches to utilize both
+historical values of a single variable to predict future val-
+                                                                          past and future exogenous inputs; TiDE (Das et al., 2023)
+ues. Traditional univariate forecasting methods, such as
+                                                                          employs an MLP-based architecture to integrate static and
+ARIMA (Box & Pierce, 1970), ETS (Hyndman et al., 2008),
+                                                                          future covariates by concatenation with endogenous fea-
+and Theta (Federico Garza, 2022) are classical and widely
+                                                                          tures at each time step. The Temporal Fusion Transformer
+used techniques. However, these methods still require man-
+                                                                          (TFT) (Lim et al., 2021) integrates historical and current
+ual feature engineering and model design (Fang et al., 2025;
+                                                                          exogenous variables using attention mechanisms. Further-
+Li et al., 2026a; Zhang et al., 2024; 2025b; Ni et al., 2026;
+                                                                          more, TimeXer(Wang et al., 2024) introduces patch-wise
+Chen et al., 2025; Qi et al., 2025; Ma et al., 2024; 2025b;
+                                                                          embeddings to flexibly incorporate exogenous covariates
+2022; Lu et al., 2024b). Leveraging the representation learn-
+                                                                          without strict temporal alignment. ExoTST (Tayal et al.,
+ing of deep neural networks (DNNs) (Fang et al., 2023;
+                                                                          2024) utilizes innovative embedding, cross-attention, and
+2022; Li et al., 2026b; Zhang et al., 2025a;c; Wang et al.,
+                                                                          cross-temporal fusion within an attention framework to ro-
+2026d; Ma et al., 2026; 2025a; Yu et al., 2025d;c;e; Lu
+                                                                          bustly handle time lags and missing data. On the other hand,
+et al., 2024a; 2023), many deep learning-based methods
+                                                                          GCGNet (Li et al., 2026c) models correlations using a graph
+emerge. Methods like N-BEATS and DeepAR can automat-
+                                                                          structure, but does not explicitly distinguish past and future
+ically learn patterns from historical data, excelling at cap-
+                                                                          variables or endogenous and exogenous variables. However,
+turing nonlinear relationships and long-term dependencies.
+                                                                          these methods generally rely on relatively simple combi-
+On the other hand, multivariate time series forecasting
+                                                                          nations of historical inputs and future exogenous, without
+models use multiple input variables to predict the corre-
+                                                                          fully modeling the complex interactions among historical
+sponding output variables. The classic methods include
+                                                                          endogenous, historical exogenous, and future exogenous
+VAR (Godahewa et al., 2021), Random Forests(Breiman,
+                                                                          variables.
+2001) and LightGBM (Ke et al., 2017). In recent years, with
+the rise of deep learning, various architectural approaches
+
+                                                                     15
+                         A Dual Correlation Network for Time Series Forecasting with Exogenous Variables
+
+ 40                                              40                                            40
+                                 Ground Truth                                Ground Truth                                     Ground Truth
+                                 Prediction                                  Prediction                                       Prediction
+ 35                                              35                                            35
+
+
+ 30                                              30                                            30
+
+
+ 25
+                                                 25                                            25
+      0   20    40      60      80   100   120        0   20   40    60     80   100   120          0   20    40     60      80   100   120
+                     (a) DAG                                   (b) TimeXer                                         (c) TFT
+ 40                                              40                                            40
+                                 Ground Truth                                Ground Truth                                     Ground Truth
+                                 Prediction                                  Prediction                                       Prediction
+ 35                                              35                                            35
+
+
+                                                                                               30
+ 30                                              30
+
+                                                                                               25
+ 25                                              25
+      0   20    40      60      80   100   120        0   20   40    60     80   100   120          0   20    40     60      80   100   120
+                     (d) TiDE                                    (e) DUET                                    (f) CrossLinear
+
+               Figure 6. Visualization of prediction results on NP dataset where future exogenous variables are available.
+
+ 40                                              40                                            40
+                                 Ground Truth                                Ground Truth                                     Ground Truth
+                                 Prediction                                  Prediction                                       Prediction
+ 35                                              35                                            35
+
+
+ 30                                              30                                            30
+
+
+ 25                                              25                                            25
+      0   20    40      60      80   100   120        0   20   40    60     80   100   120          0   20    40     60      80   100   120
+                     (a) DAG                                   (b) TimeXer                                         (c) TFT
+ 40                                              40                                            40
+                                 Ground Truth                                Ground Truth                                     Ground Truth
+                                 Prediction                                  Prediction                                       Prediction
+                                                                                               35
+ 35                                              35
+
+                                                                                               30
+ 30                                              30
+
+                                                                                               25
+
+ 25                                              25
+      0   20    40      60      80   100   120        0   20   40    60     80   100   120          0   20    40     60      80   100   120
+                     (d) TiDE                                    (e) DUET                                    (f) CrossLinear
+
+            Figure 7. Visualization of prediction results on NP dataset where future exogenous variables are not available.
+
+
+C. Experimental Results                                                  across both temporal and channel dimensions, fully leverag-
+                                                                         ing exogenous variables.
+C.1. Visualization of Results
+We visualize cases of predictions on the NP dataset in Fig-              C.2. Full Results
+ure 6, where future exogenous variables are available, and
+                                                                         Full results on the 12 multivariate datasets under the TSF-X
+Figure 7, where future exogenous variables are not avail-
+                                                                         setting, where the inputs are (X endo , X exo , Y exo ), are re-
+able. As shown in Figure 6 and Figure 7, DAG consistently
+                                                                         ported in Table 5. Full results on the multivariate datasets
+outperforms all baselines, both when future exogenous vari-
+                                                                         without future exogenous variables, where the inputs are
+ables are available and when they are not, indicating that
+                                                                         (X endo , X exo ), are provided in Table 6.
+it effectively discovers and injects correlation relationships
+
+                                                                    16
+                                                 A Dual Correlation Network for Time Series Forecasting with Exogenous Variables
+
+Table 5. Results on 12 real-world datasets that satisfy the TSF-X task, where the inputs are (X endo , X exo , and Y exo ). Red: the best, Blue:
+the 2nd best. Avg means the average results from two forecasting horizons.
+
+          Models                 DAG (ours)       GCGNet          TimeXer              TFT            TiDE           DUET          CrossLinear      Amplifier       TimeKAN         PatchTST
+          Metrics                mse   mae       mse  mae        mse   mae       mse         mae   mse    mae      mse  mae        mse    mae      mse    mae      mse   mae       mse    mae
+                            24   0.202   0.237   0.208   0.237   0.236   0.266   0.219   0.249     0.284   0.301   0.246   0.287   0.210   0.266   0.252   0.303   0.273   0.310   0.249   0.294
+   NP                      360   0.521   0.451   0.531   0.459   0.600   0.475   0.539   0.501     0.601   0.498   0.576   0.528   0.531   0.508   0.587   0.534   0.538   0.529   0.530   0.498
+                           Avg   0.362   0.344   0.370   0.348   0.418   0.371   0.379   0.375     0.443   0.400   0.411   0.408   0.371   0.387   0.420   0.418   0.405   0.419   0.390   0.396
+                            24   0.057   0.143   0.060   0.150   0.075   0.166   0.095   0.195     0.106   0.214   0.072   0.166   0.088   0.191   0.096   0.208   0.115   0.244   0.116   0.239
+   PJM                     360   0.130   0.218   0.129   0.223   0.140   0.231   0.133   0.219     0.177   0.279   0.131   0.228   0.135   0.254   0.177   0.285   0.162   0.281   0.149   0.279
+                           Avg   0.093   0.180   0.095   0.187   0.108   0.198   0.114   0.207     0.142   0.246   0.102   0.197   0.112   0.223   0.137   0.246   0.139   0.262   0.133   0.259
+                            24   0.361   0.229   0.350   0.248   0.392   0.253   0.426   0.272     0.426   0.285   0.432   0.272   0.391   0.259   0.471   0.339   0.451   0.319   0.452   0.326
+   BE                      360   0.485   0.330   0.511   0.340   0.512   0.327   0.482   0.310     0.571   0.364   0.597   0.436   0.568   0.416   0.646   0.487   0.645   0.495   0.702   0.538
+                           Avg   0.423   0.279   0.431   0.294   0.452   0.290   0.454   0.291     0.498   0.325   0.515   0.354   0.479   0.337   0.559   0.413   0.548   0.407   0.577   0.432
+                            24   0.355   0.171   0.347   0.188   0.366   0.208   0.543   0.253     0.418   0.255   0.384   0.251   0.390   0.226   0.459   0.348   0.454   0.296   0.518   0.368
+   FR                      360   0.473   0.268   0.482   0.279   0.489   0.273   0.465   0.261     0.551   0.308   0.607   0.403   0.575   0.370   0.648   0.468   0.641   0.452   0.658   0.452
+                           Avg   0.414   0.219   0.415   0.234   0.427   0.241   0.504   0.257     0.484   0.281   0.496   0.327   0.483   0.298   0.554   0.408   0.547   0.374   0.588   0.410
+                            24   0.277   0.322   0.280   0.331   0.339   0.362   0.380   0.383     0.367   0.383   0.376   0.378   0.387   0.396   0.394   0.407   0.399   0.412   0.413   0.412
+   DE                      360   0.462   0.418   0.523   0.447   0.610   0.474   0.599   0.509     0.630   0.511   0.589   0.482   0.583   0.507   0.551   0.474   0.547   0.479   0.589   0.498
+                           Avg   0.370   0.370   0.401   0.389   0.475   0.418   0.489   0.446     0.499   0.447   0.482   0.430   0.485   0.452   0.473   0.441   0.473   0.445   0.501   0.455
+                            24   0.079   0.215   0.081   0.221   0.122   0.273   0.093   0.235     0.103   0.248   0.117   0.283   0.241   0.418   0.138   0.306   0.135   0.298   0.239   0.390
+ Energy                    360   0.169   0.320   0.182   0.334   0.204   0.357   0.167   0.331     0.202   0.355   0.288   0.452   0.237   0.385   0.328   0.472   0.302   0.464   0.214   0.363
+                           Avg   0.124   0.267   0.131   0.277   0.163   0.315   0.130   0.283     0.153   0.302   0.203   0.367   0.239   0.402   0.233   0.389   0.218   0.381   0.226   0.377
+
+
+
+
+ Sdwpfh1 Sdwpfm2 Sdwpfm1
+                            24   0.351   0.400   0.376   0.415   0.558   0.533   0.366   0.421     0.474   0.488   0.551   0.564   0.355   0.473   0.364   0.445   0.418   0.503   0.374   0.454
+                           360   0.495   0.522   0.472   0.499   0.845   0.684   0.597   0.528     0.492   0.526   0.646   0.577   0.497   0.532   0.510   0.535   0.476   0.566   0.497   0.550
+                           Avg   0.423   0.461   0.424   0.457   0.701   0.609   0.482   0.474     0.483   0.507   0.599   0.570   0.426   0.502   0.437   0.490   0.447   0.534   0.435   0.502
+                            24   0.372   0.414   0.421   0.441   0.627   0.570   0.411   0.458     0.461   0.492   0.445   0.452   0.477   0.536   0.394   0.462   0.474   0.538   0.418   0.492
+                           360   0.583   0.556   0.529   0.531   0.978   0.736   0.541   0.519     0.511   0.540   0.584   0.528   0.589   0.611   0.587   0.563   0.520   0.589   0.602   0.603
+                           Avg   0.477   0.485   0.475   0.486   0.803   0.653   0.476   0.488     0.486   0.516   0.514   0.490   0.533   0.573   0.491   0.512   0.497   0.564   0.510   0.547
+                            24   0.408   0.438   0.435   0.486   0.651   0.587   0.401   0.460     0.434   0.489   0.527   0.513   0.548   0.585   0.576   0.627   0.511   0.582   0.422   0.505
+                           360   0.489   0.534   0.465   0.514   0.841   0.700   0.557   0.523     0.472   0.527   0.551   0.519   0.566   0.601   0.497   0.569   0.643   0.694   0.513   0.548
+                           Avg   0.448   0.486   0.450   0.500   0.746   0.643   0.479   0.491     0.453   0.508   0.539   0.516   0.557   0.593   0.537   0.598   0.577   0.638   0.468   0.527
+
+
+ Sdwpfh2
+                            24   0.438   0.465   0.473   0.506   0.820   0.677   0.474   0.493     0.579   0.553   0.629   0.563   0.468   0.540   0.473   0.533   0.580   0.614   0.457   0.527
+                           360   0.608   0.595   0.566   0.565   0.962   0.761   0.657   0.549     0.619   0.614   0.665   0.569   0.608   0.609   0.569   0.628   0.713   0.729   0.641   0.632
+                           Avg   0.523   0.530   0.520   0.536   0.891   0.719   0.566   0.521     0.599   0.583   0.647   0.566   0.538   0.574   0.521   0.581   0.647   0.672   0.549   0.580
+                           10    0.061   0.094   0.065   0.108   0.113   0.172   0.092   0.135     0.089   0.131   0.089   0.134   0.071   0.102   0.071   0.121   0.061   0.101   0.062   0.122
+   Colbun                  30    0.135   0.215   0.149   0.243   0.176   0.299   0.383   0.460     0.240   0.322   0.307   0.397   0.182   0.288   0.275   0.370   0.195   0.249   0.417   0.496
+                           Avg   0.098   0.154   0.107   0.175   0.145   0.235   0.238   0.297     0.164   0.227   0.198   0.266   0.126   0.195   0.173   0.246   0.128   0.175   0.239   0.309
+                           10    0.151   0.203   0.211   0.230   0.301   0.308   0.201   0.253     0.228   0.271   0.174   0.219   0.163   0.209   0.181   0.227   0.174   0.231   0.163   0.218
+ Rapel                     30    0.309   0.408   0.401   0.384   0.387   0.416   0.409   0.414     0.411   0.432   0.365   0.432   0.340   0.417   0.333   0.416   0.325   0.390   0.374   0.445
+                           Avg   0.230   0.305   0.306   0.307   0.344   0.362   0.305   0.333     0.320   0.351   0.269   0.326   0.252   0.313   0.257   0.321   0.249   0.311   0.269   0.332
+ 1st Count                        23      27      8       4       0       0       4           5     1       0       0       0       0       0       0       0       0       0       0       0
+
+
+
+
+In addition, full results on the 8 common multivariate                                                          sentations for efficiency. While this design achieves a good
+datasets with inputs (X endo , X exo , Y exo ) are presented in                                                 trade-off between performance and computational cost, it
+Table 8, while the corresponding results using inputs                                                           may not fully capture more complex and fine-grained inter-
+(X endo , X exo ) are reported in Table 7.                                                                      actions among variables. Exploring more advanced fusion
+                                                                                                                and interaction mechanisms remains an important direction
+C.3. Limitations and Future Works                                                                               for future work. Third, the current framework involves mul-
+                                                                                                                tiple manually tuned weighting coefficients, including the
+Despite the promising performance of DAG, this work still                                                       balancing of the three loss functions and the fusion weights
+has several limitations. First, the current framework mainly                                                    of the two forecasting outputs. Developing adaptive or fully
+focuses on modeling correlations between exogenous and                                                          automated weighting strategies is an important direction for
+endogenous variables, rather than explicitly capturing causal                                                   future work.
+relationships. Although the learned correlations are effective
+for forecasting, incorporating causal inference techniques
+may further improve the interpretability and reliability of
+the model. Second, the proposed gating mechanism adopts a
+simple dot-product interaction between MLP-encoded repre-
+
+
+                                                                                                           17
+                                                 A Dual Correlation Network for Time Series Forecasting with Exogenous Variables
+
+
+
+
+Table 6. Results on 12 real-world datasets under the setting where future exogenous variables are not available. The inputs are (X endo
+and X exo ). The best results are Red, and the second-best results are Blue. Avg represents the average results across the two forecasting
+horizons.
+
+          Models                    DAG           GCGNet          TimeXer              TFT            TiDE           DUET          CrossLinear      Amplifier       TimeKAN         PatchTST
+          Metrics                mse   mae       mse  mae        mse   mae       mse         mae   mse    mae      mse  mae        mse    mae      mse    mae      mse   mae       mse    mae
+                            24   0.237   0.259   0.240   0.260   0.270   0.292   0.330   0.321     0.297   0.309   0.262   0.271   0.246   0.282   0.302   0.321   0.336   0.344   0.283   0.296
+   NP                      360   0.601   0.500   0.620   0.502   0.609   0.474   0.964   0.655     0.638   0.523   0.626   0.494   0.655   0.505   0.738   0.574   0.632   0.527   0.630   0.505
+                           Avg   0.419   0.380   0.430   0.381   0.440   0.383   0.647   0.488     0.467   0.416   0.444   0.383   0.451   0.394   0.520   0.448   0.484   0.435   0.457   0.401
+                            24   0.072   0.162   0.072   0.164   0.096   0.191   0.129   0.231     0.105   0.213   0.082   0.178   0.096   0.198   0.093   0.195   0.130   0.236   0.106   0.212
+   PJM                     360   0.180   0.259   0.191   0.269   0.186   0.267   0.270   0.310     0.210   0.292   0.198   0.273   0.197   0.283   0.210   0.294   0.219   0.304   0.189   0.273
+                           Avg   0.126   0.210   0.131   0.216   0.141   0.229   0.200   0.270     0.158   0.253   0.140   0.226   0.147   0.241   0.152   0.245   0.175   0.270   0.148   0.243
+                            24   0.376   0.244   0.365   0.259   0.392   0.253   0.400   0.267     0.492   0.322   0.376   0.253   0.389   0.253   0.417   0.283   0.424   0.280   0.405   0.264
+   BE                      360   0.547   0.350   0.553   0.354   0.563   0.349   0.727   0.442     0.602   0.375   0.571   0.357   0.564   0.346   0.588   0.367   0.552   0.350   0.564   0.354
+                           Avg   0.462   0.297   0.459   0.306   0.477   0.301   0.563   0.354     0.547   0.348   0.473   0.305   0.477   0.300   0.502   0.325   0.488   0.315   0.485   0.309
+                            24   0.345   0.190   0.352   0.199   0.366   0.195   0.445   0.231     0.415   0.254   0.359   0.208   0.397   0.204   0.429   0.250   0.448   0.250   0.397   0.223
+   FR                      360   0.526   0.307   0.519   0.293   0.542   0.300   0.624   0.345     0.574   0.325   0.577   0.317   0.555   0.310   0.559   0.322   0.534   0.303   0.542   0.306
+                           Avg   0.435   0.249   0.435   0.246   0.454   0.247   0.535   0.288     0.494   0.290   0.468   0.262   0.476   0.257   0.494   0.286   0.491   0.276   0.470   0.264
+                            24   0.422   0.411   0.413   0.402   0.501   0.445   0.576   0.452     0.465   0.433   0.424   0.403   0.438   0.423   0.493   0.455   0.504   0.462   0.503   0.450
+   DE                      360   0.784   0.563   0.816   0.600   0.818   0.568   0.792   0.578     0.823   0.604   0.895   0.623   0.832   0.592   0.930   0.642   0.834   0.590   0.889   0.604
+                           Avg   0.603   0.487   0.614   0.501   0.659   0.507   0.684   0.515     0.644   0.519   0.660   0.513   0.635   0.508   0.712   0.548   0.669   0.526   0.696   0.527
+                            24   0.112   0.257   0.112   0.259   0.138   0.293   0.352   0.463     0.117   0.265   0.108   0.254   0.102   0.246   0.108   0.254   0.109   0.254   0.108   0.254
+ Energy                    360   0.189   0.342   0.195   0.351   0.206   0.360   0.399   0.497     0.207   0.358   0.211   0.362   0.299   0.425   0.251   0.400   0.186   0.338   0.298   0.428
+                           Avg   0.150   0.300   0.154   0.305   0.172   0.326   0.376   0.480     0.162   0.311   0.160   0.308   0.201   0.336   0.180   0.327   0.147   0.296   0.203   0.341
+
+
+
+
+ Sdwpfh1 Sdwpfm2 Sdwpfm1
+                            24   0.532   0.512   0.537   0.509   0.558   0.533   0.596   0.531     0.561   0.540   0.550   0.495   0.549   0.553   0.579   0.557   0.598   0.579   0.557   0.557
+                           360   0.845   0.695   0.885   0.682   0.845   0.684   1.372   0.925     0.864   0.725   0.898   0.672   1.070   0.834   1.106   0.814   0.853   0.764   0.910   0.745
+                           Avg   0.689   0.604   0.711   0.595   0.701   0.609   0.984   0.728     0.713   0.633   0.724   0.583   0.809   0.694   0.843   0.685   0.725   0.672   0.733   0.651
+                            24   0.609   0.548   0.630   0.547   0.627   0.570   0.749   0.657     0.636   0.582   0.612   0.537   0.635   0.586   0.669   0.600   0.684   0.621   0.648   0.610
+                           360   0.962   0.766   0.983   0.739   0.978   0.736   1.340   0.877     0.995   0.783   1.028   0.745   0.965   0.788   1.215   0.863   0.987   0.780   1.020   0.819
+                           Avg   0.786   0.657   0.807   0.643   0.803   0.653   1.044   0.767     0.816   0.682   0.820   0.641   0.800   0.687   0.942   0.732   0.836   0.701   0.834   0.714
+                            24   0.647   0.592   0.651   0.578   0.651   0.587   0.754   0.670     0.719   0.641   0.673   0.575   0.687   0.652   1.111   0.816   0.755   0.679   0.669   0.629
+                           360   0.820   0.695   0.830   0.677   0.841   0.700   0.831   0.727     0.897   0.757   0.886   0.712   0.849   0.752   1.089   0.823   0.853   0.762   0.939   0.804
+                           Avg   0.733   0.643   0.741   0.628   0.746   0.643   0.793   0.698     0.808   0.699   0.779   0.644   0.768   0.702   1.100   0.820   0.804   0.720   0.804   0.717
+
+
+ Sdwpfh2
+                            24   0.739   0.635   0.798   0.645   0.820   0.677   0.811   0.714     0.783   0.674   0.975   0.694   0.810   0.718   0.834   0.691   0.892   0.740   0.769   0.680
+                           360   1.000   0.755   0.974   0.757   0.962   0.761   1.042   0.779     1.056   0.829   1.039   0.735   1.102   0.830   1.126   0.845   0.990   0.825   1.280   0.925
+                           Avg   0.870   0.695   0.886   0.701   0.891   0.719   0.926   0.746     0.919   0.751   1.007   0.715   0.956   0.774   0.980   0.768   0.941   0.782   1.025   0.802
+                           10    0.072   0.103   0.070   0.094   0.084   0.146   0.449   0.279     0.095   0.140   0.073   0.106   0.068   0.101   0.077   0.120   0.091   0.129   0.083   0.125
+   Colbun                  30    0.161   0.208   0.168   0.236   0.181   0.293   0.663   0.494     0.282   0.341   0.221   0.290   0.190   0.289   0.227   0.301   0.311   0.377   0.217   0.316
+                           Avg   0.117   0.155   0.119   0.165   0.132   0.219   0.556   0.386     0.188   0.240   0.147   0.198   0.129   0.195   0.152   0.210   0.201   0.253   0.150   0.221
+                           10    0.195   0.215   0.217   0.221   0.301   0.308   0.238   0.274     0.238   0.270   0.221   0.225   0.201   0.224   0.240   0.259   0.226   0.238   0.215   0.232
+ Rapel                     30    0.327   0.347   0.313   0.346   0.387   0.416   0.377   0.394     0.409   0.444   0.387   0.386   0.278   0.374   0.433   0.436   0.458   0.437   0.436   0.436
+                           Avg   0.261   0.281   0.265   0.284   0.344   0.362   0.308   0.334     0.323   0.357   0.304   0.306   0.240   0.299   0.337   0.348   0.342   0.337   0.325   0.334
+ 1st Count                        25      16      4       7       1       2       0           0     0       0       0       7       4       2       0       0       2       2       0       0
+
+
+
+
+                                                                                                           18
+                                     A Dual Correlation Network for Time Series Forecasting with Exogenous Variables
+
+
+
+
+Table 7. Results on 8 common datasets under the setting where future exogenous variables are not available. The inputs are (X endo and
+X exo ). The best results are Red, and the second-best results are Blue. Avg represents the average results across forecasting horizons.
+
+     Models             DAG             TimeXer             TFT            TiDE            DUET         CrossLinear      Amplifier       TimeKAN         PatchTST
+     Metrics         mse   mae         mse   mae      mse         mae   mse    mae       mse  mae       mse    mae      mse    mae      mse   mae       mse    mae
+                96   0.061   0.188    0.057   0.181   0.068   0.200     0.058   0.182   0.058   0.183   0.056   0.181   0.057   0.181   0.055   0.178   0.056   0.179
+               192   0.070   0.206    0.074   0.208   0.117   0.267     0.075   0.210   0.074   0.207   0.073   0.209   0.072   0.205   0.074   0.209   0.075   0.210
+  ETTh1        336   0.082   0.227    0.087   0.231   0.152   0.304     0.090   0.234   0.092   0.237   0.083   0.226   0.089   0.233   0.090   0.236   0.087   0.231
+               720   0.079   0.225    0.096   0.243   0.143   0.302     0.096   0.242   0.124   0.276   0.082   0.226   0.090   0.236   0.093   0.241   0.091   0.238
+               Avg   0.073   0.211    0.078   0.216   0.120   0.268     0.079   0.217   0.087   0.226   0.074   0.210   0.077   0.214   0.078   0.216   0.077   0.214
+                96   0.134   0.288    0.137   0.285   0.161   0.315     0.127   0.271   0.130   0.277   0.137   0.289   0.133   0.280   0.128   0.274   0.145   0.295
+               192   0.163   0.320    0.189   0.343   0.208   0.360     0.178   0.327   0.182   0.333   0.185   0.338   0.181   0.333   0.179   0.330   0.189   0.342
+  ETTh2        336   0.183   0.350    0.225   0.380   0.258   0.407     0.223   0.376   0.219   0.374   0.220   0.376   0.217   0.371   0.222   0.376   0.231   0.386
+               720   0.172   0.338    0.250   0.399   0.314   0.456     0.260   0.411   0.244   0.397   0.255   0.405   0.238   0.392   0.250   0.402   0.234   0.388
+               Avg   0.163   0.324    0.200   0.352   0.235   0.385     0.197   0.346   0.194   0.345   0.200   0.352   0.192   0.344   0.195   0.345   0.200   0.353
+                96   0.029   0.127    0.029   0.126   0.037   0.146     0.043   0.159   0.030   0.128   0.029   0.127   0.031   0.131   0.030   0.130   0.029   0.127
+               192   0.044   0.159    0.044   0.159   0.060   0.188     0.050   0.172   0.047   0.162   0.044   0.160   0.045   0.162   0.044   0.160   0.045   0.160
+  ETTm1        336   0.057   0.184    0.058   0.186   0.072   0.208     0.068   0.200   0.071   0.198   0.058   0.185   0.057   0.185   0.057   0.185   0.058   0.185
+               720   0.079   0.216    0.081   0.219   0.119   0.272     0.079   0.218   0.088   0.225   0.082   0.218   0.080   0.219   0.080   0.218   0.082   0.220
+               Avg   0.052   0.171    0.053   0.172   0.072   0.204     0.060   0.187   0.059   0.178   0.053   0.173   0.053   0.174   0.053   0.173   0.053   0.173
+                96   0.062   0.179    0.068   0.192   0.264   0.389     0.070   0.190   0.066   0.182   0.064   0.180   0.067   0.187   0.075   0.201   0.065   0.183
+               192   0.095   0.229    0.104   0.243   0.338   0.443     0.100   0.235   0.098   0.230   0.098   0.232   0.102   0.237   0.105   0.244   0.101   0.236
+  ETTm2        336   0.125   0.267    0.130   0.276   0.272   0.407     0.128   0.272   0.126   0.268   0.130   0.273   0.134   0.279   0.132   0.278   0.130   0.273
+               720   0.174   0.322    0.185   0.335   0.339   0.466     0.179   0.328   0.178   0.326   0.182   0.331   0.183   0.334   0.181   0.331   0.183   0.331
+               Avg   0.114   0.249    0.122   0.261   0.303   0.427     0.119   0.256   0.117   0.251   0.119   0.254   0.122   0.259   0.123   0.263   0.120   0.256
+                96   0.001   0.023    0.001   0.024   0.001   0.028     0.001   0.026   0.001   0.024   0.001   0.028   0.001   0.028   0.001   0.028   0.001   0.028
+                     0.001   0.026
+  Weather
+               192                    0.001   0.026   0.002   0.029     0.002   0.029   0.001   0.026   0.002   0.031   0.002   0.030   0.002   0.031   0.002   0.030
+               336   0.001   0.026    0.001   0.028   0.002   0.030     0.002   0.030   0.001   0.028   0.002   0.032   0.002   0.032   0.002   0.032   0.002   0.032
+               720   0.002   0.030    0.002   0.032   0.002   0.034     0.002   0.035   0.002   0.032   0.002   0.036   0.002   0.036   0.002   0.036   0.002   0.036
+               Avg   0.001   0.026    0.001   0.027   0.002   0.030     0.002   0.030   0.001   0.028   0.002   0.031   0.002   0.032   0.002   0.032   0.002   0.032
+                96   0.318   0.417    0.305   0.396   0.361   0.448     0.286   0.377   0.292   0.380   0.271   0.377   0.376   0.445   0.459   0.498   0.300   0.384
+
+
+ Electricity
+               192   0.299   0.395    0.333   0.412   0.429   0.488     0.321   0.396   0.315   0.391   0.308   0.392   0.388   0.448   0.407   0.459   0.339   0.408
+               336   0.336   0.426    0.388   0.446   0.438   0.492     0.340   0.421   0.367   0.425   0.365   0.435   0.438   0.477   0.464   0.495   0.385   0.434
+               720   0.396   0.469    0.456   0.493   0.464   0.506     0.508   0.486   0.459   0.491   0.413   0.473   0.503   0.525   0.568   0.562   0.466   0.494
+               Avg   0.337   0.427    0.371   0.437   0.423   0.484     0.364   0.420   0.358   0.422   0.339   0.419   0.426   0.474   0.474   0.503   0.372   0.430
+                96   0.164   0.240    0.183   0.279   0.168   0.269     0.250   0.364   0.230   0.314   0.174   0.261   0.173   0.259   0.220   0.311   0.204   0.291
+               192   0.159   0.230    0.180   0.278   0.178   0.272     0.206   0.327   0.210   0.297   0.167   0.250   0.166   0.248   0.193   0.280   0.190   0.279
+  Traffic      336   0.157   0.235    0.180   0.284   0.169   0.263     0.261   0.395   0.205   0.297   0.164   0.251   0.162   0.248   0.198   0.285   0.183   0.276
+               720   0.188   0.266    0.199   0.300   0.166   0.264     0.316   0.459   0.229   0.321   0.179   0.271   0.185   0.269   0.219   0.307   0.203   0.292
+               Avg   0.167   0.243    0.186   0.285   0.170   0.267     0.259   0.386   0.218   0.307   0.171   0.258   0.171   0.256   0.207   0.296   0.195   0.284
+                96   0.109   0.260    0.107   0.242   0.112   0.251     0.102   0.237   0.108   0.240   0.103   0.232   0.116   0.260   0.125   0.278   0.097   0.228
+
+
+ Exchange
+               192   0.199   0.360    0.226   0.354   0.228   0.366     0.208   0.343   0.210   0.346   0.212   0.340   0.225   0.369   0.232   0.385   0.221   0.345
+               336   0.285   0.427    0.417   0.483   0.461   0.520     0.459   0.503   0.399   0.488   0.398   0.482   0.430   0.497   0.438   0.504   0.424   0.486
+               720   0.545   0.605    1.224   0.847   1.201   0.841     1.169   0.832   0.869   0.726   1.078   0.791   1.083   0.802   1.065   0.800   1.119   0.807
+               Avg   0.284   0.413    0.494   0.481   0.500   0.494     0.484   0.479   0.396   0.450   0.448   0.462   0.463   0.482   0.465   0.492   0.465   0.467
+ 1st Count            35      27        0      1       1           1     1       3       0       1       1       4       0       1       1       1       1       1
+
+
+
+
+                                                                                        19
+                                     A Dual Correlation Network for Time Series Forecasting with Exogenous Variables
+
+
+
+
+Table 8. Results on 8 common datasets that satisfy the TSF-X task, where the inputs are (X endo , X exo , and Y exo ). Red: the best, Blue: the
+2nd best. Avg means the average results from forecasting horizons.
+
+     Models          DAG (ours)       TimeXer              TFT            TiDE           DUET          CrossLinear      Amplifier       TimeKAN          xPatch         PatchTST
+     Metrics         mse   mae       mse   mae       mse         mae   mse    mae      mse  mae        mse    mae      mse    mae      mse   mae       mse    mae      mse    mae
+                96   0.054   0.176   0.056   0.179   0.081   0.214     0.056   0.179   0.163   0.338   0.152   0.321   0.160   0.332   0.118   0.273   0.136   0.305   0.216   0.403
+               192   0.072   0.208   0.073   0.207   0.073   0.213     0.075   0.210   0.206   0.382   0.199   0.374   0.134   0.290   0.166   0.330   0.150   0.311   0.174   0.336
+  ETTh1        336   0.079   0.219   0.089   0.234   0.099   0.246     0.090   0.236   0.248   0.419   0.218   0.383   0.162   0.325   0.140   0.295   0.133   0.291   0.253   0.429
+               720   0.079   0.221   0.104   0.254   0.124   0.282     0.096   0.244   0.283   0.446   0.295   0.475   0.263   0.429   0.284   0.440   0.239   0.406   0.302   0.462
+               Avg   0.071   0.206   0.081   0.219   0.094   0.239     0.079   0.217   0.225   0.396   0.216   0.388   0.180   0.344   0.177   0.335   0.165   0.328   0.236   0.407
+                96   0.127   0.273   0.141   0.289   0.217   0.364     0.127   0.271   0.121   0.275   0.135   0.289   0.119   0.275   0.122   0.278   0.191   0.352   0.134   0.293
+               192   0.177   0.327   0.194   0.346   0.256   0.405     0.179   0.327   0.234   0.391   0.154   0.323   0.200   0.356   0.186   0.354   0.142   0.305   0.158   0.326
+  ETTh2        336   0.215   0.369   0.226   0.380   0.287   0.435     0.223   0.375   0.228   0.379   0.179   0.343   0.209   0.367   0.181   0.342   0.185   0.349   0.172   0.338
+               720   0.214   0.370   0.234   0.385   0.283   0.431     0.253   0.405   0.209   0.365   0.319   0.463   0.348   0.488   0.337   0.473   0.223   0.385   0.337   0.475
+               Avg   0.183   0.335   0.199   0.350   0.261   0.409     0.195   0.344   0.198   0.352   0.197   0.354   0.219   0.372   0.207   0.362   0.185   0.348   0.200   0.358
+                96   0.029   0.127   0.030   0.129   0.030   0.131     0.030   0.130   0.063   0.204   0.087   0.247   0.092   0.252   0.067   0.205   0.055   0.188   0.092   0.253
+               192   0.044   0.159   0.044   0.161   0.048   0.168     0.049   0.168   0.217   0.413   0.164   0.351   0.177   0.359   0.156   0.331   0.128   0.300   0.132   0.304
+  ETTm1        336   0.057   0.184   0.060   0.189   0.068   0.200     0.069   0.203   0.252   0.446   0.239   0.426   0.247   0.435   0.191   0.363   0.155   0.333   0.255   0.440
+               720   0.079   0.216   0.082   0.222   0.095   0.240     0.073   0.211   0.265   0.436   0.286   0.462   0.252   0.424   0.261   0.428   0.247   0.425   0.251   0.434
+               Avg   0.052   0.172   0.054   0.175   0.060   0.185     0.055   0.178   0.199   0.375   0.194   0.372   0.192   0.367   0.169   0.332   0.146   0.312   0.183   0.358
+                96   0.063   0.183   0.072   0.195   0.117   0.253     0.070   0.190   0.107   0.260   0.156   0.332   0.175   0.353   0.146   0.309   0.151   0.320   0.173   0.351
+               192   0.098   0.230   0.110   0.249   0.179   0.324     0.101   0.235   0.200   0.366   0.203   0.366   0.179   0.339   0.139   0.293   0.096   0.235   0.142   0.295
+  ETTm2        336   0.127   0.270   0.139   0.284   0.206   0.356     0.128   0.272   0.136   0.292   0.136   0.292   0.139   0.294   0.182   0.338   0.141   0.291   0.151   0.311
+               720   0.179   0.328   0.190   0.340   0.271   0.417     0.179   0.328   0.147   0.310   0.156   0.316   0.175   0.332   0.169   0.332   0.204   0.362   0.164   0.326
+               Avg   0.117   0.253   0.128   0.267   0.193   0.338     0.119   0.256   0.148   0.307   0.163   0.326   0.167   0.330   0.159   0.318   0.148   0.302   0.157   0.321
+                96   0.001   0.023   0.001   0.023   0.001   0.028     0.001   0.026   0.002   0.028   0.012   0.093   0.008   0.074   0.008   0.072   0.001   0.027   0.006   0.062
+                     0.001   0.022
+  Weather
+               192                   0.001   0.026   0.002   0.030     0.001   0.028   0.002   0.030   0.005   0.056   0.008   0.073   0.009   0.078   0.001   0.024   0.008   0.073
+               336   0.002   0.028   0.001   0.027   0.002   0.030     0.002   0.031   0.001   0.025   0.009   0.080   0.008   0.071   0.009   0.074   0.002   0.029   0.011   0.087
+               720   0.002   0.030   0.002   0.032   0.002   0.035     0.002   0.036   0.002   0.033   0.007   0.067   0.019   0.113   0.003   0.045   0.002   0.037   0.012   0.084
+               Avg   0.002   0.026   0.001   0.027   0.002   0.031     0.002   0.030   0.001   0.029   0.008   0.074   0.011   0.083   0.007   0.067   0.002   0.029   0.009   0.076
+                96   0.158   0.298   0.160   0.296   0.365   0.456     0.312   0.414   0.248   0.385   0.281   0.416   0.279   0.416   0.276   0.413   0.249   0.387   0.274   0.406
+
+
+ Electricity
+               192   0.156   0.295   0.186   0.320   0.339   0.448     0.274   0.391   0.290   0.421   0.248   0.384   0.296   0.427   0.309   0.435   0.258   0.397   0.264   0.399
+               336   0.217   0.353   0.218   0.346   0.367   0.471     0.313   0.417   0.295   0.426   0.260   0.396   0.278   0.414   0.292   0.419   0.296   0.425   0.271   0.408
+               720   0.246   0.370   0.267   0.386   0.429   0.510     0.353   0.445   0.290   0.414   0.268   0.401   0.255   0.396   0.327   0.448   0.256   0.392   0.268   0.402
+               Avg   0.194   0.329   0.208   0.337   0.375   0.471     0.313   0.417   0.281   0.411   0.264   0.399   0.277   0.413   0.301   0.429   0.265   0.400   0.269   0.404
+                96   0.119   0.187   0.135   0.233   0.139   0.221     0.149   0.251   0.247   0.316   0.261   0.322   0.174   0.240   0.221   0.292   0.244   0.305   0.241   0.307
+               192   0.121   0.191   0.135   0.230   0.116   0.212     0.149   0.246   0.240   0.297   0.232   0.289   0.214   0.276   0.181   0.254   0.220   0.292   0.246   0.305
+  Traffic      336   0.125   0.200   0.143   0.237   0.134   0.228     0.150   0.251   0.310   0.356   0.223   0.280   0.188   0.318   0.210   0.283   0.211   0.278   0.215   0.280
+               720   0.152   0.232   0.156   0.250   0.138   0.220     0.169   0.271   0.253   0.318   0.213   0.272   0.201   0.271   0.231   0.310   0.210   0.273   0.229   0.286
+               Avg   0.129   0.203   0.142   0.238   0.132   0.220     0.154   0.255   0.263   0.322   0.232   0.291   0.194   0.276   0.211   0.285   0.221   0.287   0.233   0.295
+                96   0.087   0.229   0.109   0.245   0.105   0.258     0.096   0.230   0.291   0.484   0.234   0.425   0.136   0.316   0.297   0.487   0.220   0.397   0.370   0.554
+
+
+ Exchange
+               192   0.147   0.298   0.197   0.350   0.258   0.393     0.205   0.340   0.236   0.421   0.231   0.430   0.186   0.360   0.300   0.461   0.153   0.334   0.427   0.590
+               336   0.274   0.413   0.331   0.444   0.422   0.524     0.453   0.519   0.309   0.496   0.394   0.563   0.412   0.562   0.716   0.752   0.484   0.610   0.558   0.687
+               720   0.338   0.470   0.362   0.482   0.552   0.577     0.419   0.502   0.244   0.419   0.390   0.558   0.459   0.614   0.387   0.559   0.336   0.511   0.503   0.640
+               Avg   0.212   0.353   0.250   0.380   0.334   0.438     0.293   0.398   0.270   0.455   0.312   0.494   0.298   0.463   0.425   0.565   0.298   0.463   0.464   0.618
+ 1st Count            28      28      2       3       2           1     1       2       3       4       0       0       1       0       0       0       2       1       1       1
+
+
+
+
+                                                                                               20
+

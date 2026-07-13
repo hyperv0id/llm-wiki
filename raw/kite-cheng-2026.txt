@@ -1,0 +1,1700 @@
+                KITE: Knowledge-Guided Probabilistic Modeling for Time Series
+                         Forecasting with Exogenous Variables
+
+
+                                                                                                         B1
+                            Hanyin Cheng 1 Jingrong Zhou 1 Yang Shu 1 Chenjuan Guo
+
+
+                         Abstract                                                      Xexo    Yexo           Covariate-Agnostic
+
+     Probabilistic forecasting with exogenous vari-                                                           Covariate-Conditioned
+     ables is vital for decision-making but remains                                   Xendo Yendo             qΘ = qΘ (Yendo | Xendo)
+     underexplored compared to deterministic meth-                       (a) Deterministic Forecasting
+     ods. We propose KITE, a knowledge-guided prob-                             with Covariates
+                                                                                                              pΘ = pΘ (Yendo | Xendo , Xexo , Yexo)
+     abilistic modeling framework designed to bridge                                   Xexo    Yexo                          Xexo    Yexo
+     this gap by addressing two key bottlenecks: (1)
+     topological disparity in sampling initialization
+     and (2) spurious covariate correlations during the                                Xendo   qΘ                            Xendo   pΘ
+     iterative conditional generation process. KITE in-                  (b) Probabilistic Forecasting        (c) Probabilistic Forecasting
+                                                                              without Covariates                     with Covariates
+     troduces a History-Conditional Manifold to con-
+     struct an informative source distribution from his-               Figure 1. We illustrate three distinct prediction paradigms. Specifi-
+     torical dynamics, effectively anchoring the start-                cally, X exo and X endo denote historical exogenous and endogenous
+     ing point closer to the target space. Addition-                   variables, respectively, while Y exo and Y endo represent their coun-
+     ally, a Knowledge-Guided Conditioning module                      terparts in the future horizon. Furthermore, qθ characterizes the
+                                                                       covariate-agnostic probabilistic predictive distribution, whereas pθ
+     is developed to regularize variable interactions us-              denotes the covariate-conditioned distribution.
+     ing statistical priors, suppressing spurious corre-
+     lations and enhancing the robustness of covariate                 critical prospective information that significantly enhances
+     conditioning. Extensive experiments demonstrate                   performance (Wang et al., 2024b; Zhou et al., 2025). Con-
+     that KITE outperforms state-of-the-art methods in                 sequently, effectively utilizing covariate information has
+     both deterministic and probabilistic forecasting.                 become a prerequisite for achieving high-precision forecast-
+     § https://github.com/decisionintelligence/KITE                    ing (Das et al., 2023; Tayal et al., 2024).
+                                                                       While forecasting with covariates yields promising results,
+1. Introduction                                                        existing research remains largely confined to deterministic
+                                                                       point forecasting (Arango et al., 2025; Ekambaram et al.,
+Time series forecasting serves as a pivotal tool for char-             2024), thereby neglecting the inherent stochasticity and un-
+acterizing system dynamics across domains such as eco-                 certainty characterizing future environments, as illustrated
+nomics (Sezer et al., 2020; Huang et al., 2022), traffic (Wu           in Figure 1(a). Real-world systems fluctuate constantly due
+et al., 2024b; 2025f; Pan et al., 2023a; Fang et al., 2021;            to complex factors. Relying on deterministic estimates cre-
+Yang et al., 2021), energy (Wang et al., 2024a; Guo et al.,            ates misleading confidence, leading to accumulated errors
+2015; Sun et al., 2022), and AIOps (Lin et al., 2024; Campos           and risky decisions (Wu et al., 2025c; Rasul et al., 2021a;
+et al., 2022; Chen et al., 2023c; Pan et al., 2023b; Lin et al.,       Tashiro et al., 2021). This limitation severely hinders model
+2025). However, relying solely on historical endogenous                performance in uncertain environments. To close this gap,
+data often fails to fully capture complex system dynam-                we aim to realize probabilistic forecasting with covariates, a
+ics, thereby constraining accuracy. Incorporating covari-              paradigm depicted in Figure 1(c). However, this faces the
+ates such as weather and macroeconomic indicators offers               following challenges:
+   1
+     East China Normal University, Shanghai, China. Correspon-         First, there is a fundamental inefficiency in mapping
+dence to: Chenjuan Guo <cjguo@dase.ecnu.edu.cn>.                       context-agnostic priors to covariate-conditioned distri-
+Proceedings of the 43 rd International Conference on Machine           butions. Existing probabilistic models (Hu et al., 2025;
+Learning, Seoul, South Korea. PMLR 306, 2026. Copyright 2026           Liu et al., 2025; Rishi et al., 2025) typically initialize sam-
+by the author(s).                                                      pling from a simple, context-agnostic prior (e.g., Gaussian
+
+                                                                   1
+           KITE: Knowledge-Guided Probabilistic Modeling for Time Series Forecasting with Exogenous Variables
+
+noise (Goodman, 1963)), resulting in a vast topological                 structured distributions. Second, to mitigate the capture of
+disparity between the context-agnostic source distribution              spurious covariate correlations and thereby achieve a robust
+of the generative model and the complex target distribu-                probabilistic generation process, we propose Knowledge-
+tion of the ground truth. This discrepancy is particularly              Guided Conditioning. In this module, we innovatively in-
+pronounced in forecasting with covariates, as the covariate-            tegrate statistical knowledge into the attention mechanism
+conditioned distributions are often highly localized and ex-            for capturing variable dependencies. Specifically, we adopt
+hibit intricate structures within a high-dimensional space.             a bilinear interaction strategy to dynamically modulate the
+Such context-agnostic initialization compels the model to               query projection subspace conditioned on the strength of
+reconstruct complex temporal dependencies and dynamic                   prior structural signals. By doing so, the feature extraction
+covariate interactions entirely from scratch. Consequently,             process for attention score calculation adapts to shifts in the
+the induced transport trajectories become complex and non-              statistical environment, effectively enhancing the robustness.
+linear, which significantly increases sampling latency and              Furthermore, by incorporating classifier-free guidance, our
+compromises predictive fidelity. Although certain models,               method is capable of performing both covariate-agnostic
+such as TSFlow (Kollovieh et al., 2025), attempt to intro-              and covariate-conditioned generation simultaneously. This
+duce historically correlated priors, they often rely on fixed,          mechanism allows us to explicitly control the degree of
+non-learnable rules, leading to a representational bottleneck           covariate influence on the generation process, thereby facil-
+that limits their expressive capacity.                                  itating flexible adaptation to diverse real-world scenarios.
+                                                                        Our contributions are summarized as follows:
+Second, the probabilistic generation process exhibits vul-
+nerability to spurious covariate correlations. Existing
+covariate modeling methods (Wang et al., 2024b; Arango                  • We propose KITE, an end-to-end framework for proba-
+et al., 2025) rely heavily on purely data-driven learning                 bilistic time series forecasting with exogenous variables.
+to implicitly infer interactions among exogenous variables.               Built upon flow matching, KITE treats exogenous vari-
+However, this mechanism often causes models to overfit                    ables as conditions to enable more controllable and robust
+static spurious correlations within the training data rather              modeling of variable interactions.
+than capturing true system dynamics. When such a mecha-
+nism is applied to iterative probabilistic generation, this vul-        • To overcome the limitations of sampling from simple
+nerability is magnified during iterative sampling, as flawed              priors, we propose the History-Conditional Manifold to
+correlations cause errors to propagate and amplify along                  dynamically construct a history-aware source distribu-
+the transport trajectory. Consequently, when encountering                 tion, thereby bridging the gap between the source and
+unforeseen out-of-distribution (OOD) relational shifts (Hsu               target distributions prior to the generative flow.
+et al., 2020), these methods lack sufficient robustness, ul-            • For the robustness of variable modeling, we design the
+timately compromising the fidelity of the predictive prob-                Knowledge-Guided Conditioning to explicitly integrate
+ability space. Although some correlation modeling stud-                   statistical Knowledge into the attention mechanism, dy-
+ies (Zhao et al., 2023; Cao et al., 2020) incorporate statistical         namically modulating the projection space to adapt to
+knowledge (Pearson et al., 2004) to bolster robustness, their             non-stationary statistical environments.
+reliance on naive addition fails to fundamentally resolve
+the structural bottlenecks inherent in architectures devoid of          • Comprehensive experiments on both deterministic and
+effective knowledge guidance.                                             probabilistic forecasting demonstrate that KITE con-
+To address these challenges, in this study, we propose KITE,              sistently outperforms state-of-the-art baselines. Our
+a Knowledge-GuIded Probabilistic Modeling for Time Se-                    code are available at https://github.com/
+ries Forecasting with Exogenous Variables. Our method                     decisionintelligence/KITE.
+utilizes the advanced Flow Matching framework for gener-
+ative probabilistic modeling, incorporating covariate infor-            2. Related Works
+mation as generation conditions to better regulate variable
+dependencies. First, to address the limitations caused by               2.1. Time Series Forecasting with Exogenous Variables
+sampling initialization with simple uninformative priors,               The integration of exogenous variables into time series fore-
+We propose the History-Conditional Manifold to serve as                 casting has its roots in classical statistics, where models such
+the source distribution. Conditioned on historical informa-             as ARIMAX (Williams, 2001) and SARIMAX (Vagropou-
+tion, this module dynamically constructs a manifold that                los et al., 2016) pioneered the use of external factors to re-
+closely approximates the target distribution. This effectively          fine predictive precision. Modern deep learning frameworks
+bridges the gap between the source and target distributions             have further sophisticated this paradigm: CrossLinear (Zhou
+before the generative flow process even begins, thereby al-             et al., 2025) implements cross-correlation embeddings to
+leviating the burden of learning complex, covariate-aware               map dependencies between historical endogenous and ex-
+
+                                                                    2
+           KITE: Knowledge-Guided Probabilistic Modeling for Time Series Forecasting with Exogenous Variables
+
+ogenous series. While NBEATSx (Olivares et al., 2023) in-            formation is defined by an Ordinary Differential Equation,
+troduces specialized architectural branches for multi-period         dzs = vθ (zs , s, c)ds, driven by a velocity field vθ with learn-
+exogenous inputs, TiDE (Das et al., 2023) utilizes a dense           able parameters θ, where s ∈ [0, 1] denotes the integration
+MLP structure to fuse static and future covariates with en-          time. Following the formulation of Flow Matching (Lip-
+dogenous features via concatenation. Attention-based mech-           man et al., 2022; Albergo & Vanden-Eijnden, 2023), we
+anisms have also proven pivotal; for instance, the Temporal          construct the intermediate state zs via linear interpolation:
+Fusion Transformer (TFT) (Lim et al., 2021) employs at-
+tention to synthesize historical and concurrent exogenous                              zs = s · z1 + (1 − s) · z0                 (1)
+information. Additionally, TimeXer (Wang et al., 2024b)
+                                                                     Consequently, the target velocity field corresponds to the
+facilitates flexible covariate integration through patch-wise
+                                                                     time derivative of the path:
+embeddings, bypassing the need for rigid temporal align-
+ment. Alternatively, ExoTST (Tayal et al., 2024) addresses                                    v̂s = z1 − z0                       (2)
+challenges like time lags and data sparsity by leveraging a
+combination of cross-attention and cross-temporal fusion.            The neural network vθ (zs , s, c) is optimized to approximate
+Despite the notable performance gains achieved by these              this vector field by minimizing the difference between the
+methods (Wang et al., 2024b; Li et al., 2026c), current re-          predicted velocity and the analytical target v̂s , effectively
+search remains largely confined to the deterministic model-          learning a straight-line trajectory from the source to the
+ing, overlooking the critical role of uncertainty quantifica-        target distribution.
+tion in understanding system evolution driven by complex
+covariates in the future or the past.                                Flow Matching enables the transformation of samples from
+                                                                     an arbitrary source distribution p0 to target data z1 . How-
+                                                                     ever, prior work (Esser et al., 2024; Polyak et al., 2024)
+2.2. Probabilistic Modeling in Time Series Forecasting
+                                                                     typically initializes z0 from Gaussian noise N (0, 1), which
+Probabilistic forecasting aims to characterize the future pre-       may have an inherent bias relative to the target distribution.
+dictive distribution. Early deep learning methodologies,
+such as DeepAR (Salinas et al., 2020), primarily utilized            3.2. Problem Statement
+RNNs for temporal transitions, while frameworks like Deep-
+State (Rangapuram et al., 2018) and DSSMF (Li et al., 2019)          We address the task of Probabilistic Time Series Fore-
+integrated state-space models to refine precision. More re-          casting with Exogenous Variables. Given the history of
+cently, attention-driven models, including MANF (Feng                N endogenous variables X endo ∈ RN ×T over T time
+et al., 2024) and ProTran (Tang & Matteson, 2021), have fur-         steps, and D exogenous covariates available for both the
+ther enhanced long-range dependency modeling. The field              past (X exo ∈ RD×T ) and the future horizon of length F
+has lately shifted toward generative paradigms. Diffusion-           (Y exo ∈ RD×F ), our goal is to model the future endogenous
+based models, such as TimeGrad (Rasul et al., 2021a) ,               values Y endo ∈ RN ×F . Unlike deterministic forecasting
+TSDiff (Kollovieh et al., 2023) , and CSDI (Tashiro et al.,          which yields a single point estimate, we aim to estimate the
+2021) , treat forecasting as a score-based denoising process.        conditional probability density:
+Within this landscape, TSFlow (Kollovieh et al., 2025) intro-                       pθ (Y endo | X endo , X exo , Y exo ),        (3)
+duces a conditional flow matching framework that leverages
+Gaussian Process priors to align the generative source with          modeling the distribution of future trajectories given the
+the data’s temporal structure. Alternatively, K 2 VAE (Wu            available context.
+et al., 2025c) linearizes nonlinear dynamics via Koopman
+Theory and employs a KalmanNet to iteratively refine pre-
+dictions. While certain methods incorporate multivariate
+                                                                     4. Methodology
+dependencies (Rasul et al., 2021a; Tashiro et al., 2021), they       4.1. KITE Architecture
+are not natively designed for covariate-conditioned fore-
+casting, particularly in scenarios where future exogenous            As illustrated in Figure 2, KITE employs Flow Matching as
+information is explicitly known.                                     its generative backbone and utilizes exogenous covariates
+                                                                     as conditional inputs to achieve effective and controllable
+                                                                     distribution estimation.
+3. Preliminaries
+                                                                     The framework comprises three core components:
+3.1. Flow Matching
+                                                                     (1) History-Conditional Manifold (HCM): Taking historical
+Our approach utilizes a generative framework to transport            endogenous data as input, this module constructs a struc-
+samples z0 from a prior distribution p0 to data samples z1           tured source distribution. Unlike standard Gaussian noise,
+in the target distribution p1 , conditioned on c. This trans-        HCM is highly informative and offers a source distribution
+
+                                                                 3
+                  KITE: Knowledge-Guided Probabilistic Modeling for Time Series Forecasting with Exogenous Variables
+
+   pΘ (Yendo | Xendo , Xexo , Yexo)                             History-Conditional Manifold                       Knowledge-Guided Conditioning
+
+                                                                                                                     Attention-Based Variable Aggregation
+                                                                                                                                 Knowledge-Guided
+             Target Source                                                                                                        Attention Scores
+
+Yexo
+         Knowledge-Guided
+                                                                                                                                         Gatting
+
+                             Conditional    Classifier-Free
+                                                                                                               qi (W1 + si,j W2) kjT
+                                                              Coverage Constraint   Parametric Synthesis
+
+
+           Conditioning
+Xexo
+                            Flow Matching     Guidance
+                                                                                                                 Bilinear Attention        Knowledge-Guided Attention
+
+
+Xendo                                                         Barycenter     Uncertainty     Manifold
+                                                                                                                                                          D
+
+                                                               Mapping        Estimator      Projector                                                          Pearson
+                                                                                                             N x Endogenous      D x Exogenous     N            Granger
+                                                                                                                Variables           Variables                      ...
+                                                              Xendo                                             Query (Q)              Key (K) Statistical Knowledge (S)
+  History-Conditional Manifold
+Figure 2. The architecture of KITE. Here, X exo and X endo denote historical exogenous and endogenous variables, respectively, Y exo
+represent future exogenous variables, and si,j denotes the strength of the statistical knowledge between the i-th endogenous variable and
+the j-th exogenous variable.
+
+positioned topologically closer to the target distribution,                                      poral dependencies to bridge the topological gap between
+thereby improving transport efficiency.                                                          the source and target distributions. We further substanti-
+                                                                                                 ate the advantages of the History-Conditional Manifold in
+(2) Knowledge-Guided Conditioning (KGC): This module
+                                                                                                 Section 4.5, where we analyze how the history-conditioned
+leverages a bilinear attention mechanism to capture the de-
+                                                                                                 source contributes to a smaller matching target scale and a
+pendencies between endogenous and exogenous variables,
+                                                                                                 more regular transport path.
+injecting them as conditions for the Flow Matching process.
+To enhance the robustness of dependency modeling, the                                            Barycenter Mapping. This module defines the first-order
+module further integrates statistical knowledge to mitigate                                      moment of the source distribution. It projects the historical
+spurious correlations.                                                                           context into a central position within the proximity of the
+                                                                                                 target prediction space:
+(3) Classifier-Free Guidance (CFG): During both training
+and inference, this strategy effectively modulates the inter-                                                      µhist = fϕ (Xendo ) ∈ RN ×F ,                         (4)
+play between covariate-agnostic and covariate-conditioned
+                                                                                                 where f ϕ denotes a linear mapping or a Multi-Layer Per-
+generation, enhancing the controllability and precision.
+                                                                                                 ceptron (MLP) parameterized by ϕ.
+Overall, we utilize historical endogenous data to construct
+                                                                                                 Uncertainty Estimator. This module is responsible for
+the HCM, which serves as the source distribution for Flow
+                                                                                                 estimating the scalar scale of the distribution to achieve
+Matching. During the sampling process, the KGC module
+                                                                                                 heteroscedastic modeling, allowing the model to adaptively
+extracts covariate correlations to condition the generation.
+                                                                                                 adjust the coverage of the source distribution based on the
+Furthermore, both training and inference phases are gov-
+                                                                                                 complexity of the historical data:
+erned by CFG.
+                                                                                                               σhist = Softplus(gψ (Xendo )) + σmin ,                    (5)
+4.2. History-Conditional Manifold                                                                where gψ is a MLP that outputs a scalar. The Softplus
+Unlike prior works (Kollovieh et al., 2025) that rely on non-                                    function ensures that the standard deviation remains positive
+learnable, rule-based generation of context-aware source                                         (σhist > 0), while the term σmin is incorporated to guarantee
+distributions, we introduce the adaptively learnable History-                                    a baseline exploration width for the distribution.
+Conditional Manifold to replace the standard source typi-                                        Manifold Projector. By employing a learnable Manifold
+cally employed in Flow Matching. To facilitate more ef-                                          Basis to map random noise into a low-rank feature space,
+ficient transport trajectories, we construct an informative                                      the module induces an anisotropic prior that aligns with the
+source distribution H(µhist , σhist , δhist ), where source sam-                                 geometric structure of the target data. To prevent overfitting
+ples are synthesized as Y0 = µhist + σhist δhist . Specifically,                                 to this low-rank manifold and capture subtle perturbations,
+µhist captures the history-dependent central tendency, σhist                                     we also incorporate isotropic noise:
+controls the adaptive uncertainty scale, and δhist provides
+                                                                                                                            Mz
+structured perturbations. This construction leverages tem-                                                 δ hist = α ·           + (1 − α) · ϵ ∈ RN ×F ,                (6)
+                                                                                                                          ||M z||
+
+                                                                                             4
+           KITE: Knowledge-Guided Probabilistic Modeling for Time Series Forecasting with Exogenous Variables
+
+where M ∈ R(N ×F )×r denotes the learnable Manifold                  where, qi and kj represent the query and key vectors for the
+Basis with rank r; both the latent vector z ∈ Rr and the             i-th endogenous and j-th exogenous elements, respectively,
+isotropic noise ϵ ∈ RN ×F are sampled from a standard                while sij denotes their statistical prior. By interpolating
+normal distribution; and the mixing weight α is a learnable          between a data-driven subspace (W1 ) and a prior-injected
+parameter to balance the proportion between structured and           subspace (W2 ), this mechanism utilizes this prior knowledge
+isotropic noise.                                                     to dynamically rectify the dependency structure, effectively
+                                                                     grounding the attention mechanism in structural priors.
+Coverage Constraint. To prevent the learnable variance
+from collapsing towards zero and to force the support of             In practice, we implement the two interaction subspaces in
+the source distribution to encompass the ground-truth target         Eq. 10 using two factorized query-key projection branches,
+values, we introduce the following objective:                        without explicitly forming the full bilinear matrices. We
+                                                                     inject the historical and future covariates sequentially using
+                           ||Yendo − detach(µhist )||2
+                                                      
+           1         2                                               the same methodology. In scenarios where future covariates
+  LCC =        log σhist +             2                 , (7)
+           2                          σhist                          are unavailable, the corresponding injection step can be
+                                                                     omitted. For demonstration, we illustrate the process using
+where detach(·) denotes the stop-gradient operation, ensur-
+                                                                     only historical covariates as follows:
+ing that this constraint does not interfere with the geometric
+optimization of the barycenter.                                                                                     √
+                                                                                 Ab = (Ys W1,q )(Xexo W1,k )⊤ / d,             (11)
+Parametric Synthesis. For the s-th sampling step in the                                                          ⊤
+                                                                                                                    √
+                                                                                 Ag = (Ys W2,q )(Xexo W2,k ) / d,              (12)
+Flow Matching process, the latent state Ys is defined by the
+probability path:
+                                                                     where W1,q , W2,q ∈ RF ×d , W1,k , W2,k ∈ RT ×d are the
+               Ys = s · Yendo + (1 − s) · Y0 ,             (8)       weight matrices employed to derive the query and key vec-
+                                                                     tors, respectively. The final attention matrix A is then for-
+where the source distribution is parameterized as following:         mulated as follows:
+                                                                                                                     
+                   Y0 = µhist + σhist δhist .              (9)           A = Softmax Ab + S̃ ⊙ Ag + log(S̃ + δ) ,            (13)
+This synthesis ensures that the source distribution Y0 is not
+a standard isotropic Gaussian, but a knowledge-informed              where δ is a fixed small constant for numerical stability;
+prior that is topologically and statistically aligned with the       S̃ = Norm(|S|) ∈ [0, 1]N ×D denotes the normalized non-
+target manifold Yendo , thereby significantly rectifying the         negative statistical guidance matrix, and Norm(·) represents
+transport trajectory.                                                normalization that rescales the statistical prior magnitude
+                                                                     into [0, 1]. We further incorporate a gating mechanism
+4.3. Knowledge-Guided Conditioning                                   through the logarithmic term log(S̃ + δ), which ensures
+                                                                     that the attention score Ak is strongly suppresses when the
+Our modeling approach is conditioned on future and past co-          statistical knowledge is zero. The final conditional injection
+variates, achieving the conditioning process by capturing the        is formulated as follows:
+correlations between endogenous and exogenous variables.
+To enhance the capability and robustness in capturing the un-          Ỹs = AXexo Wv + Ys ∈ RN ×F , Wv ∈ RT ×F .             (14)
+derlying mechanisms of complex systems, we incorporate
+statistical knowledge (e.g., Pearson correlation (Pearson,
+                                                                     4.4. Pipeline with Classifier-Free Guidance
+1895), Granger causality (Granger, 1969)), which is explic-
+itly extracted from the input context, as a guidance.                Widely adopted to enhance generation quality, Classifier-
+                                                                     Free Guidance (CFG) (Ho & Salimans, 2022) employs a
+Distinct from conventional methods that directly concate-
+                                                                     unified training strategy for conditional generative models.
+nate prior weights at the input stage, we proposes a mod-
+                                                                     This mechanism has proven to be a pivotal component in
+ulation strategy based on a bilinear attention mechanism.
+                                                                     advanced image generation frameworks (Esser et al., 2024;
+We project the query vectors into two distinct subspaces
+                                                                     Chen et al., 2023a). Furthermore, we incorporate CFG into
+and perform dynamic interpolation between the interac-
+                                                                     our framework to modulate the interplay between Covariate-
+tions of these subspaces using the statistical knowledge
+                                                                     Agnostic and Covariate-Conditioned generation.
+S = {sij | 1 ≤ i ≤ N, 1 ≤ j ≤ D} ∈ RN ×D . Here, sij
+denotes the strength of the statistical knowledge between the        Training strategy. By intermittently omitting the input
+i-th endogenous variable and the j-th exogenous variable.            condition c = {Xexo , Yexo } with probability pcon , the
+The core formulation can be expressed as:                            model simultaneously learns both covariate-conditioned and
+                                                                     covariate-agnostic distributions. Specifically, during each
+          Attn(qi , kj ) = qi (W1 + sij · W2 )kj⊤ ,      (10)        training iteration, we define a null condition ∅ and generate
+
+                                                                 5
+            KITE: Knowledge-Guided Probabilistic Modeling for Time Series Forecasting with Exogenous Variables
+
+a masked condition c̃ as follows:                                            4.5.2. PATH R EGULARITY
+               (
+                 ∅ with probability pcon                                     Proposition 2 (Path Regularity). Let YsH = sY +(1−s)Y0H
+          c̃ =                                                   (15)        and YsG = sY +(1−s)Y0G denote the straight-line matching
+                 c with probability 1 − pcon
+                                                                             paths under the HCM source Y0H = µ(h) + σ(h)δ and the
+The velocity field network vθ is then optimized using the                    standard Gaussian source Y0G = ξ ∼ N (0, I), respectively.
+following Flow Matching objective:                                           Define their path-tube radii as RH := sups∈[0,1] ∥YsH −
+            LF M = |vθ (Ys , s, c̃) − (Yendo − Y0 )|             (16)        µ(h)∥1 and RG := sups∈[0,1] ∥YsG ∥1 . Suppose the vec-
+                                                                             tor field satisfies a local regularity condition bounding its
+By training with this stochastic masking, the model vθ learns                Jacobian norm by the spatial radius r around any center m:
+to estimate the vector field with or without covariate.
+                                                                                sup      ∥∇y vθ (y, s, c)∥1→1 ≤ a + br    (a ≥ 0, b > 0).
+Inference stage. During the inference phase, the final                         s∈[0,1]
+                                                                             ∥y−m∥1 ≤r
+guided velocity field v̂ s is extrapolated by linearly com-
+bining these two learned modes:                                                                                                       (19)
+
+ v̂ s (Ys , c) = (1 + γ) · v θ (Ys , s, c) − γ · v θ (Ys , s, ∅), (17)       Under this assumption, a path tube of radius R admits the
+                                                                             Jacobian upper bound a+bR, which quantifies how strongly
+where γ ≥ 0 is a hyperparameter for guidance scale. This                     the vector field can amplify local perturbations along the
+formulation enables the model to steer the generative tra-                   path. Accordingly, define the corresponding path-local Ja-
+jectory away from the generic covariate-agnostic path and                    cobian budgets as BH := a + bRH and BG := a + bRG . If
+towards a direction that is more strictly governed by the                    the condition of Proposition 4.1 holds, then HCM yields a
+specific conditional drivers, thereby enhancing the preci-                   smaller expected path-local Jacobian budget than the stan-
+sion and robustness of the forecast. The complete sampling                   dard Gaussian source:
+procedure is summarized in Algorithm 1.
+                                                                                             E[BH | h, c] < E[BG | h, c].             (20)
+4.5. Theoretical Analysis
+                                                                             Remark. Proposition 4.2 assumes a local, rather than global,
+We theoretically analyze the advantages of initializing flow
+                                                                             regularity condition. This is reasonable for smooth neural
+matching from History-Conditional Manifold by investigat-
+                                                                             vector fields, since locally bounded Hessians on a fixed tube
+ing its target scale and path regularity.
+                                                                             imply such a bound. Under this assumption, Proposition 4.2
+                                                                             shows that HCM keeps the straight-line matching path in a
+4.5.1. TARGET S CALE
+                                                                             narrower tube around µ(h) than the standard source when
+proposition 1 (Target Scale). Let Y be the target, h :=                      Proposition 4.1 holds. This yields a smaller path-local Jaco-
+Xendo the endogenous context, and c the covariates. Let                      bian budget and supports weaker local error amplification
+Y0H = µ(h) + σ(h)δ denote the HCM source, where µ(h)                         under standard ODE stability arguments.
+is the history-dependent barycenter, σ(h) is the history-
+                                                                             We provide the formal proofs for Proposition 4.1 – 4.2 in
+dependent scale, and δ is the HCM perturbation. Let Y0G =
+                                                                             Appendix A.
+ξ ∼ N (0, I) denote the standard Gaussian source. Define
+their expected L1 noise magnitudes as CH := E[∥δ∥1 ] and
+CG := E[∥ξ∥1 ]. If the conditional residual reduction in                     5. Experiments
+centering error E[∥Y ∥1 | h, c] − E[∥Y − µ(h)∥1 | h, c]
+                                                                             In this section, we provide empirical results to show the
+provided by µ(h) exceeds the combined expected noise
+                                                                             strong performance of KITE against state-of-art baselines
+magnitudes σ(h)CH + CG , then HCM yields a smaller con-
+                                                                             on both deterministic and probabilistic forecasting with ex-
+ditional matching target than the standard Gaussian source:
+                                                                             ogenous variables.
+    E[∥Y − Y0H ∥1 | h, c] < E[∥Y − Y0G ∥1 | h, c].               (18)
+                                                                             5.1. Experimental Setup
+Remark. The assumption is natural in forecasting, where fu-
+                                                                             5.1.1. DATASETS
+ture values typically concentrate around a history-dependent
+local center rather than the origin of N (0, I), making the                  Deterministic forecasting. We evaluate KITE on 12 real-
+conditional residual reduction more likely to be sufficiently                world datasets characterized by the presence of exogenous
+large. Meanwhile, Eq. (7) calibrates σ(h), and the normal-                   variables, comprising 5 Electricity Price Forecasting (Lago
+ized manifold perturbation keeps the added noise controlled.                 et al., 2021; Wang et al., 2024b) datasets and 7 other sourced
+Thus, HCM reduces the regression scale, stabilizing gradi-                   datasets. In these datasets, future exogenous variables are
+ents and alleviating the empirical optimization burden.                      either explicitly known or provided with high precision.
+
+                                                                         6
+                 KITE: Knowledge-Guided Probabilistic Modeling for Time Series Forecasting with Exogenous Variables
+
+Table 1. Statistics of all datasets for deterministic and probabilistic forecasting. #Num denotes the number of exogenous variables. Ex.
+and En. are abbreviations for the exogenous variable and endogenous variable, respectively.
+    Dataset       #Num                  Ex. Descriptions                                   En. Descriptions                    Sampling Frequency   Lengths   Split
+      NP           2                 Grid Load, Wind Power                            Nord Pool Electricity Price                    1 Hour         52,416    7:1:2
+     PJM           2          System Load, SyZonal COMED load              Pennsylvania-New Jersey-MarylandElectricity Price         1 Hour         52416     7:1:2
+      BE           2                Generation, System Load                           Belgium’s Electricity Price                    1 Hour         52,416    7:1:2
+      FR           2                Generation, System Load                            France’s Electricity Price                    1 Hour         52,416    7:1:2
+      DE           2            Wind power, Ampirion zonal load                        German’s Electricity Price                    1 Hour         52,416    7:1:2
+    Energy         5     Battery, Geothermal, Hydroelectric, Solar, Wind                   Thermoelectric                            1 Hour         13,064    7:1:2
+    Colbun         2              Precipitation, Tributary Inflow                            Water Level                             1 Day           2,958    7:1:2
+     Rapel         2              Precipitation, Tributary Inflow                            Water Level                             1 Day           3,366    7:1:2
+    Sdwpfh         6                     Climate Feature                                    Active Power                             1 Hour         1,4641    7:1:2
+    Sdwpfm         6                     Climate Feature                                    Active Power                           30 Minutes       2,9281    7:1:2
+     ETTh          6                  Power Load Feature                                    Oil Temperature                          1 Hour         14,400    6:2:2
+     ETTm          6                  Power Load Feature                                    Oil Temperature                        15 Minutes       57,600    6:2:2
+    Weather       20                    Climate Feature                                   CO2-Concentration                        10 Minutes       52,696    7:1:2
+   Exchange        7                    Exchange Rate                                       Exchange Rate                            1 Day           7,588    7:1:2
+   Electricity    320               Electricity Consumption                             Electricity Consumption                      1 Hour         26,304    7:1:2
+     Traffic      861               Road Occupancy Rates                                Road Occupancy Rates                         1 Hour         17,544    7:1:2
+
+
+
+Probabilistic Forecasting. We also conduct extensive ex-                               5.1.3. I MPLEMENTATION D ETAILS
+periments on 8 widely recognized multivariate time series
+                                                                                       To keep consistent with previous works, we adopt Mean
+datasets based on ProbTS (Zhang et al., 2024a), a com-
+                                                                                       Squared Error (MSE) and Mean Absolute Error (MAE) as
+prehensive benchmark for probabilistic forecasting tasks.
+                                                                                       evaluation metrics for Deterministic forecasting and Con-
+Notably, we follow existing works (Wang et al., 2024b; Lim
+                                                                                       tinuous Ranked Probability Score (CRPS) for Probabilis-
+et al., 2021) to conduct vanilla forecasting with exogenous
+                                                                                       tic forecasting. Following the settings in TFB (Qiu et al.,
+variables. Specifically, we partition the multivariate data
+                                                                                       2024), we do not apply the “Drop Last” trick to ensure a
+by designating the last dimension as the target endogenous
+                                                                                       fair comparison. All experiments are conducted using Py-
+series, while treating the remaining dimensions as the asso-
+                                                                                       Torch (Paszke et al., 2019) in Python 3.8 and executed on
+ciated exogenous variables.
+                                                                                       an NVIDIA Tesla-A800 GPU. To ensure experimental con-
+Table 1 summarizes the statistics of all datasets for deter-                           sistency, we select Pearson correlation coefficients (Pear-
+ministic and probabilistic forecasting.                                                son, 1895) as the foundational statistical knowledge for
+                                                                                       Knowledge-Guided Conditioning.
+5.1.2. BASELINES
+                                                                                       Comprehensive details on datasets, baselines, metrics, and
+Deterministic forecasting. We compare KITE against 10                                  implementation can be found in Appendix D (specifically
+competitive baselines. These are categorized into: 1) archi-                           Sections D.1–D.4).
+tectures with native support for future exogenous variables,
+including TimeXer (Wang et al., 2024b), TFT (Lim et al.,                               5.2. Main Results
+2021), and TiDE (Das et al., 2023); and 2) models originally
+designed without such support, namely DUET (Qiu et al.,                                Comprehensive deterministic and probabilistic forecasting
+2025c), CrossLinear (Zhou et al., 2025), Amplifier (Fei                                results with exogenous variables are listed in Table 2, Ta-
+et al., 2025), TimeKAN (Huang et al., 2025), xPatch (Stit-                             ble 3 and Table 4 with the best in red and the second in blue.
+syuk & Choi, 2025), PatchTST (Nie et al., 2023b), and                                  We have the following observations:
+DLinear (Zeng et al., 2023). For the latter group, we imple-                           1) As shown in Table 2, KITE outperforms state-of-the-
+ment a modification to incorporate future covariates using                             art deterministic baselines, demonstrating notable improve-
+an MLP-based fusion strategy, as described in Algorithm 4.                             ments in predictive performance. In the presence of future
+Probabilistic Forecasting. We select 10 strong baselines,                              exogenous variables, KITE achieves a 16.1% reduction in
+including 5 univariate models: PatchTST (Nie et al., 2023a),                           MSE compared to CrossLinear, the second-best baseline in
+TSDiff (Kollovieh et al., 2023), Koopa (Liu et al., 2023),                             terms of MSE, and a 9.2% reduction in MAE compared to
+TSFlow (Kollovieh et al., 2025), and K 2 VAE, as well as 5                             TFT, the second-best baseline in terms of MAE. Full results
+multivariate models: iTransformer (Liu et al., 2024b), GRU                             are reported in Table 8. This compellingly demonstrates the
+NVP, Trans MAF (Rasul et al., 2021c), TimeGrad (Rasul                                  advantages of probabilistic modeling in forecasting tasks
+et al., 2021a), and CSDI (Tashiro et al., 2021). The point                             with exogenous variables.
+forecasting models are equipped with gaussian heads to                                 2) The deterministic forecasting results without future ex-
+predict the distributions.                                                             ogenous variables are reported in Table 3 for average results
+                                                                                       and Table 9 for full results. In most cases, KITE outper-
+
+                                                                                   7
+                        KITE: Knowledge-Guided Probabilistic Modeling for Time Series Forecasting with Exogenous Variables
+
+Table 2. Average results on deterministic forecasting with historical and future exogenous variables across 12 real-world datasets, where
+the inputs are X endo , X exo , and Y exo . Red: the best, Blue: the 2nd best. Full results with Y exo are reported in Table 8.
+  Models              KITE (ours)      TimeXer            TFT                 TiDE           DUET          CrossLinear         Amplifier       TimeKAN                xPatch          PatchTST             DLinear
+  Metrics            MSE     MAE     MSE     MAE      MSE     MAE       MSE      MAE     MSE       MAE     MSE       MAE     MSE     MAE      MSE     MAE       MSE       MAE       MSE        MAE     MSE     MAE
+     NP              0.325   0.323   0.418   0.370    0.379   0.375    0.443     0.399   0.411     0.407   0.370     0.387   0.419   0.418    0.406   0.419     0.378     0.370     0.390      0.396   0.442   0.444
+   PJM               0.096   0.178   0.108   0.199    0.114   0.207    0.141     0.246   0.102     0.197   0.112     0.223   0.137   0.246    0.139   0.263     0.104     0.194     0.133      0.259   0.130   0.243
+     BE              0.427   0.286   0.452   0.290    0.454   0.291    0.498     0.325   0.514     0.354   0.479     0.338   0.558   0.413    0.548   0.407     0.495     0.333     0.577      0.432   0.526   0.376
+     FR              0.387   0.225   0.427   0.240    0.504   0.257    0.485     0.281   0.495     0.327   0.482     0.298   0.553   0.408    0.547   0.374     0.490     0.293     0.588      0.410   0.497   0.314
+    DE               0.350   0.370   0.475   0.418    0.489   0.446    0.498     0.447   0.482     0.430   0.485     0.452   0.473   0.441    0.473   0.446     0.474     0.433     0.501      0.455   0.498   0.457
+  Energy             0.111   0.257   0.163   0.315    0.130   0.283    0.152     0.301   0.202     0.367   0.239     0.401   0.233   0.389    0.218   0.381     0.148     0.303     0.226      0.377   0.174   0.323
+ Sdwpfm1             0.417   0.451   0.702   0.609    0.481   0.475    0.483     0.507   0.599     0.571   0.426     0.502   0.428   0.490    0.447   0.534     0.630     0.568     0.435      0.502   0.449   0.531
+ Sdwpfm2             0.475   0.483   0.802   0.653    0.476   0.489    0.486     0.516   0.514     0.490   0.533     0.574   0.490   0.512    0.497   0.564     0.516     0.495     0.510      0.547   0.524   0.580
+ Sdwpfh1             0.441   0.491   0.746   0.643    0.479   0.492    0.453     0.508   0.539     0.516   0.557     0.593   0.536   0.598    0.577   0.638     0.498     0.505     0.468      0.526   0.579   0.624
+ Sdwpfh2             0.500   0.526   0.891   0.719    0.566   0.521    0.599     0.584   0.647     0.566   0.538     0.575   0.521   0.581    0.646   0.671     0.610     0.551     0.549      0.580   0.669   0.664
+  Colbun             0.088   0.172   0.144   0.235    0.237   0.297    0.164     0.227   0.198     0.266   0.127     0.195   0.173   0.245    0.128   0.175     0.153     0.210     0.239      0.309   0.157   0.218
+  Rapel              0.244   0.294   0.344   0.362    0.305   0.334    0.320     0.352   0.269     0.326   0.252     0.313   0.257   0.322    0.249   0.310     0.333     0.381     0.269      0.332   0.250   0.324
+
+
+Table 3. Average results on deterministic forecasting with historical exogenous variables across 12 real-world datasets, where the inputs
+are X endo and X exo . Red: the best, Blue: the 2nd best. Full results without Y exo are reported in Table 9.
+  Models              KITE (ours)      TimeXer            TFT                 TiDE           DUET          CrossLinear         Amplifier       TimeKAN                xPatch          PatchTST             DLinear
+  Metrics            MSE     MAE     MSE     MAE      MSE     MAE       MSE      MAE     MSE       MAE     MSE       MAE     MSE     MAE      MSE     MAE       MSE       MAE       MSE        MAE     MSE     MAE
+     NP              0.405   0.365   0.440   0.383    0.647   0.488    0.468     0.416   0.444     0.383   0.451     0.394   0.520   0.448    0.484   0.436     0.457     0.401     0.457      0.401   0.471   0.423
+   PJM               0.127   0.210   0.141   0.229    0.200   0.271    0.158     0.253   0.140     0.226   0.147     0.241   0.152   0.245    0.175   0.270     0.148     0.243     0.148      0.243   0.154   0.250
+     BE              0.453   0.302   0.478   0.301    0.564   0.355    0.547     0.349   0.474     0.305   0.477     0.300   0.503   0.325    0.488   0.315     0.485     0.309     0.485      0.309   0.549   0.381
+     FR              0.429   0.247   0.454   0.248    0.535   0.288    0.495     0.290   0.468     0.263   0.476     0.257   0.494   0.286    0.491   0.277     0.470     0.265     0.470      0.264   0.494   0.302
+    DE               0.601   0.484   0.660   0.507    0.684   0.515    0.644     0.519   0.660     0.513   0.635     0.508   0.712   0.549    0.669   0.526     0.696     0.527     0.696      0.527   0.690   0.529
+  Energy             0.146   0.294   0.172   0.327    0.376   0.480    0.162     0.312   0.160     0.308   0.201     0.336   0.180   0.327    0.148   0.296     0.203     0.341     0.203      0.341   0.160   0.307
+ Sdwpfm1             0.698   0.577   0.702   0.609    0.984   0.728    0.713     0.633   0.724     0.584   0.810     0.694   0.843   0.686    0.726   0.672     0.734     0.651     0.733      0.651   0.693   0.681
+ Sdwpfm2             0.800   0.622   0.803   0.653    1.045   0.767    0.816     0.683   0.820     0.641   0.800     0.687   0.942   0.732    0.836   0.701     0.834     0.715     0.834      0.714   0.805   0.728
+ Sdwpfh1             0.760   0.627   0.746   0.644    0.793   0.699    0.808     0.699   0.780     0.644   0.768     0.702   1.100   0.820    0.804   0.721     0.804     0.717     0.804      0.717   0.783   0.751
+ Sdwpfh2             0.880   0.691   0.891   0.719    0.927   0.747    0.920     0.752   1.007     0.715   0.956     0.774   0.980   0.768    0.941   0.783     1.025     0.803     1.025      0.802   0.913   0.798
+  Colbun             0.136   0.193   0.133   0.220    0.556   0.387    0.189     0.241   0.147     0.198   0.129     0.195   0.152   0.211    0.201   0.253     0.150     0.221     0.150      0.221   0.198   0.247
+  Rapel              0.302   0.306   0.344   0.362    0.308   0.334    0.324     0.357   0.304     0.306   0.240     0.299   0.337   0.348    0.342   0.338     0.326     0.334     0.325      0.334   0.319   0.338
+
+
+
+Table 4. Results of CRPS for both short- and long-term probabilistic forecasting with exogenous variables across eight real-world datasets.
+In Univariate Modeling, the input consists solely of X endo , whereas in Multivariate Modeling and Covariate Modeling (CoM.), the inputs
+encompass both X endo and X exo . Red: the best, Blue: the 2nd best.
+                  Datasets              ETTh1                 ETTh2                  ETTm1                 ETTm2                Weather               Traffic                  Electricity             Exchange
+  Paras.               Models        Short    Long       Short        Long       Short    Long        Short        Long      Short    Long       Short        Long        Short        Long        Short       Long
+                      PatchTST       0.447    0.533      0.294        0.381      0.365    0.427       0.267        0.366     0.141    0.163      0.171        0.236       0.077        0.094       0.069       0.063
+                       Koopa         0.456    0.549      0.243        0.369      0.372    0.447       0.309        0.450     0.144    0.163      0.164        0.219       0.070        0.097       0.068       0.068
+  Univariate
+                       TSDiff        0.466    0.551      0.281        0.378      0.393    0.470       0.334        0.445     0.079    0.128      0.122        0.172       0.113        0.136       0.098       0.077
+  Modeling             K 2 VAE       0.333    0.433      0.235        0.325      0.314     0.376      0.208        0.323     0.068    0.098      0.084        0.143       0.054        0.075       0.037       0.052
+                       TSFlow        0.337    0.446      0.247        0.343      0.357    0.406       0.204        0.316     0.074    0.117      0.098        0.159       0.063        0.086       0.035       0.053
+                    iTransformer     0.443    0.528      0.270        0.359      0.350    0.417       0.289        0.385     0.164    0.173      0.159        0.225       0.067        0.090       0.075       0.062
+   Multivariate      GRU NVP         0.360    0.514      0.258        0.356      0.346    0.387       0.229        0.342     0.110    0.104      0.091        0.155       0.103        0.118       0.095       0.051
+                     Trans MAF       0.353    0.492      0.264        0.381      0.378    0.426       0.267        0.353     0.129    0.143      0.089        0.140       0.048        0.069       0.033       0.065
+    Modeling          TimeGrad       0.353    0.513      0.274        0.338      0.363    0.412       0.213        0.351     0.084    0.095      0.083        0.124       0.051        0.065       0.039       0.064
+                        CSDI         0.349    0.484      0.246        0.352      0.332    0.410       0.228        0.357     0.089    0.097      0.076        0.118       0.061        0.073       0.032       0.059
+  CoM.               KITE (ours)     0.324    0.426      0.228        0.314      0.308    0.364       0.198        0.309     0.063    0.092      0.069        0.110       0.042        0.060       0.027       0.048
+
+
+
+
+forms state-of-the-art deterministic baselines, achieving the                                                  variables, leading to robust deterministic forecasting even
+best average performance with a 3.8% reduction in MSE                                                          when future covariates are unavailable.
+over TimeXer and a 3.3% reduction in MAE over DUET.
+                                                                                                               3) For probabilistic forecasting, we conducted experiments
+Beyond the averaged results, KITE ranks first in 13 out of 24
+                                                                                                               on both long-term and short-term forecasting tasks across
+MSE cases and 16 out of 24 MAE cases, showing its stable
+                                                                                                               8 datasets, with settings detailed at the end of Section D.1.
+advantage across different datasets and forecasting horizons.
+                                                                                                               Table 3 demonstrates that KITE exhibits a significant ad-
+These results indicate that KITE can effectively model the
+                                                                                                               vantage in probabilistic forecasting with exogenous vari-
+interactions between target series and observed exogenous
+
+                                                                                                           8
+            KITE: Knowledge-Guided Probabilistic Modeling for Time Series Forecasting with Exogenous Variables
+
+ables. Specifically, compared to the leading univariate              Table 6. Analysis of Statistical Knowledge: Utilizing Pearson cor-
+                                                                     relation coefficients and Granger causality to guide the modeling
+method (K 2 VAE) and the top-performing multivariate                 of dependencies between endogenous variables and exogenous.
+method (CSDI), KITE achieves improvements of 5.7% and
+11.4% in CRPS, respectively. Notably, multivariate meth-                           Datasets                 NP              Sdwpfh1
+ods do not consistently outperform univariate methods. This                   X exo       Y exo     MSE          MAE     MSE     MAE
+may be because multivariate models tend to capture spurious             1    Pearson     Pearson    0.325        0.323   0.441   0.491
+correlations when dependencies are weak. However, KITE                  2    Granger     Granger    0.334        0.342   0.449   0.504
+                                                                        3    Pearson     Granger    0.362        0.374   0.467   0.518
+effectively alleviates this issue through the guidance of sta-          4    Granger     Pearson    0.323        0.320   0.438   0.486
+tistical knowledge, enabling it to surpass both univariate and
+multivariate baselines across all presented datasets.                Statistical Knowledge Studies. Previous settings consis-
+                                                                     tently employed Pearson correlation coefficients to guide
+3) Compared to probabilistic models, KITE demonstrates
+                                                                     dependency capturing, as described in Algorithm 2. In this
+notable advantages, highlighting the superiority of employ-
+                                                                     section, we further analyze how different statistical metrics
+ing the History-Conditional Manifold as the source distri-
+                                                                     capture the relationships between variables across different
+bution over uninformative Gaussian noise. Furthermore,
+                                                                     components. Specifically, we explored the use of Pear-
+KITE outperforms baselines across univariate, multivariate,
+                                                                     son correlation coefficients (representing correlations) and
+and covariate modeling paradigms. This validates that our
+                                                                     Granger Causality (representing causality, as described in
+Knowledge-Guided variable interaction strategy is highly
+                                                                     Algorithm 3) to guide the capture of dependencies between
+effective in precisely capturing the correlations between
+                                                                     endogenous variables and historical covariates (X exo ) or
+endogenous and exogenous variables.
+                                                                     future covariates (Y exo ). The results are summarized in Ta-
+                                                                     ble 6. The results show that: (1) When employing the same
+5.3. Model Analysis
+                                                                     statistical knowledge across different stages, Pearson cor-
+                                                                     relation yields superior performance compared to Granger
+Table 5. Ablation results of the History-Conditional Manifold
+(HCM), Knowledge-Guided Conditioning (KGC), and Classifier-          Causality, as seen in Rows 1 and 2. (2) When employing
+Free Guidance (CFG) modules on both deterministic and proba-         mixed statistical knowledge, Row 4 significantly outper-
+bilistic forecasting tasks.                                          forms Row 3. This indicates that correlation is better suited
+              Task           Deterministic     Probabilistic
+                                                                     for capturing relationships between future exogenous vari-
+      HCM     KGC    CFG    NP     Sdwpfh1   ETTm2     Weather
+                                                                     ables and the future endogenous variables, whereas causality
+                                                                     is more effective for modeling dependencies from historical
+  1    ✗       ✗     ✗     0.395     0.474   0.232      0.087
+  2    ✓       ✗     ✗     0.371     0.455   0.215      0.074        exogenous variables. This observation aligns well with the
+  3    ✗       ✓     ✗     0.384     0.467   0.211      0.069        intrinsic definitions of correlation and causality.
+  4    ✓       ✓     ✗     0.330     0.449   0.201      0.067
+  5    ✗       ✓     ✓     0.353     0.454   0.205      0.065        More Analysis. We provide supplementary evaluations in
+  6    ✓       ✓     ✓     0.325     0.441   0.198      0.063
+                                                                     Appendix E. These additional studies include: (1) a Parame-
+                                                                     ter Sensitivity Analysis presented in Appendix E.1, which
+Ablation Studies. To analyze the contribution of each mod-           investigates the impact of key hyperparameters such as the
+ule, we conducted an ablation study, as detailed in Table 5.         uncertainty basis σmin , the hidden dimension d, the CFG
+Here, ✗ and ✓ denote the absence and presence of a module,           guidance scale γ, and the number of KGC attention layers
+respectively. Row 1 presents the standard flow matching              L; and (2) a Efficiency Analysis, which is documented in
+baseline using standard bilinear attention for conditioning,         Appendix E.2.
+while Rows 2–6 demonstrate the performance impact of inte-
+grating specific modules from the KITE framework. Based
+on the results, we observe the following: (1) A compari-
+                                                                     6. Conclusion
+son of Rows 1–3 reveals that both the History-Conditional            In this work, we propose KITE, a knowledge-guided prob-
+Manifold (HCM) and the Knowledge-Guided Conditioning                 abilistic model for time series forecasting with exogenous
+(KGC) modules can enhance the model’s performance in                 variables. We introduce the History-Conditional Manifold
+both deterministic and probabilistic forecasting. (2) Compar-        and Knowledge-Guided Conditioning modules, which refine
+ing Rows 2–4, we observe that the simultaneous integration           the source distribution and conditioning network of Flow
+of the HCM and KGC modules leads to further performance              Matching, respectively, thereby achieving significant perfor-
+gains, demonstrating the synergy between the two. (3) In-            mance gains in deterministic and probabilistic forecasting.
+corporating Classifier-Free Guidance into the model enables          Through comprehensive experiments, we demonstrate that
+more robust sampling generation, as evidenced by the per-            KITE achieves SOTA performance. Future work will ex-
+formance gains shown in Row 5. (4) The combination of all            plore more general settings with noisy, missing, or uncertain
+three modules creates a highly effective unified framework,          future covariates for robust probabilistic forecasting.
+resulting in the best performance, as shown in Row 6.
+
+                                                                 9
+           KITE: Knowledge-Guided Probabilistic Modeling for Time Series Forecasting with Exogenous Variables
+
+Acknowledgements                                                        foundation models for anomaly detection through state-
+                                                                        aware adapter, 2025. URL https://arxiv.org/
+This work was partially supported by the National Nat-                  abs/2510.16014.
+ural Science Foundation of China (No. 62372179, No.
+62472174) and the Fundamental Research Funds for the                  Cheng, H., Wu, X., Shu, Y., Rao, Z., Pan, L., Yang, B., and
+Central Universities. Chenjuan Guo is the corresponding                 Guo, C. Cora: Boosting time series foundation models
+author of the work.                                                     for multivariate forecasting through correlation-aware
+                                                                        adapter. In ICLR, 2026.
+Impact Statement                                                      Das, A., Kong, W., Leach, A., Mathur, S., Sen, R., and Yu,
+This paper presents work aimed at advancing the field of                R. Long-term forecasting with tide: Time-series dense
+Machine Learning. There are many potential societal con-                encoder. arXiv preprint arXiv:2304.08424, 2023.
+sequences of our research, none of which we feel must be
+                                                                      Ekambaram, V., Jati, A., Dayama, P., Mukherjee, S.,
+specifically highlighted here. Furthermore, while the Large
+                                                                        Nguyen, N., Gifford, W. M., Reddy, C., and Kalagnanam,
+Language Models were used to polish some grammar during
+                                                                        J. Tiny time mixers (ttms): Fast pre-trained models for
+the writing process, all content remains original rather than
+                                                                        enhanced zero/few-shot forecasting of multivariate time
+generated, and there are no ethical issues to report.
+                                                                        series. In NeurIPS, 2024.
+
+References                                                            Esser, P., Kulal, S., Blattmann, A., Entezari, R., Müller, J.,
+                                                                        Saini, H., Levi, Y., Lorenz, D., Sauer, A., Boesel, F., et al.
+Albergo, M. S. and Vanden-Eijnden, E. Building normaliz-                Scaling rectified flow transformers for high-resolution
+  ing flows with stochastic interpolants. In ICLR, 2023.                image synthesis. In ICML, 2024.
+Arango, S. P., Mercado, P., Kapoor, S., Ansari, A. F., Stella,        Fang, X., Liu, D., Zhou, P., and Hu, Y. Multi-modal cross-
+  L., Shen, H., Senetaire, H., Türkmen, A. C., Shchur, O.,             domain alignment network for video moment retrieval.
+  Maddix, D. C., Bohlke-Schneider, M., Wang, B., and                    IEEE Transactions on Multimedia, 25:7517–7532, 2022.
+  Rangapuram, S. S. Chronosx: Adapting pretrained time
+  series models with exogenous variables. In AISTATS,                 Fang, X., Liu, D., Zhou, P., Xu, Z., and Li, R. Hierarchical
+  volume 258, pp. 2242–2250. PMLR, 2025.                                local-global transformer for temporal sentence grounding.
+                                                                        IEEE Transactions on Multimedia, 2023.
+Campos, D., Kieu, T., Guo, C., Huang, F., Zheng, K., Yang,
+  B., and Jensen, C. S. Unsupervised time series outlier              Fang, X., Easwaran, A., Genest, B., and Suganthan, P. N.
+  detection with diversity-driven convolutional ensembles.              Your data is not perfect: Towards cross-domain out-of-
+  Proc. VLDB Endow., 15(3):611–623, 2022.                               distribution detection in class-imbalanced data. Expert
+                                                                        Systems with Applications, 2025.
+Cao, D., Wang, Y., Duan, J., Zhang, C., Zhu, X., Huang,
+  C., Tong, Y., Xu, B., Bai, J., Tong, J., and Zhang, Q.              Fang, X., Fang, W., and Wang, C. Cogniverse: Revolution-
+  Spectral temporal graph neural network for multivariate               izing multi-modal retrieval-augmented generation with
+  time-series forecasting. In NeurIPS, 2020.                            cognitive reflection and geometric reasoning. In CVPR,
+                                                                        2026a.
+Chen, J., Yu, J., Ge, C., Yao, L., Xie, E., Wu, Y., Wang, Z.,
+  Kwok, J., Luo, P., Lu, H., et al. Pixart-α : Fast training          Fang, Y., Xie, J., Zhao, Y., Chen, L., Gao, Y., and Zheng, K.
+  of diffusion transformer for photorealistic text-to-image             Temporal-frequency masked autoencoders for time series
+  synthesis. arXiv preprint arXiv:2310.00426, 2023a.                    anomaly detection. In ICDE, pp. 1228–1241, 2024.
+
+Chen, L., Chen, D., Shang, Z., Wu, B., Zheng, C., Wen, B.,            Fang, Y., Miao, H., Liang, Y., Deng, L., Cui, Y., Zeng, X.,
+  and Zhang, W. Multi-scale adaptive graph neural network               Xia, Y., Zhao, Y., Pedersen, T. B., Jensen, C. S., et al.
+  for multivariate time series forecasting. TKDE, 35(10):               Unraveling spatio-temporal foundation models via the
+  10748–10761, 2023b.                                                   pipeline lens: A comprehensive review. TKDE, 2026b.
+
+Chen, Z., Ding, L., Chu, Z., Qi, Y., Huang, J., and Wang, H.          Fang, Y., Wang, S., Liang, Y., Ye, Z., Xiang, Y., Zhao,
+  Monotonic neural ordinary differential equation: Time-                Y., and Zheng, K. Efficient high-dimensional time se-
+  series forecasting for cumulative data. In CIKM, pp. 4523–            ries forecasting with transformers: A channel reordering
+  4529, 2023c.                                                          perspective. In WWW, pp. 7223–7234, 2026c.
+
+Cheng, H., Zhang, R., Lu, Y., Chen, P., Wang, M., Shu,                Fang, Z., Pan, L., Chen, L., Du, Y., and Gao, Y. MDTP:
+  Y., Yang, B., and Guo, C. Star: Boosting time series                  A multi-source deep traffic prediction framework over
+
+                                                                 10
+           KITE: Knowledge-Guided Probabilistic Modeling for Time Series Forecasting with Exogenous Variables
+
+  spatio-temporal trajectory data. Proc. VLDB Endow., 14               Hu, S., Zhang, T., Jin, J., Qiu, X., Yang, B., and Guo, C.
+  (8):1289–1297, 2021.                                                  Teamwork: Multivariate time series anomaly detection
+                                                                        via asymmetric role-aware channel modeling. In ICML,
+Fei, J., Yi, K., Fan, W., Zhang, Q., and Niu, Z. Amplifier:              2026b.
+  Bringing attention to neglected low-energy components
+  in time series forecasting. In AAAI, volume 39, pp. 11645–           Hu, S., Zhao, K., Guo, C., Qiu, X., Shu, Y., Hu, J., Jensen,
+  11653, 2025.                                                           C. S., and Yang, B. Tap: Time series anomaly prediction
+                                                                        via adaptive period modeling and dual representation
+Feng, S., Miao, C., Xu, K., Wu, J., Wu, P., Zhang, Y., and               learning. In TKDE, 2026c.
+  Zhao, P. Multi-scale attention flow for probabilistic time
+  series forecasting. IEEE Trans. Knowl. Data Eng., 36(5):             Hu, Y., Wang, X., Ding, Z., Wu, L., Zhang, H., Li, S. Z.,
+  2056–2068, 2024.                                                      Wang, S., Zhang, J., Li, Z., and Chen, T. Flowts: Time
+                                                                         series generation via rectified flow, 2025. URL https:
+Goodman, N. R. Statistical analysis based on a certain mul-             //arxiv.org/abs/2411.07506.
+  tivariate complex gaussian distribution (an introduction).
+                                                                       Huang, S., Zhao, Z., Li, C., and Bai, L. Timekan: Kan-
+ The Annals of mathematical statistics, 34(1):152–177,
+                                                                         based frequency decomposition learning architecture for
+ 1963.
+                                                                         long-term time series forecasting. In ICLR, 2025.
+Granger, C. W. Investigating causal relations by economet-             Huang, X., Yang, Y., Wang, Y., Wang, C., Zhang, Z., Xu,
+  ric models and cross-spectral methods. Econometrica:                  J., Chen, L., and Vazirgiannis, M. Dgraph: A large-scale
+  journal of the Econometric Society, pp. 424–438, 1969.                 financial dataset for graph anomaly detection. In NeurIPS,
+                                                                         pp. 22765–22777, 2022.
+Guo, C., Yang, B., Andersen, O., Jensen, C. S., and Torp, K.
+  Ecomark 2.0: empowering eco-routing with vehicular en-               Jin, Z., Qian, Y., Liang, X., and Geng, H. A multi-view fu-
+  vironmental models and actual vehicle fuel consumption                  sion approach for enhancing speech signals via short-time
+  data. GeoInformatica, 19:567–599, 2015.                                 fractional fourier transform. In IJCAI, pp. 5508–5516.
+                                                                          International Joint Conferences on Artificial Intelligence
+Hersbach, H., Bell, B., Berrisford, P., Hirahara, S., Horányi,           Organization, 2025.
+  A., Muñoz-Sabater, J., Nicolas, J., Peubey, C., Radu, R.,
+  Schepers, D., et al. The era5 global reanalysis. Quarterly           Jin, Z., Qian, Y., Liang, X., Zhang, J., Yuan, J., Hu, S., Geng,
+  journal of the royal meteorological society, 146(730):                  H., and Cheng, H. Signal enhancement via multi-view
+ 1999–2049, 2020.                                                         dynamic representation and alignment-aware fusion. In
+                                                                          AAAI, pp. 22454–22462, 2026.
+Ho, J. and Salimans, T. Classifier-free diffusion guidance.
+  arXiv preprint arXiv:2207.12598, 2022.                               Kollovieh, M., Ansari, A. F., Bohlke-Schneider, M.,
+                                                                         Zschiegner, J., Wang, H., and Wang, Y. Predict, refine,
+Hsu, Y., Shen, Y., Jin, H., and Kira, Z. Generalized ODIN:               synthesize: Self-guiding diffusion models for probabilis-
+  detecting out-of-distribution image without learning from              tic time series forecasting. In NeurIPS, 2023.
+  out-of-distribution data. In CVPR, pp. 10948–10957,
+                                                                       Kollovieh, M., Lienen, M., Lüdke, D., Schwinn, L., and
+  2020.
+                                                                         Günnemann, S. Flow matching with gaussian process
+Hu, R., Singh, A., Darrell, T., and Rohrbach, M. Iterative               priors for probabilistic time series forecasting. In ICLR,
+  answer prediction with pointer-augmented multimodal                    2025.
+  transformers for textvqa. In Proceedings of the IEEE/CVF             Lago, J., Marcjasz, G., De Schutter, B., and Weron, R.
+  conference on computer vision and pattern recognition,                 Forecasting day-ahead electricity prices: A review of
+  pp. 9992–10002, 2020.                                                  state-of-the-art algorithms, best practices and an open-
+                                                                         access benchmark. Applied Energy, 293:116983, 2021.
+Hu, S., Zhao, K., Qiu, X., Shu, Y., Hu, J., Yang, B., and
+  Guo, C. MultiRC: Joint learning for time series anomaly              Lai, G., Chang, W., Yang, Y., and Liu, H. Modeling long-
+  prediction and detection with multi-scale reconstructive               and short-term temporal patterns with deep neural net-
+  contrast. arXiv preprint arXiv:2410.15997, 2024.                       works. In Collins-Thompson, K., Mei, Q., Davison, B. D.,
+                                                                         Liu, Y., and Yilmaz, E. (eds.), SIGIR, pp. 95–104, 2018.
+Hu, S., Jin, J., Shu, Y., Chen, P., Yang, B., and Guo, C.
+ Towards multimodal time series anomaly detection with                 Li, L., Yan, J., Yang, X., and Jin, Y. Learning interpretable
+  semantic alignment and condensed interaction. In ICLR,                 deep state space model for probabilistic time series fore-
+  2026a.                                                                 casting. In IJCAI, pp. 2901–2908, 2019.
+
+                                                                  11
+           KITE: Knowledge-Guided Probabilistic Modeling for Time Series Forecasting with Exogenous Variables
+
+Li, Y., Wu, C.-Y., Fan, H., Mangalam, K., Xiong, B., Malik,           Liu, Y., Hu, T., Zhang, H., Wu, H., Wang, S., Ma, L.,
+  J., and Feichtenhofer, C. Mvitv2: Improved multiscale                 and Long, M. itransformer: Inverted transformers are
+  vision transformers for classification and detection. In              effective for time series forecasting. In ICLR, 2024a.
+  Proceedings of the IEEE/CVF conference on computer
+   vision and pattern recognition, pp. 4804–4814, 2022.               Liu, Y., Hu, T., Zhang, H., Wu, H., Wang, S., Ma, L.,
+                                                                        and Long, M. itransformer: Inverted transformers are
+Li, Z., Qiu, X., Chen, P., Wang, Y., Cheng, H., Shu, Y.,                effective for time series forecasting. In ICLR, 2024b.
+  Hu, J., Guo, C., Zhou, A., Wen, Q., et al. TSFM-Bench:
+                                                                      Liu, Y., Qin, G., Shi, Z., Chen, Z., Yang, C., Huang, X.,
+  A comprehensive and unified benchmark of foundation
+                                                                        Wang, J., and Long, M. Sundial: A family of highly
+  models for time series forecasting. In SIGKDD, 2025.
+                                                                        capable time series foundation models. In ICML, 2025.
+Li, Z., Hu, Y., Chen, Z., Huang, Q., Qiu, G., Fu, Z., and             Lu, J., Chen, P., Guo, C., Shu, Y., Wang, M., and Yang,
+  Liu, M. Retrack: Evidence-driven dual-stream directional              B. Towards non-stationary time series forecasting with
+  anchor calibration network for composed video retrieval.              temporal stabilization and frequency differencing. In
+  In AAAI, volume 40, pp. 23373–23381, 2026a.                           AAAI, 2026a.
+Li, Z., Hu, Y., Chen, Z., Zhang, M., Fu, Z., and Nie, L.              Lu, J., Chen, P., Wu, X., Shu, Y., Guo, C., Jensen, C. S., and
+  Conesep: Cone-based robust noise-unlearning compo-                    Yang, B. Patra: Pattern-aware alignment and balanced
+  sitional network for composed image retrieval. arXiv                  reasoning for time series question answering. In ICML,
+  preprint arXiv:2604.20358, 2026b.                                     2026b.
+Li, Z., Qiu, X., Zhu, Y., Wu, X., Hu, J., Guo, C., and Yang,          Lu, S., Liu, Y., and Kong, A. W.-K. Tf-icon: Diffusion-
+  B. Gcgnet: Graph-consistent generative network for time               based training-free cross-domain image composition. In
+  series forecasting with exogenous variables. In ICLR,                 ICCV, pp. 2294–2305, 2023.
+  2026c.
+                                                                      Lu, S., Wang, Z., Li, L., Liu, Y., and Kong, A. W.-K. Mace:
+Lim, B., Arık, S. Ö., Loeff, N., and Pfister, T. Temporal              Mass concept erasure in diffusion models. In CVPR, pp.
+  fusion transformers for interpretable multi-horizon time              6430–6440, 2024a.
+  series forecasting. 37(4):1748–1764, 2021.
+                                                                      Lu, S., Zhou, Z., Lu, J., Zhu, Y., and Kong, A. W.-K. Ro-
+Lin, S., Lin, W., Wu, K., Wang, S., Xu, M., and Wang,                   bust watermarking using generative priors against image
+  J. Z. Cocv: A compression algorithm for time-series data              editing: From benchmarking to advances. arXiv preprint
+  with continuous constant values in iot-based monitoring               arXiv:2410.18775, 2024b.
+  systems. Internet of Things, 25:101049, 2024.
+                                                                      Ma, Y., Wang, Y., Wu, Y., Lyu, Z., Chen, S., Li, X., and Qiao,
+Lin, S., Lin, W., Zhao, F., and Chen, H. Benchmarking                  Y. Visual knowledge graph for human action reasoning
+  and revisiting time series forecasting methods in cloud              in videos. In ACM MM, pp. 4132–4141, 2022.
+  workload prediction. Cluster Computing, 28(1):71, 2025.             Ma, Y., He, Y., Cun, X., Wang, X., Chen, S., Li, X., and
+                                                                       Chen, Q. Follow your pose: Pose-guided text-to-video
+Lipman, Y., Chen, R. T., Ben-Hamu, H., Nickel, M., and
+                                                                       generation using pose-free videos. In AAAI, volume 38,
+  Le, M. Flow matching for generative modeling. In ICLR,
+                                                                       pp. 4117–4125, 2024.
+  2022.
+                                                                      Ma, Y., Feng, K., Zhang, X., Liu, H., Zhang, D. J., Xing,
+Liu, X., Qiu, X., Cheng, H., Wu, X., Guo, C., Yang, B., and            J., Zhang, Y., Yang, A., Wang, Z., and Chen, Q. Follow-
+  Hu, J. Astgi: Adaptive spatio-temporal graph interactions            your-creation: Empowering 4d creation through video
+  for irregular multivariate time series forecasting. In ICLR,         inpainting. arXiv preprint arXiv:2506.04590, 2025a.
+  2026a.
+                                                                      Ma, Y., He, Y., Wang, H., Wang, A., Shen, L., Qi, C.,
+Liu, X., Qiu, X., Wu, X., Li, Z., Guo, C., Hu, J., and Yang,           Ying, J., Cai, C., Li, Z., Shum, H.-Y., et al. Follow-your-
+  B. Rethinking irregular time series forecasting: A simple            click: Open-domain regional image animation via motion
+  yet effective baseline. In AAAI, 2026b.                              prompts. In AAAI, volume 39, pp. 6018–6026, 2025b.
+
+Liu, Y., Li, C., Wang, J., and Long, M. Koopa: Learning non-          Ma, Y., Wang, X., Ma, Q., Wang, Q., Zheng, M., Yang,
+  stationary time series dynamics with koopman predictors.             X., Li, H., Zhao, C., Ying, J., Yang, H., et al. Group
+  Advances in neural information processing systems, 36:               editing: Edit multiple images in one go. arXiv preprint
+  12271–12290, 2023.                                                   arXiv:2603.22883, 2026.
+
+                                                                 12
+           KITE: Knowledge-Guided Probabilistic Modeling for Time Series Forecasting with Exogenous Variables
+
+Matheson, J. E. and Winkler, R. L. Scoring rules for contin-          Qiu, X., Li, Z., Qiu, W., Hu, S., Zhou, L., Wu, X., Li,
+ uous probability distributions. Management science, 22                 Z., Guo, C., Zhou, A., Sheng, Z., Hu, J., Jensen, C. S.,
+ (10):1087–1096, 1976.                                                  and Yang, B. TAB: Unified benchmarking of time series
+                                                                        anomaly detection methods. In Proc. VLDB Endow.,
+Nie, Y., Nguyen, N. H., Sinthong, P., and Kalagnanam, J.                2025a.
+  A time series is worth 64 words: Long-term forecasting
+  with transformers. In ICLR, 2023a.                                  Qiu, X., Wu, X., Cheng, H., Liu, X., Guo, C., Hu, J., and
+                                                                        Yang, B. Dbloss: Decomposition-based loss function for
+Nie, Y., Nguyen, N. H., Sinthong, P., and Kalagnanam, J.                time series forecasting. In NeurIPS, 2025b.
+  A time series is worth 64 words: Long-term forecasting
+  with transformers. In ICLR, 2023b.                                  Qiu, X., Wu, X., Lin, Y., Guo, C., Hu, J., and Yang, B.
+                                                                        DUET: Dual clustering enhanced multivariate time series
+Olivares, K. G., Challu, C., Marcjasz, G., Weron, R., and               forecasting. In SIGKDD, pp. 1185–1196, 2025c.
+  Dubrawski, A. Neural basis expansion analysis with
+  exogenous variables: Forecasting electricity prices with            Qiu, X., Zhu, Y., Li, Z., Cheng, H., Wu, X., Guo, C.,
+  nbeatsx. 39(2):884–900, 2023.                                         Yang, B., and Hu, J. DAG: A dual causal network for
+                                                                        time series forecasting with exogenous variables. CoRR,
+Pan, Z., Sharma, A., Hu, J. Y.-C., Liu, Z., Li, A., Liu,                abs/2509.14933, 2025d.
+  H., Huang, M., and Geng, T. Ising-traffic: Using ising
+  machine learning to predict traffic congestion under un-            Qiu, X., Yan, K., Liu, X., Wu, X., and Hu, J. Bridging time
+  certainty. In AAAI, volume 37, pp. 9354–9363, 2023a.                  and frequency: A joint modeling framework for irregular
+                                                                        multivariate time series forecasting. In ICML, 2026a.
+Pan, Z., Wang, Y., Zhang, Y., Yang, S. B., Cheng, Y., Chen,
+  P., Guo, C., Wen, Q., Tian, X., Dou, Y., et al. Magicscaler:        Qiu, X., Zhu, Y., Li, Z., Wu, X., Yang, B., and Hu, J. Dag: A
+  Uncertainty-aware, predictive autoscaling. Proc. VLDB                 dual correlation network for time series forecasting with
+  Endow., 16(12):3808–3821, 2023b.                                      exogenous variables. In ICML, 2026b.
+
+Paszke, A., Gross, S., Massa, F., Lerer, A., Bradbury, J.,            Rangapuram, S. S., Seeger, M. W., Gasthaus, J., Stella, L.,
+  Chanan, G., Killeen, T., Lin, Z., Gimelshein, N., Antiga,             Wang, Y., and Januschowski, T. Deep state space models
+  L., Desmaison, A., Köpf, A., Yang, E. Z., DeVito, Z.,                for time series forecasting. In NeurIPS, pp. 7796–7805,
+  Raison, M., Tejani, A., Chilamkurthy, S., Steiner, B.,                2018.
+  Fang, L., Bai, J., and Chintala, S. Pytorch: An imperative          Rasul, K., Seward, C., Schuster, I., and Vollgraf, R. Au-
+  style, high-performance deep learning library. In NeurIPS,            toregressive denoising diffusion models for multivariate
+  pp. 8024–8035, 2019.                                                  probabilistic time series forecasting. In ICML, volume
+                                                                        139, pp. 8857–8868, 2021a.
+Pearson, D. et al. Pearson. D.. Shibahara, S.. Hofsteenge,
+  J., & Chiquet-Ehrismann, pp. 2977–2982, 2004.                       Rasul, K., Sheikh, A., Schuster, I., Bergmann, U. M., and
+                                                                        Vollgraf, R. Multivariate probabilistic time series forecast-
+Pearson, K. Vii. note on regression and inheritance in the
+                                                                        ing via conditioned normalizing flows. In ICLR, 2021b.
+  case of two parents. proceedings of the royal society of
+  London, 58(347-352):240–242, 1895.                                  Rasul, K., Sheikh, A., Schuster, I., Bergmann, U. M., and
+                                                                        Vollgraf, R. Multivariate probabilistic time series forecast-
+Polyak, A., Zohar, A., Brown, A., Tjandra, A., Sinha, A.,
+                                                                        ing via conditioned normalizing flows. In ICLR, 2021c.
+  Lee, A., Vyas, A., Shi, B., Ma, C.-Y., Chuang, C.-Y., et al.
+  Movie gen: A cast of media foundation models. arXiv                 Rishi, J., Mothish, G., and Subramani, D. Conditional
+  preprint arXiv:2410.13720, 2024.                                      diffusion model with nonlinear data transformation for
+                                                                        time series forecasting. In ICML, 2025.
+Qi, Y., Zhang, Q., Lin, X., Su, X., Zhu, J., Wang, J., and Li,
+  J. Seeing beyond noise: Joint graph structure evaluation            Salinas, D., Flunkert, V., Gasthaus, J., and Januschowski,
+  and denoising for multimodal recommendation. In AAAI,                 T. Deepar: Probabilistic forecasting with autoregressive
+  volume 39, pp. 12461–12469, 2025.                                     recurrent networks. International journal of forecasting,
+                                                                        36(3):1181–1191, 2020.
+Qiu, X., Hu, J., Zhou, L., Wu, X., Du, J., Zhang, B., Guo,
+  C., Zhou, A., Jensen, C. S., Sheng, Z., and Yang, B. TFB:           Sezer, O. B., Gudelek, M. U., and Özbayoglu, A. M. Fi-
+  towards comprehensive and fair benchmarking of time                   nancial time series forecasting with deep learning : A
+  series forecasting methods. Proc. VLDB Endow., 17(9):                 systematic literature review: 2005-2019. Appl. Soft Com-
+  2363–2377, 2024.                                                      put., 90:106181, 2020.
+
+                                                                 13
+           KITE: Knowledge-Guided Probabilistic Modeling for Time Series Forecasting with Exogenous Variables
+
+Shang, Z. and Chen, L. MSHyper: Multi-scale hypergraph                Wang, H., Pan, L., Lu, Y., Chu, Z., Li, X., He, S., Chen,
+  transformer for long-range time series forecasting. arXiv            Z., Li, H., Wen, Q., and Lin, Z. Distdf: time-series
+  preprint arXiv:2401.09261, 2024.                                     forecasting needs joint-distribution wasserstein alignment.
+                                                                       In ICLR, 2026c.
+Shang, Z., Chen, L., Wu, B., and Cui, D. Ada-MSHyper:
+  Adaptive multi-scale hypergraph transformer for time                Wang, H., Wu, H., Wu, T., Sun, Y., Liu, J., Yu, D., Ma, Y.,
+  series forecasting. In NeurIPS, volume 37, pp. 33310–                He, J., He, Z., Hong, D., et al. Ernie 5.0 technical report.
+  33337, 2024.                                                         arXiv preprint arXiv:2602.04705, 2026d.
+Shang, Z., Cui, D., Wu, B., and Chen, L. Multi-scale                  Wang, J., Wu, Z., Ouyang, W., Han, X., Chen, J., Jiang,
+  hypergraph meets LLMs: Aligning large language models                Y.-G., and Li, S.-N. M2tr: Multi-modal multi-scale trans-
+  for time series analysis. In ICLR, 2026.                             formers for deepfake detection. In Proceedings of the
+                                                                       2022 international conference on multimedia retrieval,
+Stitsyuk, A. and Choi, J. xpatch: Dual-stream time series              pp. 615–623, 2022.
+   forecasting with exponential seasonal-trend decomposi-
+   tion. In AAAI, volume 39, pp. 20601–20609, 2025.                   Wang, S., Guo, Q., Chen, L., Du, L., Jin, Z., Yuan, Z., and
+                                                                       Liang, X. An association-based fusion method for speech
+Sun, Y., Xie, Z., Wang, H., Huang, X., and Hu, Q. Solar                enhancement. In IJCAI.
+  wind speed prediction via graph attention network. Space
+  Weather, 20(7), 2022.                                               Wang, Y., Wu, H., Dong, J., Qin, G., Zhang, H., Liu, Y.,
+                                                                       Qiu, Y., Wang, J., and Long, M. Timexer: Empowering
+Tang, B. and Matteson, D. S. Probabilistic transformer for             transformers for time series forecasting with exogenous
+  time series analysis. In NeurIPS, pp. 23592–23608, 2021.             variables. In NeurIPS, volume 37, pp. 469–498, 2024b.
+Tashiro, Y., Song, J., Song, Y., and Ermon, S. CSDI: condi-           Williams, B. M. Multivariate vehicular traffic flow predic-
+  tional score-based diffusion models for probabilistic time           tion: Evaluation of arimax modeling. 1776(1):194–200,
+  series imputation. In NeurIPS, pp. 24804–24816, 2021.                2001.
+Tayal, K., Renganathan, A., Jia, X., Kumar, V., and Lu, D.            Wu, B., Chen, W., Wang, W., Peng, B., Sun, L., and Chen, L.
+  Exotst: Exogenous-aware temporal sequence transformer                Weathergnn: exploiting meteo- and spatial-dependencies
+  for time series prediction. In ICDM, pp. 857–862, 2024.              for local numerical weather prediction bias-correction. In
+Trindade, A.           ElectricityLoadDiagrams20112014.                IJCAI, pp. 2433–2441, 2024a.
+  UCI Machine Learning Repository, 2015.          DOI:                Wu, B., Shang, Z., Huang, J., and Chen, L. Millgnn: Learn-
+  https://doi.org/10.24432/C58C86.                                     ing multi-scale lead-lag dependencies for multi-variate
+Vagropoulos, S. I., Chouliaras, G., Kardakos, E. G.,                   time series forecasting. In CIKM, pp. 3344–3354, 2025a.
+  Simoglou, C. K., and Bakirtzis, A. G. Comparison of sari-           Wu, B., Shang, Z., Liu, S., Huang, J., Xu, J., and Chen, L.
+  max, sarima, modified sarima and ann-based models for                Airdde: Multifactor neural delay differential equations
+  short-term pv generation forecasting. In ENERGYCON,                  for air quality forecasting. In AAAI, pp. 15941–15949,
+  pp. 1–6, 2016.                                                       2026.
+Wang, H., Wang, Z., Niu, Y., Liu, Z., Li, H., Liao, Y., Huang,        Wu, H., Xu, J., Wang, J., and Long, M. Autoformer: Decom-
+ Y., and Liu, X. An accurate and interpretable framework               position transformers with auto-correlation for long-term
+ for trustworthy process monitoring. IEEE Trans. Artif.                series forecasting. In NeurIPS, pp. 22419–22430, 2021a.
+ Intell., 5(5):2241–2252, 2024a.
+                                                                      Wu, H., Xu, J., Wang, J., and Long, M. Autoformer: Decom-
+Wang, H., Pan, L., Shen, Y., Chen, Z., Yang, D., Yang, Y.,             position transformers with auto-correlation for long-term
+ Zhang, S., Liu, X., Li, H., and Tao, D. Fredf: learning to            series forecasting. In NeurIPS, pp. 22419–22430, 2021b.
+ forecast in the frequency domain. In ICLR, 2025.
+                                                                      Wu, X., Wu, X., Yang, B., Zhou, L., Guo, C., Qiu, X., Hu,
+Wang, H., Pan, L., Chen, Z., Chen, X., Dai, Q., Wang, L., Li,          J., Sheng, Z., and Jensen, C. S. AutoCTS++: zero-shot
+ H., and Lin, Z. Time-o1: Time-series forecasting needs                joint neural architecture and hyperparameter search for
+ transformed label alignment. In NeurIPS, volume 38, pp.               correlated time series forecasting. The VLDB Journal, 33
+ 8660–8690, 2026a.                                                     (5):1743–1770, 2024b.
+Wang, H., Pan, L., Lu, Y., Chen, Z., Liu, T., He, S., Chu, Z.,        Wu, X., Qiu, X., Cheng, H., Li, Z., Hu, J., Guo, C., and
+ Wen, Q., Li, H., and Lin, Z. Quadratic direct forecast for            Yang, B. Enhancing time series forecasting through se-
+ training multi-step time-series forecast models. In ICLR,             lective representation spaces: A patch perspective. In
+ 2026b.                                                                NeurIPS, 2025b.
+
+                                                                 14
+           KITE: Knowledge-Guided Probabilistic Modeling for Time Series Forecasting with Exogenous Variables
+
+Wu, X., Qiu, X., Gao, H., Hu, J., Yang, B., and Guo, C.                Zhang, J., Wen, X., Zhang, Z., Zheng, S., Li, J., and Bian,
+ K2VAE: A koopman-kalman enhanced variational au-                        J. ProbTS: Benchmarking point and distributional fore-
+ toencoder for probabilistic time series forecasting. In                 casting across diverse prediction horizons. In NeurIPS,
+ ICML, 2025c.                                                            2024a.
+
+Wu, X., Qiu, X., Gao, H., Hu, J., Yang, B., and Guo, C.                Zhang, Q., Liu, X., Li, W., Chen, H., Liu, J., Hu, J., Xiong,
+ K2 VAE: A koopman-kalman enhanced variational au-                       Z., Yuan, C., and Wang, Y. Distilling semantic priors from
+ toencoder for probabilistic time series forecasting. In                 sam to efficient image restoration models. In Proceedings
+ ICML, 2025d.                                                            of the IEEE/CVF Conference on Computer Vision and
+                                                                         Pattern Recognition, pp. 25409–25419, 2024b.
+Wu, X., Qiu, X., Li, Z., Wang, Y., Hu, J., Guo, C., Xiong,
+                                                                       Zhang, Q., Qi, Y., Tang, X., Fang, J., Lin, X., Zhang, K.,
+ H., and Yang, B. CATCH: Channel-aware multivariate
+                                                                         and Yuan, C. Imdprompter: Adapting sam to image
+ time series anomaly detection via frequency patching. In
+                                                                         manipulation detection by cross-view automated prompt
+ ICLR, 2025e.
+                                                                         learning. arXiv preprint arXiv:2502.02454, 2025.
+Wu, X., Wu, X., Zhang, D., Zhang, M., Guo, C., Yang,                   Zhao, K., Guo, C., Cheng, Y., Han, P., Zhang, M., and Yang,
+ B., and Jensen, C. S. Fully automated correlated time                   B. Multiple time series forecasting with dynamic graph
+ series forecasting in minutes. In Proc. VLDB Endow.,                    modeling. Proc. VLDB Endow., 17(4):753–765, 2023.
+ volume 18, pp. 144–157, 2025f.
+                                                                       Zhou, H., Zhang, S., Peng, J., Zhang, S., Li, J., Xiong, H.,
+Yang, S. B., Guo, C., Hu, J., Tang, J., and Yang, B. Un-                 and Zhang, W. Informer: Beyond efficient transformer
+  supervised path representation learning with curriculum                for long sequence time-series forecasting. In AAAI, vol-
+  negative sampling. In IJCAI, pp. 3286–3292, 2021.                      ume 35, pp. 11106–11115, 2021.
+
+Yu, C., Wang, F., Shao, Z., Qian, T., Zhang, Z., Wei, W., An,          Zhou, P., Liu, Y., Liang, J., Song, Q., and Li, X. Crosslin-
+  Z., Wang, Q., and Xu, Y. Ginar+: A robust end-to-end                   ear: Plug-and-play cross-correlation embedding for time
+  framework for multivariate time series forecasting with                series forecasting with exogenous variables. In SIGKDD,
+  missing values. IEEE Transactions on Knowledge and                     2025.
+  Data Engineering, 37(8):4635–4648, 2025a.
+
+Yu, C., Wang, F., Yang, C., Shao, Z., Sun, T., Qian, T., Wei,
+  W., An, Z., and Xu, Y. Merlin: Multi-view representation
+  learning for robust multivariate time series forecasting
+  with unfixed missing rates. In SIGKDD, pp. 3633–3644,
+  2025b.
+
+Yu, X., Xu, C., Chen, Z., Zhang, Y., Lu, S., Yang, C., Zhang,
+  J., Yan, S., and Hu, X. Visual document understanding
+  and reasoning: A multi-agent collaboration framework
+  with agent-wise adaptive test-time scaling. arXiv preprint
+  arXiv:2508.03404, 2025c.
+
+Yu, X., Xu, C., Zhang, G., Chen, Z., Zhang, Y., He, Y.,
+  Jiang, P.-T., Zhang, J., Hu, X., and Yan, S. Vismem: La-
+  tent vision memory unlocks potential of vision-language
+  models. arXiv preprint arXiv:2511.11007, 2025d.
+
+Yu, X., Xu, C., Zhang, G., He, Y., Chen, Z., Xue, Z., Zhang,
+  J., Liao, Y., Hu, X., Jiang, Y.-G., et al. Visual multi-agent
+  system: Mitigating hallucination snowballing via visual
+  flow. arXiv preprint arXiv:2509.21789, 2025e.
+
+Zeng, A., Chen, M., Zhang, L., and Xu, Q. Are transformers
+  effective for time series forecasting? In AAAI, volume 37,
+  pp. 11121–11128, 2023.
+
+                                                                  15
+           KITE: Knowledge-Guided Probabilistic Modeling for Time Series Forecasting with Exogenous Variables
+
+A. Theoretical Analysis                                              Now suppose that the following condition holds:
+We theoretically analyze the advantages of initializing flow                  E [∥Y ∥1 | h, c] − E [∥Y − µ(h)∥1 | h, c]
+matching from History-Conditional Manifold by investigat-                                                                    (28)
+                                                                                  > σ(h)CH + CG .
+ing its target scale and path regularity.
+                                                                     Rearranging this condition gives:
+A.1. Target Scale
+                                                                                  E [∥Y − µ(h)∥1 | h, c] + σ(h)CH
+                                                                                                                             (29)
+proposition 1 (Target Scale). Let Y be the target, h :=                              < E [∥Y ∥1 | h, c] − CG .
+Xendo the endogenous context, and c the covariates. Let
+Y0H = µ(h) + σ(h)δ denote the HCM source, where µ(h)                 Combining (24), (27), and (29), we obtain:
+is the history-dependent barycenter, σ(h) is the history-
+                                                                                  E ∥Y − Y0H ∥1 | h, c
+                                                                                                       
+dependent scale, and δ is the HCM perturbation. Let Y0G =
+ξ ∼ N (0, I) denote the standard Gaussian source. Define                                < E [∥Y ∥1 | h, c] − CG              (30)
+their expected L1 noise magnitudes as CH := E[∥δ∥1 ] and
+                                                                                        ≤ E ∥Y − Y0G ∥1 | h, c .
+                                                                                                              
+CG := E[∥ξ∥1 ]. If the conditional residual reduction in
+centering error E[∥Y ∥1 | h, c] − E[∥Y − µ(h)∥1 | h, c]              Thus:
+                                                                                    E ∥Y − Y0H ∥1 | h, c
+                                                                                                        
+provided by µ(h) exceeds the combined expected noise
+magnitudes σ(h)CH + CG , then HCM yields a smaller con-                                                                      (31)
+                                                                                       < E ∥Y − Y0G ∥1 | h, c .
+                                                                                                            
+ditional matching target than the standard Gaussian source:
+                                                                     This proves the proposition.
+    E[∥Y − Y0H ∥1 | h, c] < E[∥Y − Y0G ∥1 | h, c].      (21)
+                                                                     Remark. The assumption is natural in forecasting, where fu-
+Proof. By the definition of the HCM source, we have Y0H =            ture values typically concentrate around a history-dependent
+µ(h) + σ(h)δ. Therefore, Y − Y0H = (Y − µ(h)) − σ(h)δ.               local center rather than the origin of N (0, I), making the
+Applying the triangle inequality for the L1 norm, we obtain:         conditional residual reduction more likely to be sufficiently
+                                                                     large. Meanwhile, Eq. (7) calibrates σ(h), and the normal-
+        ∥Y − Y0H ∥1 ≤ ∥Y − µ(h)∥1 + σ(h)∥δ∥1 .          (22)         ized manifold perturbation keeps the added noise controlled.
+                                                                     Thus, HCM reduces the regression scale, stabilizing gradi-
+Taking conditional expectations with respect to (h, c), and          ents and alleviating the empirical optimization burden.
+noting that σ(h) is (h, c)-measurable, gives:
+                                                                     A.2. Path Regularity
+ E ∥Y − Y0H ∥1 | h, c
+                       
+                                                       (23)
+      ≤ E [∥Y − µ(h)∥1 | h, c] + σ(h)E [∥δ∥1 | h, c] .               Proposition 2 (Path Regularity). Let YsH = sY +(1−s)Y0H
+                                                                     and YsG = sY +(1−s)Y0G denote the straight-line matching
+Since δ is independent of (h, c), we have E [∥δ∥1 | h, c] =          paths under the HCM source Y0H = µ(h) + σ(h)δ and the
+E [∥δ∥1 ] = CH . Hence:                                              standard Gaussian source Y0G = ξ ∼ N (0, I), respectively.
+                                                                     Define their path-tube radii as RH := sups∈[0,1] ∥YsH −
+          E ∥Y − Y0H ∥1 | h, c
+                              
+                                                       (24)          µ(h)∥1 and RG := sups∈[0,1] ∥YsG ∥1 . Suppose the vec-
+              ≤ E [∥Y − µ(h)∥1 | h, c] + σ(h)CH .                    tor field satisfies a local regularity condition bounding its
+                                                                     Jacobian norm by the spatial radius r around any center m:
+For the Gaussian source, since Y0G = ξ, we have Y −Y0G =
+Y − ξ. By the reverse triangle inequality, we obtain:                   sup      ∥∇y vθ (y, s, c)∥1→1 ≤ a + br    (a ≥ 0, b > 0).
+                                                                       s∈[0,1]
+                                                                     ∥y−m∥1 ≤r
+                ∥Y − ξ∥1 ≥ ∥Y ∥1 − ∥ξ∥1 .               (25)                                                                 (32)
+Taking conditional expectations with respect to (h, c) gives:        Under this assumption, a path tube of radius R admits the
+                                                                     Jacobian upper bound a+bR, which quantifies how strongly
+         E ∥Y − Y0G ∥1 | h, c
+                               
+                                                        (26)         the vector field can amplify local perturbations along the
+             ≥ E [∥Y ∥1 | h, c] − E [∥ξ∥1 | h, c] .                  path. Accordingly, define the corresponding path-local Ja-
+                                                                     cobian budgets as BH := a + bRH and BG := a + bRG . If
+Since ξ is independent of (h, c), we have E [∥ξ∥1 | h, c] =          the condition of Proposition 4.1 holds, then HCM yields a
+E [∥ξ∥1 ] = CG . Therefore:                                          smaller expected path-local Jacobian budget than the stan-
+                                                                     dard Gaussian source:
+                E ∥Y − Y0G ∥1 | h, c
+                                      
+                                                       (27)
+                    ≥ E [∥Y ∥1 | h, c] − CG .                                        E[BH | h, c] < E[BG | h, c].            (33)
+
+                                                                16
+             KITE: Knowledge-Guided Probabilistic Modeling for Time Series Forecasting with Exogenous Variables
+
+Proof. Recall that YsH = sY + (1 − s)Y0H , where Y0H =               Remark. Proposition 2 assumes a local, rather than global,
+µ(h) + σ(h)δ. Subtracting µ(h) from both sides gives:                regularity condition. This is reasonable for smooth neural
+                                                                     vector fields, since locally bounded Hessians on a fixed tube
+    YsH − µ(h) = s Y − µ(h) + (1 − s)σ(h)δ.
+                             
+                                                    (34)
+                                                                     imply such a bound. Under this assumption, Proposition 2
+Hence, for every s ∈ [0, 1], the point YsH − µ(h) lies on            shows that HCM keeps the straight-line matching path in a
+the line segment between Y − µ(h) and σ(h)δ. By the                  narrower tube around µ(h) than the standard source when
+convexity of the L1 norm, we obtain:                                 Proposition 1 holds. This yields a smaller path-local Jaco-
+                                                                     bian budget and supports weaker local error amplification
+   YsH − µ(h) 1 ≤ max(∥Y − µ(h)∥1 , σ(h) ∥δ∥1 )                      under standard ODE stability arguments.
+                                                        (35)
+                    ≤ ∥Y − µ(h)∥1 + σ(h) ∥δ∥1 .
+Taking the supremum over s ∈ [0, 1] yields:                          B. Algorithms
+             RH = sup           YsH − µ(h) 1                         B.1. Sampling Process
+                     s∈[0,1]                            (36)
+                                                                     Algorithm 1 outlines the inference procedure utilizing
+                  ≤ ∥Y − µ(h)∥1 + σ(h) ∥δ∥1 .
+                                                                     Classifier-Free Guidance (CFG). Initialized with the state
+Therefore:                                                           Y 0 , the process iteratively reconstructs the signal by solving
+                                                                     the Ordinary Differential Equation (ODE) over N discrete
+  E [RH | h, c] ≤ E [∥Y − µ(h)∥1 | h, c] + σ(h)CH .
+                                                                     steps. At each integration step s, the model estimates both
+                                                        (37)
+                                                                     the conditional velocity v cond —incorporating exogenous pri-
+For the Gaussian path, recall that YsG = sY + (1 − s)Y0G ,           ors X exo and Y exo —and the unconditional velocity v uncond
+where Y0G = ξ ∼ N (0, I). Since Y1G = Y , we have:                   using a null condition c∅ . These estimates are linearly com-
+                                                                     bined via the guidance scale γ to derive the final guided ve-
+                   RG = sup          YsG 1                           locity v̂, which drives the state update via the Euler method
+                          s∈[0,1]                       (38)         to yield the prediction Ŷ endo .
+                       ≥ Y1G 1 = ∥Y ∥1 .
+Hence:                                                               Algorithm 1 Inference with Classifier-Free Guidance
+               E [RG | h, c] ≥ E [∥Y ∥1 | h, c] .       (39)           Input: Historical context X endo , X exo ; Future exogenous
+                                                                       Y exo ; Initial state Y 0 .
+Now suppose that the condition of Proposition 4.1 holds:
+                                                                       Hyperparameters: Steps N ; Guidance scale γ.
+         E [∥Y ∥1 | h, c] − E [∥Y − µ(h)∥1 | h, c]                     Output: Prediction Ŷ endo .
+                                                        (40)           Define null condition: c∅ ← 0.
+              > σ(h)CH + CG .
+                                                                       Sampling Loop (ODE Solver):
+Since CG ≥ 0, this condition implies:                                  Y curr ← Y 0
+              E [∥Y − µ(h)∥1 | h, c] + σ(h)CH                          ∆s ← 1/N
+                                                        (41)           for i = 0 to N − 1 do
+                 < E [∥Y ∥1 | h, c] .
+                                                                          s ← i/N
+Combining (37), (39), and (41), we obtain:                                v cond ← vθ (Y curr , s, X exo , Y exo )
+                                                                          v uncond ← vθ (Y curr , s, c∅ )
+                E [RH | h, c] < E [RG | h, c] .         (42)
+                                                                          {Apply Classifier-Free Guidance}
+                                                                          v̂ ← (1 + γ) · v cond − γ · v uncond
+Under the stated local regularity condition, any path tube of
+                                                                          {Euler Step Update}
+radius R admits the Jacobian upper bound a + bR. There-
+                                                                          Y curr ← Y curr + v̂ · ∆s
+fore, the quantities BH := a+bRH and BG := a+bRG are
+                                                                       end for
+valid path-local Jacobian budgets for the HCM and Gaus-
+                                                                       Ŷ endo ← Y curr
+sian paths, respectively. Since b > 0, taking conditional
+                                                                       return Ŷ endo
+expectations in (42) gives:
+              E [BH | h, c] = a + b E [RH | h, c]
+                               < a + b E [RG | h, c]    (43)         B.2. Statistical Knowledge
+                               = E [BG | h, c] .                     B.2.1. P EARSON C ORRELATION C OEFFICIENTS
+Thus:                                                                Pearson Correlation Coefficient (Pearson, 1895) serves as a
+                E [BH | h, c] < E [BG | h, c] .         (44)         statistical measure to quantify the strength and direction of
+This proves the proposition.                                         the linear relationship between two variables. The detailed
+
+                                                                17
+          KITE: Knowledge-Guided Probabilistic Modeling for Time Series Forecasting with Exogenous Variables
+
+computation procedure is presented in Algorithm 2.                  Algorithm 4 MLP Fusion Approach
+                                                                      Input: model parameters θModel , MLP parameters θMLP ;
+Algorithm 2 Pearson Correlation Calculation                           learning rate η; iterations N ; training dataset D; histor-
+                                                                      ical endogenous variables X endo ; historical exogenous
+  Input: Exogenous X exo ∈ RD×T , Endogenous X endo ∈                 variables X exo ; future exogenous variables Y exo
+  RN ×T                                                               Output: prediction Ŷ endo
+  Output: Correlation Matrix R ∈ RN ×D                                1. Training Phase:
+  Initialize R as zeros.                                              for i = 1 to N do
+  for n = 1 to N do                                                      for (X train      train     train       train
+                                                                                  endo , X exo , Y endo , Y exo ) in D do
+     u ← X endo [n, :] {Extract series}                                                        train
+                                                                            z ← θModel (X endo , X exo )  train
+     for d = 1 to D do
+                                                                            Ŷ endo ← θMLP (Concat(z, Y train        exo ))
+        v ← X exo [d, :]
+                                                                            L ← Loss(Ŷ endo , Y train   endo  )
+        {Compute correlation using vectorized operations}
+                                                                            θModel ← θModel − η ∂θ∂L
+        covuv ← (u − ū) · (v − v̄)⊤                                                                       Model
+
+        σu ← ∥u − ū∥2 , σv ← ∥v − v̄∥2                                     θMLP ← θMLP − η ∂θ∂L        MLP
+
+        if σu · σv > 0 then                                              end for
+           R[n, d] ← σcov   uv                                        end for
+                         u ·σv
+        end if                                                        2. Inference Phase:
+     end for                                                          z ← θModel (X endo , X exo )
+  end for                                                             Ŷ endo ← θMLP (Concat(z, Y exo ))
+  return R                                                            return Ŷ endo
+
+
+
+B.2.2. G RANGER C AUSALITY                                          B.3. MLP Fusion Approach
+
+Unlike simple correlation metrics, Granger Causal-                  For methods that do not support future covariates, we adapt
+ity (Granger, 1969) assesses whether past information from          them to incorporate future exogenous variables using an
+an exogenous series contributes unique information to fore-         MLP fusion approach—see Algorithm 4. Note that, for fair-
+casting the target series, thereby establishing a predictive        ness, all methods in our experiments use historical endoge-
+precedence. The detailed computation procedure is pre-              nous variables, historical exogenous variables, and future
+sented in Algorithm 3.                                              exogenous variables.
+
+
+Algorithm 3 Granger Causality
+                                                                    C. Related Works
+  Input: X exo ∈ RD×T , X endo ∈ RN ×T , Lag L                      C.1. Time Series Forecasting with Exogenous Variables
+  Output: F-statistics Matrix G ∈ RN ×D                             The integration of exogenous variables into time series fore-
+  for n = 1 to N do                                                 casting has its roots in classical statistics, where models such
+    y ← X endo [n, :]                                               as ARIMAX (Williams, 2001) and SARIMAX (Vagropou-
+    {1. Restricted Model (Endogenous lags only)}                    los et al., 2016) pioneered the use of external factors to
+              PL
+    Fit yt ≈ i=1 αi yt−i + ϵr and compute residual sum              improve predictive accuracy. Modern deep learning frame-
+    of squares RSSr .                                               works have further advanced this paradigm by designing
+    for d = 1 to D do                                               more flexible mechanisms to incorporate historical, future,
+       x ← X exo [d, :]                                             static, and dynamic covariates. CrossLinear (Zhou et al.,
+       {2. Unrestricted Model (Endogenous + Exogenous               2025) implements cross-correlation embeddings to map de-
+       lags)}                                                       pendencies between historical endogenous and exogenous
+                 PL                PL
+       Fit yt ≈ i=1 αi yt−i + j=1 βj xt−j + ϵu and                  series. NBEATSx (Olivares et al., 2023) introduces spe-
+       compute RSSu .                                               cialized architectural branches for multi-period exogenous
+       {3. Compute F-statistic}                                     inputs, while TiDE (Das et al., 2023) utilizes a dense MLP
+                        r −RSSu )/L
+       G[n, d] ← (RSS
+                  RSSu /(T −2L−1)
+                                                                    structure to fuse static and future covariates with endoge-
+    end for                                                         nous features through concatenation. Attention-based mech-
+  end for                                                           anisms have also proven effective; for instance, the Tempo-
+  return G                                                          ral Fusion Transformer (TFT) (Lim et al., 2021) employs
+                                                                    attention to synthesize historical and concurrent exogenous
+                                                                    information. TimeXer (Wang et al., 2024b) further facili-
+
+                                                               18
+           KITE: Knowledge-Guided Probabilistic Modeling for Time Series Forecasting with Exogenous Variables
+
+tates flexible covariate integration through patch-wise em-           process. Within this landscape, TSFlow (Kollovieh et al.,
+beddings, bypassing the need for rigid temporal alignment.            2025) introduces a conditional flow matching framework
+ExoTST (Tayal et al., 2024) addresses challenges such as              that leverages Gaussian Process priors to align the genera-
+time lags and data sparsity by leveraging cross-attention and         tive source with the temporal structure of data. Alternatively,
+cross-temporal fusion.                                                K 2 VAE (Wu et al., 2025d) linearizes nonlinear dynamics
+                                                                      via Koopman theory and employs KalmanNet to iteratively
+Recent studies further extend exogenous-variable forecast-
+                                                                      refine probabilistic predictions.
+ing by explicitly modeling richer cross-series and cross-
+variable dependency structures. DAG (Qiu et al., 2026b)               Recent works further indicate that distribution-aware learn-
+models dual correlations between endogenous and exoge-                ing is becoming increasingly important for time series fore-
+nous variables, while GCGNet (Li et al., 2026c) intro-                casting. DistDF (Wang et al., 2026c) emphasizes joint-
+duces graph-consistent generative modeling for time series            distribution Wasserstein alignment for multi-step forecast-
+forecasting with exogenous variables. In parallel, many               ing, while QDF (Wang et al., 2026b) revisits direct multi-
+methods improve multivariate forecasting from complemen-              step forecasting through a quadratic formulation. Time-
+tary perspectives, including dual clustering for multivariate         o1 (Wang et al., 2026a) highlights the importance of trans-
+series (Qiu et al., 2025c), decomposition-based learning              formed label alignment, and FreDF (Wang et al., 2025)
+objectives (Qiu et al., 2025b), high-dimensional channel              improves forecasting by learning in the frequency domain.
+reordering (Fang et al., 2026c), multi-scale graph or hy-             In addition, representation-space selection methods such as
+pergraph modeling (Chen et al., 2023b; Shang & Chen,                  SRSNet (Wu et al., 2025b) suggest that learning suitable
+2024; Shang et al., 2024), LLM-aligned hypergraph model-              latent spaces can be more effective than relying on manually
+ing (Shang et al., 2026), and correlation-aware adaptation of         designed representations.
+time series foundation models (Cheng et al., 2026). Other
+                                                                      Although existing probabilistic methods have achieved
+works target challenging forecasting scenarios such as miss-
+                                                                      promising results and some of them incorporate multivariate
+ing values (Yu et al., 2025b;a), irregular sampling (Qiu
+                                                                      dependencies (Rasul et al., 2021a; Tashiro et al., 2021; Wu
+et al., 2026a; Liu et al., 2026b;a), non-stationarity (Lu
+                                                                      et al., 2025d), they are not natively designed for covariate-
+et al., 2026a), and domain-specific spatio-temporal forecast-
+                                                                      conditioned probabilistic forecasting, especially when future
+ing (Wu et al., 2026; 2025a; 2024a). Comprehensive bench-
+                                                                      exogenous information is explicitly available. This limita-
+marks and surveys have also been developed to system-
+                                                                      tion motivates the need for a generative framework that can
+atically evaluate forecasting methods and spatio-temporal
+                                                                      simultaneously exploit future-known covariates and provide
+foundation models (Qiu et al., 2024; Fang et al., 2026b).
+                                                                      reliable uncertainty-aware predictions.
+Despite the notable performance gains achieved by these
+methods (Cheng et al., 2025; Wang et al., 2024b; Li et al.,           C.3. Representation Learning and Robust Modeling for
+2026c; Qiu et al., 2026b), most existing studies still focus               Time Series
+on deterministic point forecasting. They therefore provide
+limited characterization of predictive uncertainty, which is          Beyond forecasting accuracy, recent time series studies in-
+crucial for understanding system evolution under complex              creasingly emphasize representation learning, robustness,
+and future-known covariates.                                          foundation-model adaptation, and task generalization. Se-
+                                                                      lective representation learning (Wu et al., 2025b), Koopman-
+                                                                      Kalman latent modeling (Wu et al., 2025d), correlation-
+C.2. Probabilistic Modeling in Time Series Forecasting
+                                                                      aware adapters (Cheng et al., 2026), and LLM-enhanced
+Probabilistic forecasting aims to characterize the future pre-        temporal modeling (Shang et al., 2026; Lu et al., 2026b)
+dictive distribution rather than producing a single point             demonstrate that the design of latent representations plays
+estimate. Early deep learning methodologies, such as                  a central role in downstream time series tasks. These stud-
+DeepAR (Salinas et al., 2020), primarily utilized RNNs                ies are closely related to our motivation, as automatically
+for temporal transitions, while frameworks such as Deep-              learned conditional representations can capture complex
+State (Rangapuram et al., 2018) and DSSMF (Li et al., 2019)           temporal and covariate-dependent structures that are diffi-
+integrated state-space models to improve distributional fore-         cult to encode manually.
+casting. More recently, attention-driven models, including
+                                                                      Robust time series modeling has also attracted increas-
+MANF (Feng et al., 2024) and ProTran (Tang & Matteson,
+                                                                      ing attention in anomaly detection, anomaly prediction,
+2021), have further enhanced long-range dependency model-
+                                                                      and out-of-distribution scenarios. Recent studies have ad-
+ing. The field has lately shifted toward generative paradigms.
+                                                                      vanced this direction through unified anomaly detection
+Diffusion-based models, such as TimeGrad (Rasul et al.,
+                                                                      benchmarks (Qiu et al., 2025a), frequency-aware channel
+2021a), TSDiff (Kollovieh et al., 2023), and CSDI (Tashiro
+                                                                      modeling (Wu et al., 2025e), and multimodal semantic
+et al., 2021), treat forecasting as a score-based denoising
+                                                                      alignment (Hu et al., 2026a). Other efforts improve ab-
+
+                                                                 19
+           KITE: Knowledge-Guided Probabilistic Modeling for Time Series Forecasting with Exogenous Variables
+
+normal pattern modeling via temporal-frequency masked                the ERA5 (Hersbach et al., 2020), such as temperature, sur-
+autoencoding (Fang et al., 2024), multi-scale reconstructive         face pressure, relative humidity, wind speed, wind direction,
+contrast (Hu et al., 2024), and role-aware channel interac-          and total precipitation.
+tion (Hu et al., 2026b). Related work also studies cross-
+                                                                     For Probabilistic forecasting, we perform experiments
+domain out-of-distribution detection (Fang et al., 2025)
+                                                                     on eight common multivariate forecasting datasets: (1)
+and adaptive period modeling for anomaly prediction (Hu
+                                                                     ETT (Zhou et al., 2021) includes four subsets: ETTh1
+et al., 2026c). Although these studies are not designed for
+                                                                     and ETTh2 provide hourly recordings, while ETTm1 and
+covariate-conditioned probabilistic forecasting, they high-
+                                                                     ETTm2 contain data collected every 15 minutes. The en-
+light the importance of adaptive temporal representations
+                                                                     dogenous variable is oil temperature, and the six power load
+under uncertainty and distribution shift.
+                                                                     features are used as exogenous variables. (2) Weather (Wu
+                                                                     et al., 2021b) consists of 21 meteorological variables
+D. Experimental Details                                              recorded every 10 minutes during 2020 at the Weather Sta-
+                                                                     tion of the Max Planck Biogeochemistry Institute. The
+D.1. Datasets
+                                                                     endogenous variable is the CO2-Concentration, while the
+For Deterministic forecasting, we conduct experiments on             remaining indicators are used as exogenous variables. (3)
+12 real-world datasets, including 5 EPF (Lago et al., 2021;          Electricity (Trindade, 2015) consists of hourly electricity
+Wang et al., 2024b) datasets: (1) NP records Nord Pool mar-          consumption data from 321 clients. The electricity con-
+ket with hourly electricity price as the endogenous variable,        sumption of the last client is the endogenous variable, and
+and grid load and wind power forecast as exogenous features.         the consumption data from the other clients are used as ex-
+(2) PJM records the Pennsylvania–New Jersey–Maryland                 ogenous variables. (4) Exchange (Lai et al., 2018) collects
+Interconnection market, with zonal electricity price in the          daily exchange rates of eight countries from 1990 to 2016.
+Commonwealth Edison (COMED) area as the endogenous                   The exchange rate of the last country is the endogenous
+variable, and corresponding system load and COMED load               variable, and the exchange rates of the others serve as ex-
+forecasts as exogenous variables. (3) BE records Belgium’s           ogenous variables. (5) Traffic (Wu et al., 2021b) records
+electricity market, with hourly electricity price as the en-         hourly road occupancy rates from 862 sensors on Bay Area
+dogenous variable, and load forecast in Belgium together             freeways. Following existing works (Wang et al., 2024b;
+with generation forecast from France as exogenous vari-              Qiu et al., 2025d), we use the last sensor as the endogenous
+ables. (4) FR records the electricity market in France,              variable and the others as exogenous variables.
+where the electricity price is the endogenous variable, and
+                                                                     For short-term forecasting, we set the look-back window
+generation and load forecasts are used as exogenous vari-
+                                                                     T = 30 and prediction horizon F = 30 for the Exchange
+ables. (5) DE records the German electricity market, with
+                                                                     dataset, while setting T = 24 and F = 24 for all other
+hourly electricity price as the endogenous variable, and
+                                                                     datasets. For long-term forecasting, we uniformly set T =
+zonal load forecast in the Amprion area along with wind
+                                                                     96 and F = 192 across all datasets.
+and solar generation forecasts as exogenous variables. and
+7 other datasets sourced from (Qiu et al., 2025d): (1) En-
+                                                                     D.2. Baselines
+ergy provides hourly power generation data collected from
+the national grid operator in Chile, encompassing multi-             Remarkable achievements in deep learning have been wit-
+ple energy sources such as battery storage, wind, hydro,             nessed across a wide range of domains. In time series
+solar, and thermoelectric generation. The thermoelectric             analysis, early Transformer-based and decomposition-based
+generation is used as the endogenous variable, while the             architectures have significantly improved long-term fore-
+remaining energy types serve as exogenous variables. (2              casting performance (Zhou et al., 2021; Wu et al., 2021a;
+& 3) Colbun and Rapel represent two daily-resolution                 Nie et al., 2023b; Liu et al., 2024a). Recent studies fur-
+hydropower datasets from Chile, containing water level, pre-         ther advance forecasting through benchmarking, clustering,
+cipitation, and tributary inflow measurements for the Colbún        generative modeling, and covariate-aware dependency learn-
+and Rapel reservoirs. The water level is treated as the en-          ing (Qiu et al., 2024; Cheng et al., 2026; Li et al., 2026c;
+dogenous variable, while precipitation and inflow are used           Qiu et al., 2026b). Meanwhile, representation learning and
+as exogenous variables. (4-7) Sdwpf comprises four wind              foundation-model adaptation have become increasingly im-
+power generation datasets collected from two turbines in             portant, enabling more flexible temporal modeling across
+the Longyuan wind farm, including Sdwpfh1 and Sdwpfh2                diverse scenarios (Wu et al., 2025d; Cheng et al., 2026;
+with hourly resolution, and Sdwpfm1 and Sdwpfm2 with                 Shang et al., 2026; 2024; Wu et al., 2025b). Distribution-
+half-hourly resolution. The active power output (Patv) is            aware objectives and label-alignment strategies also show
+used as the endogenous variable. The exogenous variables             strong potential for improving multi-step prediction (Wang
+include external weather environment data collected from             et al., 2026c; Zhang et al., 2024a; Wang et al., 2026b; Rasul
+
+
+                                                                20
+               KITE: Knowledge-Guided Probabilistic Modeling for Time Series Forecasting with Exogenous Variables
+
+               Table 7. Code repositories for baselines.                             tations often surpass manually designed features in terms
+ Baselines                            Code repositories                              of flexibility and performance (Liu et al., 2026a; Wu et al.,
+  TimeXer                        github.com/thuml/TimeXer                            2025d;b).
+   TiDE                    github.com/thuml/Time-Series-Library                      For deterministic forecasting, we compare KITE against 10
+   TFT            github.com/google-research/google-research/tree/master/tft         competitive baselines. These are categorized into: 1) archi-
+                                                                                     tectures with native support for future exogenous variables,
+  DUET                     github.com/decisionintelligence/DUET
+                                                                                     including TimeXer (Wang et al., 2024b), TFT (Lim et al.,
+CrossLinear                 github.com/mumiao2000/CrossLinear                        2021), and TiDE (Das et al., 2023); and 2) models originally
+ Amplifier                      github.com/aikunyi/amplifier                         designed without such support, namely DUET (Qiu et al.,
+ TimeKAN                      github.com/huangst21/TimeKAN
+                                                                                     2025c), CrossLinear (Zhou et al., 2025), Amplifier (Fei
+                                                                                     et al., 2025), TimeKAN (Huang et al., 2025), xPatch (Stit-
+  xPatch                         github.com/stitsyuk/xPatch
+                                                                                     syuk & Choi, 2025), PatchTST (Nie et al., 2023b), and
+ PatchTST                      github.com/yuqinie98/PatchTST                         DLinear (Zeng et al., 2023). For the latter group, we imple-
+  DLinear                     github.com/cure-lab/LTSF-Linear
+                                                                                     ment a modification to incorporate future covariates using
+                                                                                     an MLP-based fusion strategy, as described in Algorithm 4
+  Koopa                           github.com/thuml/koopa
+                                                                                     For probabilistic forecasting, we select 10 baselines, includ-
+iTransformer                   github.com/thuml/iTransformer
+                                                                                     ing 5 univariate modeling methods: PatchTST (Nie et al.,
+   FITS                         github.com/VEWOXIC/FITS                              2023a), TSDiff (Kollovieh et al., 2023), Koopa (Liu et al.,
+  TSDiff        github.com/amazon-science/unconditional-time-series-diffusion        2023), TSFlow (Kollovieh et al., 2025), and K 2 VAE, as
+ GRU NVP                    github.com/zalandoresearch/pytorch-ts
+                                                                                     well as multivariate modeling methods: iTransformer (Liu
+                                                                                     et al., 2024b), GRU NVP, Trans MAF (Rasul et al., 2021c),
+ Trans MAF                  github.com/zalandoresearch/pytorch-ts
+                                                                                     TimeGrad (Rasul et al., 2021a), and CSDI (Tashiro et al.,
+ TimeGrad                      github.com/yuqinie98/PatchTST                         2021). The point forecasting models are equipped with
+   CSDI                         github.com/ermongroup/CSDI                           gaussian heads to predict the distributions.
+    2
+  K VAE                    github.com/decisionintelligence/K2VAE                     The code repositories for each of these models–see Table 7.
+
+                                                                                     D.3. Evaluation Metrics
+et al., 2021b; Wang et al., 2026a).                                                  To evaluate model performance, we employ Mean Absolute
+Similar progress has been observed in speech and signal                              Error (MAE) and Mean Squared Error (MSE) for determin-
+enhancement, where multi-view fusion, association-based                              istic forecasting, following the TFB benchmark (Qiu et al.,
+fusion, and dynamic representation alignment have been                               2024). For probabilistic forecasts, we utilize the Continu-
+explored to improve signal quality (Jin et al., 2025; Wang                           ous Ranked Probability Score (CRPS) as implemented in
+et al.; Jin et al., 2026). In computer vision, deep models                           ProbTS (Zhang et al., 2024a).
+have advanced pose-guided generation, visual representa-
+tion learning, and open-domain animation (Ma et al., 2024;                           Mean Squared Error (MSE) The Mean Squared Er-
+Li et al., 2022; Zhang et al., 2024b; Ma et al., 2025b). They                        ror (MSE) measures the average of the squares of the er-
+have also shown effectiveness in temporal grounding, im-                             rors—that is, the average squared difference between the
+age manipulation detection, weakly supervised localization,                          estimated values and the actual observation. Unlike MAE,
+and composed retrieval (Fang et al., 2023; Hu et al., 2020;                          MSE penalizes larger errors more severely due to the squar-
+Zhang et al., 2025; Li et al., 2026b;a). Further developments                        ing operation, making it more sensitive to outliers. The
+in visual reasoning, generative editing, and robust image                            mathematical representation of MSE is defined as:
+modeling continue to broaden the scope of visual intelli-                                                          K    T
+gence (Fang et al., 2026a; Ma et al., 2026; Lu et al., 2024a;                                              1 XX k
+                                                                                                MSE =             (xt − x̂kt )2 ,             (45)
+2023; 2024b). Beyond these domains, multimodal and large-                                                K ×T t=1 k=1
+scale foundation systems have demonstrated strong potential
+in visual memory, document understanding, multimodal rec-                            where xkt denotes the ground truth and x̂kt denotes the pre-
+ommendation, and general-purpose language modeling (Yu                               dicted value.
+et al., 2025d; Qi et al., 2025; Wang et al., 2026d; Yu et al.,
+2025c;e). Together with recent progress in visual knowledge                          Mean Absolute Error (MAE) The Mean Absolute Error
+modeling and multimodal video understanding (Ma et al.,                              (MAE) measures the average magnitude of the errors in a
+2022; Fang et al., 2022; Wang et al., 2022; Ma et al., 2025a),                       set of predictions, without considering their direction. It
+these studies suggest that automatically learned represen-                           is the average over the verification sample of the absolute
+
+                                                                                21
+           KITE: Knowledge-Guided Probabilistic Modeling for Time Series Forecasting with Exogenous Variables
+                                                                           NP          Sdwpfh2         ETTm2     Weather       NP        Sdwpfh2        ETTm2          Weather
+differences between prediction and actual observation. The              0.450                                     0.30      0.450                                       0.30
+                                                                        0.425                                        0.25   0.425                                       0.25
+mathematical representation of MAE is given by:
+                                                                        0.400                                        0.20   0.400                                       0.20
+                                                                                                                       CRPS
+                                                                                                                                                                          CRPS
+                                                                                                                     0.15                                               0.15
+                                                                      MSE
+                                                                        0.375
+                                                                                                                       MSE
+                                                                                                                            0.375
+                                                                        0.350                                        0.10   0.350                                       0.10
+                                K    T                                                                               0.05                                               0.05
+                    1 XX k                                              0.325                                               0.325
+            MAE =          |xt − x̂kt |,                 (46)           0.300                                        0.00   0.300                                       0.00
+                  K ×T                                                           0      0.05     0.1    0.15   0.2                  64        128       256       512
+                       t=1     k=1                                                               min                                                d
+                                                                                (a) Uncertainty basis                               (b) Hidden dimension
+where K represents the number of time series (or variables)
+                                                                            NP         Sdwpfh2         ETTm2     Weather       NP        Sdwpfh2        ETTm2          Weather
+and T represents the number of time steps.                              0.450                                     0.30      0.450
+                                                                                                                                                                        0.30
+                                                                        0.425                                        0.25   0.425                                       0.25
+                                                                        0.400                                        0.20   0.400                                       0.20
+                                                                                                                       CRPS
+                                                                                                                                                                          CRPS
+                                                                                                                     0.15
+Continuous Ranked Probability Score (CRPS) The                        MSE
+                                                                        0.375
+                                                                                                                       MSE
+                                                                                                                            0.375                                       0.15
+                                                                        0.350                                        0.10   0.350                                       0.10
+Continuous Ranked Probability Score (CRPS) (Matheson &                  0.325                                        0.05   0.325                                       0.05
+                                                                        0.300                                        0.00                                               0.00
+                                                                                                                            0.300
+Winkler, 1976) quantifies the agreement between a cumu-                          0.8     1       1.2     1.4   1.6                  1     2         3         4    5
+lative distribution function (CDF) F and an observation x,                                                                                          L
+represented as:                                                                      (c) Guidance scale                              (d) Attention layers
+                                                                                             Figure 3. Parameter sensitivity analysis.
+                     Z
+           CRPS =          (F (z) − I{x ≤ z})2 dz,       (47)
+                       R
+                                                                      E. More Analysis
+where I{x ≤ z} denotes the indicator function, equat-                 E.1. Parameter Sensitivity Analysis
+ing to one if x ≤ z and zero otherwise. Being a proper
+                                                                      We study the parameter sensitivity of KITE, including the
+scoring function, CRPS reaches its minimum when the
+                                                                      uncertainty basis σmin in Uncertainty Estimator , the the hid-
+predictive distribution F coincides with the data distribu-
+                                                                      den dimension size d of the model, the guidance scale γ in
+tion. When   Pnusing the empirical CDF of F , denoted as              Classifier-Free Guidance, and the number of attention layers
+F̂ (z) = n1 i=1 I{Xi ≤ z}, where n represents the num-
+                                                                      L in Knowledge-Guided Conditioning. We conducted exper-
+ber of samples Xi ∼ F , CRPS can be precisely calculated
+                                                                      iments on both deterministic and probabilistic forecasting,
+from the simulated samples of the conditional distribution
+                                                                      reporting MSE and CRPS, respectively. Figure 3a shows
+pθ (xt |ht ). In our practice, 100 samples are employed to
+                                                                      the impact of σmin . In most cases, a small K is insufficient
+estimate the empirical CDF.
+                                                                      for effective learning. We typically select [0.05, 0.15] as the
+                                                                      preferred option. Besides, Figure 3b illustrates the impact
+D.4. Implementation Details                                           of d. Common choices for this value are 128 or 256. As
+We utilize the TFB (Qiu et al., 2024) and ProbTS (Zhang               illustrated in Figure 3c, the guidance scale γ modulates the
+et al., 2024a)code repository for unified evaluation, with all        generation process: γ < 1 represents a weighted interpola-
+baseline results also derived from TFB. Following the set-            tion between conditional and unconditional modes, while
+tings in TFB (Qiu et al., 2024) and TSFM-Bench (Li et al.,            γ > 1 steers the output away from the unconditional distri-
+2025), we do not apply the “Drop Last” trick to ensure a fair         bution (i.e., without covariates). Empirical results indicate
+comparison. All experiments of KITE are conducted using               that values of 1.2 or 1.4 are optimal in most cases, highlight-
+PyTorch (Paszke et al., 2019) in Python 3.8 and executed on           ing the forecasting task’s strong dependency on covariates.
+an NVIDIA Tesla-A800 GPU. The initial batch size is set               Figure 3d indicates that deep layers are not required, thus
+to 128, with the flexibility to halve it (down to a minimum           avoiding substantial additional computational costs.
+of 8) in case of an Out-Of-Memory (OOM) issue. For deter-
+ministic forecasting, we adopt the mean of multiple samples           E.2. Efficiency Analysis
+as the final prediction. To ensure reproducibility and fa-
+                                                                      We evaluate the model efficiency from three aspects: prob-
+cilitate experimentation, datasets and code are available at:
+                                                                      abilistic forecasting performance (CRPS), inference time
+https://github.com/decisionintelligence/KITE.
+                                                                      (sec/sample), and number of parameter memory (M). Fig-
+More Analysis. We provide supplementary evaluations,                  ure 4 showcases a common scenario on Weather-L (T =
+including (1) the Parameter Sensitivity Analysis of σmin ,            96, F = 192), which reflects the overall relative relation-
+hidden dimension d, CFG guidance scale γ, and KGC at-                 ships on above-mentioned three aspects. KITE achieves
+tention layers L (Appendix C.1), and (2) The Efficiency               the best forecasting performance among all baselines, while
+Analysis (Appendix C.2).                                              also securing the fastest inference speed specifically within
+
+                                                                 22
+                  KITE: Knowledge-Guided Probabilistic Modeling for Time Series Forecasting with Exogenous Variables
+           0.17
+                        Koopa
+                        0.95M
+                                              Trans MAF
+           0.15
+                                                 3.2M
+
+           0.13
+
+    CRPS
+                                          TSDiff               CSDI
+                     K2VAE
+                                           3.8M                3.3M
+                      1.5M
+           0.11
+                                      GRU NVP
+                                        1.3M
+           0.09
+                                 KITE            TimeGrad
+                                 2.3M              1.4M
+           0.07
+               1.5      3         6      12        24     48      96
+                             Inference Time (sec / sample)
+
+Figure 4. Model efficiency comparison. All the statistical data is
+obtained on the Weather-L (T = 96, F = 192). Lower values of
+CRPS indicate better performance.
+
+channel-dependent models. This demonstrates that the ex-
+plicit modeling guided by statistical knowledge imposes no
+additional computational burden; instead, it facilitates the
+accurate capture of relationships between endogenous and
+exogenous variables.
+
+F. Full Results
+We present the comprehensive MSE and MAE results for
+KITE’s deterministic forecasting in Tables 8 and 9, cor-
+responding to settings with and without future exogenous
+variables, respectively. The evaluation spans 12 real-world
+datasets across both short-term and long-term prediction.
+For the Colbun and Raperl datasets, the short-term predic-
+tion uses a lookback window of 60 with a prediction horizon
+of 10, while the long-term prediction uses a lookback win-
+dow of 180 with a prediction horizon of 30. For the other
+datasets, the short-term prediction uses a lookback window
+of 168 with a prediction horizon of 24, and the long-term
+prediction uses a lookback window of 720 with a prediction
+horizon of 360.
+
+
+
+
+                                                                       23
+                                    KITE: Knowledge-Guided Probabilistic Modeling for Time Series Forecasting with Exogenous Variables
+
+
+
+
+Table 8. Full results on deterministic forecasting with historical and future exogenous variables across 12 real-world datasets, where the
+inputs are X endo , X exo , and Y exo . Red: the best, Blue: the 2nd best. Avg means the average results from two forecasting horizons.
+          Models                 KITE (ours)      TimeXer              TFT            TiDE           DUET          CrossLinear      Amplifier       TimeKAN          xPatch         PatchTST        DLinear
+          Metrics                mse    mae      mse   mae       mse         mae   mse    mae      mse  mae        mse    mae      mse    mae      mse   mae       mse    mae      mse    mae      mse   mae
+                            24   0.179   0.223   0.236   0.266   0.219   0.249     0.284   0.301   0.246   0.287   0.210   0.266   0.252   0.303   0.273   0.310   0.234   0.278   0.249   0.294   0.282   0.337
+   NP                      360   0.471   0.422   0.600   0.475   0.539   0.501     0.601   0.498   0.576   0.528   0.531   0.508   0.587   0.534   0.538   0.529   0.523   0.461   0.530   0.498   0.601   0.552
+                           Avg   0.325   0.323   0.418   0.370   0.379   0.375     0.443   0.399   0.411   0.407   0.370   0.387   0.419   0.418   0.406   0.419   0.378   0.370   0.390   0.396   0.442   0.444
+                            24   0.056   0.143   0.075   0.166   0.095   0.195     0.106   0.214   0.072   0.166   0.088   0.191   0.096   0.208   0.115   0.244   0.077   0.168   0.116   0.239   0.096   0.208
+   PJM                     360   0.135   0.214   0.140   0.231   0.133   0.219     0.177   0.279   0.131   0.228   0.135   0.254   0.177   0.285   0.162   0.281   0.131   0.220   0.149   0.279   0.164   0.278
+                           Avg   0.096   0.178   0.108   0.199   0.114   0.207     0.141   0.246   0.102   0.197   0.112   0.223   0.137   0.246   0.139   0.263   0.104   0.194   0.133   0.259   0.130   0.243
+                            24   0.348   0.240   0.392   0.253   0.426   0.272     0.426   0.285   0.432   0.272   0.391   0.259   0.471   0.339   0.451   0.319   0.411   0.256   0.452   0.326   0.451   0.310
+   BE                      360   0.507   0.332   0.512   0.327   0.482   0.310     0.571   0.364   0.597   0.436   0.568   0.416   0.646   0.487   0.645   0.495   0.579   0.410   0.702   0.538   0.600   0.442
+                           Avg   0.427   0.286   0.452   0.290   0.454   0.291     0.498   0.325   0.514   0.354   0.479   0.338   0.558   0.413   0.548   0.407   0.495   0.333   0.577   0.432   0.526   0.376
+                            24   0.311   0.178   0.366   0.208   0.543   0.253     0.418   0.255   0.384   0.251   0.390   0.226   0.459   0.348   0.454   0.296   0.424   0.235   0.518   0.368   0.422   0.265
+   FR                      360   0.462   0.271   0.489   0.273   0.465   0.261     0.551   0.308   0.607   0.403   0.575   0.370   0.648   0.468   0.641   0.452   0.556   0.350   0.658   0.452   0.572   0.362
+                           Avg   0.387   0.225   0.427   0.240   0.504   0.257     0.485   0.281   0.495   0.327   0.482   0.298   0.553   0.408   0.547   0.374   0.490   0.293   0.588   0.410   0.497   0.314
+                            24   0.262   0.327   0.339   0.362   0.380   0.383     0.367   0.383   0.376   0.378   0.387   0.396   0.394   0.407   0.399   0.412   0.399   0.394   0.413   0.412   0.423   0.426
+   DE                      360   0.437   0.413   0.610   0.474   0.599   0.509     0.630   0.511   0.589   0.482   0.583   0.507   0.551   0.474   0.547   0.479   0.550   0.472   0.589   0.498   0.573   0.487
+                           Avg   0.350   0.370   0.475   0.418   0.489   0.446     0.498   0.447   0.482   0.430   0.485   0.452   0.473   0.441   0.473   0.446   0.474   0.433   0.501   0.455   0.498   0.457
+                            24   0.071   0.208   0.122   0.273   0.093   0.235     0.103   0.248   0.117   0.283   0.241   0.418   0.138   0.306   0.135   0.298   0.092   0.240   0.239   0.390   0.085   0.230
+ Energy                    360   0.151   0.305   0.204   0.357   0.167   0.331     0.202   0.355   0.288   0.452   0.237   0.385   0.328   0.472   0.302   0.464   0.204   0.367   0.214   0.363   0.263   0.416
+                           Avg   0.111   0.257   0.163   0.315   0.130   0.283     0.152   0.301   0.202   0.367   0.239   0.401   0.233   0.389   0.218   0.381   0.148   0.303   0.226   0.377   0.174   0.323
+
+
+
+
+ Sdwpfh1 Sdwpfm2 Sdwpfm1
+                            24   0.384   0.410   0.558   0.533   0.366   0.421     0.474   0.488   0.551   0.564   0.355   0.473   0.346   0.445   0.418   0.503   0.669   0.580   0.374   0.454   0.417   0.501
+                           360   0.450   0.491   0.845   0.684   0.597   0.528     0.492   0.526   0.646   0.577   0.497   0.532   0.510   0.535   0.476   0.566   0.592   0.556   0.497   0.550   0.480   0.562
+                           Avg   0.417   0.451   0.702   0.609   0.481   0.475     0.483   0.507   0.599   0.571   0.426   0.502   0.428   0.490   0.447   0.534   0.630   0.568   0.435   0.502   0.449   0.531
+                            24   0.443   0.450   0.627   0.570   0.411   0.458     0.461   0.492   0.445   0.452   0.477   0.536   0.394   0.462   0.474   0.538   0.508   0.478   0.418   0.492   0.459   0.530
+                           360   0.506   0.515   0.978   0.736   0.541   0.519     0.511   0.540   0.584   0.528   0.589   0.611   0.587   0.563   0.520   0.589   0.523   0.513   0.602   0.603   0.589   0.630
+                           Avg   0.475   0.483   0.802   0.653   0.476   0.489     0.486   0.516   0.514   0.490   0.533   0.574   0.490   0.512   0.497   0.564   0.516   0.495   0.510   0.547   0.524   0.580
+                            24   0.424   0.464   0.651   0.587   0.401   0.460     0.434   0.489   0.527   0.513   0.548   0.585   0.576   0.627   0.511   0.582   0.524   0.505   0.422   0.505   0.557   0.613
+                           360   0.457   0.517   0.841   0.700   0.557   0.523     0.472   0.527   0.551   0.519   0.566   0.601   0.497   0.569   0.643   0.694   0.472   0.504   0.513   0.548   0.600   0.635
+                           Avg   0.441   0.491   0.746   0.643   0.479   0.492     0.453   0.508   0.539   0.516   0.557   0.593   0.536   0.598   0.577   0.638   0.498   0.505   0.468   0.526   0.579   0.624
+
+
+ Sdwpfh2
+                            24   0.477   0.498   0.820   0.677   0.474   0.493     0.579   0.553   0.629   0.563   0.468   0.540   0.473   0.533   0.580   0.614   0.640   0.554   0.457   0.527   0.633   0.653
+                           360   0.524   0.555   0.962   0.761   0.657   0.549     0.619   0.614   0.665   0.569   0.608   0.609   0.569   0.628   0.713   0.729   0.579   0.547   0.641   0.632   0.704   0.674
+                           Avg   0.500   0.526   0.891   0.719   0.566   0.521     0.599   0.584   0.647   0.566   0.538   0.575   0.521   0.581   0.646   0.671   0.610   0.551   0.549   0.580   0.669   0.664
+                           10    0.055   0.101   0.113   0.172   0.092   0.135     0.089   0.131   0.089   0.134   0.071   0.102   0.071   0.121   0.061   0.101   0.090   0.104   0.062   0.122   0.069   0.151
+   Colbun                  30    0.121   0.243   0.176   0.299   0.383   0.460     0.240   0.322   0.307   0.397   0.182   0.288   0.275   0.370   0.195   0.249   0.217   0.315   0.417   0.496   0.245   0.285
+                           Avg   0.088   0.172   0.144   0.235   0.237   0.297     0.164   0.227   0.198   0.266   0.127   0.195   0.173   0.245   0.128   0.175   0.153   0.210   0.239   0.309   0.157   0.218
+                           10    0.192   0.231   0.301   0.308   0.201   0.253     0.228   0.271   0.174   0.219   0.163   0.209   0.181   0.227   0.174   0.231   0.161   0.216   0.163   0.218   0.184   0.239
+ Rapel                     30    0.296   0.358   0.387   0.416   0.409   0.414     0.411   0.432   0.365   0.432   0.340   0.417   0.333   0.416   0.325   0.390   0.505   0.546   0.374   0.445   0.316   0.410
+                           Avg   0.244   0.294   0.344   0.362   0.305   0.334     0.320   0.352   0.269   0.326   0.252   0.313   0.257   0.322   0.249   0.310   0.333   0.381   0.269   0.332   0.250   0.324
+ 1st Count                        17      16      0       0       2           4     0       0       1       0       0       1       2       0       0       0       1       3       1       0       0       0
+
+
+
+
+                                                                                                                   24
+                                    KITE: Knowledge-Guided Probabilistic Modeling for Time Series Forecasting with Exogenous Variables
+
+
+
+
+Table 9. Full results on deterministic forecasting with historical exogenous variables across 12 real-world datasets, where the inputs are
+X endo and X exo . Red: the best, Blue: the 2nd best. Avg means the average results from two forecasting horizons.
+          Models                 KITE (ours)      TimeXer              TFT            TiDE           DUET          CrossLinear      Amplifier       TimeKAN          xPatch         PatchTST        DLinear
+          Metrics                mse    mae      mse   mae       mse         mae   mse    mae      mse  mae        mse    mae      mse    mae      mse   mae       mse    mae      mse    mae      mse   mae
+                            24   0.220   0.257   0.270   0.292   0.330   0.321     0.297   0.309   0.262   0.271   0.246   0.282   0.302   0.321   0.336   0.344   0.283   0.296   0.283   0.296   0.294   0.308
+   NP                      360   0.590   0.472   0.609   0.474   0.964   0.655     0.638   0.523   0.626   0.494   0.655   0.505   0.738   0.574   0.632   0.527   0.630   0.505   0.630   0.505   0.647   0.537
+                           Avg   0.405   0.365   0.440   0.383   0.647   0.488     0.468   0.416   0.444   0.383   0.451   0.394   0.520   0.448   0.484   0.436   0.457   0.401   0.457   0.401   0.471   0.423
+                            24   0.068   0.160   0.096   0.191   0.129   0.231     0.105   0.213   0.082   0.178   0.096   0.198   0.093   0.195   0.130   0.236   0.106   0.212   0.106   0.212   0.109   0.215
+   PJM                     360   0.185   0.260   0.186   0.267   0.270   0.310     0.210   0.292   0.198   0.273   0.197   0.283   0.210   0.294   0.219   0.304   0.189   0.273   0.189   0.273   0.199   0.285
+                           Avg   0.127   0.210   0.141   0.229   0.200   0.271     0.158   0.253   0.140   0.226   0.147   0.241   0.152   0.245   0.175   0.270   0.148   0.243   0.148   0.243   0.154   0.250
+                            24   0.355   0.255   0.392   0.253   0.400   0.267     0.492   0.322   0.376   0.253   0.389   0.253   0.417   0.283   0.424   0.280   0.405   0.264   0.405   0.264   0.453   0.308
+   BE                      360   0.550   0.349   0.563   0.349   0.727   0.442     0.602   0.375   0.571   0.357   0.564   0.346   0.588   0.367   0.552   0.350   0.564   0.354   0.564   0.354   0.645   0.454
+                           Avg   0.453   0.302   0.478   0.301   0.564   0.355     0.547   0.349   0.474   0.305   0.477   0.300   0.503   0.325   0.488   0.315   0.485   0.309   0.485   0.309   0.549   0.381
+                            24   0.337   0.197   0.366   0.195   0.445   0.231     0.415   0.254   0.359   0.208   0.397   0.204   0.429   0.250   0.448   0.250   0.397   0.223   0.397   0.223   0.412   0.253
+   FR                      360   0.521   0.297   0.542   0.300   0.624   0.345     0.574   0.325   0.577   0.317   0.555   0.310   0.559   0.322   0.534   0.303   0.542   0.306   0.542   0.306   0.576   0.352
+                           Avg   0.429   0.247   0.454   0.248   0.535   0.288     0.495   0.290   0.468   0.263   0.476   0.257   0.494   0.286   0.491   0.277   0.470   0.265   0.470   0.264   0.494   0.302
+                            24   0.418   0.402   0.501   0.445   0.576   0.452     0.465   0.433   0.424   0.403   0.438   0.423   0.493   0.455   0.504   0.462   0.503   0.450   0.503   0.450   0.511   0.458
+   DE                      360   0.783   0.566   0.818   0.568   0.792   0.578     0.823   0.604   0.895   0.623   0.832   0.592   0.930   0.642   0.834   0.590   0.889   0.604   0.889   0.604   0.868   0.600
+                           Avg   0.601   0.484   0.660   0.507   0.684   0.515     0.644   0.519   0.660   0.513   0.635   0.508   0.712   0.549   0.669   0.526   0.696   0.527   0.696   0.527   0.690   0.529
+                            24   0.103   0.247   0.138   0.293   0.352   0.463     0.117   0.265   0.108   0.254   0.102   0.246   0.108   0.254   0.109   0.254   0.108   0.254   0.108   0.254   0.106   0.248
+ Energy                    360   0.188   0.340   0.206   0.360   0.399   0.497     0.207   0.358   0.211   0.362   0.299   0.425   0.251   0.400   0.186   0.338   0.298   0.428   0.298   0.428   0.214   0.367
+                           Avg   0.146   0.294   0.172   0.327   0.376   0.480     0.162   0.312   0.160   0.308   0.201   0.336   0.180   0.327   0.148   0.296   0.203   0.341   0.203   0.341   0.160   0.307
+
+
+
+
+ Sdwpfh1 Sdwpfm2 Sdwpfm1
+                            24   0.534   0.485   0.558   0.533   0.596   0.531     0.561   0.540   0.550   0.495   0.549   0.553   0.579   0.557   0.598   0.579   0.557   0.557   0.557   0.557   0.547   0.589
+                           360   0.862   0.669   0.845   0.684   1.372   0.925     0.864   0.725   0.898   0.672   1.070   0.834   1.106   0.814   0.853   0.764   0.910   0.745   0.910   0.745   0.839   0.773
+                           Avg   0.698   0.577   0.702   0.609   0.984   0.728     0.713   0.633   0.724   0.584   0.810   0.694   0.843   0.686   0.726   0.672   0.734   0.651   0.733   0.651   0.693   0.681
+                            24   0.623   0.527   0.627   0.570   0.749   0.657     0.636   0.582   0.612   0.537   0.635   0.586   0.669   0.600   0.684   0.621   0.648   0.610   0.648   0.610   0.631   0.631
+                           360   0.977   0.717   0.978   0.736   1.340   0.877     0.995   0.783   1.028   0.745   0.965   0.788   1.215   0.863   0.987   0.780   1.020   0.819   1.020   0.819   0.980   0.824
+                           Avg   0.800   0.622   0.803   0.653   1.045   0.767     0.816   0.683   0.820   0.641   0.800   0.687   0.942   0.732   0.836   0.701   0.834   0.715   0.834   0.714   0.805   0.728
+                            24   0.650   0.570   0.651   0.587   0.754   0.670     0.719   0.641   0.673   0.575   0.687   0.652   1.111   0.816   0.755   0.679   0.669   0.629   0.669   0.629   0.736   0.721
+                           360   0.869   0.683   0.841   0.700   0.831   0.727     0.897   0.757   0.886   0.712   0.849   0.752   1.089   0.823   0.853   0.762   0.939   0.804   0.939   0.804   0.829   0.781
+                           Avg   0.760   0.627   0.746   0.644   0.793   0.699     0.808   0.699   0.780   0.644   0.768   0.702   1.100   0.820   0.804   0.721   0.804   0.717   0.804   0.717   0.783   0.751
+
+
+ Sdwpfh2
+                            24   0.801   0.632   0.820   0.677   0.811   0.714     0.783   0.674   0.975   0.694   0.810   0.718   0.834   0.691   0.892   0.740   0.769   0.680   0.769   0.680   0.838   0.759
+                           360   0.958   0.749   0.962   0.761   1.042   0.779     1.056   0.829   1.039   0.735   1.102   0.830   1.126   0.845   0.990   0.825   1.280   0.925   1.280   0.925   0.989   0.837
+                           Avg   0.880   0.691   0.891   0.719   0.927   0.747     0.920   0.752   1.007   0.715   0.956   0.774   0.980   0.768   0.941   0.783   1.025   0.803   1.025   0.802   0.913   0.798
+                           10    0.069   0.098   0.084   0.146   0.449   0.279     0.095   0.140   0.073   0.106   0.068   0.101   0.077   0.120   0.091   0.129   0.083   0.125   0.083   0.125   0.077   0.135
+   Colbun                  30    0.203   0.287   0.181   0.293   0.663   0.494     0.282   0.341   0.221   0.290   0.190   0.289   0.227   0.301   0.311   0.377   0.217   0.316   0.217   0.316   0.318   0.359
+                           Avg   0.136   0.193   0.133   0.220   0.556   0.387     0.189   0.241   0.147   0.198   0.129   0.195   0.152   0.211   0.201   0.253   0.150   0.221   0.150   0.221   0.198   0.247
+                           10    0.212   0.229   0.301   0.308   0.238   0.274     0.238   0.270   0.221   0.225   0.201   0.224   0.240   0.259   0.226   0.238   0.215   0.232   0.215   0.232   0.223   0.253
+ Rapel                     30    0.392   0.382   0.387   0.416   0.377   0.394     0.409   0.444   0.387   0.386   0.278   0.374   0.433   0.436   0.458   0.437   0.436   0.436   0.436   0.436   0.414   0.423
+                           Avg   0.302   0.306   0.344   0.362   0.308   0.334     0.324   0.357   0.304   0.306   0.240   0.299   0.337   0.348   0.342   0.338   0.326   0.334   0.325   0.334   0.319   0.338
+ 1st Count                        13      16      1       2       0           0     0       0       1       1       5       4       0       0       1       1       1       0       0       0       2       0
+
+
+
+
+                                                                                                                   25
+
