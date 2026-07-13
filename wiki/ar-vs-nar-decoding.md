@@ -9,7 +9,7 @@ tags:
   - foundation-model
 created: 2026-07-13
 last_updated: 2026-07-13
-source_count: 1
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -32,6 +32,8 @@ status: active
 - **长程点预测线**（Informer / Autoformer / [[patchtst|PatchTST]] / iTransformer / LTSF-Linear 等）几乎清一色采用 NAR，以规避长 horizon 误差累积[^src-probts]。
 - **短程概率线**（DeepAR / [[timegrad|TimeGrad]] / 归一化流等 vs [[csdi|CSDI]] / 部分扩散方法）在 AR 与 NAR 之间更均衡[^src-probts]。
 - **时间序列基础模型**同样分裂：Lag-Llama / [[timesfm|TimesFM]] / Timer / [[chronos|Chronos]] 偏 AR；MOIRAI / UniTS / ForecastPFN / TTM 偏 NAR[^src-probts]。
+
+- **[[manf|MANF]]（arXiv 2022）** 给出早期 **NAR + 精确似然流** 证据：相对 LSTM-MAF / Transformer-MAF，加倍预测长度与缺失噪声下 CRPS/MSE 衰减更小，并显著加速训练/测试，支持“one-shot 生成可抑制 AR 误差累积”的论断[^src-maf]。
 
 ## ProbTS 实证规律
 
@@ -56,5 +58,8 @@ status: active
 - [[timesfm]] / [[chronos]] — AR 系基础模型
 - [[instance-normalization]]
 - [[generative-time-series-forecasting]]
+- [[manf]] — NAR + 条件 RealNVP
+- [[multi-scale-attention]] — MANF 编码器技术
 
 [^src-probts]: [[source-probts]]
+[^src-maf]: [[source-maf]]

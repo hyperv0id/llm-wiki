@@ -10,7 +10,7 @@ tags:
   - icml-2021
 created: 2026-05-31
 last_updated: 2026-07-13
-source_count: 8
+source_count: 9
 confidence: medium
 status: active
 ---
@@ -118,6 +118,7 @@ TimeGrad 处于多条研究线的交汇点：
 - [[probts|ProbTS]]（NeurIPS 2024）将 TimeGrad 作为 **AR 概率预测** 代表：短程分布估计强，但长程 CRPS 随 horizon/趋势恶化（误差累积）；在强季节（如 Traffic）上 AR 可反超 PatchTST；均值缩放是短程默认可靠归一化，RevIN 对长程 AR 更有帮助[^src-probts]
 - [[armd|ARMD]]（AAAI 2025）将 TimeGrad 这类"把真实序列扩散成白高斯噪声、再以历史为条件去噪"的范式视为扩散机制与 TSF 目标的失配，转而用滑动窗口产生确定性中间态、把历史→未来直接构造成扩散链，并在 7 个数据集上显著超越 TimeGrad[^src-armd]
 - [[tsdiff|TSDiff]]（NeurIPS 2023）改走**无条件**训练 + 推理期 [[observation-self-guidance|observation self-guidance]]，在相关工作中将 TimeGrad 定位为条件扩散预测代表，并与 CSDI/SSSD 对照任务专用性[^src-prs]
+- [[manf|MANF]]（arXiv 2022）走 **NAR + 条件 RealNVP** 路线，与 TimeGrad 的 **AR + 条件扩散** 形成对照：同属高维联合分布灵活建模，但解码与生成机制不同；MANF 基线中含 Transformer-MAF 等 AR 流，而 TimeGrad 报告中 Transformer-MAF 为强竞争方法[^src-maf]
 
 [^src-timegrad]: [[source-timegrad]]
 [^src-nsdiff]: [[source-nsdiff]]
@@ -127,3 +128,4 @@ TimeGrad 处于多条研究线的交汇点：
 [^src-armd]: [[source-armd]]
 [^src-probts]: [[source-probts]]
 [^src-prs]: [[source-prs]]
+[^src-maf]: [[source-maf]]

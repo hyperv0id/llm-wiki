@@ -6,8 +6,8 @@ tags:
   - normalizing-flow
   - probability
 created: 2026-04-28
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-07-13
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -37,7 +37,7 @@ $$
 | 变换 | 描述 | log-det |
 |------|------|---------|
 | 仿射耦合层 | $y_a = s \odot x_a + t, y_b = x_b$ | $\sum \log |s|$ |
-| 可逆 1×1 ���积 | $y = Wx$ | $h \cdot w \cdot \log\|\det(W)\|$ |
+| 可逆 1×1 卷积 | $y = Wx$ | $h \cdot w \cdot \log\|\det(W)\|$ |
 | ActNorm | $y = s \odot x + b$ | $h \cdot w \cdot \sum \log \|s\|$ |
 | 逐通道变换 | 通道重排 | 0 |
 
@@ -46,6 +46,14 @@ $$
 - **NICE** (Dinh et al., 2014): 首个现代归一化流
 - **RealNVP** (Dinh et al., 2016): 引入多尺度和耦合层
 - **Glow** (Kingma & Dhariwal, 2018): 引入可逆 1×1 卷积
+
+## 时间序列中的条件流
+
+离散归一化流（尤其 RealNVP affine coupling）被用于多变量概率预测：以序列编码器隐状态为条件，将高斯基变换为预测窗联合分布，并可精确优化 log-likelihood[^src-maf]。
+
+- **AR 条件流**：LSTM/Transformer-MAF 等在逐步解码中用流建模输出变异（Rasul et al. 2020 系基线）[^src-maf]。
+- **NAR 条件流**：[[manf|MANF]] 用多尺度注意力编码历史，解码器各层条件驱动堆叠 RealNVP，**不回馈**预测窗观测，实现 one-shot 生成并降低相对 $O(D^2T)$ 的串行开销[^src-maf]。
+- 与 [[continuous-normalizing-flow|CNF]] / [[flow-matching|Flow Matching]] 路线不同，MANF 属有限层离散双射，似然精确但表达力依赖耦合层深度[^src-maf]。
 
 ## 与其他生成模型对比
 
@@ -59,9 +67,13 @@ $$
 ## 相关页面
 
 - [[glow]] — Glow 模型
+- [[manf]] — 多尺度注意力 + 条件 RealNVP 的时序概率预测
+- [[source-maf]] — MANF 源摘要
+- [[generative-time-series-forecasting]] — 生成式时序预测谱系
 - [[variational-autoencoder]] — VAE
 - [[diffusion-model]] — 扩散模型
 
 ## 引用
 
 [^src-glow]: [[source-glow]]
+[^src-maf]: [[source-maf]]

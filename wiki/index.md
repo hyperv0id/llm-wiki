@@ -129,6 +129,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-fast-long-horizon-forecasting]] — FaST: Efficient Long-Horizon Forecasting for Large-Scale STG via MoE (KDD 2026)
 - [[source-muon-optimizer]] — Muon: An optimizer for hidden layers in neural networks (Jordan, 2024)
 - [[source-mae]] — MAE: Masked Autoencoders Are Scalable Vision Learners (He et al., CVPR 2022)
+- [[source-maf]] — MANF: Multi-scale Attention Normalizing Flow for non-autoregressive multivariate probabilistic forecasting (arXiv:2205.07493)
 - [[source-phat]] — PHAT: Period Heterogeneity-Aware Transformer for MTS forecasting (ICLR 2026)
 - [[source-pi-mfm]] — PI-MFM: Physics-informed multimodal foundation model for solving PDEs, PDE-encoding MOL with physics losses in pretraining and adaptation (arXiv 2025)
 - [[source-hephestus]] — HEPHAESTUS: Hierarchical Periodic Heterogeneous Adaptive Spatio-Temporal Unified System for Traffic Forecasting (ICLR 2026 under review)
@@ -383,6 +384,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[grin]] — GRIN, first GNN-based multivariate time series imputation model with message-passing spatial decoder (ICLR 2022)
 - [[gtr]] — GTR, lightweight plug-and-play global temporal retrieval module for MTSF, extends cycle awareness beyond look-back window (ICLR 2026)
 - [[mamba]] — Mamba, selective state space model reformulated as linear attention variant (NeurIPS 2024)
+- [[manf]] — MANF, multi-scale attention + conditional RealNVP for NAR multivariate probabilistic TS forecasting (arXiv 2022/2023)
 - [[ssd-ts]] — SSD-TS, Mamba as diffusion denoising backbone with BAM+CMB for probabilistic time series imputation (KDD 2025)
 - [[mila]] — MILA, Mamba-Inspired Linear Attention model (NeurIPS 2024)
 - [[gsli]] — GSLI, multi-scale graph structure learning for spatiotemporal imputation with feature heterogeneity (AAAI 2025)
@@ -477,6 +479,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[rectified-flow-for-time-series]] — Rectified Flow 在时间序列生成中的应用范式 (FlowTS, 2025)
 - [[multi-level-alignment]] — 多级对齐，在表示级和预测级融合文本与时间序列模态 (ICLR 2026)
 - [[multi-scale-linear-prediction]] — 多尺度线性预测，下采样 + 自上而下混合提取多粒度趋势模式 (DST-Mamba, AAAI 2025)
+- [[multi-scale-attention]] — Multi-scale window attention with dynamic relative position for hierarchical TS patterns (MANF)
 - [[generative-time-series-forecasting]] — 生成式时间序列预测，通过概率建模实现不确定性量化的预测范式
 - [[ar-vs-nar-decoding]] — AR vs NAR multi-step decoding schemes and their horizon/seasonality trade-offs (ProbTS)
 - [[non-gaussianity]] — window-level non-Gaussianity (JS vs Gaussian) as distribution complexity for forecasting (ProbTS)

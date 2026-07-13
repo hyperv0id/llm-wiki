@@ -1,3 +1,10 @@
+## [2026-07-13] ingest | Multi-scale Attention Flow for Probabilistic Time Series Forecasting (arXiv:2205.07493)
+创建的页面：[[source-maf]], [[manf]], [[multi-scale-attention]]
+更新的页面：[[index]], [[generative-time-series-forecasting]], [[normalizing-flow]], [[ar-vs-nar-decoding]], [[timegrad]]
+核心贡献：MANF = 多尺度注意力（动态相对位置）编码器 + 条件 RealNVP 非自回归 one-shot 生成；六数据集 CRPS-sum/MSE 文中 SOTA；抗预测长度加倍与缺失噪声；对比 LSTM/Transformer-MAF 与 NKF。
+源文件：raw/2205.07493.pdf（不可变；外部路径 `/run/media/jcheng/WD-Data/yjs/INSIS/多模态外生信息引导的长期时空预测/2205.07493.pdf`）
+---
+
 ## [2026-07-13] ingest | Predict, Refine, Synthesize / TSDiff (NeurIPS 2023, arXiv:2307.11494)
 创建的页面：[[source-prs]], [[tsdiff]], [[observation-self-guidance]], [[linear-predictive-score]]
 更新的页面：[[index]], [[generative-time-series-forecasting]], [[source-timegrad]], [[timegrad]], [[source-csdi]], [[csdi]], [[source-tsflow]], [[tsflow]], [[classifier-guidance]], [[classifier-free-guidance]]

@@ -9,7 +9,7 @@ tags:
   - diffusion-models
 created: 2026-05-03
 last_updated: 2026-07-13
-source_count: 15
+source_count: 16
 confidence: high
 status: active
 ---
@@ -61,6 +61,10 @@ status: active
 
 **[[aurora|Aurora]]** (arXiv 2026) 提出 Prototype-Guided Flow Matching，使用多模态领域知识生成条件和原型来引导流匹配过程，实现生成式概率预测[^src-aurora]。Aurora 支持多模态输入（文本、图像、数值）和零样本推理。
 
+### 归一化流方法
+
+**[[manf|MANF]]**（arXiv:2205.07493）将 [[multi-scale-attention|多尺度注意力]] 编码器与条件 [[normalizing-flow|RealNVP]] 结合，以**非自回归**方式生成未来窗口联合分布：预测窗观测不回馈模型，解码器各层条件驱动堆叠 affine coupling，从而避免 AR 流的误差累积并保持时间维并行[^src-maf]。在 Exchange/Solar/Electricity/Traffic/Taxi/Wikipedia 上相对 LSTM-MAF、Transformer-MAF、NKF 等取得文中报告的 CRPS-sum/MSE SOTA，并在加倍预测长度与缺失噪声压力下更稳[^src-maf]。它代表离散归一化流在多变量概率预测中的早期 NAR 路线，与后续 Flow Matching（TSFlow/Sundial）及 AR 扩散（TimeGrad）形成对照。
+
 ### VAE 方法
 
 **[[k2vae|K²VAE]]** (ICML 2025 Spotlight) 是 VAE 路线 + 一步生成的代表，把概率预测重构为在 Koopman 测量空间中对线性动力系统的过程不确定性建模：KoopmanNet 线性化 + KalmanNet 精炼并输出协方差作为变分后验。短期 CRPS 较 CSDI 降低 7.3%，长期 CRPS 较 PatchTST 提升 20.9%，且因 VAE 一步生成而显存最低、推理最快——克服了扩散/流模型在长期预测下崩溃且低效的问题[^src-k2vae]。
@@ -85,6 +89,7 @@ status: active
 | **TSFlow** | **Flow Matching (OT)** | **仅数值** | **✗** | **概率分布** | **原始域 + GP 先验** |
 | **CoGenCast** | **Flow Matching (平均速度)** | **文本 + 数值** | **✓** | **概率分布 (一步)** | **LLM Encoder-Decoder + 平均速度 JVP** |
 | **Swift** | **Consistency Model (TrigFlow)** | **仅数值 + 静态强迫** | **✗** | **概率分布 (NFE=1)** | **原始域 + CRPS 微调** |
+| **MANF** | **Normalizing Flow (RealNVP)** | **仅数值** | **✗** | **概率分布** | **原始域 + 多尺度注意力 NAR** |
 
 ## 优势
 
@@ -139,6 +144,9 @@ status: active
 - [[probts|ProbTS]] — 点+分布、短+长 horizon 统一基准与 AR/NAR 分析
 - [[ar-vs-nar-decoding]] — 多步解码方案权衡
 - [[non-gaussianity]] — 窗口分布复杂度指标
+- [[manf]] — MANF，多尺度注意力 + 条件 RealNVP（NAR）
+- [[multi-scale-attention]] — 多尺度窗口注意力
+- [[normalizing-flow]] — 离散归一化流
 
 [^src-aurora]: [[source-aurora]]
 [^src-simdiff]: [[source-simdiff]]
@@ -155,3 +163,4 @@ status: active
 [^src-s2dbm]: [[source-s2dbm]]
 [^src-probts]: [[source-probts]]
 [^src-prs]: [[source-prs]]
+[^src-maf]: [[source-maf]]
