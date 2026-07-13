@@ -9,7 +9,7 @@ tags:
   - manifold
   - icml-2026
 created: 2026-07-12
-last_updated: 2026-07-12
+last_updated: 2026-07-13
 source_count: 1
 confidence: high
 status: active
@@ -71,5 +71,6 @@ p_\theta(Y_{\text{endo}} \mid X_{\text{endo}}, X_{\text{exo}}, Y_{\text{exo}}).
 - [[gaussian-process-prior-flow-matching]] — TSFlow 的 GP 源路线
 - [[multimodal-exogenous-guided-long-term-st-forecasting]] — 外生引导长期时空预测议程
 - [[dag]] / [[source-dag]] — 确定性双相关外生预测对照（IJCAI 2026，同 ECNU 组）
+- [[gcgnet]] / [[source-gcgnet]] — 图一致生成外生预测对照（ICLR 2026，同 ECNU 组）
 
 [^src-kite]: [[source-kite]]

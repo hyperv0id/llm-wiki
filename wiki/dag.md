@@ -8,7 +8,7 @@ tags:
   - time-series
   - ijcai-2026
 created: 2026-07-12
-last_updated: 2026-07-12
+last_updated: 2026-07-13
 source_count: 1
 confidence: high
 status: active
@@ -56,12 +56,14 @@ TSF-X 任务中，现有方法两大短板：[^src-dag]
 - **相对 TimeXer**：DAG 显式建模并利用未来外生，而非仅 patch 融合历史外生。[^src-dag]
 - **相对 TiDE/TFT**：DAG 不做简单拼接，而是发现—注入相关性结构，抑制伪相关。[^src-dag]
 - **相对 [[kite|KITE]]**：DAG 是确定性预测 + 学习相关性注入；KITE 是概率预测 + 统计先验注入（[[knowledge-guided-conditioning|KGC]]）+ [[classifier-free-guidance|CFG]] 剂量控制 + [[history-conditional-manifold|HCM]] 源几何。两者在"用相关性指导外生建模"同向，但相关性来源与预测范式不同。[^src-dag]
+- **相对 [[gcgnet|GCGNet]]**：同为确定性外生预测；DAG 做双相关发现—注入到注意力，GCGNet 用 VAE 粗生成 + 图结构对齐 + GCN 精炼做联合时间–通道图一致建模。[^src-dag]
 
 ## 相关页面
 
 - [[source-dag]] — 源摘要
 - [[dual-correlation-injection]] — 相关性发现—注入技术
 - [[kite]] / [[source-kite]] — 概率外生预测对照
+- [[gcgnet]] / [[source-gcgnet]] — 图一致生成外生预测对照（ICLR 2026）
 - [[source-timexer]] / [[source-exotst]] / [[source-exost]] / [[source-select-then-balance]]
 - [[cross-attention-conditioning]]
 - [[covariate-fusion-module]]

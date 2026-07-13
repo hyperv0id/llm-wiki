@@ -10,7 +10,7 @@ tags:
   - 2026
   - icml-2026
 created: 2026-07-12
-last_updated: 2026-07-12
+last_updated: 2026-07-13
 source_count: 1
 confidence: high
 status: active
@@ -86,6 +86,7 @@ KITE 把**外生变量条件下的概率时序预测**做成端到端生成框�
 - [[tsflow]] / [[source-tsflow]] — GP 先验流匹配前驱
 - [[source-timexer]] / [[source-exotst]] / [[source-exost]] — 外生确定性预测谱系
 - [[source-dag]] / [[dag]] — DAG 双相关确定性外生预测（IJCAI 2026，同 ECNU 组）
+- [[source-gcgnet]] / [[gcgnet]] — GCGNet 图一致生成外生预测（ICLR 2026，同 ECNU 组；确定性联合图对齐）
 - [[flow-matching-forecasting]] — 流匹配时序预测总览
 
 [^src-kite]: [[source-kite]]

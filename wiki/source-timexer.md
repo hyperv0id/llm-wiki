@@ -7,7 +7,7 @@ tags:
   - time-series
   - 2024
 created: 2026-07-07
-last_updated: 2026-07-12
+last_updated: 2026-07-13
 source_count: 1
 confidence: medium
 status: active
@@ -61,5 +61,6 @@ TimeXer 的核心洞见在于：内生变量和外生变量需要不同粒度的
 - [[source-patchtst|PatchTST]] — Patch 化时序预测奠基工作
 - [[source-dits|DiTS]] — 多模态扩散 Transformer 时序预测，采用类似双流设计
 - [[source-kite|KITE]] — 外生条件下的概率流匹配（HCM + KGC + CFG），确定性外生基准上对比 TimeXer
+- [[source-gcgnet|GCGNet]] — 将 TimeXer 归为 temporal→channel 两步策略，提出图一致联合相关生成网络 (ICLR 2026)
 
 [^src-timexer]: [[source-timexer]]

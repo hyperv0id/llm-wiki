@@ -913,3 +913,17 @@ All wiki pages, organized by type. Updated on every ingest.
 ## Techniques (continued)
 - [[dual-correlation-injection]] — Dual Correlation Injection，跨模块提取 Wq',Wk' 并注入内生预测注意力
 - [[frequency-enhanced-direct-forecast]] — FreDF 训练技术：时域 MSE + 频域模长损失混合，模型无关的 DF 升级 (FreDF)
+
+## Sources (continued)
+- [[source-gcgnet]] — GCGNet: Graph-Consistent Generative Network for TS forecasting with exogenous variables (joint graph alignment + VAE generator + Graph Refiner, ICLR 2026)
+
+## Entities (continued)
+- [[gcgnet]] — GCGNet, graph-consistent generative network for exogenous TS forecasting (ICLR 2026, ECNU)
+
+## Concepts (continued)
+- [[joint-temporal-channel-correlation]] — 联合时间–通道相关建模，反对外生预测中的两步串行相关学习 (GCGNet)
+
+## Techniques (continued)
+- [[graph-structure-aligner]] — Graph Structure Aligner：patch 图 VAE + L1 结构对齐约束生成器 (GCGNet)
+- [[graph-refiner]] — Graph Refiner：top-k 稀疏邻接 + GCN 精炼并防止 Graph VAE 退化 (GCGNet)
+- [[variational-generator-exogenous]] — Variational Generator：VAE 粗预测 + 可选未来外生替换 (GCGNet)
