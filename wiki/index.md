@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-07-12
+last_updated: 2026-07-13
 source_count: 0
 tags:
   - meta
@@ -35,6 +35,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-chapter-5-monte-carlo-methods]] — 第 5 章：蒙特卡洛方法与 ε-greedy
 - [[source-chapter-7-temporal-difference-methods]] — 第 7 章：TD 方法、Sarsa 与 Q-learning
 - [[source-deep-time-series-survey]] — Deep Time Series Models: comprehensive survey and benchmark (TSLib)
+- [[source-distdf]] — DistDF: Distribution-aware Direct Forecast, joint-distribution Wasserstein alignment for training time-series forecasting models, 解决 MSE 的自相关偏差 (ICLR 2026)
 - [[source-dualformer]] — Dualformer: time-frequency dual domain learning for long-term forecasting
 - [[source-fedformer]] — FEDformer: frequency enhanced decomposed transformer (ICML 2022)
 - [[source-flightdiff]] — FlightDiff: Dual-Constraint Guided Two-Phase Diffusion Framework for Flight Prediction
@@ -735,6 +736,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[dual-stream-attention-time-series]] — Dual-Stream Attention for Time Series, orthogonal Time + Variate attention as low-rank decomposition (arXiv 2026)
 - [[contextual-pattern-bank]] — incrementally expandable parametric memory with prompt-based gating and dual-stream attention keys for CSTF (STBP, ICLR 2026)
 
+- [[joint-distribution-wasserstein-alignment]] — DistDF 的联合分布 Wasserstein 对齐技术，对齐预测与标签的条件分布 (ICLR 2026)
 ## Concepts (continued)
 - [[hybrid-llm-flow-matching-forecasting]] — 混合 LLM-流匹配预测，耦合预训练 LLM 语义理解与 FM 连续随机建模的生成式预测范式 (ICML 2026)
 - [[lomb-scargle-periodogram]] — Lomb–Scargle 周期图，非均匀采样数据的频谱估计方法
@@ -876,6 +878,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[embodied-question-answering]] — EQA, 具身问答，agent 主动探索环境收集视觉证据并回答问题的基准任务 (Zheng et al., 2025)
 - [[birkhoff-polytope]] — $n \times n$ 双随机矩阵构成的 Birkhoff 多面体，mHC 的残差映射流形
 - [[identity-mapping-property]] — 残差连接中浅层信号直通深层的恒等映射性质
+- [[autocorrelation-bias]] — MSE 作为时序预测学习目标时的自相关偏差，源于标签序列的条件自相关被忽略 (DistDF, ICLR 2026)
 
 ## Techniques (continued)
 - [[3d-visual-grounding]] — 3D 视觉定位，从自然语言描述在 3D 场景中定位目标物体的三类方法（3D/多视图/混合）(Zheng et al., 2025)

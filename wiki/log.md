@@ -2,7 +2,7 @@
 title: Log
 type: concept
 created: 2026-04-26
-last_updated: 2026-07-08
+last_updated: 2026-07-13
 ## [2026-07-12] query | ICML 2026 Spotlight 与多模态外生信息引导长期时空预测的相关分析
 从 OpenReview 抓取 ICML 2026 全部 538 篇 spotlight 论文的标题+摘要，按方向“多模态外生信息引导的长期时空预测”分三层筛选：直接相关、方法可迁移、基础设施。
 创建的页面：[[source-icml-2026-spotlight-papers]], [[icml-2026-spotlight-vs-multimodal-exogenous-spatiotemporal]]
@@ -1463,3 +1463,10 @@ DAG: A Dual Correlation Network for Time Series Forecasting with Exogenous Varia
 创建的页面：[[source-dag]], [[dag]], [[dual-correlation-injection]]
 更新的页面：[[kite]], [[source-kite]], [[index]]
 源文件：raw/dag-qiu-2026.pdf（不可变拷贝自 Zotero 3MBN63QI）
+
+## [2026-07-13] ingest | DistDF (ICLR 2026)
+DistDF: Distribution-aware Direct Forecast for time-series forecasting via joint-distribution Wasserstein alignment. 提出 MSE 的自相关偏差理论（Theorem 3.1），用联合分布 Wasserstein discrepancy 替代似然估计，Bures-Wasserstein 实现均值+协方差对齐，模型无关即插即用。
+
+创建的页面：[[source-distdf]], [[autocorrelation-bias]], [[joint-distribution-wasserstein-alignment]]
+更新的页面：[[index]]
+源文件：raw/DistDF_Wang_2026_ICLR.pdf
