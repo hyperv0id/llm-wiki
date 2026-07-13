@@ -7,8 +7,8 @@ tags:
   - long-sequence
   - transformer
 created: 2026-05-04
-last_updated: 2026-05-31
-source_count: 4
+last_updated: 2026-07-13
+source_count: 5
 confidence: high
 status: active
 ---
@@ -47,10 +47,11 @@ LSTF has driven a sustained research line focused on efficient Transformer archi
 | **[[source-frets|FreTS]]** | 2023 | $O(N \log N + L \log L)$ | Frequency-domain MLPs as global convolutions (NeurIPS) |
 | **[[crossformer|Crossformer]]** | 2023 | $O(DL^2_\text{seg})$ | DSW 2D embedding + TSA cross-dimension attention + HED (ICLR) |
 | **[[patchtst|PatchTST]]** | 2023 | $O((L/S)^2)$ | Patch tokenization + Channel Independence + self-supervised (ICLR) |
+| **[[tide|TiDE]]** | 2023/24 | $\tilde O(n_e h^2 + hL)$ | Residual MLP encoder–decoder with covariates + temporal decoder (arXiv) |
 | **[[itransformer|iTransformer]]** | 2024 | $O(N^2)$ per layer | Inverted dimensions: attention on variates, FFN on time (ICLR) |
 | **[[sparsetsf|SparseTSF]]** | 2025 | Extreme compression | Cross-period sparse forecasting with <1k parameters (ICML/TPAMI) |
 
-The progression shows a trend from **efficiency-first** (Informer: reduce complexity) → **structure-first** (Autoformer: embed decomposition) → **domain-specific** (FEDformer/FreTS: frequency domain) → **cross-dimension** (Crossformer: explicit variable interaction) → **tokenization rethink** (PatchTST: patch + CI, proving Transformer can beat linear models) → **architecture rethinking** (iTransformer: invert dimensions without modifying components) → **extreme compression** (SparseTSF: sub-1k-parameter models).
+The progression shows a trend from **efficiency-first** (Informer: reduce complexity) → **structure-first** (Autoformer: embed decomposition) → **domain-specific** (FEDformer/FreTS: frequency domain) → **cross-dimension** (Crossformer: explicit variable interaction) → **tokenization rethink** (PatchTST: patch + CI, proving Transformer can beat linear models) → **dense MLP with covariates** ([[tide|TiDE]]: linear-time residual encoder–decoder that subsumes DLinear while using future covariates) → **architecture rethinking** (iTransformer: invert dimensions without modifying components) → **extreme compression** (SparseTSF: sub-1k-parameter models).
 
 ## iTransformer 对 LSTF 的突破
 
@@ -62,6 +63,8 @@ Zeng et al. (2022) fundamentally challenged the Transformer-based LSTF paradigm 
 
 **PatchTST 的回应**：PatchTST (ICLR 2023) 通过 patching + channel independence 证明正确设计的 Transformer 可以超越 DLinear，且是唯一随 look-back window 增大持续降低 MSE 的 Transformer 模型[^src-patchtst]。
 
+**TiDE 的并行路线**：[[tide|TiDE]] (Das et al., arXiv 2023/2024) 不走 attention，而以 residual MLP 编码器–解码器在保持线性计算缩放的同时处理静态/动态协变量；全局线性残差使 DLinear 成为其子类，Traffic 长视界上相对 PatchTST 有约 10% MSE 优势，训练/推理快 5–10×[^src-tide]。
+
 ## Relationship to Other Forecasting Settings
 
 - **Short-term forecasting**: Usually ≤48 steps; can use simpler models (ARIMA, LSTMs, vanilla MLPs).
@@ -72,3 +75,4 @@ Zeng et al. (2022) fundamentally challenged the Transformer-based LSTF paradigm 
 [^src-zeng-2022-are-transformers-effective]: [[source-zeng-2022-are-transformers-effective]]
 [^src-itransformer]: [[source-itransformer]]
 [^src-patchtst]: [[source-patchtst]]
+[^src-tide]: [[source-tide]]

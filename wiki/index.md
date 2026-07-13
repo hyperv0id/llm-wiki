@@ -68,6 +68,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-zhou-informer-2021]] — Informer: Beyond Efficient Transformer for Long Sequence Time-Series Forecasting (AAAI 2021 Best Paper)
 - [[source-timedit]] — TimeDiT: General-purpose Diffusion Transformers for Time Series Foundation Model (KDD 2025)
 - [[source-tips]] — TIPS: transformer with inductive prior synthesis for financial forecasting
+- [[source-tide]] — TiDE: Time-series Dense Encoder, residual MLP encoder–decoder for LTSF with covariates (Das et al., arXiv:2304.08424)
 - [[source-tqn]] — TQNet: Temporal Query Network for efficient multivariate forecasting (ICML 2025)
 - [[source-trajectory-dl-survey]] — Comprehensive Survey of Deep Learning for Trajectory Data Management and Mining
 - [[source-timegrad]] — TimeGrad: autoregressive denoising diffusion for probabilistic time series forecasting (ICML 2021)
@@ -377,6 +378,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[patchtst]] — PatchTST, patch tokenization + channel independence Transformer for LSTF and self-supervised learning (ICLR 2023)
 - [[phat]] — PHAT, Period Heterogeneity-Aware Transformer with positive-negative attention and periodic bucket structure (ICLR 2026)
 - [[ltsf-linear]] — LTSF-Linear, embarrassingly simple linear baseline that outperforms Transformer LTSF models (Zeng et al., 2022)
+- [[tide]] — TiDE, residual-MLP encoder–decoder for long-term forecasting with static/dynamic covariates (Google, arXiv 2023/24)
 - [[edm]] — EDM, Elucidating the Design Space of Diffusion-Based Generative Models (NeurIPS 2022)
 - [[grin]] — GRIN, first GNN-based multivariate time series imputation model with message-passing spatial decoder (ICLR 2022)
 - [[gtr]] — GTR, lightweight plug-and-play global temporal retrieval module for MTSF, extends cycle awareness beyond look-back window (ICLR 2026)
@@ -646,6 +648,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[patch-based-tokenization]] — converting time series into overlapping patch tokens for transformer input
 - [[periodic-temporal-attention]] — PTA: time-aware cross-attention with learnable daily/weekly periodic embedding queries (HEPHAESTUS, ICLR 2026 under review)
 - [[channel-independence]] — processing each channel separately to enhance efficiency and distribution learning
+- [[temporal-decoder]] — TiDE per-horizon residual fusion of decoded vectors with projected future covariates
 - [[key-normalization]] — ℓ2 normalization of keys to prevent attention hijacking
 - [[attention-logit-explosion]] — training instability from unbounded attention scores
 - [[attention-entropy-collapse]] — attention distribution becoming one-hot during training

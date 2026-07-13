@@ -8,7 +8,7 @@ tags:
   - multivariate
 created: 2026-04-28
 last_updated: 2026-07-13
-source_count: 9
+source_count: 10
 confidence: high
 status: active
 ---
@@ -31,6 +31,10 @@ Channel Independence 是时间序列预测中的一种处理策略，要求模�
 ## 在 PatchTST 中的应用
 
 **PatchTST** 是首个将 CI 引入 Transformer 的模型 [^src-patchtst]。多元时间序列的 M 个通道独立送入共享权重的 Transformer，增加训练样本量（M 个通道→M 个独立样本）并使注意力聚焦时间维度。消融实验证明 CI 是性能提升的关键因素：在 Traffic 数据集上，仅 CI（无 patching）已将 FEDformer 的 MSE 从 0.576 降至 0.397 [^src-patchtst]。然而完全忽略跨变量依赖是 PatchTST 的主要局限，后续 [[cvpe|CVPE]] 和 [[crossformer|Crossformer]] 尝试补充此缺陷。
+
+## 在 TiDE 中的应用
+
+[[tide|TiDE]] 同样采用 channel-independent 推理：每次输入单条序列的 look-back、动态协变量与静态属性，映射到该序列的 horizon，但权重在全数据集上全局共享。与 PatchTST 不同，TiDE 用 residual MLP 而非 self-attention，并在 CI 设定下通过 [[temporal-decoder|temporal decoder]] 接入未来协变量高速路[^src-tide]。
 
 ## 在 SimDiff 中的应用
 
@@ -81,6 +85,7 @@ CPiRi 的通道打乱测试暴露了一个关键问题：大多数 CD 模型在�
 ## 相关技术
 
 - **起源**：[[patchtst|PatchTST]] — 首次将 CI 引入时序 Transformer (ICLR 2023)
+- **MLP 路线**：[[tide|TiDE]] — CI + residual MLP 编码器–解码器 + 协变量 temporal decoder (arXiv 2023/24)
 - 对比：[[patch-based-tokenization]] — patch 化处理
 - 对比：[[instance-normalization]] — RevIN 策略
 - 相关：[[normalization-independence]] — SimDiff 的归一化技术
@@ -105,3 +110,4 @@ CPiRi 的通道打乱测试暴露了一个关键问题：大多数 CD 模型在�
 [^src-uniflow]: [[source-uniflow]]
 [^src-nuwats]: [[source-nuwats]]
 [^src-crosslinear]: [[source-crosslinear]]
+[^src-tide]: [[source-tide]]

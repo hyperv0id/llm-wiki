@@ -11,7 +11,7 @@ tags:
   - ICLR-2023
 created: 2026-05-30
 last_updated: 2026-07-13
-source_count: 3
+source_count: 4
 confidence: medium
 status: active
 ---
@@ -99,7 +99,8 @@ PatchTST 是 LSTF 领域的关键转折点 [^src-patchtst]：
 
 ## Connections
 
-- **前驱/基线**：[[informer|Informer]], [[autoformer|Autoformer]], [[fedformer|FEDformer]], DLinear
+- **前驱/基线**：[[informer|Informer]], [[autoformer|Autoformer]], [[fedformer|FEDformer]], [[ltsf-linear|DLinear / LTSF-Linear]]
+- **同期/对照**：[[tide|TiDE]] — residual MLP + 协变量高速路，线性复杂度；在 Traffic 等大数据集上可超过 PatchTST，且训练/推理显著更快[^src-tide]
 - **后续/继承**：[[simdiff|SimDiff]]（patch + CI + diffusion）, [[cvpe|CVPE]]（CI + CD 折中）, [[sparsetsf|SparseTSF]]（patch + 极致压缩）, [[srsnet|SRSNet]] / [[selective-representation-space|SRS]]（自适应 patch 表示空间插件）
 - **核心概念**：[[patch-based-tokenization]], [[channel-independence]], [[instance-normalization]], [[lstf]]
 - **自监督/预训练**：[[mae|MAE]], [[videomae]], [[timesfm|TimesFM]], [[chronos]]
@@ -107,3 +108,4 @@ PatchTST 是 LSTF 领域的关键转折点 [^src-patchtst]：
 [^src-patchtst]: [[source-patchtst]]
 [^src-srsnet]: [[source-srsnet]]
 [^src-probts]: [[source-probts]]
+[^src-tide]: [[source-tide]]

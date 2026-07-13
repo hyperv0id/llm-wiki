@@ -1527,3 +1527,10 @@ DistDF: Distribution-aware Direct Forecast for time-series forecasting via joint
 创建的页面：[[source-distdf]], [[autocorrelation-bias]], [[joint-distribution-wasserstein-alignment]]
 更新的页面：[[index]]
 源文件：raw/DistDF_Wang_2026_ICLR.pdf
+
+## [2026-07-13] ingest | TiDE (arXiv:2304.08424)
+TiDE: Time-series Dense Encoder for Long-term Forecasting (Das, Kong, Leach, Mathur, Sen & Yu; Google Research / Google Cloud / UCSD). Residual-MLP encoder–decoder with feature projection, dense encoder/decoder, temporal decoder, and global linear residual; channel-independent LTSF with static/dynamic covariates; LDS theory + 5–10× faster than PatchTST.
+
+创建的页面：[[source-tide]], [[tide]], [[temporal-decoder]]
+更新的页面：[[lstf]], [[ltsf-linear]], [[patchtst]], [[channel-independence]], [[instance-normalization]], [[direct-forecast]], [[index]]
+源文件：raw/2304.08424.pdf
