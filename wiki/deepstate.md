@@ -29,7 +29,7 @@ status: active
 | 跨序列学习 | 共享网络参数 \(\Phi\)，非每序列独立拟合 |
 | 似然 | 线性高斯，Kalman 解析 |
 | 预测 | 潜状态后验 + 递推采样，非目标值自回归输入 |
-| 代表对照 | ETS/ARIMA（经典 SSM）、DeepAR（自回归 RNN）、MatFact |
+| 代表对照 | ETS/ARIMA（经典 SSM）、[[deepar|DeepAR]]（自回归 RNN）、MatFact |
 
 DeepState 属于[[deep-state-space-model|深度状态空间模型]]早期工业实践，也是后续神经 Kalman / Koopman-Kalman 路线（如[[k2vae|K²VAE]]）的重要前驱对照。[^src-deepstate]
 
@@ -41,7 +41,7 @@ DeepState 属于[[deep-state-space-model|深度状态空间模型]]早期工业�
 
 ## 经验要点
 
-- 小样本 electricity/traffic（2–4 周训练）上相对 auto.arima、ets、DeepAR 的 p50/p90 优势，体现显式季节 SSM 结构的数据效率。[^src-deepstate]
+- 小样本 electricity/traffic（2–4 周训练）上相对 auto.arima、ets、[[deepar|DeepAR]] 的 p50/p90 优势，体现显式季节 SSM 结构的数据效率。[^src-deepstate]
 - 合成实验表明联合训练可逐步恢复 day-of-week 季节模型的 \(\mu_0\)、创新与观测噪声参数。[^src-deepstate]
 - 目标值不进入网络输入 → 缺失处理与多样本路径生成更高效。[^src-deepstate]
 
@@ -52,5 +52,6 @@ DeepState 属于[[deep-state-space-model|深度状态空间模型]]早期工业�
 - [[kalman-filter]] — 推断算法
 - [[generative-time-series-forecasting]] — 概率预测大图
 - [[k2vae]] / [[kalmannet-uncertainty-modeling]] — 现代神经 Kalman 延伸
+- [[deepar]] — 目标值自回归 RNN 对照
 
 [^src-deepstate]: [[source-deepstate]]

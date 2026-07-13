@@ -55,20 +55,20 @@ DeepState 用 LSTM 循环网络 \(h_t=h(h_{t-1},x_t,\Phi)\) 产生表示，再�
 
 ### 相对自回归模型的设计优势
 
-与 DeepAR 等以目标值作输入的自回归 RNN 不同，DeepState **不把目标值直接喂入网络**，目标只通过似然进入训练。带来：(i) 对观测噪声更稳健；(ii) 缺失值可直接丢掉对应似然项；(iii) 预测期 RNN 只需 unroll 一次（与采样条数无关），而自回归模型需对每条样本路径重复 unroll。[^src-deepstate]
+与 [[deepar|DeepAR]] 等以目标值作输入的自回归 RNN 不同，DeepState **不把目标值直接喂入网络**，目标只通过似然进入训练。带来：(i) 对观测噪声更稳健；(ii) 缺失值可直接丢掉对应似然项；(iii) 预测期 RNN 只需 unroll 一次（与采样条数无关），而自回归模型需对每条样本路径重复 unroll。[^src-deepstate]
 
 ## 实验结果
 
 - **参数可识别性（合成）**：按 day-of-week 季节 SSM 生成 5 组序列；随每组样本从 20→140，\(\mu_0\)、创新强度 \(\gamma_t\)、观测噪声 \(\sigma_t\) 逐步逼近真值，说明联合训练可恢复可解释 SSM 参数。[^src-deepstate]
-- **小样本 electricity / traffic**：训练窗 2/3/4 周、预测 7 天；p50/p90 分位损失上 DeepState 多数设定优于 auto.arima、ets 与 DeepAR，尤其 2 周训练时显式季节结构带来优势。[^src-deepstate]
-- **滚动日预测 vs MatFact**：无需按日重训，仅扩展训练窗并更新潜状态后验；p50 优于矩阵分解 MatFact，与 DeepAR 相当。[^src-deepstate]
+- **小样本 electricity / traffic**：训练窗 2/3/4 周、预测 7 天；p50/p90 分位损失上 DeepState 多数设定优于 auto.arima、ets 与 [[deepar|DeepAR]]，尤其 2 周训练时显式季节结构带来优势。[^src-deepstate]
+- **滚动日预测 vs MatFact**：无需按日重训，仅扩展训练窗并更新潜状态后验；p50 优于矩阵分解 MatFact，与 [[deepar|DeepAR]] 相当。[^src-deepstate]
 - **公开语料**：M4-Hourly、tourism 月/季、parts 等上整体 p50/p90 最优或接近最优。[^src-deepstate]
 
 ## 贡献
 
 1. 提出 **RNN→线性 SSM 参数** 的全局共享参数化，统一小样本结构先验与大规模联合学习。[^src-deepstate]
 2. 保留可解释 SSM 分量与高效 Kalman 推断，同时用协变量编码促销等非线性外生效应。[^src-deepstate]
-3. 非自回归目标输入带来缺失鲁棒与采样效率优势，并在多基准上优于经典 ETS/ARIMA 与同期 DeepAR。[^src-deepstate]
+3. 非自回归目标输入带来缺失鲁棒与采样效率优势，并在多基准上优于经典 ETS/ARIMA 与同期 [[deepar|DeepAR]]。[^src-deepstate]
 
 ## 局限性
 
@@ -85,5 +85,6 @@ DeepState 用 LSTM 循环网络 \(h_t=h(h_{t-1},x_t,\Phi)\) 产生表示，再�
 - [[generative-time-series-forecasting]] — 概率预测谱系中的 SSM 分支
 - [[k2vae]] — 后续 Koopman+Kalman 神经 SSM 路线
 - [[timegrad]] — 后续扩散概率预测（对照）
+- [[deepar]] — 目标值自回归 RNN 对照
 
 [^src-deepstate]: [[source-deepstate]]

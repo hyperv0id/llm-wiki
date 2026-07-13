@@ -91,6 +91,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-ddim]] — DDIM: Denoising Diffusion Implicit Models (ICLR 2021), 确定性 ODE 加速采样
 - [[source-ddim-ode-spaces-ac-cn]] — 生成扩散模型漫谈（六）：一般框架之 ODE 篇 (苏剑林, 2022), F-P 方程视角下的概率流 ODE 与 DDIM
 - [[source-deepfec]] — DeepFEC: Energy Consumption Prediction under Real-World Driving Conditions for Smart Cities
+- [[source-deepar]] — DeepAR: Probabilistic Forecasting with Autoregressive Recurrent Networks, global shared LSTM + Gaussian/negbin likelihood + MC sample paths (Salinas et al., Amazon, arXiv:1704.04110)
 - [[source-deepstate]] — DeepState: Deep State Space Models for Time Series Forecasting, RNN-parametrized linear SSM + Kalman likelihood (NeurIPS 2018)
 - [[source-dst-mamba]] — DST-Mamba: Decomposed Spatio-Temporal Mamba for Long-Term Traffic Prediction (AAAI 2025)
 - [[source-sde]] — Score-Based SDE: Unified framework for SMLD and DDPM (ICLR 2021)
@@ -296,6 +297,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[d3vae]] — D³VAE (GCRDD), generative time series forecasting with coupled diffusion, denoising score matching, and latent disentanglement (NeurIPS 2022)
 - [[d3vae-and-gcrdd-naming]] — D³VAE vs GCRDD 命名关系
 - [[dcrnn]] — DCRNN, diffusion convolutional recurrent neural network for traffic forecasting (ICLR 2018)
+- [[deepar]] — DeepAR, global shared autoregressive LSTM probabilistic forecaster with scale handling (Amazon, arXiv:1704.04110)
 - [[deepstate]] — DeepState, RNN-parametrized linear Gaussian SSM with Kalman likelihood/prediction (NeurIPS 2018, Amazon)
 - [[dst-mamba]] — DST-Mamba, decomposed spatio-temporal Mamba for long-term traffic prediction (AAAI 2025)
 - [[diffstg]] — DiffSTG, probabilistic spatio-temporal graph forecasting with denoising diffusion (AAAI 2023)

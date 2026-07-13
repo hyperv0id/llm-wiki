@@ -9,7 +9,7 @@ tags:
   - diffusion-models
 created: 2026-05-03
 last_updated: 2026-07-13
-source_count: 17
+source_count: 18
 confidence: high
 status: active
 ---
@@ -37,7 +37,7 @@ status: active
 
 在插补方向，**[[csdi|CSDI]]** (NeurIPS 2021) 首次将条件扩散模型显式用于时间序列缺失值插补，其自监督训练策略和双轴 Transformer 注意力设计成为后续扩散插补工作的标准范式，在预测任务上也展现了与 TimeGrad 相当的竞争力。
 
-**[[tsdiff|TSDiff]]** (NeurIPS 2023, *Predict, Refine, Synthesize*) 将路线从任务专用条件训练转为**无条件** DiffWave+S4 扩散，并用 [[observation-self-guidance|observation self-guidance]]（MSE / 分位数）在推理期条件化到任意观测子集；同一模型还支持基预测精炼与合成数据生成，并定义 [[linear-predictive-score|LPS]] 评测合成样本的下游预测质量[^src-prs]。在 8 个 GluonTS 单变量基准上，TSDiff-Q 与 CSDI/条件扩散及 DeepAR 等竞争，且可在未知缺失模式下复用同一检查点[^src-prs]。后续 [[tsflow|TSFlow]] 将“无条件训练 → 推理条件化”推进到 Flow Matching + GP 先验。
+**[[tsdiff|TSDiff]]** (NeurIPS 2023, *Predict, Refine, Synthesize*) 将路线从任务专用条件训练转为**无条件** DiffWave+S4 扩散，并用 [[observation-self-guidance|observation self-guidance]]（MSE / 分位数）在推理期条件化到任意观测子集；同一模型还支持基预测精炼与合成数据生成，并定义 [[linear-predictive-score|LPS]] 评测合成样本的下游预测质量[^src-prs]。在 8 个 GluonTS 单变量基准上，TSDiff-Q 与 CSDI/条件扩散及 [[deepar|DeepAR]] 等竞争，且可在未知缺失模式下复用同一检查点[^src-prs]。后续 [[tsflow|TSFlow]] 将“无条件训练 → 推理条件化”推进到 Flow Matching + GP 先验。
 
 **[[simdiff|SimDiff]]** (AAAI 2026) 是首个纯端到端扩散模型用于时间序列点预测，使用 DDPM 框架并通过 Median-of-Means 将概率样本聚合为点估计[^src-simdiff]。SimDiff 仅支持单模态数值输入。
 
@@ -65,9 +65,13 @@ status: active
 
 **[[manf|MANF]]**（arXiv:2205.07493）将 [[multi-scale-attention|多尺度注意力]] 编码器与条件 [[normalizing-flow|RealNVP]] 结合，以**非自回归**方式生成未来窗口联合分布：预测窗观测不回馈模型，解码器各层条件驱动堆叠 affine coupling，从而避免 AR 流的误差累积并保持时间维并行[^src-maf]。在 Exchange/Solar/Electricity/Traffic/Taxi/Wikipedia 上相对 LSTM-MAF、Transformer-MAF、NKF 等取得文中报告的 CRPS-sum/MSE SOTA，并在加倍预测长度与缺失噪声压力下更稳[^src-maf]。它代表离散归一化流在多变量概率预测中的早期 NAR 路线，与后续 Flow Matching（TSFlow/Sundial）及 AR 扩散（TimeGrad）形成对照。
 
+### 自回归参数化似然（AR-RNN）
+
+**[[deepar|DeepAR]]** (arXiv:1704.04110) 用全局共享 LSTM 自回归建模大量相关序列：每步输出高斯或负二项等似然参数，祖先采样 Monte Carlo 轨迹以得到任意跨度分位数；并用序列尺度因子缩放与按销量速度加权采样应对幂律量级差异。它是工业概率预测中长期对照的 AR + 参数化输出基线，也为后续 [[timegrad|TimeGrad]]（扩散头）与 [[deepstate|DeepState]]（非目标输入 SSM）提供了对照起点。[^src-deepar]
+
 ### 状态空间 / 深度 SSM 方法
 
-**[[deepstate|DeepState]]** (NeurIPS 2018) 用全局共享 LSTM 从协变量映射出每条序列的线性高斯 [[kalman-filter|SSM]] 参数，以 Kalman 滤波计算边际似然与多步预测后验；目标值不直接作网络输入，从而在可解释季节/趋势结构、小样本效率与跨序列联合学习之间折中，并对照同期 DeepAR 与经典 ETS/ARIMA[^src-deepstate]。它是 [[deep-state-space-model|深度状态空间模型]] 在概率预测中的早期工业代表，也是后续 [[k2vae|K²VAE]]（Koopman 线性化 + 神经 Kalman）路线的前驱对照。
+**[[deepstate|DeepState]]** (NeurIPS 2018) 用全局共享 LSTM 从协变量映射出每条序列的线性高斯 [[kalman-filter|SSM]] 参数，以 Kalman 滤波计算边际似然与多步预测后验；目标值不直接作网络输入，从而在可解释季节/趋势结构、小样本效率与跨序列联合学习之间折中，并对照同期 [[deepar|DeepAR]] 与经典 ETS/ARIMA[^src-deepstate]。它是 [[deep-state-space-model|深度状态空间模型]] 在概率预测中的早期工业代表，也是后续 [[k2vae|K²VAE]]（Koopman 线性化 + 神经 Kalman）路线的前驱对照。
 
 ### VAE 方法
 
@@ -94,6 +98,7 @@ status: active
 | **CoGenCast** | **Flow Matching (平均速度)** | **文本 + 数值** | **✓** | **概率分布 (一步)** | **LLM Encoder-Decoder + 平均速度 JVP** |
 | **Swift** | **Consistency Model (TrigFlow)** | **仅数值 + 静态强迫** | **✗** | **概率分布 (NFE=1)** | **原始域 + CRPS 微调** |
 | **MANF** | **Normalizing Flow (RealNVP)** | **仅数值** | **✗** | **概率分布** | **原始域 + 多尺度注意力 NAR** |
+| **DeepAR** | **AR-RNN + 参数化似然** | **数值协变量** | **✗** | **概率分布 (MC 轨迹)** | **全局共享 LSTM + 高斯/负二项 + 尺度缩放** |
 | **DeepState** | **Linear SSM + RNN params** | **数值协变量** | **✗** | **概率分布** | **Kalman 解析 + 季节潜状态** |
 
 ## 优势
@@ -154,6 +159,8 @@ status: active
 - [[manf]] — MANF，多尺度注意力 + 条件 RealNVP（NAR）
 - [[multi-scale-attention]] — 多尺度窗口注意力
 - [[normalizing-flow]] — 离散归一化流
+- [[deepar]] — DeepAR，全局共享 AR-RNN 概率预测基线
+
 
 [^src-aurora]: [[source-aurora]]
 [^src-simdiff]: [[source-simdiff]]
@@ -172,3 +179,4 @@ status: active
 [^src-prs]: [[source-prs]]
 [^src-maf]: [[source-maf]]
 [^src-deepstate]: [[source-deepstate]]
+[^src-deepar]: [[source-deepar]]

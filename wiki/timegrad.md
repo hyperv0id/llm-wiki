@@ -55,7 +55,7 @@ $$\varepsilon_\theta(x_t^n, h_{t-1}, n) \quad\text{vs}\quad \varepsilon_\theta(x
 基于 WaveNet/DiffWave 的膨胀卷积残差架构[^src-timegrad]：8 个残差块，每块由 1D 卷积（kernel=3）+ GAU（门控激活单元）$\sigma(W_f \cdot x) \odot \tanh(W_g \cdot x)$ 组成，残差通道=8，膨胀率交替 1 和 2。条件注入方式：$h_{t-1}$（40 维）和 $n$ 的 Transformer 正弦位置编码（32 维）通过全连接层变换后作为每层卷积的偏置项广播到 D 维[^src-timegrad]。总参数量极小（所有卷积通道仅 8）。
 
 ### 均值缩放归一化
-每个维度 $i$ 的值除以其在上下文窗口内的均值（继承自 DeepAR），推理时乘以同一均值恢复原始尺度[^src-timegrad]。这使模型聚焦于"相对变化模式"而非"绝对数值范围"，在高维数据集上尤为关键。
+每个维度 $i$ 的值除以其在上下文窗口内的均值（继承自 [[deepar|DeepAR]]），推理时乘以同一均值恢复原始尺度[^src-timegrad]。这使模型聚焦于"相对变化模式"而非"绝对数值范围"，在高维数据集上尤为关键。
 
 ## 训练
 
@@ -90,7 +90,7 @@ $$\varepsilon_\theta(x_t^n, h_{t-1}, n) \quad\text{vs}\quad \varepsilon_\theta(x
 TimeGrad 处于多条研究线的交汇点：
 
 - **继承自 [[ddpm|DDPM]]**：$\varepsilon$ 预测参数化、$L_{\text{simple}}$ 简化目标、$\beta$ 调度、$\bar\alpha_t$ 累积积、N 步 Markov 链——全部直接搬用；区别仅在于条件扩展为 $(n, h_{t-1})$[^src-timegrad]
-- **继承自 DeepAR**：自回归 RNN 架构和均值缩放归一化，但将预设参数化输出分布替换为更灵活的扩散模型[^src-timegrad]
+- **继承自 [[deepar|DeepAR]]**：自回归 RNN 架构和均值缩放归一化，但将预设参数化输出分布替换为更灵活的扩散模型[^src-timegrad]
 - **对标 Vec-LSTM**：Vec-LSTM 用低秩高斯 Copula 建模跨维度依赖，TimeGrad 用扩散模型隐式学习任意复杂度的联合分布[^src-timegrad]
 - **后续推动**：[[generative-time-series-forecasting|生成式时间序列预测]]整个方向的奠基之作——[[csdi|CSDI]]（插补）、[[tsdiff|TSDiff]]（无条件 + observation self-guidance，NeurIPS 2023）[^src-prs]、DiffSTG（时空图）、[[specstg|SpecSTG]]（谱域扩散）、[[urbandit|UrbanDiT]]（扩散 Transformer）均以 TimeGrad 的条件扩散范式为理论起点或对照基线
 

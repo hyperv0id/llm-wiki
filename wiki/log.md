@@ -1,3 +1,10 @@
+## [2026-07-13] ingest | DeepAR — Probabilistic Forecasting with Autoregressive Recurrent Networks (arXiv:1704.04110)
+创建的页面：[[source-deepar]], [[deepar]]
+更新的页面：[[index]], [[generative-time-series-forecasting]], [[deep-state-space-model]], [[deepstate]], [[source-deepstate]], [[timegrad]], [[ar-vs-nar-decoding]]
+核心贡献：全局共享 AR-LSTM 输出高斯/负二项似然参数；Monte Carlo 轨迹分位数；幂律尺度下 νi 缩放 + 速度加权采样；parts/ec/electricity/traffic 上相对 ISSM/ETS/MatFact 等约 15% 量级提升；工业概率预测经典基线。
+源文件：raw/1704.04110.pdf（不可变；外部路径 `/run/media/jcheng/WD-Data/yjs/INSIS/多模态外生信息引导的长期时空预测/1704.04110.pdf`）
+---
+
 ## [2026-07-13] ingest | Temporal Fusion Transformers for Interpretable Multi-horizon Time Series Forecasting (arXiv:1912.09363)
 创建的页面：[[source-tft]], [[tft]], [[gated-residual-network]], [[variable-selection-network]], [[interpretable-multi-head-attention]]
 更新的页面：[[index]], [[direct-forecast]], [[heterogeneous-covariates]], [[source-nbeatsx]], [[nbeatsx]], [[source-tide]], [[tide]], [[source-timexer]], [[source-exost]], [[glu-gated-linear-unit]]

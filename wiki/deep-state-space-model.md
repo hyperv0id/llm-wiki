@@ -34,7 +34,7 @@ DeepState 将映射写为 \(\Theta_t=\Psi(x_{1:t},\Phi)\)，其中 \(\Psi\) 由 
 
 | 路线 | 与深度 SSM 的关系 |
 |------|-------------------|
-| DeepAR 类自回归似然 | 无显式潜状态转移；目标值作输入 |
+| [[deepar|DeepAR]] 类自回归似然 | 无显式潜状态转移；目标值作输入 |
 | [[deepstate\|DeepState]] | 线性 SSM + RNN 参数头 + Kalman |
 | [[k2vae\|K²VAE]] / [[kalmannet-uncertainty-modeling\|KalmanNet]] | Koopman 线性化 + 可学习 Kalman 精炼，VAE 一步生成 |
 | 扩散/流概率模型（[[timegrad\|TimeGrad]] 等） | 弱结构先验、强分布表达，通常无解析 Kalman |
@@ -44,6 +44,7 @@ DeepState 将映射写为 \(\Theta_t=\Psi(x_{1:t},\Phi)\)，其中 \(\Psi\) 由 
 ## 关联页面
 
 - [[deepstate]] / [[source-deepstate]]
+- [[deepar]] / [[source-deepar]]
 - [[kalman-filter]]
 - [[k2vae]]
 - [[generative-time-series-forecasting]]
