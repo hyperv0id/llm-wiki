@@ -1,3 +1,10 @@
+## [2026-07-13] ingest | CrossLinear: Plug-and-Play Cross-Correlation Embedding for Time Series Forecasting with Exogenous Variables
+创建的页面：[[source-crosslinear]], [[crosslinear]], [[cross-correlation-embedding]]
+更新的页面：[[index]], [[source-timexer]], [[source-exost]], [[source-exollm]], [[source-exotst]], [[source-gcgnet]], [[gcgnet]], [[channel-independence]]
+核心贡献：many-to-one 外生预测；单层 1D conv 交叉相关嵌入仅建模时不变直接依赖 + α residual；patch + linear head；O(T)；12 数据集多数优于 TimeXer，且可即插提升 SparseTSF/RLinear/PatchTST 等。KDD 2025 / arXiv:2505.23116。
+源文件：外部 PDF（不可变 raw/ 策略；路径见 ingest-reports/crosslinear-why.md）
+---
+
 ## [2026-07-13] ingest | Building Normalizing Flows with Stochastic Interpolants
 创建的页面：[[source-stochasticinterpolants]], [[stochastic-interpolant]], [[interflow]]
 更新的页面：[[index]], [[flow-matching]], [[rectified-flow]], [[continuous-normalizing-flow]], [[optimal-transport]], [[benamou-brenier-algorithm]], [[building-schrodinger-bridges]], [[source-flow-matching]], [[source-rectified-flow]]

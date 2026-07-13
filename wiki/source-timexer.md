@@ -62,5 +62,6 @@ TimeXer 的核心洞见在于：内生变量和外生变量需要不同粒度的
 - [[source-dits|DiTS]] — 多模态扩散 Transformer 时序预测，采用类似双流设计
 - [[source-kite|KITE]] — 外生条件下的概率流匹配（HCM + KGC + CFG），确定性外生基准上对比 TimeXer
 - [[source-gcgnet|GCGNet]] — 将 TimeXer 归为 temporal→channel 两步策略，提出图一致联合相关生成网络 (ICLR 2026)
+- [[source-crosslinear|CrossLinear]] — KDD 2025 Linear 外生模型：1D conv 交叉相关嵌入 + patch/linear head，同协议 many-to-one 基准上与 TimeXer 对照且更轻量
 
 [^src-timexer]: [[source-timexer]]

@@ -73,6 +73,10 @@ ExoST 以"select-then-balance"为核心理念，包含两个完全可微分且�
 
 - [[source-e2-cstp]] — 因果多模态融合
 - [[source-terra]] — 多模态地球时空数据集
+- [[source-timexer]] — Transformer 外生 many-to-one（patch endo + variate exo）
+- [[source-crosslinear]] — Linear 外生 many-to-one：即插即用交叉相关嵌入 (KDD 2025)
+- [[source-exollm]] — LLM-driven 外生预测
+- [[source-exotst]] — 过去/未来外生模态分离 + 跨时融合
 
 ## 引用
 

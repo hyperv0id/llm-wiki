@@ -7,8 +7,8 @@ tags:
   - channel-processing
   - multivariate
 created: 2026-04-28
-last_updated: 2026-06-08
-source_count: 8
+last_updated: 2026-07-13
+source_count: 9
 confidence: high
 status: active
 ---
@@ -54,6 +54,8 @@ CI 与 CD（跨维度依赖建模）并非二元对立。Crossformer 是首个�
 
 CVPE (Cross-Variate Patch Embedding) 提出一种折中策略——仅在最轻量的 patch embedding 层注入跨变量信息（通过可学习位置编码和 Router-Attention），而保留后续所有层的 CI backbone [^src-cvpe-2025]。实验证明：在强跨变量相关数据集（Weather ↓4.6% MSE, Traffic ↓6.7%）上获益显著，而在弱相关数据集上可能过拟合（ETTh2/ETTm2 ↑5.2%）[^src-cvpe-2025]。这提示 CI 与 CD 之间的选择并非二元对立——局部、轻量的 CD 增强可以与 CI 鲁棒性共存，但需根据数据集的变量相关性谨慎调节。
 
+[[crosslinear|CrossLinear]] (KDD 2025) 给出外生 many-to-one 设定下的同类折中：用单层 1D 卷积的 [[cross-correlation-embedding|cross-correlation embedding]] 仅注入**时不变、直接**的 endo–exo 依赖，再以可学习残差混合回内生序列，后续仍走 CI 友好的 patch + linear head；复杂度保持 O(T)，并可即插提升 SparseTSF/RLinear/PatchTST 等 CI 骨干 [^src-crosslinear]。
+
 ### CPiRi：CI 与 CD 的深度融合
 
 [[cpiri|CPiRi]] (ICLR 2026) 提出了一种更彻底的 CI-CD 融合方案——**时空解耦 + 排列不变正则化**[^src-cpiri]。其架构由三阶段组成：冻结局模型 (Sundial) 独立提取时间特征（CI 端）、可训练的空间模块通过 multi-head self-attention 学习内容驱动的跨通道关系（CD 端）、冻结局模型独立生成预测。关键创新在于训练策略：每次训练步随机打乱通道顺序，迫使空间模块基于时间特征的内容而非位置索引来推断通道间关系 [^src-cpiri]。
@@ -74,6 +76,7 @@ CPiRi 的通道打乱测试暴露了一个关键问题：大多数 CD 模型在�
 - **Channel Independence**：各通道独立处理，增强效率和分布学习 [^src-simdiff]
 - **Crossformer (全 CD)**：2D embedding + 两阶段注意力，全层建模跨维度依赖 [^src-crossformer-2023]
 - **CVPE 折中**：CI backbone + patch 级 CD 注入，保留鲁棒性同时增加跨变量容量 [^src-cvpe-2025]
+- **CrossLinear 折中**：CI 时序骨干 + 1D conv 外生交叉相关残差注入（外生 many-to-one）[^src-crosslinear]
 
 ## 相关技术
 
@@ -91,6 +94,7 @@ CPiRi 的通道打乱测试暴露了一个关键问题：大多数 CD 模型在�
 
 - 相关：[[uniflow]] — UniFlow，CI 策略在时空基础模型中的应用 (arXiv 2024)
 - 相关：[[nuwats]] — NuwaTS，CI 支撑插补基础模型的跨变量/跨域零样本 (arXiv 2024)
+- 相关：[[crosslinear]] / [[cross-correlation-embedding]] — CI 骨干 + 轻量外生 CD 注入 (KDD 2025)
 
 [^src-simdiff]: [[source-simdiff]]
 [^src-patchtst]: [[source-patchtst]]
@@ -100,3 +104,4 @@ CPiRi 的通道打乱测试暴露了一个关键问题：大多数 CD 模型在�
 [^src-cpiri]: [[source-cpiri]]
 [^src-uniflow]: [[source-uniflow]]
 [^src-nuwats]: [[source-nuwats]]
+[^src-crosslinear]: [[source-crosslinear]]

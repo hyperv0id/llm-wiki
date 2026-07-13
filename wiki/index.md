@@ -92,6 +92,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-exotst]] — ExoTST: Exogenous-Aware Temporal Sequence Transformer, treats past and future exogenous as distinct modalities with cross-temporal fusion for autoregressive time series prediction (arXiv 2024)
 - [[source-select-then-balance]] — Select, then Balance: Exogenous Variable Modeling for Spatio-Temporal Forecasting（已由 [[source-exost]] 取代）
 - [[source-exollm]] — ExoLLM: 首个 LLM-driven 外生变量预测方法，Meta-task Instruction + Multi-grained Prompts + Dual TS-Text Attention（WWW 2025）
+- [[source-crosslinear]] — CrossLinear: plug-and-play 1D-conv cross-correlation embedding for exogenous many-to-one TS forecasting (KDD 2025, arXiv:2505.23116)
 - [[source-dpm-solver]] — DPM-Solver: Fast ODE solver for diffusion models (NeurIPS 2022)
 - [[source-consistency-models]] — Consistency Models: one-step generation (ICML 2023)
 - [[source-glow]] — Glow: Generative Flow with Invertible 1×1 Convolutions (NeurIPS 2018)
@@ -924,10 +925,12 @@ All wiki pages, organized by type. Updated on every ingest.
 ## Sources (continued)
 - [[source-gcgnet]] — GCGNet: Graph-Consistent Generative Network for TS forecasting with exogenous variables (joint graph alignment + VAE generator + Graph Refiner, ICLR 2026)
 - [[source-srsnet]] — SRSNet / SRS: Selective Representation Space, adaptive patch selection + reassembly plugin for LTSF (NeurIPS 2025, arXiv:2510.14510)
+- [[source-crosslinear]] — CrossLinear: plug-and-play cross-correlation embedding for TS forecasting with exogenous variables (KDD 2025, arXiv:2505.23116)
 
 ## Entities (continued)
 - [[gcgnet]] — GCGNet, graph-consistent generative network for exogenous TS forecasting (ICLR 2026, ECNU)
 - [[srsnet]] — SRSNet, SRS + MLP for long-term MTS forecasting via adaptive patch representation spaces (NeurIPS 2025, ECNU)
+- [[crosslinear]] — CrossLinear, Linear many-to-one exogenous forecaster with O(T) cross-correlation embedding (KDD 2025, USTC)
 
 ## Concepts (continued)
 - [[joint-temporal-channel-correlation]] — 联合时间–通道相关建模，反对外生预测中的两步串行相关学习 (GCGNet)
@@ -940,3 +943,4 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[selective-patching]] — Selective Patching：stride-1 候选上可微 Argmax 选 patch（可重复采样）(SRS, NeurIPS 2025)
 - [[dynamic-reassembly]] — Dynamic Reassembly：对选中 patch 可微 Argsort 学习顺序 (SRS, NeurIPS 2025)
 - [[adaptive-fusion]] — Adaptive Fusion (SRS)：常规 adjacent 与 selective patch 嵌入的凸组合 (NeurIPS 2025)
+- [[cross-correlation-embedding]] — CrossLinear 即插即用 1D conv 外生交叉相关残差嵌入，CI 骨干友好 (KDD 2025)

@@ -80,8 +80,9 @@ status: active
 
 ## 与相关工作的关系
 
-ExoLLM 与 [[source-exost]]（时空预测中外生变量的 select-then-balance 范式）和 [[source-e2-cstp]]（因果多模态时空预测）同属外生变量建模方向，但各有侧重：
+ExoLLM 与 [[source-exost]]（时空预测中外生变量的 select-then-balance 范式）、[[source-timexer]] / [[source-crosslinear]]（数值型 many-to-one 外生预测）和 [[source-e2-cstp]]（因果多模态时空预测）同属外生变量建模方向，但各有侧重：
 - ExoST 关注数值型外生变量的选择与平衡，未涉及 LLM 或文本模态。
+- TimeXer / CrossLinear 在数值外生序列上做 endo–exo 融合（注意力 vs 1D conv residual），不使用语言知识。
 - E²-CSTP 利用多模态融合（文本+图像+时序）进行因果推断，但其文本来自事件描述而非外生变量的结构化提示。
 - ExoLLM 首创性地利用 LLM 的预训练语言知识来理解外生变量对内生变量的多粒度影响，并专门设计了文本-时序特征对齐机制。
 

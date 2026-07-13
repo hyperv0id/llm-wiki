@@ -48,7 +48,7 @@ Same lab line as [[kite|KITE]] (probabilistic FM + exogenous) and [[dag|DAG]] (d
 - Source: [[source-gcgnet]]
 - Concept: [[joint-temporal-channel-correlation]]
 - Techniques: [[graph-structure-aligner]], [[graph-refiner]], [[variational-generator-exogenous]]
-- Related: [[source-timexer]], [[source-exost]], [[source-kite]], [[source-dag]], [[patchtst]]
+- Related: [[source-timexer]], [[source-crosslinear]], [[crosslinear]], [[source-exost]], [[source-kite]], [[source-dag]], [[patchtst]]
 
 ---
 

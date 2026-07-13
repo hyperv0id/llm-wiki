@@ -49,4 +49,11 @@ ExoTST targets the problem class where both past endogenous values $y_{1:L}$, pa
 
 ExoTST systematically bridges the gap between autoregressive and forward modeling by treating past and future exogenous series as distinct modalities with explicit cross-temporal fusion. This provides a principled framework for incorporating exogenous information into time series prediction, with direct applicability to climate science and other domains where future driver projections are available.[^src-exotst]
 
+### Related exogenous pages
+
+- [[source-timexer|TimeXer]] — historical endo patch + exo variate cross-attention (no future-exo modality split)
+- [[source-crosslinear|CrossLinear]] — plug-and-play 1D-conv cross-correlation embedding for historical exo (KDD 2025)
+- [[source-exost|ExoST]] — select-then-balance past/future exo for ST backbones
+- [[source-exollm|ExoLLM]] — LLM multi-grained prompts for exogenous forecasting
+
 [^src-exotst]: [[source-exotst]]

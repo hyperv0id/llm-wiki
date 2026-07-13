@@ -46,7 +46,7 @@ Focus is **numerical** multi-series exogenous forecasting (not image/text multim
 - Entity: [[gcgnet]]
 - Techniques: [[graph-structure-aligner]], [[graph-refiner]], [[variational-generator-exogenous]]
 - Concept: [[joint-temporal-channel-correlation]]
-- Related exogenous work: [[source-timexer]], [[source-exotst]], [[source-exost]], [[source-kite]], [[source-dag]]
+- Related exogenous work: [[source-timexer]], [[source-crosslinear]], [[source-exotst]], [[source-exost]], [[source-kite]], [[source-dag]]
 
 ---
 
