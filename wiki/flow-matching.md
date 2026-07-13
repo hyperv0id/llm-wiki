@@ -9,15 +9,15 @@ tags:
   - meta-ai
   - neurips-2023
 created: 2026-04-28
-last_updated: 2026-06-16
-source_count: 5
+last_updated: 2026-07-13
+source_count: 6
 confidence: medium
 status: active
 ---
 
 # Flow Matching
 
-**Flow Matching**（流匹配）是由 Meta AI 的 Yaron Lipman、Ricky T. Q. Chen 等人于 2022 年提出的生成模型训练框架，发表于 NeurIPS 2023[^src-flow-matching]。它提供了一种无需模拟（simulation-free）的方式来训练连续归一化流（CNF），同时统一了扩散模型和最优传输路径。后续工作 [[rectified-flow|Rectified Flow]] 通过 rectification 进一步拉直轨迹实现少步生成。
+**Flow Matching**（流匹配）是由 Meta AI 的 Yaron Lipman、Ricky T. Q. Chen 等人于 2022 年提出的生成模型训练框架，发表于 NeurIPS 2023[^src-flow-matching]。它提供了一种无需模拟（simulation-free）的方式来训练连续归一化流（CNF），同时统一了扩散模型和最优传输路径。同期的 [[stochastic-interpolant|Stochastic Interpolants]] / [[interflow|InterFlow]] 与后续 [[rectified-flow|Rectified Flow]] 分别从任意插值二次目标与 rectification 直线轨迹两条路线扩展同一仿真无关 ODE 流范式[^src-stochasticinterpolants][^src-flow-matching]。
 
 ## 背景：连续归一化流 (CNF)
 
@@ -399,7 +399,7 @@ $$
 
 ### vs Schrödinger Bridge
 
-[[schrodinger-bridge|Schrödinger bridge (SB)]] 为 flow matching 提供了更底层的统一理论。Flow matching 可以视为 SB 在 $\sigma_t \to 0$ 极限下的特例（recovering deterministic OT），而 diffusion models 是 $\sigma_t > 0$ 时固定前向过程的另一个特例[^src-schrodinger-bridges-generative-modeling]。SB 的 [[entropic-optimal-transport|entropy-regularized path-space OT]] 形式化揭示了 flow matching 和 diffusion models 本质上是同一变分问题的不同参数化。[[building-schrodinger-bridges|六种 SB 构造方法]] 中的 stochastic interpolant 视角与 flow matching 的条件构造有直接对应关系。
+[[schrodinger-bridge|Schrödinger bridge (SB)]] 为 flow matching 提供了更底层的统一理论。Flow matching 可以视为 SB 在 $\sigma_t \to 0$ 极限下的特例（recovering deterministic OT），而 diffusion models 是 $\sigma_t > 0$ 时固定前向过程的另一个特例[^src-schrodinger-bridges-generative-modeling]。SB 的 [[entropic-optimal-transport|entropy-regularized path-space OT]] 形式化揭示了 flow matching 和 diffusion models 本质上是同一变分问题的不同参数化。[[building-schrodinger-bridges|六种 SB 构造方法]] 中的 stochastic interpolant 视角与 flow matching 的条件构造有直接对应关系；Albergo & Vanden-Eijnden 的 [[source-stochasticinterpolants|ICLR 2023 论文]] 则给出任意端点密度上的二次速度目标 $G(\hat v)$、路径–目标解耦，以及 max-min 通往 [[benamou-brenier-algorithm|Benamou–Brenier]] OT 的理论[^src-stochasticinterpolants]。
 
 ---
 
@@ -433,6 +433,9 @@ $$
 - [[average-velocity-modeling]] — 平均速度建模，区间条件化速度场 + JVP 修正的 FM 训练技术
 - [[schrodinger-bridge]] — Schrödinger bridge，统一 diffusion/score/flow 的路径空间变分框架
 - [[building-schrodinger-bridges]] — 六种 SB 构造方法，包含 stochastic interpolant 视角
+- [[stochastic-interpolant]] — 随机插值：任意 $\rho_0,\rho_1$ 的有限时间路径与二次速度目标
+- [[interflow]] — InterFlow，基于 stochastic interpolant 的仿真无关 CNF
+- [[source-stochasticinterpolants]] — Building Normalizing Flows with Stochastic Interpolants (ICLR 2023)
 
 ## 引用
 
@@ -442,3 +445,4 @@ $$
 [^src-sundial]: [[source-sundial]]
 [^src-doflow]: [[source-doflow]]
 [^src-schrodinger-bridges-generative-modeling]: [[source-schrodinger-bridges-generative-modeling]]
+[^src-stochasticinterpolants]: [[source-stochasticinterpolants]]

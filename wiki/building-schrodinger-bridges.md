@@ -6,8 +6,8 @@ tags:
   - generative-modeling
   - bridge-construction
 created: 2026-06-16
-last_updated: 2026-06-16
-source_count: 1
+last_updated: 2026-07-13
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -78,4 +78,7 @@ $$\max_{\hat{I}}\min_{\hat{u}} \mathbb{E}\!\left[\frac{1}{2}\|\hat{u}\|^2 - (\pa
 
 边界条件：$I(x_0,x_T,0)=x_0$，$I(x_0,x_T,T)=x_T$。
 
+原论文 [[source-stochasticinterpolants|Building Normalizing Flows with Stochastic Interpolants]] 给出无额外噪声桥时的二次目标 $G(\hat v)$、InterFlow ODE 生成，以及与 score 扩散的对偶；详见 [[stochastic-interpolant]] 与 [[interflow]][^src-stochasticinterpolants]。
+
 [^src-schrodinger-bridges-generative-modeling]: [[source-schrodinger-bridges-generative-modeling]]
+[^src-stochasticinterpolants]: [[source-stochasticinterpolants]]

@@ -9,8 +9,8 @@ tags:
   - augmented-lagrangian
   - dynamic-optimal-transport
 created: 2026-06-16
-last_updated: 2026-06-16
-source_count: 1
+last_updated: 2026-07-13
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -132,6 +132,7 @@ Benamou-Brenier 的**动态 OT 公式化**与现代生成模型有深层联系�
 - **Flow Matching** 中的 OT 路径（直线插值 $\mu_t = (1-t)x_0 + t x_1$）可视为离散形式的 Wasserstein 测地线
 - 连续性方程 $\partial_t \varrho + \nabla \cdot (\mathbf{v} \varrho) = 0$ 在 [[flow-matching|Flow Matching]] 中对应 CNF 的概率密度演化（Fokker-Planck 方程的无噪声特例）
 - 动能 $\int \int |\mathbf{v}|^2 d\varrho dt$ 与 Flow Matching 目标 $\|v_t(x) - u_t(x)\|^2$ 有相同的变分结构
+- [[source-stochasticinterpolants|Stochastic Interpolants]] 将 $\min_{\hat v} G$ 的极小值等同于负路径动能，并对插值做 max-min 以逼近本算法的动态 OT 解（Proposition 2）[^src-stochasticinterpolants]
 
 ## 相关页面
 
@@ -139,7 +140,10 @@ Benamou-Brenier 的**动态 OT 公式化**与现代生成模型有深层联系�
 - [[flow-matching]] — Flow Matching 中的 OT 路径
 - [[wasserstein-distance]] — Wasserstein 距离
 - [[continuous-normalizing-flow]] — 连续归一化流的概率密度演化
+- [[stochastic-interpolant]] — 随机插值 max-min 通往动态 OT
+- [[interflow]] — InterFlow
 
 ## 引用
 
 [^src-benamou-brenier-blog]: [[source-benamou-brenier-blog]]
+[^src-stochasticinterpolants]: [[source-stochasticinterpolants]]

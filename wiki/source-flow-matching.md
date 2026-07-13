@@ -9,7 +9,7 @@ tags:
   - meta-ai
   - neurips-2023
 created: 2026-04-28
-last_updated: 2026-05-30
+last_updated: 2026-07-13
 source_count: 1
 confidence: medium
 status: active
@@ -105,8 +105,9 @@ OT 路径的优势：粒子沿直线运动，方向恒定，训练更快、采�
 
 ## 意义
 
-Flow Matching 统一了扩散模型和连续归一化流，提供了更灵活的概率路径选择。OT 路径在训练速度、采样效率和生成质量上均优于传统扩散路径。
+Flow Matching 统一了扩散模型和连续归一化流，提供了更灵活的概率路径选择。OT 路径在训练速度、采样效率和生成质量上均优于传统扩散路径。同期工作 [[source-stochasticinterpolants|Stochastic Interpolants]]（Albergo & Vanden-Eijnden, ICLR 2023）给出任意插值上的二次速度目标与 InterFlow，理论路线互补[^src-stochasticinterpolants]。
 
 ## 引用
 
 [^src-flow-matching]: [[source-flow-matching]]
+[^src-stochasticinterpolants]: [[source-stochasticinterpolants]]

@@ -7,7 +7,7 @@ tags:
   - ode
   - optimal-transport
 created: 2026-05-31
-last_updated: 2026-05-31
+last_updated: 2026-07-13
 source_count: 1
 confidence: high
 status: active
@@ -40,9 +40,10 @@ status: active
 
 ## 与 Flow Matching 的关系
 
-Rectified Flow 与 [[flow-matching]] 密切相关但目标不同 [^src-rectified-flow]：
+Rectified Flow 与 [[flow-matching]] 及 [[stochastic-interpolant|Stochastic Interpolants]] 密切相关但目标不同 [^src-rectified-flow][^src-stochasticinterpolants]：
 - **Flow Matching**：训练连续归一化流 (CNF) 以匹配目标向量场，需要预定义的概率路径（通常是高斯路径）
 - **Rectified Flow**：通过 rectification 直接学习直线轨迹，天然具有少步生成能力，无需预定义路径
+- **Stochastic Interpolants / InterFlow**：固定（可优化）插值后用二次目标学概率流速度，强调任意端点密度与 max-min 通往动态 OT[^src-stochasticinterpolants]
 - **互补性**：Flow Matching 可通过 Rectification 进一步优化，反之亦然
 
 ## 实验评估
@@ -65,3 +66,4 @@ Rectified Flow 启发了后续许多少步生成的工作：
 - 理论保证虽然优雅，但在高维图像数据上实际效果受维数诅咒影响 [^src-rectified-flow]
 
 [^src-rectified-flow]: [[source-rectified-flow]]
+[^src-stochasticinterpolants]: [[source-stochasticinterpolants]]

@@ -7,8 +7,8 @@ tags:
   - probability
   - wasserstein-distance
 created: 2026-04-28
-last_updated: 2026-06-16
-source_count: 3
+last_updated: 2026-07-13
+source_count: 4
 confidence: medium
 status: active
 ---
@@ -111,7 +111,7 @@ OT 的求解方法可分为两大类：
 
 ## 在生成模型中的应用
 
-### Flow Matching
+### Flow Matching 与 Stochastic Interpolants
 
 Flow Matching 使用 OT 位移插值作为概率路径：
 
@@ -124,6 +124,8 @@ $$
 $$
 u_t(x \mid x_1) = \frac{x_1 - (1 - \sigma_{\min}) x}{1 - (1 - \sigma_{\min})t}
 $$
+
+[[stochastic-interpolant|Stochastic Interpolants]] 进一步证明：固定任意插值路径时，概率流速度是二次目标 $G(\hat v)$ 的极小点；若再对插值做 $\max_I \min_{\hat v} G$，在可插值密度假设下恢复 [[benamou-brenier-algorithm|Benamou–Brenier]] 动态 OT 解，从而把仿真无关速度学习与动态最优传输显式桥接[^src-stochasticinterpolants]。
 
 ### 优势
 
@@ -144,9 +146,12 @@ $$
 - [[schrodinger-bridge]] — Schrödinger bridge，路径空间中的熵正则最优传输
 - [[entropic-optimal-transport]] — 熵正则最优传输的完整形式化
 - [[sinkhorn-algorithm]] — Sinkhorn/IPF 求解静态 SB 的迭代算法
+- [[stochastic-interpolant]] — 随机插值与二次速度目标
+- [[interflow]] — InterFlow 生成模型
 
 ## 引用
 
 [^src-flow-matching]: [[source-flow-matching]]
 [^src-benamou-brenier-blog]: [[source-benamou-brenier-blog]]
 [^src-schrodinger-bridges-generative-modeling]: [[source-schrodinger-bridges-generative-modeling]]
+[^src-stochasticinterpolants]: [[source-stochasticinterpolants]]

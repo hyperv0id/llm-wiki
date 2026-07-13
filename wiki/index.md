@@ -139,6 +139,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-schrodinger-bridges-generative-modeling]] — Foundations of Schrödinger Bridges for Generative Modeling, 220 页综合性教程，统一 SB 理论与算法 (Tang, 2026)
 
 - [[source-ssf]] — SSF: Spectral Sheaf Filtering — A Topological Approach to Spatio-Temporal Modeling (ICLR 2026 under review)
+- [[source-stochasticinterpolants]] — Building Normalizing Flows with Stochastic Interpolants / InterFlow: quadratic simulation-free CNF velocity from arbitrary interpolants, finite-time OT max-min, ICLR 2023
 
 - [[source-kexue-muon-analysis]] — Muon优化器赏析：从向量到矩阵的本质跨越 (苏剑林, 2024)
 - [[source-incident-guided-st-forecasting]] — IGSTGNN: Incident-Guided Spatiotemporal Graph Neural Network for Traffic Forecasting (KDD 2026)
@@ -500,6 +501,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[diffusion-models]] — 扩散模型 (Diffusion Models)，包含 DDPM、SMLD、SDE 统一框架与应用
 - [[fokker-planck-equation]] — 福克-普朗克方程 (Fokker-Planck Equation)，描述随机过程概率密度演化的 PDE
 - [[score-matching]] — 得分匹配 (Score Matching)，通过匹配分数函数估计数据分布
+- [[stochastic-interpolant]] — Stochastic Interpolant: 任意端点密度上的有限时间随机插值与二次概率流速度目标 (ICLR 2023)
 - [[smld]] — Score-Matching Langevin Dynamics，基于分数匹配和朗之万采样的生成模型
 - [[multivariate-correlation-attention]] — 多变量相关性注意力，iTransformer 中 attention 作用于 variate token 维度 (ICLR 2024)
 - [[mixed-channel-dependency]] — CD encoding + CI denoising hybrid for diffusion TS, inspired by MiDDiR (ICLR 2026 under review)
@@ -753,6 +755,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[elf]] — ELF (Embedded Language Flows), continuous diffusion LM via Flow Matching (MIT, 2026)
 - [[jit]] — JiT (Just image Transformers), x-prediction pixel-space diffusion on plain ViT (Li & He, MIT, 2025)
 - [[rectified-flow]] — Rectified Flow, ODE-based generative model learning straight trajectories for few-step generation (arXiv 2022)
+- [[interflow]] — InterFlow: stochastic-interpolant CNF with quadratic simulation-free velocity objective (ICLR 2023)
 - [[muon-optimizer]] — Muon, neural network optimizer using Newton-Schulz orthogonalization (2024)
 - [[opencity]] — OpenCity, spatio-temporal traffic foundation model with TimeShift Transformer + instance norm for zero-shot prediction (arXiv 2024)
 - [[staeformer]] — STAEFormer, previous SOTA transformer for traffic forecasting

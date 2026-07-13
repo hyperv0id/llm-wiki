@@ -7,8 +7,8 @@ tags:
   - ode
   - few-step-generation
 created: 2026-05-31
-last_updated: 2026-06-08
-source_count: 2
+last_updated: 2026-07-13
+source_count: 3
 confidence: high
 status: active
 ---
@@ -50,9 +50,12 @@ Reflow 是 Rectification 的无监督版本，仅使用从 $\pi_0$ 采样的数�
 
 ## 与相关技术的比较
 
+同期 [[stochastic-interpolant|Stochastic Interpolants]]（Albergo & Vanden-Eijnden, ICLR 2023）同样采用独立耦合上的线性/三角插值并回归 ODE 速度，但用二次目标 $G(\hat v)$ 刻画任意固定插值路径上的概率流，并提出对插值做 max-min 以逼近动态 OT，而非迭代 reflow；该文亦指出 reflow 在映射非精确时可能累积偏差[^src-stochasticinterpolants]。
+
 | 方法 | 路径类型 | 采样步数 | 训练复杂度 |
 |------|---------|---------|-----------|
 | **Rectified Flow** | 直线 ODE | 1-4 步 | 适中 |
+| [[interflow|InterFlow]] / SI | 任意插值 ODE | 多步 ODE | 低（仿真无关） |
 | [[flow-matching|Flow Matching]] | 预定义 ODE | 10-50 步 | 低 |
 | [[diffusion-model|扩散模型]] | 随机 SDE | 50-1000 步 | 高 |
 | [[consistency-models|Consistency Models]] | 直连 ODE | 1 步 | 高 |
@@ -89,3 +92,4 @@ Rectification 思想启发了 [[shortcut-models|Shortcut Models]]（arXiv 2025�
 
 [^src-rectified-flow]: [[source-rectified-flow]]
 [^src-flowts]: [[source-flowts]]
+[^src-stochasticinterpolants]: [[source-stochasticinterpolants]]

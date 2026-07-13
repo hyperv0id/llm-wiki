@@ -1,3 +1,10 @@
+## [2026-07-13] ingest | Building Normalizing Flows with Stochastic Interpolants
+创建的页面：[[source-stochasticinterpolants]], [[stochastic-interpolant]], [[interflow]]
+更新的页面：[[index]], [[flow-matching]], [[rectified-flow]], [[continuous-normalizing-flow]], [[optimal-transport]], [[benamou-brenier-algorithm]], [[building-schrodinger-bridges]], [[source-flow-matching]], [[source-rectified-flow]]
+核心贡献：随机插值过程 + 二次速度目标 $G(\hat v)$ 的仿真无关 CNF（InterFlow）；路径与目标解耦；max-min 通往 Benamou–Brenier OT；$W_2$ 误差受 $H(\hat v)$ 控制；Gaussian base 下速度↔score 对偶；表格/CIFAR/ImageNet/128×128 Flowers 验证。ICLR 2023 / arXiv:2209.15571。
+源文件：外部 PDF（不可变 raw/ 策略；路径见 ingest-reports/stochasticinterpolants-why.md）
+---
+
 ## [2026-07-13] ingest | SRSNet: Enhancing Time Series Forecasting through Selective Representation Spaces
 创建的页面：[[source-srsnet]], [[srsnet]], [[selective-representation-space]], [[selective-patching]], [[dynamic-reassembly]], [[adaptive-fusion]]
 更新的页面：[[index]], [[patchtst]], [[patch-based-tokenization]], [[crossformer]]
