@@ -176,7 +176,7 @@ $$C^{(hom)}_{1:T+H} \in \mathbb{R}^{(T+H) \times M_{hom}}$$
 | 方法 | 同质支持 | 异构支持 | 训练方式 |
 |------|---------|---------|----------|
 | DeepAR | ✓ | ✗ | 从零训练 |
-| TFT | ✓ | ✗ | 从零训练 |
+| [[tft|TFT]] | ✓ | ✗ | 从零训练 |
 | [[nbeatsx|N-BEATSx]] | ✓ | ✗ | 从零训练 |
 | TimesFM | ✗ | ✗ | 预训练 |
 | Chronos | ✗ | ✗ | 预训练 |
@@ -209,6 +209,7 @@ UniCA 提出的核心解决方案是**协变量同质化 (Covariate Homogenizati
 - [[cora-tsfm|CoRA]] — 替代处理路线：冻结 FM 特征提取 + 因果嵌入选择
 - [[tsfm-covariate-adaptation-comparison]] — 各适配路线的系统对比
 - [[nbeatsx]] / [[source-nbeatsx]] — 早期同质数值外生 + 可解释基扩展（非异构）
+- [[tft]] / [[source-tft]] — 早期可解释 multi-horizon：static / known / observed 表格协变量 + 分位数（非图像/文本异构）
 
 ---
 

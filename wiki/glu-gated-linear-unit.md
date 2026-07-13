@@ -6,7 +6,7 @@ tags:
   - feed-forward
   - activation-function
 created: 2026-05-04
-last_updated: 2026-05-08
+last_updated: 2026-07-13
 source_count: 1
 confidence: medium
 status: active
@@ -31,5 +31,7 @@ $$\mathbf{\Delta}_i = \text{Softplus}(\mathbf{x}_i W_1 W_2)$$
 ## Related Pages
 - [[mixture-of-experts]]
 - [[gated-linear-units]]
+- [[gated-residual-network]] — TFT 中以 GLU 门控残差非线性分支的构建块
+- [[tft]] / [[source-tft]] — 时序预测中广泛使用 GRN+GLU 的代表模型
 
 [^src-demystify-mamba-linear-attention-2024]: [[source-demystify-mamba-linear-attention-2024]]

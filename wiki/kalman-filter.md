@@ -7,8 +7,8 @@ tags:
   - dynamical-systems
   - uncertainty-quantification
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-07-13
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -30,13 +30,16 @@ Kalman 增益在"相信预测"与"相信观测"之间自适应权衡——观测
 
 ## 在深度学习中的应用
 
-经典 Kalman 滤波要求已知线性系统矩阵。深度学习中可把 $A,B,H$ 及噪声协方差 $Q,R$ 设为**可学习参数**，端到端训练——[[k2vae|K²VAE]] 的 [[kalmannet-uncertainty-modeling|KalmanNet]] 即是此类"神经化 Kalman 滤波"，在 Koopman 测量空间上迭代 Predict/Update，并把输出协方差对齐为 VAE 变分后验[^src-k2vae]。深度状态空间模型（如 DeepState、DSSMF）也属此类思路[^src-k2vae]。
+经典 Kalman 滤波要求已知线性系统矩阵。深度学习中可把 $A,B,H$ 及噪声协方差 $Q,R$ 设为**可学习参数**，端到端训练——[[k2vae|K²VAE]] 的 [[kalmannet-uncertainty-modeling|KalmanNet]] 即是此类"神经化 Kalman 滤波"，在 Koopman 测量空间上迭代 Predict/Update，并把输出协方差对齐为 VAE 变分后验[^src-k2vae]。[[deep-state-space-model|深度状态空间模型]]路线更早的代表是 [[deepstate|DeepState]]（NeurIPS 2018）：用全局 RNN 从协变量输出线性高斯 SSM 的时变参数，训练与预测均调用解析 Kalman 滤波/平滑计算边际似然与潜状态后验[^src-deepstate][^src-k2vae]。
 
 ## 关联页面
 
 - [[kalmannet-uncertainty-modeling]] — 神经化 Kalman 滤波用于不确定性建模
+- [[deepstate]] — RNN 参数化线性 SSM + Kalman 似然/预测（NeurIPS 2018）
+- [[deep-state-space-model]] — 深度状态空间模型概念
 - [[k2vae]] — Koopman + Kalman 概率预测
 - [[koopman-linearization-for-forecasting]] — Kalman 滤波作用的线性系统由 Koopman 线性化构造
 
 [^src-k2vae]: [[source-k2vae]]
+[^src-deepstate]: [[source-deepstate]]
 

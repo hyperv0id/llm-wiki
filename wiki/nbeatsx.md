@@ -62,7 +62,7 @@ Five open EPFtoolbox markets (NP, PJM, EPEX-BE/FR/DE), two-year tests, daily rec
 
 ## Historical Position
 
-NBEATSx is an early, widely cited bridge from pure univariate neural basis expansion (NBEATS/ESRNN, M4 era) to **covariate-aware** residual deep forecasting. Later long-horizon MLP work such as [[tide|TiDE]] reuses residual dense blocks with stronger future-covariate highways; Transformer exogenous models ([[source-timexer|TimeXer]], [[source-exotst|ExoTST]]) and Linear plug-ins ([[source-crosslinear|CrossLinear]]) reframe many-to-one endo/exo fusion; spatiotemporal select-then-balance ([[source-exost|ExoST]]) and LLM exogenous prompts ([[source-exollm|ExoLLM]]) move beyond numerical univariate EPF. NBEATSx remains a strong interpretable residual-MLP reference for short-horizon exogenous point forecasts.[^src-nbeatsx]
+NBEATSx is an early, widely cited bridge from pure univariate neural basis expansion (NBEATS/ESRNN, M4 era) to **covariate-aware** residual deep forecasting. Contemporaneous multi-horizon work [[tft|TFT]] (2020) already handled static/known/observed inputs with interpretable attention and quantiles; later long-horizon MLP work such as [[tide|TiDE]] reuses residual dense blocks with stronger future-covariate highways; Transformer exogenous models ([[source-timexer|TimeXer]], [[source-exotst|ExoTST]]) and Linear plug-ins ([[source-crosslinear|CrossLinear]]) reframe many-to-one endo/exo fusion; spatiotemporal select-then-balance ([[source-exost|ExoST]]) and LLM exogenous prompts ([[source-exollm|ExoLLM]]) move beyond numerical univariate EPF. NBEATSx remains a strong interpretable residual-MLP reference for short-horizon exogenous point forecasts.[^src-nbeatsx]
 
 ## Limitations
 
@@ -74,7 +74,7 @@ NBEATSx is an early, widely cited bridge from pure univariate neural basis expan
 ## Connections
 
 - Paper: [[source-nbeatsx]]
-- Related exogenous models: [[tide]], [[source-timexer]], [[source-exotst]], [[source-exost]], [[source-crosslinear]]
+- Related exogenous models: [[tft]], [[tide]], [[source-timexer]], [[source-exotst]], [[source-exost]], [[source-crosslinear]]
 - Covariate concepts: [[heterogeneous-covariates]]
 
 ---

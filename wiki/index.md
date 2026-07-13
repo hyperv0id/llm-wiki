@@ -69,6 +69,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-timedit]] — TimeDiT: General-purpose Diffusion Transformers for Time Series Foundation Model (KDD 2025)
 - [[source-tips]] — TIPS: transformer with inductive prior synthesis for financial forecasting
 - [[source-tide]] — TiDE: Time-series Dense Encoder, residual MLP encoder–decoder for LTSF with covariates (Das et al., arXiv:2304.08424)
+- [[source-tft]] — TFT: Temporal Fusion Transformer for interpretable multi-horizon forecasting with static/known/observed inputs + quantile outputs (Lim et al., Google, arXiv:1912.09363)
 - [[source-nbeatsx]] — NBEATSx: neural basis expansion with exogenous variables for electricity price forecasting (Olivares et al., IJF 2022 / arXiv:2104.05522)
 - [[source-tqn]] — TQNet: Temporal Query Network for efficient multivariate forecasting (ICML 2025)
 - [[source-trajectory-dl-survey]] — Comprehensive Survey of Deep Learning for Trajectory Data Management and Mining
@@ -90,6 +91,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-ddim]] — DDIM: Denoising Diffusion Implicit Models (ICLR 2021), 确定性 ODE 加速采样
 - [[source-ddim-ode-spaces-ac-cn]] — 生成扩散模型漫谈（六）：一般框架之 ODE 篇 (苏剑林, 2022), F-P 方程视角下的概率流 ODE 与 DDIM
 - [[source-deepfec]] — DeepFEC: Energy Consumption Prediction under Real-World Driving Conditions for Smart Cities
+- [[source-deepstate]] — DeepState: Deep State Space Models for Time Series Forecasting, RNN-parametrized linear SSM + Kalman likelihood (NeurIPS 2018)
 - [[source-dst-mamba]] — DST-Mamba: Decomposed Spatio-Temporal Mamba for Long-Term Traffic Prediction (AAAI 2025)
 - [[source-sde]] — Score-Based SDE: Unified framework for SMLD and DDPM (ICLR 2021)
 - [[source-exost]] — ExoST 框架：首个系统研究时空预测外生变量建模挑战，提出 select-then-balance 即插即用范式
@@ -294,6 +296,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[d3vae]] — D³VAE (GCRDD), generative time series forecasting with coupled diffusion, denoising score matching, and latent disentanglement (NeurIPS 2022)
 - [[d3vae-and-gcrdd-naming]] — D³VAE vs GCRDD 命名关系
 - [[dcrnn]] — DCRNN, diffusion convolutional recurrent neural network for traffic forecasting (ICLR 2018)
+- [[deepstate]] — DeepState, RNN-parametrized linear Gaussian SSM with Kalman likelihood/prediction (NeurIPS 2018, Amazon)
 - [[dst-mamba]] — DST-Mamba, decomposed spatio-temporal Mamba for long-term traffic prediction (AAAI 2025)
 - [[diffstg]] — DiffSTG, probabilistic spatio-temporal graph forecasting with denoising diffusion (AAAI 2023)
 - [[dpm-solver]] — DPM-Solver, fast ODE solver for diffusion model (NeurIPS 2022)
@@ -381,6 +384,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[phat]] — PHAT, Period Heterogeneity-Aware Transformer with positive-negative attention and periodic bucket structure (ICLR 2026)
 - [[ltsf-linear]] — LTSF-Linear, embarrassingly simple linear baseline that outperforms Transformer LTSF models (Zeng et al., 2022)
 - [[tide]] — TiDE, residual-MLP encoder–decoder for long-term forecasting with static/dynamic covariates (Google, arXiv 2023/24)
+- [[tft]] — Temporal Fusion Transformer, interpretable multi-horizon quantile forecaster with GRN, variable selection, and interpretable multi-head attention (Google, 2020)
 - [[nbeatsx]] — NBEATSx, residual neural basis expansion with interpretable/generic exogenous stacks for EPF (IJF 2022)
 - [[edm]] — EDM, Elucidating the Design Space of Diffusion-Based Generative Models (NeurIPS 2022)
 - [[grin]] — GRIN, first GNN-based multivariate time series imputation model with message-passing spatial decoder (ICLR 2022)
@@ -426,6 +430,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[rstib]] — Robust Spatial-Temporal Information Bottleneck, IB generalization for dual-noise STF (ICML 2025)
 - [[retrieval-augmented-spatio-temporal-forecasting]] — RAG-for-STF 范式，通过外部记忆扩展模型容量以捕获复杂时空依赖 (AAAI 2026)
 - [[generative-time-series-forecasting]] — 生成式时间序列预测，通过概率建模实现不确定性量化的预测范式
+- [[deep-state-space-model]] — 深度状态空间模型：用神经网络参数化/扩展经典线性 SSM（DeepState 等）
 - [[timeflow-loss]] — TimeFlow Loss，Sundial 基于 Flow Matching 的生成式训练目标 (ICML 2025)
 - [[conformal-prediction]] — 共形预测，与模型无关的不确定性量化框架
 - [[spatio-temporal-decoupling]] — 时空解耦在在线共形预测中的最优权衡
@@ -589,6 +594,9 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[moe-decomposition]] — MOEDecomp, input-adaptive mixture-of-experts average filters for seasonal-trend decomposition (ICML 2022)
 - [[newton-schulz-iteration]] — Newton-Schulz iteration for matrix orthogonalization
 - [[glu-gated-linear-unit]] — Gated Linear Unit, activation-modulated linear transformation
+- [[gated-residual-network]] — GRN: residual + GLU-gated nonlinear block with optional context (TFT building block)
+- [[variable-selection-network]] — instance-wise Softmax variable selection for static/past/future inputs (TFT)
+- [[interpretable-multi-head-attention]] — multi-head attention with shared values and averaged attention maps for temporal interpretability (TFT)
 - [[gpt-st]] — GPT-ST, plug-and-play MAE pre-training framework for spatio-temporal GNNs (NeurIPS 2023)
 - [[muffin-mae]] — Muffin-MAE, multifaceted masked autoencoder with temporal/spatial/global masking for inter-correlated urban dynamics (UrbanMind, KDD 2025)
 - [[test-time-adaptation-st]] — test-time adaptation for spatio-temporal domain shift via masked reconstruction (UrbanMind, KDD 2025)

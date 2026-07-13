@@ -9,7 +9,7 @@ tags:
   - diffusion-models
 created: 2026-05-03
 last_updated: 2026-07-13
-source_count: 16
+source_count: 17
 confidence: high
 status: active
 ---
@@ -65,6 +65,10 @@ status: active
 
 **[[manf|MANF]]**（arXiv:2205.07493）将 [[multi-scale-attention|多尺度注意力]] 编码器与条件 [[normalizing-flow|RealNVP]] 结合，以**非自回归**方式生成未来窗口联合分布：预测窗观测不回馈模型，解码器各层条件驱动堆叠 affine coupling，从而避免 AR 流的误差累积并保持时间维并行[^src-maf]。在 Exchange/Solar/Electricity/Traffic/Taxi/Wikipedia 上相对 LSTM-MAF、Transformer-MAF、NKF 等取得文中报告的 CRPS-sum/MSE SOTA，并在加倍预测长度与缺失噪声压力下更稳[^src-maf]。它代表离散归一化流在多变量概率预测中的早期 NAR 路线，与后续 Flow Matching（TSFlow/Sundial）及 AR 扩散（TimeGrad）形成对照。
 
+### 状态空间 / 深度 SSM 方法
+
+**[[deepstate|DeepState]]** (NeurIPS 2018) 用全局共享 LSTM 从协变量映射出每条序列的线性高斯 [[kalman-filter|SSM]] 参数，以 Kalman 滤波计算边际似然与多步预测后验；目标值不直接作网络输入，从而在可解释季节/趋势结构、小样本效率与跨序列联合学习之间折中，并对照同期 DeepAR 与经典 ETS/ARIMA[^src-deepstate]。它是 [[deep-state-space-model|深度状态空间模型]] 在概率预测中的早期工业代表，也是后续 [[k2vae|K²VAE]]（Koopman 线性化 + 神经 Kalman）路线的前驱对照。
+
 ### VAE 方法
 
 **[[k2vae|K²VAE]]** (ICML 2025 Spotlight) 是 VAE 路线 + 一步生成的代表，把概率预测重构为在 Koopman 测量空间中对线性动力系统的过程不确定性建模：KoopmanNet 线性化 + KalmanNet 精炼并输出协方差作为变分后验。短期 CRPS 较 CSDI 降低 7.3%，长期 CRPS 较 PatchTST 提升 20.9%，且因 VAE 一步生成而显存最低、推理最快——克服了扩散/流模型在长期预测下崩溃且低效的问题[^src-k2vae]。
@@ -90,6 +94,7 @@ status: active
 | **CoGenCast** | **Flow Matching (平均速度)** | **文本 + 数值** | **✓** | **概率分布 (一步)** | **LLM Encoder-Decoder + 平均速度 JVP** |
 | **Swift** | **Consistency Model (TrigFlow)** | **仅数值 + 静态强迫** | **✗** | **概率分布 (NFE=1)** | **原始域 + CRPS 微调** |
 | **MANF** | **Normalizing Flow (RealNVP)** | **仅数值** | **✗** | **概率分布** | **原始域 + 多尺度注意力 NAR** |
+| **DeepState** | **Linear SSM + RNN params** | **数值协变量** | **✗** | **概率分布** | **Kalman 解析 + 季节潜状态** |
 
 ## 优势
 
@@ -107,6 +112,8 @@ status: active
 ## 相关工作
 
 - [[s2dbm]] — S²DBM，布朗桥扩散桥模型，s=0 时退化为无噪声确定性生成器以做点对点预测、s=1 时做概率预测（arXiv 2024）[^src-s2dbm]
+- [[deepstate]] — DeepState，RNN 参数化线性 SSM + Kalman（NeurIPS 2018）[^src-deepstate]
+- [[deep-state-space-model]] — 深度状态空间模型概念
 
 ## 相关页面
 
@@ -164,3 +171,4 @@ status: active
 [^src-probts]: [[source-probts]]
 [^src-prs]: [[source-prs]]
 [^src-maf]: [[source-maf]]
+[^src-deepstate]: [[source-deepstate]]

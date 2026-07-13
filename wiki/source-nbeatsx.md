@@ -49,7 +49,7 @@ Univariate target series with numerical (and static categorical) covariates—no
 ## Related Pages
 
 - Entity: [[nbeatsx]]
-- Later exogenous forecasting: [[source-tide]], [[source-timexer]], [[source-exotst]], [[source-exost]], [[source-crosslinear]], [[source-exollm]]
+- Later exogenous forecasting: [[source-tft]], [[source-tide]], [[source-timexer]], [[source-exotst]], [[source-exost]], [[source-crosslinear]], [[source-exollm]]
 - Related covariate concepts: [[heterogeneous-covariates]], [[texts-as-auxiliary-variables]]
 
 ---

@@ -1,3 +1,17 @@
+## [2026-07-13] ingest | Temporal Fusion Transformers for Interpretable Multi-horizon Time Series Forecasting (arXiv:1912.09363)
+创建的页面：[[source-tft]], [[tft]], [[gated-residual-network]], [[variable-selection-network]], [[interpretable-multi-head-attention]]
+更新的页面：[[index]], [[direct-forecast]], [[heterogeneous-covariates]], [[source-nbeatsx]], [[nbeatsx]], [[source-tide]], [[tide]], [[source-timexer]], [[source-exost]], [[glu-gated-linear-unit]]
+核心贡献：TFT 对齐 static / past-observed / future-known 三类输入；GRN+GLU 自适应深度、实例级变量选择、静态上下文编码、LSTM 局部处理 + 可解释多头注意力；多 horizon 分位数输出；Electricity/Traffic/Retail/Volatility 上优于 DeepAR/MQRNN/ConvTrans 等；支持变量重要性、持续时序模式与 regime 解释。
+源文件：raw/1912.09363.pdf（不可变；外部路径 `/run/media/jcheng/WD-Data/yjs/INSIS/多模态外生信息引导的长期时空预测/1912.09363.pdf`）
+---
+
+## [2026-07-13] ingest | DeepState — Deep State Space Models for Time Series Forecasting (NeurIPS 2018)
+创建的页面：[[source-deepstate]], [[deepstate]], [[deep-state-space-model]]
+更新的页面：[[index]], [[kalman-filter]], [[generative-time-series-forecasting]]
+核心贡献：全局共享 RNN 从协变量映射线性高斯 SSM 时变参数；Kalman 滤波解析边际似然与预测后验；目标值不直接作网络输入（相对 DeepAR）；小样本 electricity/traffic 与 M4/tourism/parts 上优于/对标 ETS、ARIMA、DeepAR、MatFact。
+源文件说明：磁盘路径 `deepstate-rangapuram-2018.pdf`（及 raw/ 同名副本）内容错标为 Coles et al. module embedding theorem（arXiv:1810.07049），未改 raw/；正文依据 NeurIPS 2018 官方 PDF（hash 5cf68969…Paper.pdf）。详见 ingest-reports/deepstate-why.md。
+---
+
 ## [2026-07-13] ingest | Multi-scale Attention Flow for Probabilistic Time Series Forecasting (arXiv:2205.07493)
 创建的页面：[[source-maf]], [[manf]], [[multi-scale-attention]]
 更新的页面：[[index]], [[generative-time-series-forecasting]], [[normalizing-flow]], [[ar-vs-nar-decoding]], [[timegrad]]

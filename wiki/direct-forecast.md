@@ -7,7 +7,7 @@ tags:
   - learning-objective
 created: 2026-07-13
 last_updated: 2026-07-13
-source_count: 3
+source_count: 4
 confidence: high
 status: active
 ---
@@ -23,9 +23,9 @@ status: active
 | Generation | All $T$ steps in parallel | One step at a time, feeding predictions back |
 | Label structure | Implicitly assumes step independence under MSE | Naturally respects sequential dependence |
 | Failure mode | Ignores [[label-autocorrelation]] → biased likelihood training | Error propagation / high variance on long horizons |
-| Modern use | Dominant since Informer; used by TimesNet, PatchTST, iTransformer, [[tide|TiDE]] | Early RNNs / DeepAR-style models |
+| Modern use | Dominant since Informer; used by TimesNet, PatchTST, iTransformer, [[tide|TiDE]]; early multi-horizon quantile exemplar [[tft|TFT]] | Early RNNs / DeepAR-style models |
 
-DF became dominant for long-horizon tasks because of faster inference, simpler implementation, and better empirical accuracy than IF under error accumulation.[^src-fredf]
+DF became dominant for long-horizon tasks because of faster inference, simpler implementation, and better empirical accuracy than IF under error accumulation. Earlier multi-horizon direct models such as [[tft|TFT]] and MQRNN already forecast all horizons jointly with quantile heads before the LTSF Transformer wave.[^src-fredf][^src-tft]
 
 ## Likelihood Gap
 
@@ -35,11 +35,12 @@ FreDF's Theorem 3.1: the DF MSE objective equals the conditional negative log-li
 
 - [[label-autocorrelation]], [[heterogeneous-task-weights]]
 - [[frequency-enhanced-direct-forecast]], [[quadratic-form-weighted-objective]]
-- [[fredf]], [[qdf]], [[tide]]
-- [[source-fredf]], [[source-qdf]], [[source-tide]]
+- [[fredf]], [[qdf]], [[tide]], [[tft]]
+- [[source-fredf]], [[source-qdf]], [[source-tide]], [[source-tft]]
 
 ---
 
 [^src-fredf]: [[source-fredf]]
 [^src-qdf]: [[source-qdf]]
 [^src-tide]: [[source-tide]]
+[^src-tft]: [[source-tft]]
