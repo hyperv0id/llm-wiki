@@ -9,8 +9,8 @@ tags:
   - 2023
   - icml
 created: 2026-07-07
-last_updated: 2026-07-16
-source_count: 1
+last_updated: 2026-07-21
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -48,10 +48,17 @@ ClimaX extends the standard ViT with:
 
 ClimaX pioneered the foundation model paradigm for Earth systems science, demonstrating that pretraining on heterogeneous physics-based simulation data (CMIP6) enables generalization across tasks, variables, and resolutions unseen during training. It established the variable tokenization + aggregation pattern adopted by later weather foundation models, and provided empirical evidence for scaling laws in climate ML[^src-climax].
 
+## 后续工作
+
+同一 UCLA 组（Nguyen, Grover）后续提出 [[omnicast|OmniCast]]（NeurIPS 2025），将掩码潜扩散模型应用于 S2S 预测，在 ChaosBench 上取得 SOTA。OmniCast 与 ClimaX 的设计哲学形成对比：ClimaX 为每个 lead time 单独微调模型，OmniCast 则用一个模型同时生成完整 44 天序列，且避免了自回归累积误差[^src-omnicast]。
+
 ## 相关页面
 
+- [[omnicast]] — 同组后继 S2S 预测模型（NeurIPS 2025）
 - [[source-aurora]] — 多模态时序基础模型
 - [[source-cirt]] — CirT S2S 预测模型（ClimaX 为其基线之一）
 - [[source-climatear]] — ClimateAR，VAR 生成式概率气候预测（ClimaX 为其确定性 baseline 之一）
 
 [^src-climax]: [[source-climax]] — ClimaX: A Foundation Model for Weather and Climate (Nguyen et al., ICML 2023)
+
+[^src-omnicast]: [[source-omnicast]]

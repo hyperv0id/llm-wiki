@@ -996,6 +996,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-srsnet]] — SRSNet / SRS: Selective Representation Space, adaptive patch selection + reassembly plugin for LTSF (NeurIPS 2025, arXiv:2510.14510)
 - [[source-crosslinear]] — CrossLinear: plug-and-play cross-correlation embedding for TS forecasting with exogenous variables (KDD 2025, arXiv:2505.23116)
 - [[source-cirt]] — CirT: Geometry-Inspired Spherical Transformer for S2S Climate Forecasting, 圆形分块 + 傅里叶域自注意力，超越 ECMWF/PanguWeather/GraphCast，ICLR 2025
+- [[source-omnicast]] — OmniCast: 掩码潜扩散模型统一跨时间尺度天气预测，VAE + 掩码生成 Transformer + per-token 扩散头，S2S SOTA，10–20× 快于 GenCast，NeurIPS 2025
 - [[source-mage]] — MAGE: Less but More — Linear Adaptive Graph Learning with sparse-balanced MoE, NeurIPS 2025 (USTC)
 - [[source-moirai-moe]] — Moirai-MoE: 首个 Sparse MoE 时间序列基础模型，token 级专业化替代频率级数据分组，cluster-based gating + next-token prediction，39 数据集 SOTA，ICML 2025（Salesforce）
 
@@ -1004,6 +1005,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[srsnet]] — SRSNet, SRS + MLP for long-term MTS forecasting via adaptive patch representation spaces (NeurIPS 2025, ECNU)
 - [[crosslinear]] — CrossLinear, Linear many-to-one exogenous forecaster with O(T) cross-correlation embedding (KDD 2025, USTC)
 - [[cirt]] — CirT (Circular Transformer)，几何感知 S2S 气候预测 Transformer，圆形分块 + 傅里叶域自注意力，ICLR 2025 (HKUST + Alibaba DAMO)
+- [[omnicast]] — OmniCast，掩码潜扩散天气预测模型，VAE + 掩码生成 Transformer + 扩散头，S2S SOTA，NeurIPS 2025 (UCLA/Argonne)
 - [[mage]] — MAGE, Mixture of Adaptive Graph Experts, linear complexity adaptive graph learning for ST forecasting, NeurIPS 2025 (USTC)
 - [[moirai-moe]] — Moirai-MoE, 首个稀疏 MoE 时间序列基础模型，token 级专业化 + cluster-based gating，超越 Moirai/Chronos/Time-MoE，ICML 2025（Salesforce）
 
@@ -1011,6 +1013,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[joint-temporal-channel-correlation]] — 联合时间–通道相关建模，反对外生预测中的两步串行相关学习 (GCGNet)
 - [[selective-representation-space]] — Selective Representation Space (SRS)，自适应选择/重排 patch 以替代固定 adjacent patching 的表示空间 (NeurIPS 2025)
 - [[subseasonal-to-seasonal-forecasting]] — S2S 次季节到季节预测，2-6 周"可预测性荒漠"的概念与方法论
+- [[masked-generative-modeling]] — 掩码生成建模，随机掩码 token 后通过迭代并行解码的生成范式，应用于天气预测等连续科学数据（OmniCast, NeurIPS 2025）
 - [[spherical-geometry-inductive-bias]] — 球面几何归纳偏置，显式编码地球球面几何以消除平面投影失真的设计理念
 - [[edge-noise-amplification]] — 边噪声放大，ReLU 在自适应图学习中放大负边权为正的伪空间依赖缺陷 (MAGE, NeurIPS 2025)
 

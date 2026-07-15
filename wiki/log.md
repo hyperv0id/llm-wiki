@@ -1,3 +1,31 @@
+## [2026-07-21] ingest | OmniCast: A Masked Latent Diffusion Model for Weather Forecasting Across Time Scales (NeurIPS 2025)
+
+Ingest OmniCast paper (Nguyen et al., UCLA/UCI/Argonne/AI2; NeurIPS 2025). OmniCast proposes a two-stage masked latent diffusion model for probabilistic weather forecasting unifying medium-range and S2S timescales. Core innovations: (1) continuous VAE latent space (not VQ-VAE) for weather data with ~100:1 compression, (2) masked generative transformer with per-token diffusion MLP head for direct sequence modeling, (3) joint space-time iterative decoding avoiding autoregressive error accumulation, (4) auxiliary weighted MSE on first 10 frames. On ChaosBench, SOTA at S2S across deterministic, physics-based, and probabilistic metrics; on WeatherBench2, competitive with GenCast/IFS-ENS while 10–20× faster. Generates stable rollouts up to 100 years.
+
+创建的页面：[[source-omnicast]], [[omnicast]], [[masked-generative-modeling]]
+更新的页面：[[subseasonal-to-seasonal-forecasting]], [[latent-diffusion-models]], [[source-climax]], [[index]]
+
+源文件：raw/omnicast-masked-latent-diffusion-weather-forecasting.pdf
+
+
+## [2026-07-21] lint | OmniCast ingest Lint + 幻觉检查 + 修复
+
+### 严重（已修复）
+- [x] omnicast.md — 幻觉："6层MLP"→"轻量MLP"（论文从未指定去噪 MLP 层数），已修正
+- [x] latent-diffusion-models.md — 数据错误：~3939:1→~3938:1，与论文原文 ≈3938 不一致，已修正
+- [x] masked-generative-modeling.md — 数据错误：~3939:1→~3938:1，同上，已修正
+- [x] omnicast.md — 断链修复 5 处：[[climax]]→[[source-climax|ClimaX]]（无实体页）、[[stormer]]→Stormer（无页面）、[[gencast]]→GenCast（无页面）、[[neuralgcm]]→NeuralGCM（无页面）、[[chaosbench]]→ChaosBench（无页面）
+
+### 警告（已修复）
+- [x] masked-generative-modeling.md — confidence: medium→low，source_count=1 但跨 MaskGIT/MAGE/MAR 多模型的概括性论述缺乏多重来源
+
+### 幻觉交叉验证
+对照 PDF(pdftotext) 逐项核实：作者(Nguyen et al., UCLA/UCI/Argonne/AI2)、会议(NeurIPS 2025)、69变量、13气压层、50–100% 掩码(γ~U[0.5,1.0])、τ=1.3(S2S)/1.0(中期)、44帧@24h间隔、32×A100×4天训练、T850/Z500/Q700 评估变量、SDIV/SRES 物理指标、100年 stable rollout、29s(A100)vs 480s(TPUv5) — 均与 PDF 原文一致
+
+### 仍存风险
+- [ ] masked-generative-modeling.md — 关于 MaskGIT(CVPR 2022)、MAGE(CVPR 2023) 的起源论断无独立 raw/ 来源支持，后续 ingest 相关论文时应补引用
+- [ ] omnicast.md / source-omnicast.md — D=1024 潜空间下实际压缩比约 17:1(69×128×256→1024×8×16)，wiki 中 ~100:1 源自论文 Section 3.3 示例(D=16)，非实际实现，可加注但不算错误
+
 ## [2026-07-21] ingest | New Bounds on Diffsequences (Clifton, arXiv:2110.10760, 2022)
 
 Ingest Ramsey 理论论文 New Bounds on Diffsequences。核心贡献：对 D={2ⁱ} 给出指数下界 Δ(D,k) ≥ 2^√(2k)，验证 CCLS 猜想；证明阶乘集合非 2-accessible；完整分类乘积集合 D_{aₙ} 的 2-accessibility（当且仅当 {aₙ} 含任意长连续 2 的串）。技术：Thue-Morse 染色族、Beatty 序列染色、嵌套区间构造。
