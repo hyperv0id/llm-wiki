@@ -8,8 +8,8 @@ tags:
   - interventional
   - structural-causal-model
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-07-14
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -45,12 +45,15 @@ status: active
 ## 方法
 
 - [[doflow|DoFlow]]（ICLR 2026）：用连续归一化流在已知因果 DAG 上统一三类查询，是该范式下少数支持反事实轨迹生成的框架之一[^src-doflow]。
+- [[causalx|CausalX]]（ICML 2026）：另一条因果路线——不回答干预/反事实查询，而是用多源因果约束（Granger、do-calculus、TDMI、VAE）+ 扩散精炼学习因果启发的动态图，以提升预测精度和可解释性[^src-causalx]。
 
 ## 链接
 
 - [[doflow]] — DoFlow，因果 DAG 上的流式生成预测
 - [[causal-counterfactual-recovery]] — abduction–action–prediction 与反事实恢复理论
 - [[e2-cstp]] — 因果时空预测（混杂消除路线）
+- [[causalx]] — 因果图学习路线（多源约束 + 扩散精炼）
 
 [^src-doflow]: [[source-doflow]]
+[^src-causalx]: [[source-causalx]]
 

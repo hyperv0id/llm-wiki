@@ -18,6 +18,7 @@ All wiki pages, organized by type. Updated on every ingest.
 ## Sources
 - [[source-climax]] — ClimaX: 首个气象/气候基础模型，ViT + variable tokenization + cross-attention aggregation + CMIP6 预训练 + 随机预测目标，WeatherBench/ClimateBench SOTA，ICML 2023
 - [[source-cast]] — CaST: Causal Spatio-Temporal Neural Network for STG Forecasting, SCM + back-door adjustment (temporal OoD) + front-door adjustment with Hodge-Laplacian (dynamic spatial causation), NeurIPS 2023
+- [[source-causalx]] — CausalX: causally-interpretable plug-and-play multi-modal ST forecasting, multi-source causal constraints (Granger/do-calculus/TDMI/VAE) + diffusion graph refinement, ICML 2026
 - [[source-gpt4mts]] — DP-GPT4MTS: Dual-Prompt LLM 多模态时序预测框架，explicit prompt（任务指令）+ textual prompt（BERT 文本上下文嵌入）+ frozen GPT-2 骨干，GDELT/Time-MMD SOTA，arXiv 2025
 - [[source-benamou-brenier-blog]] — Benamou-Brenier 算法（博客笔记），最优传输的动态公式化与增广拉格朗日求解
 - [[source-beyond-imitation-mobility]] — Beyond Imitation: Generating Human Mobility from Context-aware Reasoning with LLMs (MobiGeaR)
@@ -270,6 +271,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[craft]] — CRAFT, cross-city retrieval-augmented diffusion model for zero-shot traffic flow generation (NeurIPS 2025)
 - [[ctenet]] — CTENet, ADR 架构嵌入 PINN + 欧拉连续空间，空气质量预测，NeurIPS 2025
 - [[e2-cstp]] — E²-CSTP, causal multi-modal ST prediction with dual-branch causal inference + GCN+Mamba (NeurIPS 2025)
+- [[causalx]] — CausalX, causally-interpretable plug-and-play multi-modal ST forecasting with multi-source causal constraints + diffusion graph refinement, ICML 2026
 - [[hifinet]] — HiFiNet, hierarchical frequency-decomposition GNN for road network representation learning (AAAI 2026)
 - [[hephestus]] — HEPHAESTUS, adaptive multi-scale MoE + periodic temporal attention + heterogeneous spatial attention for traffic forecasting (ICLR 2026, under review)
 - [[middir]] — MiDDiR, mixed channel dependency diffusion with retrieval guidance for probabilistic MTS forecasting (ICLR 2026, under review)
@@ -551,8 +553,10 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[benamou-brenier-algorithm]] — OT 的动态公式化，转化为时空凸优化问题并以增广拉格朗日方法求解
 - [[hopf-cole-transform]] — Hopf-Cole 变换，将非线性 HJB-FP 系统线性化为 Kolmogorov PDE 对
 - [[girsanov-theorem]] — Girsanov 定理，路径空间测度变换的基石，连接控制漂移与 path-space KL
+- [[granger-causality]] — Granger causality, predictive causality via lagged VAR F-tests, used for causal graph supervision and covariate selection
 - [[sinkhorn-algorithm]] — Sinkhorn/IPF 算法，交替优化对偶 Schrödinger potentials 求解静态 SB
 - [[doob-h-transform]] — Doob's h-变换，通过 h-函数倾斜参考测度构造条件随机过程
+- [[do-calculus]] — Pearl's do-calculus for interventional reasoning, operationalized as feature-level perturbation score for causal graph learning
 - [[iterative-markovian-fitting]] — IMF，交替 Markovian/reciprocal KL 投影求解动态 SB
 - [[stochastic-optimal-control-sb]] — SB 的 SOC 视角，HJB 方程、值函数及三种损失族
 - [[diffusion-schrodinger-bridge-matching]] — DSBM，参数化 IMF：forward/reverse Markov drift matching + consistency loss
@@ -607,6 +611,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[interpretable-multi-head-attention]] — multi-head attention with shared values and averaged attention maps for temporal interpretability (TFT)
 - [[gpt-st]] — GPT-ST, plug-and-play MAE pre-training framework for spatio-temporal GNNs (NeurIPS 2023)
 - [[muffin-mae]] — Muffin-MAE, multifaceted masked autoencoder with temporal/spatial/global masking for inter-correlated urban dynamics (UrbanMind, KDD 2025)
+- [[multi-source-causal-constraints]] — multi-source causal constraints framework: Granger + do-calculus + TDMI + VAE jointly supervise causal graph learning (CausalX, ICML 2026)
 - [[test-time-adaptation-st]] — test-time adaptation for spatio-temporal domain shift via masked reconstruction (UrbanMind, KDD 2025)
 - [[urbangpt]] — UrbanGPT, spatio-temporal large language model with instruction-tuning paradigm (KDD 2024)
 - [[urbanpg]] — UrbanPG, efficient framework with personalized context prompts + general backbone for large-scale/few-shot/continual ST learning (AAAI 2026)

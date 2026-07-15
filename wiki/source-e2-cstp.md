@@ -9,8 +9,8 @@ tags:
   - traffic-forecasting
   - neurips
 created: 2026-06-04
-last_updated: 2026-07-05
-source_count: 1
+last_updated: 2026-07-14
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -52,4 +52,8 @@ Efficiency: **17.37%–56.11%** reduction in computational overhead vs Transform
 
 All six components (text, image, DeepSHAP, causal inference, GCN, Mamba) contribute. Removing causal inference has the largest impact on BjTT event-driven data. Removing GCN or Mamba significantly degrades performance across all datasets[^src-e2-cstp].
 
+## Related Work
+[[causalx]] (ICML 2026) takes a different causal route for multi-modal ST: instead of SCM-based confounding adjustment, it learns causal-inspired dynamic graphs via multi-source causal constraints (Granger, do-calculus, TDMI, VAE) with diffusion-based refinement[^src-causalx].
+
 [^src-e2-cstp]: [[source-e2-cstp]]
+[^src-causalx]: [[source-causalx]]

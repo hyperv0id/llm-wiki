@@ -1,3 +1,20 @@
+## [2026-07-14] lint | CausalX ingest 完整 Lint + 幻觉检查
+更新的页面：[[causalx]], [[source-causalx]], [[multi-source-causal-constraints]], [[source-e2-cstp]], [[source-cast]], [[e2-cstp]]
+修复内容：
+- causalx.md + source-causalx.md：confidence high→medium（source_count:1 不满足 high 需 ≥2 规则）
+- multi-source-causal-constraints.md：Granger 公式从 min_{b,ℓ} 修正为 1/B Σ_b min_ℓ（对照 PDF 原文）
+- source-e2-cstp.md：source_count 1→2（本轮新增 [^src-causalx] 引用未计入）
+- source-cast.md：last_updated 2026-07-07→2026-07-14（本轮修改未更新）
+- e2-cstp.md：补全缺失的 created 字段，修复重复 last_updated（预存问题）
+幻觉检查：对照 PDF 全文验证作者/年份/架构/方法/数据集/指标，（1）TCNM 24h 改善论文称 19.9 km 但 Table 2 实际 93.08→74.55=18.53 km，论文自身混淆百分比与绝对值，wiki 如实复现论文声称，已标注为风险；（2）其余全部一致。
+
+
+## [2026-07-14] ingest | CausalX: A Unified and Causally-Interpretable Plug-and-Play Model for Multi-modal Spatio-Temporal Forecasting
+创建的页面：[[source-causalx]], [[causalx]], [[granger-causality]], [[do-calculus]], [[multi-source-causal-constraints]]
+更新的页面：[[causal-time-series-forecasting]], [[e2-cstp]], [[source-e2-cstp]], [[source-cast]], [[index]]
+核心贡献：CausalX (ICML 2026) 提出统一因果可解释即插即用多模态时空预测模型。创新：多源因果约束（Granger + do-calculus + TDMI + VAE）+ 扩散精炼学习动态因果启发图。在行人轨迹和热带气旋预测两个高风险场景、5 个 backbone 上一致提升精度。新建 5 个页面：source-summary + 实体 + Granger 因果技术页 + do-calculus 技术页 + 多源因果约束技术页。更新 4 个现有页面添加交叉引用。
+源文件：raw/causalx-causally-interpretable-multimodal-st-forecasting.pdf（不可变）
+
 ## [2026-07-14] ingest | CTENet: Chemical Transport Eulerian Network for Air Quality Forecasting
 创建的页面：[[source-ctenet]], [[ctenet]], [[physics-informed-neural-network]], [[advection-diffusion-reaction-equation]], [[air-quality-forecasting]], [[radial-basis-function-interpolation]]
 更新的页面：[[source-pi-mfm]], [[source-multimodal-pinn]], [[multimodal-exogenous-guided-long-term-st-forecasting]], [[index]]

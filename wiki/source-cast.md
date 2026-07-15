@@ -8,7 +8,7 @@ tags:
   - 2023
   - neurips
 created: 2026-07-07
-last_updated: 2026-07-07
+last_updated: 2026-07-14
 source_count: 1
 confidence: medium
 status: active
@@ -45,6 +45,7 @@ CaST is the first work to jointly address temporal OoD and dynamic spatial causa
 ## 相关页面
 
 - [[source-e2-cstp]] — 因果多模态时空预测
+- [[source-causalx]] — CausalX (ICML 2026)，多源因果约束 + 扩散精炼
 
 
 [^src-cast]: [[source-cast]] — CaST: Deciphering Spatio-Temporal Graph Forecasting — A Causal Lens and Treatment (Xia et al., NeurIPS 2023)

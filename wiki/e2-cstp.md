@@ -9,7 +9,7 @@ tags:
   - gcn
   - neurips
 created: 2026-06-04
-last_updated: 2026-07-05
+last_updated: 2026-07-14
 source_count: 2
 confidence: high
 status: active
@@ -131,5 +131,6 @@ E²-CSTP is the first to combine **multi-modal fusion**, **dual-branch causal in
 - [[mamba]] — Mamba architecture
 - [[conformer]] — ConFormer causality-informed
 
+- [[causalx]] — CausalX causal graph learning for ST
 [^src-e2-cstp]: [[source-e2-cstp]]
 [^src-doflow]: [[source-doflow]]
