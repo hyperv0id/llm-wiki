@@ -7,7 +7,7 @@ tags:
   - traffic-flow-modeling
   - advection-diffusion
 created: 2026-06-08
-last_updated: 2026-06-08
+last_updated: 2026-07-14
 source_count: 1
 confidence: medium
 status: active
@@ -53,5 +53,11 @@ If $L^{\text{diff}}$ and $C^{\text{adv}}$ commute, they can be simultaneously di
 ## Significance
 
 This is the first framework to **preserve microscopic stochasticity within macroscopic PDE models** through vehicle-centric discretization. Ablation on NGSIM confirms: removing the diffusion term $L^{\text{diff}}$ (advection-only) degrades macro prediction by 2.9–4.6% across all horizons, since the model reverts to deterministic flow evolution unable to represent stochastic perturbations[^src-mmckm]. The learned edge weights $W^{\text{adv}}$ and $W^{\text{diff}}$ provide interpretable vehicle-to-vehicle interaction measures unavailable in grid-based methods[^src-mmckm].
+
+## 相关页面
+
+- [[advection-diffusion-reaction-equation]] — ADR 方程在污染物传输中的连续形式与 FTCS 离散化（互补视角，欧拉 vs 拉格朗日）
+- [[mmckm]] — MMCKM 模型实体
+- [[ctenet]] — 欧拉框架下的 ADR 架构嵌入（对比参照）
 
 [^src-mmckm]: [[source-mmckm]]

@@ -8,7 +8,7 @@ tags:
   - urban-climate
   - 2025
 created: 2026-07-07
-last_updated: 2026-07-07
+last_updated: 2026-07-14
 source_count: 1
 confidence: medium
 status: active
@@ -52,6 +52,7 @@ status: active
 ## 交叉链接
 
 - [[source-pi-mfm]] — PI-MFM：物理信息多模态基础模型用于 PDE 求解，与本工作同为 PINN 多模态扩展方向
-- [[source-pi-mfm|physics-informed neural network]] — PINN 基本原理
+- [[physics-informed-neural-network]] — PINN 概念（损失约束型 vs 架构嵌入型）
+- [[source-ctenet]] — CTENet：架构嵌入型 PINN，将 ADR 方程直接嵌入网络前向传播（对比参照）
 
 [^src-multimodal-pinn]: [[source-multimodal-pinn]]

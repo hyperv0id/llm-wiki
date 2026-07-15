@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-07-13
+last_updated: 2026-07-14
 source_count: 0
 tags:
   - meta
@@ -77,6 +77,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-probts]] — ProbTS: unified benchmark for point and distributional forecasting across short/long horizons (NeurIPS 2024 D&B, arXiv:2310.07446)
 - [[source-diffstg]] — DiffSTG: probabilistic spatio-temporal graph forecasting with diffusion models (AAAI 2023)
 - [[source-csdi]] — CSDI: Conditional Score-based Diffusion Models for Probabilistic Time Series Imputation (NeurIPS 2021)
+- [[source-ctenet]] — CTENet: chemical transport Eulerian network, ADR equation embedded in neural architecture, NeurIPS 2025
 - [[source-prs]] — Predict, Refine, Synthesize / TSDiff: unconditional diffusion + observation self-guidance for probabilistic TS forecasting (NeurIPS 2023, arXiv:2307.11494)
 - [[source-ssdts]] — SSD-TS: Mamba as diffusion denoising backbone for time series imputation (KDD 2025)
 - [[source-pristi]] — PriSTI: A Conditional Diffusion Framework for Spatiotemporal Imputation (arXiv 2023 / ICDE 2023)
@@ -267,6 +268,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[mmckm]] — MMCKM, history-free micro-macro coupled Koopman model unifying vehicle trajectory + traffic density prediction (ICLR 2026 Poster)
 - [[stbp]] — STBP, continual spatio-temporal forecasting with fixed backbone + scalable contextual pattern bank (ICLR 2026)
 - [[craft]] — CRAFT, cross-city retrieval-augmented diffusion model for zero-shot traffic flow generation (NeurIPS 2025)
+- [[ctenet]] — CTENet, ADR 架构嵌入 PINN + 欧拉连续空间，空气质量预测，NeurIPS 2025
 - [[e2-cstp]] — E²-CSTP, causal multi-modal ST prediction with dual-branch causal inference + GCN+Mamba (NeurIPS 2025)
 - [[hifinet]] — HiFiNet, hierarchical frequency-decomposition GNN for road network representation learning (AAAI 2026)
 - [[hephestus]] — HEPHAESTUS, adaptive multi-scale MoE + periodic temporal attention + heterogeneous spatial attention for traffic forecasting (ICLR 2026, under review)
@@ -444,6 +446,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[spectral-graph-conditional-exchangeability]] — SGCE，谱图条件可交换性 (ICML 2026)
 - [[bayesian-conformal-prediction]] — Bayesian 共形预测，时间折扣历史权重
 - [[adaptive-conformal-inference]] — ACI，在线误差反馈驱动的共形预测
+- [[advection-diffusion-reaction-equation]] — ADR 方程，平流-扩散-反应 PDE，CTM 的数学基础
+- [[air-quality-forecasting]] — 空气质量预测，从物理模型到 PINN 的建模方法演进
 - [[heterogeneous-covariates]] — classification and multimodal covariates that differ from target time series (ICLR 2026)
 - [[cross-dimension-dependency]] — Cross-Dimension Dependency，MTS 中不同变量之间的关联关系 (ICLR 2023)
 - [[message-passing-imputation]] — Message Passing Imputation，利用 GNN 消息传递进行时空缺失值重建 (ICLR 2022)
@@ -476,6 +480,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[score-based-generative-modeling]] — 基于分数的生成建模，通过估计数据分布的对数密度梯度来生成样本
 - [[edm-design-space]] — EDM 统一设计空间，将 VP/VE/DDIM 等框架正交化
 - [[perceptual-compression]] — 感知压缩，将生成建模分为感知压缩和语义压缩两个层次
+- [[physics-informed-neural-network]] — PINN，损失约束型 vs 架构嵌入型两大范式
 - [[continuous-normalizing-flow]] — 连续归一化流 (CNF)，基于 Neural ODE 的可逆生成模型
 - [[algorithm-unrolling]] — algorithm unrolling, converting iterative optimization into neural network layers
 - [[mcr2]] — MCR², Maximal Coding Rate Reduction for learning compact structured representations
@@ -636,6 +641,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[epsilon-greedy]] — 经典探索策略
 - [[temporal-query-technique]] — periodically shifted learnable vectors as queries for global correlation
 - [[cross-period-sparse-forecasting]] — cross-period downsampling for extreme model compression
+- [[radial-basis-function-interpolation]] — RBF 插值，Multiquadric 核从离散站点构建连续污染物场
 - [[reparameterization-trick]] — 重参数化技巧，将随机采样重构为可微确定性变换+固定噪声
 - [[residual-cycle-forecasting]] — RCF technique using learnable recurrent cycles for explicit periodicity modeling
 - [[retrieval-guidance]] — inference-time retrieval of similar history to analytically tilt diffusion score estimation (MiDDiR, ICLR 2026 under review)

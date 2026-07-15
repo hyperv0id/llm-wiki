@@ -1,3 +1,13 @@
+## [2026-07-14] ingest | CTENet: Chemical Transport Eulerian Network for Air Quality Forecasting
+创建的页面：[[source-ctenet]], [[ctenet]], [[physics-informed-neural-network]], [[advection-diffusion-reaction-equation]], [[air-quality-forecasting]], [[radial-basis-function-interpolation]]
+更新的页面：[[source-pi-mfm]], [[source-multimodal-pinn]], [[multimodal-exogenous-guided-long-term-st-forecasting]], [[index]]
+核心贡献：CTENet (NeurIPS 2025) 是首个在空气质量预测中采用欧拉连续空间表示的 PINN，将 ADR 偏微分方程以 FTCS 有限差分离散化嵌入神经网络架构（架构嵌入型 PINN），而非损失函数约束。中美数据集 RMSE 分别降低 45.8% 和 21.0%。新建 6 个页面：source-summary + 实体(entity) + 3 个概念页(PINN/ADR方程/空气质量预测) + 1 个技术页(RBF插值)。更新 2 个现有 PINN source-summary 添加交叉引用；分析页添加 CTENet 至中心缺口拼图表。
+源文件：raw/ctenet-eulerian-neural-network-chemical-transport-air-quality-forecasting.pdf（不可变）
+
+## [2026-07-14] lint | CTENet ingest 完整 Lint + 幻觉检查
+更新的页面：[[ctenet]], [[advection-diffusion-reaction-equation]], [[air-quality-forecasting]], [[physics-informed-neural-network]]
+修复内容：补全 12 处缺失的 [^src-*] 内联引用（ctenet 架构列表 4 处、ADR 方程离散化列表 + 源项 3 处、空气质量预测方法分类 + 外生信息 4 处、PINN 定义 + 优势劣势 3 处）；幻觉检查：对照 PDF 原文验证作者/年份/方法名/数据集/指标数字，全部一致，无捏造/错引发现。
+
 ## [2026-07-14] re-ingest | CSDI — 补全缺口（source-summary 扩展 + 概念页 + 交叉引用）
 创建的页面：[[self-supervised-imputation-training]]
 更新的页面：[[source-csdi]], [[index]]

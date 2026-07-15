@@ -11,8 +11,8 @@ tags:
   - research-agenda
   - landscape-analysis
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 25
+last_updated: 2026-07-14
+source_count: 26
 confidence: medium
 status: active
 ---
@@ -49,6 +49,7 @@ status: active
 | [[factost\|FactoST]] | O(N) 解耦、避免负迁移、STMF 元数据槽[^src-factost] | 显式无外生模态；future work 明写"event/text/weather 协变量编码器"[^src-factost] |
 | [[visifold\|VisiFold]] | 高效长程(24-48 步)[^src-visifold] | 明写"无法响应突发事件；多模态元数据融入 TFG 是 future work"[^src-visifold] |
 | [[swift\|Swift]] | 75 天稳定天气 rollout＋CRPS 集合[^src-swift] | 纯自回归、**无外生条件**、无 classifier-free guidance[^src-swift] |
+| [[ctenet\|CTENet]] (NeurIPS25) | ADR 架构嵌入＋欧拉连续空间＋气象外生融合，中美数据集 RMSE −45.8%/−21.0%[^src-ctenet] | 缺因果去混杂、无不确定性量化、计算 O(HW) 高于图方法[^src-ctenet] |
 | [[most\|MoST]]/[[aurora\|Aurora]] | 原生多模态/生成式概率预测[^src-most][^src-aurora] | 通用时序非时空图、无长期机制、无因果[^src-most][^src-aurora] |
 
 [[spatio-temporal-foundation-model-landscape|时空基础模型全景]]页自列的三大未解问题正中靶心：**外生事件未建模**（[[conformer|ConFormer]]/IGSTGNN 证明事故剧烈影响交通，但 VoT/TimeCAP 的外生推理模块尚未与 STFM 架构集成）、**概率预测空白**、**天气-交通 FM 谱系能否统一**[^src-conformer][^src-incident-guided-st-forecasting]。换言之，`FactoST` 与 `VisiFold` 自己把这个方向写成了 future work——**这是被官方盖章的空位**[^src-factost][^src-visifold]。
@@ -175,6 +176,7 @@ status: active
 - [[heterogeneous-covariates]] — 异构外生协变量的统一接入
 - [[retrieval-augmented-spatio-temporal-forecasting]] — 外部记忆扩展容量的范式
 - [[e2-cstp]]、[[igstgnn]]、[[factost]]、[[visifold]]、[[swift]] — 四块拼图的最接近工作
+- [[ctenet]] — 架构嵌入型 PINN，欧拉场 + ADR 方程，多模态外生在空气质量预测中的典范
 
 ## 引用源
 
@@ -203,3 +205,4 @@ status: active
 [^src-rast]: [[source-rast]]
 [^src-stop]: [[source-stop]]
 [^src-nsdiff]: [[source-nsdiff]]
+[^src-ctenet]: [[source-ctenet]]

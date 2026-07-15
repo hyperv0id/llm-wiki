@@ -8,7 +8,7 @@ tags:
   - foundation-model
   - 2025
 created: 2026-07-07
-last_updated: 2026-07-07
+last_updated: 2026-07-14
 source_count: 1
 confidence: medium
 status: active
@@ -45,5 +45,11 @@ PI-MFM proposes a physics-informed multimodal foundation model (MFM) framework t
 ### Significance
 
 PI-MFM provides a practical and scalable path toward data-efficient, transferable PDE solvers that combine the flexibility of multimodal foundation models with the physical fidelity of physics-informed neural networks (PINNs). It bridges the gap between single-operator PINNs and data-driven MOL by unifying symbolic PDE encoding with automatic physics loss construction.[^src-pi-mfm]
+
+## 交叉链接
+
+- [[physics-informed-neural-network]] — PINN 概念总览（PI-MFM 属于损失约束型 PINN）
+- [[source-multimodal-pinn]] — 另一个损失约束型 PINN 实例
+- [[source-ctenet]] — 架构嵌入型 PINN（对比参照）
 
 [^src-pi-mfm]: [[source-pi-mfm]]
