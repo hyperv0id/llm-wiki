@@ -1038,6 +1038,7 @@ All wiki pages, organized by type. Updated on every ingest.
 ## Entities (continued)
 - [[minitraffic]] — MiniTraffic, first lightweight (~119K) pre-trained model for fine-grained (road+lane) traffic prediction, ICML 2026
 - [[mcgvae]] — McgVAE, first road-lane joint modeling VAE for fine-grained traffic prediction, CIKM 2024
+- [[omnifield]] — OmniField, encoder-processor-decoder CNF unifying reconstruction/interpolation/forecasting/cross-modal prediction, ICLR 2026
 - [[subfactor-planar-algebra]] — 子因子平面代数，II₁ 子因子标准不变量的公理化，与 unitary 2×2 multitensor category 等价
 
 ## Concepts (continued)
@@ -1046,3 +1047,9 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Techniques (continued)
 - [[frequency-domain-stability-augmentation]] — FDA, frequency-domain perturbation with spectral constraints for road→lane transfer in MiniTraffic
+- [[multimodal-crosstalk]] — MCT block, concatenated per-modality CNF tokens with global feature z injection for cross-modal exchange (OmniField, ICLR 2026)
+- [[iterative-cross-modal-refinement]] — ICMR, multi-round MCT with pooled global feature bridge for progressive multimodal signal alignment (OmniField, ICLR 2026)
+- [[fleximodal-fusion]] — presence-mask gating at encoder/attention/loss levels enabling one model for arbitrary input modality subsets (OmniField, ICLR 2026)
+
+## Sources (continued)
+- [[source-omnifield]] — OmniField: continuity-aware multimodal conditioned neural field for robust spatiotemporal learning, MCT + ICMR + fleximodal fusion, ICLR 2026 (BNL/UCLA/Columbia)

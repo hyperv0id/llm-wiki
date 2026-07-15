@@ -1,3 +1,12 @@
+## [2026-07-21] ingest | OmniField: Conditioned Neural Fields for Robust Multimodal Spatiotemporal Learning (ICLR 2026)
+
+Ingest OmniField paper (Valencia et al., UCLA/Columbia/BNL; ICLR 2026, arXiv:2511.02205). OmniField proposes a continuity-aware multimodal conditioned neural field (CNF) for robust spatiotemporal learning from sparse, irregular, noisy scientific observations. Core innovations: (1) Gaussian Fourier Features + sinusoidal initialization for high-frequency learning; (2) Multimodal Crosstalk (MCT) block with global feature z for cross-modal information exchange; (3) Iterative Cross-Modal Refinement (ICMR) that progressively aligns heterogeneous modal signals; (4) Fleximodal Fusion with presence masks for arbitrary input modality subsets. Unifies reconstruction, interpolation, forecasting, and cross-modal prediction without gridding. Consistently outperforms 8 baselines (22.4% avg error reduction) and remains near-clean under heavy sensor noise. Evaluated on ClimSim-THW, EPA-AQS, CIFAR-10, RainNet.
+
+创建的页面：[[source-omnifield]], [[omnifield]], [[multimodal-crosstalk]], [[iterative-cross-modal-refinement]], [[fleximodal-fusion]]
+更新的页面：[[index]]
+
+源文件：raw/omnifield-conditioned-neural-fields-iclr2026.pdf
+
 ## [2026-07-21] ingest | OmniCast: A Masked Latent Diffusion Model for Weather Forecasting Across Time Scales (NeurIPS 2025)
 
 Ingest OmniCast paper (Nguyen et al., UCLA/UCI/Argonne/AI2; NeurIPS 2025). OmniCast proposes a two-stage masked latent diffusion model for probabilistic weather forecasting unifying medium-range and S2S timescales. Core innovations: (1) continuous VAE latent space (not VQ-VAE) for weather data with ~100:1 compression, (2) masked generative transformer with per-token diffusion MLP head for direct sequence modeling, (3) joint space-time iterative decoding avoiding autoregressive error accumulation, (4) auxiliary weighted MSE on first 10 frames. On ChaosBench, SOTA at S2S across deterministic, physics-based, and probabilistic metrics; on WeatherBench2, competitive with GenCast/IFS-ENS while 10–20× faster. Generates stable rollouts up to 100 years.
