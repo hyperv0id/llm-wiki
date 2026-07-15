@@ -1,3 +1,31 @@
+## [2026-07-16] ingest | ProbTS: 补充 raw PDF 副本与交叉验证（补充 ingest）
+
+ProbTS 论文初始已于 2026-07-13 ingest。本次：将 kebab-case 命名 PDF 副本 `raw/probts-benchmarking-point-and-distributional-forecasting.pdf` 加入 raw/（已有 `raw/2310.07446.pdf` 保留不动）。交叉验证 source-summary 五项主要发现与论文 §4.1–§4.2 全部一致。
+
+更新的页面：[[source-probts]]（补充 raw 路径 + last_updated），[[probts]]（last_updated）
+更新的文件：ingest-reports/2026-07-16-probts-supplement.md
+源文件：raw/probts-benchmarking-point-and-distributional-forecasting.pdf（新增）
+
+
+## [2026-07-16] lint | ProbTS ingest 完整 Lint + 幻觉检查 + 修复
+
+### 严重（已修复）
+- [x] source-probts.md — 15 处 `[^src-probts]` 自引用 + 脚注定义形成循环引用（source-summary 不应自引用，仓库惯例已多次应用）。移除全部自引用，`source_count: 1→0`，`confidence: medium→low`
+- [x] source-probts.md — `[[generative-style-decoder|NAR]]` 指向 Informer 专用 NAR 技术页 → 改为 `[[ar-vs-nar-decoding|NAR]]`（ProbTS 讨论的是通用 AR/NAR 解码，非 Informer Generative Style Decoder）
+
+### 幻觉交叉验证通过
+对照 PDF (pdftotext) 逐条验证：作者（6 人）/机构（HKUST(GZ)/MSRA/Tsinghua）/NeurIPS 2024 D&B/arXiv:2310.07446v5、方法轴（AR/NAR 公式、分布头三类、RevIN vs mean scaling）、数据特征公式（FT/FS/非高斯性 JS、STL 分解、短窗口 30/长窗口 336）、100 采样（附录 B.2 CRPS 节）、五项主要发现与 §4.1–§4.2 对照——全部与 PDF 原文一致。
+
+### 已验证
+- probts.md — source_count:1 confidence:medium（合规，entity 页单源）；所有 wikilink 均存在
+- ar-vs-nar-decoding.md / non-gaussianity.md — source_count 与 confidence 合规；索引已登记
+- 全部新页面已在 index.md 对应类别登记
+
+### 仍存风险
+- source-probts.md 移除自引用后 source_count:0 + confidence:low — source-summary 无交叉来源验证，待该论文被其他源引用后再升级 confidence
+
+更新的页面：[[source-probts]]
+更新的文件：ingest-reports/2026-07-16-probts-supplement.md
 ## [2026-07-16] lint | PN-Train ingest 完整 Lint + 幻觉检查 + 修复
 
 ### 严重（已修复）
