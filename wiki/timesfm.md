@@ -7,8 +7,8 @@ tags:
   - decoder-only
   - iclr2024
 created: 2026-04-29
-last_updated: 2026-07-17
-source_count: 6
+last_updated: 2026-07-21
+source_count: 7
 confidence: high
 status: active
 ---
@@ -61,6 +61,7 @@ TimesFM 可以通过 UniCA 框架适配到协变量感知预测任务：
 - [[timedit]] — TimeDiT (KDD 2025)，将 DiT 扩散 Transformer 作为时间序列基础模型，支持预测/插补/异常检测/数据生成四合一，区别于 TimesFM 的纯预测架构[^src-timedit]
 - [[sundial]] — Sundial (ICML 2025)，原生 Flow Matching TS 基础模型。Sundial 在 TSLib 零样本预测上全面超越 TimesFM（Table 9，TimesFM 在所有 24 个指标中仅 1 个获胜），并支持概率预测（TimesFM 仅点估计）[^src-sundial]
 - [[probts|ProbTS]] — 将 TimesFM 作为 **AR 解码基础模型** 纳入零样本分析：短 horizon 有竞争力，长 horizon 相对 MOIRAI 等 NAR 基础模型劣势扩大（误差累积）[^src-probts]
+- [[moirai-moe|Moirai-MoE]] — ICML 2025 的 MoE 时间序列基础模型。在 10 个零样本数据集上，Moirai-MoE-B (86M activated) 在 CRPS 总评（Avg all: 0.478）上超越 TimesFM (0.488)，排除 Electricity/Solar 含泄露数据集后 Avg non-leak 两者持平（0.439 vs 0.439）。Moirai-MoE-S (11M) 则在 Solar、Power、ETT2、Traffic 上 CRPS 优于 TimesFM，但总体 Avg 不及[^src-moirai-moe]
 
 ## DynaMix 对比
 
@@ -81,3 +82,4 @@ TimesFM 可以通过 UniCA 框架适配到协变量感知预测任务：
 [^src-sundial]: [[source-sundial]]
 [^src-probts]: [[source-probts]]
 [^src-dynamix]: [[source-dynamix]]
+[^src-moirai-moe]: [[source-moirai-moe]]

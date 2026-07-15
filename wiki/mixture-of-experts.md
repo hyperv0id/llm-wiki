@@ -6,8 +6,8 @@ tags:
   - architecture
   - scalability
 created: 2026-04-29
-last_updated: 2026-07-19
-source_count: 5
+last_updated: 2026-07-20
+source_count: 6
 references:
   - [[source-fast-long-horizon-forecasting]]
 confidence: high
@@ -72,6 +72,18 @@ FaST 首次将 MoE 应用于大规模长视野时空图预测：
 
 [[most|MoST]] (KDD 2026) 将 MoE 应用于空间依赖建模，提出 [[multi-modality-guided-spatial-expert|多模态引导空间专家]]：使用两类专家——模态共享专家（每种激活模态一个）和路由专家（由路由器基于模态融合嵌入选择）——来捕获区域特定的局部空间模式[^src-most]。每个专家通过交叉注意力建模传感器与其 top-k 最近邻的交互，而非全图关系[^src-most]。与 FaST 的 Dense MoE 不同，MoST 使用 Top-1 稀疏路由并引入负载均衡损失防止专家坍塌[^src-most]。
 
+## 在时间序列基础模型中的应用
+
+[[moirai-moe|Moirai-MoE]] (ICML 2025) 是首个将 **Sparse MoE** 引入时间序列基础模型预训练的框架[^src-moirai-moe]：
+
+- **架构**：在 6/12 层 decoder-only Transformer 中，每层 FFN 替换为 M=32 experts 的 MoE 层，每个 token 仅激活 K=2 experts
+- **簇基门控**：提出 [[cluster-based-gating|新型门控函数]]——用预训练 dense 模型的 token 嵌入 k-means 聚类中心引导 expert 分配，在所有专家数量配置下一致优于随机初始化线性门控[^src-moirai-moe]
+- **与标准 Sparse MoE 的差异**：Moirai-MoE 的 MoE 作用于时间序列 token 维度，通过 [[token-level-specialization|token 级专业化]] 替代频率级人工数据分组——浅层 expert 分配因频率而异、深层趋于一致，实现频率不变表示[^src-moirai-moe]
+- **效果**：Moirai-MoE-S (11M activated, 117M total) 以 17% Monash 聚合 MAE 提升超越 dense Moirai-S，以 65× 更少激活参数优于 Chronos-L[^src-moirai-moe]
+- **效率**：推理时间 273s vs Chronos-S 551s（受益于 patch size 16 vs Chronos 的 point-wise tokenization）[^src-moirai-moe]
+
+同期工作 Time-MoE 也引入 MoE，但使用逐点 tokenization 和标准线性门控，Moirai-MoE 在零样本上显著优于 Time-MoE-B 和 Time-MoE-L[^src-moirai-moe]。
+
 ## 在动力系统重建中的应用
 
 [[dynamix|DynaMix]] (NeurIPS 2025) 是首个将 MoE 用于动力系统重建（DSR）零样本泛化的模型[^src-dynamix]：
@@ -93,9 +105,13 @@ FaST 首次将 MoE 应用于大规模长视野时空图预测：
 - [[heterogeneous-moe-routing|异质性感知 MoE 路由]]
 - [[adaptive-graph-agent-attention|自适应图代理注意力]]
 - [[multi-modality-guided-spatial-expert|多模态引导空间专家]]
+- [[token-level-specialization|Token 级专业化]]
+- [[cluster-based-gating|簇基门控]]
+- [[moirai-moe|Moirai-MoE]]
 
 [^src-fast-long-horizon-forecasting]: [[source-fast-long-horizon-forecasting]]
 [^src-most]: [[source-most]]
 [^src-dynamix]: [[source-dynamix]]
 [^src-stamimputer]: [[source-stamimputer]]
 [^src-mage]: [[source-mage]]
+[^src-moirai-moe]: [[source-moirai-moe]]

@@ -1,3 +1,23 @@
+## [2026-07-20] ingest | Moirai-MoE: Empowering Time Series Foundation Models with Sparse Mixture of Experts (ICML 2025)
+
+Ingest Moirai-MoE paper (Liu, Liu, Woo, Aksu, Liang, Zimmermann, Liu, Li, Savarese, Xiong, Sahoo; Salesforce AI Research / NUS / HKUST-GZ; ICML 2025, PMLR 267)。Moirai-MoE 是首个将 Sparse Mixture of Experts 引入时间序列基础模型预训练的框架，核心创新：(1) 移除 Moirai 的频率级投影层，在 Transformer 内部使用 MoE（32 experts, Top-2 activation）实现数据驱动的 token 级专业化；(2) 提出簇基门控函数——从预训练 dense 模型提取 token 嵌入 k-means 聚类中心引导 expert 分配；(3) 采用 next-token prediction 预训练目标替代 masked filling。39 数据集（29 in-distribution + 10 zero-shot）全面 SOTA，Moirai-MoE-S 以 11M 激活参数超越 Moirai-S 17%，以 65× 更少激活参数优于 Chronos-L。模型分析首次揭示时间序列 MoE 的 inner workings：频率不变表示、渐进式去噪（浅层多 expert→深层集中）、与 LLM MoE 相反的浅-深行为模式。
+
+创建的页面：[[source-moirai-moe]], [[moirai-moe]], [[token-level-specialization]], [[cluster-based-gating]]
+更新的页面：[[mixture-of-experts]], [[timesfm]], [[chronos]], [[index]]
+
+源文件：raw/moirai-moe-empowering-time-series-foundation-models-with-sparse-mixture-of-experts-icml2025.pdf（不可变）
+
+
+## [2026-07-21] lint | Moirai-MoE ingest 幻觉修正
+
+### 严重（已修复）
+- [x] wiki/chronos.md — Chronos-S MAE 误写为 0.71（实际 ~0.77，系 Chronos-B 数值）。修正为 ~0.77 并补 Chronos-B (~0.71)
+- [x] wiki/timesfm.md — "Moirai-MoE-S 在 CRPS 上全面优于 TimesFM" 与 Table 2 矛盾（MMoE-S 在 6/10 数据集 CRPS 不如 TimesFM，聚合 Avg 也不如）。修正为 MMoE-B 与 TimesFM 持平的准确描述
+- [x] wiki/moirai-moe.md — `[[moirai-moe|Moirai]]` 自链接（无 wiki/moirai.md），改为纯文本 Moirai
+
+### 信息（已知未修）
+- [i] wiki/source-moirai-moe.md — source_count: 0（source-summary 未自引 body 内 [^src-*]，参数正确但非标准实践）
+- [i] Moirai (Woo et al., 2024) 无独立 entity 页面，多处引用需 plain text
 
 
 

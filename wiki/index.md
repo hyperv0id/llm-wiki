@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-07-16
+last_updated: 2026-07-20
 tags:
   - meta
 ---
@@ -832,6 +832,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[x-prediction]] — x-prediction，扩散模型中直接预测干净数据的参数化方式，基于流形假设在高维空间中优于 ε-/v-prediction
 - [[gradient-orthogonalization]] — orthogonalizing gradient updates to improve optimization
 - [[mixture-of-experts]] — MoE, mixture of experts architecture with dynamic expert routing
+- [[token-level-specialization]] — Token 级专业化，MoE 驱动的数据驱动式时间序列 token 粒度模型专业化范式，替代频率级人工分组 (Moirai-MoE, ICML 2025)
 - [[on-policy-vs-off-policy]] — on-policy 与 off-policy 学习范式对比
 - [[periodicity-modeling-in-time-series]] — analysis of periodic modeling approaches across time-series forecasting architectures
 - [[rl-learning-path-mfrl]] — 基于《Mathematical Foundations of Reinforcement Learning》的系统性 RL 学习路径
@@ -993,6 +994,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-crosslinear]] — CrossLinear: plug-and-play cross-correlation embedding for TS forecasting with exogenous variables (KDD 2025, arXiv:2505.23116)
 - [[source-cirt]] — CirT: Geometry-Inspired Spherical Transformer for S2S Climate Forecasting, 圆形分块 + 傅里叶域自注意力，超越 ECMWF/PanguWeather/GraphCast，ICLR 2025
 - [[source-mage]] — MAGE: Less but More — Linear Adaptive Graph Learning with sparse-balanced MoE, NeurIPS 2025 (USTC)
+- [[source-moirai-moe]] — Moirai-MoE: 首个 Sparse MoE 时间序列基础模型，token 级专业化替代频率级数据分组，cluster-based gating + next-token prediction，39 数据集 SOTA，ICML 2025（Salesforce）
 
 ## Entities (continued)
 - [[gcgnet]] — GCGNet, graph-consistent generative network for exogenous TS forecasting (ICLR 2026, ECNU)
@@ -1000,6 +1002,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[crosslinear]] — CrossLinear, Linear many-to-one exogenous forecaster with O(T) cross-correlation embedding (KDD 2025, USTC)
 - [[cirt]] — CirT (Circular Transformer)，几何感知 S2S 气候预测 Transformer，圆形分块 + 傅里叶域自注意力，ICLR 2025 (HKUST + Alibaba DAMO)
 - [[mage]] — MAGE, Mixture of Adaptive Graph Experts, linear complexity adaptive graph learning for ST forecasting, NeurIPS 2025 (USTC)
+- [[moirai-moe]] — Moirai-MoE, 首个稀疏 MoE 时间序列基础模型，token 级专业化 + cluster-based gating，超越 Moirai/Chronos/Time-MoE，ICML 2025（Salesforce）
 
 ## Concepts (continued)
 - [[joint-temporal-channel-correlation]] — 联合时间–通道相关建模，反对外生预测中的两步串行相关学习 (GCGNet)
@@ -1020,6 +1023,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[fourier-self-attention]] — 傅里叶域自注意力，DFT→频域多头注意力→IDFT 显式编码空间周期性，与 FEDformer FEB 不同
 - [[linear-adaptive-graph-learning]] — 线性自适应图学习，kernel 近似将图卷积从 O(N²) 降为 O(N)，线性于节点数 (MAGE, NeurIPS 2025)
 - [[sparse-balanced-mixture-of-experts-st]] — 稀疏平衡混合专家，每节点 Top-K 激活 + 符号 SGD 负载均衡，克服线性图学习的低秩瓶颈 (MAGE, NeurIPS 2025)
+- [[cluster-based-gating]] — 簇基门控，利用预训练 dense 模型 token 嵌入 k-means 聚类中心引导 MoE 专家分配的创新门控函数 (Moirai-MoE, ICML 2025)
 
 ## Sources (continued)
 - [[source-minitraffic]] — MiniTraffic: mini-sized contrastive learning pre-trained model for fine-grained traffic tasks, ICML 2026

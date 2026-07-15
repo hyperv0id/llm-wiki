@@ -7,7 +7,7 @@ tags:
   - tokenizer
   - iclr2024
 created: 2026-04-29
-last_updated: 2026-07-17
+last_updated: 2026-07-21
 source_count: 6
 confidence: high
 status: active
@@ -79,6 +79,7 @@ Sundial 团队在 Table 8 中报告：使用相同 94B 预训练数据子集时�
 - [[aurora]] — Aurora 多模态生成式基础模型（Chronos 为单模态，Aurora 支持多模态）
 - [[tats]] — TaTS 即插即用多模态框架（Chronos 为数值专用 tokenization，TaTS 通过辅助变量处理文本）
 - [[sundial]] — Sundial，连续 tokenization + Flow Matching 的对比模型 (ICML 2025)
+- [[moirai-moe|Moirai-MoE]] — ICML 2025 首个 MoE 时间序列基础模型。Moirai-MoE-S (11M activated) 在 Monash 29 数据集上聚合 MAE 0.65 超越 Chronos-S (~0.77)、Chronos-B (~0.71)，以 65× 更少激活参数（11M vs 710M Chronos-L）取得更优结果[^src-moirai-moe]。推理速度 273s vs Chronos-S 551s（受益于 patch size 16 vs Chronos 的 point-wise tokenization）[^src-moirai-moe]
 
 ## DynaMix 对比
 
@@ -102,3 +103,4 @@ Sundial 团队在 Table 8 中报告：使用相同 94B 预训练数据子集时�
 [^src-sundial]: [[source-sundial]]
 [^src-probts]: [[source-probts]]
 [^src-dynamix]: [[source-dynamix]]
+[^src-moirai-moe]: [[source-moirai-moe]]
