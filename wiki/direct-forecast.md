@@ -6,7 +6,7 @@ tags:
   - multi-step-forecast
   - learning-objective
 created: 2026-07-13
-last_updated: 2026-07-13
+last_updated: 2026-07-17
 source_count: 4
 confidence: high
 status: active
@@ -34,7 +34,7 @@ FreDF's Theorem 3.1: the DF MSE objective equals the conditional negative log-li
 ## Related
 
 - [[label-autocorrelation]], [[heterogeneous-task-weights]]
-- [[frequency-enhanced-direct-forecast]], [[quadratic-form-weighted-objective]]
+- [[frequency-enhanced-direct-forecast]], [[quadratic-form-weighted-objective]], [[joint-distribution-wasserstein-alignment]]
 - [[fredf]], [[qdf]], [[tide]], [[tft]]
 - [[source-fredf]], [[source-qdf]], [[source-tide]], [[source-tft]]
 

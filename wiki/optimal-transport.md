@@ -7,7 +7,7 @@ tags:
   - probability
   - wasserstein-distance
 created: 2026-04-28
-last_updated: 2026-07-13
+last_updated: 2026-07-17
 source_count: 4
 confidence: medium
 status: active
@@ -148,6 +148,8 @@ $$
 - [[sinkhorn-algorithm]] — Sinkhorn/IPF 求解静态 SB 的迭代算法
 - [[stochastic-interpolant]] — 随机插值与二次速度目标
 - [[interflow]] — InterFlow 生成模型
+- [[joint-distribution-wasserstein-alignment]] — DistDF, Wasserstein alignment for time-series forecasting training
+- [[bures-wasserstein]] — closed-form Gaussian W₂ metric
 
 ## 引用
 

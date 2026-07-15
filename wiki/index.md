@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-07-16
+last_updated: 2026-07-17
 source_count: 0
 tags:
   - meta
@@ -785,6 +785,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[contextual-pattern-bank]] — incrementally expandable parametric memory with prompt-based gating and dual-stream attention keys for CSTF (STBP, ICLR 2026)
 
 - [[joint-distribution-wasserstein-alignment]] — DistDF 的联合分布 Wasserstein 对齐技术，对齐预测与标签的条件分布 (ICLR 2026)
+- [[bures-wasserstein]] — Bures-Wasserstein discrepancy，高斯分布下 W₂ 的闭式解，均值+协方差对齐 (DistDF, ICLR 2026)
 ## Concepts (continued)
 - [[hybrid-llm-flow-matching-forecasting]] — 混合 LLM-流匹配预测，耦合预训练 LLM 语义理解与 FM 连续随机建模的生成式预测范式 (ICML 2026)
 - [[lomb-scargle-periodogram]] — Lomb–Scargle 周期图，非均匀采样数据的频谱估计方法

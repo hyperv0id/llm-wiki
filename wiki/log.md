@@ -1,3 +1,23 @@
+## [2026-07-17] gap-fill | DistDF ingest 补全：交叉引用 + Bures-Wasserstein 页面
+
+补全 2026-07-13 ingest 遗留的缺口。
+
+创建的页面：[[bures-wasserstein]]
+更新的页面：[[joint-distribution-wasserstein-alignment]], [[source-distdf]], [[optimal-transport]], [[direct-forecast]]
+更新的文件：ingest-reports/distdf-why.md
+
+### 交叉引用补全
+- [[joint-distribution-wasserstein-alignment]] ↔ [[optimal-transport]]（Wasserstein 是 OT 度量）
+- [[joint-distribution-wasserstein-alignment]] ↔ [[direct-forecast]]（DistDF = Distribution-aware DF）
+- [[joint-distribution-wasserstein-alignment]] ↔ [[bures-wasserstein]]（实用闭式度量）
+- [[source-distdf]] → [[optimal-transport]], [[direct-forecast]]
+- [[optimal-transport]] → [[joint-distribution-wasserstein-alignment]], [[bures-wasserstein]]
+- [[direct-forecast]] → [[joint-distribution-wasserstein-alignment]]
+
+### 新建页面
+- [[bures-wasserstein]] — BW 闭式 W₂ 度量，均值+协方差对齐，被 DistDF 和 Gaussian SB 使用
+
+
 ## [2026-07-16] lint | DeepAR ingest 全面 Lint + 修复
 
 ### 发现

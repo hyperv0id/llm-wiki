@@ -8,7 +8,7 @@ tags:
   - wasserstein
   - iclr-2026
 created: 2026-07-13
-last_updated: 2026-07-13
+last_updated: 2026-07-17
 source_count: 1
 confidence: high
 status: active
@@ -40,7 +40,12 @@ The Bures-Wasserstein discrepancy under a Gaussian assumption captures only firs
 
 - **Autocorrelation bias**: the bias in MSE as a negative log-likelihood estimator when label sequences have conditional autocorrelation
 - **Joint-distribution Wasserstein discrepancy**: Wp(Px,y, Px,ŷ) as a tractable upper bound on expected conditional Wasserstein discrepancy
-- **Bures-Wasserstein discrepancy**: closed-form W2 metric under Gaussian assumption, matching mean and covariance
+- **[[bures-wasserstein|Bures-Wasserstein discrepancy]]**: closed-form W₂ metric under Gaussian assumption, matching mean and covariance
+
+## Related Paradigms
+
+- [[optimal-transport]] — theoretical basis for Wasserstein discrepancy
+- [[direct-forecast]] — DF paradigm that DistDF enhances with distributional alignment
 
 ## Sibling Objectives
 
