@@ -8,7 +8,7 @@ tags:
   - deep-learning
 created: 2026-07-14
 last_updated: 2026-07-14
-source_count: 3
+source_count: 4
 confidence: high
 status: active
 ---
@@ -36,21 +36,33 @@ Physics-Informed Neural Network（PINN）是将物理定律（通常以 PDE 形�
 
 优势是物理约束强、可解释性高；劣势是架构设计受限于特定 PDE 形式，不够通用。[^src-ctenet]
 
-## 关键权衡
+### 3. 编码知情型（Encoding-Informed PINN）
 
-| | 损失约束型 | 架构嵌入型 |
-|---|---|---|
-| 灵活性 | 高（任意网络+PDE 损失） | 低（PDE 定制架构） |
-| 物理一致性 | 软约束 | 硬约束 |
-| 可解释性 | 间接（通过损失值） | 直接（每层有物理含义） |
-| 对物理知识误差 | 敏感（有害偏置） | 较鲁棒（仅模块化嵌入） |
+将物理元数据（时间戳、地理坐标等）注入模型的位置编码中，无需修改损失函数或架构[^src-pipe]。[[pipe|PIPE]] 是这一范式的代表：将图像 token 的 RoPE 位置 ID 替换为物理量（年日、小时、纬度、经度），配合[[variant-frequency-positional-encoding|变频率正弦编码]]实现物理知识注入[^src-pipe]。
 
+优势是极轻量（仅改动位置编码层），训练开销几乎不变；劣势是表达能力受限于位置编码的容量，无法编码复杂的 PDE 约束[^src-pipe]。
+
+
+## 三种范式对比
+
+| | 损失约束型 | 架构嵌入型 | 编码知情型 |
+|---|---|---|---|
+| 灵活性 | 高 | 低 | **最高** |
+| 物理一致性 | 软约束 | 硬约束 | 软约束（频率域对齐） |
+| 实现成本 | 中 | 高 | **极低** |
+| 适用场景 | 已知 PDE | 已知 PDE 离散形式 | 已知物理量周期性 |
+| 代表方法 | PI-MFM, Raissi | CTENet | **PIPE** |
 ## 相关页面
 
 - [[ctenet]] — 架构嵌入型 PINN 实例
 - [[advection-diffusion-reaction-equation]] — CTENet 嵌入的核心 PDE
 - [[source-pi-mfm]]、[[source-multimodal-pinn]] — 损失约束型 PINN 实例
 
+- [[pipe]] — PIPE 编码知情型实例
+- [[physics-informed-position-encoding]] — 物理知情位置编码
+- [[variant-frequency-positional-encoding]] — 变频率正弦编码
+
 [^src-pi-mfm]: [[source-pi-mfm]]
 [^src-multimodal-pinn]: [[source-multimodal-pinn]]
 [^src-ctenet]: [[source-ctenet]]
+[^src-pipe]: [[source-pipe]]

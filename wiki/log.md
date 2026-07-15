@@ -1,3 +1,22 @@
+## [2025-07-14] ingest | PIPE: Physics-Informed Position Encoding for Typhoon Forecasting (NeurIPS 2025)
+
+Ingest PIPE paper (Li et al., HKUST CSE & ENVR; NeurIPS 2025). PIPE proposes physics-informed positional encoding for aligning satellite images and time series in VLM-based typhoon forecasting. Core innovations: (1) physics-informed positional indexing — mapping physical metadata (day-of-year, hour, latitude, longitude) to positional IDs with negative-value mapping; (2) variant-frequency positional encoding — per-physical-variable sinusoidal wavelengths. Based on Qwen-2.5-VL, achieves SOTA on Digital Typhoon with 12% intensity MAE improvement. Represents a novel third PINN paradigm: encoding-informed.
+
+创建的页面：[[source-pipe]], [[pipe]], [[physics-informed-position-encoding]], [[variant-frequency-positional-encoding]], [[digital-typhoon-dataset]]
+更新的页面：[[multimodal-time-series-forecasting]], [[rope]], [[physics-informed-neural-network]], [[index]], [[log]]
+
+
+## [2026-07-14] lint | PIPE ingest 相关页面
+
+### 严重
+- digital-typhoon-dataset.md: confidence:high 但 source_count:1 → 改为 medium
+- variant-frequency-positional-encoding.md: "贡献了约 2%-4%" → 实际 ~6%（对照 PDF Table 2: 1.639→1.545）
+- source-pipe.md: 训练时间范围 "2.1-3.7h" 遗漏 32B LoRA 0.7h → "0.7-3.7h"
+- multimodal-time-series-forecasting.md, rope.md, physics-informed-neural-network.md: last_updated 年份 2025 应为 2026 的 typo
+
+### 警告
+- source-pipe.md, pipe.md, multimodal-time-series-forecasting.md: "12% 比此前最优方法" → 补全为"比此前最优的无视觉方法（TiDE）"
+- physics-informed-position-encoding.md: 补上缺失的 [[digital-typhoon-dataset]] wikilink
 ## [2026-07-21] ingest | OmniField: Conditioned Neural Fields for Robust Multimodal Spatiotemporal Learning (ICLR 2026)
 
 Ingest OmniField paper (Valencia et al., UCLA/Columbia/BNL; ICLR 2026, arXiv:2511.02205). OmniField proposes a continuity-aware multimodal conditioned neural field (CNF) for robust spatiotemporal learning from sparse, irregular, noisy scientific observations. Core innovations: (1) Gaussian Fourier Features + sinusoidal initialization for high-frequency learning; (2) Multimodal Crosstalk (MCT) block with global feature z for cross-modal information exchange; (3) Iterative Cross-Modal Refinement (ICMR) that progressively aligns heterogeneous modal signals; (4) Fleximodal Fusion with presence masks for arbitrary input modality subsets. Unifies reconstruction, interpolation, forecasting, and cross-modal prediction without gridding. Consistently outperforms 8 baselines (22.4% avg error reduction) and remains near-clean under heavy sensor noise. Evaluated on ClimSim-THW, EPA-AQS, CIFAR-10, RainNet.

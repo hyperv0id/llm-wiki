@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-07-21
+last_updated: 2025-07-14
 tags:
   - meta
 ---
@@ -139,6 +139,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-mae]] — MAE: Masked Autoencoders Are Scalable Vision Learners (He et al., CVPR 2022)
 - [[source-maf]] — MANF: Multi-scale Attention Normalizing Flow for non-autoregressive multivariate probabilistic forecasting (arXiv:2205.07493)
 - [[source-phat]] — PHAT: Period Heterogeneity-Aware Transformer for MTS forecasting (ICLR 2026)
+- [[source-pipe]] — PIPE: Physics-Informed Position Encoding for satellite image-time series alignment in typhoon forecasting (NeurIPS 2025)
 - [[source-pi-mfm]] — PI-MFM: Physics-informed multimodal foundation model for solving PDEs, PDE-encoding MOL with physics losses in pretraining and adaptation (arXiv 2025)
 - [[source-hephestus]] — HEPHAESTUS: Hierarchical Periodic Heterogeneous Adaptive Spatio-Temporal Unified System for Traffic Forecasting (ICLR 2026 under review)
 - [[source-dpgnet]] — DPGNet: Dynamic Graph Prediction Network with AGL + ASL for spatiotemporal forecasting (ICLR 2026 under review)
@@ -313,6 +314,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[deepstate]] — DeepState, RNN-parametrized linear Gaussian SSM with Kalman likelihood/prediction (NeurIPS 2018, Amazon)
 - [[dst-mamba]] — DST-Mamba, decomposed spatio-temporal Mamba for long-term traffic prediction (AAAI 2025)
 - [[diffstg]] — DiffSTG, probabilistic spatio-temporal graph forecasting with denoising diffusion (AAAI 2023)
+- [[digital-typhoon-dataset]] — Digital Typhoon, largest open-source typhoon satellite image dataset (1978-2023)
 - [[dpm-solver]] — DPM-Solver, fast ODE solver for diffusion model (NeurIPS 2022)
 - [[dyffusion]] — DYffusion, dynamics-informed diffusion model for spatiotemporal forecasting (NeurIPS 2023)
 - [[consistency-models]] — Consistency Models, one-step generation via trajectory consistency (ICML 2023)
@@ -385,6 +387,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[xcpd]] — xCPD, model-agnostic plugin for spectral-domain channel-patch dependency routing (ICLR 2026)
 - [[cpiri]] — CPiRi, CI+CD decoupled with channel shuffling for permutation-invariant MTSF (ICLR 2026)
 - [[phat]] — PHAT, period heterogeneity-aware Transformer, 3D bucket + PNA cross-bucket attention (ICLR 2026)
+- [[pipe]] — PIPE, physics-informed position encoding for multimodal typhoon forecasting (NeurIPS 2025)
 - [[cora-tsfm]] — CoRA, TSFM covariate adaptation with Causality Embedding + zero-init injection (ICLR 2026)
 - [[gtr]] — GTR, plug-and-play global temporal retrieval for extending temporal awareness (ICLR 2026)
 - [[lstnet]] — LSTNet, first cross-dimension MTS deep learning model, CNN+RNN+Skip-RNN+AR (SIGIR 2018)
@@ -497,7 +500,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[score-based-generative-modeling]] — 基于分数的生成建模，通过估计数据分布的对数密度梯度来生成样本
 - [[edm-design-space]] — EDM 统一设计空间，将 VP/VE/DDIM 等框架正交化
 - [[perceptual-compression]] — 感知压缩，将生成建模分为感知压缩和语义压缩两个层次
-- [[physics-informed-neural-network]] — PINN，损失约束型 vs 架构嵌入型两大范式
+- [[physics-informed-neural-network]] — PINN，损失约束型 vs 架构嵌入型 vs 编码知情型三大范式
 - [[continuous-normalizing-flow]] — 连续归一化流 (CNF)，基于 Neural ODE 的可逆生成模型
 - [[algorithm-unrolling]] — algorithm unrolling, converting iterative optimization into neural network layers
 - [[mcr2]] — MCR², Maximal Coding Rate Reduction for learning compact structured representations
@@ -774,6 +777,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[bam]] — BAM, Bidirectional Attention Mamba for intra-channel dependency in diffusion denoising (KDD 2025)
 - [[cmb]] — CMB, Channel Mamba Block for inter-channel dependency in diffusion denoising (KDD 2025)
 - [[pristi]] — PriSTI, prior-guided conditional diffusion framework for spatiotemporal imputation (ICDE 2023)
+- [[physics-informed-position-encoding]] — physics-informed position encoding, embedding physical metadata (timestamps, geo-coordinates) into transformer position encodings (PIPE, NeurIPS 2025)
+- [[variant-frequency-positional-encoding]] — variant-frequency sinusoidal encoding with per-physical-variable wavelengths (PIPE, NeurIPS 2025)
 
 ## Techniques (continued)
 - [[node-scale-graph-structure-learning]] — 节点尺度图结构学习，为每个特征独立学习全局元图以解决特征异质性 (AAAI 2025)

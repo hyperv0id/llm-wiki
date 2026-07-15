@@ -6,9 +6,10 @@ tags:
   - multimodal
   - forecasting
   - covariate
+  - satellite-imagery
 created: 2026-04-29
-last_updated: 2026-06-09
-source_count: 10
+last_updated: 2026-07-14
+source_count: 11
 confidence: high
 status: active
 ---
@@ -107,14 +108,14 @@ UniCA 在多模态场景下的表现：
 
 ### 与其他多模态模型的对比
 
-| 维度 | Aurora | UniCA | MoST | VoT | TaTS | ChannelMTS |
-|------|--------|-------|------|-----|------|------------|
-| 范式 | 生成式基础模型 | 适配框架 | 判别式基础模型 | LLM 推理 | 即插即用框架 | 任务专用 |
-| 模态 | 文本 + 图像 + TS | 分类 + 图像 + 文本 | 图像 + 文本 + 位置 + TS | 文本 + TS | 文本 + TS | 环境 + TS |
-| 零样本 | ✓ | ✓ (via TSFM) | ✓ | ✗ | ✗ | ✗ |
-| 生成方式 | Flow Matching | N/A | N/A | LLM 生成 | N/A | N/A |
-| 概率预测 | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ |
-| 架构修改 | 需要 | 需要 (fusion module) | 需要 | 需要 (dual-branch) | **不需要** | 需要 |
+| 维度 | Aurora | UniCA | MoST | VoT | TaTS | ChannelMTS | PIPE |
+|------|--------|-------|------|-----|------|------------|------|
+| 范式 | 生成式基础模型 | 适配框架 | 判别式基础模型 | LLM 推理 | 即插即用框架 | 任务专用 | 位置编码注入 |
+| 模态 | 文本 + 图像 + TS | 分类 + 图像 + 文本 | 图像 + 文本 + 位置 + TS | 文本 + TS | 文本 + TS | 环境 + TS | 卫星图像 + TS |
+| 零样本 | ✓ | ✓ (via TSFM) | ✓ | ✗ | ✗ | ✗ | ✓ (跨洋区) |
+| 生成方式 | Flow Matching | N/A | N/A | LLM 生成 | N/A | N/A | N/A |
+| 概率预测 | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
+| 架构修改 | 需要 | 需要 (fusion module) | 需要 | 需要 (dual-branch) | **不需要** | 需要 | **仅位置编码** |
 
 ### 与 VoT 的区别
 
@@ -169,6 +170,10 @@ UniCA 在多模态场景下的表现：
 
 **[[st-vision-llm|ST-Vision-LLM]]** (Yang et al., arXiv 2025) 代表多模态预测中一条独特路线：它不引入外部模态，而是将数值交通矩阵本身渲染为灰度伪RGB图像，用 Vision-LLM (Qwen2.5-VL-7B) 的原生视觉编码器感知整个网格的全局时空场景，再逐格生成数值 token 预测[^src-st-vision-llm]。与 MoST（使用真实卫星图像作为模态）不同，ST-Vision-LLM 的"图像"是数值场的视觉表示，选择视觉编码器纯粹为利用其 2D 网格归纳偏置，并配合 SFT + GRPO 两阶段训练直接优化预测精度[^src-st-vision-llm]。
 
+## PIPE：物理知情位置编码的台风预测
+
+**[[pipe|PIPE]]** (Li et al., HKUST, NeurIPS 2025) 首次提出将物理元数据（时间戳、经纬度）嵌入 VLM 位置编码的多模态台风预测方法[^src-pipe]。基于 Qwen-2.5-VL，PIPE 通过两个核心机制在位置编码层注入物理知识：（1）[[physics-informed-position-encoding#1. 物理知情位置索引|物理知情位置索引]]——将图像 token 的位置 ID 替换为物理量（年日、小时、纬度、经度），并映射到负值以避免与文本 token 冲突；（2）[[variant-frequency-positional-encoding|变频率位置编码]]——为不同物理变量分配不同波长的正弦函数[^src-pipe]。在 [[digital-typhoon-dataset|Digital Typhoon]] 数据集上达到 SOTA，台风强度预测 MAE 比此前最优的无视觉方法（TiDE）提升 12%[^src-pipe]。消融实验显示：视觉数据贡献约 8% 改善，物理知情编码额外贡献约 6%[^src-pipe]。PIPE 代表了多模态融合的一条独特路线：不通过额外的融合模块或适配器，仅通过**位置编码层的物理知识注入**实现跨模态对齐，训练成本极低（PIPE-3B 仅需 2.1 小时 4×H800）[^src-pipe]。
+
 ## 相关概念
 
 - [[heterogeneous-covariates]] — 异构协变量
@@ -194,6 +199,10 @@ UniCA 在多模态场景下的表现：
 - [[e2-cstp]] — E²-CSTP 因果多模态时空预测框架
 - [[streasoner]] — STReasoner 时空推理 TS-LM
 - [[spatio-temporal-reasoning]] — 时空推理概念
+- [[pipe]] — PIPE 物理知情位置编码台风预测模型 (NeurIPS 2025)
+- [[physics-informed-position-encoding]] — 物理知情位置编码技术
+- [[variant-frequency-positional-encoding]] — 变频率正弦编码
+- [[digital-typhoon-dataset]] — Digital Typhoon 台风卫星数据集
 
 ---
 
@@ -209,3 +218,4 @@ UniCA 在多模态场景下的表现：
 [^src-streasoner]: [[source-streasoner]]
 [^src-mtp]: [[source-mtp]]
 [^src-st-vision-llm]: [[source-st-vision-llm]]
+[^src-pipe]: [[source-pipe]]
