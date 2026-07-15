@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-07-20
+last_updated: 2026-07-21
 tags:
   - meta
 ---
@@ -72,6 +72,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-tide]] — TiDE: Time-series Dense Encoder, residual MLP encoder–decoder for LTSF with covariates (Das et al., arXiv:2304.08424)
 - [[source-tft]] — TFT: Temporal Fusion Transformer for interpretable multi-horizon forecasting with static/known/observed inputs + quantile outputs (Lim et al., Google, arXiv:1912.09363)
 - [[source-nbeatsx]] — NBEATSx: neural basis expansion with exogenous variables for electricity price forecasting (Olivares et al., IJF 2022 / arXiv:2104.05522)
+- [[source-new-bounds-on-diffsequences]] — New Bounds on Diffsequences: Ramsey theory, improved exponential lower bound for D={2ⁱ} diffsequences, classification of 2-accessible dividing sequences (Clifton, arXiv 2022)
 - [[source-tqn]] — TQNet: Temporal Query Network for efficient multivariate forecasting (ICML 2025)
 - [[source-trajectory-dl-survey]] — Comprehensive Survey of Deep Learning for Trajectory Data Management and Mining
 - [[source-timegrad]] — TimeGrad: autoregressive denoising diffusion for probabilistic time series forecasting (ICML 2021)
@@ -489,6 +490,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[generalized-positional-encoding-framework]] — unified framework decomposing attention scores into multiplicative and additive components
 - [[elbo]] — 证据下界（ELBO），潜变量模型中 $\log p(\mathbf{x})$ 的可优化下界
 - [[diffusion-model]] — 扩散模型，通过逐步加噪和去噪学习的生成模型
+- [[diffsequence]] — Diffsequence（差序列），Ramsey 理论中 gaps 落在指定集合的递增整数序列，van der Waerden 定理的自然推广
 - [[variational-autoencoder]] — 变分自编码器（VAE），基于 ELBO 优化的潜变量生成模型
 - [[score-function]] — 分数函数 ∇_x log p(x)，对数概率密度的梯度
 - [[scaling-factor-sqrt-dk]] — 缩放因子 1/√dₖ，注意力机制的数值稳定性条件
@@ -668,6 +670,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[temporal-query-technique]] — periodically shifted learnable vectors as queries for global correlation
 - [[cross-period-sparse-forecasting]] — cross-period downsampling for extreme model compression
 - [[radial-basis-function-interpolation]] — RBF 插值，Multiquadric 核从离散站点构建连续污染物场
+- [[ramsey-theory]] — Ramsey 理论（拉姆齐理论），组合数学核心分支：足够大的结构中必然存在秩序子结构的哲学及其在数论/图论中的应用
 - [[reparameterization-trick]] — 重参数化技巧，将随机采样重构为可微确定性变换+固定噪声
 - [[residual-cycle-forecasting]] — RCF technique using learnable recurrent cycles for explicit periodicity modeling
 - [[retrieval-guidance]] — inference-time retrieval of similar history to analytically tilt diffusion score estimation (MiDDiR, ICLR 2026 under review)

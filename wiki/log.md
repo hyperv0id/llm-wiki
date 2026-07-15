@@ -1,3 +1,42 @@
+## [2026-07-21] ingest | New Bounds on Diffsequences (Clifton, arXiv:2110.10760, 2022)
+
+Ingest Ramsey 理论论文 New Bounds on Diffsequences。核心贡献：对 D={2ⁱ} 给出指数下界 Δ(D,k) ≥ 2^√(2k)，验证 CCLS 猜想；证明阶乘集合非 2-accessible；完整分类乘积集合 D_{aₙ} 的 2-accessibility（当且仅当 {aₙ} 含任意长连续 2 的串）。技术：Thue-Morse 染色族、Beatty 序列染色、嵌套区间构造。
+
+创建的页面：[[source-new-bounds-on-diffsequences]], [[diffsequence]], [[ramsey-theory]]
+更新的页面：[[index]]
+
+源文件：raw/2110.10760.pdf（已存在，不可变）
+
+## [2026-07-21] lint | New Bounds on Diffsequences ingest Lint + 幻觉检查 + 修复
+
+对照 PDF (pdftotext) 逐条验证作者、年份、方法名、指标数字。全部通过，无捏造/错引。
+
+### 发现
+- source-new-bounds-on-diffsequences.md: source-summary 自引用 [^src-*] 循环引用 → source_count: 1→0
+- diffsequence.md: Fibonacci/素数 已知结果行缺引用 → 补 [^src-new-bounds-on-diffsequences]
+- diffsequence.md: Ramsey 理论缺 wikilink → [[ramsey-theory|Ramsey 理论]]
+- ramsey-theory.md: 算术级数 modulo m 等变体行缺引用 → 补 [^src-new-bounds-on-diffsequences]
+- ramsey-theory.md: 稀疏集合分类行缺引用 → 补 [^src-new-bounds-on-diffsequences]
+- ramsey-theory.md: Diffsequence 行缺 wikilink → [[diffsequence|Diffsequence]]
+- source-new-bounds-on-diffsequences.md: 缺交叉 wikilink → 补 [[ramsey-theory]]、[[diffsequence]]
+
+### 修复
+- source_count fix ×1; 引用补全 ×4; wikilink 补全 ×4; last_updated 刷新 (today)
+
+### 已验证通过（幻觉检查）
+- 作者 Alexander Clifton / IBS Daejeon、arXiv:2110.10760v4 [math.CO], Dec 2022 ✓
+- Thm 1.1 指数下界公式与 CCLS 猜想引用 ✓
+- Prop 1.2 Beatty α 染色避免长度 ≥4 ✓
+- Thm 1.3 乘积集合分类条件 ✓
+- 方法：Thue-Morse 染色族 P_t / P_{t,u}、嵌套区间构造 ✓
+- 局限性：Θ(√k) vs Θ(k) gap、Conjecture 5.1、开放问题 ✓
+
+### 仍存风险
+- ramsey-theory.md Frank Ramsey (1930) 为常识性陈述，非 Clifton 论文直接内容
+- diffsequence/ramsey-theory 全新数学领域，仅 1 篇 source，待后续充实
+
+更新的页面：[[source-new-bounds-on-diffsequences]], [[diffsequence]], [[ramsey-theory]], [[index]]
+
 ## [2026-07-21] lint | NBEATSx ingest Lint + 幻觉检查 + 修复
 
 对照 PDF (pdftotext) 逐条验证作者、年份、方法名、数值指标。全部通过，无捏造/错引。
@@ -548,7 +587,7 @@ ClimateAR (Yu, Chen, Wu, Cui, Jiang, Shang, Wu, Sun & Chen; Zhejiang Univ, Aliba
 title: Log
 type: concept
 created: 2026-04-26
-last_updated: 2025-07-18
+last_updated: 2026-07-21
 ## [2026-07-13] ingest | QDF: Quadratic Direct Forecast for Training Multi-Step Time-Series Forecast Models
 创建的页面：[[source-qdf]], [[qdf]], [[quadratic-form-weighted-objective]], [[heterogeneous-task-weights]]
 更新的页面：[[index]], [[source-fredf]], [[source-distdf]], [[fredf]], [[label-autocorrelation]], [[direct-forecast]], [[autocorrelation-bias]], [[joint-distribution-wasserstein-alignment]]
