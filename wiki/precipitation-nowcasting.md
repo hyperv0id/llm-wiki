@@ -9,29 +9,42 @@ tags:
   - satellite
 created: 2026-07-16
 last_updated: 2026-07-16
-source_count: 1
-confidence: medium
+source_count: 2
+confidence: high
 status: active
 ---
 
 # Precipitation Nowcasting
 
-降水临近预报（Precipitation Nowcasting）是指对 0–6 小时短时降水进行高分辨率预测的任务。与中期天气预报（1–15 天）不同，临近预报关注的是局部、快速演变的对流系统，对空间分辨率和时效性要求极高[^src-qcgs]。
+降水临近预报（Precipitation Nowcasting）是指对 0–8 小时短时降水进行高分辨率预测的任务。与中期天气预报（1–15 天）不同，临近预报关注的是局部、快速演变的对流系统，对空间分辨率和时效性要求极高[^src-qcgs][^src-rainpro]。
 
 ## 为什么降水特别难
 
-尽管基于 ERA5 的数据驱动全球预报模型（FourCastNet、Pangu-Weather、GraphCast、ClimaX、FuXi、GenCast）已在中程超越 NWP，降水仍然是突出难点。根本原因在于**尺度不匹配**：全球模型运行在数十公里粗分辨率上，而降水关键特征（局部暴雨、对流单体）出现在亚网格尺度、间歇且局部地涌现[^src-qcgs]。
+尽管基于 ERA5 的数据驱动全球预报模型（FourCastNet、Pangu-Weather、GraphCast、ClimaX、FuXi、GenCast）已在中程超越 NWP，降水仍然是突出难点。根本原因在于**尺度不匹配**：全球模型运行在数十公里粗分辨率上，而降水关键特征（局部暴雨、对流单体）出现在亚网格尺度、间歇且局部地涌现[^src-qcgs]。此外，中期模型使用的 ERA5 再分析数据存在表面变量和降水的系统性偏差[^src-rainpro]。
 
 ## 方法演进
 
 ### 传统方法
-- **光流法**：Lucas-Kanade 等对雷达反射率场做外推（如 PySTEPS），预报技巧受限于雷达保真度
+- **光流法**：Lucas-Kanade 等对雷达反射率场做外推（如 PySTEPS），预报技巧受限于雷达保真度，且假设恒定运动和强度，随预报时效增长迅速退化[^src-rainpro]
 - **统计插值**：Barnes 插值、Kriging、最优插值从雨量计点观测构建网格化降水场，但模糊尖锐边界、对站点密度敏感
 
 ### 深度学习时代
 - **ConvLSTM**（Shi et al., 2015）：开创性工作，将卷积嵌入 LSTM 做时空预报
+- **U-Net 变体**：RainNet（Ayzel et al., 2020）、SmaAt-UNet（Trebing et al., 2021）、Broad-UNet（Fernández & Mehrkanoon, 2021）广泛用于雷达降水预报[^src-rainpro]
 - **GAN-based**：DGMR（Ravuri et al., 2021, Nature），深度生成式雷达降水预报
-- **扩散模型**：PreDiff（Gao et al., 2023）、DiffCast（Yu et al., 2024a）、CasCast（Gong et al., 2024a）、PostCast（Gong et al., 2024b）在短时效实现强性能
+- **Transformer**：Earthformer（Gao et al., 2024）用时空 Transformer 做地球系统预报[^src-rainpro]
+- **扩散模型**：PreDiff（Gao et al., 2023）、DiffCast（Yu et al., 2024）、CasCast（Gong et al., 2024）在短时效实现强性能
+
+### 多源数据融合路线（8 小时级别）
+
+突破雷达限制的关键方向是融合多源异构数据。[[rainpro|RainPro-8]]（ICLR 2026）首次在欧洲以 2km/px、10min 间隔实现 8 小时概率降水预报，整合雷达（RainViewer）、卫星（EUMETSAT 11 通道）、NWP（GFS 122 变量）和地形数据，36.7M 参数 U-Net+MaxViT 架构，性能超越运营 NWP 系统 65%[^src-rainpro]。
+
+其核心创新包括：
+- **[[ordinal-consistent-loss|有序一致性损失]]**：通过条件概率公式强制降水强度类别单调性，替代传统交叉熵[^src-rainpro]
+- **单次前向预测**：48 个预报时效编码到通道维度一次输出，推理快 48× 且保持时序一致性[^src-rainpro]
+- **时效权重衰减**：指数衰减加权训练，兼顾短时效精度和长时效稳定性[^src-rainpro]
+
+[[metnet|MetNet]] 系列（Google）在 8–24h 美国概率降水预报上达到 SOTA，但依赖 227M 参数和 512 TPU v3 的大规模训练，代码和数据未公开，且使用交叉熵损失忽略强度序数关系[^src-rainpro]。
 
 ### 雷达困境
 上述方法几乎全部假设雷达为主要输入。但雷达网络成本高、地理覆盖有限，主要适用于欧美等地区。雷达分辨率固定，无法表征亚尺度过程[^src-qcgs]。
@@ -42,10 +55,12 @@ status: active
 |------|----------|--------|
 | 纯卫星 | Sat2Radar (NPM, Park et al. 2025) | 全球覆盖，但偏差大、固定分辨率 |
 | 卫星-站点融合 | QCGS (Kim et al., ICLR 2026) | 分辨率灵活、精度高，但依赖 AWS 密度；核心依赖 [[gaussian-splatting|Gaussian Splatting]] 和 [[implicit-neural-representation|INR]] |
+| 多源融合 + 概率预报 | [[rainpro|RainPro-8]] (ICLR 2026) | 8h 欧洲全覆盖，多源数据（雷达/卫星/NWP/地形），概率输出，36.7M 参数高效架构[^src-rainpro] |
 | 传统插值 | Kriging, Barnes | 无需训练，但模糊边界 |
 
 ## 与极端天气预测的关系
 
-临近预报与 [[extreme-weather-forecasting|极端天气预测]] 高度相关：强降水本身就是高影响极端事件。但临近预报关注短时（<6h）局地降水场重建，极端天气预测关注更广泛的事件类型（洪涝、热浪、闪电等）和更长的预报时效。[[qcgs|QCGS]] 的降水场生成能力可作为极端降水预测的数据同化前端[^src-qcgs]。
+临近预报与 [[extreme-weather-forecasting|极端天气预测]] 高度相关：强降水本身就是高影响极端事件。但临近预报关注短时（<8h）局地降水场重建，极端天气预测关注更广泛的事件类型（洪涝、热浪、闪电等）和更长的预报时效。[[qcgs|QCGS]] 的降水场生成能力可作为极端降水预测的数据同化前端[^src-qcgs]。[[rainpro|RainPro]] 的概率输出为 8 小时内各强度等级提供校准的不确定性估计，可辅助极端降水预警决策[^src-rainpro]。
 
 [^src-qcgs]: [[source-qcgs]]
+[^src-rainpro]: [[source-rainpro]]

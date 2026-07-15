@@ -1,3 +1,30 @@
+## [2026-07-16] ingest | RainPro-8: Efficient Deep Learning Model for Rainfall Probability over 8 Hours (ICLR 2026)
+
+Ingest RainPro-8 paper (Rafael Pablos Sarabia et al., Aarhus University & Cordulus; ICLR 2026). Core innovations: (1) Ordinal Consistent Loss — conditional probability formulation enforcing monotonicity across precipitation intensity classes via Bayes chain rule; (2) Single-Pass Predictions — all 48 lead times in one forward pass (48× faster than lead-time conditioning); (3) Multi-source data fusion at heterogeneous resolutions (radar 4km/8km, satellite 8km, GFS 16km, topography 4km) via U-Net+MaxViT (36.7M params, 16% of MetNet-3). RainPro-8 achieves CRPS 0.061, CSI 0.279, FSS 0.537 in Europe, outperforming operational NWP by 65%. RainPro-2R (radar-only variant) achieves SOTA on SEVIR benchmark. Proposal includes comprehensive ablation, Integrated Gradients attribution, and MetNet-3* faithful reimplementation.
+
+创建的页面：[[source-rainpro]], [[rainpro]], [[metnet]], [[ordinal-consistent-loss]]
+更新的页面：[[precipitation-nowcasting]], [[index]]
+
+源文件：raw/rainpro-8-rainfall-probability-iclr-2026.pdf
+
+## [2026-07-21] lint | RainPro ingest 完整 Lint + 幻觉检查 + 修复
+
+### 严重（已修复）
+- [x] rainpro.md — 训练时间幻觉："约 13.6 小时" → "约 13 小时"（PDF 原文 "approximately 13 hours"）
+
+### 警告（已修复）
+- [x] ordinal-consistent-loss.md — Fernandes & Cardoso (2018) 句末缺 [^src-rainpro]
+
+### 幻觉交叉验证通过
+对照 PDF (pdftotext) 逐条验证：作者/机构/年份/CRPS 0.06096/CSI 0.279/FSS 0.537/36.7M/EUMETSAT 11 通道/GFS 122/Copernicus DEM/H100 ~13h/α=10/Ordinal Consistent Loss/Fernandes & Cardoso/SEVIR DiffCast 13×/IG 归因/MetNet-3*/65%——除 13.6h→13h 笔误外全部一致，无捏造。
+
+### 仍存风险
+- 无。单源 ingest，所有新建页面 source_count≤1，符合策略。
+
+更新的页面：[[rainpro]], [[ordinal-consistent-loss]]
+更新的文件：ingest-reports/rainpro-8-iclr-2026.md
+
+
 ## [2026-07-21] lint | QDF ingest 深度 Lint + 幻觉检查 + 修复
 
 ### 严重（已修复）

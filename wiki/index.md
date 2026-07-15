@@ -1053,6 +1053,9 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[mcgvae]] — McgVAE, first road-lane joint modeling VAE for fine-grained traffic prediction, CIKM 2024
 - [[omnifield]] — OmniField, encoder-processor-decoder CNF unifying reconstruction/interpolation/forecasting/cross-modal prediction, ICLR 2026
 - [[subfactor-planar-algebra]] — 子因子平面代数，II₁ 子因子标准不变量的公理化，与 unitary 2×2 multitensor category 等价
+- [[metnet]] — MetNet 系列（Google），SOTA 概率降水预报模型（1/2/3），交叉熵 + 时效条件化 + 227M 参数，仅限美国
+- [[rainpro]] — RainPro 系列，高效多源融合概率降水预报（RainPro-8/8R/2R），有序一致性损失 + 单次预测，ICLR 2026
+
 
 ## Concepts (continued)
 - [[fine-grained-traffic-prediction]] — fine-grained traffic prediction unifying road-level and lane-level forecasting
@@ -1063,6 +1066,10 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[multimodal-crosstalk]] — MCT block, concatenated per-modality CNF tokens with global feature z injection for cross-modal exchange (OmniField, ICLR 2026)
 - [[iterative-cross-modal-refinement]] — ICMR, multi-round MCT with pooled global feature bridge for progressive multimodal signal alignment (OmniField, ICLR 2026)
 - [[fleximodal-fusion]] — presence-mask gating at encoder/attention/loss levels enabling one model for arbitrary input modality subsets (OmniField, ICLR 2026)
+- [[ordinal-consistent-loss]] — 有序一致性损失，条件概率公式强制降水强度单调性，BCE + 有序掩码保证概率一致性
+
 
 ## Sources (continued)
 - [[source-omnifield]] — OmniField: continuity-aware multimodal conditioned neural field for robust spatiotemporal learning, MCT + ICMR + fleximodal fusion, ICLR 2026 (BNL/UCLA/Columbia)
+- [[source-rainpro]] — RainPro-8: 高效 8h 概率降水预报模型，多源融合（雷达/卫星/NWP/地形）+ 有序一致性损失 + 单次前向预测，ICLR 2026
+
