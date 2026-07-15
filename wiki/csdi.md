@@ -9,8 +9,8 @@ tags:
   - probabilistic-modeling
   - neurips-2021
 created: 2026-05-31
-last_updated: 2026-07-13
-source_count: 10
+last_updated: 2026-07-14
+source_count: 9
 confidence: medium
 status: active
 ---
@@ -35,7 +35,7 @@ $$\mu_\theta(x_t^{\text{ta}}, t \mid x_0^{\text{co}}) = \mu^{\text{DDPM}}(x_t^{\
 
 ### 自监督训练策略
 
-受 BERT 掩码语言建模启发，CSDI 在训练时从观测值中人工构造监督信号[^src-csdi]：从未缺失的部分中随机选取一部分作为"伪插补目标" $x_0^{\text{ta}}$（假装缺失），其余作为"伪条件观测" $x_0^{\text{co}}$（假装只看到这些）。在伪目标上按标准扩散流程加噪 $x_t^{\text{ta}} = \sqrt{\bar{\alpha}_t} x_0^{\text{ta}} + \sqrt{1-\bar{\alpha}_t} \epsilon$，训练网络去噪恢复。
+受 BERT 掩码语言建模启发，CSDI 在训练时从观测值中人工构造监督信号[^src-csdi]：从未缺失的部分中随机选取一部分作为"伪插补目标" $x_0^{\text{ta}}$（假装缺失），其余作为"伪条件观测" $x_0^{\text{co}}$（假装只看到这些）。在伪目标上按标准扩散流程加噪 $x_t^{\text{ta}} = \sqrt{\bar{\alpha}_t} x_0^{\text{ta}} + \sqrt{1-\bar{\alpha}_t} \epsilon$，训练网络去噪恢复。该训练范式已被多个后续方法继承，详见 [[self-supervised-imputation-training|自监督插补训练]]。
 
 四种目标选择策略[^src-csdi]：
 
@@ -158,7 +158,6 @@ CSDI 的三个核心设计——(1) 观测值作为条件直接注入去噪网�
 
 [^src-csdi]: [[source-csdi]]
 [^src-timegrad]: [[source-timegrad]]
-[^src-fence]: [[source-fence]]
 [^src-lscd]: [[source-lscd]]
 [^src-ssdts]: [[source-ssdts]]
 [^src-sadi]: [[source-sadi]]

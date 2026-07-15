@@ -1,3 +1,10 @@
+## [2026-07-14] re-ingest | CSDI — 补全缺口（source-summary 扩展 + 概念页 + 交叉引用）
+创建的页面：[[self-supervised-imputation-training]]
+更新的页面：[[source-csdi]], [[index]]
+核心贡献：扩展 source-summary 从 231→290 词（方法细节、消融实验、噪声调度）；新建自监督插补训练概念页（四种策略、后续采用、BERT/MAE 对比）；csdi 页关联链接。
+源文件：raw/2107.03502.pdf（不可变）
+---
+
 ## [2026-07-13] ingest | DeepAR — Probabilistic Forecasting with Autoregressive Recurrent Networks (arXiv:1704.04110)
 创建的页面：[[source-deepar]], [[deepar]]
 更新的页面：[[index]], [[generative-time-series-forecasting]], [[deep-state-space-model]], [[deepstate]], [[source-deepstate]], [[timegrad]], [[ar-vs-nar-decoding]]

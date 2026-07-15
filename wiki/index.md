@@ -522,6 +522,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[diffusion-models]] — 扩散模型 (Diffusion Models)，包含 DDPM、SMLD、SDE 统一框架与应用
 - [[fokker-planck-equation]] — 福克-普朗克方程 (Fokker-Planck Equation)，描述随机过程概率密度演化的 PDE
 - [[score-matching]] — 得分匹配 (Score Matching)，通过匹配分数函数估计数据分布
+- [[self-supervised-imputation-training]] — 自监督插补训练：从观测值中人工构造伪缺失目标形成自监督信号，BERT 掩码语言建模启发的训练范式 (CSDI, NeurIPS 2021)
 - [[stochastic-interpolant]] — Stochastic Interpolant: 任意端点密度上的有限时间随机插值与二次概率流速度目标 (ICLR 2023)
 - [[smld]] — Score-Matching Langevin Dynamics，基于分数匹配和朗之万采样的生成模型
 - [[multivariate-correlation-attention]] — 多变量相关性注意力，iTransformer 中 attention 作用于 variate token 维度 (ICLR 2024)

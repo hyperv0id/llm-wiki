@@ -8,7 +8,7 @@ tags:
   - self-supervised-learning
   - neurips-2021
 created: 2026-05-31
-last_updated: 2026-07-13
+last_updated: 2026-07-14
 source_count: 1
 confidence: medium
 status: active
@@ -26,16 +26,17 @@ CSDI 是首个将条件扩散模型显式用于时间序列缺失值插补的工
 
 ## 方法
 
-- **条件扩散**：将 DDPM 的参数化 $\mu_\theta(x_t, t)$ 直接扩展到条件场景 $\mu_\theta(x_t^{\text{ta}}, t \mid x_0^{\text{co}})$，训练目标仍然是 MSE 噪声预测，形式完全不变——唯一的区别是 $\epsilon_\theta$ 多了一个条件输入 $x_0^{\text{co}}$
-- **自监督训练**：受 BERT 掩码语言建模启发，从训练样本的观测值中随机选一部分作为"伪插补目标" $x_0^{\text{ta}}$，其余作为"伪条件观测" $x_0^{\text{co}}$，在伪目标上加噪声后训练去噪网络。提供四种目标选择策略（Random / Historical / Mix / Test pattern）以适配不同缺失模式
-- **双轴注意力架构**：每层残差块包含两个 1 层 Transformer 编码器——时间 Transformer 沿特征轴学习时间依赖，特征 Transformer 沿时间轴学习跨特征依赖。4 层残差层，残差通道 C=64，8 注意力头，约 415K 参数。T=50，二次方噪声调度
+- **条件扩散**：将 DDPM 的参数化 $\mu_\theta(x_t, t)$ 直接扩展到条件场景 $\mu_\theta(x_t^{\text{ta}}, t \mid x_0^{\text{co}})$，训练目标保持 MSE 噪声预测，唯一区别是 $\epsilon_\theta$ 多了条件输入 $x_0^{\text{co}}$。通过零填充将变化的输入形状固定为 $K \times L$，配合条件掩码 $m^{\text{co}}$ 指示条件观测位置[^src-csdi]
+- **自监督训练**：受 BERT 掩码语言建模启发，从训练样本的观测值中随机选取一部分作为"伪插补目标" $x_0^{\text{ta}}$，其余作为"伪条件观测" $x_0^{\text{co}}$，在伪目标上按标准扩散流程加噪后训练去噪网络。四种目标选择策略：Random（采样 0-100% 观测值为目标，应对未知缺失）、Historical（借用训练集另一样本的缺失模式，应对结构化缺失如传感器连续故障块）、Mix（Random + Historical 各 50%）、Test pattern（已知测试缺失模式时直接使用，如预测任务）。详见 [[self-supervised-imputation-training|自监督插补训练]][^src-csdi]
+- **双轴注意力架构**：每层残差块包含两个 1 层 Transformer 编码器——时间 Transformer 沿特征轴学习时间依赖，特征 Transformer 沿时间轴学习跨特征依赖。骨架为 DiffWave 风格 4 层残差层，残差通道 $C=64$，8 注意力头。输入侧信息：128 维扩散步嵌入（正弦）、128 维时间戳嵌入、16 维特征类别嵌入。输出经 $(1-m^{\text{co}})$ 掩码屏蔽条件位置。$T=50$，二次方噪声调度 $\beta_1=0.0001, \beta_T=0.5$，约 415K 参数[^src-csdi]
 
 ## 关键结果
 
-- **概率插补**：在 PhysioNet 医疗数据（35 特征，48 时间步，~80% 缺失率）和北京空气质量数据（36 特征，36 时间步，~13% 缺失率）上，CSDI 的 CRPS 比 GP-VAE 降低 40-65%[^src-csdi]
-- **确定性插补**：MAE 比 BRITS/GLIMA 降低 5-20%
-- **不规则采样插值**：CRPS 大幅领先 Latent ODE 和 mTANs
-- **预测**：在 electricity 和 traffic 数据集上超越 [[timegrad|TimeGrad]]，在所有数据集上具有竞争力
+- **概率插补**：在 PhysioNet 医疗数据（35 特征，48 时间步，~80% 缺失率）和北京空气质量数据（36 特征，36 时间步，~13% 结构性缺失）上对比 Multitask GP、GP-VAE、V-RIN 和无条件扩散基线。CSDI 的 CRPS 比 GP-VAE 降低 40-65%；无条件扩散本身已优于 GP-VAE（PhysioNet 50%：0.458 vs 0.774），CSDI 条件建模进一步带来约 28% 额外改善[^src-csdi]
+- **确定性插补**：中位数聚合 100 个生成样本，MAE 比 BRITS/GLIMA/RDIS 降低 5-20%。缺失率越低 CSDI 相对优势越大（更多观测值提供更丰富条件信息）[^src-csdi]
+- **不规则采样插值**：CRPS 大幅领先 Latent ODE 和 mTANs（PhysioNet 50% 缺失：CSDI 0.418 vs mTANs 0.567 vs Latent ODE 0.676），验证了注意力机制对不规则采样的天然适配[^src-csdi]
+- **预测**：在 5 个 GluonTS 基准（solar/electricity/traffic/taxi/wiki）上 CRPS-sum 在 electricity 和 traffic 上超越 [[timegrad|TimeGrad]]（0.017 vs 0.021；0.020 vs 0.044），整体竞争力相当；预测优势不如插补显著——预测集几乎没有缺失值，RNN 不受限[^src-csdi]
+- **消融**：移除时间或特征注意力均显著降性能；Bi-RNN/膨胀卷积替代劣于双轴注意力；噪声调度对比表明 CRPS 对不同调度稳健，但 ELBO/NLL 高度依赖调度——不可靠用于评估生成质量；5-10 个样本即接近最优，超过 50 个改善趋于饱和[^src-csdi]
 
 ## 贡献
 
