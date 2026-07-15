@@ -2381,3 +2381,29 @@ Raw: qcgs-query-conditioned-gaussian-splatting-precipitation-nowcasting.pdf
 ### 备注
 - pdftotext 因 PDF 字体问题仅提取出标题/摘要/引言开头，主要文本内容从 arXiv HTML (2603.00418v1) 和 PaperNotes 分析中获取
 - 论文提及但尚未创建的潜在页面：ConvLSTM, PreDiff, Sat2Radar/NPM, IMERG, MSWEP, GSMaP（可作为未来 ingest 的目标源）
+
+## [2026-07-21] ingest | SIFusion: Multi-Granularity Arctic Sea Ice Forecasting (NeurIPS 2025)
+
+源文件：raw/sifusion-multi-granularity-arctic-sea-ice-forecasting.pdf
+
+创建的页面：[[source-sifusion]], [[sifusion]], [[multi-granularity-sea-ice-forecasting]], [[granularity-variates]], [[independent-spatial-tokenization]], [[sea-ice-concentration-forecasting]], [[arctic-amplification]]
+
+更新的页面：[[subseasonal-to-seasonal-forecasting]], [[itransformer]], [[multi-scale-attention]]
+
+新建交叉链接：sifusion ↔ multi-granularity-sea-ice-forecasting ↔ granularity-variates ↔ independent-spatial-tokenization ↔ sea-ice-concentration-forecasting；sifusion → subseasonal-to-seasonal-forecasting；granularity-variates → itransformer；multi-granularity-sea-ice-forecasting → multi-scale-attention
+
+## [2026-07-21] lint | SIFusion ingest 深度 lint + 幻觉交叉验证
+
+### 发现
+- source-sifusion.md：7 个自引用 `[^src-sifusion]` + 脚注自引用（违反 qdf lint 先例）
+- sifusion.md：缺少到 arctic-amplification 的交叉引用
+
+### 修复
+- source-sifusion.md：移除全部自引用，替换为到 sifusion/itransformer/independent-spatial-tokenization/granularity-variates/multi-granularity-sea-ice-forecasting/sea-ice-concentration-forecasting/arctic-amplification 的 wikilink
+- sifusion.md：新增 arctic-amplification 相关页面链接
+
+### 幻觉检查（通过）
+- 作者、会议（NeurIPS 2025）、Swin V2、三粒度（日/周/月）、patch partition（2×2）、spatial channels（32）、NSIDC G02202 v4 参数（448×304, 25km）、训练/验证/测试划分（1978–2013/2014–2015/2016–2023）、六个指标、Table 1/2/3 数字：全部与 PDF 原文一致
+
+### 配置文件
+- source-sifusion.md, sifusion.md, ingest-reports/sifusion-why.md

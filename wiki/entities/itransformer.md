@@ -7,7 +7,7 @@ tags:
   - multivariate-forecasting
   - ICLR-2024
 created: 2026-05-30
-last_updated: 2026-05-31
+last_updated: 2026-07-21
 source_count: 1
 confidence: medium
 status: active
@@ -77,5 +77,7 @@ iTransformer 属于论文定义的第四类 Transformer 修改：仅改架构、
 - [[patch-based-tokenization]] — iTransformer 的 variate token 可视为 Patching 的极端情况（整条序列为一个 patch）
 - [[lstf]] — iTransformer 解决了 Transformer 在 LSTF 中随回看窗口增长性能不提升的问题
 - [[informer]] — iTransformer 框架可直接提升 Informer 性能 28.5%
+- [[granularity-variates]] — SIFusion 将 variate 思路迁移至时间粒度维度（跨粒度 attention）
+- [[sifusion]] — SIFusion 中应用 granularity variates 做多粒度海冰预测
 
 [^src-itransformer]: [[source-itransformer]]

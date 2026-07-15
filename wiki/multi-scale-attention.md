@@ -8,7 +8,7 @@ tags:
   - relative-position
   - transformer
 created: 2026-07-13
-last_updated: 2026-07-13
+last_updated: 2026-07-21
 source_count: 1
 confidence: medium
 status: active
@@ -48,6 +48,7 @@ $$
 | 全局 Transformer 注意力 | 无窗口归纳偏置；MANF 用尺度窗口约束 |
 | 绝对正弦 PE | MANF 在多尺度下用可学习相对位置 |
 | [[multi-scale-linear-prediction]] 等 | 同属多粒度时序建模，但机制为下采样/线性混合而非注意力窗口 |
+| [[multi-granularity-sea-ice-forecasting]] | 多粒度海冰预测：不同时间粒度的 SIC 作为独立 variate 跨粒度建模 |
 | [[ar-vs-nar-decoding]] | 多尺度注意力在 MANF 中服务 **NAR** 条件流生成 |
 
 ## 相关页面
@@ -55,5 +56,6 @@ $$
 - [[manf]] / [[source-maf]]
 - [[normalizing-flow]]
 - [[generative-time-series-forecasting]]
+- [[multi-granularity-sea-ice-forecasting]] — 跨粒度注意力与多粒度预测
 
 [^src-maf]: [[source-maf]]

@@ -6,9 +6,10 @@ tags:
   - s2s
   - climate
   - predictability-desert
+  - sea-ice
 created: 2026-07-14
 last_updated: 2026-07-21
-source_count: 2
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -36,14 +37,15 @@ S2S 时间尺度的根本挑战在于[^src-cirt]：
 - **全球直接模型**：ClimaX 和 CirT 直接预测 S2S 时间窗口的平均值，避免迭代误差
 - **几何感知模型**：[[cirt|CirT]]（ICLR 2025）首次将球面几何归纳偏置引入 S2S Transformer，在高纬度区域改善尤为显著[^src-cirt]
 - **掩码生成模型**：[[omnicast|OmniCast]]（NeurIPS 2025）首次将掩码生成建模应用于 S2S 预测，跨时空联合并行解码避免累积误差，S2S 尺度 SOTA，10–20× 快于 GenCast[^src-omnicast]
+- **海冰多粒度预测**：[[sifusion|SIFusion]]（NeurIPS 2025）首次将多时间粒度（日/周/月）统一建模引入北极海冰 S2S 预测，通过 granularity variate attention 捕获跨粒度相关性，仅用 SIC 数据超越所有单粒度 baseline[^src-sifusion]
 
 ## 与其他预测尺度的关系
 
 | 尺度 | 时间范围 | 核心驱动力 | 代表方法 |
 |:-----|:---------|:-----------|:---------|
 | 中期预报 | ≤15 天 | 初始条件 | PanguWeather, GraphCast |
-| **S2S** | **2-6 周** | **过渡区** | **OmniCast, CirT, ClimaX** |
-| 季节预测 | 3-6 月 | 边界强迫（海洋等） | 耦合气候模式 |
+| **S2S** | **2-6 周** | **过渡区** | **OmniCast, CirT, ClimaX, SIFusion** |
+| 季节预测 | 3-6 月 | 边界强迫（海洋、海冰等） | 耦合气候模式 |
 
 ## 相关页面
 
@@ -52,5 +54,8 @@ S2S 时间尺度的根本挑战在于[^src-cirt]：
 - [[weather-foundation-model]] — 天气基础模型范式
 - [[extreme-weather-forecasting]] — 极端天气预测
 - [[spherical-geometry-inductive-bias]] — 球面几何偏置
+- [[sifusion]] — SIFusion 多粒度海冰 S2S 预测
+- [[sea-ice-concentration-forecasting]] — 海冰密集度预测
 [^src-cirt]: [[source-cirt]]
 [^src-omnicast]: [[source-omnicast]]
+[^src-sifusion]: [[source-sifusion]]

@@ -844,7 +844,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[uomo]] — UoMo, first universal model for mobile traffic forecasting, diffusion+transformer, deployed at China Mobile (KDD 2025)
 - [[jiutian-platform]] — Jiutian Platform, China Mobile's AI platform for network simulation and optimization, hosts UoMo
 - [[pn-train]] — PN-Train, neuron-level training method with perturbation-based pattern neuron detection + fine-tuning for UTSMs (ICLR 2025)
-
+- [[sifusion]] — SIFusion，统一多粒度北极海冰预测 Transformer，Swin V2 + granularity variate attention (NeurIPS 2025)
 ## Concepts
 - [[mm-dit-for-time-series]] — MM-DiT for Time Series, adapting multimodal diffusion transformer to treat covariates as distinct modality streams (arXiv 2026)
 - [[flow-matching-forecasting]] — Flow Matching for time series forecasting, rectified flow with 5-step sampling for probabilistic TS prediction
@@ -1065,16 +1065,19 @@ All wiki pages, organized by type. Updated on every ingest.
 ## Concepts (continued)
 - [[fine-grained-traffic-prediction]] — fine-grained traffic prediction unifying road-level and lane-level forecasting
 - [[module-embedding-theorem-subfactor]] — 模嵌入定理（子因子），有限深子因子平面代数嵌入其任意循环模融合图的二部图平面代数中
-
+- [[arctic-amplification]] — 北极放大效应，北极升温速度 2-4 倍于全球平均的气候现象
+- [[multi-granularity-sea-ice-forecasting]] — 多粒度海冰预测，联合日/周/月 SIC 跨粒度建模新范式
+- [[sea-ice-concentration-forecasting]] — 海冰密集度预测，从数值模型到深度学习的领域概览
 ## Techniques (continued)
 - [[frequency-domain-stability-augmentation]] — FDA, frequency-domain perturbation with spectral constraints for road→lane transfer in MiniTraffic
 - [[multimodal-crosstalk]] — MCT block, concatenated per-modality CNF tokens with global feature z injection for cross-modal exchange (OmniField, ICLR 2026)
 - [[iterative-cross-modal-refinement]] — ICMR, multi-round MCT with pooled global feature bridge for progressive multimodal signal alignment (OmniField, ICLR 2026)
 - [[fleximodal-fusion]] — presence-mask gating at encoder/attention/loss levels enabling one model for arbitrary input modality subsets (OmniField, ICLR 2026)
 - [[ordinal-consistent-loss]] — 有序一致性损失，条件概率公式强制降水强度单调性，BCE + 有序掩码保证概率一致性
-
+- [[granularity-variates]] — 粒度 variate 建模，iTransformer variate 思路跨粒度迁移 (SIFusion)
+- [[independent-spatial-tokenization]] — 独立空间 tokenization，解耦空间编码与序列建模 (SIFusion)
 
 ## Sources (continued)
 - [[source-omnifield]] — OmniField: continuity-aware multimodal conditioned neural field for robust spatiotemporal learning, MCT + ICMR + fleximodal fusion, ICLR 2026 (BNL/UCLA/Columbia)
 - [[source-rainpro]] — RainPro-8: 高效 8h 概率降水预报模型，多源融合（雷达/卫星/NWP/地形）+ 有序一致性损失 + 单次前向预测，ICLR 2026
-
+- [[source-sifusion]] — SIFusion: 统一多粒度北极海冰预测框架，Swin V2 空间编码 + granularity variate 跨粒度融合 (NeurIPS 2025)
