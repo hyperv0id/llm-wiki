@@ -1,3 +1,35 @@
+## [2026-07-17] lint | DynaMix ingest 全面 Lint + 修复
+
+对照论文 PDF (pdftotext) 逐条验证作者、年份、方法名、架构参数、指标数字。
+
+### 发现
+- **confidence:high + source_count:1**：dynamix / dynamical-systems-reconstruction / almost-linear-rnn / sparse-teacher-forcing 共 4 页违反规则 → confidence→medium
+- **STF 归属错误（幻觉）**：sparse-teacher-forcing.md 将 STF 理论归为 Hess et al. (ICML 2023)，实际 DynaMix 论文引用 [60] Mikhaeil et al. (NeurIPS 2022) 为 STF 理论来源；Hess et al. (ICML 2023) 为 Generalized Teacher Forcing → 已修正
+- **~500 参数不可核实**：almost-linear-rnn.md 和 dynamix.md 比较表中 AL-RNN ~500 参数量未见于 DynaMix 论文 → 改为"极低参数量"或"DynaMix 中 10 专家总计约 10k"
+- **交叉引用缺失**：sparse-teacher-forcing.md 未反向链接 [[dynamix]]；dynamix.md 未链接 [[dynamical-systems-reconstruction]] 和 [[mixture-of-experts]]
+
+### 修改
+- wiki/dynamix.md — confidence→medium；~500→极低；补 [[dynamical-systems-reconstruction]] 和 [[mixture-of-experts]] wikilink
+- wiki/dynamical-systems-reconstruction.md — confidence→medium
+- wiki/almost-linear-rnn.md — confidence→medium；~500 参数→极低参数量
+- wiki/sparse-teacher-forcing.md — confidence→medium；Hess→Mikhaeil；补 [[dynamix]] wikilink
+
+### 已验证通过
+- 作者（Hemmer & Durstewitz）、NeurIPS 2025、J=10、M=30、P=2、τ=10、~10k 参数、34 训练/54 测试系统、Dstsp/DH/MASE 指标、RADAM+指数衰减学习率、MSE+方差正则化、消融结论——均与 PDF 原文一致
+- chronos.md / timesfm.md / mixture-of-experts.md 中 DynaMix 对比章节的 DSR 失败分析、Lyapunov 指数（0.02/0.96/0.87）、Lorenz-96 MASE（4.82 vs 1.02）、context parroting 描述——均与 PDF 原文一致
+- AL-RNN 初始化协议（W~N(0,0.011²)、h=0、A=PSD 对角）——与 PDF 附录一致
+
+### 仍存风险
+- chronos.md "~200M" 和 timesfm.md "200M" 并非来自 DynaMix 论文原文，而是各模型自身已知规格；引用 [^src-dynamix] 包含参数对比语境
+- AL-RNN 页面 source_count:1 导致一些 AL-RNN 专属细节（如初始化协议）仅能从 DynaMix 论文附录交叉验证，严谨性略低于直接引用 AL-RNN 原始论文
+
+## [2026-07-17] ingest | DynaMix: True Zero-Shot Inference of Dynamical Systems Preserving Long-Term Statistics
+
+Hemmer & Durstewitz (NeurIPS 2025) 提出首个 DSR 零样本基础模型 DynaMix——MoE + AL-RNN + STF 架构，仅约 10k 参数，从上下文信号重建新动力系统的长期统计特性。在 54 个测试系统上超越所有 TS 基础模型（Chronos、TimesFM、Mamba4Cast、TTM、Panda），且在未见于训练的实证数据（交通、天气、fMRI、EEG）上仍具竞争力。
+
+创建的页面：[[source-dynamix]], [[dynamix]], [[dynamical-systems-reconstruction]], [[almost-linear-rnn]], [[sparse-teacher-forcing]]
+更新的页面：[[chronos]], [[timesfm]], [[mixture-of-experts]], [[index]], [[log]]
+
 ## [2026-07-17] gap-fill | DistDF ingest 补全：交叉引用 + Bures-Wasserstein 页面
 
 补全 2026-07-13 ingest 遗留的缺口。

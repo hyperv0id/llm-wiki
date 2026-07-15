@@ -6,8 +6,8 @@ tags:
   - architecture
   - scalability
 created: 2026-04-29
-last_updated: 2026-06-09
-source_count: 3
+last_updated: 2026-07-17
+source_count: 4
 references:
   - [[source-fast-long-horizon-forecasting]]
 confidence: high
@@ -72,6 +72,16 @@ FaST 首次将 MoE 应用于大规模长视野时空图预测：
 
 [[most|MoST]] (KDD 2026) 将 MoE 应用于空间依赖建模，提出 [[multi-modality-guided-spatial-expert|多模态引导空间专家]]：使用两类专家——模态共享专家（每种激活模态一个）和路由专家（由路由器基于模态融合嵌入选择）——来捕获区域特定的局部空间模式[^src-most]。每个专家通过交叉注意力建模传感器与其 top-k 最近邻的交互，而非全图关系[^src-most]。与 FaST 的 Dense MoE 不同，MoST 使用 Top-1 稀疏路由并引入负载均衡损失防止专家坍塌[^src-most]。
 
+## 在动力系统重建中的应用
+
+[[dynamix|DynaMix]] (NeurIPS 2025) 是首个将 MoE 用于动力系统重建（DSR）零样本泛化的模型[^src-dynamix]：
+
+- **架构**：J=10 个 AL-RNN 专家 + 门控网络（CNN 上下文编码器 + 状态注意力机制 + MLP）
+- **Dense MoE**：所有 10 个专家均被激活，通过 softmax 加权输出——与 FaST 的 Dense MoE 一致
+- **状态注意力门控**：基于投影潜在状态与上下文观测之间的距离计算注意力权重 $w_t^{att}$，再经 CNN 特征加权后由 MLP 生成专家权重 $w_t^{exp}$
+- **动力学专业化**：不同专家自然专业化到不同的动力学模式（如混沌区域的不同部分），专家使用权重可构建动力学相似度度量
+- **关键发现**：J ≥ 5 个专家即足够，更多收益递减——实际 J=10 已达到性能平台期[^src-dynamix]
+
 ## 相关工作
 
 - [[stamimputer|STAMImputer]] (arXiv 2025) 将 MoE 上移到框架外层，用观测专家 (O-Expert) 依据稀疏度特征动态路由时间/空间注意力专家，号称首次把 MoE 用于交通数据填补[^src-stamimputer]。
@@ -85,4 +95,5 @@ FaST 首次将 MoE 应用于大规模长视野时空图预测：
 
 [^src-fast-long-horizon-forecasting]: [[source-fast-long-horizon-forecasting]]
 [^src-most]: [[source-most]]
+[^src-dynamix]: [[source-dynamix]]
 [^src-stamimputer]: [[source-stamimputer]]

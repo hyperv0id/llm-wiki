@@ -7,8 +7,8 @@ tags:
   - tokenizer
   - iclr2024
 created: 2026-04-29
-last_updated: 2026-07-13
-source_count: 4
+last_updated: 2026-07-17
+source_count: 6
 confidence: high
 status: active
 ---
@@ -79,6 +79,18 @@ Sundial 团队在 Table 8 中报告：使用相同 94B 预训练数据子集时�
 - [[aurora]] — Aurora 多模态生成式基础模型（Chronos 为单模态，Aurora 支持多模态）
 - [[tats]] — TaTS 即插即用多模态框架（Chronos 为数值专用 tokenization，TaTS 通过辅助变量处理文本）
 - [[sundial]] — Sundial，连续 tokenization + Flow Matching 的对比模型 (ICML 2025)
+
+## DynaMix 对比
+
+[[dynamix|DynaMix]] (NeurIPS 2025) 对 Chronos 在 DSR 任务上进行了系统评估[^src-dynamix]：
+
+- **长期动力学失败**：Chronos 在长期预测中倾向于收敛到不动点或简单周期轨道，无法重建混沌系统的真实吸引子几何[^src-dynamix]
+- **Context Parroting**：Chronos 倾向重复性复现上下文模式而非适应系统的真实演化——功率谱呈现尖锐窄峰（暗示周期性），而真实混沌系统具有宽带弥散谱[^src-dynamix]
+- **Lyapunov 指数**：Chronos 生成的轨迹 λ≈0.02（接近 0，指示周期行为），而真实 Lorenz-63 的 λ≈0.87[^src-dynamix]
+- **参数量对比**：Chronos-t5-base（~200M）vs DynaMix（~10k），参数量高出约 20,000 倍，但 DSR 质量显著更差[^src-dynamix]
+- **多变量耦合**：Chronos 将各维度独立处理，忽略了非线性动力系统中变量间的耦合——这是其 DSR 失败的根本原因之一[^src-dynamix]
+
+然而，在底层系统真实为周期行为时，Chronos 能够正确捕获，DynaMix 亦然。短期预测上 Chronos 仍有一定竞争力[^src-dynamix]。
 - [[timecap]] — TimeCAP LLM agent 框架，用 LLM 做时间序列上下文理解（AAAI 2025 Oral）
 
 ---
@@ -89,3 +101,4 @@ Sundial 团队在 Table 8 中报告：使用相同 94B 预训练数据子集时�
 [^src-unca]: [[source-unca]]
 [^src-sundial]: [[source-sundial]]
 [^src-probts]: [[source-probts]]
+[^src-dynamix]: [[source-dynamix]]

@@ -7,8 +7,8 @@ tags:
   - decoder-only
   - iclr2024
 created: 2026-04-29
-last_updated: 2026-07-13
-source_count: 5
+last_updated: 2026-07-17
+source_count: 6
 confidence: high
 status: active
 ---
@@ -62,6 +62,15 @@ TimesFM 可以通过 UniCA 框架适配到协变量感知预测任务：
 - [[sundial]] — Sundial (ICML 2025)，原生 Flow Matching TS 基础模型。Sundial 在 TSLib 零样本预测上全面超越 TimesFM（Table 9，TimesFM 在所有 24 个指标中仅 1 个获胜），并支持概率预测（TimesFM 仅点估计）[^src-sundial]
 - [[probts|ProbTS]] — 将 TimesFM 作为 **AR 解码基础模型** 纳入零样本分析：短 horizon 有竞争力，长 horizon 相对 MOIRAI 等 NAR 基础模型劣势扩大（误差累积）[^src-probts]
 
+## DynaMix 对比
+
+[[dynamix|DynaMix]] (NeurIPS 2025) 在 DSR 任务上对 TimesFM 进行了评估[^src-dynamix]：
+
+- **DSR 全面失败**：TimesFM 无法重建动力系统的长期行为——在 54 个测试系统上，Dstsp 和 DH 均显著差于 DynaMix[^src-dynamix]
+- **短期预测仍有竞争力**：在 MASE 上 TimesFM 与 DynaMix 接近，因为 TS 基础模型正是为短期预测优化的[^src-dynamix]
+- **多变量耦合缺失**：TimesFM 将各维度独立处理，无法捕获非线性动力系统中维度间的耦合关系——这是 DSR 失败的根本原因[^src-dynamix]
+- **6D Lorenz-96 失败**：TimesFM 完全无法重建更高维的动力学结构，MASE=4.82 vs DynaMix 的 1.02[^src-dynamix]
+
 ---
 
 ## 引用
@@ -71,3 +80,4 @@ TimesFM 可以通过 UniCA 框架适配到协变量感知预测任务：
 [^src-timedit]: [[source-timedit]]
 [^src-sundial]: [[source-sundial]]
 [^src-probts]: [[source-probts]]
+[^src-dynamix]: [[source-dynamix]]

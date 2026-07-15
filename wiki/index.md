@@ -246,6 +246,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-urbanverse]] — UrbanVerse: Learning Urban Region Representation Across Cities and Tasks, cross-city/cross-task foundation model (arXiv 2026)
 - [[source-urbanmind]] — UrbanMind: Urban Dynamics Prediction with Multifaceted Spatial-Temporal Large Language Models (KDD 2025)
 - [[source-dyffusion]] — DYffusion: A Dynamics-informed Diffusion Model for Spatiotemporal Forecasting (NeurIPS 2023)
+- [[source-dynamix]] — DynaMix: 首个零样本 DSR 基础模型，AL-RNN MoE + STF，从上下文信号重建动力系统长期统计特性，NeurIPS 2025
 - [[source-allspark]] — AllSpark: multimodal spatio-temporal general intelligence model with 10 modalities via LaRF (Shao et al., 2024)
 - [[source-swift]] — Swift: An Autoregressive Consistency Model for Efficient Weather Forecasting (arXiv 2025)
 - [[source-streasoner]] — STReasoner: spatio-temporal reasoning in time series via spatial-aware RL (Ni et al., 2026)
@@ -277,6 +278,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[hephestus]] — HEPHAESTUS, adaptive multi-scale MoE + periodic temporal attention + heterogeneous spatial attention for traffic forecasting (ICLR 2026, under review)
 - [[middir]] — MiDDiR, mixed channel dependency diffusion with retrieval guidance for probabilistic MTS forecasting (ICLR 2026, under review)
 - [[dpgnet]] — DPGNet, dynamic graph prediction network with plug-and-play AGL + multi-scale ASL for spatiotemporal forecasting (ICLR 2026, under review)
+- [[dynamix]] — DynaMix，首个动力系统重建（DSR）零样本基础模型，MoE + AL-RNN + STF，~10k 参数（NeurIPS 2025）
 - [[streasoner]] — STReasoner, first TS-LM for spatio-temporal reasoning (Ni et al., 2026)
 - [[rstib-mlp]] — RSTIB-MLP, information bottleneck-guided robust MLP for spatial-temporal forecasting (ICML 2025)
 - [[testam]] — TESTAM, MoE-based spatio-temporal attention model with 3 heterogeneous experts (ICLR 2024)
@@ -454,6 +456,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[air-quality-forecasting]] — 空气质量预测，从物理模型到 PINN 的建模方法演进
 - [[heterogeneous-covariates]] — classification and multimodal covariates that differ from target time series (ICLR 2026)
 - [[cross-dimension-dependency]] — Cross-Dimension Dependency，MTS 中不同变量之间的关联关系 (ICLR 2023)
+- [[dynamical-systems-reconstruction]] — DSR，从观测数据学习生成式替代模型以复现动力系统长期行为（吸引子几何+不变统计量）
 - [[message-passing-imputation]] — Message Passing Imputation，利用 GNN 消息传递进行时空缺失值重建 (ICLR 2022)
 - [[variable-wise-partitioning]] — 变量维度划分基准，沿变量而非时间切分 train/val/test 以检验跨变量/跨域插补泛化 (NuwaTS, arXiv 2024)
 - [[missing-not-at-random]] — MNAR 与缺失机制 (MCAR/MAR/MNAR)，可忽略性，及各插补模型的缺失假设 (PRDIM, arXiv 2026)
@@ -553,6 +556,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[building-schrodinger-bridges]] — 六种 SB 构造方法综述：条件桥、时间反演、FBSDE、h-变换、IMF、随机插值
 
 ## Techniques
+- [[almost-linear-rnn]] — AL-RNN，近乎线性 RNN（P<<M ReLU），拓扑简约+可解释 DSR 架构（NeurIPS 2024）
 - [[benamou-brenier-algorithm]] — OT 的动态公式化，转化为时空凸优化问题并以增广拉格朗日方法求解
 - [[hopf-cole-transform]] — Hopf-Cole 变换，将非线性 HJB-FP 系统线性化为 Kolmogorov PDE 对
 - [[girsanov-theorem]] — Girsanov 定理，路径空间测度变换的基石，连接控制漂移与 path-space KL
@@ -577,6 +581,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[adaptive-season-learner]] — ASL, multi-scale temporal decomposition + pattern-specific graph construction for seasonal/trend modeling (DPGNet, ICLR 2026 under review)
 - [[sandglass-attention]] — SGA, precoder-decoder 注意力模块，聚合区域 token 捕获高阶时空相关性 + 降开销 (AAAI 2025)
 - [[sheaf-laplacian]] — 层拉普拉斯算子 (Sheaf Laplacian)，推广图拉普拉斯以编码边特定的变换语义，用于谱域滤波 (ICLR 2026 under review)
+- [[sparse-teacher-forcing]] — STF，间歇性数据推断状态重校准的 DSR 训练方法，控制梯度爆炸同时探索长期动力学
 - [[spatial-temporal-tokenizer]] — 空间+时间双维度 token 生成，激活 PLM 对时空数据的理解 (AAAI 2025)
 - [[spatio-temporal-retrieval-store]] — 基于 FAISS 的双维度向量记忆库 + 动量 EMA 管理 (RAST, AAAI 2026)
 - [[topology-aware-node-embedding]] — 基于拉普拉斯特征向量的归纳式节点嵌入，支持跨图结构迁移 (AAAI 2025)
