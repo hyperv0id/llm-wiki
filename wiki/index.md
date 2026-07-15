@@ -1023,13 +1023,16 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Sources (continued)
 - [[source-minitraffic]] — MiniTraffic: mini-sized contrastive learning pre-trained model for fine-grained traffic tasks, ICML 2026
+- [[source-module-embedding-theorem-towers-algebras]] — Module Embedding Theorem via Towers of Algebras: Markov towers 进路推广 Jones-Penneys 嵌入定理至任意循环模，arXiv 2018
 
 ## Entities (continued)
 - [[minitraffic]] — MiniTraffic, first lightweight (~119K) pre-trained model for fine-grained (road+lane) traffic prediction, ICML 2026
 - [[mcgvae]] — McgVAE, first road-lane joint modeling VAE for fine-grained traffic prediction, CIKM 2024
+- [[subfactor-planar-algebra]] — 子因子平面代数，II₁ 子因子标准不变量的公理化，与 unitary 2×2 multitensor category 等价
 
 ## Concepts (continued)
 - [[fine-grained-traffic-prediction]] — fine-grained traffic prediction unifying road-level and lane-level forecasting
+- [[module-embedding-theorem-subfactor]] — 模嵌入定理（子因子），有限深子因子平面代数嵌入其任意循环模融合图的二部图平面代数中
 
 ## Techniques (continued)
 - [[frequency-domain-stability-augmentation]] — FDA, frequency-domain perturbation with spectral constraints for road→lane transfer in MiniTraffic

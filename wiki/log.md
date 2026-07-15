@@ -1,5 +1,26 @@
 
 
+
+## [2026-07-20] lint | Module Embedding Theorem via Towers of Algebras ingest Lint + hallucination check + fix
+
+对照 PDF (pdftotext) 逐条验证作者、年份、方法名与定理陈述——全部通过，无捏造/错引。
+
+### 发现
+- wiki/source-module-embedding-theorem-towers-algebras.md — confidence: high but source_count: 1, violation. Changed to medium.
+- wiki/subfactor-planar-algebra.md — module embedding theorem section missing inline citation and cross-link to module-embedding-theorem-subfactor. Fixed.
+- wiki/index.md — duplicate mcgvae entry (pre-existing). Removed.
+
+### 修复
+- confidence fix x1; cross-link added x1; citation added x1; index dedup x1
+- last_updated refreshed x3
+
+更新的页面：[[source-module-embedding-theorem-towers-algebras]], [[subfactor-planar-algebra]], [[module-embedding-theorem-subfactor]], [[index]]
+## [2026-07-16] ingest | Module Embedding Theorem via Towers of Algebras (Coles, Huston, Penneys, Srinivas; arXiv 2018)
+
+Ingest pure mathematics paper in operator algebras/subfactor theory. The paper generalizes the Jones-Penneys (2011) embedding theorem using Markov towers of algebras, showing a finite depth subfactor planar algebra embeds in the bipartite graph planar algebra of the fusion graph of any of its cyclic modules. First paper in this domain ingested into the wiki.
+创建的页面：[[source-module-embedding-theorem-towers-algebras]], [[subfactor-planar-algebra]], [[module-embedding-theorem-subfactor]]
+更新的页面：[[index]]
+
 ## [2026-07-16] ingest | MiniTraffic: Mini-sized Contrastive Learning Pre-trained Models for Fine-grained Traffic Task (ICML 2026)
 
 Ingest MiniTraffic paper (Li, Yang, Fei, Cui, Ma, Zhang; Fudan / CUHK / Alibaba / Guangzhou University, ICML 2026). MiniTraffic is the first lightweight (~119K params) pre-trained model specifically designed for fine-grained traffic prediction — unifying road-level and lane-level forecasting. Core innovations: (1) Frequency Domain Stability Augmentation (FDA) — bounded spectral perturbations simulating lane-level variability from road data; (2) Contrastive Clustering Graph Partitioning — InfoNCE-based patch similarity learning + k-NN sparse graph construction, reducing attention from O(N²) to O(k·N); (3) Granularity-Aware Fine-Tuning — road-level Extension+Pooling vs lane-level FDA retention.
