@@ -1,8 +1,6 @@
 # Ingest 报告：DeepAR (Salinas et al., arXiv:1704.04110)
 
-**PDF**:  
-`/run/media/jcheng/WD-Data/yjs/INSIS/多模态外生信息引导的长期时空预测/1704.04110.pdf`  
-（`raw/1704.04110.pdf` 已存在且与外部 PDF 字节一致；按不可变策略未改 raw/）
+**PDF copies**: `raw/1704.04110.pdf` (existing) + `raw/deepar-probabilistic-forecasting.pdf` (kebab-case, MD5 一致)
 
 **Slug**: `src-deepar`  
 **Date**: 2026-07-13  
@@ -22,14 +20,14 @@
 - `wiki/generative-time-series-forecasting.md` — WHY：在概率谱系中补 AR-RNN/DeepAR 分支（此前仅有扩散/流/SSM 等）。
 - `wiki/deep-state-space-model.md` — WHY：对照表中 DeepAR 改为正式 wikilink。
 - `wiki/deepstate.md` — WHY：定位表与关联中链到 [[deepar]]。
-- `wiki/source-deepstate.md` — WHY：正文已对照 DeepAR，补 wikilink。
-- `wiki/timegrad.md` — WHY：“继承自 DeepAR”改为正式 wikilink。
+- `wiki/timegrad.md` — WHY：关联页面补 [[deepar]] 反向链接（此前仅正文提及）。
 - `wiki/ar-vs-nar-decoding.md` — WHY：短程概率 AR 代表链到 [[deepar]]，并增加脚注引用。
-
+- `wiki/probts.md` — WHY：相关页面补 [[deepar]] 反向链接，与 deepar.md 的 ProbTS 引用对应。
+- `wiki/tft.md` — WHY：Connections 补 [[deepar]] 反向链接；TFT 原文报告分位数 loss 优于 DeepAR。
 ## 新建交叉链接
 
 - [[source-deepar]] ↔ [[deepar]]
-- [[deepar]] ↔ [[generative-time-series-forecasting]] / [[ar-vs-nar-decoding]] / [[deepstate]] / [[timegrad]] / [[probts]]
+- [[deepar]] ↔ [[generative-time-series-forecasting]] / [[ar-vs-nar-decoding]] / [[deepstate]] / [[timegrad]] / [[probts]] / [[tft]]
 - [[source-deepar]] ↔ [[deep-state-space-model]]（经对照表）
 
 ## 未创建（有意收窄）

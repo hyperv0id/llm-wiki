@@ -105,6 +105,7 @@ TimeGrad 处于多条研究线的交汇点：
 ## 关联页面
 
 - [[ddpm]] — DDPM，TimeGrad 的扩散模型基础
+- [[deepar]] — DeepAR，TimeGrad 继承其自回归 RNN 架构与均值缩放归一化
 - [[diffusion-model]] — 扩散模型概念总览
 - [[generative-time-series-forecasting]] — 生成式时间序列预测范式
 - [[simdiff]] — SimDiff，端到端扩散时间序列点预测（AAAI 2026）

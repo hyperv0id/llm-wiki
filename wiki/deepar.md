@@ -10,7 +10,7 @@ tags:
   - amazon
   - arxiv-1704-04110
 created: 2026-07-13
-last_updated: 2026-07-13
+last_updated: 2026-07-16
 source_count: 1
 confidence: medium
 status: active
@@ -50,10 +50,10 @@ DeepAR 属于[[generative-time-series-forecasting|概率时间序列预测]]中�
 
 ## 后续影响
 
-- [[deepstate|DeepState]] 刻意**不把目标值喂入网络**，改用 RNN 参数化线性 SSM + Kalman，以换取缺失鲁棒与采样效率。[^src-deepar]
-- [[timegrad|TimeGrad]] 保留 AR-RNN 与均值缩放，用条件扩散替换高斯/负二项输出头。[^src-deepar]
-- [[probts|ProbTS]] / [[ar-vs-nar-decoding|AR vs NAR]] 将 DeepAR 式 AR 概率模型定位为短程分布强、长程易误差累积的代表轴。[^src-deepar]
-- [[tft|TFT]]、[[tide|TiDE]] 等在多 horizon / 协变量设定中常以 DeepAR 为强基线。[^src-deepar]
+- [[deepstate|DeepState]] 刻意不将目标值喂入网络，改用 RNN 参数化线性 SSM + Kalman，以换取缺失鲁棒与采样效率。
+- [[timegrad|TimeGrad]] 保留 AR-RNN 与均值缩放，用条件扩散替换高斯/负二项输出头。
+- [[probts|ProbTS]] / [[ar-vs-nar-decoding|AR vs NAR]] 将 DeepAR 式 AR 概率模型定位为短程分布强、长程易误差累积的代表轴。
+- [[tft|TFT]]、[[tide|TiDE]] 等在多 horizon / 协变量设定中以 DeepAR 为强基线（见各页面原文实验）。
 
 ## 关联页面
 

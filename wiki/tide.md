@@ -13,7 +13,7 @@ tags:
 created: 2026-07-13
 last_updated: 2026-07-13
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
@@ -79,7 +79,7 @@ TiDE sits between the [[ltsf-linear|LTSF-Linear / DLinear]] challenge to Transfo
 
 - Paper: [[source-tide]]
 - Technique: [[temporal-decoder]]
-- Related models: [[ltsf-linear]], [[patchtst]], [[nbeatsx]], [[tft]], [[informer]], [[autoformer]], [[fedformer]]
+- Related models: [[ltsf-linear]], [[patchtst]], [[nbeatsx]], [[tft]], [[informer]], [[autoformer]], [[fedformer]], [[deepar]]
 - Concepts: [[lstf]], [[channel-independence]], [[direct-forecast]], [[instance-normalization]]
 
 ---

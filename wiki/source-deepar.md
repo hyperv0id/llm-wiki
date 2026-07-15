@@ -10,7 +10,7 @@ tags:
   - amazon
   - arxiv-1704-04110
 created: 2026-07-13
-last_updated: 2026-07-13
+last_updated: 2026-07-16
 source_count: 1
 confidence: medium
 status: active
@@ -89,8 +89,8 @@ Amazon 零售销量速度近似幂律，跨序列量级差数个数量级。Deep
 
 ## 局限性
 
-- 预设参数化似然（高斯/负二项）表达力有限，难刻画强多峰/高维跨变量复杂依赖；后续 [[timegrad|TimeGrad]] 等以扩散替换输出分布。[^src-deepar]
-- 自回归 teacher-forcing 与采样闭环存在 train–test 落差；长 horizon 误差累积成为后续 [[ar-vs-nar-decoding|AR vs NAR]] 与 [[probts|ProbTS]] 讨论的核心。[^src-deepar]
+- 预设参数化似然（高斯/负二项）表达力有限，难刻画强多峰/高维跨变量复杂依赖。[^src-deepar] 参见 [[timegrad|TimeGrad]] 等以扩散替换输出分布的后续工作。
+- 自回归 teacher-forcing 与采样闭环存在 train–test 落差。[^src-deepar] 长 horizon 误差累积亦为后续 [[ar-vs-nar-decoding|AR vs NAR]] 与 [[probts|ProbTS]] 讨论的核心议题。
 - 正文主实验为**单变量**相关序列集合，非显式多变量联合或时空图结构。[^src-deepar]
 - 缺失观测给出 principled 处理（用采样填入并剔除似然项），但未报告完整实验。[^src-deepar]
 

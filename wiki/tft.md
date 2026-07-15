@@ -14,7 +14,7 @@ tags:
 created: 2026-07-13
 last_updated: 2026-07-13
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
@@ -85,6 +85,7 @@ TFT is an early **covariate-complete** deep multi-horizon baseline: it codifies 
 - Building blocks: [[gated-residual-network]], [[variable-selection-network]], [[interpretable-multi-head-attention]], [[glu-gated-linear-unit]]
 - Paradigm: [[direct-forecast]]
 - Related exogenous models: [[nbeatsx]], [[tide]], [[source-timexer]], [[source-exotst]], [[source-exost]], [[source-crosslinear]]
+- Probabilistic baselines: [[deepar]] — TFT 报告在 electricity/traffic/retail 上分位数 loss 优于 DeepAR[^src-tft]
 - Covariate taxonomy: [[heterogeneous-covariates]]
 
 ---

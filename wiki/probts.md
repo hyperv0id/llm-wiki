@@ -60,6 +60,6 @@ status: active
 - [[non-gaussianity]] — 分布复杂度指标
 - [[instance-normalization]] — RevIN
 - [[generative-time-series-forecasting]] — 生成式预测范式
-- [[timegrad]] / [[csdi]] / [[patchtst]] / [[timesfm]] / [[chronos]]
+- [[deepar]] / [[timegrad]] / [[csdi]] / [[patchtst]] / [[timesfm]] / [[chronos]]
 
 [^src-probts]: [[source-probts]]

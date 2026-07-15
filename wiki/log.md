@@ -1,3 +1,24 @@
+## [2026-07-16] lint | DeepAR ingest 全面 Lint + 修复
+
+### 发现
+- **幻觉/错引**：source-deepar.md 局限性 section 将 "后续 TimeGrad 等以扩散替换输出分布" 及 "后续 AR vs NAR / ProbTS" 引用为 [^src-deepar]，但 DeepAR 论文（2017/2019）无法讨论其后出版工作。已拆分：事实部分保留引用，编辑性交叉引用移除错引。
+- **时效/置信**：tft.md / tide.md 原 confidence:high + source_count:1，已在 07-16 maintenance pass 中修正为 medium（lint 确认通过）。
+- **交叉引用**：tide.md 已含 [[deepar]] 反向链接（lint 确认通过）；deepar.md "后续影响" section 未含错引（lint 确认通过）。
+
+### 修改
+- wiki/source-deepar.md — 修复局限性 section 2 处错引
+
+### 仍存风险
+- deepar.md source_count:1 的实体页包含跨多篇论文的"后续影响"论断，当前作为无引用的交叉引用描述处理，严谨性略低于逐条引用对应源页面。
+- 部分交叉引用描述（"DeepState 刻意..." "TimeGrad 保留..."）无法从 src-deepar 独立验证，其准确性依赖对应实体页面的自身质量。
+
+## [2026-07-16] maintenance | DeepAR: 交叉引用补全 + kebab-case PDF 入库
+
+DeepAR 已于 2026-07-13 ingest；本次补全遗漏的交叉引用反向链接与 PDF 副本。
+拷贝 PDF → raw/deepar-probabilistic-forecasting.pdf（与 raw/1704.04110.pdf 字节一致）。
+更新的页面：[[deepar]]（frontmatter last_updated）, [[source-deepar]]（frontmatter last_updated）, [[timegrad]]（[[deepar]] 反向链接）, [[probts]]（[[deepar]] 反向链接）, [[tft]]（[[deepar]] 反向链接）
+更新的文件：ingest-reports/deepar-why.md（补 PDF 入库 + 反向链接修改记录）
+
 ## [2026-07-16] maintenance | CrossLinear: PDF 入库 + frontmatter 更新
 
 将 PDF 从外部路径拷贝至 `raw/crosslinear-kdd-2025.pdf`，补全 2026-07-13 ingest 遗留的 raw/ 缺失。
