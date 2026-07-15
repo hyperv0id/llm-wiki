@@ -964,15 +964,19 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-gcgnet]] — GCGNet: Graph-Consistent Generative Network for TS forecasting with exogenous variables (joint graph alignment + VAE generator + Graph Refiner, ICLR 2026)
 - [[source-srsnet]] — SRSNet / SRS: Selective Representation Space, adaptive patch selection + reassembly plugin for LTSF (NeurIPS 2025, arXiv:2510.14510)
 - [[source-crosslinear]] — CrossLinear: plug-and-play cross-correlation embedding for TS forecasting with exogenous variables (KDD 2025, arXiv:2505.23116)
+- [[source-cirt]] — CirT: Geometry-Inspired Spherical Transformer for S2S Climate Forecasting, 圆形分块 + 傅里叶域自注意力，超越 ECMWF/PanguWeather/GraphCast，ICLR 2025
 
 ## Entities (continued)
 - [[gcgnet]] — GCGNet, graph-consistent generative network for exogenous TS forecasting (ICLR 2026, ECNU)
 - [[srsnet]] — SRSNet, SRS + MLP for long-term MTS forecasting via adaptive patch representation spaces (NeurIPS 2025, ECNU)
 - [[crosslinear]] — CrossLinear, Linear many-to-one exogenous forecaster with O(T) cross-correlation embedding (KDD 2025, USTC)
+- [[cirt]] — CirT (Circular Transformer)，几何感知 S2S 气候预测 Transformer，圆形分块 + 傅里叶域自注意力，ICLR 2025 (HKUST + Alibaba DAMO)
 
 ## Concepts (continued)
 - [[joint-temporal-channel-correlation]] — 联合时间–通道相关建模，反对外生预测中的两步串行相关学习 (GCGNet)
 - [[selective-representation-space]] — Selective Representation Space (SRS)，自适应选择/重排 patch 以替代固定 adjacent patching 的表示空间 (NeurIPS 2025)
+- [[subseasonal-to-seasonal-forecasting]] — S2S 次季节到季节预测，2-6 周"可预测性荒漠"的概念与方法论
+- [[spherical-geometry-inductive-bias]] — 球面几何归纳偏置，显式编码地球球面几何以消除平面投影失真的设计理念
 
 ## Techniques (continued)
 - [[graph-structure-aligner]] — Graph Structure Aligner：patch 图 VAE + L1 结构对齐约束生成器 (GCGNet)
@@ -982,3 +986,5 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[dynamic-reassembly]] — Dynamic Reassembly：对选中 patch 可微 Argsort 学习顺序 (SRS, NeurIPS 2025)
 - [[adaptive-fusion]] — Adaptive Fusion (SRS)：常规 adjacent 与 selective patch 嵌入的凸组合 (NeurIPS 2025)
 - [[cross-correlation-embedding]] — CrossLinear 即插即用 1D conv 外生交叉相关残差嵌入，CI 骨干友好 (KDD 2025)
+- [[circular-patching]] — CirT 的纬度线圆形分块策略，消除固定角度 grid patching 的高纬度面积失真
+- [[fourier-self-attention]] — 傅里叶域自注意力，DFT→频域多头注意力→IDFT 显式编码空间周期性，与 FEDformer FEB 不同

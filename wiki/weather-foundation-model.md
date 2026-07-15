@@ -7,8 +7,8 @@ tags:
   - pretraining
   - generalization
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-07-14
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -28,6 +28,7 @@ status: active
 - **In-context 任务统一**：[[weathergfm|WeatherGFM]]（ICLR 2025）是首个天气**通用**基础模型，通过 [[weather-prompt|天气提示]] 与 [[mixed-modal-masked-image-modeling|MMIM]] 在单一 ViT 内统一 10+ 种天气理解任务（预报、超分、图像翻译、后处理），并展示对未见任务的 in-context 泛化[^src-weathergfm]。
 - **极端事件专用基础模型**：[[uniextreme|UniExtreme]] 聚焦多样化极端天气预测，用频域调制 + 事件先验记忆补足通用预报模型在极端事件上的性能差距。
 - **生成式概率预报**：[[swift|Swift]] 以自回归一致性模型做单步概率集合预报，关注不确定性量化。
+- **几何感知 S2S 预报**：[[cirt|CirT]]（ICLR 2025）以圆形分块 + 傅里叶域自注意力显式编码球面几何偏置，直接预测 2-6 周平均态，超越 ECMWF 等数值系统[^src-cirt]。
 
 ## 与时空基础模型的关系
 
@@ -39,10 +40,13 @@ status: active
 - [[uniextreme]] — UniExtreme，极端天气基础模型
 - [[swift]] — Swift，生成式概率天气预报
 - [[extreme-weather-forecasting]] — 极端天气预测
+- [[cirt]] — CirT，几何感知 S2S Transformer
+- [[subseasonal-to-seasonal-forecasting]] — S2S 预测概念
 - [[spatio-temporal-foundation-model]] — 时空基础模型范式
 - [[weather-prompt]] — 天气提示设计
 - [[mixed-modal-masked-image-modeling]] — MMIM 训练范式
-- [[source-weathergfm]] — WeatherGFM 源文件摘要
+- [[source-cirt]] — CirT S2S 预测论文
 
 [^src-weathergfm]: [[source-weathergfm]]
+[^src-cirt]: [[source-cirt]]
 

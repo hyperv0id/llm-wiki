@@ -1,3 +1,19 @@
+## [2026-07-15] lint | CirT ingest 完整 Lint + 幻觉检查
+
+更新的页面：[[fourier-self-attention]], [[cirt]], [[spherical-geometry-inductive-bias]]
+修复内容：
+- fourier-self-attention.md：删除 FEDformer 对比表中无法从 CirT 论文核实的细节（M=64、O(D²M)、element-wise 可学习核），替换为基于论文可核实的叙述性对比。论文仅引 Zhou et al. 2022 一次（line 270），未涉及 FEDformer 机制。
+- cirt.md：同上，修正 FEDformer 对比句，删除「随机模式选择」等非论文来源的细节。
+- spherical-geometry-inductive-bias.md：SFNO 条目补 [^src-cirt] 引用，并将「球谐域」修正为论文实际表述（基于 FNO 框架的球面谱域）。
+幻觉检查：对照 PDF 全文（pdftotext, 2747 行），核验作者、年份（ICLR 2025）、架构（Circular Patching + Fourier Self-Attention）、数据集（ERA5, 1.5°, 63 var, 1979–2018）、指标（z500 RMSE 602→477, 16M/2.2G）、消融结论。除上述 FEDformer 细节外全部一致。仍存风险：fourier-self-attention.md 中 FEDformer 对比仍依赖外部知识，CirT 论文本身仅提及 FEDformer 一次且未讨论机制差异。
+
+## [2026-07-14] ingest | CirT: Geometry-Inspired Spherical Transformer for S2S Climate Forecasting (ICLR 2025)
+
+创建的页面：[[source-cirt]], [[cirt]], [[subseasonal-to-seasonal-forecasting]], [[spherical-geometry-inductive-bias]], [[circular-patching]], [[fourier-self-attention]]
+更新的页面：[[weather-foundation-model]], [[source-climax]]
+
+核心贡献：HKUST Guangzhou + Alibaba DAMO 提出的 CirT，将球面几何归纳偏置显式引入 S2S Transformer 设计——圆形分块（按纬度线分块消除面积失真）+ 傅里叶域自注意力（DFT→频域注意力→IDFT 编码空间周期性）。在 ERA5 上全面超越 FourCastNetV2/PanguWeather/GraphCast/ClimaX 及 ECMWF/UKMO/NCEP/CMA 等数值系统，仅 16M 参数/2.2G FLOPs。Ablation 证实两设计缺一不可。
+
 ## [2026-07-14] lint | CausalX ingest 完整 Lint + 幻觉检查
 更新的页面：[[causalx]], [[source-causalx]], [[multi-source-causal-constraints]], [[source-e2-cstp]], [[source-cast]], [[e2-cstp]]
 修复内容：
