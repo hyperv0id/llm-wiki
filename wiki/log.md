@@ -1,3 +1,20 @@
+## [2026-07-16] ingest | ClimateAR: Multi-Scale Autoregressive Generative Modeling for Climate Forecasting (ICML 2026)
+
+ClimateAR (Yu, Chen, Wu, Cui, Jiang, Shang, Wu, Sun & Chen; Zhejiang Univ, Alibaba DAMO, IAP CAS) 是首个将 Visual Autoregressive (VAR) 范式引入概率气候预测的模型。核心创新：(1) 对齐 VQ 分词器——分段码本 + 浅层分离深层共享架构实现 CMIP6-ERA5 跨域语义对齐；(2) 混合尺度条件控制——intra-scale mix token + hybrid-scale prompt 同时捕获尺度内局部一致性和跨尺度全局交互。CMIP6 预训练 + ERA5/ORAS5 微调，在 1–10 月 lead time 上平均 ACC 提升 37.56% vs Pangu/GraphCast/Oneforecast/ClimaX/DWD，ENSO 概率预测校准优良。
+
+创建的页面：[[source-climatear]], [[climatear]], [[mixed-scale-conditioning]]
+更新的页面：[[weather-foundation-model]], [[generative-time-series-forecasting]], [[index]]
+源文件：raw/climatear-multi-scale-autoregressive-generative-climate-forecasting-icml2026.pdf
+
+## [2026-07-16] lint | ClimateAR ingest 完整 Lint + 幻觉检查
+
+对照论文 PDF (pdftotext) 逐条验证：
+- 作者、机构、会议、方法名、指标数字（37.56% ACC）均与原文一致 ✓
+- 修复：lead time 1–12 月 → 1–10 月（论文 Fig 2 主评估为 1–10 月），影响 source-climatear、climatear、generative-time-series-forecasting、log
+- 修复：SSR "接近 1" → 改为"集合预报能有效捕获观测 ENSO 变率"（论文 SSR 呈上升趋势而非恒定接近 1，且未单独报告 ENSO 的 SSR）
+- 修复：方法对比表中 ClimateAR 行插入导致的 SimDiff 重复行 + 分隔符错位
+- 已验证：SSIM 感知项（$L_s = 1 - \text{SSIM}$）、分段码本、浅层分离深层共享、消融结论、零样本迁移、34 channels、三阶段训练流程均与原文一致
+
 ## [2026-07-15] lint | CirT ingest 完整 Lint + 幻觉检查
 
 更新的页面：[[fourier-self-attention]], [[cirt]], [[spherical-geometry-inductive-bias]]

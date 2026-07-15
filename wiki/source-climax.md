@@ -9,7 +9,7 @@ tags:
   - 2023
   - icml
 created: 2026-07-07
-last_updated: 2026-07-14
+last_updated: 2026-07-16
 source_count: 1
 confidence: medium
 status: active
@@ -52,5 +52,6 @@ ClimaX pioneered the foundation model paradigm for Earth systems science, demons
 
 - [[source-aurora]] — 多模态时序基础模型
 - [[source-cirt]] — CirT S2S 预测模型（ClimaX 为其基线之一）
+- [[source-climatear]] — ClimateAR，VAR 生成式概率气候预测（ClimaX 为其确定性 baseline 之一）
 
 [^src-climax]: [[source-climax]] — ClimaX: A Foundation Model for Weather and Climate (Nguyen et al., ICML 2023)

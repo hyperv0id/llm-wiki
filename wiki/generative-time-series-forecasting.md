@@ -8,8 +8,8 @@ tags:
   - flow-matching
   - diffusion-models
 created: 2026-05-03
-last_updated: 2026-07-13
-source_count: 18
+last_updated: 2026-07-16
+source_count: 19
 confidence: high
 status: active
 ---
@@ -81,11 +81,13 @@ status: active
 
 **[[swift|Swift]]** (arXiv 2025) 首次将 [[autoregressive-consistency-models|自回归一致性模型]] 应用于天气时间序列预测，单步 NFE=1 取代扩散模型的 20–40 NFE，实现 39× 推理加速[^src-swift]。通过 [[crps-autoregressive-finetuning|CRPS 自回归微调]] 在多步 rollout 上直接优化集合校准度，实现 75 天稳定预报，集合技能与 IFS ENS 竞争[^src-swift]。
 
+### 自回归生成式方法（VAR）
+
+**[[climatear|ClimateAR]]** (ICML 2026) 是首个将视觉自回归（VAR）引入概率气候预测的模型。通过 VQ + 分段码本对齐 CMIP6-ERA5 跨域异构数据，以混合尺度条件控制（intra-scale mix token + hybrid-scale prompt）在自回归 token 预测中同时捕获尺度内与跨尺度气候交互。在 1–10 月 lead time 上平均 ACC 提升 37.56% vs Pangu/GraphCast/ClimaX，ENSO 概率预测校准优良[^src-climatear]。
+
 ### 方法对比
 
-| 方法 | 生成框架 | 模态支持 | 零样本 | 输出类型 | 操作域 |
-|------|---------|---------|--------|---------|--------|
-| SimDiff | Diffusion (DDPM) | 仅数值 | ✗ | 点估计（MoM 聚合） | 原始域 |
+| **ClimateAR** | **VAR (离散 Token 预测)** | **多变量网格数据** | **✓ (零样本 CMIP6→ERA5)** | **概率分布 (集合)** | **多尺度 VQ Token + 混合条件** |
 | SpecSTG | Diffusion (谱域) | 仅数值 | ✗ | 概率分布 + 点估计 | **谱域** |
 | **FrèqFlow** | **Flow Matching (频域)** | **仅数值** | **✗** | **点估计（确定性）** | **频域** |
 | Aurora | Flow Matching (OT) | 文本 + 图像 + 数值 | ✓ | 概率分布 | 原始域 |
@@ -127,6 +129,8 @@ status: active
 - [[simdiff]] — 扩散式生成预测模型
 - [[freqflow-ts|FrèqFlow/SpectFlow]] — 频域流匹配确定性预测（NeurIPS 2025）
 - [[ustd]] — USTD，解耦预训练的统一时空扩散预测与插值框架（SIGSPATIAL 2024）
+- [[climatear]] — ClimateAR，VAR 自回归概率气候预测（ICML 2026）
+- [[mixed-scale-conditioning]] — 混合尺度条件控制
 - [[dyffusion]] — DYffusion，动力学信息扩散模型（NeurIPS 2023）
 - [[dits|DiTS]] — DiTS，MM-DiT 双流架构 + Rectified Flow 用于协变量感知概率预测 (arXiv 2026)
 - [[flow-matching-forecasting]] — Flow Matching 在时间序列预测中的应用范式
@@ -180,3 +184,4 @@ status: active
 [^src-maf]: [[source-maf]]
 [^src-deepstate]: [[source-deepstate]]
 [^src-deepar]: [[source-deepar]]
+[^src-climatear]: [[source-climatear]]

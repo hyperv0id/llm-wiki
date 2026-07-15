@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-07-14
+last_updated: 2026-07-16
 source_count: 0
 tags:
   - meta
@@ -17,6 +17,7 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Sources
 - [[source-climax]] — ClimaX: 首个气象/气候基础模型，ViT + variable tokenization + cross-attention aggregation + CMIP6 预训练 + 随机预测目标，WeatherBench/ClimateBench SOTA，ICML 2023
+- [[source-climatear]] — ClimateAR: 首个 VAR 自回归概率气候预测模型，对齐 VQ 分词器 + 混合尺度条件控制，ERA5 ACC 提升 37.56%，ICML 2026
 - [[source-cast]] — CaST: Causal Spatio-Temporal Neural Network for STG Forecasting, SCM + back-door adjustment (temporal OoD) + front-door adjustment with Hodge-Laplacian (dynamic spatial causation), NeurIPS 2023
 - [[source-causalx]] — CausalX: causally-interpretable plug-and-play multi-modal ST forecasting, multi-source causal constraints (Granger/do-calculus/TDMI/VAE) + diffusion graph refinement, ICML 2026
 - [[source-gpt4mts]] — DP-GPT4MTS: Dual-Prompt LLM 多模态时序预测框架，explicit prompt（任务指令）+ textual prompt（BERT 文本上下文嵌入）+ frozen GPT-2 骨干，GDELT/Time-MMD SOTA，arXiv 2025
@@ -354,6 +355,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[mindts]] — MindTS, multimodal time series anomaly detection model (ICLR 2026)
 - [[vot]] — VoT (Value of Text), multimodal time series forecasting model with event-driven reasoning (ICLR 2026)
 - [[aurora]] — Aurora, universal generative multimodal time series foundation model (arXiv 2026)
+- [[climatear]] — ClimateAR, VAR autoregressive probabilistic climate forecasting, ACC +37.56% (ICML 2026)
 - [[tats]] — TaTS (Texts as Time Series), plug-and-play multimodal TS framework (ICLR 2026)
 - [[uniextreme]] — UniExtreme, universal extreme weather forecasting foundation model (arXiv 2025)
 - [[uniflow]] — UniFlow, foundation model for unified grid+graph urban spatio-temporal flow prediction (arXiv 2024)
@@ -496,6 +498,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[multi-level-alignment]] — 多级对齐，在表示级和预测级融合文本与时间序列模态 (ICLR 2026)
 - [[multi-scale-linear-prediction]] — 多尺度线性预测，下采样 + 自上而下混合提取多粒度趋势模式 (DST-Mamba, AAAI 2025)
 - [[multi-scale-attention]] — Multi-scale window attention with dynamic relative position for hierarchical TS patterns (MANF)
+- [[mixed-scale-conditioning]] — 混合尺度条件控制，intra-scale mix token + hybrid-scale prompt 捕获跨尺度气候交互 (ClimateAR, ICML 2026)
 - [[generative-time-series-forecasting]] — 生成式时间序列预测，通过概率建模实现不确定性量化的预测范式
 - [[ar-vs-nar-decoding]] — AR vs NAR multi-step decoding schemes and their horizon/seasonality trade-offs (ProbTS)
 - [[non-gaussianity]] — window-level non-Gaussianity (JS vs Gaussian) as distribution complexity for forecasting (ProbTS)
