@@ -8,8 +8,8 @@ tags:
   - fft
   - learning-objective
 created: 2026-07-13
-last_updated: 2026-07-13
-source_count: 1
+last_updated: 2026-07-18
+source_count: 2
 confidence: high
 status: active
 ---
@@ -51,12 +51,12 @@ On ETTh1/ECL learning curves, frequency-domain supervision with ~30% of training
 | Method | Where frequency is used | Target dependence |
 |--------|-------------------------|-------------------|
 | [[fedformer|FEDformer]] / [[frequency-enhanced-block|FEB]] | Attention / blocks | Input encoding |
-| [[frets|FreTS]] | MLP layers on DFT features | Input encoding |
+| [[source-frets|FreTS]] | MLP layers on DFT features | Input encoding |
 | **FreDF** | Training loss only | Label sequence under DF |
 
 ## Limitations and Follow-ups
 
-Fixed Fourier bases do not adapt to data geometry; PCA-style adaptive orthogonal bases are suggested. [[source-distdf|DistDF]] later argues that frequency/PCA transforms only ensure *marginal* decorrelation and residual [[autocorrelation-bias]] remains; DistDF replaces likelihood factorization with joint Wasserstein alignment.[^src-fredf]
+Fixed Fourier bases do not adapt to data geometry; PCA-style adaptive orthogonal bases are suggested.[^src-fredf] [[source-distdf|DistDF]] later argues that frequency/PCA transforms only ensure *marginal* decorrelation and residual [[autocorrelation-bias]] remains; DistDF replaces likelihood factorization with joint Wasserstein alignment.[^src-distdf]
 
 ## Related
 
@@ -67,3 +67,5 @@ Fixed Fourier bases do not adapt to data geometry; PCA-style adaptive orthogonal
 ---
 
 [^src-fredf]: [[source-fredf]]
+[^src-distdf]: [[source-distdf]]
+

@@ -8,8 +8,8 @@ tags:
   - learning-objective
   - plug-and-play
 created: 2026-07-13
-last_updated: 2026-07-13
-source_count: 1
+last_updated: 2026-07-18
+source_count: 3
 confidence: high
 status: active
 ---
@@ -20,7 +20,7 @@ status: active
 
 ## Motivation
 
-Standard [[direct-forecast|direct forecast (DF)]] models minimize step-wise MSE under an implicit conditional independence assumption on the multi-step label sequence. Real labels exhibit [[label-autocorrelation|label autocorrelation]], so DF training is misaligned with the true likelihood (Theorem 3.1). Prior frequency work (e.g., [[fedformer|FEDformer]], [[frets|FreTS]]) mostly redesigns *architectures* for *input* autocorrelation; FreDF instead upgrades the *forecast paradigm* for *label* autocorrelation.[^src-fredf]
+Standard [[direct-forecast|direct forecast (DF)]] models minimize step-wise MSE under an implicit conditional independence assumption on the multi-step label sequence. Real labels exhibit [[label-autocorrelation|label autocorrelation]], so DF training is misaligned with the true likelihood (Theorem 3.1). Prior frequency work (e.g., [[fedformer|FEDformer]], [[source-frets|FreTS]]) mostly redesigns *architectures* for *input* autocorrelation; FreDF instead upgrades the *forecast paradigm* for *label* autocorrelation.[^src-fredf]
 
 ## Method
 
@@ -44,16 +44,19 @@ See [[frequency-enhanced-direct-forecast]] for the technique-level formulation a
 
 ## Relation to Later Work
 
-[[source-distdf|DistDF]] (ICLR 2026) cites FreDF as a likelihood-based attempt that achieves only *marginal* frequency decorrelation and still leaves residual [[autocorrelation-bias|autocorrelation bias]]; DistDF instead aligns joint forecast/label distributions via Wasserstein discrepancy. [[source-qdf|QDF]] (same author group, ICLR 2026 preprint) similarly argues FreDF/Time-o1 leave residual conditional dependence and equal component weights, and instead learns a quadratic $L_\Sigma$ with adaptive $\Sigma$.[^src-fredf]
+[[source-distdf|DistDF]] (ICLR 2026) cites FreDF as a likelihood-based attempt that achieves only *marginal* frequency decorrelation and still leaves residual [[autocorrelation-bias|autocorrelation bias]]; DistDF instead aligns joint forecast/label distributions via Wasserstein discrepancy.[^src-distdf] [[source-qdf|QDF]] (same author group, ICLR 2026 preprint) similarly argues FreDF/Time-o1 leave residual conditional dependence and equal component weights, and instead learns a quadratic $L_\Sigma$ with adaptive $\Sigma$.[^src-qdf]
 
 ## Links
 
 - Source: [[source-fredf]]
 - Concepts: [[label-autocorrelation]], [[autocorrelation-bias]], [[direct-forecast]]
 - Technique: [[frequency-enhanced-direct-forecast]]
-- Related models: [[itransformer]], [[fedformer]], [[frets]], [[autoformer]]
+- Related models: [[itransformer]], [[fedformer]], [[source-frets]], [[autoformer]]
 - Sibling objectives: [[qdf]], [[source-qdf]], [[source-distdf]]
 
 ---
 
 [^src-fredf]: [[source-fredf]]
+[^src-distdf]: [[source-distdf]]
+[^src-qdf]: [[source-qdf]]
+

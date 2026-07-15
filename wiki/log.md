@@ -1,3 +1,38 @@
+## [2026-07-18] lint | FreDF ingest 完整 Lint + 幻觉修复
+
+对照论文 PDF (pdftotext) 逐条验证作者、年份、方法名、指标数字。
+
+### 发现
+- **source-fredf.md 自引用脚注**：`[^src-fredf]: [[source-fredf]]` 循环引用 → 移除全部自引用，`source_count: 1→0`
+- **source-fredf.md Limitations 错引**：DistDF/QDF 批评以 `[^src-fredf]` 引用，FreDF 论文早于两者无法包含 → 移除错引，保留为编辑性交叉引用
+- **fredf.md confidence:high + source_count:1** 违规 → 修正 Relation to Later Work 中 DistDF/QDF 批评的引用为各自 source-summary，`source_count: 1→3`, confidence:high 保留
+- **fredf.md Relation to Later Work 错引**：DistDF/QDF 论断以 `[^src-fredf]` 引用 → 分别改为 `[^src-distdf]`/`[^src-qdf]`
+- **frequency-enhanced-direct-forecast.md confidence:high + source_count:1** 违规 → Limitations 中 DistDF 批评改为 `[^src-distdf]`，`source_count: 1→2`
+- **frequency-enhanced-direct-forecast.md Limitations 错引**：同上
+- **broken wikilinks `[[frets]]`**：fredf.md 和 frequency-enhanced-direct-forecast.md 中 `[[frets]]` → `[[source-frets]]`（无 entity 页 `wiki/frets.md`）
+- **缺失反向链接**：itransformer/fedformer/autoformer/frequency-enhanced-block 不链接回 fredf（警告级）
+
+### 已验证通过（幻觉检查）
+- 作者 Wang/Pan/Chen/Yang/Zhang/Yang/Liu/Li/Tao、机构 ZJU/CSU/NTU/SJTU/PKU、arXiv:2402.02399 (Feb 2024) ✓
+- Theorem 3.1（条件独立假设）、DML 37.5%/3.6% 阈值、Weather T=192 ✓
+- 方法：L^(feq) 复数模长和（非平方）、L_α 混合、α≈0.8–1.0 最优 ✓
+- 指标：ETTm1 MSE 0.392 vs 0.415、M4 SMAPE 12.112/MASE 1.648/OWA 0.877、30% 数据匹配全量 ✓
+- 泛化：iTransformer/DLinear/Autoformer/Transformer/FreTS backbone、1D-T/1D-D/2D FFT、Fourier/Legendre/Chebyshev/Laguerre bases ✓
+- 相位特别关键、消融（纯频域已帮助、时频联合边际提升）✓
+- 局限：固定 Fourier bases 不能适应数据几何、PCA 建议、标签结构扩展至 3D/Speech/Images ✓
+
+### 修改
+- wiki/source-fredf.md — 移除自引用 [^src-fredf] 和脚注定义，source_count: 1→0, confidence: high→medium
+- wiki/fredf.md — 修正 DistDF/QDF 引用，source_count: 1→3；broken [[frets]]→[[source-frets]]
+- wiki/frequency-enhanced-direct-forecast.md — 修正 DistDF 引用，source_count: 1→2；broken [[frets]]→[[source-frets]]
+- ingest-reports/fredf-why.md — 追加 lint 修复记录
+
+### 仍存风险
+- itransformer/fedformer/autoformer/frequency-enhanced-block 缺少 FreDF 反向链接（警告级，不阻塞）
+- rstib-mlp.md 中 `[[frets|FreTS]]` 同样链接到不存在的 entity 页（预存问题，本轮未修复）
+- source-fredf.md source_count:0 后 confidence:medium（source-summary 无交叉来源验证，单一源总结页惯例）
+
+
 ## [2026-07-18] maintenance + lint | Flow Matching (2210.02747) 补全缺口
 
 补全 2026-04-28 初始 ingest 遗留缺口 + Lint 修复：
