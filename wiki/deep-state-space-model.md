@@ -8,8 +8,8 @@ tags:
   - kalman-filter
   - time-series
 created: 2026-07-13
-last_updated: 2026-07-13
-source_count: 1
+last_updated: 2026-07-21
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -41,6 +41,10 @@ DeepState 将映射写为 \(\Theta_t=\Psi(x_{1:t},\Phi)\)，其中 \(\Psi\) 由 
 
 在[[generative-time-series-forecasting|生成式/概率时间序列预测]]谱系中，深度 SSM 构成“**可解释线性动态 + 神经参数化**”分支，与扩散、流匹配、归一化流并列。[^src-deepstate]
 
+## 在时空建模中的扩展
+
+RiverMamba (NeurIPS 2025) 将深度 SSM 范式推向全球尺度时空水文预测：利用 Mamba 选择性 SSM 的线性复杂度，结合空间填充曲线序列化，实现 0.05° 分辨率的全球河流流量和洪水预报。[^src-rivermamba] 这标志着 SSM 从序列建模向大规模时空预报的重要跨越——传统深度 SSM（DeepState）仅处理单一时间序列，而 RiverMamba 在数万个空间点上同时建模时空交互。
+
 ## 关联页面
 
 - [[deepstate]] / [[source-deepstate]]
@@ -48,5 +52,7 @@ DeepState 将映射写为 \(\Theta_t=\Psi(x_{1:t},\Phi)\)，其中 \(\Psi\) 由 
 - [[kalman-filter]]
 - [[k2vae]]
 - [[generative-time-series-forecasting]]
+- [[rivermamba|RiverMamba]] — 全球尺度 SSM 时空水文应用
 
 [^src-deepstate]: [[source-deepstate]]
+[^src-rivermamba]: [[source-rivermamba]]

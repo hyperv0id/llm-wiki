@@ -1,3 +1,36 @@
+## [2026-07-21] ingest | RiverMamba: A State Space Model for Global River Discharge and Flood Forecasting (NeurIPS 2025)
+
+Ingest RiverMamba paper (Shams Eddin, Zhang, Kollet, Gall; University of Bonn & Research Centre Jülich; NeurIPS 2025). Core innovations: (1) First global 0.05° river discharge and flood forecasting DL model, using Mamba selective SSM for linear-complexity spatio-temporal modeling; (2) Space-filling curves (Sweep and Gilbert) for serializing sampled spatial points into 1D sequences; (3) Hindcast-Forecast layered architecture — 3 Hindcast layers encode historical reanalysis with temporal downsampling, 7 Forecast layers sequentially integrate ECMWF HRES meteorological forcing; (4) LOAN (Location-Aware Adaptive Normalization) for conditioning on static river attributes (catchment morphology from LISFLOOD); (5) Flood return period-weighted MSE loss to handle rare extreme events. Outperforms GloFAS physics-based model and LSTM baselines on both GloFAS reanalysis (R² 0.8728, F1 0.4589) and GRDC observations (R² 0.5057, F1 0.2427) across all lead times (1-7 days).
+
+创建的页面：[[source-rivermamba]], [[rivermamba]], [[space-filling-curves]], [[location-aware-adaptive-normalization]], [[flood-forecasting]]
+更新的页面：[[mamba]], [[deep-state-space-model]], [[index]]
+
+源文件：raw/rivermamba-state-space-model-for-global-river-discharge-and-flood-forecasting.pdf
+
+## [2026-07-21] lint | RiverMamba ingest 完整 Lint + 幻觉检查 + 修复
+
+### 严重（已修复）
+- [x] source-rivermamba.md — confidence:high + source_count:1 违规 → source_count: 1→0, confidence: high→low
+- [x] rivermamba.md line 51 — GloFAS 性能数字（R² 0.8287/KGE 0.8837/F1 0.4248）无法在主论文 Table 1 验证（Table 1 整体平均: R² 0.8728/KGE 0.9125/F1 0.4589）。替换为 Table 1 可验证数字。同理 F1 0.0854(GloFAS)/0.1318(LSTM) 无法验证 → 替换为 LSTM Test F1 0.3582
+- [x] source-rivermamba.md line 30 — Zigzag 曲线虽被研究但未用于最终模型 → 改为 Sweep 和 Gilbert
+- [x] log.md line 3 — 同上 Zigzag + 数字修正
+
+### 幻觉交叉验证
+对照 PDF (pdftotext) 逐条验证：作者（4 人）/机构（Bonn & Jülich）/NeurIPS 2025/方法名（LOAN/Hindcast-Forecast/Mamba）/架构参数（192-dim, 3 Hindcast, 7 Forecast, T=4）/训练策略（洪水加权 MSE, ŵ=r, û=e^(α(L-l+1)), α=0.25）/GRDC 数字（R² 0.5057, KGE 0.6612, F1 0.2427）/消融实验结论/局限——除上述已修正项外全部与 PDF 原文一致。
+
+### 已验证
+- rivermamba.md / space-filling-curves.md / location-aware-adaptive-normalization.md / flood-forecasting.md — source_count:1, confidence:medium，合规
+- mamba.md (source_count:3) / deep-state-space-model.md (source_count:2) — 引用计数准确
+- 所有 wikilink（mamba-block-design, instance-normalization 等）均存在，无断链
+- 全部新页面已在 index.md 对应类别登记
+
+### 仍存风险
+- source-rivermamba.md: source_count:0 + confidence:low，待被其他源引用后升级
+- 替换后的数字为 Table 1 整体平均值而非 7-day lead time 特定值；原数字可能来自补充材料但无法通过主论文验证
+
+更新的页面：[[source-rivermamba]], [[rivermamba]]
+更新的文件：ingest-reports/rivermamba-neurips-2025.md
+
 ## [2026-07-16] ingest | RainPro-8: Efficient Deep Learning Model for Rainfall Probability over 8 Hours (ICLR 2026)
 
 Ingest RainPro-8 paper (Rafael Pablos Sarabia et al., Aarhus University & Cordulus; ICLR 2026). Core innovations: (1) Ordinal Consistent Loss — conditional probability formulation enforcing monotonicity across precipitation intensity classes via Bayes chain rule; (2) Single-Pass Predictions — all 48 lead times in one forward pass (48× faster than lead-time conditioning); (3) Multi-source data fusion at heterogeneous resolutions (radar 4km/8km, satellite 8km, GFS 16km, topography 4km) via U-Net+MaxViT (36.7M params, 16% of MetNet-3). RainPro-8 achieves CRPS 0.061, CSI 0.279, FSS 0.537 in Europe, outperforming operational NWP by 65%. RainPro-2R (radar-only variant) achieves SOTA on SEVIR benchmark. Proposal includes comprehensive ablation, Integrated Gradients attribution, and MetNet-3* faithful reimplementation.

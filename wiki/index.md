@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-07-16
+last_updated: 2026-07-21
 tags:
   - meta
 ---
@@ -43,6 +43,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-fredf]] — FreDF: Frequency-enhanced Direct Forecast, learns multi-step DF in the frequency domain to mitigate label autocorrelation (arXiv 2024 / ICLR 2025 labeled)
 - [[source-qcgs]] — QCGS (Station2Radar): Query-Conditioned Gaussian Splatting fusing AWS + satellite for radar-free precipitation field generation, >50% RMSE improvement vs IMERG/MSWEP/GSMaP (ICLR 2026)
 - [[source-qdf]] — QDF: Quadratic Direct Forecast, learns PSD weighting matrix Σ for quadratic NLL objective addressing label autocorrelation + heterogeneous task weights (ICLR 2026 preprint, arXiv:2511.00053)
+- [[source-rivermamba]] — RiverMamba: 首个全球 0.05° 河流流量和洪水预报 Mamba 模型，双向 SSM + 空间填充曲线 + LOAN + Hindcast-Forecast，NeurIPS 2025
 - [[source-frets]] — FreTS: frequency-domain MLPs for time series forecasting (NeurIPS 2023)
 - [[source-from-news-to-forecast]] — From News to Forecast: LLM generative agent iteratively filters news events with reflection + CoT for time series prediction (NeurIPS 2024)
 - [[source-grid-world-code-readme]] — 网格世界环境官方代码说明（Zhao, Mi & Li）
@@ -370,6 +371,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[uniextreme]] — UniExtreme, universal extreme weather forecasting foundation model (arXiv 2025)
 - [[uniflow]] — UniFlow, foundation model for unified grid+graph urban spatio-temporal flow prediction (arXiv 2024)
 - [[ragc]] — RAGC, regularized adaptive graph convolution for large-scale traffic forecasting (arXiv 2026)
+- [[rivermamba]] — RiverMamba, 首个全球 0.05° 河流流量和洪水预报 Mamba 模型，双向 SSM + 空间填充曲线 + LOAN + Hindcast-Forecast，NeurIPS 2025
 - [[visifold]] — VisiFold, temporal folding graph + node visibility for efficient long-term traffic forecasting (arXiv 2026)
 - [[rast]] — RAST, retrieval-augmented spatio-temporal forecasting framework, first RAG-for-STF (AAAI 2026)
 - [[specstg]] — SpecSTG, spectral diffusion framework for probabilistic STG traffic forecasting (arXiv 2024)
@@ -528,6 +530,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[model-reprogramming]] — 模型重编程，冻结预训练模型通过输入变换+输出投影跨域重用的范式
 - [[texts-as-auxiliary-variables]] — 文本作为辅助变量，TaTS 的核心设计概念 (ICLR 2026)
 - [[extreme-weather-forecasting]] — 极端天气预测，对罕见非线性大气极端事件的预报 (arXiv 2025)
+- [[flood-forecasting]] — 洪水预报，从物理模型（GloFAS）到深度学习（RiverMamba）的演进，含洪水重现期度量
 - [[autoregressive-consistency-models]] — 自回归一致性模型，将单步 CM 扩展到序列自回归预测 (arXiv 2025)
 - [[signal-to-noise-ratio-modality-selection]] — SNR-based adaptive modality weighting for multi-modal prediction
 - [[mutual-information]] — 互信息，衡量两个随机变量之间共享信息量的信息论度量
@@ -601,6 +604,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[adaptive-season-learner]] — ASL, multi-scale temporal decomposition + pattern-specific graph construction for seasonal/trend modeling (DPGNet, ICLR 2026 under review)
 - [[sandglass-attention]] — SGA, precoder-decoder 注意力模块，聚合区域 token 捕获高阶时空相关性 + 降开销 (AAAI 2025)
 - [[sheaf-laplacian]] — 层拉普拉斯算子 (Sheaf Laplacian)，推广图拉普拉斯以编码边特定的变换语义，用于谱域滤波 (ICLR 2026 under review)
+- [[space-filling-curves]] — 空间填充曲线，双射 Φ:Z³→N 将高维时空点序列化为 1D 序列，Gilbert/Sweep/Zigzag 交替扫描用于 Mamba 时空建模 (RiverMamba, NeurIPS 2025)
 - [[sparse-teacher-forcing]] — STF，间歇性数据推断状态重校准的 DSR 训练方法，控制梯度爆炸同时探索长期动力学
 - [[spatial-temporal-tokenizer]] — 空间+时间双维度 token 生成，激活 PLM 对时空数据的理解 (AAAI 2025)
 - [[spatio-temporal-retrieval-store]] — 基于 FAISS 的双维度向量记忆库 + 动量 EMA 管理 (RAST, AAAI 2026)
@@ -684,6 +688,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[retrieval-guidance]] — inference-time retrieval of similar history to analytically tilt diffusion score estimation (MiDDiR, ICLR 2026 under review)
 - [[learnable-recurrent-cycles]] — trainable cycle parameters Q ∈ ℝ^(W×D) for periodicity representation
 - [[instance-normalization]] — RevIN strategy for handling distributional shifts in time series
+- [[location-aware-adaptive-normalization]] — LOAN，位置感知自适应归一化，通过静态地理属性注入空间偏置条件化特征 (RiverMamba)
 - [[linear-attention-bias]] — ALiBi's core mechanism: adding distance-proportional penalty to attention scores
 - [[position-extrapolation]] — Transformer model's ability to handle longer sequences at inference than training
 - [[geometric-slope-schedule]] — ALiBi's slope assignment method for multi-head attention

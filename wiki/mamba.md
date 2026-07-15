@@ -6,8 +6,8 @@ tags:
   - sequence-modeling
   - linear-complexity
 created: 2026-05-08
-last_updated: 2026-07-17
-source_count: 2
+last_updated: 2026-07-21
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -66,6 +66,8 @@ SSD-TS introduces BAM (bidirectional Mamba + temporal attention for intra-channe
 - [[forget-gate-in-sequential-models|遗忘门在序列模型中的作用]]
 - [[mamba-block-design|Mamba 块设计]]
 - [[e2-cstp|E²-CSTP]] — GCN+Mamba 混合时空编码器，17-56% 效率提升 vs Transformer (NeurIPS 2025)
+- [[rivermamba|RiverMamba]] — 首个全球 0.05° 河流流量和洪水预报 Mamba 模型，空间填充曲线 + LOAN + Hindcast-Forecast 架构 (NeurIPS 2025)
 
 [^src-demystify-mamba-linear-attention-2024]: [[source-demystify-mamba-linear-attention-2024]]
 [^src-ssdts]: [[source-ssdts]]
+[^src-rivermamba]: [[source-rivermamba]]
