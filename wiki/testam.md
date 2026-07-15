@@ -9,7 +9,7 @@ tags:
   - attention
   - iclr-2024
 created: 2026-06-08
-last_updated: 2026-06-09
+last_updated: 2026-07-16
 source_count: 2
 confidence: high
 status: active
@@ -55,6 +55,8 @@ The model is particularly strong on large-scale graphs (EXPY-TKY, 1,843 nodes) a
 
 ## Related
 
+- [[pn-train|PN-Train]] — neuron-level training method that compares against TESTAM (ICLR 2025)
+- [[pattern-neuron]] — pattern neurons discovered in UTSMs
 - [[traffic-forecasting]] — the task domain
 - [[time-enhanced-attention]] — the core attention mechanism
 - [[memory-augmented-gating]] — the routing mechanism

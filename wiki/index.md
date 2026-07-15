@@ -833,6 +833,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[staeformer]] — STAEFormer, previous SOTA transformer for traffic forecasting
 - [[uomo]] — UoMo, first universal model for mobile traffic forecasting, diffusion+transformer, deployed at China Mobile (KDD 2025)
 - [[jiutian-platform]] — Jiutian Platform, China Mobile's AI platform for network simulation and optimization, hosts UoMo
+- [[pn-train]] — PN-Train, neuron-level training method with perturbation-based pattern neuron detection + fine-tuning for UTSMs (ICLR 2025)
 
 ## Concepts
 - [[mm-dit-for-time-series]] — MM-DiT for Time Series, adapting multimodal diffusion transformer to treat covariates as distinct modality streams (arXiv 2026)
@@ -845,6 +846,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[periodicity-modeling-in-time-series]] — analysis of periodic modeling approaches across time-series forecasting architectures
 - [[rl-learning-path-mfrl]] — 基于《Mathematical Foundations of Reinforcement Learning》的系统性 RL 学习路径
 - [[spatiotemporal-mirage]] — 时空幻象，短输入窗口导致模型无法区分不同→相似或相似→不同的预测困境
+- [[pattern-neuron]] — Pattern Neuron, UTSM 中与低频时序模式（节假日、极端天气）稳定关联的神经元，集中在注意力 query/key 组件中 (ICLR 2025)
 - [[mobile-traffic-forecasting]] — mobile traffic forecasting for wireless network optimization, distinct from vehicle traffic forecasting
 - [[zero-initialized-adaptation]] — 零初始化适配，LoRA/DiT/CoRA 跨领域的设计原则，确保适配起点与预训练模型等价
 
@@ -930,6 +932,7 @@ All wiki pages, organized by type. Updated on every ingest.
 ## Sources (continued)
 - [[source-bigst]] — BigST: Linear Complexity Spatio-Temporal GNN for Traffic Forecasting on Large-Scale Road Networks (PVLDB 2024)
 - [[source-past]] — PAST: Primary-Auxiliary Spatio-Temporal Network for Traffic Time Series Imputation, primary+auxiliary pattern disentanglement with GIM+CGM (PVLDB, arXiv 2025)
+- [[source-pn-train]] — PN-Train: perturbation-based pattern neuron detector + optimizer for urban time series forecasting, identifies and fine-tunes <10% neurons to boost low-frequency pattern accuracy, ICLR 2025
 
 ## Entities (continued)
 - [[bigst]] — BigST, linear-complexity STGNN scaling to ~100K nodes via PRF-kernel linearized spatial conv + cached long-sequence features (PVLDB 2024)

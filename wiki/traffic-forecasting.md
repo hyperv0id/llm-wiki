@@ -7,7 +7,7 @@ tags:
   - intelligent-transportation
 created: 2026-04-27
 last_updated: 2026-07-16
-source_count: 45
+source_count: 46
 confidence: high
 status: active
 ---
@@ -102,6 +102,18 @@ On NGSIM and HighD, MMCKM achieves history-free trajectory prediction matching h
 
 ### Mixture of Experts / Adaptive Routing
 [[testam|TESTAM]] (ICLR 2024) is the first MoE-based spatio-temporal attention model for traffic forecasting. It uses three heterogeneous experts — identity (temporal-only), learnable static graph, and spatial attention — adaptively routed via [[memory-augmented-gating|memory-augmented gating]] with two classification losses that solve the MoE routing freeze problem in regression. With only 224K params, TESTAM achieves SOTA on METR-LA, PEMS-BAY, and EXPY-TKY, excelling on large-scale graphs (1,843-node EXPY-TKY) and non-recurring conditions through in-situ spatial modeling[^src-testam]. The [[time-enhanced-attention|time-enhanced attention]] mechanism eliminates autoregressive error propagation by directly attending from source to target time steps.
+
+### Neuron-Level Analysis / Pattern Neuron Fine-Tuning
+
+A fundamentally different approach operates at the **neuron level** rather than the architecture level. [[pn-train|PN-Train]] (ICLR 2025) discovers that specific neurons in transformer-based UTSMs — called [[pattern-neuron|pattern neurons]] — are stably associated with low-frequency patterns (holidays, extreme weather). By fine-tuning only the detected pattern neurons (<10% of total parameters) while freezing the rest, PN-Train significantly improves holiday forecasting without degrading non-holiday performance[^src-pn-train].
+
+Key findings[^src-pn-train]:
+- Pattern neurons concentrate in attention query/key components, confirming the attention mechanism's role in pattern capture
+- Shallow layers capture general patterns, middle layers refine low-level features (hierarchical distribution)
+- Perturbation-based detection (directly measuring prediction impact) outperforms gradient-based methods
+- Only ~10 fine-tuning samples (R=10) needed — making it a low-cost enhancement to existing UTSMs
+
+PN-Train uses [[staeformer|STAEformer]] as its backbone and outperforms 9 baselines including [[testam|TESTAM]] on Metro-Traffic, Pedestrian, and GBAP datasets[^src-pn-train].
 
 ### Lightweight / MLP-Based
 
@@ -270,3 +282,4 @@ The XTraffic benchmark provides incident-aligned traffic datasets for California
 [^src-bigst]: [[source-bigst]]
 [^src-lightweight-mixed-graph-unrolling]: [[source-lightweight-mixed-graph-unrolling]]
 [^src-minitraffic]: [[source-minitraffic]]
+[^src-pn-train]: [[source-pn-train]]

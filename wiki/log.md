@@ -1,3 +1,52 @@
+## [2026-07-16] lint | PN-Train ingest 完整 Lint + 幻觉检查 + 修复
+
+### 严重（已修复）
+- [x] source-pn-train.md — 数据集归属错误：32.39→32.25/8.21%→8.18% 实际来自 GBAP Table 4，非 Metro-Traffic。已修正为 Metro-Traffic (443.23→430.40, 6.62%→6.40%) + GBAP (32.39→32.25, 8.21%→8.18%)
+- [x] source-pn-train.md — confidence:high 但 source_count:1 违规 → confidence:medium, source_count:0
+- [x] pattern-neuron.md — 捏造三种神经元类型名称（Holiday-Specific/General/Non-Holiday），论文从未命名。已替换为论文准确描述
+
+### 警告（已修复）
+- [x] pattern-neuron.md — 断链 [[neuron-interpretability]] → 页面不存在，已移除
+
+### 幻觉交叉验证通过
+作者/机构/会议/方法名/超参数/数据集/指标/消融结论 — 全部与 PDF 原文一致
+
+### 仍存风险
+- pn-train.md: PND 归因公式简化为 Attr_p = |L(x) − L(x + ε)|，论文实际使用激活范数和（Eq 2），属于合理简化
+
+更新的页面：[[source-pn-train]], [[pattern-neuron]]
+更新的文件：ingest-reports/2026-07-16-pn-train.md
+
+
+## [2026-07-16] lint | PN-Train ingest 完整 Lint + 幻觉检查 + 修复
+
+### 严重（已修复）
+- [x] source-pn-train.md — 数据集归属错误：32.39→32.25/8.21%→8.18% 实际来自 GBAP Table 4，非 Metro-Traffic。已修正为 Metro-Traffic (443.23→430.40, 6.62%→6.40%) + GBAP (32.39→32.25, 8.21%→8.18%)
+- [x] source-pn-train.md — confidence:high 但 source_count:1 违规 → confidence:medium, source_count:0
+- [x] pattern-neuron.md — 捏造三种神经元类型名称（Holiday-Specific/General/Non-Holiday），论文从未命名。已替换为论文准确描述
+
+### 警告（已修复）
+- [x] pattern-neuron.md — 断链 [[neuron-interpretability]] → 页面不存在，已移除
+
+### 幻觉交叉验证通过
+作者/机构/会议/方法名/超参数/数据集/指标/消融结论 — 全部与 PDF 原文一致
+
+### 仍存风险
+- pn-train.md: PND 归因公式简化为 Attr_p = |L(x) − L(x + ε)|，论文实际使用激活范数和（Eq 2），属于合理简化
+
+更新的页面：[[source-pn-train]], [[pattern-neuron]]
+更新的文件：ingest-reports/2026-07-16-pn-train.md
+
+
+## [2026-07-16] ingest | PN-Train: Investigating Pattern Neurons in Urban Time Series Forecasting (ICLR 2025)
+
+Ingest PN-Train paper (ICLR 2025). PN-Train is the first work to confirm and leverage pattern neurons in Urban Time Series Models (UTSMs). Core innovations: (1) PND (Pattern Neuron Detector) — fine-grained perturbation-based detector evaluating neuron importance at every linear layer; (2) PNO (Pattern Neuron Optimizer) — fine-tunes only detected pattern neurons (<10% params). Uses STAEformer as backbone UTSM, outperforms 9 baselines on Metro-Traffic, Pedestrian, and GBAP. Key findings: pattern neurons concentrate in attention query/key components, hierarchical distribution (shallow→general, middle→refined), perturbation-based detection outperforms gradient-based.
+
+创建的页面：[[source-pn-train]], [[pn-train]], [[pattern-neuron]]
+更新的页面：[[staeformer]], [[testam]], [[traffic-forecasting]], [[index]], [[log]]
+
+源文件：raw/pn-train-pattern-neurons-urban-tsf-iclr2025.pdf
+
 ## [2025-07-14] ingest | PIPE: Physics-Informed Position Encoding for Typhoon Forecasting (NeurIPS 2025)
 
 Ingest PIPE paper (Li et al., HKUST CSE & ENVR; NeurIPS 2025). PIPE proposes physics-informed positional encoding for aligning satellite images and time series in VLM-based typhoon forecasting. Core innovations: (1) physics-informed positional indexing — mapping physical metadata (day-of-year, hour, latitude, longitude) to positional IDs with negative-value mapping; (2) variant-frequency positional encoding — per-physical-variable sinusoidal wavelengths. Based on Qwen-2.5-VL, achieves SOTA on Digital Typhoon with 12% intensity MAE improvement. Represents a novel third PINN paradigm: encoding-informed.
