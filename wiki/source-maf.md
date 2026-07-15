@@ -10,7 +10,7 @@ tags:
   - realnvp
   - arxiv-2022
 created: 2026-07-13
-last_updated: 2026-07-13
+last_updated: 2026-07-19
 source_count: 1
 confidence: medium
 status: active
@@ -57,7 +57,7 @@ status: active
 - Exchange 等**弱周期**数据上表现平庸[^src-maf]。
 - 高随机序列（如 Taxi）需更强非线性流；多层解码可能引入偏差，作者建议 Flow++ 等更强流[^src-maf]。
 - 未对离散取值做 dequantization，销售等离散数据需另建离散分布模型[^src-maf]。
-- 主要对照 2020 年前 AR 流/状态空间基线；与后续 [[timegrad|TimeGrad]] 等扩散系方法无直接对比[^src-maf]。
+- 主要对照 2020 年前 AR 流/状态空间基线；与同期 [[timegrad|TimeGrad]] 等扩散系方法无直接对比[^src-maf]。
 
 ## 相关页面
 

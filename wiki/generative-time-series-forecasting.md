@@ -8,7 +8,7 @@ tags:
   - flow-matching
   - diffusion-models
 created: 2026-05-03
-last_updated: 2026-07-16
+last_updated: 2026-07-19
 source_count: 19
 confidence: high
 status: active
@@ -63,7 +63,7 @@ status: active
 
 ### 归一化流方法
 
-**[[manf|MANF]]**（arXiv:2205.07493）将 [[multi-scale-attention|多尺度注意力]] 编码器与条件 [[normalizing-flow|RealNVP]] 结合，以**非自回归**方式生成未来窗口联合分布：预测窗观测不回馈模型，解码器各层条件驱动堆叠 affine coupling，从而避免 AR 流的误差累积并保持时间维并行[^src-maf]。在 Exchange/Solar/Electricity/Traffic/Taxi/Wikipedia 上相对 LSTM-MAF、Transformer-MAF、NKF 等取得文中报告的 CRPS-sum/MSE SOTA，并在加倍预测长度与缺失噪声压力下更稳[^src-maf]。它代表离散归一化流在多变量概率预测中的早期 NAR 路线，与后续 Flow Matching（TSFlow/Sundial）及 AR 扩散（TimeGrad）形成对照。
+**[[manf|MANF]]**（arXiv:2205.07493）将 [[multi-scale-attention|多尺度注意力]] 编码器与条件 [[normalizing-flow|RealNVP]] 结合，以**非自回归**方式生成未来窗口联合分布：预测窗观测不回馈模型，解码器各层条件驱动堆叠 affine coupling，从而避免 AR 流的误差累积并保持时间维并行[^src-maf]。在 Exchange/Solar/Electricity/Traffic/Taxi/Wikipedia 上相对 LSTM-MAF、Transformer-MAF、NKF 等取得文中报告的 CRPS-sum/MSE SOTA，并在加倍预测长度与缺失噪声压力下更稳[^src-maf]。它代表离散归一化流在多变量概率预测中的早期 NAR 路线，与后续 Flow Matching（TSFlow/Sundial）及并行的 AR 扩散路线（[[timegrad|TimeGrad]] 等）形成对照。
 
 ### 自回归参数化似然（AR-RNN）
 

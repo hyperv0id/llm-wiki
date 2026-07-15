@@ -1983,3 +1983,37 @@ FSTLLM（Jiang et al., ICML 2025）先前于 2026-06-09 批量 ingest，已有 s
 创建的页面：[[llm-enhanced-graph-construction]], [[domain-knowledge-injection]]
 更新的页面：[[fstllm]], [[source-fstllm]], [[index]]
 源文件：raw/fstllm-icml2025.pdf
+
+## [2026-07-19] ingest-completion | MANF PDF 入库 + ingest 报告补全
+
+已有 wiki 页面（2026-07-13 创建）经全文对照验证无误。本次补全：
+创建的页面：无（所有页面已于 2026-07-13 创建）
+新增 raw 文件：raw/manf-multi-scale-attention-flow.pdf
+新增报告：ingest-reports/manf-why.md
+验证的页面：[[source-maf]], [[manf]], [[multi-scale-attention]], [[normalizing-flow]], [[ar-vs-nar-decoding]], [[generative-time-series-forecasting]], [[timegrad]]
+
+## [2026-07-19] lint | MANF ingest 完整 Lint + 幻觉检查 + 修复
+
+对照 PDF (pdftotext) 逐条验证作者、方法名、数字指标。
+
+### 幻觉检查（通过）
+- 作者列表（Shibo Feng, Chunyan Miao, Ke Xu, Jiaxiang Wu, Pengcheng Wu, Yang Zhang, Peilin Zhao）✓
+- 机构（NTU LILY / Tencent AI Lab / 山东大学齐鲁医院）✓
+- arXiv:2205.07493v3, 2023-07-21 ✓
+- 消融变体 MANF-T/MANF-P/MANF-M/MANF-L 四组 ✓
+- 指标数字 CRPS-sum/MSE（对照 Table 2 原文）✓
+- Θ=[1/3L,1/2L,L], L=4×预测长度, batch=64, lr=5e-4/1e-3, 60 epoch, 3 stacks, hidden=100, 100 samples ✓
+- Electricity 训练/测试 ~2.2s/epoch ✓
+- Mixup 增广、GluonTS、PyTorch、BN 双射 ✓
+- Flow++ 与 dequantization 局限原文明确提及 ✓
+
+### 发现并修复
+- **manf.md#89**: "相对后续 TimeGrad" → 移除"后续"（TimeGrad ICML 2021 早于 MANF arXiv 2022，"后续"为事实错误）
+- **source-maf.md#60**: "与后续 TimeGrad" → "与同期 TimeGrad"
+- **generative-time-series-forecasting.md#66**: "及 AR 扩散（TimeGrad）" → "及并行的 AR 扩散路线（[[timegrad|TimeGrad]] 等）"（消除时序歧义）
+- 更新 manf.md / source-maf.md / generative-time-series-forecasting.md 的 last_updated → 2026-07-19
+- 更新 ingest-reports/manf-why.md 反映修复
+
+### 备注
+- Raw 文件名 `manf-multi-scale-attention-flow.pdf` 与 wiki slug `source-maf` 不严格匹配（PDF 后入库），已知历史遗留，不影响功能
+- manf.md → [[tsflow]] / [[glow]] 为单向链接（两个页面未回链），glow 预早于 MANF 无可厚非，tsflow 可后续考虑补充

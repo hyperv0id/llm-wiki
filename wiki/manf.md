@@ -9,7 +9,7 @@ tags:
   - non-autoregressive
   - realnvp
 created: 2026-07-13
-last_updated: 2026-07-13
+last_updated: 2026-07-19
 source_count: 1
 confidence: medium
 status: active
@@ -86,7 +86,7 @@ z_0 ~ N(0,I) → z_1 → … → z_l = 预测样本
 
 - 相对 **AR 条件流**（LSTM-RealNVP / LSTM-MAF / Transformer-MAF）：MANF 用 NAR one-shot 生成，强调速度与抗累积误差[^src-maf]。
 - 相对 **NKF**（LGM + flow）：不以线性高斯状态空间为骨架，直接用注意力序列建模 + 条件流[^src-maf]。
-- 相对后续 **[[timegrad|TimeGrad]]**（AR + 扩散）：同属高维联合分布灵活建模，但生成机制与解码方案不同（流 vs 扩散，NAR vs AR）[^src-maf]。
+- 相对 **[[timegrad|TimeGrad]]**（AR + 扩散）：同属高维联合分布灵活建模，但生成机制与解码方案不同（流 vs 扩散，NAR vs AR）[^src-maf]。
 - 属于 [[generative-time-series-forecasting|生成式时序预测]] 中**离散归一化流**一支，早于主流 Flow Matching / 扩散时序工作[^src-maf]。
 
 ## 局限与展望
