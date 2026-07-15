@@ -6,7 +6,7 @@ tags:
   - spatial-temporal
   - intelligent-transportation
 created: 2026-04-27
-last_updated: 2026-06-10
+last_updated: 2026-07-16
 source_count: 44
 confidence: high
 status: active
@@ -112,6 +112,20 @@ A growing direction challenges the dominance of heavy Transformer-based STGNNs, 
 STID (Shao et al., CIKM 2022) uses learnable node embeddings to characterize spatiotemporal structure, assisting pure MLP in learning — a strong yet simple baseline for large-scale data.
 
 **[[graphsparsenet|GraphSparseNet (GSNet)]]** (PVLDB 2025) addresses GNN scalability from a different angle: it observes that well-trained adaptive adjacency matrices are highly sparse, so learning the full N×N matrix is wasteful[^src-graphsparsenet]. GSNet replaces it with two small matrices — K (C×C low-dimensional adjacency) and U (combination coefficients) — performing all graph operations in a compressed C-dimensional space where C ≪ N. Two O(N) modules (Feature Extractor + Relational Compressor) achieve linear complexity while theoretically preserving the expressiveness of full-rank adjacency via Theorem 3.1[^src-graphsparsenet]. On CA (8,600 nodes), GSNet achieves SOTA MAE 19.76 with 3.51× faster training than BigST and 64–70× faster than GWNet/AGCRN[^src-graphsparsenet]. See [[low-dimensional-graph-adjacency]] for the compressed adjacency concept.
+### Mixed-Graph Algorithm Unrolling
+
+A new paradigm that bridges model-based optimization and data-driven learning: instead of designing larger attention mechanisms, **unroll a mixed-graph optimization algorithm into a lightweight, interpretable Transformer**[^src-lightweight-mixed-graph-unrolling].
+
+Qi et al. (ICML 2026) propose constructing two graphs — an undirected graph $G^u$ for spatial correlations and a directed acyclic graph $G^d$ for temporal sequential relationships — and minimizing an optimization objective combining GLR (for $G^u$), [[directed-graph-laplacian-regularizer|DGLR]] ($\ell_2$), and [[directed-graph-total-variation|DGTV]] ($\ell_1$) via ADMM. Each ADMM iteration (CG solve, soft-thresholding, multiplier update) is unrolled into a neural layer, with periodically inserted graph learning modules that serve as [[graph-learning-as-self-attention|self-attention substitutes]]. The unrolled network achieves competitive performance with only **38K parameters** — 7.2% of transformer-based PDFormer (1,404K) and 4.9% of its inference cost[^src-lightweight-mixed-graph-unrolling].
+
+Key advantages[^src-lightweight-mixed-graph-unrolling]:
+- **Interpretability**: each layer corresponds to an optimization step (low-pass graph filter on $G^u$ and $G^d$)
+- **Parameter efficiency**: graph learning modules replace Q/K/V matrices with compact Mahalanobis distances
+- **Data efficiency**: maintains stable performance under limited training data where larger models degrade
+- **Directed temporal modeling**: $G^d$ naturally captures time's arrow, outperforming undirected temporal graphs
+
+See [[mixed-graph-spatiotemporal-modeling]], [[directed-graph-laplacian-regularizer|DGLR]], [[directed-graph-total-variation|DGTV]], and [[graph-learning-as-self-attention]] for detailed mechanism pages.
+
 
 ### Spatial Patching / Efficient Dynamic Spatial Modeling
 
@@ -245,5 +259,5 @@ The XTraffic benchmark provides incident-aligned traffic datasets for California
 [^src-st-ttc]: [[source-st-ttc]]
 [^src-bist]: [[source-bist]]
 [^src-graphsparsenet]: [[source-graphsparsenet]]
-[^src-team]: [[source-team]]
 [^src-bigst]: [[source-bigst]]
+[^src-lightweight-mixed-graph-unrolling]: [[source-lightweight-mixed-graph-unrolling]]

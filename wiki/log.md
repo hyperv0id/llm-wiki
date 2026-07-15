@@ -1,3 +1,40 @@
+## [2026-07-16] lint | Lightweight Mixed Graph Unrolling ingest 完整 Lint + 幻觉修复
+
+对照 PDF (pdftotext) 逐条验证作者、年份、方法名、指标数字。
+
+### 发现
+- source-lightweight-mixed-graph-unrolling.md: `confidence: high` + `source_count: 1` → `source_count: 0`, `confidence: medium`
+- source-lightweight-mixed-graph-unrolling.md: 论文声称 7.2% 但 38/1404≈2.7%，已加注
+- graph-learning-as-self-attention.md: 7.2% vs 2.7% 不一致，已加注；缺 [[algorithm-unrolling]] 反向链接
+- algorithm-unrolling.md §5: 新条目缺四个概念/技术页面的 wikilink → 已补
+- traffic-forecasting.md: 重复 `last_updated` → 已去重；`source_count: 45` → 44
+
+### 已验证（幻觉检查）
+- 作者、机构、ICML 2026、Code URL ✓
+- DGLR/DGTV 定义和公式 ✓
+- Theorem 3.1（DAG DGLR → undirected line GLR）✓
+- 5 ADMM blocks × 25 layers, K=6, H=4, 38K ✓
+- PEMS03 (358n/547e), METR-LA (207n/1315e) ✓
+- 推理 FLOPs 0.087 vs PDFormer 1.771 (4.9%) ✓
+- 训练设置 Adam LR 5e-4, Huber δ=1, 70 epochs, 6:2:2 split ✓
+
+### 修改页面
+- [[source-lightweight-mixed-graph-unrolling]], [[graph-learning-as-self-attention]], [[algorithm-unrolling]], [[traffic-forecasting]], ingest-reports/2026-07-16-lightweight-mixed-graph-unrolling.md
+
+### 仍存风险
+- 论文自身 7.2% vs 38/1404=2.7% 数值矛盾
+- algorithm-unrolling `confidence: high` + `source_count: 2` 为阈值边界
+
+
+## [2026-07-16] ingest | Lightweight and Interpretable Transformer via Mixed Graph Algorithm Unrolling for Traffic Forecast
+
+Ingest Qi et al. (Tsinghua/York, ICML 2026) 混合图算法展开交通预测论文。该文将 ADMM 优化算法展开为轻量级类 Transformer 网络：无向图 $G^u$ 建模空间相关性，有向图 $G^d$ 建模时间顺序关系，设计 DGLR（$\ell_2$）和 DGTV（$\ell_1$）两个有向图正则项，图学习模块数学等价于自注意力。38K 参数达到 PDFormer (1,404K) 的可比性能，推理计算量仅 PDFormer 的 4.9%。
+
+创建的页面：[[source-lightweight-mixed-graph-unrolling]], [[mixed-graph-spatiotemporal-modeling]], [[directed-graph-laplacian-regularizer]], [[directed-graph-total-variation]], [[graph-learning-as-self-attention]]
+更新的页面：[[algorithm-unrolling]], [[traffic-forecasting]], [[index]]
+
+源文件：raw/lightweight-mixed-graph-unrolling-traffic-forecast.pdf（不可变）
+
 ## [2026-07-18] ingest | GMF: Geometry-based Schrödinger Bridges for Trustworthy Multimodal Fusion
 
 Ingest GMF 论文（Geometry-based Schrödinger Bridges for Trustworthy Multimodal Fusion），该文提出使用潜在空间传输几何（DSB/Rectified Flow）进行多模态融合可靠性评估的框架，打破统计方法中依赖分类器置信度的循环依赖。

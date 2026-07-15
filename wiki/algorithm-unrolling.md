@@ -8,9 +8,9 @@ tags:
   - algorithm-design
   - network-architecture
 created: 2026-04-29
-last_updated: 2026-05-31
-source_count: 1
-confidence: medium
+last_updated: 2026-07-16
+source_count: 2
+confidence: high
 status: active
 ---
 
@@ -128,6 +128,17 @@ CBSA 包含两个阶段，对应优化目标的不同组成部分：
 CRATE 将 MCR² 目标的 ISTA 步骤展开为完整 Transformer：
 - MSSA（Multi-head Subspace Self-Attention）：对应 MCR² 的压缩项梯度
 - ISTA 模块：对应稀疏性惩罚和展开项的处理[^src-cbsa]
+### 5. Mixed-Graph ADMM Unrolling for Traffic Forecasting
+
+Qi et al. (ICML 2026) 将 ADMM 优化算法展开为轻量级交通预测 Transformer[^src-lightweight-mixed-graph-unrolling]：
+
+- 构建 [[mixed-graph-spatiotemporal-modeling|混合图]]（无向空间 + 有向时间）
+- 设计 [[directed-graph-laplacian-regularizer|DGLR]]/[[directed-graph-total-variation|DGTV]] 有向图正则项
+- ADMM 每一步（CG 求解、软阈值、乘子更新）展开为网络层
+- [[graph-learning-as-self-attention|图学习模块]]数学等价于自注意力，但参数远少于 Q/K/V 矩阵
+- 每层可解释为参数化低通滤波器
+
+结果：38K 参数达到 PDFormer（1,404K）的可比性能。
 
 ## 与 End-to-End 学习的对比
 
@@ -140,5 +151,5 @@ CRATE 将 MCR² 目标的 ISTA 步骤展开为完整 Transformer：
 | 收敛保证 | 有（基于优化理论） | 无 |
 
 ## 引用
-
 [^src-cbsa]: [[source-cbsa]]
+[^src-lightweight-mixed-graph-unrolling]: [[source-lightweight-mixed-graph-unrolling]]

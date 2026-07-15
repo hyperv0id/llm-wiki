@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-07-18
+last_updated: 2026-07-16
 tags:
   - meta
 ---
@@ -264,6 +264,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-team]] — TEAM: Topological Evolution-aware Framework for Traffic Forecasting (PVLDB 2024)
 - [[source-whatif-tsf]] — WIT: What If TSF benchmark, scenario-guided multimodal forecasting with expert-crafted plausible/counterfactual futures, 4 domains, 5,352 samples, arXiv 2026
 - [[source-gmf]] — GMF: Geometry-based Schrödinger Bridges for Trustworthy Multimodal Fusion, 潜在空间传输几何用于多模态融合可靠性评估，打破统计方法的循环依赖
+- [[source-lightweight-mixed-graph-unrolling]] — Lightweight & Interpretable Transformer via Mixed Graph Algorithm Unrolling for Traffic Forecast, ADMM 展开混合图优化为轻量级类 Transformer，ICML 2026
 
 ## Entities
 - [[std-plm]] — STD-PLM, unified PLM-based ST forecasting+imputation with spatial+time dual tokenizer (AAAI 2025)
@@ -563,6 +564,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[building-schrodinger-bridges]] — 六种 SB 构造方法综述：条件桥、时间反演、FBSDE、h-变换、IMF、随机插值
 - [[circular-dependency-in-multimodal-fusion]] — 多模态融合中的循环依赖问题：依赖分类器置信度检测错误形成自我指涉
 - [[transport-based-reliability-assessment]] — 基于传输的可靠性评估：通过潜在空间传输几何而非分类器输出来度量可靠性
+- [[mixed-graph-spatiotemporal-modeling]] — 混合图时空建模，无向图（空间）+ 有向图（时间）统一表示框架
+- [[graph-learning-as-self-attention]] — 图学习即自注意力，图学习模块数学等价于 Transformer 自注意力但参数远少于 Q/K/V
 
 ## Techniques
 - [[almost-linear-rnn]] — AL-RNN，近乎线性 RNN（P<<M ReLU），拓扑简约+可解释 DSR 架构（NeurIPS 2024）
@@ -748,6 +751,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[efficient-cosine-operator]] — ECO, linear-complexity graph convolution via cosine similarity decomposition (arXiv 2026)
 - [[stochastic-shared-embedding]] — SSE, stochastic shared embedding regularization for graph node embeddings (NeurIPS 2019, adapted 2026)
 - [[residual-difference-mechanism]] — RDM, subtractive residual that suppresses SSE noise via adaptive graph convolution weights
+- [[directed-graph-laplacian-regularizer]] — DGLR，ℓ₂ 范数有向图 Laplacian 正则项，对称化后 PSD 提供频率解释
+- [[directed-graph-total-variation]] — DGTV，ℓ₁ 范数有向图总变差，软阈值高通衰减提供两通道滤波器组解释
 - [[fast-spectral-graph-convolution]] — Fast Spectral GC, O(KN) Chebyshev graph convolution for Fourier-domain inputs (arXiv 2024)
 - [[spectral-recurrent-encoder]] — SG-GRU, spectral-domain Graph GRU encoder for STG diffusion conditioning (arXiv 2024)
 - [[dual-stream-temporal-frequency-processing]] — 双流时频处理，TCN+GCN 时域与 DCT 频域的并行处理与 Cross-Attention 融合 (arXiv 2025)
