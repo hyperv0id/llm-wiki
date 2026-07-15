@@ -8,9 +8,9 @@ tags:
   - wasserstein
   - distribution-alignment
 created: 2026-07-13
-last_updated: 2026-07-17
+last_updated: 2026-07-21
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
@@ -53,7 +53,7 @@ The Bures-Wasserstein metric captures only first- and second-order moments. Real
 
 - [[source-fredf|FreDF]]: frequency-domain likelihood-based method (marginal decorrelation only)
 - [[source-qdf|QDF]]: learned quadratic $L_\Sigma$ (autocorrelation + heterogeneous task weights; still likelihood family)
-- [[source-time-o1|Time-o1]]: PCA-based transformed label alignment
+- Time-o1: PCA-based transformed label alignment
 - [[source-exost|ExoST]]: exogenous variable modeling for spatiotemporal forecasting
 - [[optimal-transport]] — theoretical foundation: Wasserstein distance is an OT metric
 - [[direct-forecast]] — DistDF is a distribution-aware variant of the direct forecast paradigm

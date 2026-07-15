@@ -1,3 +1,24 @@
+## [2026-07-21] lint | QDF ingest 深度 Lint + 幻觉检查 + 修复
+
+### 严重（已修复）
+- [x] source-qdf.md — 自引用循环（6 处 `[^src-qdf]` + 脚注定义）。Source-summary 不应自引用（前例：ProbTS lint）。移除全部自引用，source_count: 1→0，confidence: medium→low
+
+### 警告（已修复）
+- [x] joint-distribution-wasserstein-alignment.md — confidence:high + source_count:1 违规 → confidence: medium
+
+### 信息（已修复）
+- [x] qdf.md — "Same author line as FreDF and DistDF" 不够准确（共享 4/10 作者）→ "Overlapping author group with"
+
+### 幻觉交叉验证通过
+对照 PDF (pdftotext) 逐条验证：作者（10 人）/机构（Xiaohongshu/PKU/Purdue/SUFE/ZJU/Squirrel AI）/arXiv:2511.00053/方法名/ECL 61.4% 偏相关/PEMS08 MSE 0.120 vs TQNet 0.139/<2ms at T=720/MAML 系列对比/Cholesky+softplus/收敛条件 ‖Σ‖_F<1e-4/K-fold 时序划分/hypernetwork 扩展方向——全部与 PDF 原文一致，无捏造。
+
+### 仍存风险
+- source-qdf.md: source_count:0 + confidence:low，待被其他源引用后升级
+
+更新的页面：[[source-qdf]], [[qdf]], [[joint-distribution-wasserstein-alignment]]
+更新的文件：ingest-reports/qdf-why.md
+
+
 ## [2026-07-16] ingest | ProbTS: 补充 raw PDF 副本与交叉验证（补充 ingest）
 
 ProbTS 论文初始已于 2026-07-13 ingest。本次：将 kebab-case 命名 PDF 副本 `raw/probts-benchmarking-point-and-distributional-forecasting.pdf` 加入 raw/（已有 `raw/2310.07446.pdf` 保留不动）。交叉验证 source-summary 五项主要发现与论文 §4.1–§4.2 全部一致。
@@ -727,6 +748,12 @@ last_updated: 2026-07-21
 核心贡献：在 DF 学习目标中同时处理标签自相关（Σ^{-1} 非对角）与异质任务权重（Σ^{-1} 非均匀对角）；双层优化学习 PSD 加权矩阵后以二次型 NLL 训练，模型无关；相对 FreDF/Time-o1/DistDF 的同组兄弟工作。arXiv:2511.00053（ICLR 2026 preprint）。
 源文件：外部 PDF（不可变 raw/ 策略；路径见 ingest-reports/qdf-why.md）
 ---
+
+## [2026-07-21] maintenance | QDF ingest gap fix
+修复：source-qdf/qdf/quadratic-form-weighted-objective confidence:high→medium（lint：source_count=1）；joint-distribution-wasserstein-alignment 移除 broken wikilink [[source-time-o1]]→plain "Time-o1"。
+更新的页面：[[source-qdf]], [[qdf]], [[quadratic-form-weighted-objective]], [[joint-distribution-wasserstein-alignment]]
+---
+
 
 ## [2026-07-13] ingest | GCGNet: Graph-Consistent Generative Network for Time Series Forecasting with Exogenous Variables
 创建的页面：[[source-gcgnet]], [[gcgnet]], [[joint-temporal-channel-correlation]], [[graph-structure-aligner]], [[graph-refiner]], [[variational-generator-exogenous]]

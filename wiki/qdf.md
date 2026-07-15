@@ -9,15 +9,15 @@ tags:
   - quadratic-form
   - iclr-2026
 created: 2026-07-13
-last_updated: 2026-07-13
+last_updated: 2026-07-21
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
 # QDF
 
-**QDF (Quadratic Direct Forecast)** is a plug-and-play training algorithm that improves multi-step time-series forecasting by learning a quadratic-form weighted loss with an adaptive covariance-like matrix $\Sigma$. Proposed by Hao Wang et al. (Xiaohongshu / PKU / ZJU et al.), arXiv:2511.00053 (ICLR 2026 preprint). Same author line as [[fredf|FreDF]] and [[source-distdf|DistDF]].[^src-qdf]
+**QDF (Quadratic Direct Forecast)** is a plug-and-play training algorithm that improves multi-step time-series forecasting by learning a quadratic-form weighted loss with an adaptive covariance-like matrix $\Sigma$. Proposed by Hao Wang et al. (Xiaohongshu / PKU / ZJU et al.), arXiv:2511.00053 (ICLR 2026 preprint). Overlapping author group with [[fredf|FreDF]] and [[source-distdf|DistDF]].[^src-qdf]
 
 ## Motivation
 
