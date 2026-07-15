@@ -795,6 +795,41 @@ ClimateAR (Yu, Chen, Wu, Cui, Jiang, Shang, Wu, Sun & Chen; Zhejiang Univ, Aliba
 更新的页面：[[index]], [[patchtst]], [[patch-based-tokenization]], [[crossformer]]
 核心贡献：批评固定 adjacent patching 的表示空间；提出可微 Selective Patching + Dynamic Reassembly + Adaptive Fusion 的即插即用 SRS 模块；SRSNet=SRS+MLP 在多域 LTSF 上 SOTA，并可提升 PatchTST/Crossformer 等 patch 骨干。NeurIPS 2025 / arXiv:2510.14510。
 源文件：外部 PDF（不可变 raw/ 策略；路径见 ingest-reports/srsnet-why.md）
+
+## [2026-07-21] ingest 补全 | SRSNet 交叉引用与 frontmatter 补全
+补全 2026-07-13 ingest 的缺口：
+- channel-independence.md：新增 SRS 引用（SRS 在 CI 设定下做 selective patch）
+- instance-normalization.md：新增 SRS 引用（SRS 采用 RevIN 预处理）
+- 全部 6 个 SRS 页面 frontmatter last_updated → 2026-07-21
+- ingest-reports/srsnet-why.md 更新交叉链接
+Raw: raw/srsnet-selective-representation-spaces-patch-perspective.pdf
+---
+
+## [2026-07-21] lint | SRSNet ingest 完整 Lint + 幻觉检查 + 修复
+
+### 严重（已修复）
+- [x] source-srsnet.md — 自引用循环（6 处 `[^src-srsnet]` + 脚注），source_count: 1→0, confidence: high→low
+- [x] srsnet.md — confidence:high→medium (source_count:1)
+- [x] selective-representation-space.md — confidence:high→medium
+- [x] selective-patching.md — confidence:high→medium
+- [x] dynamic-reassembly.md — confidence:high→medium
+- [x] adaptive-fusion.md — confidence:high→medium
+
+### 幻觉交叉验证：全部通过
+对照 PDF (pdftotext) 逐条验证：作者/机构/会议/方法名/数据集/指标数字/效率数据/组合公式——全部与 PDF 原文一致，无捏造。
+
+### 已验证
+- 更新页面 source_count 与实际引用匹配
+- 全部新页面已在 index.md 对应类别登记
+- 所有 wikilink 目标页面存在，无断链，无孤立
+
+### 仍存风险
+- source-srsnet.md: source_count:0 + confidence:low，待被其他源引用后升级
+- 其余 SRS 页面 source_count:1 + confidence:medium，合规但待加固
+
+更新的页面：[[source-srsnet]], [[srsnet]], [[selective-representation-space]], [[selective-patching]], [[dynamic-reassembly]], [[adaptive-fusion]]
+更新的文件：ingest-reports/srsnet-why.md
+
 ---
 
 ---
