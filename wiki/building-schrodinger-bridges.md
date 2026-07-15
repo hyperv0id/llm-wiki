@@ -6,15 +6,14 @@ tags:
   - generative-modeling
   - bridge-construction
 created: 2026-06-16
-last_updated: 2026-07-13
-source_count: 2
-confidence: medium
+last_updated: 2026-07-18
+source_count: 3
 status: active
 ---
 
 # Building Schrödinger Bridges
 
-六种互补的数学构造方法，均收敛于同一 optimal Markov control drift $u^\star = \sigma_t\nabla\log\varphi_t$，该 drift 最小地修正 reference dynamics 以匹配 prescribed marginal distributions[^src-schrodinger-bridges-generative-modeling]。
+六种互补的数学构造方法（此外 [[gmf|GMF]] 使用单步 Rectified Flow 作为 DSB 近似，无需 iterative proportional fitting 即可估计传输代价用于多模态融合的可靠性评估[^src-gmf]）。以下六种方法均收敛于同一 optimal Markov control drift $u^\star = \sigma_t\nabla\log\varphi_t$，该 drift 最小地修正 reference dynamics 以匹配 prescribed marginal distributions[^src-schrodinger-bridges-generative-modeling]。
 
 ## 1. Mixture of Conditional Bridges
 
@@ -82,3 +81,4 @@ $$\max_{\hat{I}}\min_{\hat{u}} \mathbb{E}\!\left[\frac{1}{2}\|\hat{u}\|^2 - (\pa
 
 [^src-schrodinger-bridges-generative-modeling]: [[source-schrodinger-bridges-generative-modeling]]
 [^src-stochasticinterpolants]: [[source-stochasticinterpolants]]
+[^src-gmf]: [[source-gmf]]

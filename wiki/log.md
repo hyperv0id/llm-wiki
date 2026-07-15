@@ -1,3 +1,15 @@
+## [2026-07-18] ingest | GMF: Geometry-based Schrödinger Bridges for Trustworthy Multimodal Fusion
+
+Ingest GMF 论文（Geometry-based Schrödinger Bridges for Trustworthy Multimodal Fusion），该文提出使用潜在空间传输几何（DSB/Rectified Flow）进行多模态融合可靠性评估的框架，打破统计方法中依赖分类器置信度的循环依赖。
+
+核心贡献：(1) 模态内/模态间传输代价估计（Rectified Flow 速度网络）；(2) 熵正则化 Gibbs 分布融合权重（Theorem 4.4）；(3) 几何屏障原理（Theorem 4.5）——语义冲突下跨模态传输代价 $\geq (\delta-2\epsilon)^2$，指数抑制冲突模态；(4) 梯度分离训练。NYU Depth V2/UPMC Food-101/MVSA-Single/PneumoniaMNIST 四基准全面验证，语义冲突 Safe Rejection Rate 76.8%（vs 最佳基线 35.2%）。
+
+创建的页面：[[source-gmf]], [[gmf]], [[circular-dependency-in-multimodal-fusion]], [[geometric-barrier-principle]], [[transport-based-reliability-assessment]]
+更新的页面：[[schrodinger-bridge]], [[building-schrodinger-bridges]], [[rectified-flow]], [[index]], [[log]]
+
+源文件：raw/gmf-geometry-based-schrodinger-bridges-multimodal-fusion.pdf（不可变）
+
+
 ## [2026-07-18] lint | FreDF ingest 完整 Lint + 幻觉修复
 
 对照论文 PDF (pdftotext) 逐条验证作者、年份、方法名、指标数字。
@@ -369,7 +381,7 @@ ClimateAR (Yu, Chen, Wu, Cui, Jiang, Shang, Wu, Sun & Chen; Zhejiang Univ, Aliba
 title: Log
 type: concept
 created: 2026-04-26
-last_updated: 2026-07-13
+last_updated: 2025-07-18
 ## [2026-07-13] ingest | QDF: Quadratic Direct Forecast for Training Multi-Step Time-Series Forecast Models
 创建的页面：[[source-qdf]], [[qdf]], [[quadratic-form-weighted-objective]], [[heterogeneous-task-weights]]
 更新的页面：[[index]], [[source-fredf]], [[source-distdf]], [[fredf]], [[label-autocorrelation]], [[direct-forecast]], [[autocorrelation-bias]], [[joint-distribution-wasserstein-alignment]]

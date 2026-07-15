@@ -8,8 +8,8 @@ tags:
   - entropy-regularization
   - stochastic-processes
 created: 2026-06-16
-last_updated: 2026-06-16
-source_count: 1
+last_updated: 2026-07-18
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -94,5 +94,13 @@ SB 将若干范式统一在一个框架之下：
 - [[unbalanced-schrodinger-bridge]] — 允许质量生成/消失
 - [[branched-schrodinger-bridge]] — 多模态终端分布
 - [[fractional-schrodinger-bridge]] — 通过 fBM 引入长程依赖
+
+## 应用案例
+
+### GMF：多模态融合的几何可靠性
+
+[[gmf|GMF]] (Geometry-based Multimodal Fusion) 将 Schrödinger bridge 应用于多模态融合中的可靠性评估[^src-gmf]。通过单步 Rectified Flow（DSB 近似）在潜在空间中估计模态内和模态间传输代价，作为与分类器输出解耦的外在可靠性信号。跨模态传输代价上的[[geometric-barrier-principle|几何屏障]]（$\geq (\delta-2\epsilon)^2$）能指数级抑制语义冲突模态的融合权重，打破传统统计方法的[[circular-dependency-in-multimodal-fusion|循环依赖]]。详见 [[transport-based-reliability-assessment|基于传输的可靠性评估]]。
+
+[^src-gmf]: [[source-gmf]]
 
 [^src-schrodinger-bridges-generative-modeling]: [[source-schrodinger-bridges-generative-modeling]]

@@ -263,6 +263,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-graphsparsenet]] — GraphSparseNet: A Novel Method for Large Scale Traffic Flow Prediction (PVLDB 2025)
 - [[source-team]] — TEAM: Topological Evolution-aware Framework for Traffic Forecasting (PVLDB 2024)
 - [[source-whatif-tsf]] — WIT: What If TSF benchmark, scenario-guided multimodal forecasting with expert-crafted plausible/counterfactual futures, 4 domains, 5,352 samples, arXiv 2026
+- [[source-gmf]] — GMF: Geometry-based Schrödinger Bridges for Trustworthy Multimodal Fusion, 潜在空间传输几何用于多模态融合可靠性评估，打破统计方法的循环依赖
 
 ## Entities
 - [[std-plm]] — STD-PLM, unified PLM-based ST forecasting+imputation with spatial+time dual tokenizer (AAAI 2025)
@@ -430,6 +431,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[tips]] — TIPS, Transformer with Inductive Prior Synthesis for financial forecasting
 - [[tqn]] — TQNet, Temporal Query Network for efficient multivariate forecasting (ICML 2025)
 - [[tslib]] — TSLib, open-source time series library and benchmark
+- [[gmf]] — GMF, geometry-based multimodal fusion framework using SB/rectified flow transport costs for reliability assessment
 
 ## Entities
 - [[lscd]] — LSCD, Lomb–Scargle conditioned diffusion for time series imputation (ICML 2025)
@@ -559,6 +561,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[generalized-schrodinger-bridge]] — 广义 SB，含 mean-field 交互项的 SB 扩展
 - [[branched-schrodinger-bridge]] — 分支 SB，处理多模态终端分布的轨迹分叉模型
 - [[building-schrodinger-bridges]] — 六种 SB 构造方法综述：条件桥、时间反演、FBSDE、h-变换、IMF、随机插值
+- [[circular-dependency-in-multimodal-fusion]] — 多模态融合中的循环依赖问题：依赖分类器置信度检测错误形成自我指涉
+- [[transport-based-reliability-assessment]] — 基于传输的可靠性评估：通过潜在空间传输几何而非分类器输出来度量可靠性
 
 ## Techniques
 - [[almost-linear-rnn]] — AL-RNN，近乎线性 RNN（P<<M ReLU），拓扑简约+可解释 DSR 架构（NeurIPS 2024）
@@ -575,6 +579,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[adjoint-matching]] — Adjoint matching，通过 adjoint state + corrector matching 学习 SB 控制
 - [[adjoint-schrodinger-bridge-sampler]] — Adjoint SB sampler，从 Boltzmann 分布采样的交替半桥优化
 - [[conditional-score-flow-matching]] — [SF]²M，给定 entropic OT coupling 的免仿真 SB 学习
+- [[geometric-barrier-principle]] — 几何屏障原理，语义冲突下跨模态传输代价 (δ-2ε)² 正下界，指数抑制冲突模态 (GMF, Theorem 4.5)
 - [[geographic-feature-alignment]] — GFA, cross-city geographic representation alignment via traffic flow alignment + optimal transport (CRAFT, NeurIPS 2025)
 - [[retrieval-based-condition-augmentation]] — RCA, RAG-style condition enrichment for cross-city diffusion generation (CRAFT, NeurIPS 2025)
 - [[noise-impact-indicator]] — per-series noise quantification via teacher model predictions for dynamic IB regularization (RSTIB-MLP, ICML 2025)

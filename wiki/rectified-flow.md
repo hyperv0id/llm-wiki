@@ -7,8 +7,8 @@ tags:
   - ode
   - few-step-generation
 created: 2026-05-31
-last_updated: 2026-07-13
-source_count: 3
+last_updated: 2026-07-18
+source_count: 4
 confidence: high
 status: active
 ---
@@ -90,6 +90,10 @@ Rectification 思想启发了 [[shortcut-models|Shortcut Models]]（arXiv 2025�
 - **高维数据挑战**：理论保证虽好，但在高维图像上实际效果受维数诅咒影响 [^src-rectified-flow]
 - **Reflow 稳定性**：无监督 Reflow 需要仔细调参，可能不稳定
 
+### GMF：多模态融合可靠性评估
+
+[[gmf|GMF]] 将 Rectified Flow 应用于一个全新的领域——多模态融合的可靠性评估[^src-gmf]。通过训练速度网络估计潜在空间中的模态内和模态间传输代价，利用 rectification 使轨迹线性化，使单步速度预测即可作为可靠的传输能量估计（多步 ODE 集成 vs 单步预测准确率差异可忽略，验证了轨迹线性性）。该应用展示了 Rectified Flow 超越图像/时间序列生成的新用途：作为几何审计工具，打破多模态融合中的[[circular-dependency-in-multimodal-fusion|循环依赖]]。
 [^src-rectified-flow]: [[source-rectified-flow]]
 [^src-flowts]: [[source-flowts]]
 [^src-stochasticinterpolants]: [[source-stochasticinterpolants]]
+[^src-gmf]: [[source-gmf]]
