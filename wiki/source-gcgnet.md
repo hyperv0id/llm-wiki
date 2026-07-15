@@ -9,9 +9,9 @@ tags:
   - joint-correlation
   - iclr-2026
 created: 2026-07-13
-last_updated: 2026-07-13
+last_updated: 2026-07-18
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
@@ -23,7 +23,7 @@ status: active
 
 ## Core Arguments
 
-**1. Two-step exogenous forecasting interferes with itself.** Forecasting with exogenous variables requires both *temporal* correlations (past→future endogenous dynamics) and *channel* correlations (exogenous→endogenous influence). Prior deep models mostly use a two-step pipeline—either temporal-then-channel ([[source-timexer|TimeXer]], [[source-exotst|ExoTST]]) or channel-then-temporal ([[source-timexer|TFT]] lineage, CrossLinear)—which can cause mutual interference and suboptimal joint structure capture.[^src-gcgnet]
+**1. Two-step exogenous forecasting interferes with itself.** Forecasting with exogenous variables requires both *temporal* correlations (past→future endogenous dynamics) and *channel* correlations (exogenous→endogenous influence). Prior deep models mostly use a two-step pipeline—either temporal-then-channel ([[source-timexer|TimeXer]], [[source-exotst|ExoTST]]) or channel-then-temporal ([[source-tft|TFT]], [[source-crosslinear|CrossLinear]])—which can cause mutual interference and suboptimal joint structure capture.[^src-gcgnet]
 
 **2. Noise breaks naive correlation learning.** Sensor failure, transmission error, and recording mistakes inject noise so observed series no longer reflect true correlations; pointwise reconstruction overfits noise. Generative models that learn latent structure are more robust than models that read correlations directly from raw observations.[^src-gcgnet]
 

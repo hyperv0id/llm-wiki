@@ -37,3 +37,7 @@
 - 未为 12 个数据集各自建 entity（仅在 source-summary 中汇总）。
 - 未新建独立 baseline 页（TimeXer/PatchTST 等已存在）。
 - 未修改 `raw/`（外部 PDF 只读）。
+
+## 维护记录
+
+- **2026-07-18** — 修复 source-gcgnet.md 交叉引用：TFT wikilink 从 `[[source-timexer|TFT]]` 修正为 `[[source-tft|TFT]]`（不同模型），CrossLinear 从纯文本改为 `[[source-crosslinear|CrossLinear]]`。

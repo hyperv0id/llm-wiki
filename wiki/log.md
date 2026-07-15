@@ -384,6 +384,21 @@ last_updated: 2026-07-13
 源文件：外部 PDF（不可变 raw/ 策略；路径见 ingest-reports/gcgnet-why.md）
 ---
 
+## [2026-07-18] maintenance | GCGNet cross-reference fix
+修复：source-gcgnet.md 中 TFT 链接由 [[source-timexer|TFT]] 修正为 [[source-tft|TFT]]（TFT 与 TimeXer 是不同模型），并修正 CrossLinear 为 wikilink [[source-crosslinear|CrossLinear]]。
+更新的页面：[[source-gcgnet]]
+
+## [2026-07-18] lint | GCGNet ingest pages
+
+### 严重（已修复）
+- 5 个页面 `confidence: high` + `source_count: 1` → 降为 `medium`：[[source-gcgnet]], [[gcgnet]], [[graph-structure-aligner]], [[graph-refiner]], [[variational-generator-exogenous]]
+
+### 幻觉检查
+- 对照 raw/GCGNet_Li_2026_ICLR.pdf（pdftotext），所有事实性论断（作者、年份、方法名、数据集、指标数字）与原文一致，未发现捏造或错引。
+
+更新的页面：[[source-gcgnet]], [[gcgnet]], [[graph-structure-aligner]], [[graph-refiner]], [[variational-generator-exogenous]]
+
+
 ## [2026-07-13] ingest | FreDF: Learning to Forecast in Frequency Domain
 创建的页面：[[source-fredf]], [[fredf]], [[label-autocorrelation]], [[direct-forecast]], [[frequency-enhanced-direct-forecast]]
 更新的页面：[[index]], [[autocorrelation-bias]]

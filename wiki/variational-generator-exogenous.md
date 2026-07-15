@@ -7,9 +7,9 @@ tags:
   - time-series-forecasting
   - generative-model
 created: 2026-07-13
-last_updated: 2026-07-13
+last_updated: 2026-07-18
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
