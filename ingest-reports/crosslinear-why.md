@@ -1,7 +1,7 @@
 # Ingest 报告：CrossLinear
 
-**Source PDF (immutable, external path; not copied into raw/)**:  
-`/run/media/jcheng/WD-Data/yjs/INSIS/多模态外生信息引导的长期时空预测/2505.23116.pdf`
+**Source PDF (now in raw/)**:  
+`raw/crosslinear-kdd-2025.pdf`
 
 **Slug**: `src-crosslinear`  
 **Date**: 2026-07-13  
@@ -37,3 +37,9 @@
 - 未新建独立 baseline 页（TimeXer/SparseTSF/RLinear 等已有或可复用）。
 - 未修改 `raw/`（外部 PDF 只读）。
 - 未扩展 `multimodal-exogenous-guided-long-term-st-forecasting` 分析页（任务仅要求 ingest + 与既有外生源交叉链接）。
+
+## 2026-07-16 补充
+
+- PDF 已拷贝至 `raw/crosslinear-kdd-2025.pdf`（之前仅为外部路径，未入 raw/）。
+- 更新 frontmatter `last_updated` 至 2026-07-16。
+- 追加 log 记录 PDF 入库。

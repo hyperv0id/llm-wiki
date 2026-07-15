@@ -1,3 +1,10 @@
+## [2026-07-16] maintenance | CrossLinear: PDF 入库 + frontmatter 更新
+
+将 PDF 从外部路径拷贝至 `raw/crosslinear-kdd-2025.pdf`，补全 2026-07-13 ingest 遗留的 raw/ 缺失。
+更新的页面：[[source-crosslinear]], [[crosslinear]], [[cross-correlation-embedding]]（frontmatter last_updated）
+更新的文件：ingest-reports/crosslinear-why.md（补充 PDF 入库说明）
+源文件：raw/crosslinear-kdd-2025.pdf
+
 ## [2026-07-16] ingest | ClimateAR: Multi-Scale Autoregressive Generative Modeling for Climate Forecasting (ICML 2026)
 
 ClimateAR (Yu, Chen, Wu, Cui, Jiang, Shang, Wu, Sun & Chen; Zhejiang Univ, Alibaba DAMO, IAP CAS) 是首个将 Visual Autoregressive (VAR) 范式引入概率气候预测的模型。核心创新：(1) 对齐 VQ 分词器——分段码本 + 浅层分离深层共享架构实现 CMIP6-ERA5 跨域语义对齐；(2) 混合尺度条件控制——intra-scale mix token + hybrid-scale prompt 同时捕获尺度内局部一致性和跨尺度全局交互。CMIP6 预训练 + ERA5/ORAS5 微调，在 1–10 月 lead time 上平均 ACC 提升 37.56% vs Pangu/GraphCast/Oneforecast/ClimaX/DWD，ENSO 概率预测校准优良。
