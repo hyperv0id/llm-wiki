@@ -9,8 +9,8 @@ tags:
   - scalability
   - large-scale
 created: 2026-06-09
-last_updated: 2026-06-09
-source_count: 1
+last_updated: 2026-07-19
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -48,5 +48,7 @@ status: active
 - [[large-scale-spatial-temporal-graph]] — BigST 是扩到 ~10 万节点的代表性工作
 - [[linearized-spatial-convolution]]、[[long-sequence-feature-extractor]] — 两大核心机制
 - [[traffic-forecasting]] — 任务
+- [[mage|MAGE]] (NeurIPS 2025) — 同为线性复杂度自适应图学习，但用 kernel 近似 + MoE 替代 PRF，实验全面超越 BigST[^src-mage]
 
 [^src-bigst]: [[source-bigst]]
+[^src-mage]: [[source-mage]]

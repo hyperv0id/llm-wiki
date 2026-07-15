@@ -7,8 +7,8 @@ tags:
   - graph-neural-networks
   - adaptive-graph-learning
 created: 2026-05-31
-last_updated: 2026-05-31
-source_count: 6
+last_updated: 2026-07-19
+source_count: 7
 confidence: high
 status: active
 ---
@@ -32,6 +32,9 @@ GWNet's core contribution is a **self-adaptive adjacency matrix** that learns hi
 $$\tilde{A}_{adp} = \text{SoftMax}(\text{ReLU}(E_1 E_2^\top))$$
 
 Where $E_1, E_2 \in \mathbb{R}^{N \times c}$ are randomly initialized learnable node embeddings (source and target), with $c=10$ in the paper[^src-gwnet]. ReLU eliminates weak connections; SoftMax normalizes the matrix, making it interpretable as a transition matrix of a hidden diffusion process[^src-gwnet].
+
+> [!warning] 争议
+> MAGE (NeurIPS 2025) 的理论分析表明，ReLU 在此公式中存在[[edge-noise-amplification|边噪声放大]]问题——负边权被截断为 0 后在 Softmax 中与微弱正相关混同，放大伪空间依赖[^src-mage]。GWNet 原意是用 ReLU 消除弱连接，但实际效果可能适得其反。MAGE 的解决方案是移除 ReLU 并使用 kernel 近似维持线性复杂度[^src-mage].
 
 When a predefined graph IS available, GWNet combines three adjacency matrices in its diffusion graph convolution[^src-gwnet]:
 
@@ -136,3 +139,4 @@ GWNet, together with the same team's later [[mtgnn|MTGNN]] (KDD 2020), establish
 [^src-2312-00516-std-mae]: [[source-2312-00516-std-mae]]
 [^src-prnet]: [[source-prnet]]
 [^src-conformer]: [[source-conformer]]
+[^src-mage]: [[source-mage]]

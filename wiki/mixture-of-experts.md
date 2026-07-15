@@ -6,8 +6,8 @@ tags:
   - architecture
   - scalability
 created: 2026-04-29
-last_updated: 2026-07-17
-source_count: 4
+last_updated: 2026-07-19
+source_count: 5
 references:
   - [[source-fast-long-horizon-forecasting]]
 confidence: high
@@ -83,6 +83,7 @@ FaST 首次将 MoE 应用于大规模长视野时空图预测：
 - **关键发现**：J ≥ 5 个专家即足够，更多收益递减——实际 J=10 已达到性能平台期[^src-dynamix]
 
 ## 相关工作
+- [[mage|MAGE]] (NeurIPS 2025) 在**图结构生成层面**引入 sparse-balanced MoE——每个专家对应一种独特的空间拓扑假设（自适应图），每节点 Top-K 稀疏激活 + 符号 SGD 负载均衡 βk。与标准 MoE（如 Mixtral 的 FFN 级路由）不同，MAGE 的 MoE 作用于图学习而非特征变换，用差分图 A(k)=Softmax(E₁)Softmax(E₂ᵀ)−λ Softmax(E₃)Softmax(E₄ᵀ) 增强多样性[^src-mage]。参见 [[sparse-balanced-mixture-of-experts-st]] 了解其稀疏平衡机制的技术细节。
 
 - [[stamimputer|STAMImputer]] (arXiv 2025) 将 MoE 上移到框架外层，用观测专家 (O-Expert) 依据稀疏度特征动态路由时间/空间注意力专家，号称首次把 MoE 用于交通数据填补[^src-stamimputer]。
 
@@ -97,3 +98,4 @@ FaST 首次将 MoE 应用于大规模长视野时空图预测：
 [^src-most]: [[source-most]]
 [^src-dynamix]: [[source-dynamix]]
 [^src-stamimputer]: [[source-stamimputer]]
+[^src-mage]: [[source-mage]]

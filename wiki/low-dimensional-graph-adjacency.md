@@ -7,8 +7,8 @@ tags:
   - scalability
   - graph-theory
 created: 2026-06-10
-last_updated: 2026-06-10
-source_count: 1
+last_updated: 2026-07-19
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -44,3 +44,7 @@ GSNet 的两个模块共同实现低维图邻接建模[^src-graphsparsenet]：
 核心优势在于特征融合操作（邻接矩阵乘法的等价操作）的复杂度从 O(N²) 降至 O(C³)，其中 C ≪ N。
 
 [^src-graphsparsenet]: [[source-graphsparsenet]]
+
+> [!note] 低秩瓶颈
+> [[mage|MAGE]] (NeurIPS 2025) 从理论上刻画了[[linear-adaptive-graph-learning|低维图邻接建模]]的**低秩瓶颈**：Rank(A) ≤ dG ≪ N 导致节点表示被限制在低秩子空间。GSNet 接受此代价，MAGE 则用 [[sparse-balanced-mixture-of-experts-st|sparse-balanced MoE]] 将秩提升至 ≤min{d, KdG}，当 K≥⌈d/dG⌉ 时恢复满秩[^src-mage].
+[^src-mage]: [[source-mage]]

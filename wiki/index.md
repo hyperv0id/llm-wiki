@@ -992,18 +992,21 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-srsnet]] — SRSNet / SRS: Selective Representation Space, adaptive patch selection + reassembly plugin for LTSF (NeurIPS 2025, arXiv:2510.14510)
 - [[source-crosslinear]] — CrossLinear: plug-and-play cross-correlation embedding for TS forecasting with exogenous variables (KDD 2025, arXiv:2505.23116)
 - [[source-cirt]] — CirT: Geometry-Inspired Spherical Transformer for S2S Climate Forecasting, 圆形分块 + 傅里叶域自注意力，超越 ECMWF/PanguWeather/GraphCast，ICLR 2025
+- [[source-mage]] — MAGE: Less but More — Linear Adaptive Graph Learning with sparse-balanced MoE, NeurIPS 2025 (USTC)
 
 ## Entities (continued)
 - [[gcgnet]] — GCGNet, graph-consistent generative network for exogenous TS forecasting (ICLR 2026, ECNU)
 - [[srsnet]] — SRSNet, SRS + MLP for long-term MTS forecasting via adaptive patch representation spaces (NeurIPS 2025, ECNU)
 - [[crosslinear]] — CrossLinear, Linear many-to-one exogenous forecaster with O(T) cross-correlation embedding (KDD 2025, USTC)
 - [[cirt]] — CirT (Circular Transformer)，几何感知 S2S 气候预测 Transformer，圆形分块 + 傅里叶域自注意力，ICLR 2025 (HKUST + Alibaba DAMO)
+- [[mage]] — MAGE, Mixture of Adaptive Graph Experts, linear complexity adaptive graph learning for ST forecasting, NeurIPS 2025 (USTC)
 
 ## Concepts (continued)
 - [[joint-temporal-channel-correlation]] — 联合时间–通道相关建模，反对外生预测中的两步串行相关学习 (GCGNet)
 - [[selective-representation-space]] — Selective Representation Space (SRS)，自适应选择/重排 patch 以替代固定 adjacent patching 的表示空间 (NeurIPS 2025)
 - [[subseasonal-to-seasonal-forecasting]] — S2S 次季节到季节预测，2-6 周"可预测性荒漠"的概念与方法论
 - [[spherical-geometry-inductive-bias]] — 球面几何归纳偏置，显式编码地球球面几何以消除平面投影失真的设计理念
+- [[edge-noise-amplification]] — 边噪声放大，ReLU 在自适应图学习中放大负边权为正的伪空间依赖缺陷 (MAGE, NeurIPS 2025)
 
 ## Techniques (continued)
 - [[graph-structure-aligner]] — Graph Structure Aligner：patch 图 VAE + L1 结构对齐约束生成器 (GCGNet)
@@ -1015,3 +1018,5 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[cross-correlation-embedding]] — CrossLinear 即插即用 1D conv 外生交叉相关残差嵌入，CI 骨干友好 (KDD 2025)
 - [[circular-patching]] — CirT 的纬度线圆形分块策略，消除固定角度 grid patching 的高纬度面积失真
 - [[fourier-self-attention]] — 傅里叶域自注意力，DFT→频域多头注意力→IDFT 显式编码空间周期性，与 FEDformer FEB 不同
+- [[linear-adaptive-graph-learning]] — 线性自适应图学习，kernel 近似将图卷积从 O(N²) 降为 O(N)，线性于节点数 (MAGE, NeurIPS 2025)
+- [[sparse-balanced-mixture-of-experts-st]] — 稀疏平衡混合专家，每节点 Top-K 激活 + 符号 SGD 负载均衡，克服线性图学习的低秩瓶颈 (MAGE, NeurIPS 2025)

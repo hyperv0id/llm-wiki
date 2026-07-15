@@ -8,8 +8,8 @@ tags:
   - scalability
   - lightweight
 created: 2026-06-10
-last_updated: 2026-06-10
-source_count: 1
+last_updated: 2026-07-19
+source_count: 2
 confidence: high
 status: active
 ---
@@ -58,3 +58,7 @@ GSNet 由两个 O(N) 线性复杂度模块组成，堆叠 L 层，通过 skip co
 | C 值 trade-off | 越大精度越高，但显存和耗时增加 |
 
 [^src-graphsparsenet]: [[source-graphsparsenet]]
+
+> [!note] 对比 MAGE
+> [[mage|MAGE]] (NeurIPS 2025) 同样以线性复杂度实现自适应图学习，但走不同路线：GSNet 用低秩矩阵分解 (K·U·Kᵀ)，MAGE 用 kernel 近似 + sparse-balanced MoE 克服低秩瓶颈。MAGE 在 17 数据集上 94% 指标 SOTA[^src-mage]。
+[^src-mage]: [[source-mage]]

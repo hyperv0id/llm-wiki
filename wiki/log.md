@@ -1,3 +1,42 @@
+
+## [2026-07-19] lint | MAGE ingest 完整 Lint + 幻觉检查 + 修复
+
+对照 PDF (pdftotext) 逐条验证作者、方法名、数字指标。
+
+### 发现
+- source-mage.md: `confidence: high` + `source_count: 0` → `confidence: medium`
+- mage.md: `confidence: high` + `source_count: 1` → `confidence: medium`
+- bigst.md: `source_count: 1` → `2`（新增 src-mage 未更新计数）
+- graphsparsenet.md: `source_count: 1` → `2`（同上）
+- 4 对摄入报告声明的交叉链接未实际建立 → 已补全双向链接
+- ingest-reports/mage-2026-07-19.md: header typo "mages" → "mage"
+
+### 已验证（幻觉检查）
+- 作者列表（Jiaming Ma, Binwu Wang et al., USTC, 8 人）✓
+- NeurIPS 2025 ✓
+- 去 ReLU → kernel 近似（Φ/Ψ 指数激活）✓
+- O(N·d·dG) 复杂度 ✓
+- Rank(A) ≤ dG ≪ N ✓
+- KG=16, K=4, d=128, dG=32, L=3 ✓
+- 17 数据集 / 14 基线 / 94%(48/51) SOTA ✓
+- 118–960× faster than D²STGNN, 4.7× vs PatchSTG, 1.72× memory ✓
+- 16:0 Linear:Full Pareto-optimal ✓
+- 负载均衡 6.25%(1/16), μ=10⁻³ ✓
+
+### 备注
+- PDF 摘要称 17 数据集、Setup 称 18 数据集 — 论文自身不一致，wiki 从摘要
+
+## [2026-07-19] ingest | MAGE: Less but More — Linear Adaptive Graph Learning
+
+创建的页面：[[source-mage]], [[mage]], [[edge-noise-amplification]], [[linear-adaptive-graph-learning]], [[sparse-balanced-mixture-of-experts-st]]
+更新的页面：[[source-gwnet]], [[bigst]], [[graphsparsenet]], [[mixture-of-experts]], [[low-dimensional-graph-adjacency]]
+
+### 摘要
+- MAGE (NeurIPS 2025, USTC): kernel-based 线性自适应图学习 + sparse-balanced MoE 克服低秩瓶颈
+- 核心理论贡献：ReLU 边噪声放大、低秩瓶颈、单步卷积等价多步卷积
+- 17 数据集 / 14 基线 / 94% 指标 SOTA；比 D²STGNN 快 118-960×
+- 与现有页面交叉引用：GWNet（ReLU 争议）、BigST/GSNet（线性竞争者）、MoE（图层面应用）、低维图邻接（低秩瓶颈）
+
 ## [2026-07-16] lint | Lightweight Mixed Graph Unrolling ingest 完整 Lint + 幻觉修复
 
 对照 PDF (pdftotext) 逐条验证作者、年份、方法名、指标数字。
