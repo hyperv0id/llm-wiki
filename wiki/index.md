@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2025-07-14
+last_updated: 2026-07-16
 tags:
   - meta
 ---
@@ -41,6 +41,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-fedformer]] — FEDformer: frequency enhanced decomposed transformer (ICML 2022)
 - [[source-flightdiff]] — FlightDiff: Dual-Constraint Guided Two-Phase Diffusion Framework for Flight Prediction
 - [[source-fredf]] — FreDF: Frequency-enhanced Direct Forecast, learns multi-step DF in the frequency domain to mitigate label autocorrelation (arXiv 2024 / ICLR 2025 labeled)
+- [[source-qcgs]] — QCGS (Station2Radar): Query-Conditioned Gaussian Splatting fusing AWS + satellite for radar-free precipitation field generation, >50% RMSE improvement vs IMERG/MSWEP/GSMaP (ICLR 2026)
 - [[source-qdf]] — QDF: Quadratic Direct Forecast, learns PSD weighting matrix Σ for quadratic NLL objective addressing label autocorrelation + heterogeneous task weights (ICLR 2026 preprint, arXiv:2511.00053)
 - [[source-frets]] — FreTS: frequency-domain MLPs for time series forecasting (NeurIPS 2023)
 - [[source-from-news-to-forecast]] — From News to Forecast: LLM generative agent iteratively filters news events with reflection + CoT for time series prediction (NeurIPS 2024)
@@ -500,6 +501,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[score-based-generative-modeling]] — 基于分数的生成建模，通过估计数据分布的对数密度梯度来生成样本
 - [[edm-design-space]] — EDM 统一设计空间，将 VP/VE/DDIM 等框架正交化
 - [[perceptual-compression]] — 感知压缩，将生成建模分为感知压缩和语义压缩两个层次
+- [[precipitation-nowcasting]] — 降水临近预报，0-6h 短时高分辨率降水预测，从 ConvLSTM 到 QCGS 无雷达方法的演进 (ICLR 2026)
 - [[physics-informed-neural-network]] — PINN，损失约束型 vs 架构嵌入型 vs 编码知情型三大范式
 - [[continuous-normalizing-flow]] — 连续归一化流 (CNF)，基于 Neural ODE 的可逆生成模型
 - [[algorithm-unrolling]] — algorithm unrolling, converting iterative optimization into neural network layers
@@ -632,9 +634,11 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[moe-decomposition]] — MOEDecomp, input-adaptive mixture-of-experts average filters for seasonal-trend decomposition (ICML 2022)
 - [[newton-schulz-iteration]] — Newton-Schulz iteration for matrix orthogonalization
 - [[glu-gated-linear-unit]] — Gated Linear Unit, activation-modulated linear transformation
+- [[gaussian-splatting]] — 3D/2D Gaussian Splatting，各向异性高斯原语渲染，与传统高斯加权插值等价，QCGS 首次应用于降水场生成
 - [[gated-residual-network]] — GRN: residual + GLU-gated nonlinear block with optional context (TFT building block)
 - [[variable-selection-network]] — instance-wise Softmax variable selection for static/past/future inputs (TFT)
 - [[interpretable-multi-head-attention]] — multi-head attention with shared values and averaged attention maps for temporal interpretability (TFT)
+- [[implicit-neural-representation]] — INR 隐式神经表示，连续坐标到值的映射，分辨率无关但密集查询低效，QCGS 用于高斯参数估计
 - [[gpt-st]] — GPT-ST, plug-and-play MAE pre-training framework for spatio-temporal GNNs (NeurIPS 2023)
 - [[muffin-mae]] — Muffin-MAE, multifaceted masked autoencoder with temporal/spatial/global masking for inter-correlated urban dynamics (UrbanMind, KDD 2025)
 - [[multi-source-causal-constraints]] — multi-source causal constraints framework: Granger + do-calculus + TDMI + VAE jointly supervise causal graph learning (CausalX, ICML 2026)
@@ -664,6 +668,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[expected-sarsa]] — 基于期望目标的 Sarsa 变体
 - [[n-step-sarsa]] — 连接 TD 与 MC 的多步 Sarsa 方法
 - [[q-learning-algorithm]] — off-policy TD 控制算法
+- [[qcgs]] — Query-Conditioned Gaussian Splatting (Station2Radar)，AWS-卫星融合 + INR 高斯参数估计 + 降雨感知采样，无雷达降水场生成 (ICLR 2026)
 - [[bellman-optimality-equation]] — 最优值函数与最优策略的不动点方程
 - [[value-iteration]] — 直接迭代求解最优方程的动态规划算法
 - [[policy-iteration]] — 策略评估与改进交替的动态规划算法

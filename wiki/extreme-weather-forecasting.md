@@ -7,8 +7,8 @@ tags:
   - foundation-model
   - frequency-domain
 created: 2026-05-03
-last_updated: 2026-06-09
-source_count: 2
+last_updated: 2026-07-16
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -55,6 +55,8 @@ status: active
 - [[multimodal-time-series-forecasting|多模态时间序列预测]]关注文本/图像辅助，而极端天气预测关注频域和事件先验
 - [[generative-time-series-forecasting|生成式时间序列预测]]关注不确定性量化，极端天气预测当前以判别式方法为主
 - [[weathergfm|WeatherGFM]]（ICLR 2025）走的是另一条路线：不专攻极端事件，而是用视觉 in-context learning 在单一模型内统一天气预报、超分、图像翻译、后处理等 10+ 种天气理解任务，并展示对未见任务的泛化[^src-weathergfm]。
+- [[precipitation-nowcasting|降水临近预报]]同样面对极端降水事件，QCGS（ICLR 2026）提出了一种无雷达的 AWS-卫星融合降水场生成框架，可作为极端降水预测的数据同化前端[^src-qcgs]。
 
 [^src-uniextreme]: [[source-uniextreme]]
 [^src-weathergfm]: [[source-weathergfm]]
+[^src-qcgs]: [[source-qcgs]]

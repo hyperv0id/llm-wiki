@@ -2280,3 +2280,17 @@ FSTLLM（Jiang et al., ICML 2025）先前于 2026-06-09 批量 ingest，已有 s
 ### 备注
 - Raw 文件名 `manf-multi-scale-attention-flow.pdf` 与 wiki slug `source-maf` 不严格匹配（PDF 后入库），已知历史遗留，不影响功能
 - manf.md → [[tsflow]] / [[glow]] 为单向链接（两个页面未回链），glow 预早于 MANF 无可厚非，tsflow 可后续考虑补充
+
+## [2026-07-16] ingest | Station2Radar: QCGS for Precipitation Field
+
+首次 ingest ICLR 2026 论文：Query-Conditioned Gaussian Splatting for Heterogeneous Precipitation Nowcasting (QCGS/Station2Radar, Kim et al., KAIST, arXiv:2603.00418)。
+
+创建的页面：[[source-qcgs]], [[qcgs]], [[gaussian-splatting]], [[implicit-neural-representation]], [[precipitation-nowcasting]]
+更新的页面：[[extreme-weather-forecasting]]（新增降水临近预报交叉引用）
+交叉链接：qcgs ↔ gaussian-splatting ↔ implicit-neural-representation ↔ precipitation-nowcasting ↔ extreme-weather-forecasting
+
+Raw: qcgs-query-conditioned-gaussian-splatting-precipitation-nowcasting.pdf
+
+### 备注
+- pdftotext 因 PDF 字体问题仅提取出标题/摘要/引言开头，主要文本内容从 arXiv HTML (2603.00418v1) 和 PaperNotes 分析中获取
+- 论文提及但尚未创建的潜在页面：ConvLSTM, PreDiff, Sat2Radar/NPM, IMERG, MSWEP, GSMaP（可作为未来 ingest 的目标源）
