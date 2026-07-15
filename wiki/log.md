@@ -1,3 +1,44 @@
+## [2026-07-16] ingest | ERDM: Elucidated Rolling Diffusion Models for Probabilistic Forecasting of Complex Dynamics (Cachay et al., NeurIPS 2025)
+
+Ingest ERDM paper (Cachay & Yu, UC San Diego; Vahdat, Aittala, Kreis, Mardani, Brenowitz, NVIDIA)。ERDM 首次将 Rolling Sequence Diffusion (RSDM) 与 EDM 设计空间统一，三大贡献：(1) 不确定性感知的损失重加权（对数正态 PDF 聚焦 mid-range 过渡区间）；(2) 预训练 EDM 初始化首个窗口替代 RSDM 双任务训练；(3) 混合 3D 时空架构（2D U-Net + causal temporal attention）。Navier-Stokes 64 步 CRPS 提升 50%（vs EDM），ERA5 1.5° 与 IFS ENS 竞争，仅需 4 H200 GPU × 5 天。创建 source-summary、ERDM entity、rolling-diffusion-models concept 页面；更新 EDM/DYffusion/TEDM/diffusion-model 页面添加交叉引用。
+
+创建的页面：[[source-erdm]], [[erdm]], [[rolling-diffusion-models]]
+更新的页面：[[edm]], [[dyffusion]], [[tedm]], [[diffusion-model]], [[index]], [[log]]
+
+## [2026-07-16] lint | ERDM ingest 完整 Lint + 幻觉修复
+
+对照论文 PDF (pdftotext) 逐条验证作者、年份、方法名、架构、指标数字、消融结论。
+
+### 发现
+- **日期 typo**：全部 ERDM 相关页 frontmatter `2025-07-16` → `2026-07-16`，影响 source-erdm/erdm/rolling-diffusion-models/diffusion-model/edm/dyffusion/tedm/index/log 共 9 个文件
+- **source-erdm.md source_count: 1→0**：source-summary 无任何 `[^src-*]` 内联引用（与 EAC lint 同模式）
+- **Broken wikilink**：rolling-diffusion-models.md 链接 `[[progressive-noise-schedule]]`，页面不存在 → 已移除
+
+### 已验证通过（幻觉检查）
+- 作者 (Cachay/Yu/Vahdat/Aittala/Kreis/Mardani/Brenowitz)、NeurIPS 2025 ✓
+- ρ=−10, W=6, N=1.25/2, Pmean/Pstd, Heun sampler ✓
+- 50% CRPS (Navier-Stokes 64步), up to 10% CRPS (ERA5) ✓
+- 4× 2D通道堆叠退化, >2× loss weight 移除退化 ✓
+- 49GB vs 21GB 推理内存 (Table 1) ✓
+- 4 H200 × 5天 vs NeuralGCM 128 TPUv5 × 10天 ✓
+- 时间相关噪声先验 (Ge et al., α=1), causal temporal attention ✓
+- EDM 首个窗口初始化, importance sampling 局限 ✓
+
+### 修改
+- wiki/source-erdm.md — 日期 2025→2026, source_count: 1→0
+- wiki/erdm.md — 日期 2025→2026
+- wiki/rolling-diffusion-models.md — 日期 2025→2026；移除 broken link [[progressive-noise-schedule]]
+- wiki/diffusion-model.md — last_updated 2025→2026
+- wiki/edm.md — last_updated 2025→2026
+- wiki/dyffusion.md — last_updated 2025→2026
+- wiki/tedm.md — last_updated 2025→2026
+- wiki/index.md — last_updated 2025→2026
+- wiki/log.md — 日期 2025→2026
+
+### 仍存风险
+- GenCast 多次被 erdm.md 提及但无对应实体页面（警告级，不阻塞）
+- 日志日期 2026-07-16 早于已存在的 2026-07-18 条目；条目位于 log 顶部（prepend-only 惯例下位置优先于日期），但严格时间顺序不成立
+
 ## [2026-07-18] ingest | EAC: Expand and Compress — Exploring Tuning Principles for Continual Spatio-Temporal Graph Forecasting (Chen & Liang, ICLR 2025)
 
 Ingest EAC paper (Wei Chen, Yuxuan Liang, HKUST-GZ, ICLR 2025)。EAC 提出基于 prompt pool 的持续时空图预测框架：冻结 backbone STGNN，仅通过节点级可学习参数池（continuous prompt parameter pool）适应流式数据。核心贡献：（1）推导两个 tuning principles——expand（异质性驱动的 prompt pool 扩展以适应新节点）和 compress（低秩分解 A^(τ)B 以抑制参数膨胀，k=6 仅 ~59% 参数）；（2）理论证明 prompt pool 严格增加特征空间离差（Proposition 1）且满足低秩性质（Proposition 2）；（3）三领域数据集（交通 PEMS-Stream、空气质量 Air-Stream、风能 Energy-Stream）上全面 SOTA，平均 MAE 降幅 1.75%–4.85%，训练加速 1.26–3.02×。作者团队（HKUST-GZ, Yuxuan Liang 通讯作者）后续产出 UrbanFM 和 FactoST。创建 source-summary、entity 和 technique 页面；更新 CSTF 概念页面添加 [^src-eac] 引用。

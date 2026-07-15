@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-07-18
+last_updated: 2026-07-16
 tags:
   - meta
 ---
@@ -125,6 +125,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-ncsn]] — NCSN: Generative Modeling by Estimating Gradients of the Data Distribution (Song & Ermon, 2020)
 - [[source-understanding-diffusion-models]] — Understanding Diffusion Models: A Unified Perspective (Luo, 2022)
 - [[source-edm]] — EDM: Elucidating the Design Space of Diffusion-Based Generative Models (Karras et al., NeurIPS 2022)
+- [[source-erdm]] — ERDM: Elucidated Rolling Diffusion Models, EDM + 滚动扩散统一框架，渐进噪声 + 混合 3D 架构，Navier-Stokes/ERA5 SOTA (Cachay et al., NeurIPS 2025)
 - [[source-rombach-ldm-2022]] — LDM: High-Resolution Image Synthesis with Latent Diffusion Models (Rombach et al., CVPR 2022)
 - [[source-neural-ode]] — Neural ODE: Neural Ordinary Differential Equations (Chen et al., NeurIPS 2018)
 - [[source-nsdiff]] — NsDiff: Non-stationary Diffusion for Probabilistic Time Series Forecasting (ICML 2025 Spotlight)
@@ -398,6 +399,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[tft]] — Temporal Fusion Transformer, interpretable multi-horizon quantile forecaster with GRN, variable selection, and interpretable multi-head attention (Google, 2020)
 - [[nbeatsx]] — NBEATSx, residual neural basis expansion with interpretable/generic exogenous stacks for EPF (IJF 2022)
 - [[edm]] — EDM, Elucidating the Design Space of Diffusion-Based Generative Models (NeurIPS 2022)
+- [[erdm]] — ERDM, EDM + 滚动扩散统一框架，渐进噪声 + 混合 3D 架构用于复杂动力学概率预测 (NeurIPS 2025)
 - [[grin]] — GRIN, first GNN-based multivariate time series imputation model with message-passing spatial decoder (ICLR 2022)
 - [[gtr]] — GTR, lightweight plug-and-play global temporal retrieval module for MTSF, extends cycle awareness beyond look-back window (ICLR 2026)
 - [[mamba]] — Mamba, selective state space model reformulated as linear attention variant (NeurIPS 2024)
@@ -480,6 +482,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[long-context-personalization]] — personalization under long context (1K-256K tokens) with constraint satisfaction
 - [[privacy-reasoning]] — privacy leakage detection and reasoning in long contexts
 - [[road-network-representation-learning]] — 道路网络表示学习，学习可复用的路段嵌入以支持多下游任务 (AAAI 2026)
+- [[rolling-diffusion-models]] — 滚动扩散模型，snapshot-dependent 渐进噪声 schedule 显式建模序列预测中的不确定性增长
 - [[generalized-positional-encoding-framework]] — unified framework decomposing attention scores into multiplicative and additive components
 - [[elbo]] — 证据下界（ELBO），潜变量模型中 $\log p(\mathbf{x})$ 的可优化下界
 - [[diffusion-model]] — 扩散模型，通过逐步加噪和去噪学习的生成模型

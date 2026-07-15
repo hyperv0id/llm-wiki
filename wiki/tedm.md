@@ -10,8 +10,8 @@ tags:
   - multivariate-forecasting
   - real-time-deployment
 created: 2026-05-31
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-07-16
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -83,6 +83,7 @@ TEDM 的 denoiser 可采用多种骨干网络[^src-tedm]：
 
 ### 对比方法
 - [[simdiff]] — SimDiff，端到端扩散点预测 (AAAI 2026)
+- [[erdm]] — ERDM，同样基于 EDM 的滚动扩散预测 (NeurIPS 2025)
 - [[informer]] — Informer，高效 Transformer (AAAI 2021)
 - [[autoformer]] — Autoformer，分解式 Transformer (NeurIPS 2021)
 - [[ltsf-linear]] — LTSF-Linear，简单线性 baseline
