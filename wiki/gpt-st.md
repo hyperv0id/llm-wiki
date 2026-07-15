@@ -9,7 +9,7 @@ tags:
   - capsule-network
   - traffic-forecasting
 created: 2026-05-31
-last_updated: 2026-06-01
+last_updated: 2026-07-19
 source_count: 2
 confidence: high
 status: active
@@ -116,6 +116,7 @@ GPT-ST is the first work to successfully adapt the MAE pre-training paradigm fro
 - [[gwnet]] — Graph WaveNet, the primary downstream baseline in GPT-ST experiments (IJCAI 2019)
 - [[dcrnn]] — DCRNN, referenced as ST prediction baseline (ICLR 2018)
 - [[bigcity]] — BIGCity, first MTMD ST model, unifies trajectory+traffic state via GPT-2+LoRA with task-oriented prompts (arXiv 2024)
+- [[minitraffic]] — MiniTraffic (ICML 2026), lightweight fine-grained pre-training model, uses MiniTraffic as baseline
 
 [^src-gpt-st]: [[source-gpt-st]]
 [^src-unist]: [[source-unist]]

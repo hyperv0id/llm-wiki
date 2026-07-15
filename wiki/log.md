@@ -1,4 +1,41 @@
 
+
+## [2026-07-16] ingest | MiniTraffic: Mini-sized Contrastive Learning Pre-trained Models for Fine-grained Traffic Task (ICML 2026)
+
+Ingest MiniTraffic paper (Li, Yang, Fei, Cui, Ma, Zhang; Fudan / CUHK / Alibaba / Guangzhou University, ICML 2026). MiniTraffic is the first lightweight (~119K params) pre-trained model specifically designed for fine-grained traffic prediction — unifying road-level and lane-level forecasting. Core innovations: (1) Frequency Domain Stability Augmentation (FDA) — bounded spectral perturbations simulating lane-level variability from road data; (2) Contrastive Clustering Graph Partitioning — InfoNCE-based patch similarity learning + k-NN sparse graph construction, reducing attention from O(N²) to O(k·N); (3) Granularity-Aware Fine-Tuning — road-level Extension+Pooling vs lane-level FDA retention.
+
+创建的页面：[[source-minitraffic]], [[minitraffic]], [[frequency-domain-stability-augmentation]], [[fine-grained-traffic-prediction]], [[mcgvae]]
+更新的页面：[[gpt-st]], [[traffic-forecasting]], [[contrastive-learning]], [[index]], [[log]]
+
+## [2026-07-19] lint | MiniTraffic ingest Lint + 幻觉检查 + 修复
+
+对照 PDF (pdftotext) 逐条验证作者、方法名、数字指标。
+
+### 发现
+- source-minitraffic.md: `confidence: high` + `source_count: 1` → `confidence: medium`
+- minitraffic.md: `confidence: high` + `source_count: 1` → `confidence: medium`
+- gpt-st.md: `source_count: 3` → `2`（仅 2 个脚注定义）
+- mcgvae.md: 「三个互联通道」→「多通道集成架构」（原文仅称 ensemble architecture，通道数未明确）
+- mcgvae.md: 缺 fine-grained-traffic-prediction 回链 → 新增 ## 相关 节
+
+### 已验证（幻觉检查）
+- 作者列表（Li, Yang, Fei, Cui, Ma, Zhang；Fudan/CUHK/Alibaba/广州大学）✓
+- ICML 2026, PMLR 306 ✓
+- ~119K 参数量（Appendix C Figure 8 确认 119k，intro 称 ~100k）✓
+- McgVAE ~544K, GPT-ST ~1,126K 参数量（Appendix C Figure 8）✓
+- PeMS-Lane h=6: McgVAE 4.89 → MiniTraffic 3.94（−19.4%）✓
+- HuaNan-Lane h=6: McgVAE 5.72 → MiniTraffic 4.11（−28.1%）✓
+- PeMS-Road h=6: GPT-ST 3.72 → MiniTraffic 3.12（−16.1%）✓
+- MAE 降幅 7-24%（PeMS-Lane）、24-39%（HuaNan-Lane）✓
+- 推理延迟降 40%+、FLOPs 降约 85%（Appendix B.1）✓
+- CC 移除→参数 119K→820K ✓
+- FlashST 为 ICML 2024 ✓
+- 代码仓 github.com/ShuhaoLii/Mini-Traffic ✓
+
+### 仍存风险
+- fine-grained-traffic-prediction.md: 「METR-LA 650 万观测点」未在 MiniTraffic 论文正文确认（附件 H/I 未完整提取），但为数据集已知事实
+- mcgvae.md 架构细节（多通道分工）部分超出 MiniTraffic 论文描述范围，属合理推断
+
 ## [2026-07-19] lint | MAGE ingest 完整 Lint + 幻觉检查 + 修复
 
 对照 PDF (pdftotext) 逐条验证作者、方法名、数字指标。

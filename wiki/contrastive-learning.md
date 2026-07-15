@@ -6,8 +6,8 @@ tags:
   - self-supervised
   - multimodal-alignment
 created: 2026-05-03
-last_updated: 2026-06-08
-source_count: 2
+last_updated: 2026-07-16
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -34,11 +34,14 @@ $$\mathcal{L} = -\log \frac{\exp(\text{sim}(z_i, z_j^+) / \tau)}{\sum_k \exp(\te
 - [[endogenous-text-alignment]] — VoT's decomposed trend/seasonal contrastive learning
 - [[multi-level-alignment]] — VoT's multi-level alignment framework using contrastive losses
 - [[nuwats]] — NuwaTS's mask-invariant patch representations across missing patterns
+- [[minitraffic]] — MiniTraffic's contrastive clustering for patch-level graph construction in fine-grained traffic prediction
 
 ## Related
 
 - [[mutual-information]] — alternative information-theoretic objective for modality interaction
 - [[content-condenser-reconstruction]] — complementary approach using reconstruction instead of contrastive learning
+- [[fine-grained-traffic-prediction]] — fine-grained traffic prediction, where contrastive clustering is used for efficient graph partitioning
 
 [^src-multimodal-ts-anomaly-detection]: [[source-multimodal-ts-anomaly-detection]]
+[^src-minitraffic]: [[source-minitraffic]]
 [^src-nuwats]: [[source-nuwats]]

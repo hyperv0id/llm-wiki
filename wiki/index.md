@@ -1020,3 +1020,16 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[fourier-self-attention]] — 傅里叶域自注意力，DFT→频域多头注意力→IDFT 显式编码空间周期性，与 FEDformer FEB 不同
 - [[linear-adaptive-graph-learning]] — 线性自适应图学习，kernel 近似将图卷积从 O(N²) 降为 O(N)，线性于节点数 (MAGE, NeurIPS 2025)
 - [[sparse-balanced-mixture-of-experts-st]] — 稀疏平衡混合专家，每节点 Top-K 激活 + 符号 SGD 负载均衡，克服线性图学习的低秩瓶颈 (MAGE, NeurIPS 2025)
+
+## Sources (continued)
+- [[source-minitraffic]] — MiniTraffic: mini-sized contrastive learning pre-trained model for fine-grained traffic tasks, ICML 2026
+
+## Entities (continued)
+- [[minitraffic]] — MiniTraffic, first lightweight (~119K) pre-trained model for fine-grained (road+lane) traffic prediction, ICML 2026
+- [[mcgvae]] — McgVAE, first road-lane joint modeling VAE for fine-grained traffic prediction, CIKM 2024
+
+## Concepts (continued)
+- [[fine-grained-traffic-prediction]] — fine-grained traffic prediction unifying road-level and lane-level forecasting
+
+## Techniques (continued)
+- [[frequency-domain-stability-augmentation]] — FDA, frequency-domain perturbation with spectral constraints for road→lane transfer in MiniTraffic

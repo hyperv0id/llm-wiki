@@ -7,7 +7,7 @@ tags:
   - intelligent-transportation
 created: 2026-04-27
 last_updated: 2026-07-16
-source_count: 44
+source_count: 45
 confidence: high
 status: active
 ---
@@ -125,6 +125,14 @@ Key advantages[^src-lightweight-mixed-graph-unrolling]:
 - **Directed temporal modeling**: $G^d$ naturally captures time's arrow, outperforming undirected temporal graphs
 
 See [[mixed-graph-spatiotemporal-modeling]], [[directed-graph-laplacian-regularizer|DGLR]], [[directed-graph-total-variation|DGTV]], and [[graph-learning-as-self-attention]] for detailed mechanism pages.
+
+### Fine-Grained / Multi-Granularity Prediction
+
+**[[fine-grained-traffic-prediction|Fine-grained traffic prediction]]** encompasses both road-level and lane-level forecasting within a unified framework[^src-minitraffic]. Unlike traditional large-scale urban traffic prediction that treats road segments as atomic units, fine-grained prediction models the internal lane structure of each road segment — critical for lane-change guidance in autonomous vehicles, dynamic lane system control, and precise signal optimization[^src-minitraffic].
+
+The core challenge is **data imbalance**: road-level data is abundant (METR-LA, PeMS-Bay), but lane-level annotations are scarce and expensive to collect. [[mcgvae|McgVAE]] (CIKM 2024) was the first model to jointly handle both granularities using an ensemble VAE architecture, but it lacks a pre-training mechanism[^src-minitraffic].
+
+**[[minitraffic|MiniTraffic]]** (ICML 2026) is the first lightweight pre-trained model (~119K params) specifically designed for this task. It uses [[frequency-domain-stability-augmentation|FDA]] to augment road-level data with frequency-domain perturbations that simulate lane-level variability, paired with contrastive clustering to construct small-scale semantic graphs for efficient attention[^src-minitraffic]. On 6 fine-grained datasets vs 29 baselines, MiniTraffic reduces lane-level MAE by 7%–39% and road-level FLOPs by ~85% compared to [[gpt-st|GPT-ST]][^src-minitraffic].
 
 
 ### Spatial Patching / Efficient Dynamic Spatial Modeling
@@ -261,3 +269,4 @@ The XTraffic benchmark provides incident-aligned traffic datasets for California
 [^src-graphsparsenet]: [[source-graphsparsenet]]
 [^src-bigst]: [[source-bigst]]
 [^src-lightweight-mixed-graph-unrolling]: [[source-lightweight-mixed-graph-unrolling]]
+[^src-minitraffic]: [[source-minitraffic]]
