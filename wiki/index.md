@@ -197,7 +197,7 @@ All wiki pages, organized by type. Updated on every ingest.
 
 - [[source-chan-2025-diffusion-tutorial]] — Diffusion model comprehensive tutorial (Chan, 2025)
 - [[source-chan-diffusion-tutorial]] — Diffusion model tutorial (Chan, earlier version)
-- [[source-flow-matching]] — Flow Matching: simulation-free CNF training with OT paths (ICLR 2023)
+- [[source-flow-matching]] — Flow Matching: simulation-free CNF training with OT paths (NeurIPS 2023)
 - [[source-flowts]] — FlowTS: Time Series Generation via Rectified Flow (arXiv 2025)
 - [[source-quest]] — QUEST: efficient long-range attention via token clustering
 - [[source-raf]] — RAF: Retrieval Augmented Forecasting, 首个系统性 RAG 框架用于 TSFM 零样本预测 (arXiv 2024)

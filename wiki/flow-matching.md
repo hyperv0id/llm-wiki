@@ -9,8 +9,8 @@ tags:
   - meta-ai
   - neurips-2023
 created: 2026-04-28
-last_updated: 2026-07-13
-source_count: 6
+last_updated: 2026-07-18
+source_count: 4
 confidence: medium
 status: active
 ---
@@ -440,9 +440,6 @@ $$
 ## 引用
 
 [^src-flow-matching]: [[source-flow-matching]]
-[^src-tsflow]: [[source-tsflow]]
-[^src-flowts]: [[source-flowts]]
-[^src-sundial]: [[source-sundial]]
 [^src-doflow]: [[source-doflow]]
 [^src-schrodinger-bridges-generative-modeling]: [[source-schrodinger-bridges-generative-modeling]]
 [^src-stochasticinterpolants]: [[source-stochasticinterpolants]]

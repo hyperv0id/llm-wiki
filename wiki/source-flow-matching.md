@@ -9,7 +9,7 @@ tags:
   - meta-ai
   - neurips-2023
 created: 2026-04-28
-last_updated: 2026-07-13
+last_updated: 2026-07-18
 source_count: 1
 confidence: medium
 status: active
@@ -17,7 +17,7 @@ status: active
 
 # Flow Matching
 
-**Flow Matching** 是由 Meta AI 的 Yaron Lipman、Ricky T. Q. Chen 等人于 2022 年发表的论文（arXiv:2210.02747），提出了一种无需模拟的训练连续归一化流（CNF）的新范式[^src-flow-matching]。
+**Flow Matching** 是由 Meta AI 的 Yaron Lipman、Ricky T. Q. Chen 等人于 2022 年发表的论文（arXiv:2210.02747），提出了一种无需模拟的训练连续归一化流（CNF）的新范式。
 
 ## 核心贡献
 
@@ -109,5 +109,4 @@ Flow Matching 统一了扩散模型和连续归一化流，提供了更灵活的
 
 ## 引用
 
-[^src-flow-matching]: [[source-flow-matching]]
 [^src-stochasticinterpolants]: [[source-stochasticinterpolants]]

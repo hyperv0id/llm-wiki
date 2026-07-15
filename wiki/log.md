@@ -1,3 +1,14 @@
+## [2026-07-18] maintenance + lint | Flow Matching (2210.02747) 补全缺口
+
+补全 2026-04-28 初始 ingest 遗留缺口 + Lint 修复：
+- 修复 [[source-flow-matching]] 自引用 `[^src-flow-matching]` — 移除，`source_count: 2→1`
+- 修复 [[flow-matching]] `source_count: 6→4`（4 个实际引用 vs 6 标注），移除未使用脚注 `[^src-tsflow]`/`[^src-flowts]`/`[^src-sundial]`
+- 修复 [[index]] 中 venue 标注 ICLR 2023 → NeurIPS 2023
+- 创建缺失的 `ingest-reports/flow-matching-2026-04-28.md` WHY 报告
+- 幻觉检查：对照 PDF pdftotext，作者/方法/定理/指标全部一致
+
+更新的页面：[[source-flow-matching]], [[flow-matching]], [[index]]
+
 ## [2026-07-16] ingest | ERDM: Elucidated Rolling Diffusion Models for Probabilistic Forecasting of Complex Dynamics (Cachay et al., NeurIPS 2025)
 
 Ingest ERDM paper (Cachay & Yu, UC San Diego; Vahdat, Aittala, Kreis, Mardani, Brenowitz, NVIDIA)。ERDM 首次将 Rolling Sequence Diffusion (RSDM) 与 EDM 设计空间统一，三大贡献：(1) 不确定性感知的损失重加权（对数正态 PDF 聚焦 mid-range 过渡区间）；(2) 预训练 EDM 初始化首个窗口替代 RSDM 双任务训练；(3) 混合 3D 时空架构（2D U-Net + causal temporal attention）。Navier-Stokes 64 步 CRPS 提升 50%（vs EDM），ERA5 1.5° 与 IFS ENS 竞争，仅需 4 H200 GPU × 5 天。创建 source-summary、ERDM entity、rolling-diffusion-models concept 页面；更新 EDM/DYffusion/TEDM/diffusion-model 页面添加交叉引用。
