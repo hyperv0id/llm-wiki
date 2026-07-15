@@ -9,7 +9,7 @@ tags:
   - plug-and-play
   - icml-2025
 created: 2026-06-08
-last_updated: 2026-06-08
+last_updated: 2026-07-18
 source_count: 1
 confidence: medium
 status: active
@@ -73,6 +73,8 @@ FSTLLM can augment external forecasters: removing the LLM-graph + STGNN backbone
 - Contrast: [[urbangpt|UrbanGPT]] — instruction-tuned ST-LLM that replaces graphs with POI text for zero-shot; FSTLLM keeps an STGNN backbone and targets few-shot calibration
 - Contrast: [[gpd|GPD]] — few-shot spatio-temporal transfer via parameter-space diffusion hypernetwork (no LLM)
 - Baselines compared: [[itransformer|iTransformer]], [[patchtst|PatchTST]], [[ltsf-linear|DLinear]], GPT4TS, GMAN
-- Technique: [[alpha-entmax]] — sparse softmax generalization for graph attention (proposed)
+- Technique: [[alpha-entmax]] — sparse softmax generalization for graph attention (adopted by FSTLLM with α=2.0)
+- Technique: [[llm-enhanced-graph-construction]] — LLM encoding of node-specific text to build semantic adjacency matrices
+- Technique: [[domain-knowledge-injection]] — six-component prompt + QLoRA SFT for contextual prediction calibration
 
 [^src-fstllm]: [[source-fstllm]]

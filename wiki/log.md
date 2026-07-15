@@ -1827,3 +1827,10 @@ NBEATSx: Neural basis expansion analysis with exogenous variables for electricit
 创建的页面：[[source-nbeatsx]], [[nbeatsx]]
 更新的页面：[[source-exost]], [[source-exotst]], [[source-timexer]], [[source-crosslinear]], [[source-tide]], [[tide]], [[source-exollm]], [[heterogeneous-covariates]], [[index]]
 源文件：raw/2104.05522.pdf（不可变；外部路径 `/run/media/jcheng/WD-Data/yjs/INSIS/多模态外生信息引导的长期时空预测/2104.05522.pdf`）
+
+## [2026-07-18] re-ingest | FSTLLM 补全（ICML 2025）
+FSTLLM（Jiang et al., ICML 2025）先前于 2026-06-09 批量 ingest，已有 source-summary、entity、概念页。本次补全缺口：创建 LLM-Enhanced Graph Construction 和 Domain Knowledge Injection 技术页，更新交叉引用与 frontmatter。
+
+创建的页面：[[llm-enhanced-graph-construction]], [[domain-knowledge-injection]]
+更新的页面：[[fstllm]], [[source-fstllm]], [[index]]
+源文件：raw/fstllm-icml2025.pdf

@@ -9,7 +9,7 @@ tags:
   - traffic-forecasting
   - icml-2025
 created: 2026-06-08
-last_updated: 2026-06-08
+last_updated: 2026-07-18
 source_count: 1
 confidence: medium
 status: active
@@ -49,5 +49,6 @@ LLaMA-2-7B inference is slow (single-GPU, no data parallelism), so ECL was restr
 - [[few-shot-traffic-forecasting]] — task framing (proposed)
 - [[time-llm]] · [[urbangpt]] · [[gpd]] — related LLM/few-shot spatio-temporal methods
 - [[traffic-forecasting]] · [[mtgnn]] · [[itransformer]] — backbones and domain
+- [[llm-enhanced-graph-construction]] · [[domain-knowledge-injection]] · [[alpha-entmax]] — FSTLLM techniques
 
 [^src-fstllm]: [[source-fstllm]]

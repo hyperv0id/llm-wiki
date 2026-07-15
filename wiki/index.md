@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-07-16
+last_updated: 2026-07-18
 tags:
   - meta
 ---
@@ -918,6 +918,8 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Techniques (continued)
 - [[linearized-spatial-convolution]] — LSC, O(N) graph message passing via PRF-kernel adjacency factorization, avoids materializing the N×N matrix (BigST, PVLDB 2024)
+- [[llm-enhanced-graph-construction]] — LLM-Enhanced Graph Construction, using frozen LLM + α-Entmax to build semantically meaningful adjacency matrices from node text (FSTLLM, ICML 2025)
+- [[domain-knowledge-injection]] — Domain Knowledge Injection, six-component prompt + QLoRA fine-tuning for LLM-based calibration of numerical predictions (FSTLLM, ICML 2025)
 - [[long-sequence-feature-extractor]] — LSFE, BigST cached pre-processing: linearized Transformer (PRF) + periodic feature sampling for long-history encoding (PVLDB 2024)
 - [[interval-aware-dropout]] — 基于时间距离的图边 dropout 策略，近邻边更高概率丢弃，迫使模型学习更广范围依赖 (PAST, arXiv 2025)
 - [[cross-gated-mechanism]] — 交叉门控机制，双向 sigmoid+tanh 门控实现时空嵌入的跨域特征选择与交互 (PAST, arXiv 2025)
