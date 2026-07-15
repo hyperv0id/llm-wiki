@@ -9,7 +9,7 @@ tags:
   - traffic-forecasting
   - neurips
 created: 2026-06-04
-last_updated: 2026-07-14
+last_updated: 2026-07-17
 source_count: 2
 confidence: medium
 status: active
@@ -43,17 +43,19 @@ GCN for spatial dependencies + Mamba (selective state space model) for temporal 
 |---------|-----------|:--:|:--:|:--:|
 | Terra | ST + image + text | UniST (MAE 2.47) | **2.43** | 1.61% |
 | BjTT | Traffic + events | UniST (MAE 3.62) | **3.56** | 1.66% |
-| GreenEarthNet | Satellite + vegetation | HimNet (MAE 0.13) | **0.13** | tied |
+| GreenEarthNet | Satellite + vegetation | UniST (MAE 0.14) | **0.13** | 7.14% |
 | BikeNYC | ST only | UniST (MAE 3.31) | **2.99** | **9.66%** |
 
 Efficiency: **17.37%–56.11%** reduction in computational overhead vs Transformer baselines[^src-e2-cstp].
 
 ## Ablation Highlights
 
-All six components (text, image, DeepSHAP, causal inference, GCN, Mamba) contribute. Removing causal inference has the largest impact on BjTT event-driven data. Removing GCN or Mamba significantly degrades performance across all datasets[^src-e2-cstp].
+All six components (text, image, DeepSHAP, causal inference, GCN, Mamba) contribute. Removing causal inference leads to reduced robustness, especially under confounding conditions. Removing GCN or Mamba significantly degrades performance across all datasets[^src-e2-cstp].
 
 ## Related Work
 [[causalx]] (ICML 2026) takes a different causal route for multi-modal ST: instead of SCM-based confounding adjustment, it learns causal-inspired dynamic graphs via multi-source causal constraints (Granger, do-calculus, TDMI, VAE) with diffusion-based refinement[^src-causalx].
+
+E²-CSTP's core causal mechanism is [[backdoor-adjustment]], also employed by CaST (NeurIPS 2023) for temporal environment confounding[^src-e2-cstp].
 
 [^src-e2-cstp]: [[source-e2-cstp]]
 [^src-causalx]: [[source-causalx]]

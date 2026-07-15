@@ -6,7 +6,7 @@ tags:
   - sequence-modeling
   - linear-complexity
 created: 2026-05-08
-last_updated: 2026-06-08
+last_updated: 2026-07-17
 source_count: 2
 confidence: medium
 status: active
@@ -65,6 +65,7 @@ SSD-TS introduces BAM (bidirectional Mamba + temporal attention for intra-channe
 - [[linear-attention-unified-framework|Mamba ↔ Linear Attention 统一框架]]
 - [[forget-gate-in-sequential-models|遗忘门在序列模型中的作用]]
 - [[mamba-block-design|Mamba 块设计]]
+- [[e2-cstp|E²-CSTP]] — GCN+Mamba 混合时空编码器，17-56% 效率提升 vs Transformer (NeurIPS 2025)
 
 [^src-demystify-mamba-linear-attention-2024]: [[source-demystify-mamba-linear-attention-2024]]
 [^src-ssdts]: [[source-ssdts]]

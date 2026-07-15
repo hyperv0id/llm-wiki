@@ -450,6 +450,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[low-dimensional-graph-adjacency]] — 低维图邻接建模，将 N×N 邻接矩阵的学习迁移到 C×C 压缩空间 (GSNet, PVLDB 2025)
 - [[evolving-rn-traffic-forecasting]] — 演化道路网络交通预测，拓扑持续变化下的增量预测问题 (TEAM, PVLDB 2024)
 - [[spectral-graph-conditional-exchangeability]] — SGCE，谱图条件可交换性 (ICML 2026)
+- [[backdoor-adjustment]] — Pearl 后门调整，条件于混杂变量以消除虚假因果路径的 do-calculus 技术
 - [[bayesian-conformal-prediction]] — Bayesian 共形预测，时间折扣历史权重
 - [[adaptive-conformal-inference]] — ACI，在线误差反馈驱动的共形预测
 - [[advection-diffusion-reaction-equation]] — ADR 方程，平流-扩散-反应 PDE，CTM 的数学基础

@@ -1,3 +1,43 @@
+## [2026-07-17] lint | E²-CSTP ingest 完整 Lint + 幻觉修复
+
+对照论文 PDF (pdftotext) 逐条验证作者、年份、方法名、架构、指标数字、消融结论。
+
+### 发现
+- **GreenEarthNet 幻觉**：source-e2-cstp.md 和 e2-cstp.md 中最佳基线错标为 HimNet (MAE 0.13) 且声称 tied。实际：HimNet MAE=0.16，最佳基线 UniST MAE=0.14，E²-CSTP (0.13) 改善约 7.14%。论文自身声称改善范围 1.61%–9.66%，无持平。→ 已修正
+- **消融解读过强**：'largest impact on BjTT' 非论文文字，论文仅称 especially under confounding conditions。→ 已改用论文原文措辞
+
+### 修改
+- wiki/source-e2-cstp.md — GreenEarthNet 行：HimNet→UniST, tied→7.14%；消融句改用论文措辞
+- wiki/e2-cstp.md — 同上；消融表 'Largest degradation on BjTT'→'Reduced robustness under confounding'；'most critical'→'each removal causes non-trivial performance degradation'
+- ingest-reports/e2-cstp-2026-06-04.md — 追加 lint 修复记录
+
+### 已验证通过
+- 作者（Huang, Fang, Zeng, Chen, Gao）、Zhejiang University、NeurIPS 2025
+- 三核心模块、BERT+CNN+Cross-Modal Attention+Fusion Gate
+- DeepSHAP+EMA、SCM 后门调整、三层 GCN+Mamba
+- 复杂度 O(B·T·N²·d)、Terra/BjTT/BikeNYC 指标、效率 17.37%–56.11%
+- λ/β 参数敏感度、损失函数——均与 PDF 原文一致
+
+### 仍存风险
+- e2-cstp.md confidence:high + 2 sources 技术通过，但 [^src-doflow] 仅用于一处对比句，主体依赖单一来源
+- 消融相对重要性依赖 Fig 3 柱状图，不可文本验证精确排序
+
+
+## [2026-07-17] gap-fill | E²-CSTP ingest 补全：交叉引用 + Backdoor Adjustment 页面
+
+补全 2026-06-04 ingest 遗留的缺口。
+
+创建的页面：[[backdoor-adjustment]]
+更新的页面：[[mamba]], [[do-calculus]], [[index]], [[log]]
+
+### 新建页面
+- [[backdoor-adjustment]] — Pearl 后门调整概念页，以 E²-CSTP (NeurIPS 2025) 和 CaST (NeurIPS 2023) 为例说明 backdoor adjustment 在时空预测中的应用，source_count=2
+
+### 交叉引用补全
+- [[mamba]] → [[e2-cstp]]（GCN+Mamba 混合时空编码器，17-56% 效率提升）
+- [[do-calculus]] → [[e2-cstp]] + [[backdoor-adjustment]]（E²-CSTP 是 do-calculus 在时空预测中的关键应用）
+
+
 ## [2026-07-17] lint | DynaMix ingest 全面 Lint + 修复
 
 对照论文 PDF (pdftotext) 逐条验证作者、年份、方法名、架构参数、指标数字。

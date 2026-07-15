@@ -9,7 +9,7 @@ tags:
   - gcn
   - neurips
 created: 2026-06-04
-last_updated: 2026-07-14
+last_updated: 2026-07-17
 source_count: 2
 confidence: high
 status: active
@@ -84,7 +84,7 @@ X → GCN (spatial) → ──→ LayerNorm
 |---------|-----------|:--:|:--:|:--:|
 | Terra | ST + image + text | **2.43** | 2.47 (UniST) | 1.61% |
 | BjTT | Traffic + events | **3.56** | 3.62 (UniST) | 1.66% |
-| GreenEarthNet | Satellite | **0.13** | 0.13 (HimNet) | tied |
+| GreenEarthNet | Satellite + vegetation | **0.13** | 0.14 (UniST) | 7.14% |
 | BikeNYC | Bike flow only | **2.99** | 3.31 (UniST) | **9.66%** |
 
 Efficiency: **17.37%–56.11%** faster than Transformer baselines[^src-e2-cstp].
@@ -96,11 +96,11 @@ Efficiency: **17.37%–56.11%** faster than Transformer baselines[^src-e2-cstp].
 | Text Feature | Significant on event-driven BjTT |
 | Image Feature | Critical on Terra (visual context) |
 | DeepSHAP | Less prior knowledge → worse causal structure |
-| Causal Inference | **Largest degradation** on BjTT |
+| Causal Inference | Reduced robustness under confounding |
 | GCN | Spatial modeling collapses |
 | Mamba | Temporal modeling degrades |
 
-All six components measurable; causal inference and spatial encoding most critical[^src-e2-cstp].
+All six components measurably contribute; each removal causes non-trivial performance degradation[^src-e2-cstp].
 
 ## Parameter Sensitivity
 
@@ -131,6 +131,8 @@ E²-CSTP is the first to combine **multi-modal fusion**, **dual-branch causal in
 - [[mamba]] — Mamba architecture
 - [[conformer]] — ConFormer causality-informed
 
+- [[backdoor-adjustment]] — the causal mechanism underlying E²-CSTP's dual-branch design
+- [[do-calculus]] — foundational framework for backdoor adjustment
 - [[causalx]] — CausalX causal graph learning for ST
 [^src-e2-cstp]: [[source-e2-cstp]]
 [^src-doflow]: [[source-doflow]]

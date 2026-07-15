@@ -7,8 +7,8 @@ tags:
   - pearl
   - structural-causal-model
 created: 2026-07-14
-last_updated: 2026-07-14
-source_count: 1
+last_updated: 2026-07-17
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -53,5 +53,8 @@ do-calculus requires stronger assumptions than Granger (knowledge of the causal 
 - [[multi-source-causal-constraints]] — framework combining do-calculus with other constraints
 - [[causal-time-series-forecasting]] — broader causal TS paradigm including interventional queries
 - [[causal-counterfactual-recovery]] — DoFlow's CNF-based counterfactual recovery (also uses Pearl's framework)
+- [[e2-cstp|E²-CSTP]] — applies backdoor adjustment (derived from do-calculus) for multi-modal ST causal inference (NeurIPS 2025)
+- [[backdoor-adjustment]] — the specific do-calculus application for blocking confounding paths [^src-e2-cstp]
 
 [^src-causalx]: [[source-causalx]]
+[^src-e2-cstp]: [[source-e2-cstp]]
