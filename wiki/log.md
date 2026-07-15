@@ -1,3 +1,16 @@
+## [2026-07-21] lint | NBEATSx ingest Lint + 幻觉检查 + 修复
+
+对照 PDF (pdftotext) 逐条验证作者、年份、方法名、数值指标。全部通过，无捏造/错引。
+
+### 发现
+- wiki/source-nbeatsx.md: confidence: high + source_count: 1 → confidence: medium
+- wiki/nbeatsx.md: confidence: high + source_count: 1 → confidence: medium
+
+### 修复
+- confidence fix ×2; last_updated refresh ×2
+
+更新的页面：[[source-nbeatsx]], [[nbeatsx]]
+
 ## [2026-07-20] ingest | Moirai-MoE: Empowering Time Series Foundation Models with Sparse Mixture of Experts (ICML 2025)
 
 Ingest Moirai-MoE paper (Liu, Liu, Woo, Aksu, Liang, Zimmermann, Liu, Li, Savarese, Xiong, Sahoo; Salesforce AI Research / NUS / HKUST-GZ; ICML 2025, PMLR 267)。Moirai-MoE 是首个将 Sparse Mixture of Experts 引入时间序列基础模型预训练的框架，核心创新：(1) 移除 Moirai 的频率级投影层，在 Transformer 内部使用 MoE（32 experts, Top-2 activation）实现数据驱动的 token 级专业化；(2) 提出簇基门控函数——从预训练 dense 模型提取 token 嵌入 k-means 聚类中心引导 expert 分配；(3) 采用 next-token prediction 预训练目标替代 masked filling。39 数据集（29 in-distribution + 10 zero-shot）全面 SOTA，Moirai-MoE-S 以 11M 激活参数超越 Moirai-S 17%，以 65× 更少激活参数优于 Chronos-L。模型分析首次揭示时间序列 MoE 的 inner workings：频率不变表示、渐进式去噪（浅层多 expert→深层集中）、与 LLM MoE 相反的浅-深行为模式。
