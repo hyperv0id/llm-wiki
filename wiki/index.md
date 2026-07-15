@@ -2,8 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-07-17
-source_count: 0
+last_updated: 2026-07-18
 tags:
   - meta
 ---
@@ -251,6 +250,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-swift]] — Swift: An Autoregressive Consistency Model for Efficient Weather Forecasting (arXiv 2025)
 - [[source-streasoner]] — STReasoner: spatio-temporal reasoning in time series via spatial-aware RL (Ni et al., 2026)
 - [[source-e2-cstp]] — E²-CSTP: causal multi-modal spatio-temporal prediction with GCN+Mamba (NeurIPS 2025)
+- [[source-eac]] — EAC: Expand and Compress, prompt-based continual STG forecasting with frozen backbone + expandable/compressible prompt pool, ICLR 2025
 - [[source-hifinet]] — HiFiNet: Hierarchical Frequency-Decomposition GNN for Road Network Representation Learning (AAAI 2026)
 - [[source-rast]] — RAST: Retrieval-Augmented Spatio-Temporal Framework for Traffic Prediction (AAAI 2026)
 - [[source-retrieval-augmented-st-traffic]] — RAST: Retrieval-Augmented Spatio-Temporal Traffic Forecasting
@@ -272,6 +272,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[stbp]] — STBP, continual spatio-temporal forecasting with fixed backbone + scalable contextual pattern bank (ICLR 2026)
 - [[craft]] — CRAFT, cross-city retrieval-augmented diffusion model for zero-shot traffic flow generation (NeurIPS 2025)
 - [[ctenet]] — CTENet, ADR 架构嵌入 PINN + 欧拉连续空间，空气质量预测，NeurIPS 2025
+- [[eac]] — EAC (Expand and Compress), prompt-based CSTF with frozen STGNN backbone + continuous prompt parameter pool, ICLR 2025
 - [[e2-cstp]] — E²-CSTP, causal multi-modal ST prediction with dual-branch causal inference + GCN+Mamba (NeurIPS 2025)
 - [[causalx]] — CausalX, causally-interpretable plug-and-play multi-modal ST forecasting with multi-source causal constraints + diffusion graph refinement, ICML 2026
 - [[hifinet]] — HiFiNet, hierarchical frequency-decomposition GNN for road network representation learning (AAAI 2026)
@@ -788,6 +789,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[variate-token-embedding]] — Variate Token Embedding，将整条变量序列嵌入为单个 token (ICLR 2024)
 - [[inverted-transformer-architecture]] — Inverted Transformer Architecture，反转 attention/FFN 应用维度而不修改组件 (ICLR 2024)
 - [[dual-stream-attention-time-series]] — Dual-Stream Attention for Time Series, orthogonal Time + Variate attention as low-rank decomposition (arXiv 2026)
+- [[continuous-prompt-parameter-pool]] — node-level dynamically expandable learnable parameters for CSTF, expand (heterogeneity) + compress (low-rank), from EAC (ICLR 2025)
 - [[contextual-pattern-bank]] — incrementally expandable parametric memory with prompt-based gating and dual-stream attention keys for CSTF (STBP, ICLR 2026)
 
 - [[joint-distribution-wasserstein-alignment]] — DistDF 的联合分布 Wasserstein 对齐技术，对齐预测与标签的条件分布 (ICLR 2026)

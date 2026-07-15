@@ -1,3 +1,33 @@
+## [2026-07-18] ingest | EAC: Expand and Compress — Exploring Tuning Principles for Continual Spatio-Temporal Graph Forecasting (Chen & Liang, ICLR 2025)
+
+Ingest EAC paper (Wei Chen, Yuxuan Liang, HKUST-GZ, ICLR 2025)。EAC 提出基于 prompt pool 的持续时空图预测框架：冻结 backbone STGNN，仅通过节点级可学习参数池（continuous prompt parameter pool）适应流式数据。核心贡献：（1）推导两个 tuning principles——expand（异质性驱动的 prompt pool 扩展以适应新节点）和 compress（低秩分解 A^(τ)B 以抑制参数膨胀，k=6 仅 ~59% 参数）；（2）理论证明 prompt pool 严格增加特征空间离差（Proposition 1）且满足低秩性质（Proposition 2）；（3）三领域数据集（交通 PEMS-Stream、空气质量 Air-Stream、风能 Energy-Stream）上全面 SOTA，平均 MAE 降幅 1.75%–4.85%，训练加速 1.26–3.02×。作者团队（HKUST-GZ, Yuxuan Liang 通讯作者）后续产出 UrbanFM 和 FactoST。创建 source-summary、entity 和 technique 页面；更新 CSTF 概念页面添加 [^src-eac] 引用。
+
+创建的页面：[[source-eac]], [[eac]], [[continuous-prompt-parameter-pool]]
+更新的页面：[[continual-spatio-temporal-forecasting]], [[index]], [[log]]
+
+## [2026-07-18] lint | EAC ingest 完整 Lint + 幻觉修复
+
+对照论文 PDF (pdftotext) 逐条验证，按 CLAUDE.md 检查清单全项检查。
+
+### 发现
+- **source-eac.md 自引用脚注**：`[^src-eac]: [[source-eac]]` 在自身页面造成循环引用 → 移除全部自引用，`source_count: 1→0`
+- **eac.md + continuous-prompt-parameter-pool.md confidence:high 但 source_count:1** → 均改为 medium
+- **continuous-prompt-parameter-pool.md 跨论文引用**：STBP 相关论断以 `[^src-eac]` 为引用，EAC 论文早于 STBP 无法支持 → 移除该句脚注
+- **source-eac.md Proposition 2 措辞**：'with high probability' 改为更精确的 'when n grows large'
+
+### 已验证通过（幻觉检查）
+- 作者 (Wei Chen, Yuxuan Liang, HKUST-GZ)、ICLR 2025 ✓
+- 全部指标数字 (MAE 13.53/20.75/5.10、降幅 3.90%/1.75%/4.85%、加速 1.26–3.02×、参数 59%/33%) ✓
+- 6 种 STGNN 架构、Proposition 1/2、节点收缩 claim、7 年 max span、sparsification/pruning ✓
+
+### 修改
+- wiki/source-eac.md — 移除自引用脚注和所有 `[^src-eac]`，source_count: 1→0
+- wiki/eac.md — confidence: high→medium
+- wiki/continuous-prompt-parameter-pool.md — confidence: high→medium；移除 STBP 句 `[^src-eac]`
+- ingest-reports/eac-2026-07-18.md — 追加 lint 修复记录
+
+
+
 ## [2026-07-17] lint | E²-CSTP ingest 完整 Lint + 幻觉修复
 
 对照论文 PDF (pdftotext) 逐条验证作者、年份、方法名、架构、指标数字、消融结论。

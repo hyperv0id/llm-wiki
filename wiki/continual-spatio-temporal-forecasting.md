@@ -8,8 +8,8 @@ tags:
   - catastrophic-forgetting
   - traffic-forecasting
 created: 2026-06-08
-last_updated: 2026-06-09
-source_count: 2
+last_updated: 2026-07-18
+source_count: 3
 confidence: high
 status: active
 ---
@@ -50,7 +50,7 @@ The key distinction from conventional spatio-temporal forecasting: the model mus
 **STRAP** (Zhang et al., 2025): Builds multi-dimensional key-value pattern libraries (spatial/temporal/spatio-temporal), retrieving and fusing relevant patterns during inference. Effective for OOD generalization but struggles with extreme topology expansion[^src-stbp].
 
 ### Prompt-Based
-**EAC** (Chen & Liang, 2025): Dynamic prompt pool with expand-and-compress operations. Lightweight trainable parameters on frozen backbone enable efficient adaptation. Current strongest baseline before [[stbp|STBP]][^src-stbp].
+**[[eac|EAC]]** (Chen & Liang, ICLR 2025): Dynamic prompt pool with expand-and-compress operations guided by two tuning principles: heterogeneity-driven expansion and low-rank-driven compression. Freezes backbone STGNN after initial training; adapts solely through a node-level [[continuous-prompt-parameter-pool|continuous prompt parameter pool]]. Uses only ~59% of tuning parameters vs full fine-tuning, with training speed accelerated 1.26–3.02×. SOTA on PEMS-Stream (MAE 13.53, −3.90%), Air-Stream (−1.75%), and Energy-Stream (−4.85%). Current strongest CSTF baseline before [[stbp|STBP]][^src-eac][^src-stbp].
 
 ### Fixed Backbone + Expandable Bank
 **[[stbp|STBP]]** (Liu & Zhang, ICLR 2026): Decouples a general frozen backbone from an incrementally expanding [[contextual-pattern-bank|contextual pattern bank]]. The backbone captures stable, general spatio-temporal patterns; the pattern bank adapts to evolving context-specific patterns via pure parametric expansion (no compression). Achieves 21.44% MAE reduction over EAC on PEMS-Stream[^src-stbp].
@@ -87,7 +87,9 @@ Continual fine-tuning is critiqued by OOD-learning work such as [[stop|STOP]] (I
 - [[spatio-temporal-foundation-model]] — Foundation model paradigm
 - [[eac]] — EAC (Expand and Compress)
 - [[pecpm]] — PECPM
+- [[continuous-prompt-parameter-pool]] — EAC's core mechanism
 - [[trafficstream]] — TrafficStream
 
 [^src-stbp]: [[source-stbp]]
 [^src-stop]: [[source-stop]]
+[^src-eac]: [[source-eac]]
