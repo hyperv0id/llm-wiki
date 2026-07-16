@@ -9,9 +9,9 @@ tags:
   - linear-attention
   - iclr-2026
 created: 2026-06-08
-last_updated: 2026-06-08
+last_updated: 2026-07-22
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
@@ -69,5 +69,7 @@ STBP explicitly positions itself as a step toward **spatio-temporal foundation m
 - [[spatio-temporal-foundation-model]] — The broader foundation model context
 - [[pecpm]] — PECPM, pattern-matching-based CSTF predecessor
 - [[trafficstream]] — TrafficStream, first CSTF framework
+- [[dlga-dual-stream-linear-graph-attention]] — DLGA, the spatial attention module in STBP's backbone
+- [[frenet-frequency-domain-network]] — FreNet, the frequency-domain temporal module
 
 [^src-stbp]: [[source-stbp]]

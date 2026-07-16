@@ -8,9 +8,9 @@ tags:
   - prompt-based-guidance
   - pattern-memory
 created: 2026-06-08
-last_updated: 2026-06-08
+last_updated: 2026-07-22
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
@@ -82,5 +82,6 @@ Unlike [[eac|EAC]]'s expand-and-compress prompt pool, STBP's pattern bank[^src-s
 - [[eac]] — EAC, the expand-and-compress prompt pool approach
 - [[pecpm]] — PECPM, pattern-matching-based pattern bank
 - [[trafficstream]] — TrafficStream, replay-based CSTF
+- [[dlga-dual-stream-linear-graph-attention]] — DLGA, which receives the pattern bank as prompt keys
 
 [^src-stbp]: [[source-stbp]]

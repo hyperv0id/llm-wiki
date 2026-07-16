@@ -1,3 +1,50 @@
+## [2026-07-22] ingest | STBP — 补全缺口 + 交叉引用 + 新建衍生页面
+
+STBP (Liu & Zhang, ICLR 2026) 论文已于早期 ingest（~2026-06-08）建立了 source-stbp.md（source-summary）、stbp.md（entity）、contextual-pattern-bank.md（technique）。本次补全：
+
+**验证现有页面**：对照完整 PDF（含 appendix）逐条验证 source-stbp 和 stbp 的方法描述、实验数字、架构细节。全部一致，无需修正。更新 last_updated。
+
+**新建 4 个衍生页面**（均以 [^src-stbp] 为引用）：
+- [[dlga-dual-stream-linear-graph-attention]] — DLGA 技术页：线性注意力 + dual-stream 结构，O(N²)→O(N)
+- [[frenet-frequency-domain-network]] — FreNet 技术页：FFT + learnable frequency embedding，抑制高噪提取低频稳定成分
+- [[trafficstream]] — TrafficStream 实体页：首个 CSTF 框架，replay + parameter smoothing (IJCAI 2021)
+- [[pecpm]] — PECPM 实体页：pattern-matching-based CSTF，无需历史数据 (KDD 2023)
+
+**修复断裂链接**：contextual-pattern-bank、stbp、continual-spatio-temporal-forecasting 中原本指向 trafficstream/pecpm 的 [[wikilink]] 现均已解析。
+
+**增强交叉引用**：stbp.md 添加 → DLGA、FreNet 链接；contextual-pattern-bank.md 添加 → DLGA 链接。
+
+**更新页面**：[[source-stbp]], [[stbp]], [[contextual-pattern-bank]], [[continual-spatio-temporal-forecasting]], [[index]]
+
+创建的页面：[[dlga-dual-stream-linear-graph-attention]], [[frenet-frequency-domain-network]], [[trafficstream]], [[pecpm]]
+更新的页面：[[source-stbp]], [[stbp]], [[contextual-pattern-bank]], [[continual-spatio-temporal-forecasting]], [[index]]
+
+源文件：raw/stbp-iclr2026.pdf (已存在，未修改)
+
+## [2026-07-22] lint | STBP ingest 完整 Lint + confidence 修复
+
+按 CLAUDE.md 检查清单全项检查本轮 STBP 相关改动（source-stbp/stbp/contextual-pattern-bank/dlga/frenet/trafficstream/pecpm/continual-spatio-temporal-forecasting）。
+
+### 幻觉检查（全部通过）
+- 对照 pdftotext 提取的 PDF 全文逐条验证：作者、会议、年份、代码 URL、全部 MAE 指标数字（12.31/15.77/23.64、21.44%/21.93%/2.35%）、few-shot（13.58/17.11）、数据集统计（PEMS 655→871 +33%, CA 480→1698 +254%, AIR 1087→1202 +10%）、DLGA Eq 8-9、FreNet Eq 6、gating Eq 5、展开公式，全部与原文一致。
+
+### 发现
+- **source-stbp.md**: confidence:high + source_count:1（实际无内联引用，应为 0）违规 → source_count: 1→0, confidence: high→medium
+- **stbp.md**: confidence:high + source_count:1 违规 → confidence: high→medium
+- **contextual-pattern-bank.md**: confidence:high + source_count:1 违规 → confidence: high→medium
+
+### 验证通过
+- 全部 7 个页面 frontmatter 齐全、type 合法
+- 全部 [^src-stbp] 脚注定义存在指向 [[source-stbp]]
+- 全部 [[wikilink]] 目标页面存在
+- 4 个新页面均有 incoming links，无孤立页面
+- 结构检查：无 superseded/disputed 违规
+
+### 修改
+- wiki/source-stbp.md — source_count: 1→0, confidence: high→medium
+- wiki/stbp.md — confidence: high→medium
+- wiki/contextual-pattern-bank.md — confidence: high→medium
+
 ## [2026-07-21] lint | ST-TTC ingest 完整 Lint + 幻觉检查 + 修复
 
 对照 PDF (pdftotext) 逐条验证作者、方法名、数据集、指标数字。

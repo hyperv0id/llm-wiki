@@ -8,7 +8,7 @@ tags:
   - catastrophic-forgetting
   - traffic-forecasting
 created: 2026-06-08
-last_updated: 2026-07-21
+last_updated: 2026-07-22
 source_count: 4
 confidence: high
 status: active

@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-07-21
+last_updated: 2026-07-22
 tags:
   - meta
 ---
@@ -279,6 +279,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[team]] — TEAM, first framework for traffic forecasting on evolving road networks with continual learning (PVLDB 2024)
 - [[mmckm]] — MMCKM, history-free micro-macro coupled Koopman model unifying vehicle trajectory + traffic density prediction (ICLR 2026 Poster)
 - [[stbp]] — STBP, continual spatio-temporal forecasting with fixed backbone + scalable contextual pattern bank (ICLR 2026)
+- [[trafficstream]] — TrafficStream, first CSTF framework with historical data replay + parameter smoothing (IJCAI 2021)
+- [[pecpm]] — PECPM, pattern-matching-based CSTF with expandable pattern bank without historical data replay (KDD 2023)
 - [[craft]] — CRAFT, cross-city retrieval-augmented diffusion model for zero-shot traffic flow generation (NeurIPS 2025)
 - [[ctenet]] — CTENet, ADR 架构嵌入 PINN + 欧拉连续空间，空气质量预测，NeurIPS 2025
 - [[eac]] — EAC (Expand and Compress), prompt-based CSTF with frozen STGNN backbone + continuous prompt parameter pool, ICLR 2025
@@ -609,6 +611,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[sheaf-laplacian]] — 层拉普拉斯算子 (Sheaf Laplacian)，推广图拉普拉斯以编码边特定的变换语义，用于谱域滤波 (ICLR 2026 under review)
 - [[space-filling-curves]] — 空间填充曲线，双射 Φ:Z³→N 将高维时空点序列化为 1D 序列，Gilbert/Sweep/Zigzag 交替扫描用于 Mamba 时空建模 (RiverMamba, NeurIPS 2025)
 - [[ssdl]] — Self-Supervised Deviation Learning，历史锚点 + 原型离散化 + 对比损失 + 偏差损失，无标签建模时空偏差 (ST-SSDL, NeurIPS 2025)
+- [[dlga-dual-stream-linear-graph-attention]] — DLGA, dual-stream linear graph attention with random feature mapping + prompt-based key stream reducing $O(N^2)$ to $O(N)$ (STBP, ICLR 2026)
+- [[frenet-frequency-domain-network]] — FreNet, frequency-domain network using FFT + learnable frequency embedding to extract stable low-frequency components resilient to distribution drift (STBP, ICLR 2026)
 - [[sparse-teacher-forcing]] — STF，间歇性数据推断状态重校准的 DSR 训练方法，控制梯度爆炸同时探索长期动力学
 - [[spatial-temporal-tokenizer]] — 空间+时间双维度 token 生成，激活 PLM 对时空数据的理解 (AAAI 2025)
 - [[spatio-temporal-retrieval-store]] — 基于 FAISS 的双维度向量记忆库 + 动量 EMA 管理 (RAST, AAAI 2026)
