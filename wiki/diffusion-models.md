@@ -6,8 +6,8 @@ tags:
   - diffusion
   - deep-learning
 created: 2026-04-28
-last_updated: 2026-06-16
-source_count: 11
+last_updated: 2026-07-24
+source_count: 12
 confidence: high
 status: active
 ---
@@ -65,6 +65,7 @@ Cold Diffusion（Bansal et al., 2022）提出了"广义扩散模型"框架，将
 - 药物分子设计
 - 逆问题求解（去模糊、超分辨率、修复）
 - 时空动力学预测（DYffusion）[^src-dyffusion]
+- **热带气旋降水预测**：[[tcp-diffusion|TCP-Diffusion]] (ICML 2025) 通过 [[adjacent-residual-prediction|ARP]] 机制将预测目标从绝对降水改为相邻残差，以扩散模型直接建模降水变化，超越 ECMWF-IFS[^src-tcp]
 - **跨城市交通流生成**：[[craft|CRAFT]] (NeurIPS 2025) 使用 DDPM 主干 + [[geographic-feature-alignment|地理特征对齐]] + [[retrieval-based-condition-augmentation|检索增强条件]]实现零样本跨城市交通流生成，59.7% 超越基线平均值[^src-craft]
 
 ## 挑战与未来方向
@@ -79,6 +80,8 @@ Cold Diffusion（Bansal et al., 2022）提出了"广义扩散模型"框架，将
 - **一致性模型加速**：[[swift|Swift]] (arXiv 2025) 通过将扩散模型的 PF-ODE 替换为一阶一致性模型，在天气预测中实现 39× 推理加速，NfE 从 39 降至 1，并首次实现 75 天稳定自回归预报[^src-swift]
 
 知识蒸馏和快速 ODE 求解器是加速采样的主要方向。[^src-chan-2025-diffusion-tutorial]
+
+[^src-tcp]: [[source-tcp]]
 
 ## 引用
 

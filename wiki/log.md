@@ -1,3 +1,44 @@
+## [2026-07-24] ingest | TCP-Diffusion: A Multi-modal Diffusion Model for Global Tropical Cyclone Precipitation Forecasting
+
+ICML 2025 论文。浙江工业大学 + 布里斯托大学。首个基于 DL 的全球热带气旋降水预测模型。核心创新：ARP（Adjacent Residual Prediction）将训练目标从绝对降水值改为相邻时间步变化量、多模态编码器框架（3D CNN + MLP-Transformer + ResNet-18）、NWP 集成（ERA5-IFS 引导扩散去噪）。12h 预测时效，超越 ECMWF-IFS。
+
+创建的页面：[[source-tcp]], [[tcp-diffusion]], [[tropical-cyclone-precipitation-forecasting]], [[adjacent-residual-prediction]]
+更新的页面：[[precipitation-nowcasting]], [[diffusion-models]], [[extreme-weather-forecasting]], [[index]]
+
+## [2026-07-25] lint | TCP-Diffusion ingest 完整 Lint + 幻觉检查 + 修复
+
+对照 PDF (pdftotext) 逐条验证作者、方法名、数据集、指标数字。
+
+### 严重（已修复）
+- [x] tcp-diffusion.md — ETS-24 "PreDiff 0.106" 幻觉：PDF Table 1 中 U-Net ETS-24=0.10587, PreDiff ETS-24=0.11931，错将 U-Net 值归于 PreDiff。修正为 0.119，提升率 ~39%→~23%
+- [x] precipitation-nowcasting.md — 同一幻觉传播（PreDiff 仅 0.106→0.119）
+
+### 警告（已修复）
+- [x] adjacent-residual-prediction.md — TCP-Diffusion 提及缺 wikilink → [[tcp-diffusion]]
+- [x] tropical-cyclone-precipitation-forecasting.md — TCP-Diffusion 提及缺 wikilink ×2、precipitation nowcasting 缺 wikilink → [[tcp-diffusion]] + [[precipitation-nowcasting]]
+- [x] tcp-diffusion.md — ARP 提及缺 wikilink → [[adjacent-residual-prediction|ARP]]
+
+### 幻觉交叉验证通过
+作者（Huang, Mu, Bai & Watson, ZJUT + Bristol）/ICML 2025 PMLR 267/ARP/三编码器/EA-3DUNet SA+TA/N=200/1877 TC 1980-2020 六洋区/126 test TC 2018-2020/ETS-6 0.412 vs ECMWF-IFS 0.302/TPM AE 0.474 vs 0.507/消融 ARP 0.1-15.0% + M 5.6-13.0% + F 2.0-9.3%/1.253 s/sample/72h A100 训练/形成期/消散期性能瓶颈——全部与 PDF 原文一致
+
+### 已验证
+- source-tcp.md: source_count:0, confidence:low（source-summary 仓库惯例）——合规
+- tcp-diffusion.md / tropical-cyclone-precipitation-forecasting.md / adjacent-residual-prediction.md: source_count:1, confidence:medium ——合规
+- precipitation-nowcasting.md: source_count:4, confidence:high ——合规
+- extreme-weather-forecasting.md: source_count:6, confidence:medium ——合规
+- diffusion-models.md: source_count:12, confidence:high ——合规
+- 全部 frontmatter type 合法，无 superseded/disputed 违规
+- 全部 wikilink 存在，无断链
+- 新页面均在 index.md 对应类别登记
+
+### 仍存风险
+- source-tcp.md: source_count:0 + confidence:low，待被其他源引用后升级
+- adjacent-residual-prediction.md 中 GenCast/GraphCast 对应关系来自对 PDF 作者-年份引用的推断（Price et al. 2025/Oskarsson et al. 2024），非论文直接命名
+
+更新的页面：[[tcp-diffusion]], [[adjacent-residual-prediction]], [[tropical-cyclone-precipitation-forecasting]], [[precipitation-nowcasting]]
+更新的文件：ingest-reports/tcp-diffusion-2026-07-24.md
+
+---
 ## [2026-07-23] ingest | StormInsight: Hierarchical Environmental Forcing and Vertical Coupling for Convective Systems Evolution
 
 ICML 2026 论文。HKUST-GZ + 广州气象台。将临近预报从 2D 雷达外推重新定义为环境条件化的 3D 垂直动力学推理。三分量编码（Convective State + Vertical Interaction MoE + Atmospheric Environment）+ Conditional Flow Matching 分层调制。自建 StormBench 基准（美法双区域 65+ ERA5 变量 + 多源观测）。MAE −12.4%, mCSI +34.0%。
