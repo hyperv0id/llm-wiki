@@ -1,3 +1,29 @@
+## [2025-07-25] ingest | WardropNet: Traffic Flow Predictions via Equilibrium-Augmented Learning
+
+PDF 物理文件拷贝到 raw/wardropnet-traffic-flow-predictions-via-equilibrium-augmented-learning.pdf。ICLR 2025 论文，提出 COAML 管道将 Wardrop 均衡嵌入为可微 NN 层。
+
+创建的页面：[[source-wardropnet]], [[wardropnet]], [[combinatorial-optimization-augmented-machine-learning]], [[wardrop-equilibrium]], [[fenchel-young-loss]]
+更新的页面：无（全新 ingest，无冲突现有页面）
+交叉链接：[[wardropnet]] ↔ [[combinatorial-optimization-augmented-machine-learning]] ↔ [[wardrop-equilibrium]] ↔ [[fenchel-young-loss]] ↔ [[source-wardropnet]]
+
+## [2025-07-25] lint | WardropNet 本轮 ingest 全量 Lint + 幻觉检查
+
+对照 PDF 全文（pdftotext）逐条核实，按 CLAUDE.md 完整检查清单执行。
+
+发现的严重问题：
+- 所有 5 个新建页面缺少相互 [[wikilinks]]，ingest report 声称的交叉链接未在正文中实现
+
+发现的警告：
+- [[wardropnet]]、[[wardrop-equilibrium]]、[[fenchel-young-loss]] 三个页面 confidence: high 但 source_count: 1，已降为 medium
+
+修复内容：
+- 补全 wardropnet ↔ COAML ↔ wardrop-equilibrium ↔ fenchel-young-loss 之间的 wikilinks
+- 修复 wardrop-equilibrium.md 和 fenchel-young-loss.md 的重复 last_updated 字段
+
+幻觉检查：通过。作者、年份、方法名、定理、指标数字均与 PDF 原文一致，无捏造内容。
+
+更新的页面：[[wardropnet]], [[wardrop-equilibrium]], [[fenchel-young-loss]], [[combinatorial-optimization-augmented-machine-learning]]
+
 ## [2026-07-16] ingest | UrbanDiT PDF 正式入库 + 交叉引用验证
 
 PDF 物理文件拷贝到 raw/urbandit-diffusion-transformers-open-world-spatiotemporal-foundation-models.pdf。原 ingest 已于 2026-05-28 完成（source-summary + entity + unified-prompt-learning），本次为 PDF 归档 + 交叉引用完整性验证。

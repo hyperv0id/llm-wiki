@@ -307,6 +307,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[testam]] — TESTAM, MoE-based spatio-temporal attention model with 3 heterogeneous experts (ICLR 2024)
 - [[ssf]] — SSF, Spectral Sheaf Filtering: cellular sheaf + spectral filtering for spatio-temporal modeling (ICLR 2026 under review)
 - [[allspark]] — AllSpark, 10-modality spatio-temporal general intelligence model (Shao et al., 2024)
+- [[wardropnet]] — WardropNet, COAML pipeline combining neural network + Wardrop equilibrium layer for traffic flow prediction, ICLR 2025
 - [[sa-bcp]] — SA-BCP, state-adaptive Bayesian conformal prediction (arXiv 2026)
 - [[scale]] — SCALE, spectral conformal prediction via wavelet transform (ICML 2026)
 - [[sundial]] — Sundial，首个原生 Flow Matching 时间序列基础模型系列，TimeFlow Loss + TimeBench (ICML 2025)
@@ -463,6 +464,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[freqflow-ts]] — FrèqFlow/SpectFlow, lightweight frequency-domain flow matching for time series forecasting (NeurIPS 2025)
 
 ## Concepts
+- [[combinatorial-optimization-augmented-machine-learning]] — COAML, hybrid ML-CO pipeline paradigm embedding combinatorial optimization as differentiable neural network layer
+- [[wardrop-equilibrium]] — generalized Wardrop equilibrium with non-decomposable latency functions, convex characterization via potential functions
 - [[vehicle-centric-graph-traffic-pde]] — Lagrangian discretization of LWR traffic PDE on dynamic vehicle graphs with skew-symmetric advection + PSD diffusion (ICLR 2026)
 - [[micro-macro-coupled-koopman-modeling]] — unified history-free Koopman operator framework for joint macro flow + micro vehicle prediction (ICLR 2026)
 - [[rstib]] — Robust Spatial-Temporal Information Bottleneck, IB generalization for dual-noise STF (ICML 2025)
@@ -598,6 +601,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[graph-learning-as-self-attention]] — 图学习即自注意力，图学习模块数学等价于 Transformer 自注意力但参数远少于 Q/K/V
 
 ## Techniques
+- [[fenchel-young-loss]] — FY loss, convex surrogate for Bregman divergence enabling end-to-end training through combinatorial layers
 - [[almost-linear-rnn]] — AL-RNN，近乎线性 RNN（P<<M ReLU），拓扑简约+可解释 DSR 架构（NeurIPS 2024）
 - [[benamou-brenier-algorithm]] — OT 的动态公式化，转化为时空凸优化问题并以增广拉格朗日方法求解
 - [[hopf-cole-transform]] — Hopf-Cole 变换，将非线性 HJB-FP 系统线性化为 Kolmogorov PDE 对
@@ -1112,3 +1116,4 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-omnifield]] — OmniField: continuity-aware multimodal conditioned neural field for robust spatiotemporal learning, MCT + ICMR + fleximodal fusion, ICLR 2026 (BNL/UCLA/Columbia)
 - [[source-rainpro]] — RainPro-8: 高效 8h 概率降水预报模型，多源融合（雷达/卫星/NWP/地形）+ 有序一致性损失 + 单次前向预测，ICLR 2026
 - [[source-sifusion]] — SIFusion: 统一多粒度北极海冰预测框架，Swin V2 空间编码 + granularity variate 跨粒度融合 (NeurIPS 2025)
+- [[source-wardropnet]] — WardropNet: COAML pipeline embedding Wardrop equilibrium as differentiable layer for traffic flow prediction, Fenchel-Young loss + perturbation regularization, ICLR 2025
