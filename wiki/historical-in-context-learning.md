@@ -8,7 +8,7 @@ tags:
   - error-correction
   - time-series
 created: 2026-05-03
-last_updated: 2026-05-03
+last_updated: 2026-07-25
 source_count: 1
 confidence: medium
 status: active
@@ -20,7 +20,7 @@ status: active
 
 ## Motivation
 
-The basic event-driven reasoning pipeline in VoT operates in an unsupervised manner — the LLM generates predictions from summaries without explicit error feedback. This may introduce suboptimal guidance for numerical prediction patternsoro, potentially amplifying prediction errors[^src-event-driven-ts-forecasting]. HIC addresses this by providing error-informed guidance from historically corrected reasoning examples.
+The basic event-driven reasoning pipeline in VoT operates in an unsupervised manner — the LLM generates predictions from summaries without explicit error feedback. This may introduce suboptimal guidance for numerical prediction patterns, potentially amplifying prediction errors[^src-event-driven-ts-forecasting]. HIC addresses this by providing error-informed guidance from historically corrected reasoning examples.
 
 ## Mechanism
 
@@ -56,7 +56,7 @@ HIC is unique in using **corrected reasoning examples** (not raw data) as retrie
 
 - [[vot]] — the VoT model
 - [[event-driven-reasoning]] — the reasoning paradigm HIC enhances
-- [[multi-level-alignment]] — complementary alignment approachorate
+- [[multi-level-alignment]] — complementary alignment approach
 - [[source-event-driven-ts-forecasting]] — source summary
 
 [^src-event-driven-ts-forecasting]: [[source-event-driven-ts-forecasting]]

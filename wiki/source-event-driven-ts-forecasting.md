@@ -9,7 +9,7 @@ tags:
   - event-driven
   - iclr-2026
 created: 2026-05-03
-last_updated: 2026-05-30
+last_updated: 2026-07-25
 source_count: 1
 confidence: medium
 status: active
@@ -27,20 +27,20 @@ VoT (Value of Text) is a multimodal time series forecasting method that unlocks 
 
 ### 1. Event-driven Reasoning with Historical In-Context Learning (HIC)
 
-A three-step generative pipeline (template generation → summarization → reasoning) uses LLMs to extract forecasting-relevant information from exogenous text. HIC enhances this by constructing a knowledge base of corrected reasoning samples during training and retrieving similar historical examples as error-informed guidance during inference — without requiring fine-tuning.
+A three-step generative pipeline (template generation → summarization → reasoning) uses LLMs to extract forecasting-relevant information from exogenous text. HIC enhances this by constructing a knowledge base of corrected reasoning samples during training and retrieving similar historical examples as error-informed guidance during inference — without requiring fine-tuning.[^src-event-driven-ts-forecasting]
 
 ### 2. Multi-level Alignment
 
-- **Representation level**: Endogenous Text Alignment (ETA) converts time series statistics into textual descriptions, then uses decomposed pattern extraction (trend/seasonal) and decomposed contrastive learningODIS to align text and time series representations.
+- **Representation level**: Endogenous Text Alignment (ETA) converts time series statistics into textual descriptions, then uses decomposed pattern extraction (trend/seasonal) and decomposed contrastive learning to align text and time series representations.[^src-event-driven-ts-forecasting]
 - **Prediction level**: Adaptive Frequency Fusion (AFF) decomposes both event-driven and numerical predictions into frequency bands (low/mid/high) and learns adaptive fusion weights per band, achieving complementary advantages across modalities.[^src-event-driven-ts-forecasting]
 
 ### 3. Dual-Branch Architecture
 
-The event-driven prediction branch processes exogenous text via LLM reasoning, while the numerical prediction branch aligns endogenous text with time series. AFF fuses outputs from both branches.
+The event-driven prediction branch processes exogenous text via LLM reasoning, while the numerical prediction branch aligns endogenous text with time series. AFF fuses outputs from both branches.[^src-event-driven-ts-forecasting]
 
 ## Experimental Results
 
-Evaluated on 10 real-world multimodal datasets across diverse domains (Agriculture, Climate, Economy, Energy, Environment, Health, Security, Social Good, Traffic, Weather). VoT achieves 20/20 first-place counts against time series-only and text-enhanced baselines (PatchTST, iTransformer, RaFT and their text-enhanced variants), and outperforms multimodal methods including GPT4TS, GPT4MTS, TaTS, Time-VLM, and CALF.
+Evaluated on 10 real-world multimodal datasets across diverse domains (Agriculture, Climate, Economy, Energy, Environment, Health, Security, Social Good, Traffic, Weather). VoT achieves 20/20 first-place counts against time series-only and text-enhanced baselines (PatchTST, iTransformer, RaFT and their text-enhanced variants), and outperforms multimodal methods including GPT4TS, GPT4MTS, TaTS, Time-VLM, and CALF.[^src-event-driven-ts-forecasting]
 
 ## Limitations
 

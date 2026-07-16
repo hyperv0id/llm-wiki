@@ -2927,3 +2927,24 @@ ST-TTC 已于 2026-06-09 批量摄入，页面完整（source-summary/entity/con
 
 创建的页面：[[source-timi]], [[timi]], [[mmoe]], [[non-fusion-guidance]]
 更新的页面：[[multimodal-time-series-forecasting]], [[mixture-of-experts]], [[event-driven-reasoning]], [[index]]
+
+## [2026-07-25] maintenance | VoT 论文补全：拷贝 PDF 到 raw/ + 创建 ingest-report
+
+VoT 论文已于 2026-05-03 完成 wiki 页面 ingest，但 PDF 未拷贝到 raw/，且缺少 ingest-reports/ WHY 报告。
+
+操作：
+- 拷贝 PDF → raw/vot-event-driven-reasoning-multi-modal-time-series-forecasting.pdf
+- 创建 ingest-reports/vot-2026-05-03.md（回溯补全 WHY 报告）
+
+Note: source slug 沿用已有的 src-event-driven-ts-forecasting（cf. 用户建议 src-vot），因现有 slug 已被 7 个 wiki 页面和 1 个 analysis 页面引用，改 slug 会导致全库断链。
+
+## [2026-07-25] lint | VoT ingest 全量 Lint + 幻觉检查 + 修复
+
+发现并修复：
+- 幻觉：source-summary 中 "decomposed contrastive learningODIS" → 删除 "ODIS"
+- 幻觉：historical-in-context-learning 中 "patternsoro" → "patterns"
+- 幻觉：historical-in-context-learning 中 "approachorate" → "approach"
+- 缺引用：source-summary HIC/ETA/Dual-Branch/Experiments 段落补 [^src-event-driven-ts-forecasting]
+- 更新 last_updated：source-event-driven-ts-forecasting, historical-in-context-learning
+
+结构/来源计数/置信度/交叉引用：全部通过。
