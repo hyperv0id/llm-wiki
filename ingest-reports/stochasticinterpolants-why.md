@@ -32,3 +32,9 @@
 - 外部路径：`/run/media/jcheng/WD-Data/yjs/INSIS/多模态外生信息引导的长期时空预测/StochasticInterpolants_Albergo_2023_ICLR.pdf`
 - arXiv:2209.15571v3 (9 Mar 2023)；ICLR 2023
 - 作者：Michael S. Albergo, Eric Vanden-Eijnden
+
+## 2026-07-23 验证
+- **raw/ 副本**：`raw/StochasticInterpolants_Albergo_2023_ICLR.pdf`（与外部源 md5 一致）
+- **验证**：重新阅读全文（含 Appendix B-G-H），确认 source-summary、stochastic-interpolant、interflow 三页内容完整覆盖全部 4 个 Proposition + 附录关键结果（gradient velocity B.4、KILBO 连接 B.5、base density 优化 D.2、factored interpolant G）
+- **交叉引用**：13 个链接页面回链均正确，无需新增或修正
+- **日期**：更新三页 `last_updated: 2026-07-23`

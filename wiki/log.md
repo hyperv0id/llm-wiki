@@ -1,3 +1,34 @@
+## [2026-07-23] lint | Stochastic Interpolants / InterFlow 完整 Lint + 幻觉检查 + 修复
+
+对照 PDF (pdftotext) 逐条验证作者、方法名、数据集、指标数字。
+
+幻觉检查：全部 22 项关键论断与原文一致，无捏造或错引。
+
+### 修复
+- stochastic-interpolant.md：confidence high→medium（单源概念页，source_count=1）
+- interflow.md：confidence high→medium（单源技术页，source_count=1）
+
+### 保留
+- source-stochasticinterpolants.md：confidence:high（source-summary 准确描述来源内容，confidence 表示摘要准确度而非跨源一致性）
+
+### 仍存风险
+- 无。已核验所有引用，交叉引用 13 个页面回链正确。
+
+## [2026-07-23] verify | Stochastic Interpolants / InterFlow — 重新验证 + 日期刷新
+
+重新完整阅读论文 PDF，验证已有 ingest 的完整性。
+
+结论：论文已于 2026-07-13 完整摄入，无需新建或修改任何页面。
+- source-stochasticinterpolants.md：覆盖全部 4 个 Proposition + 附录关键结果
+- stochastic-interpolant.md：概念页完整（gradient velocity / KILBO / factored interpolant / SB 视角）
+- interflow.md：技术页完整（方法管线 / 基线对比 / 实现要点 / 局限）
+- 13 个交叉引用页面全部回链正确
+- raw/ 副本 `StochasticInterpolants_Albergo_2023_ICLR.pdf` 与外部源 md5 一致
+
+更新的页面：source-stochasticinterpolants.md、stochastic-interpolant.md、interflow.md（last_updated → 2026-07-23）
+更新的报告：ingest-reports/stochasticinterpolants-why.md（追加验证记录）
+
+
 ## [2026-07-23] lint | STPDE ingest 完整 Lint + 幻觉检查 + 修复
 
 对照 PDF (pdftotext) 逐条验证作者、方法名、数据集、指标数字。
