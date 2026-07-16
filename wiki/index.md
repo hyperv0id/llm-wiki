@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-07-23
+last_updated: 2026-07-25
 tags:
   - meta
 ---
@@ -801,6 +801,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[uncertainty-aware-noise-schedule]] — UANS，将数据感知的时变方差注入扩散过程以建模非平稳不确定性
 - [[csdi]] — CSDI, conditional score-based diffusion model for probabilistic time series imputation (NeurIPS 2021)
 - [[observation-self-guidance]] — Observation self-guidance: inference-time conditioning of unconditional TS diffusion without auxiliary nets (TSDiff, NeurIPS 2023)
+- [[prediction-refinement]] — Prediction Refinement: post-hoc refinement of base forecaster predictions using diffusion model as energy-based prior (TSDiff, NeurIPS 2023)
 - [[linear-predictive-score]] — LPS: train-on-synthetic ridge CRPS for evaluating generative time-series samples (TSDiff, NeurIPS 2023)
 - [[bam]] — BAM, Bidirectional Attention Mamba for intra-channel dependency in diffusion denoising (KDD 2025)
 - [[cmb]] — CMB, Channel Mamba Block for inter-channel dependency in diffusion denoising (KDD 2025)

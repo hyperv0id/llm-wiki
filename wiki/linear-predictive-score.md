@@ -8,8 +8,8 @@ tags:
   - probabilistic-forecasting
   - generative-model
 created: 2026-07-13
-last_updated: 2026-07-13
-source_count: 1
+last_updated: 2026-07-25
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -30,7 +30,7 @@ status: active
 
 ## 实证角色
 
-在 Solar / Electricity / Traffic 等 8 个基准上，TSDiff 的 LPS 显著优于 TimeVAE 与 TimeGAN；辅以 DeepAR、Transformer 的 train-on-synthetic 结果，进一步支持“样本保留关键预测结构”的结论[^src-prs]。后续 [[tsflow|TSFlow]] 继续采用 LPS 比较不同 GP 先验核下的无条件生成质量[^src-prs]。
+在 Solar / Electricity / Traffic 等 8 个基准上，TSDiff 的 LPS 显著优于 TimeVAE 与 TimeGAN；辅以 DeepAR、Transformer 的 train-on-synthetic 结果，进一步支持"样本保留关键预测结构"的结论[^src-prs]。后续 [[tsflow|TSFlow]] 继续采用 LPS 比较不同 GP 先验核下的无条件生成质量[^src-tsflow]。
 
 ## 局限
 
@@ -46,3 +46,4 @@ status: active
 - [[generative-time-series-forecasting]] — 生成式预测语境
 
 [^src-prs]: [[source-prs]]
+[^src-tsflow]: [[source-tsflow]]

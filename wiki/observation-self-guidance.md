@@ -8,8 +8,8 @@ tags:
   - conditional-generation
   - probabilistic-forecasting
 created: 2026-07-13
-last_updated: 2026-07-13
-source_count: 1
+last_updated: 2026-07-25
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -66,7 +66,7 @@ $$
 | **Observation self-guidance** | **无** | **无** | **任意观测时间子集** |
 | [[tsflow\|TSFlow]] CPS+引导 | 无条件 CFM | 无 | 观测上下文（向量场修正） |
 
-TSFlow 将同类“无条件 → 推理条件”思想迁移到流匹配，并用条件先验采样强化起点[^src-prs]。
+TSFlow 将同类“无条件 → 推理条件”思想迁移到流匹配，并用条件先验采样强化起点[^src-tsflow]。
 
 ## 能力与代价
 
@@ -83,6 +83,8 @@ TSFlow 将同类“无条件 → 推理条件”思想迁移到流匹配，并�
 - [[source-csdi]] / [[csdi]] — 训练期条件化对照
 - [[source-timegrad]] / [[timegrad]] — 条件 AR 扩散对照
 - [[source-tsflow]] / [[tsflow]] — 流匹配上的后续无条件→条件桥接
+- [[prediction-refinement]] — 扩散密度做先验的数据空间精炼（同文另一条推理方案）
 - [[score-function]] — 得分函数基础
 
 [^src-prs]: [[source-prs]]
+[^src-tsflow]: [[source-tsflow]]

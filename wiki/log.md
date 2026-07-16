@@ -2770,3 +2770,47 @@ ST-TTC 已于 2026-06-09 批量摄入，页面完整（source-summary/entity/con
 - [[ood-generalization]]：source_count=1, confidence=medium。开篇对 ERM/OOD 的概括性断言仅以 STOP 为唯一 source。广义 ML 概念页仅有单一来源，日后有新 OOD 论文 ingress 时建议补引。
 - [[distributionally-robust-optimization]]：同上，DRO 理论概念页仅有 [^src-stop]。STOP Appendix D 对 DRO 推导充分，但非 DRO 原典。
 - [[spatio-temporal-ood-learning]] 表格中 CaST/STONE 行未逐一加脚注——但 [^src-cast] 已在首句使用，source_count=2 准确，属可接受的表格简化写法。
+
+## [2026-07-25] ingest 补全 | TSDiff / Predict, Refine, Synthesize (2307.11494)
+
+补全 Prediction Refinement 技术页面。原三用例中 Predict（observation-self-guidance）和 Synthesize（LPS）已有独立页面，Refine 缺失。
+创建的页面：[[prediction-refinement]]
+更新的页面：[[tsdiff]], [[source-prs]], [[observation-self-guidance]], [[index]]
+
+## [2026-07-25] lint | TSDiff / PRS ingest 完整 Lint + 幻觉检查 + 修复
+
+对照 PDF (pdftotext) 逐条验证作者、方法名、数据集、架构、指标数字。
+
+### 严重（已修复）
+- [x] source-prs.md — 30 处 [^src-prs] 自引用 + 脚注形成循环引用（source-summary 不应自引用，仓库惯例已多次应用）。移除全部自引用，source_count: 1→0，confidence: medium→low
+
+### 幻觉交叉验证通过
+作者（Marcel Kollovieh TUM*/Abdul Fatir Ansari AWS*/M. Bohlke-Schneider/J. Zschiegner/H. Wang/Yuyang Wang）/NeurIPS 2023/arXiv 2307.11494v3/SSSD + S4 + DiffWave 架构/3 残差层 × 64 通道/T=100 线性 β₁=0.0001 β₁₀₀=0.1/GluonTS mean scaler/Adam lr=1e-3 1000 epoch batch 64/8 GluonTS 基准（Solar, Electricity, Traffic, Exchange, M4-Hourly, UberTLC, KDDCup, Wikipedia）/TSDiff-Q 5/8 最低或次低 CRPS/Missing context RM/BM-B/BM-E 50%/Refine 20 迭代 λ=1/LMC/ML-MS/Q/inference time 201s vs Cond 163s/LPS 10,000 样本 ridge CRPS——全部与 PDF 原文一致，无捏造或错引。
+
+### 已验证
+- tsdiff.md: source_count=1, confidence=medium ——合规
+- source-prs.md: source_count=0, confidence:low ——合规（source-summary 无自引用）
+- observation-self-guidance.md: source_count=1, confidence=medium ——合规
+- linear-predictive-score.md: source_count=1, confidence=medium ——合规
+- prediction-refinement.md: source_count=1, confidence=medium ——合规
+- 全部 frontmatter type 合法，无 superseded/disputed 违规
+- 全部 wikilink 存在，无断链
+- 新页面均在 index.md 对应类别登记
+- 源文件计数（source_count）与实际 [^src-*] 引用数一致
+
+
+### 仍存风险
+- source-prs.md: source_count: 0 + confidence: low，待被其他源引用后升级
+- 各技术/实体页 source_count=1 + confidence=medium，待更多源文件交叉验证后升级
+
+## [2026-07-25] lint 补遗 | TSDiff/PRS TSFlow 引用错引修复
+
+对照 PDF 再次检查发现 TSFlow 相关断言错引 [^src-prs]——PRS 论文发表于 TSFlow 之前（NeurIPS 2023 vs ICLR 2025），全文中 TSFlow/Flow Matching/GP prior 出现次数为 0。
+
+### 严重（已修复）
+- [x] wiki/tsdiff.md — "实验中 TSFlow-Cond 以更少 NFE 超越含 TSDiff 在内的扩散基线" 错引 [^src-prs]→[^src-tsflow]；添加脚注，source_count: 1→2
+- [x] wiki/observation-self-guidance.md — "TSFlow 将同类思想迁移到流匹配" 同上 [^src-prs]→[^src-tsflow]；source_count: 1→2
+- [x] wiki/linear-predictive-score.md — "后续 TSFlow 继续采用 LPS" 同上 [^src-prs]→[^src-tsflow]；source_count: 1→2，last_updated: 2026-07-13→2026-07-25
+
+更新的页面：[[tsdiff]], [[observation-self-guidance]], [[linear-predictive-score]]
+更新的文件：ingest-reports/prs-tsdiff-why.md

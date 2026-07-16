@@ -9,8 +9,8 @@ tags:
   - self-guidance
   - neurips-2023
 created: 2026-07-13
-last_updated: 2026-07-13
-source_count: 1
+last_updated: 2026-07-25
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -57,7 +57,7 @@ $$
 
 ### 2. Refine — 能量先验精炼
 
-将扩散密度当作先验能量 $E_\theta(y;\tilde y)=-\log p_\theta(y)+\lambda R(y,\tilde y)$，对基预测器 $g$ 输出迭代更新（LMC 或 $\gamma=0$ 的 ML）[^src-prs]。用单步 representative $\tau$ 近似 ELBO，默认 20 次迭代，开销通常低于完整 reverse diffusion[^src-prs]。对 Seasonal Naive、Linear 等弱基线提升显著，对 DeepAR / Transformer 也常有收益[^src-prs]。
+将扩散密度当作先验能量 $E_\theta(y;\tilde y)=-\log p_\theta(y)+\lambda R(y,\tilde y)$，对基预测器 $g$ 输出迭代更新（LMC 或 $\gamma=0$ 的 ML）。详见 [[prediction-refinement|Prediction Refinement]][^src-prs]。用单步 representative $\tau$ 近似 ELBO，默认 20 次迭代，开销通常低于完整 reverse diffusion[^src-prs]。对 Seasonal Naive、Linear 等弱基线提升显著，对 DeepAR / Transformer 也常有收益[^src-prs]。
 
 ### 3. Synthesize — 下游训练
 
@@ -73,7 +73,7 @@ $$
 | **TSDiff** | **无条件** | **推理 self-guidance** | 预测 + 精炼 + 生成 |
 | [[tsflow\|TSFlow]] | 无条件/条件 CFM | CPS + 向量场引导 / GP 条件先验 | 预测 + 生成（后续） |
 
-[[tsflow|TSFlow]]（ICLR 2025）由同系作者将“无条件训练 → 推理条件化”推进到 **Flow Matching + GP 先验**，并继续沿用 LPS；实验中 TSFlow-Cond 以更少 NFE 超越含 TSDiff 在内的扩散基线[^src-prs]。
+[[tsflow|TSFlow]]（ICLR 2025）由同系作者将"无条件训练 → 推理条件化"推进到 **Flow Matching + GP 先验**，并继续沿用 LPS；实验中 TSFlow-Cond 以更少 NFE 超越含 TSDiff 在内的扩散基线[^src-tsflow]。
 
 ## 局限性
 
@@ -91,6 +91,7 @@ $$
 - [[source-prs]] — 论文摘要
 - [[observation-self-guidance]] — 观测自引导技术
 - [[linear-predictive-score]] — LPS 指标
+- [[prediction-refinement]] — 能量先验精炼技术
 - [[source-timegrad]] / [[timegrad]] — 条件 AR 扩散预测
 - [[source-csdi]] / [[csdi]] — 条件扩散插补/预测
 - [[source-tsflow]] / [[tsflow]] — 后续 CFM + GP 先验
@@ -102,3 +103,4 @@ $$
 - [[langevin-dynamics]] — LMC 精炼采样
 
 [^src-prs]: [[source-prs]]
+[^src-tsflow]: [[source-tsflow]]
