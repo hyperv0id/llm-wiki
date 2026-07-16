@@ -19,8 +19,8 @@
 - [[urbandit]] → 新增 [[rectified-flow]] 链接
 
 ## 置信度变更
-- [[source-urbandit]]: confidence medium → high（从摘要变为完整论文）
-- [[urbandit]]: confidence medium → high
+- [[source-urbandit]]: confidence 保留 medium（source_count=1，不满足 high 的 ≥2 来源要求；完整论文提升了内容深度但未增加独立来源数量）
+- [[urbandit]]: confidence 保留 medium（同上，source_count=1）
 
 ## 时间线
 1. 2026-05-12：基于摘要 + GitHub README 的初步 ingest（source_count=1, confidence=medium）

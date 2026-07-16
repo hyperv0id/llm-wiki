@@ -1,3 +1,26 @@
+## [2026-07-16] ingest | UrbanDiT PDF 正式入库 + 交叉引用验证
+
+PDF 物理文件拷贝到 raw/urbandit-diffusion-transformers-open-world-spatiotemporal-foundation-models.pdf。原 ingest 已于 2026-05-28 完成（source-summary + entity + unified-prompt-learning），本次为 PDF 归档 + 交叉引用完整性验证。
+
+更新的页面：[[source-urbandit]], [[urbandit]]
+
+交叉引用验证通过：urbandit ↔ unified-prompt-learning ↔ rectified-flow ↔ spatio-temporal-foundation-model
+
+## [2026-07-16] lint | UrbanDiT 本轮 ingest 全量 Lint + 幻觉检查
+
+对照 PDF 全文（pdftotext）逐条核实，按 CLAUDE.md 完整检查清单执行。
+
+发现 6 项问题，全部已修复：
+- 严重：urbandit.md vs MoST 行错误标注 `[^src-urbandit]` → 去除错引，标注为 wiki 分析
+- 严重：ingest report 2026-05-28 错误声称 confidence 改为 high → 修正为保留 medium（source_count=1）
+- 警告：source-urbandit.md UniST 首次出现未 wikilink → 补 `[[unist|UniST]]`
+- 警告：urbandit.md DDPM 未 wikilink → 补 `[[ddpm|DDPM]]`
+- 信息：urbandit.md TaxiNYC 城市列 "纽" → "纽约"
+- 信息：index.md unified-prompt-learning 误放在 Entities → 移至 Techniques
+
+幻觉核验通过项：作者、NeurIPS 2025、5 任务、3 memory pool、模型配置（S/M/L 层数/维度/头数）、数据集（6 grid + 3 graph，分辨率与节点数）、性能数字（11.3%、30.4%、25×）、rectified flow/InstaFlow、频域 4 种 FFT 配置、局限性声明——均与 PDF 原文一致。
+
+
 ## [2026-07-25] ingest | TimeGrad: gap-filling pass（PDF 验证 + 交叉引用补全 + CRPS 新页）
 
 原始 ingest 已于 2026-05-31 完成（source-summary、entity、index、log）。本次：

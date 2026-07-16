@@ -8,7 +8,7 @@ tags:
   - traffic-forecasting
   - rectified-flow
 created: 2026-05-12
-last_updated: 2026-06-01
+last_updated: 2026-07-16
 source_count: 1
 confidence: medium
 status: active
@@ -38,7 +38,7 @@ Task Memory Pool  → Task-specific Prompt ─┘            │  (Temporal Attn
 1. **数据统一化**：grid-based 数据通过 3D CNN（kernel=pt×ps×ps）patched + reshaped；graph-based 数据通过 1D CNN（时间）+ GCN（空间）处理为统一序列 $X^{N \times T}$[^src-urbandit]
 2. **掩码策略**：通过掩码矩阵 $M$ 将不同任务统一为"重建缺失数据"——Forward 掩码未来、Backward 掩码过去、Interpolation 掩码中间时间点、Extrapolation 掩码未知空间区域、Imputation 随机掩码[^src-urbandit]
 3. **[[unified-prompt-learning|统一提示学习]]**：三个 learnable key-value memory pools 分别捕捉时域、频域、空域模式，通过 cosine similarity 检索最相关 patterns 作为 data-driven prompts；task mask 通过 attention 生成 task-specific prompt[^src-urbandit]
-4. **[[rectified-flow|Rectified Flow]] 训练**：采用 [[instaflow|InstaFlow]] 的 straightened ODE trajectory，比传统 DDPM 弯曲路径更高效，扩散步数 500、推理步数 20，实现 25 倍加速[^src-urbandit]
+4. **[[rectified-flow|Rectified Flow]] 训练**：采用 [[instaflow|InstaFlow]] 的 straightened ODE trajectory，比传统 [[ddpm|DDPM]] 弯曲路径更高效，扩散步数 500、推理步数 20，实现 25 倍加速[^src-urbandit]
 
 ## 模型变体
 
@@ -62,7 +62,7 @@ UrbanDiT-L 展现出最强的扩展行为——数据量增加时性能提升斜
 | PopBJ | 北京 | Crowd flow | 28×24 / 1h | 2021/10-11 |
 | TaxiBJ | 北京 | Taxi flow | 32×32 / 30min | 2013/06-10 |
 | CrowdNJ | 南京 | Crowd flow | 20×28 / 1h | 2021/02-03 |
-| TaxiNYC | 纽 | Taxi flow | 10×20 / 30min | 2015/01-03 |
+| TaxiNYC | 纽约 | Taxi flow | 10×20 / 30min | 2015/01-03 |
 | PopSH | 上海 | Dynamic population | 32×28 / 1h | 2014/08 |
 
 **Graph-based（3 个城市）**[^src-urbandit]：SpeedSH（21099 节点）、SpeedBJ（13675 节点）、SpeedNJ（13419 节点），均为 15min traffic speed。
@@ -84,7 +84,7 @@ UrbanDiT-L 展现出最强的扩展行为——数据量增加时性能提升斜
 | **vs [[unist|UniST]]** | 同实验室前身。UniST 仅支持 grid 数据 + 预测任务；UrbanDiT 扩展到 graph 数据 + 5 种任务 + rectified flow 训练[^src-urbandit] |
 | **vs [[uniflow|UniFlow]]** | 同实验室同期工作。UniFlow 采用纯 Transformer + ST-MRA (memory retrieval) 路线，UrbanDiT 采用 DiT + rectified flow 扩散路线。UniFlow 支持 >10K nodes 大规模 graph，UrbanDiT 支持 5 种任务（含 imputation/extrapolation）[^src-urbandit] |
 | **vs UrbanGPT** | UrbanGPT 基于 LLM 逐一处理传感器（7B params，174s inference）；UrbanDiT 从零训练，多传感器并行[^src-urbandit] |
-| **vs MoST** | MoST 专注多模态（图像+文本+时序），UrbanDiT 单模态但多数据类型+多任务[^src-urbandit] |
+| **vs MoST** | MoST 专注多模态（图像+文本+时序），UrbanDiT 单模态但多数据类型+多任务（wiki 分析，MoST 为 KDD 2026 后续工作） |
 | **vs CSDI** | CSDI 是扩散插补模型，UrbanDiT 在插补任务上超越 CSDI，且覆盖预测任务，25 倍更快[^src-urbandit] |
 
 ## 相关资源

@@ -9,7 +9,7 @@ tags:
   - traffic-forecasting
   - rectified-flow
 created: 2026-05-12
-last_updated: 2026-06-01
+last_updated: 2026-07-16
 source_count: 1
 confidence: medium
 status: active
@@ -95,7 +95,7 @@ Prompt 通过 cosine similarity 检索最匹配的 patterns：$P_x = \sum \alpha
 
 | 任务 | UrbanDiT 表现 | 对标基线 |
 |------|-------------|---------|
-| Forward Prediction（grid） | 最佳，相对提升 11.3% | UniST / CSDI 次优 |
+| Forward Prediction（grid） | 最佳，相对提升 11.3% | [[unist|UniST]] / CSDI 次优 |
 | Forward Prediction（graph） | 最佳 | 见 Appendix |
 | Backward Prediction | 超越专门训练的 CSDI **30.4%** | CSDI |
 | Temporal Interpolation（50% missing） | 多数数据集最佳 | 各独立训练的基线 |
