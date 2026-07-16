@@ -7,7 +7,7 @@ tags:
   - scalability
 created: 2026-04-29
 last_updated: 2026-07-25
-source_count: 7
+source_count: 8
 references:
   - [[source-fast-long-horizon-forecasting]]
 confidence: high
@@ -74,15 +74,25 @@ FaST 首次将 MoE 应用于大规模长视野时空图预测：
 
 ## 在时间序列基础模型中的应用
 
-[[moirai-moe|Moirai-MoE]] (ICML 2025) 是首个将 **Sparse MoE** 引入时间序列基础模型预训练的框架[^src-moirai-moe]：
+[[time-moe|Time-MoE]] (ICLR 2025) 是**首个将 Sparse MoE 引入时序基础模型预训练**的框架，首次将时序模型推到 2.4B 参数规模[^src-time-moe]：
+
+- **架构**：decoder-only Transformer，每层 FFN 替换为 MoE（N 个独立专家 + 1 个共享专家），Top-K 稀疏激活 + 辅助负载均衡损失[^src-time-moe]
+- **门控**：标准线性门控 + Softmax Top-K（与 Switch Transformer 一致），通过辅助均衡损失（fi×ri）防止路由坍塌——移除该损失导致专家坍塌为更小 FFN，性能从 0.262→0.275[^src-time-moe]
+- **Token 化**：逐点（point-wise）SwiGLU 嵌入，保留全部时序精度，区别于 patch token 化[^src-time-moe]
+- **多分辨率预测**：4 个输出头（horizon {1,8,32,64}），多任务联合优化 + 贪心调度组合实现灵活预测长度[^src-time-moe]
+- **效果**：Time-MoEultra (1.1B 激活/2.4B 总参) 零样本平均 MSE 降低 20%+ vs Moirai/TimesFM/Chronos，训练成本比等激活 Dense 模型降 78%、推理降 39%[^src-time-moe]
+- **缩放定律验证**：随模型规模和数据量增长，性能持续提升——首次在时序领域实证验证缩放定律[^src-time-moe]
+
+[[moirai-moe|Moirai-MoE]] (ICML 2025) 随后进一步改进了门控函数设计[^src-moirai-moe]：
 
 - **架构**：在 6/12 层 decoder-only Transformer 中，每层 FFN 替换为 M=32 experts 的 MoE 层，每个 token 仅激活 K=2 experts
 - **簇基门控**：提出 [[cluster-based-gating|新型门控函数]]——用预训练 dense 模型的 token 嵌入 k-means 聚类中心引导 expert 分配，在所有专家数量配置下一致优于随机初始化线性门控[^src-moirai-moe]
-- **与标准 Sparse MoE 的差异**：Moirai-MoE 的 MoE 作用于时间序列 token 维度，通过 [[token-level-specialization|token 级专业化]] 替代频率级人工数据分组——浅层 expert 分配因频率而异、深层趋于一致，实现频率不变表示[^src-moirai-moe]
+- **与 Time-MoE 的差异**：Moirai-MoE 使用 patch token 化（更大感受野、更快推理）+ 簇基门控（数据驱动路由），而 Time-MoE 使用逐点 token 化 + 线性门控 + 辅助均衡损失[^src-moirai-moe]。Moirai-MoE 通过 [[token-level-specialization|token 级专业化]] 替代频率级人工数据分组[^src-moirai-moe]
 - **效果**：Moirai-MoE-S (11M activated, 117M total) 以 17% Monash 聚合 MAE 提升超越 dense Moirai-S，以 65× 更少激活参数优于 Chronos-L[^src-moirai-moe]
 - **效率**：推理时间 273s vs Chronos-S 551s（受益于 patch size 16 vs Chronos 的 point-wise tokenization）[^src-moirai-moe]
 
-同期工作 Time-MoE 也引入 MoE，但使用逐点 tokenization 和标准线性门控，Moirai-MoE 在零样本上显著优于 Time-MoE-B 和 Time-MoE-L[^src-moirai-moe]。
+> [!note] MoE 时序基础模型的演进
+> Time-MoE (ICLR 2025) 首次将标准 Sparse MoE + 辅助均衡损失引入时序预训练，验证了缩放定律和效率优势。Moirai-MoE (ICML 2025) 随后通过簇基门控和 patch token 化进一步改进了零样本性能。两者共同确立了稀疏 MoE 作为时序基础模型缩放的核心范式。
 
 ## 在动力系统重建中的应用
 
@@ -114,11 +124,14 @@ FaST 首次将 MoE 应用于大规模长视野时空图预测：
 - [[mmoe|MMoE (TiMi)]]
 - [[timi|TiMi]]
 - [[moirai-moe|Moirai-MoE]]
+- [[time-moe|Time-MoE]]
+- [[time-300b|Time-300B]]
 
 [^src-fast-long-horizon-forecasting]: [[source-fast-long-horizon-forecasting]]
 [^src-most]: [[source-most]]
 [^src-dynamix]: [[source-dynamix]]
 [^src-stamimputer]: [[source-stamimputer]]
 [^src-mage]: [[source-mage]]
+[^src-time-moe]: [[source-time-moe]]
 [^src-moirai-moe]: [[source-moirai-moe]]
 [^src-timi]: [[source-timi]]

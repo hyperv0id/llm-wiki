@@ -1,3 +1,38 @@
+## [2026-07-25] ingest | Time-MoE: Billion-Scale Time Series Foundation Models with Mixture of Experts
+
+Ingest ICLR 2025 论文 Time-MoE（稀疏 MoE 时序基础模型，2.4B 参数，Time-300B 数据集）。
+创建的页面：[[source-time-moe]], [[time-moe]], [[time-300b]]
+更新的页面：[[mixture-of-experts]], [[moirai-moe]], [[source-moirai-moe]], [[token-level-specialization]], [[index]]
+
+
+## [2026-07-25] lint | Time-MoE ingest Lint + 幻觉检查 + 修复
+
+对照 PDF (pdftotext) 逐条验证作者、方法名、数据集、指标数字。
+
+### 严重（已修复）
+- [x] time-moe.md — **Top-8 幻觉**：wiki 称「Top-8 激活」但论文 Table 6 base 推理速度 0.095 s/iter 与 Table 7 Top-2 匹配，Top-8 0.269/0.129 s/iter 更差。修正：Top-8→Top-2
+- [x] time-moe.md — **source_count 错误**：frontmatter source_count:1 但 body 使用 [^src-time-moe] 和 [^src-moirai-moe]（2 源）。修正：source_count 1→2
+
+### 警告（已修复）
+- [x] source-time-moe.md — confidence:high + source_count:0 违规（source-summary 无交叉来源验证）。修正：high→low
+- [x] time-300b.md — confidence:high + source_count:1 违规（单源）。修正：high→medium
+- [x] time-moe.md — 缺交叉链接 → [[mixture-of-experts]] 和 → [[token-level-specialization]]，已补
+
+### 幻觉交叉验证通过
+作者/ICLR 2025/Princeton+Xiaohongshu+Squirrel Ai+Griffith/decoder-only+Sparse MoE+SwiGLU+RoPE+RMSNorm/三档模型(50M-200M-1.1B 激活/113M-453M-2.4B 总参)/16 专家+K=2/309.09B/{1,8,32,64} horizon/AdamW lr=1e-3 warmup 10K cosine/128×A100 BF16 FlashAttn/Huber+auxiliary balance loss/零样本 20%+/全样本 24%/训练降 78% 推理降 39%/消融(0.262→0.267/0.272/0.275)/23%-30%-11% vs Chronos/Moment/Moirai — 全部与 PDF 原文一致
+
+### 已验证
+- time-moe.md: source_count:2, confidence:high — 合规
+- time-300b.md: source_count:1, confidence:medium — 合规
+- source-time-moe.md: source_count:0, confidence:low — 合规（仓库惯例）
+- moirai-moe.md/mixture-of-experts.md/token-level-specialization.md 现有 frontmatter 合规
+- 全部 wikilink 存在，无断链；跨页反向链接完整
+
+### 仍存风险
+- source-time-moe.md: source_count:0+confidence:low，待被其他源引用后升级
+- time-moe.md 「先于 Moirai-MoE」措辞：Moirai-MoE 论文自身定位为「concurrent work」，wiki 称「先于」略有 editorial 色彩但非事实错误
+
+更新的页面：[[source-time-moe]], [[time-moe]], [[time-300b]]
 ## [2026-07-25] lint | TiDE ingest Lint + 幻觉检查 + 修复
 
 对照 PDF（raw/2304.08424.pdf）全量检查 source-tide.md、tide.md、temporal-decoder.md。

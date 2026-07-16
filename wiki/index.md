@@ -172,6 +172,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-aurora]] — Aurora: universal generative multimodal time series forecasting (arXiv 2026)
 - [[source-bigcity]] — BIGCity: first MTMD spatio-temporal model unifying trajectory + traffic state (arXiv 2024)
 - [[source-time-llm]] — Time-LLM: Time Series Forecasting by Reprogramming Large Language Models (ICLR 2024)
+- [[source-time-moe]] — Time-MoE: 首个稀疏 MoE 时序基础模型，decoder-only + 逐点 token 化 + 多分辨率预测头，2.4B 参数，Time-300B (309B pts)，ICLR 2025
 - [[source-timecap]] — TimeCAP: contextualize, augment, and predict time series events with LLM agents (AAAI 2025 Oral)
 - [[source-bluuuuue-scaling-factor-intuition]] — 数学直觉系列（一）：缩放因子1/√dₖ——注意力机制的数值稳定性条件 (bluuuuue, 小红书)
 - [[source-bluuuuue-reparameterization-trick]] — 数学直觉系列（二）：VAE与重参数化——将不可逆的随机采样重构为可微的确定性变换 (bluuuuue, 小红书)
@@ -287,6 +288,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[stormbench]] — StormBench, 多源观测+ERA5 再分析对流临近预报基准，美法双区域 (ICML 2026)
 - [[storminsight]] — StormInsight, 环境条件化对流临近预报框架，三分量编码 + CFM 分层调制 (ICML 2026)
 - [[tcp-diffusion]] — TCP-Diffusion, 首个 DL 全球 TC 降水预测模型，ARP + 多模态编码器 + NWP 集成 (ICML 2025)
+- [[time-300b]] — Time-300B, Time-MoE 的 309B 时间点预训练数据集，9+ 领域，当时最大开放访问时序数据集合
+- [[time-moe]] — Time-MoE, 首个稀疏 MoE 时序基础模型系列，decoder-only + 逐点 token 化 + 多分辨率预测，最高 2.4B 参数，ICLR 2025
 - [[trafficstream]] — TrafficStream, first CSTF framework with historical data replay + parameter smoothing (IJCAI 2021)
 - [[pecpm]] — PECPM, pattern-matching-based CSTF with expandable pattern bank without historical data replay (KDD 2023)
 - [[craft]] — CRAFT, cross-city retrieval-augmented diffusion model for zero-shot traffic flow generation (NeurIPS 2025)

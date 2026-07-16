@@ -8,9 +8,9 @@ tags:
   - pretraining
   - forecasting
 created: 2026-07-20
-last_updated: 2026-07-20
-source_count: 0
-confidence: medium
+last_updated: 2026-07-25
+source_count: 1
+confidence: high
 status: active
 ---
 
