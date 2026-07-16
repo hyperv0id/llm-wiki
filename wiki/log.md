@@ -1,3 +1,36 @@
+## [2026-07-25] lint | WeatherPEFT ingest 全量 Lint + 幻觉检查 + 修复
+
+对照 PDF 全文（pdftotext）逐条核实，按 CLAUDE.md 完整检查清单执行。
+
+### 严重（已修复）
+- [x] source-weatherpeft.md — 自引用循环（5 处 `[^src-weatherpeft]` + 脚注定义）。source-summary 不应自引用（仓库惯例）。移除全部自引用，source_count: 1→0，confidence: medium→low
+
+### 警告（已修复）
+- [x] weather-prompt.md — ingest report 声称 `[[task-adaptive-dynamic-prompting]] ↔ [[weather-prompt]]` 但 weather-prompt.md 未反向链接。已在「相关页面」补 TADP 条目
+- [x] projected-fisher-divergence.md — ingest report 声称 `[[stochastic-fisher-guided-adaptive-selection]] ↔ [[projected-fisher-divergence]]` 但 projected-fisher-divergence.md 未反向链接。已在「相关页面」补 SFAS 条目
+
+### 幻觉交叉验证通过
+作者（12 人：Cao, Lin, Cheng, Liu, Li, Wang, Zheng, Liang, Jin, Qin, Cheng & Fu）/机构（SYSU + HKUST-GZ + HKUST + CUHK + NSCS + Huawei + Tsinghua）/ICLR 2026/TADP 和 SFAS 方法名/Aurora 1.3B 3D Swin Transformer U-Net/降尺度 5.625°→1.40625° 68 变量/WeatherPEFT 3.48M/Full-Tuning 1239.94M/DoRA 3.75M T2m ∼36% worse/ENS-10 Z500 CRPS 72.701 vs 73.760/ERA5-CH 0.25° TP-6hr/SEEPS+ACC+RMSE/Task-selective 方法（SCT/Child-Tuning/SAM）/∼4% 参数超越 Full-Tuning/局限性声明（单骨干/无自适应 k/无不确定性量化）——全部与 PDF 原文一致，无捏造或错引。
+
+### 已验证
+- source-weatherpeft.md: source_count:0, confidence:low（source-summary 仓库惯例）——合规
+- weatherpeft.md: source_count:1, confidence:medium ——合规
+- task-adaptive-dynamic-prompting.md: source_count:1, confidence:medium ——合规
+- stochastic-fisher-guided-adaptive-selection.md: source_count:1, confidence:medium ——合规
+- weather-foundation-model.md: source_count:4, confidence:medium ——合规
+- 全部 frontmatter type 合法，无 superseded/disputed 违规
+- 全部 wikilink 存在，无断链
+- 全部新页面已在 index.md 对应类别登记
+- 全部交叉引用双向（修复后）
+
+### 仍存风险
+- source-weatherpeft.md: source_count:0 + confidence:low，待被其他源引用后升级
+- 论文对 Prithvi WxC 的实验仅在附录 B.2 提供初步结果，wiki 已在局限性中标注
+- Top-k 超参数 k 需按任务调节：论文讨论了 k 的消融实验（附录 B.1），但未提出自动选择机制
+
+更新的页面：[[source-weatherpeft]], [[weather-prompt]], [[projected-fisher-divergence]]
+
+
 ## [2025-07-25] ingest | WardropNet: Traffic Flow Predictions via Equilibrium-Augmented Learning
 
 PDF 物理文件拷贝到 raw/wardropnet-traffic-flow-predictions-via-equilibrium-augmented-learning.pdf。ICLR 2025 论文，提出 COAML 管道将 Wardrop 均衡嵌入为可微 NN 层。
@@ -2974,3 +3007,10 @@ Note: source slug 沿用已有的 src-event-driven-ts-forecasting（cf. 用户�
 - 更新 last_updated：source-event-driven-ts-forecasting, historical-in-context-learning
 
 结构/来源计数/置信度/交叉引用：全部通过。
+
+## [2026-07-25] ingest | WeatherPEFT: Task-Adaptive Parameter-Efficient Fine-Tuning for Weather Foundation Models (ICLR 2026)
+
+创建的页面：[[source-weatherpeft]], [[weatherpeft]], [[task-adaptive-dynamic-prompting]], [[stochastic-fisher-guided-adaptive-selection]]
+更新的页面：[[weather-foundation-model]]
+
+WeatherPEFT 是首个针对 WFM 的 PEFT 框架，包含 TADP（前向任务自适应动态提示）和 SFAS（反向随机 Fisher 引导自适应选择），在降尺度/集合后处理/区域降水预报三任务上以极少参数逼近 Full-Tuning。PDF 拷贝至 raw/ 并完成全流程 ingest。

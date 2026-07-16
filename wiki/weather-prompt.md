@@ -8,7 +8,7 @@ tags:
   - multi-modal
   - iclr-2025
 created: 2026-06-08
-last_updated: 2026-06-08
+last_updated: 2026-07-25
 source_count: 1
 confidence: medium
 status: active
@@ -46,5 +46,6 @@ $$X_{target} = F_\tau(P_{in}, P_{target}, X_{in}; \theta)$$
 - [[mixed-modal-masked-image-modeling]] — 消费天气提示的训练/推理范式
 - [[in-context-learning]] — in-context learning 范式
 - [[source-weathergfm]] — 源文件摘要
+- [[task-adaptive-dynamic-prompting]] — WeatherPEFT 的 TADP，从编码器嵌入内生生成任务自适应软提示（vs WeatherGFM 的视觉 in-context prompt）
 
 [^src-weathergfm]: [[source-weathergfm]]

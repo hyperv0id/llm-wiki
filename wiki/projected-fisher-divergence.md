@@ -8,7 +8,7 @@ tags:
   - fisher-divergence
   - generative-model
 created: 2026-05-13
-last_updated: 2026-05-13
+last_updated: 2026-07-25
 source_count: 1
 confidence: medium
 status: active
@@ -51,6 +51,7 @@ Fisher 散度 $J(\theta) = \mathbb{E}_{x \sim p_{\text{data}}} \|f_\theta(x) - \
 - [[flux-matching]] — 使用投影 Fisher 散度的生成建模范式
 - [[score-matching]] — 传统 Fisher 散度的应用
 - [[fokker-planck-equation]] — 福克-普朗克方程的平稳条件
+- [[stochastic-fisher-guided-adaptive-selection]] — WeatherPEFT 的 SFAS，用 Fisher 信息选择 Top-k 关键参数（vs 投影 Fisher 散度用于 Flux Matching 损失梯度等价性）
 
 ## 引用
 

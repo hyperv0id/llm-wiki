@@ -909,6 +909,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-doflow]] — DoFlow: Flow-based Generative Models for Interventional and Counterfactual Forecasting on Time Series (ICLR 2026)
 - [[source-k2vae]] — K²VAE: Koopman-Kalman Enhanced VAE for Probabilistic Time Series Forecasting (ICML 2025 Spotlight)
 - [[source-weathergfm]] — WeatherGFM: Learning A Weather Generalist Foundation Model via In-context Learning (ICLR 2025)
+- [[source-weatherpeft]] — WeatherPEFT: Task-Adaptive Parameter-Efficient Fine-Tuning for Weather Foundation Models (ICLR 2026)
 - [[source-maginet]] — MagiNet: Mask-Aware Graph Imputation Network for Incomplete Traffic Data, learnable missing encoding without pre-filling (arXiv 2024 / ACM TKDD 2025)
 - [[source-stamimputer]] — STAMImputer: Spatio-Temporal Attention MoE for Traffic Data Imputation (arXiv 2025 / IJCAI 2025)
 - [[source-st-vision-llm]] — ST-Vision-LLM: Vision-LLMs for Spatiotemporal Traffic Forecasting, TS-as-image + GRPO for mobile traffic (arXiv 2025)
@@ -943,6 +944,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[koopman-linearization-for-forecasting]] — Koopman 线性化预测范式，把非线性 TS 提升到测量空间用线性算子 (DMD/eDMD/神经网络) 建模 (K²VAE/MMCKM)
 - [[kalman-filter]] — Kalman 滤波，线性动力系统状态估计的递归 Predict/Update 算法 + 不确定性建模
 - [[weather-foundation-model]] — 天气基础模型，在大规模气象数据上预训练、服务多种天气/气候任务的通用模型范式 (ICLR 2025)
+- [[weatherpeft]] — WeatherPEFT，首个 WFM 参数高效微调框架，TADP + SFAS 双阶段任务自适应（ICLR 2026）
 - [[mask-aware-imputation-no-prefilling]] — 无预填充的掩码感知填补，用可学习缺失嵌入直接表征缺失值而非零初始化 (MagiNet, arXiv 2024)
 - [[vision-language-traffic-forecasting]] — reframing 2D grid traffic forecasting as a vision-language fusion problem via traffic-matrix-as-image (arXiv 2025)
 - [[in-context-learning]] — ICL，冻结基础模型仅凭上下文演示适配新任务的范式；WeatherGFM 视觉 ICL 的基础 (2026)
@@ -1111,6 +1113,9 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[ordinal-consistent-loss]] — 有序一致性损失，条件概率公式强制降水强度单调性，BCE + 有序掩码保证概率一致性
 - [[granularity-variates]] — 粒度 variate 建模，iTransformer variate 思路跨粒度迁移 (SIFusion)
 - [[independent-spatial-tokenization]] — 独立空间 tokenization，解耦空间编码与序列建模 (SIFusion)
+- [[task-adaptive-dynamic-prompting]] — TADP，从 WFM 编码器嵌入权重内生生成任务自适应软提示的 PEFT 技术（WeatherPEFT, ICLR 2026）
+- [[stochastic-fisher-guided-adaptive-selection]] — SFAS，Fisher 信息 + 退火随机性选择 Top-k 关键参数更新的 PEFT 技术（WeatherPEFT, ICLR 2026）
+
 
 ## Sources (continued)
 - [[source-omnifield]] — OmniField: continuity-aware multimodal conditioned neural field for robust spatiotemporal learning, MCT + ICMR + fleximodal fusion, ICLR 2026 (BNL/UCLA/Columbia)
