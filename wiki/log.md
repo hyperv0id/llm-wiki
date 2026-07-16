@@ -3014,3 +3014,7 @@ Note: source slug 沿用已有的 src-event-driven-ts-forecasting（cf. 用户�
 更新的页面：[[weather-foundation-model]]
 
 WeatherPEFT 是首个针对 WFM 的 PEFT 框架，包含 TADP（前向任务自适应动态提示）和 SFAS（反向随机 Fisher 引导自适应选择），在降尺度/集合后处理/区域降水预报三任务上以极少参数逼近 Full-Tuning。PDF 拷贝至 raw/ 并完成全流程 ingest。
+
+## [2026-07-16] 勘误 | source-terra 对 ExoST 的定性拔高
+source-terra.md 第73行原称未评审的 ExoST (arXiv:2509.05779) 为“方法论级别的框架”，属定性拔高且无审稿状态标注。已降格为中性描述并补“arXiv 预印本，未经同行评审”标注。
+更新的页面：[[source-terra]]

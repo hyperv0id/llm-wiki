@@ -8,7 +8,7 @@ tags:
   - benchmark
   - 2024
 created: 2026-07-07
-last_updated: 2026-07-07
+last_updated: 2026-07-16
 source_count: 1
 confidence: medium
 status: active
@@ -70,7 +70,7 @@ Terra 将全球划分为 0.1°×0.1° 的栅格网格，覆盖 **6,480,000 个�
 
 ## 与 [[source-exost]]、[[source-aurora]] 的关系
 
-- **ExoST**（Select, then Balance）聚焦外生变量在时空预测中的建模范式，是方法论级别的框架；Terra 为其提供全球尺度的多模态外生数据基础。
+- **ExoST**（Select, then Balance，arXiv 预印本 2509.05779，未经同行评审截至 2026-07）提出时空预测外生变量的 select-then-balance 建模思路；Terra 可为其提供全球尺度的多模态外生数据基础。
 - **Aurora**（通用生成式多模态时间序列预测基础模型）依赖大规模多模态数据集进行预训练；Terra 的全球覆盖和 multimodal 特性使其成为 Aurora 类模型的理想训练/评测平台。
 
 ---
