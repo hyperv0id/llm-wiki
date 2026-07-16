@@ -1,3 +1,19 @@
+## [2026-07-25] ingest | TimeGrad: gap-filling pass（PDF 验证 + 交叉引用补全 + CRPS 新页）
+
+原始 ingest 已于 2026-05-31 完成（source-summary、entity、index、log）。本次：
+1. 对照用户提供的 PDF（md5=b093d9fe，与 raw/2101.12072.pdf 一致）完整验证 pdftotext 内容
+2. 创建 [[crps]] 概念页 — CRPS 是 TimeGrad 的核心评估指标（Section 4.1），wiki 此前缺失
+3. 更新 [[langevin-dynamics]] — 添加 TimeGrad 退火 Langevin 采样在时序扩散中的应用
+4. 更新 [[energy-based-model]] — 添加 TimeGrad 作为首个自回归 EBM 时序预测方法的引用
+5. 更新 frontmatter（last_updated → 2026-07-25）和交叉链接
+6. Lint：source-timegrad 移除自引用循环（source_count 1→0, confidence medium→low）；timegrad 修复局限性引用范围 + 列表格式
+
+创建的页面：[[crps]]
+更新的页面：[[source-timegrad]], [[timegrad]], [[langevin-dynamics]], [[energy-based-model]], [[index]]
+
+源文件：raw/2101.12072.pdf（已存在，未修改）
+
+
 ## [2026-07-25] ingest | Time-MoE: Billion-Scale Time Series Foundation Models with Mixture of Experts
 
 Ingest ICLR 2025 论文 Time-MoE（稀疏 MoE 时序基础模型，2.4B 参数，Time-300B 数据集）。

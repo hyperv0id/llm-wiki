@@ -472,6 +472,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[deep-state-space-model]] — 深度状态空间模型：用神经网络参数化/扩展经典线性 SSM（DeepState 等）
 - [[timeflow-loss]] — TimeFlow Loss，Sundial 基于 Flow Matching 的生成式训练目标 (ICML 2025)
 - [[conformal-prediction]] — 共形预测，与模型无关的不确定性量化框架
+- [[crps]] — Continuous Ranked Probability Score，严格合适评分规则，衡量预测 CDF 与观测的 $L^2$ 距离
 - [[spatio-temporal-decoupling]] — 时空解耦在在线共形预测中的最优权衡
 - [[spatio-temporal-decomposition]] — 时空分解，将时空序列分解为趋势+季节成分分治建模 (DST-Mamba, AAAI 2025)
 - [[spatiotemporal-deviation]] — 时空偏差，输入与历史/标签的不一致现象 (BiST PVLDB 2025; ST-SSDL NeurIPS 2025)

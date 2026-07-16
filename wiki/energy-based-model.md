@@ -6,8 +6,8 @@ tags:
   - energy-function
   - score-function
 created: 2026-05-04
-last_updated: 2026-05-30
-source_count: 1
+last_updated: 2026-07-25
+source_count: 2
 confidence: low
 status: active
 ---
@@ -24,4 +24,6 @@ where $Z_\theta = \int \exp(-E_\theta(\mathbf{x})) d\mathbf{x}$ is the intractab
 - [[score-function]]
 - [[score-based-generative-modeling]]
 - [[diffusion-model]]
+- [[timegrad]] — TimeGrad, the first autoregressive EBM for multivariate probabilistic time series forecasting[^src-timegrad]
 [^src-energy-based-model]: [[source-energy-based-model]]
+[^src-timegrad]: [[source-timegrad]]

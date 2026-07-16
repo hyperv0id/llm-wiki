@@ -9,7 +9,7 @@ tags:
   - ddpm
   - icml-2021
 created: 2026-05-31
-last_updated: 2026-07-13
+last_updated: 2026-07-25
 source_count: 9
 confidence: medium
 status: active
@@ -77,13 +77,13 @@ $$\varepsilon_\theta(x_t^n, h_{t-1}, n) \quad\text{vs}\quad \varepsilon_\theta(x
    $$x_t^{n-1} = \frac{1}{\sqrt{\alpha_n}} \left[ x_t^n - \frac{\beta_n}{\sqrt{1-\bar\alpha_n}} \varepsilon_\theta(x_t^n, h_{t-1}, n) \right] + \sqrt{\tilde\beta_n}\, z$$
    其中 $z \sim \mathcal{N}(0,I)$ for $n>1$，$z=0$ for $n=1$（最后一步确定性输出）
 3. 将采样得到的 $x_{T+1}^0$ 送回 RNN 得 $h_{T+1}$，重复至预测窗口结束
-4. 整个过程重复 $S=100$ 次得到 100 条轨迹，计算经验 CDF 后用 CRPS 评估
+4. 整个过程重复 $S=100$ 次得到 100 条轨迹，计算经验 CDF 后用 [[crps|CRPS]] 评估
 
 ## 性能
 
-在 6 个真实数据集（Exchange D=8, Solar D=137, Electricity D=370, Traffic D=963, Taxi D=1214, Wikipedia D=2000）上以 CRPS_sum 评估，TimeGrad 在 5 个数据集上排名第一，14 种基线全面领先[^src-timegrad]。
+在 6 个真实数据集（Exchange D=8, Solar D=137, Electricity D=370, Traffic D=963, Taxi D=1214, Wikipedia D=2000）上以 [[crps|CRPS_sum]] 评估，TimeGrad 在 5 个数据集上排名第一，14 种基线全面领先[^src-timegrad]。
 
-消融实验揭示了一个与图像扩散截然不同的规律：$N \approx 10$ 时 CRPS_sum 已接近最优，$N=100$ 达最优，$N>100$ 后性能持平甚至轻微下降[^src-timegrad]。原因在于 RNN 隐状态 $h_{t-1}$ 已提供了强引导信号——扩散模型只需补充建模残差中的不确定性，无需从零重建完整数据分布[^src-timegrad]。这打破了"扩散一定需要上千步"的刻板印象。
+消融实验揭示了一个与图像扩散截然不同的规律：$N \approx 10$ 时 [[crps|CRPS_sum]] 已接近最优，$N=100$ 达最优，$N>100$ 后性能持平甚至轻微下降[^src-timegrad]。原因在于 RNN 隐状态 $h_{t-1}$ 已提供了强引导信号——扩散模型只需补充建模残差中的不确定性，无需从零重建完整数据分布[^src-timegrad]。这打破了"扩散一定需要上千步"的刻板印象。
 
 ## 与相关方法的关系
 
@@ -99,7 +99,7 @@ TimeGrad 处于多条研究线的交汇点：
 1. **推理速度是根本瓶颈**：预测 24 步需 $100 \times 24 = 2400$ 次 $\varepsilon_\theta$ 前向传播，实时场景不可行[^src-timegrad]
 2. **自回归串行依赖**：不同时间步必须串行推理，无法并行预测[^src-timegrad]
 3. **固定 LSTM 瓶颈**：D=8 到 D=2000 共用 h=40，高维信息压缩比不足[^src-timegrad]
-4. **统一噪声调度**：所有数据集使用相同 $\beta$ 调度，CSDI 后来将其改进为可学习调度[^src-timegrad]
+4. **统一噪声调度**：所有数据集使用相同 $\beta$ 调度[^src-timegrad]；CSDI 后来将其改进为可学习调度
 5. **缺少显式空间/拓扑归纳偏置**：跨维度依赖依赖扩散模型容量黑箱学习，当存在明确图拓扑时不如 GNN 方法高效[^src-timegrad]
 
 ## 关联页面
@@ -121,6 +121,8 @@ TimeGrad 处于多条研究线的交汇点：
 - [[tsdiff|TSDiff]]（NeurIPS 2023）改走**无条件**训练 + 推理期 [[observation-self-guidance|observation self-guidance]]，在相关工作中将 TimeGrad 定位为条件扩散预测代表，并与 CSDI/SSSD 对照任务专用性[^src-prs]
 - [[manf|MANF]]（arXiv 2022）走 **NAR + 条件 RealNVP** 路线，与 TimeGrad 的 **AR + 条件扩散** 形成对照：同属高维联合分布灵活建模，但解码与生成机制不同；MANF 基线中含 Transformer-MAF 等 AR 流，而 TimeGrad 报告中 Transformer-MAF 为强竞争方法[^src-maf]
 
+- [[crps-autoregressive-finetuning]] — CRPS 作为扩散生成式模型的时间序列自回归微调目标
+- [[crps]] — CRPS 评分规则，TimeGrad 的核心评估指标
 [^src-timegrad]: [[source-timegrad]]
 [^src-nsdiff]: [[source-nsdiff]]
 [^src-stats]: [[source-stats]]
