@@ -1,3 +1,10 @@
+## [2026-07-16] maintenance | 清理 ICML 2026 Spotlight 筛选分析整组
+删除 analysis 页与 source-summary；index 去掉对应条目；保留 immutable 源 `raw/icml-2026-spotlight-papers.md`。
+删除的页面：[[icml-2026-spotlight-vs-multimodal-exogenous-spatiotemporal]], [[source-icml-2026-spotlight-papers]]
+删除的报告：ingest-reports/2026-07-12-icml-2026-spotlight-analysis.md
+更新的页面：[[index]]
+保留：raw/icml-2026-spotlight-papers.md；各单篇 ICML 论文 source/entity 页不动
+
 ## [2026-07-25] lint | WeatherPEFT ingest 全量 Lint + 幻觉检查 + 修复
 
 对照 PDF 全文（pdftotext）逐条核实，按 CLAUDE.md 完整检查清单执行。

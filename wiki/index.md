@@ -1029,11 +1029,9 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Analysis (continued)
 - [[kite-manifold-guidance-chain]] — KITE 三件套串联：流形改起点、知识改条件、CFG 拧剂量
-- [[icml-2026-spotlight-vs-multimodal-exogenous-spatiotemporal]] — ICML 2026 Spotlight 与多模态外生信息引导长期时空预测的相关分析（直接相关+方法可迁移+基础设施三层）
 
 ## Sources (continued)
 - [[source-dag]] — DAG: A Dual Correlation Network for TS Forecasting with Exogenous Variables（时间+通道双相关发现—注入，IJCAI 2026）
-- [[source-icml-2026-spotlight-papers]] — ICML 2026 Spotlight 论文集（538 篇标题+摘要，OpenReview 抓取，2026-07-12）
 
 ## Entities (continued)
 - [[dag]] — DAG，确定性外生预测框架：双相关发现—注入，gating 融合
