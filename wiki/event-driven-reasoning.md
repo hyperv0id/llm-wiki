@@ -8,8 +8,8 @@ tags:
   - reasoning
   - event-driven
 created: 2026-05-03
-last_updated: 2026-05-03
-source_count: 1
+last_updated: 2026-07-25
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -54,8 +54,11 @@ This enables LLMs to learn from past errors without expensive fine-tuning.
 | CALF | Feature extraction | Endogenous | No |
 | GPT4MTS | Feature extraction | Exogenous | No |
 | TaTS | Feature extraction | Exogenous | No |
+| **TiMi** | **Reasoning → Guidance** | Exogenous | **Yes** |
 
-VoT is the first method to use LLMs for **reasoning** (not just feature extraction) in multimodal time series forecasting[^src-event-driven-ts-forecasting].
+VoT is the first method to use LLMs for **reasoning** (not just feature extraction) in multimodal time series forecasting[^src-event-driven-ts-forecasting]。
+
+[[timi|TiMi]] (ICML 2026) 进一步将 LLM 推理提升为 **[[non-fusion-guidance|Non-Fusion Guidance]]** 范式：LLM 独立推理生成未来趋势的结构化因果知识，通过 [[mmoe|MMoE]] 门控路由引导时序 backbone，完全放弃特征融合[^src-timi]。与 VoT 的 Reasoning → Summarization → Multi-Level Alignment 流水线不同，TiMi 的 Reasoning → MoE Routing 路径更短且不需要模态对齐[^src-timi]。
 
 ## Related Pages
 
@@ -63,6 +66,10 @@ VoT is the first method to use LLMs for **reasoning** (not just feature extracti
 - [[historical-in-context-learning]] — HIC technique
 - [[multi-level-alignment]] — complementary alignment approach
 - [[multimodal-time-series-forecasting]] — task concept
+- [[timi]] — TiMi, Non-Fusion Guidance model
+- [[non-fusion-guidance]] — Non-Fusion Guidance paradigm
+- [[mmoe]] — MMoE plugin module
 - [[mindts]] — related multimodal TS model (anomaly detection, same lab)
 
 [^src-event-driven-ts-forecasting]: [[source-event-driven-ts-forecasting]]
+[^src-timi]: [[source-timi]]

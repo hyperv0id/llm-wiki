@@ -2846,3 +2846,10 @@ ST-TTC 已于 2026-06-09 批量摄入，页面完整（source-summary/entity/con
 
 更新的页面：[[tsdiff]], [[observation-self-guidance]], [[linear-predictive-score]]
 更新的文件：ingest-reports/prs-tsdiff-why.md
+
+## [2026-07-25] ingest | TiMi: Empower Time Series Transformers with Multimodal Mixture of Experts
+
+清华大学 Lin/Wang/Luo/Wang/Pei, ICML 2026。核心贡献：(1) Non-Fusion Guidance 范式——LLM 独立推理文本因果知识→MoE 门控引导时序 backbone，放弃模态融合；(2) MMoE (TMoE+SMoE) 即插即用模块替换 Transformer FFN；(3) 16 个多模态基准 SOTA，PatchTST+MMoE 平均 MSE 降低 18.2%。
+
+创建的页面：[[source-timi]], [[timi]], [[mmoe]], [[non-fusion-guidance]]
+更新的页面：[[multimodal-time-series-forecasting]], [[mixture-of-experts]], [[event-driven-reasoning]], [[index]]

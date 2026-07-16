@@ -8,8 +8,8 @@ tags:
   - covariate
   - satellite-imagery
 created: 2026-04-29
-last_updated: 2026-07-14
-source_count: 11
+source_count: 12
+last_updated: 2026-07-25
 confidence: high
 status: active
 ---
@@ -106,16 +106,20 @@ UniCA 在多模态场景下的表现：
 
 **[[tats|TaTS (Texts as Time Series)]]** (ICLR 2026) 是一个即插即用的多模态时间序列框架，由 Li et al. (UIUC/Meta/IBM) 提出[^src-language-in-the-flow-of-time]。TaTS 基于 **[[chronological-textual-resonance|Chronological Textual Resonance (CTR)]]** 现象——时间序列配对的文本天然展现出与数值序列一致的周期性——将文本编码后作为辅助变量拼接到原始时间序列中，无需修改任何现有模型架构[^src-language-in-the-flow-of-time]。在 18 个数据集和 9 个模型上验证，预测和插补任务均取得一致提升。TaTS 的核心优势在于极简设计：仅需 MLP 降维 + 拼接操作，与 Transformer-based、线性、频域模型均兼容[^src-language-in-the-flow-of-time]。
 
+## TiMi：Non-Fusion Guidance 多模态预测
+
+**[[timi|TiMi]]** (ICML 2026) 提出第三种多模态预测范式——**[[non-fusion-guidance|Non-Fusion Guidance]]**：不再尝试在表示层对齐或融合文本与数值模态，而是让冻结 LLM 独立推理文本中的未来趋势因果知识，通过 **[[mmoe|Multimodal Mixture-of-Experts (MMoE)]]** 门控机制注入 Transformer backbone 的时序建模过程[^src-timi]。MMoE 包含 TMoE（基于文本的路由）和 SMoE（基于序列全局趋势的路由）两个互补专家系统，可在不修改 backbone 架构的情况下即插即用[^src-timi]。在 16 个多模态基准上一致 SOTA，PatchTST+MMoE 平均 MSE 提升 18.2%[^src-timi]。与 VoT 同为 LLM 推理式方法但放弃特征融合，与 TaTS 同为即插即用但引入因果推理而非简单特征拼接[^src-timi]。
+
 ### 与其他多模态模型的对比
 
-| 维度 | Aurora | UniCA | MoST | VoT | TaTS | ChannelMTS | PIPE |
-|------|--------|-------|------|-----|------|------------|------|
-| 范式 | 生成式基础模型 | 适配框架 | 判别式基础模型 | LLM 推理 | 即插即用框架 | 任务专用 | 位置编码注入 |
-| 模态 | 文本 + 图像 + TS | 分类 + 图像 + 文本 | 图像 + 文本 + 位置 + TS | 文本 + TS | 文本 + TS | 环境 + TS | 卫星图像 + TS |
-| 零样本 | ✓ | ✓ (via TSFM) | ✓ | ✗ | ✗ | ✗ | ✓ (跨洋区) |
-| 生成方式 | Flow Matching | N/A | N/A | LLM 生成 | N/A | N/A | N/A |
-| 概率预测 | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
-| 架构修改 | 需要 | 需要 (fusion module) | 需要 | 需要 (dual-branch) | **不需要** | 需要 | **仅位置编码** |
+| 维度 | Aurora | TiMi | UniCA | MoST | VoT | TaTS | ChannelMTS | PIPE |
+|------|--------|------|-------|------|-----|------|------------|------|
+| 范式 | 生成式基础模型 | Non-Fusion Guidance | 适配框架 | 判别式基础模型 | LLM 推理 | 即插即用框架 | 任务专用 | 位置编码注入 |
+| 模态 | 文本 + 图像 + TS | 文本 + TS | 分类 + 图像 + 文本 | 图像 + 文本 + 位置 + TS | 文本 + TS | 文本 + TS | 环境 + TS | 卫星图像 + TS |
+| 零样本 | ✓ | ✗ | ✓ (via TSFM) | ✓ | ✗ | ✗ | ✗ | ✓ (跨洋区) |
+| 生成方式 | Flow Matching | N/A | N/A | N/A | LLM 生成 | N/A | N/A | N/A |
+| 概率预测 | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
+| 架构修改 | 需要 | **仅 FFN 替换** | 需要 (fusion module) | 需要 | 需要 (dual-branch) | **不需要** | 需要 | **仅位置编码** |
 
 ### 与 VoT 的区别
 
@@ -219,3 +223,4 @@ UniCA 在多模态场景下的表现：
 [^src-mtp]: [[source-mtp]]
 [^src-st-vision-llm]: [[source-st-vision-llm]]
 [^src-pipe]: [[source-pipe]]
+[^src-timi]: [[source-timi]]

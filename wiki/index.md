@@ -105,6 +105,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-exotst]] — ExoTST: Exogenous-Aware Temporal Sequence Transformer, treats past and future exogenous as distinct modalities with cross-temporal fusion for autoregressive time series prediction (arXiv 2024)
 - [[source-select-then-balance]] — Select, then Balance: Exogenous Variable Modeling for Spatio-Temporal Forecasting（已由 [[source-exost]] 取代）
 - [[source-exollm]] — ExoLLM: 首个 LLM-driven 外生变量预测方法，Meta-task Instruction + Multi-grained Prompts + Dual TS-Text Attention（WWW 2025）
+- [[source-timi]] — TiMi: 用 LLM 因果推理 + Multimodal MoE 引导 Transformer 时序预测，Non-Fusion Guidance 范式，16 基准 SOTA，ICML 2026
 - [[source-crosslinear]] — CrossLinear: plug-and-play 1D-conv cross-correlation embedding for exogenous many-to-one TS forecasting (KDD 2025, arXiv:2505.23116)
 - [[source-dpm-solver]] — DPM-Solver: Fast ODE solver for diffusion models (NeurIPS 2022)
 - [[source-consistency-models]] — Consistency Models: one-step generation (ICML 2023)
@@ -379,6 +380,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[aurora]] — Aurora, universal generative multimodal time series foundation model (arXiv 2026)
 - [[climatear]] — ClimateAR, VAR autoregressive probabilistic climate forecasting, ACC +37.56% (ICML 2026)
 - [[tats]] — TaTS (Texts as Time Series), plug-and-play multimodal TS framework (ICLR 2026)
+- [[timi]] — TiMi, LLM 因果推理 + MMoE 即插即用引导 Transformer 多模态时序预测，Non-Fusion Guidance 范式，ICML 2026
 - [[uniextreme]] — UniExtreme, universal extreme weather forecasting foundation model (arXiv 2025)
 - [[uniflow]] — UniFlow, foundation model for unified grid+graph urban spatio-temporal flow prediction (arXiv 2024)
 - [[ragc]] — RAGC, regularized adaptive graph convolution for large-scale traffic forecasting (arXiv 2026)
@@ -527,6 +529,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[large-scale-spatial-temporal-graph]] — 大规模时空图预测的计算复杂度与解决方案
 - [[spatio-temporal-foundation-model]] — 时空基础模型，跨城市零样本预测范式
 - [[event-driven-reasoning]] — 事件驱动推理，利用 LLM 从外生文本中提取预测信号 (ICLR 2026)
+- [[non-fusion-guidance]] — Non-Fusion Guidance，第三种多模态预测范式：LLM 独立推理→MoE 引导，放弃特征融合 (TiMi, ICML 2026)
 - [[gaussian-process-prior-flow-matching]] — GP 先验流匹配，在 CFM 中使用非各向同性高斯过程先验
 - [[rectified-flow-for-time-series]] — Rectified Flow 在时间序列生成中的应用范式 (FlowTS, 2025)
 - [[multi-level-alignment]] — 多级对齐，在表示级和预测级融合文本与时间序列模态 (ICLR 2026)
@@ -654,6 +657,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[spectral-trajectory-scheduler]] — STS, adaptive noise schedule learning via frequency-domain regularized PGD for diffusion TS forecasting (StaTS, arXiv 2026)
 - [[frequency-guided-denoiser]] — FGD, schedule-induced spectral distortion estimation for modulating denoising strength (StaTS, arXiv 2026)
 - [[moe-decomposition]] — MOEDecomp, input-adaptive mixture-of-experts average filters for seasonal-trend decomposition (ICML 2022)
+- [[mmoe]] — Multimodal Mixture-of-Experts, TMoE+SMoE 双路门控即插即用模块，文本因果知识引导时序预测 (TiMi, ICML 2026)
 - [[newton-schulz-iteration]] — Newton-Schulz iteration for matrix orthogonalization
 - [[glu-gated-linear-unit]] — Gated Linear Unit, activation-modulated linear transformation
 - [[gaussian-splatting]] — 3D/2D Gaussian Splatting，各向异性高斯原语渲染，与传统高斯加权插值等价，QCGS 首次应用于降水场生成
