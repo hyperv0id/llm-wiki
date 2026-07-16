@@ -217,6 +217,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-dits]] — DiTS: Multimodal Diffusion Transformers Are Time Series Forecasters (arXiv 2026)
 - [[source-sundial]] — Sundial: A Family of Highly Capable Time Series Foundation Models, Flow Matching + TimeFlow Loss (ICML 2025)
 - [[source-cogencast]] — CoGenCast: A Coupled Autoregressive–Flow Generative Framework for Time Series Forecasting, LLM + FM encoder-decoder hybrid (ICML 2026)
+- [[source-storminsight]] — StormInsight: Hierarchical Environmental Forcing and Vertical Coupling for Convective Systems Evolution, 3D 环境条件化对流临近预报，三分量编码 + Conditional Flow Matching + StormBench，ICML 2026
 
 ## Sources (continued)
 - [[source-patchstg]] — PatchSTG: efficient large-scale traffic Transformer via irregular spatial patching and dual attention (KDD 2025)
@@ -281,6 +282,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[mmckm]] — MMCKM, history-free micro-macro coupled Koopman model unifying vehicle trajectory + traffic density prediction (ICLR 2026 Poster)
 - [[stbp]] — STBP, continual spatio-temporal forecasting with fixed backbone + scalable contextual pattern bank (ICLR 2026)
 - [[stpde]] — STPDE, PDE-driven ST forecasting decoupling invariant diffusion operator + environment basis manifold (ICML 2026)
+- [[stormbench]] — StormBench, 多源观测+ERA5 再分析对流临近预报基准，美法双区域 (ICML 2026)
+- [[storminsight]] — StormInsight, 环境条件化对流临近预报框架，三分量编码 + CFM 分层调制 (ICML 2026)
 - [[trafficstream]] — TrafficStream, first CSTF framework with historical data replay + parameter smoothing (IJCAI 2021)
 - [[pecpm]] — PECPM, pattern-matching-based CSTF with expandable pattern bank without historical data replay (KDD 2023)
 - [[craft]] — CRAFT, cross-city retrieval-augmented diffusion model for zero-shot traffic flow generation (NeurIPS 2025)
@@ -511,6 +514,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[edm-design-space]] — EDM 统一设计空间，将 VP/VE/DDIM 等框架正交化
 - [[perceptual-compression]] — 感知压缩，将生成建模分为感知压缩和语义压缩两个层次
 - [[precipitation-nowcasting]] — 降水临近预报，0-6h 短时高分辨率降水预测，从 ConvLSTM 到 QCGS 无雷达方法的演进 (ICLR 2026)
+- [[environment-conditioned-nowcasting]] — 环境条件化临近预报，将 2D 雷达外推扩展为 3D 垂直耦合+环境门控的对流动力学建模 (ICML 2026)
 - [[physics-informed-neural-network]] — PINN，损失约束型 vs 架构嵌入型 vs 编码知情型三大范式
 - [[continuous-normalizing-flow]] — 连续归一化流 (CNF)，基于 Neural ODE 的可逆生成模型
 - [[algorithm-unrolling]] — algorithm unrolling, converting iterative optimization into neural network layers

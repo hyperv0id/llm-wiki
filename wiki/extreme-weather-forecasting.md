@@ -7,8 +7,8 @@ tags:
   - foundation-model
   - frequency-domain
 created: 2026-05-03
-last_updated: 2026-07-16
-source_count: 4
+last_updated: 2026-07-23
+source_count: 5
 confidence: medium
 status: active
 ---
@@ -39,6 +39,7 @@ status: active
 ### 单一事件类型方法
 
 早期方法针对特定极端现象设计：NowcastNet（极端降水，Nature 2023）、FuXiExtreme（极端降雨和风力，Science China 2024）、López-Gómez et al.（热浪，AI for the Earth Systems 2023）。这些方法无法泛化到其他极端事件类型[^src-uniextreme]。
+- **环境条件化临近预报**：[[storminsight|StormInsight]]（ICML 2026）从垂直分层和跨层热力学耦合角度直接建模对流增强/消散，通过 Conditional Flow Matching 动态门控环境强迫。在 Kerrville 2025 式快速增强场景中——现有 2D 外推方法系统性失败的核心情境——StormInsight 的 mCSI 提升 34.0%[^src-storminsight]。参见 [[environment-conditioned-nowcasting|环境条件化临近预报]]。
 
 ### 广义极端特征方法
 
@@ -61,3 +62,4 @@ status: active
 [^src-weathergfm]: [[source-weathergfm]]
 [^src-qcgs]: [[source-qcgs]]
 [^src-rainpro]: [[source-rainpro]]
+[^src-storminsight]: [[source-storminsight]]

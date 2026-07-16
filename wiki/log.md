@@ -1,3 +1,32 @@
+## [2026-07-23] ingest | StormInsight: Hierarchical Environmental Forcing and Vertical Coupling for Convective Systems Evolution
+
+ICML 2026 论文。HKUST-GZ + 广州气象台。将临近预报从 2D 雷达外推重新定义为环境条件化的 3D 垂直动力学推理。三分量编码（Convective State + Vertical Interaction MoE + Atmospheric Environment）+ Conditional Flow Matching 分层调制。自建 StormBench 基准（美法双区域 65+ ERA5 变量 + 多源观测）。MAE −12.4%, mCSI +34.0%。
+
+创建的页面：[[source-storminsight]], [[storminsight]], [[stormbench]], [[environment-conditioned-nowcasting]]
+更新的页面：[[precipitation-nowcasting]], [[extreme-weather-forecasting]], [[flow-matching]], [[index]]
+
+## [2026-07-23] lint | StormInsight ingest 完整 Lint + 幻觉检查 + 修复
+
+对照 PDF (pdftotext) 逐条验证作者、方法名、数据集、指标数字。
+
+### 幻觉交叉验证通过
+作者（8 人）/机构（HKUST-GZ + 广州气象台）/ICML 2026 PMLR 306/Kerrville 250mm 130+人/三分量编码（SetConv/MSIM/VAE/FiLM + MoE 四向路径 + Multi-mesh Message Passing）/CFM Global/Local AdaLN/StormBench 美法双区域 ERA5 65 变量/384km×384km 49 帧 5min/550km×550km 2016-2018/推理 372.52±4.10ms H100/消融结论/局限（无完整 3D/无偏振雷达变量）——全部与 PDF 原文一致，无捏造或错引。
+
+### 严重（已修复）
+- [x] source-storminsight.md — 自引用循环（3 处 `[^src-storminsight]` + 脚注定义），source-summary 不应自引用。移除全部自引用，source_count: 1→0，confidence: high→low
+
+### 警告（已修复）
+- [x] storminsight.md — confidence: high→medium（实体页单源，source_count=1）
+- [x] stormbench.md — confidence: high→medium（实体页单源，source_count=1）
+
+### 仍存风险
+- source-storminsight.md: source_count: 0 + confidence: low，待被其他源引用后升级
+- 论文自身称 "ten competitive baselines" 但主 Table 1 仅列 9 个
+
+更新的页面：[[source-storminsight]], [[storminsight]], [[stormbench]]
+更新的文件：ingest-reports/storminsight-2026-07-23.md
+
+
 ## [2026-07-23] lint | Stochastic Interpolants / InterFlow 完整 Lint + 幻觉检查 + 修复
 
 对照 PDF (pdftotext) 逐条验证作者、方法名、数据集、指标数字。

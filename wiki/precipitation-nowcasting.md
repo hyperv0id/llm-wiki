@@ -8,8 +8,8 @@ tags:
   - radar
   - satellite
 created: 2026-07-16
-last_updated: 2026-07-16
-source_count: 2
+last_updated: 2026-07-23
+source_count: 3
 confidence: high
 status: active
 ---
@@ -35,7 +35,7 @@ status: active
 - **Transformer**：Earthformer（Gao et al., 2024）用时空 Transformer 做地球系统预报[^src-rainpro]
 - **扩散模型**：PreDiff（Gao et al., 2023）、DiffCast（Yu et al., 2024）、CasCast（Gong et al., 2024）在短时效实现强性能
 
-### 多源数据融合路线（8 小时级别）
+### 多源数据融合 + 环境条件化
 
 突破雷达限制的关键方向是融合多源异构数据。[[rainpro|RainPro-8]]（ICLR 2026）首次在欧洲以 2km/px、10min 间隔实现 8 小时概率降水预报，整合雷达（RainViewer）、卫星（EUMETSAT 11 通道）、NWP（GFS 122 变量）和地形数据，36.7M 参数 U-Net+MaxViT 架构，性能超越运营 NWP 系统 65%[^src-rainpro]。
 
@@ -45,6 +45,8 @@ status: active
 - **时效权重衰减**：指数衰减加权训练，兼顾短时效精度和长时效稳定性[^src-rainpro]
 
 [[metnet|MetNet]] 系列（Google）在 8–24h 美国概率降水预报上达到 SOTA，但依赖 227M 参数和 512 TPU v3 的大规模训练，代码和数据未公开，且使用交叉熵损失忽略强度序数关系[^src-rainpro]。
+
+[[storminsight|StormInsight]]（ICML 2026）将范式从 2D 外推推向**环境条件化的 3D 垂直动力学推理**——三分量编码（对流状态 + 垂直交互 + 大气环境）+ Conditional Flow Matching 分层调制。在美国和法国 [[stormbench|StormBench]] 上 MAE 降低 12.4%，mCSI 提升 34.0%，尤其在快速增强和消散阶段优势显著[^src-storminsight]。其核心洞见是：临近预报的最大局限不在于观测风暴，而在于错失**风暴如何在环境条件下演化**[^src-storminsight]。参见 [[environment-conditioned-nowcasting|环境条件化临近预报]]。
 
 ### 雷达困境
 上述方法几乎全部假设雷达为主要输入。但雷达网络成本高、地理覆盖有限，主要适用于欧美等地区。雷达分辨率固定，无法表征亚尺度过程[^src-qcgs]。
@@ -64,3 +66,4 @@ status: active
 
 [^src-qcgs]: [[source-qcgs]]
 [^src-rainpro]: [[source-rainpro]]
+[^src-storminsight]: [[source-storminsight]]
