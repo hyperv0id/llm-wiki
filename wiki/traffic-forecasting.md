@@ -6,8 +6,8 @@ tags:
   - spatial-temporal
   - intelligent-transportation
 created: 2026-04-27
-last_updated: 2026-07-16
-source_count: 46
+last_updated: 2026-07-21
+source_count: 47
 confidence: high
 status: active
 ---
@@ -46,6 +46,9 @@ Traditional models assume stationary traffic patterns but fail during accidents 
 ### Incident-Guided
 Extending beyond accidents, [[igstgnn|IGSTGNN]] (KDD 2026) explicitly models the impact of broader non-recurrent incidents (accidents, weather, hazards, breakdowns, etc.) through two plug-and-play modules: [[incident-context-spatial-fusion|ICSF]] captures heterogeneous spatial influence via attention + spatial relationship tensor, and [[temporal-incident-impact-decay|TIID]] models temporal decay via Gaussian function. Achieves 5.65% average MAE improvement on Alameda dataset[^src-incident-guided-st-forecasting].
 
+
+### Self-Supervised Deviation Learning
+[[st-ssdl|ST-SSDL]] (NeurIPS 2025) introduces self-supervised deviation learning to explicitly model dynamic deviations between current observations and historical patterns. Using weekly historical anchors + learnable prototypes + contrastive/deviation losses on a GCRU backbone, it achieves SOTA on 6 benchmarks (METRLA, PEMSBAY, PEMSD7(M), PEMS04/07/08) with only 100K params on PEMS08[^src-st-ssdl]. Its [[ssdl|SSDL]] method quantifies continuous deviation without external labels, complementing the binary-threshold anomaly detection paradigm.
 ### Large-Scale Long-Horizon
 FaST (KDD 2026) addresses computational bottlenecks in large-scale graphs (8,600+ nodes) with long-horizon predictions (672 steps = 1 week) using [[adaptive-graph-agent-attention|AGA-Att]] for O(N·a) spatial complexity and [[mixture-of-experts|Dense MoE]] for efficient feature extraction. Achieves 4.4%-18.4% MAE improvement over SOTA with 1.3x-2.2x faster inference[^src-fast-long-horizon-forecasting].
 
@@ -283,3 +286,4 @@ The XTraffic benchmark provides incident-aligned traffic datasets for California
 [^src-lightweight-mixed-graph-unrolling]: [[source-lightweight-mixed-graph-unrolling]]
 [^src-minitraffic]: [[source-minitraffic]]
 [^src-pn-train]: [[source-pn-train]]
+[^src-st-ssdl]: [[source-st-ssdl]]

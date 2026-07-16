@@ -1,3 +1,42 @@
+## [2026-07-21] ingest | ST-SSDL: Self-Supervised Deviation Learning for Spatio-Temporal Forecasting (NeurIPS 2025)
+
+Ingest ST-SSDL paper (Gao, Dong, Yong, Fukushima, Taura & Jiang; U Tokyo / Toyota; NeurIPS 2025; code: github.com/Jimmy-7664/ST-SSDL). Core innovations: (1) First self-supervised method explicitly modeling dynamic deviations between current inputs and historical patterns in spatio-temporal forecasting; (2) Historical anchors — weekly averaged patterns as context-aware reference for deviation quantification; (3) Learnable prototypes discretizing continuous latent space into structured regions, enabling deviation measurement via prototype-proxy distances; (4) Two self-supervised objectives: contrastive loss (triplet variant for prototype discriminability) and deviation loss enforcing relative distance consistency (D1>D2 ⇒ D̃1>D̃2); (5) GCRU encoder-decoder backbone with adaptive graph generation from prototype-enhanced representations. SOTA on 6 benchmarks (METRLA, PEMSBAY, PEMSD7(M), PEMS04/07/08); only 100K params on PEMS08.
+
+创建的页面：[[source-st-ssdl]], [[st-ssdl]], [[ssdl]], [[relative-distance-consistency]]
+更新的页面：[[spatiotemporal-deviation]], [[contrastive-learning]], [[index]]
+
+源文件：raw/st-ssdl.pdf
+
+
+## [2026-07-21] lint | ST-SSDL ingest 完整 Lint + 幻觉检查 + 修复
+
+对照 PDF (pdftotext) 逐条验证作者、年份、方法名、架构、指标数字。
+
+### 严重（已修复）
+- [x] ssdl.md — 断链 [[historical-anchor]]（页面不存在），已移除
+
+### 警告（已修复）
+- [x] st-ssdl.md — "第二轻量模型 AGCRN"：论文正文自称 second-lightest 但完整 Table 7 中 STID(117K)/GRU(126K) 更轻，已修正为仅保留 66% 数字比较并注明不一致
+- [x] source-st-ssdl.md — "对非周期性数据可能不适用"非论文原文明确声明，已标注为编辑性分析
+- [x] relative-distance-consistency.md — "速度下降 40 km/h" 论文仅说 "D1≈40, D2≈20" 无物理单位，已修正为中性措辞
+- [x] traffic-forecasting.md — 缺 ST-SSDL/SSDL 反向链接，已补 Self-Supervised Deviation Learning 小节 + [^src-st-ssdl]，source_count: 46→47
+
+### 幻觉交叉验证通过
+作者 (Haotian Gao, Zheng Dong, Jiawei Yong, Shintaro Fukushima, Kenjiro Taura, Renhe Jiang; U Tokyo / Toyota)、NeurIPS 2025、GCRU backbone、6 数据集 (METRLA/PEMSBAY/PEMSD7(M)/PEMS04/07/08)、M=20 prototypes d=64、100K params on PEMS08、对比损失 (triplet) + 偏差损失 (relative distance consistency)、未来方向 (hierarchical prototype structures)——全部与 PDF 原文一致。
+
+### 已验证
+- st-ssdl.md / ssdl.md / relative-distance-consistency.md — source_count:1, confidence:medium，合规
+- spatiotemporal-deviation.md — source_count:2, confidence:high，合规
+- contrastive-learning.md — source_count:4, confidence:medium，合规
+- 全部新页面已在 index.md 对应类别登记
+- 所有 wikilink（除已修 historical-anchor 外）均存在，无断链
+
+### 仍存风险
+- source-st-ssdl.md: source_count:0 + confidence:low（source-summary 无自引用，符合仓库惯例），待被其他源引用后升级
+- 论文自身 Section 5.4 称 AGCRN 为 "second-lightest" 但内部 Table 7 矛盾（STID 117K/GRU 126K < AGCRN 150K），已在 wiki 标注
+- 论文声称 Limitations 在 appendix 但 extracted text 未找到独立 Limitations section
+
+更新的页面：[[st-ssdl]], [[source-st-ssdl]], [[ssdl]], [[relative-distance-consistency]], [[traffic-forecasting]]
 ## [2026-07-21] ingest | RiverMamba: A State Space Model for Global River Discharge and Flood Forecasting (NeurIPS 2025)
 
 Ingest RiverMamba paper (Shams Eddin, Zhang, Kollet, Gall; University of Bonn & Research Centre Jülich; NeurIPS 2025). Core innovations: (1) First global 0.05° river discharge and flood forecasting DL model, using Mamba selective SSM for linear-complexity spatio-temporal modeling; (2) Space-filling curves (Sweep and Gilbert) for serializing sampled spatial points into 1D sequences; (3) Hindcast-Forecast layered architecture — 3 Hindcast layers encode historical reanalysis with temporal downsampling, 7 Forecast layers sequentially integrate ECMWF HRES meteorological forcing; (4) LOAN (Location-Aware Adaptive Normalization) for conditioning on static river attributes (catchment morphology from LISFLOOD); (5) Flood return period-weighted MSE loss to handle rare extreme events. Outperforms GloFAS physics-based model and LSTM baselines on both GloFAS reanalysis (R² 0.8728, F1 0.4589) and GRDC observations (R² 0.5057, F1 0.2427) across all lead times (1-7 days).

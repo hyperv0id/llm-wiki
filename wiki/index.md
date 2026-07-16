@@ -60,6 +60,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-simdiff]] — SimDiff: simpler yet better diffusion model for time series point forecasting (AAAI 2026)
 - [[source-siren-rope]] — Learning to Rotate: Temporal and Semantic Rotary Encoding for Sequential Modeling (arXiv 2026)
 - [[source-st-resnet]] — ST-ResNet: deep spatio-temporal residual networks for crowd flow (AAAI 2017)
+- [[source-st-ssdl]] — ST-SSDL: Self-Supervised Deviation Learning for Spatio-Temporal Forecasting, historical anchors + learnable prototypes + contrastive/deviation losses + GCRU backbone (NeurIPS 2025)
 - [[source-stgcn]] — STGCN: spatial-temporal graph convolutional networks for traffic forecasting (IJCAI 2018)
 - [[source-stg-mamba]] — STG-Mamba: 首个将选择性 SSM (Mamba) 应用于 STG 预测的工作，GS3B + KFGN 实现线性复杂度 (arXiv 2024)
 - [[source-middir]] — MiDDiR: Mixed Channel Dependency Diffusion Model with Retrieval Guidance (ICLR 2026 under review)
@@ -272,6 +273,7 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Entities
 - [[std-plm]] — STD-PLM, unified PLM-based ST forecasting+imputation with spatial+time dual tokenizer (AAAI 2025)
+- [[st-ssdl]] — ST-SSDL, self-supervised deviation learning framework with historical anchors + learnable prototypes + GCRU backbone (NeurIPS 2025)
 - [[bist]] — BiST, lightweight bidirectional spatio-temporal prediction with MLP backbone + residual correction (PVLDB 2025)
 - [[graphsparsenet]] — GraphSparseNet (GSNet), scalable GNN with low-dimensional compressed adjacency for large-scale traffic (PVLDB 2025)
 - [[team]] — TEAM, first framework for traffic forecasting on evolving road networks with continual learning (PVLDB 2024)
@@ -458,7 +460,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[conformal-prediction]] — 共形预测，与模型无关的不确定性量化框架
 - [[spatio-temporal-decoupling]] — 时空解耦在在线共形预测中的最优权衡
 - [[spatio-temporal-decomposition]] — 时空分解，将时空序列分解为趋势+季节成分分治建模 (DST-Mamba, AAAI 2025)
-- [[spatiotemporal-deviation]] — 时空偏差，输入数据与标签之间时空相关性的不一致现象 (BiST, PVLDB 2025)
+- [[spatiotemporal-deviation]] — 时空偏差，输入与历史/标签的不一致现象 (BiST PVLDB 2025; ST-SSDL NeurIPS 2025)
+- [[relative-distance-consistency]] — 相对距离一致性，物理空间距离序关系在潜在空间的保持 (ST-SSDL, NeurIPS 2025)
 - [[bidirectional-spatiotemporal-prediction]] — 双向时空预测，前向基预测+后向残差校正的学习范式 (BiST, PVLDB 2025)
 - [[low-dimensional-graph-adjacency]] — 低维图邻接建模，将 N×N 邻接矩阵的学习迁移到 C×C 压缩空间 (GSNet, PVLDB 2025)
 - [[evolving-rn-traffic-forecasting]] — 演化道路网络交通预测，拓扑持续变化下的增量预测问题 (TEAM, PVLDB 2024)
@@ -605,6 +608,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[sandglass-attention]] — SGA, precoder-decoder 注意力模块，聚合区域 token 捕获高阶时空相关性 + 降开销 (AAAI 2025)
 - [[sheaf-laplacian]] — 层拉普拉斯算子 (Sheaf Laplacian)，推广图拉普拉斯以编码边特定的变换语义，用于谱域滤波 (ICLR 2026 under review)
 - [[space-filling-curves]] — 空间填充曲线，双射 Φ:Z³→N 将高维时空点序列化为 1D 序列，Gilbert/Sweep/Zigzag 交替扫描用于 Mamba 时空建模 (RiverMamba, NeurIPS 2025)
+- [[ssdl]] — Self-Supervised Deviation Learning，历史锚点 + 原型离散化 + 对比损失 + 偏差损失，无标签建模时空偏差 (ST-SSDL, NeurIPS 2025)
 - [[sparse-teacher-forcing]] — STF，间歇性数据推断状态重校准的 DSR 训练方法，控制梯度爆炸同时探索长期动力学
 - [[spatial-temporal-tokenizer]] — 空间+时间双维度 token 生成，激活 PLM 对时空数据的理解 (AAAI 2025)
 - [[spatio-temporal-retrieval-store]] — 基于 FAISS 的双维度向量记忆库 + 动量 EMA 管理 (RAST, AAAI 2026)

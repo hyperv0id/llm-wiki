@@ -6,8 +6,8 @@ tags:
   - self-supervised
   - multimodal-alignment
 created: 2026-05-03
-last_updated: 2026-07-16
-source_count: 3
+last_updated: 2026-07-21
+source_count: 4
 confidence: medium
 status: active
 ---
@@ -41,6 +41,9 @@ $$\mathcal{L} = -\log \frac{\exp(\text{sim}(z_i, z_j^+) / \tau)}{\sum_k \exp(\te
 - [[mutual-information]] — alternative information-theoretic objective for modality interaction
 - [[content-condenser-reconstruction]] — complementary approach using reconstruction instead of contrastive learning
 - [[fine-grained-traffic-prediction]] — fine-grained traffic prediction, where contrastive clustering is used for efficient graph partitioning
+- [[ssdl]] — ST-SSDL 使用 prototype triplet loss 实现潜在空间离散化，作为自监督偏差学习的基础
+
+[^src-st-ssdl]: [[source-st-ssdl]]
 
 [^src-multimodal-ts-anomaly-detection]: [[source-multimodal-ts-anomaly-detection]]
 [^src-minitraffic]: [[source-minitraffic]]

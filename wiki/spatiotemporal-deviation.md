@@ -6,15 +6,15 @@ tags:
   - forecasting
   - data-quality
 created: 2026-06-10
-last_updated: 2026-06-10
-source_count: 1
-confidence: medium
+last_updated: 2026-07-21
+source_count: 2
+confidence: high
 status: active
 ---
 
 # 时空偏差（Spatiotemporal Deviation）
 
-时空偏差是指时空预测任务中，输入数据与标签（预测目标）之间的时空相关性存在显著不一致的现象[^src-bist]。这一概念由 [[bist|BiST]] 论文（PVLDB 2025）正式提出并系统分析。
+时空偏差是指时空预测任务中，输入数据与历史模式或标签之间的时空相关性存在显著不一致的现象。这一概念在 [[bist|BiST]]（PVLDB 2025）中被正式定义为输入-标签间的不一致性[^src-bist]，而 [[st-ssdl|ST-SSDL]]（NeurIPS 2025）从另一角度——当前输入与历史模式之间的动态偏差——进行了系统化建模[^src-st-ssdl]。
 
 ## 两种表现形态
 
@@ -40,6 +40,9 @@ status: active
 
 ## 解决方法
 
-BiST 提出了双向学习范式：在前向基预测的基础上，通过后向残差校正过程显式建模输入-标签之间的偏差[^src-bist]。残差通过解耦（上下文特征 vs 个性化特征）和扩散平滑生成校正项。
+**BiST**（输入-标签偏差）：通过双向学习范式显式建模偏差——前向 MLP 基预测 + 后向残差校正（解耦上下文/个性化特征 + 扩散平滑）[^src-bist]。
+
+**ST-SSDL**（输入-历史偏差）：通过 [[ssdl|自监督偏差学习]]（SSDL）量化当前观测与历史锚点的连续偏差——历史平均锚点 + 可学习原型离散化 + [[relative-distance-consistency|相对距离一致性]]约束，偏差信号通过原型注意力注入预测器[^src-st-ssdl]。两种方法互补：BiST 关注输入和标签分布的不一致，ST-SSDL 关注输入偏离自身历史模式的程度。
 
 [^src-bist]: [[source-bist]]
+[^src-st-ssdl]: [[source-st-ssdl]]
