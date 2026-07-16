@@ -9,7 +9,7 @@ tags:
   - distribution-shift
   - plug-and-play
 created: 2026-06-08
-last_updated: 2026-06-08
+last_updated: 2026-07-15
 source_count: 1
 confidence: medium
 status: active
@@ -21,7 +21,7 @@ status: active
 
 ## Motivation
 
-Deployed ST models degrade because real-world periodic patterns (daily/weekly cycles in traffic flow, air quality, energy) are **non-stationary**: they drift via amplitude fluctuations (peaks rising/falling with seasons) and phase shifts (rush hours advancing/delaying with congestion)[^src-st-ttc]. Pre-trained models fit fixed periodic patterns and cannot track these gradual systematic biases[^src-st-ttc]. Prior remedies — OOD architectures, data augmentation, continual fine-tuning — are computationally expensive and assume training data captures all future invariance, which rarely holds[^src-st-ttc]. ST-TTC instead exploits a property unique to STF: **label autocorrelation**, where sliding-window construction makes the true labels of past test samples available for supervised calibration[^src-st-ttc].
+Deployed ST models degrade because real-world periodic patterns (daily/weekly cycles in traffic flow, air quality, energy) are **non-stationary**: they drift via amplitude fluctuations (peaks rising/falling with seasons) and phase shifts (rush hours advancing/delaying with congestion)[^src-st-ttc]. Pre-trained models fit fixed periodic patterns and cannot track these gradual systematic biases[^src-st-ttc]. Prior remedies — OOD architectures, data augmentation, continual fine-tuning — are computationally expensive and assume training data captures all future invariance, which rarely holds[^src-st-ttc]. ST-TTC instead exploits a property unique to STF: **[[label-autocorrelation|label autocorrelation]]**, where sliding-window construction makes the true labels of past test samples available for supervised calibration[^src-st-ttc].
 
 ## Architecture
 
@@ -51,7 +51,7 @@ See [[flash-gradient-update]]. A FIFO queue of size equal to the prediction hori
 | Setting | Backbone(s) | Result |
 |---|---|---|
 | Default (6 datasets) | STAEformer, STTN, [[gwnet|GWNet]], [[stgcn|STGCN]], STID, ST-Norm | Consistent ~1–2% MAE/RMSE gains[^src-st-ttc] |
-| METR-LA | GWNet | RMSE 7.43 → 7.21; beats TTT-MAE, TENT, CompFormer, DOST[^src-st-ttc] |
+| METR-LA | GWNet | ST-TTC RMSE 7.21 vs TTT-MAE 7.43 (both on GWNet); beats TENT, CompFormer, DOST[^src-st-ttc] |
 | Large-scale | [[patchstg|PatchSTG]] on LargeST (≤8,600 nodes) | Gains across SD/GBA/GLA/CA; +≤3.82 min inference vs 14 h training[^src-st-ttc] |
 | OOD learning | STONE | Larger gains as shift increases (all & new nodes)[^src-st-ttc] |
 | Continual learning | [[eac|EAC]], STKEC | Up to 32.6% MAE reduction on Energy-Stream[^src-st-ttc] |

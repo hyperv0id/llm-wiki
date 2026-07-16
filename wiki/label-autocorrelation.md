@@ -7,8 +7,8 @@ tags:
   - learning-objective
   - direct-forecast
 created: 2026-07-13
-last_updated: 2026-07-13
-source_count: 2
+last_updated: 2026-07-15
+source_count: 3
 confidence: high
 status: active
 ---
@@ -39,17 +39,20 @@ Using double machine learning (DML) with history as confounder (to remove fork-s
 | [[fredf|FreDF]] | Align DF outputs with labels in an orthogonal (e.g., Fourier) domain | Mitigates label dependence under DF; model-agnostic |
 | [[qdf|QDF]] | Learn PSD $\Sigma$ in quadratic $L_\Sigma=\|Y-\hat Y\|_{\Sigma^{-1}}^2$ (off-diagonals) | Models residual conditional dependence + [[heterogeneous-task-weights]] |
 | [[source-distdf|DistDF]] | Joint-distribution Wasserstein alignment | Avoids likelihood factorization; targets residual [[autocorrelation-bias]] |
+| [[st-ttc|ST-TTC]] | Exploit label autocorrelation at test time; frozen backbone + spectral calibrator updated via [[flash-gradient-update|single-step gradient]] on queued historical labels | [[test-time-computing-st|Test-time computing]] — supervised calibration impossible in vision/NLP |
 
-FreDF is the first systematic use of frequency analysis to upgrade the *forecast paradigm* (not just architecture) for label autocorrelation.[^src-fredf] Later [[qdf|QDF]] keeps the DF multi-output head but learns a quadratic weighting matrix $\Sigma$ so off-diagonals of $\Sigma^{-1}$ model residual conditional dependence (and diagonals model [[heterogeneous-task-weights|heterogeneous task weights]]).[^src-qdf]
+FreDF is the first systematic use of frequency analysis to upgrade the *forecast paradigm* (not just architecture) for label autocorrelation.[^src-fredf] Later [[qdf|QDF]] keeps the DF multi-output head but learns a quadratic weighting matrix $\Sigma$ so off-diagonals of $\Sigma^{-1}$ model residual conditional dependence (and diagonals model [[heterogeneous-task-weights|heterogeneous task weights]]).[^src-qdf] In a complementary direction, [[st-ttc|ST-TTC]] (NeurIPS 2025 Spotlight) exploits label autocorrelation at inference time: because sliding-window construction makes past test labels available, a lightweight spectral calibrator can be supervised on them to correct non-stationary distribution shift, without any training-stage modification.[^src-st-ttc]
 
 ## Related
 
 - [[autocorrelation-bias]] — DistDF's formal bias of MSE under conditional label dependence
 - [[frequency-enhanced-direct-forecast]] — FreDF training recipe
-- [[source-fredf]], [[source-qdf]]
+- [[source-fredf]], [[source-qdf]], [[source-st-ttc]]
 - [[qdf]], [[quadratic-form-weighted-objective]], [[heterogeneous-task-weights]]
+- [[st-ttc]], [[test-time-computing-st]], [[flash-gradient-update]]
 
 ---
 
 [^src-fredf]: [[source-fredf]]
 [^src-qdf]: [[source-qdf]]
+[^src-st-ttc]: [[source-st-ttc]]

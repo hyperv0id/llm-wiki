@@ -8,8 +8,8 @@ tags:
   - catastrophic-forgetting
   - traffic-forecasting
 created: 2026-06-08
-last_updated: 2026-07-18
-source_count: 3
+last_updated: 2026-07-21
+source_count: 4
 confidence: high
 status: active
 ---
@@ -77,7 +77,7 @@ CSTF and [[spatio-temporal-foundation-model|spatio-temporal foundation models]] 
 
 STBP explicitly positions its fixed-backbone + expandable-bank paradigm as a stepping stone toward foundation models: "extending its application to cross-domain continual spatio-temporal forecasting... will be a crucial step towards developing a foundational spatio-temporal model"[^src-stbp].
 
-Continual fine-tuning is critiqued by OOD-learning work such as [[stop|STOP]] (ICML 2025), which argues these methods only succeed under near-IID conditions (fine-tuning on ~21 days of new-distribution data) and underperform traditional models when tested directly on shifted future years[^src-stop].
+Continual fine-tuning is critiqued by OOD-learning work such as [[stop|STOP]] (ICML 2025), which argues these methods only succeed under near-IID conditions (fine-tuning on ~21 days of new-distribution data) and underperform traditional models when tested directly on shifted future years[^src-stop]. An alternative inference-time paradigm, [[test-time-computing-st|test-time computing]] ([[st-ttc|ST-TTC]], NeurIPS 2025), bypasses continual retraining entirely by appending a lightweight calibrator to a frozen backbone and updating only the calibrator on historical test labels[^src-st-ttc].
 
 ## Related Pages
 
@@ -89,7 +89,10 @@ Continual fine-tuning is critiqued by OOD-learning work such as [[stop|STOP]] (I
 - [[pecpm]] — PECPM
 - [[continuous-prompt-parameter-pool]] — EAC's core mechanism
 - [[trafficstream]] — TrafficStream
+- [[test-time-computing-st]] — test-time computing as lightweight alternative to CSTF
+- [[st-ttc]] — ST-TTC method
 
 [^src-stbp]: [[source-stbp]]
 [^src-stop]: [[source-stop]]
 [^src-eac]: [[source-eac]]
+[^src-st-ttc]: [[source-st-ttc]]

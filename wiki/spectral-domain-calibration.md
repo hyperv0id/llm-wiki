@@ -48,7 +48,7 @@ In ST-TTC's ablations, **frequency-domain calibration significantly outperforms 
 
 ## Relation to other spectral methods
 
-SD-Calibrator differs from spectral *forecasting* models — e.g. [[fedformer|FEDformer]]'s [[frequency-enhanced-block|FEB]]/[[frequency-enhanced-attention|FEA]] blocks, FreTS, or [[specstg|SpecSTG]]'s spectral diffusion — which embed frequency-domain operators *inside* the trained model. SD-Calibrator instead operates *after* a frozen backbone, learning only minor per-band corrections at test time[^src-st-ttc].
+SD-Calibrator differs from spectral *forecasting* models — e.g. [[fedformer|FEDformer]]'s [[frequency-enhanced-block|FEB]]/[[frequency-enhanced-attention|FEA]] blocks, [[source-frets|FreTS]], or [[specstg|SpecSTG]]'s spectral diffusion — which embed frequency-domain operators *inside* the trained model. SD-Calibrator instead operates *after* a frozen backbone, learning only minor per-band corrections at test time[^src-st-ttc].
 
 ## Related pages
 

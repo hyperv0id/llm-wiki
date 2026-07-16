@@ -8,7 +8,7 @@ tags:
   - distribution-shift
   - online-learning
 created: 2026-06-08
-last_updated: 2026-06-08
+last_updated: 2026-07-15
 source_count: 1
 confidence: medium
 status: active
@@ -34,7 +34,7 @@ Unlike TTT (which needs a pretext task in both training and test) and online con
 
 ## Two enabling properties of STF
 
-1. **Label autocorrelation.** Because STF training instances are built from sliding windows, each observation strongly depends on its predecessor, so the *true labels of past test samples become available* at inference[^src-st-ttc]. This lets TTC do explicit supervised optimization at test time — impossible in vision/NLP, which must rely on self-supervision[^src-st-ttc].
+1. **[[label-autocorrelation|Label autocorrelation]].** Because STF training instances are built from sliding windows, each observation strongly depends on its predecessor, so the *true labels of past test samples become available* at inference[^src-st-ttc]. This lets TTC do explicit supervised optimization at test time — impossible in vision/NLP, which must rely on self-supervision[^src-st-ttc].
 2. **Timeliness.** Any additional inference-time computation must complete within the sliding-window stride (e.g. 5 minutes), or it is useless for real-time deployment[^src-st-ttc].
 
 ## What is calibrated
@@ -53,6 +53,7 @@ TTC is closely related to **test-time adaptation (TTA)**. The label-free, masked
 - [[test-time-adaptation-st]] — label-free masked-reconstruction TTA (UrbanMind)
 - [[traffic-forecasting]] — the primary application domain
 - [[continual-spatio-temporal-forecasting]] — the continual fine-tuning alternative
+- [[label-autocorrelation]] — the enabling property that makes supervised TTC possible
 
 [^src-st-ttc]: [[source-st-ttc]]
 

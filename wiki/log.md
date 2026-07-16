@@ -1,3 +1,31 @@
+## [2026-07-21] lint | ST-TTC ingest 完整 Lint + 幻觉检查 + 修复
+
+对照 PDF (pdftotext) 逐条验证作者、方法名、数据集、指标数字。
+
+### 严重（已修复）
+- [x] source-st-ttc.md — source_count: 1→0 + confidence: medium→low（source-summary 不自引，仓库惯例）
+- [x] source-st-ttc.md + st-ttc.md — METR-LA "RMSE drops from 7.43 to 7.21" 不精确：7.43 是 TTT-MAE 结果而非 GWNet 基线，已改为 "ST-TTC RMSE 7.21 vs TTT-MAE 7.43 (both on GWNet)"
+
+### 警告（已修复）
+- [x] continual-spatio-temporal-forecasting.md — 缺对 test-time-computing-st 和 st-ttc 的反向链接（test-time-computing-st 在对比表中将 CSTF 列为对照范式），已在正文和 Related Pages 补全；source_count: 3→4
+- [x] spectral-domain-calibration.md — FreTS 提及无 wikilink → [[source-frets|FreTS]]
+
+### 幻觉交叉验证通过
+作者 (Wei Chen & Yuxuan Liang, HKUST-Guangzhou)、NeurIPS 2025 Spotlight、方法名 (SD-Calibrator + Flash Gradient Update)、6 backbone × 6 数据集、理论 (Parseval bound, controlled descent)、G=4, lr=1e-4, $2NG$ vs $2NM$、4.64× faster, 37.12% less GPU, 32.6% MAE reduction — 全部与 PDF 原文一致。
+
+### 已验证
+- st-ttc.md / test-time-computing-st.md / spectral-domain-calibration.md / flash-gradient-update.md — source_count:1, confidence:medium，合规
+- label-autocorrelation.md — source_count:3, confidence:high，合规
+- index.md 中 source/entity/concept/technique 条目齐全
+- 全部 wikilink 存在，无断链
+- 全部交叉引用双向（st-ttc ↔ test-time-computing-st ↔ label-autocorrelation ↔ continual-spatio-temporal-forecasting ↔ spectral-domain-calibration ↔ flash-gradient-update）
+
+### 仍存风险
+- source-st-ttc.md: source_count:0 + confidence:low，待被其他源引用后升级
+- METR-LA GWNet 纯基线 RMSE 未在论文 Table 3 中给出，现有数字均以 TTT-MAE 为参照
+
+更新的页面：[[source-st-ttc]], [[st-ttc]], [[spectral-domain-calibration]], [[continual-spatio-temporal-forecasting]]
+
 ## [2026-07-21] ingest | ST-SSDL: Self-Supervised Deviation Learning for Spatio-Temporal Forecasting (NeurIPS 2025)
 
 Ingest ST-SSDL paper (Gao, Dong, Yong, Fukushima, Taura & Jiang; U Tokyo / Toyota; NeurIPS 2025; code: github.com/Jimmy-7664/ST-SSDL). Core innovations: (1) First self-supervised method explicitly modeling dynamic deviations between current inputs and historical patterns in spatio-temporal forecasting; (2) Historical anchors — weekly averaged patterns as context-aware reference for deviation quantification; (3) Learnable prototypes discretizing continuous latent space into structured regions, enabling deviation measurement via prototype-proxy distances; (4) Two self-supervised objectives: contrastive loss (triplet variant for prototype discriminability) and deviation loss enforcing relative distance consistency (D1>D2 ⇒ D̃1>D̃2); (5) GCRU encoder-decoder backbone with adaptive graph generation from prototype-enhanced representations. SOTA on 6 benchmarks (METRLA, PEMSBAY, PEMSD7(M), PEMS04/07/08); only 100K params on PEMS08.
@@ -2481,3 +2509,12 @@ Raw: qcgs-query-conditioned-gaussian-splatting-precipitation-nowcasting.pdf
 
 ### 配置文件
 - source-sifusion.md, sifusion.md, ingest-reports/sifusion-why.md
+
+## [2026-07-15] maintenance | ST-TTC 交叉引用补全 + ingest-report 生成
+
+ST-TTC 已于 2026-06-09 批量摄入，页面完整（source-summary/entity/concept/technique × 2），但缺少：
+(1) 单独的 ingest-report（批量摄入时未生成）；
+(2) `[[label-autocorrelation]]` 反向交叉引用（ST-TTC 的核心使能属性）。
+
+创建的页面：ingest-reports/ingest-st-ttc.md（WHY 报告）
+更新的页面：[[label-autocorrelation]]（source_count 2→3，新增 ST-TTC 行 + 段落 + 交叉链接）, [[test-time-computing-st]]（wikilink label-autocorrelation + 相关页面）, [[st-ttc]]（wikilink label-autocorrelation）, [[source-st-ttc]]（wikilink label-autocorrelation）

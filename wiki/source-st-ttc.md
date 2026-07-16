@@ -9,9 +9,9 @@ tags:
   - spectral-domain
   - distribution-shift
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
-confidence: medium
+last_updated: 2026-07-21
+source_count: 0
+confidence: low
 status: active
 ---
 
@@ -21,7 +21,7 @@ status: active
 
 ## Core idea and paradigm
 
-The authors formally distinguish test-time computing from prior generalization paradigms (Table 1): OOD learning, continual fine-tuning, test-time training (TTT-ST), and online continual learning (DOST)[^src-st-ttc]. Their key insight: STF performance degradation at deployment is primarily driven by **non-stationary, progressive periodic biases** — periodic patterns (daily/weekly cycles) drift via amplitude fluctuations (changing traffic peaks) and phase shifts (peak hours advancing/delaying)[^src-st-ttc]. Unlike vision/NLP, STF benefits from **label autocorrelation**: observations are constructed from sliding windows, so the true labels of past test samples become available, enabling explicit supervised optimization at test time[^src-st-ttc].
+The authors formally distinguish test-time computing from prior generalization paradigms (Table 1): OOD learning, continual fine-tuning, test-time training (TTT-ST), and online continual learning (DOST)[^src-st-ttc]. Their key insight: STF performance degradation at deployment is primarily driven by **non-stationary, progressive periodic biases** — periodic patterns (daily/weekly cycles) drift via amplitude fluctuations (changing traffic peaks) and phase shifts (peak hours advancing/delaying)[^src-st-ttc]. Unlike vision/NLP, STF benefits from **[[label-autocorrelation|label autocorrelation]]**: observations are constructed from sliding windows, so the true labels of past test samples become available, enabling explicit supervised optimization at test time[^src-st-ttc].
 
 ## Method
 
@@ -35,7 +35,7 @@ Two theoretical guarantees support the design: an approximate output-perturbatio
 
 ## Results
 
-Across 6 backbones (STAEformer, STTN, GWNet, STGCN, STID, ST-Norm) on PEMS03/04/07/08, KnowAir, and UrbanEV, ST-TTC consistently improves MAE/RMSE by roughly 1–2%[^src-st-ttc]. On METR-LA (GWNet backbone), RMSE drops from 7.43 to 7.21, beating TTT-MAE, TENT, CompFormer, and DOST[^src-st-ttc]. It is universal across few-shot, long-term, and large-scale (LargeST, up to 8,600 nodes via PatchSTG) scenarios, and complements OOD learning (STONE) and continual learning (EAC, STKEC — up to 32.6% MAE reduction on Energy-Stream)[^src-st-ttc]. Efficiency: 4.64× faster and 37.12% less GPU memory than the least efficient TTA baseline, well within the sliding-window stride[^src-st-ttc].
+Across 6 backbones (STAEformer, STTN, GWNet, STGCN, STID, ST-Norm) on PEMS03/04/07/08, KnowAir, and UrbanEV, ST-TTC consistently improves MAE/RMSE by roughly 1–2%[^src-st-ttc]. On METR-LA (GWNet backbone), ST-TTC achieves RMSE 7.21 vs TTT-MAE 7.43 (both on GWNet), beating TENT, CompFormer, and DOST[^src-st-ttc]. It is universal across few-shot, long-term, and large-scale (LargeST, up to 8,600 nodes via PatchSTG) scenarios, and complements OOD learning (STONE) and continual learning (EAC, STKEC — up to 32.6% MAE reduction on Energy-Stream)[^src-st-ttc]. Efficiency: 4.64× faster and 37.12% less GPU memory than the least efficient TTA baseline, well within the sliding-window stride[^src-st-ttc].
 
 ## Limitations
 
