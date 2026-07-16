@@ -11,7 +11,7 @@ tags:
   - google
   - channel-independence
 created: 2026-07-13
-last_updated: 2026-07-13
+last_updated: 2026-07-25
 source_count: 1
 confidence: medium
 status: active
@@ -67,7 +67,7 @@ Training uses mini-batch MSE with rolling (look-back, horizon) pairs; TiDE uses 
 
 ## Historical Position
 
-TiDE sits between the [[ltsf-linear|LTSF-Linear / DLinear]] challenge to Transformers and the [[patchtst|PatchTST]] revival of attention via patching+CI. Relative to DLinear it adds non-linear residual capacity and first-class covariates; relative to PatchTST it trades attention for linear-time dense maps and stronger covariate highways. Earlier residual exogenous work [[nbeatsx|NBEATSx]] (EPF, basis stacks + TCN exo encoder) is a short-horizon interpretable precursor; [[tft|TFT]] (2020) is an earlier attention multi-horizon baseline with static/known/observed covariates and quantiles. Later exogenous-aware models (e.g., TimeXer, ExoTST, KITE, DAG) often still cite TiDE as a strong MLP/covariate baseline for long-horizon forecasting.[^src-tide]
+TiDE sits between the [[ltsf-linear|LTSF-Linear / DLinear]] challenge to Transformers and the [[patchtst|PatchTST]] revival of attention via patching+CI. Relative to DLinear it adds non-linear residual capacity and first-class covariates; relative to PatchTST it trades attention for linear-time dense maps and stronger covariate highways.[^src-tide] Earlier residual exogenous work [[nbeatsx|NBEATSx]] (EPF, basis stacks + TCN exo encoder) is a short-horizon interpretable precursor; [[tft|TFT]] (2020) is an earlier attention multi-horizon baseline with static/known/observed covariates and quantiles. Later exogenous-aware models (e.g., TimeXer, ExoTST, KITE, DAG) often still cite TiDE as a strong MLP/covariate baseline for long-horizon forecasting.
 
 ## Limitations
 

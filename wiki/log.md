@@ -1,3 +1,35 @@
+## [2026-07-25] lint | TiDE ingest Lint + 幻觉检查 + 修复
+
+对照 PDF（raw/2304.08424.pdf）全量检查 source-tide.md、tide.md、temporal-decoder.md。
+
+### 结构
+- [x] source-tide.md: confidence high→medium（source_count=1 不允许 high）
+- [x] temporal-decoder.md: confidence high→medium（同上），last_updated: 07-13→07-25
+- [x] 全部页 frontmatter 齐全，type 合法，无 superseded/disputed 问题
+
+### 幻觉/引用错引（关键）
+- [x] source-tide.md §Limitations: "Evaluation focuses on... later studied by TimeXer/ExoST/KITE-class work" 带 [^src-tide] 引用——TiDE 论文不可能讨论后期工作。拆分为：事实句保留 [^src-tide]，editorial 句去掉引用。
+- [x] tide.md §Historical Position: "Later exogenous-aware models often cite TiDE" 带 [^src-tide] 引用——此论断非来自 TiDE 论文。将 [^src-tide] 移到 TiDE 特定论断句尾，editorial 句去掉引用。
+- [x] temporal-decoder.md §Relation to Broader Designs: "TimeXer / ExoTST-style" 带 [^src-tide] 引用——同上。拆分为：TiDE 实现细节保留 [^src-tide]，后期比较去掉引用。
+- [x] 核心数字验证通过（M5 WRMSSE 0.611±0.009 vs 0.789/0.976；Traffic H=720 10.6%；5–10× faster；L≥1440 OOM；spectral radius/γ<1 LDS 条件）
+
+### 链接
+- [x] temporal-decoder 非孤立（tide、source-tide、index 均引用）
+- [x] tide ↔ source-tide ↔ temporal-decoder 互链完整
+
+### 时效/置信
+- [x] 三页 source_count:1 均已 confidence:medium
+
+更新的页面：[[source-tide]], [[tide]], [[temporal-decoder]]
+
+
+## [2026-07-25] ingest | TiDE ingest 补全
+
+补全 2026-07-13 遗漏的 ingest-reports/source-tide.md；修复 source-tide.md 和 tide.md 的 last_updated 日期（07-13→07-16，对齐 maintenance pass）。
+创建的页面：ingest-reports/source-tide.md
+更新的页面：[[source-tide]], [[tide]]
+
+
 ## [2026-07-24] maintenance | TFT ingest 补全 + lint 修复
 
 将新 PDF 副本复制到 raw/（tft-temporal-fusion-transformers-for-interpretable-multi-horizon-time-series-forecasting.pdf）。

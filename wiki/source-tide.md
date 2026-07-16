@@ -10,9 +10,9 @@ tags:
   - LTSF
   - google
 created: 2026-07-13
-last_updated: 2026-07-13
+last_updated: 2026-07-25
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
@@ -37,7 +37,7 @@ status: active
 
 ## Limitations
 
-Transformers remain more parameter-efficient while being memory/compute heavier; the authors note this may matter for extremely large pretrained models. Theory covers linear analogues under LDS assumptions, not full residual MLPs with non-linearity. Evaluation focuses on standard multivariate LTSF + M5 rather than multimodal exogenous settings later studied by TimeXer/ExoST/KITE-class work.[^src-tide]
+The evaluation focuses on standard multivariate LTSF + M5 benchmarks.[^src-tide] TiDE does not target multimodal exogenous settings later studied by TimeXer/ExoST/KITE-class work. Transformers remain more parameter-efficient while being memory/compute heavier; the authors note this may matter for extremely large pretrained models. Theory covers linear analogues under LDS assumptions, not full residual MLPs with non-linearity.[^src-tide]
 
 ## Key Terminology
 

@@ -9,9 +9,9 @@ tags:
   - residual-block
   - TiDE
 created: 2026-07-13
-last_updated: 2026-07-13
+last_updated: 2026-07-25
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
@@ -42,7 +42,7 @@ On M5, TiDE's ability to consume static attributes plus rich dynamic covariates 
 ## Relation to Broader Designs
 
 - Complements TiDE's **global linear residual** (look-back→horizon), which preserves [[ltsf-linear|DLinear]]-style pure temporal linear maps.[^src-tide]
-- Related in spirit to later exogenous fusion modules that keep a direct path from future exogenous variables into the forecast (e.g., TimeXer / ExoTST-style future-exo pathways), though TiDE implements the path as a residual MLP rather than cross-attention.[^src-tide]
+- Implements this path as a residual MLP rather than cross-attention.[^src-tide] Related in spirit to later exogenous fusion modules that keep a direct path from future exogenous variables into the forecast (e.g., TimeXer / ExoTST-style future-exo pathways).
 - Operates under [[channel-independence|channel independence]]: fusion is per series, not across series.
 
 ## Related
