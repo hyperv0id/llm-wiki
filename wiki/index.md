@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-07-22
+last_updated: 2026-07-23
 tags:
   - meta
 ---
@@ -911,6 +911,7 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Concepts (continued)
 - [[ood-generalization]] — out-of-distribution generalization: maintaining accuracy under temporal (T-OOD) and structural (S-OOD) distribution shift beyond the IID assumption
+- [[spatio-temporal-ood-learning]] — ST-OOD learning: systematic landscape of solutions (causal/centralized messaging/information bottleneck/continual/test-time) for spatio-temporal distribution shift beyond IID
 - [[distributionally-robust-optimization]] — DRO, worst-case optimization over an uncertainty set of distributions; equivalent to ERM + variance regularization for OOD robustness
 - [[few-shot-traffic-forecasting]] — few-shot / data-scarce spatio-temporal forecasting, where STGNNs and TSFMs fail and contextual/transfer methods help (ICML 2025)
 - [[test-time-computing-st]] — test-time computing paradigm for STF: online calibration of a frozen backbone exploiting label autocorrelation (NeurIPS 2025)

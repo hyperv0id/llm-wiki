@@ -8,7 +8,7 @@ tags:
   - data-augmentation
   - regularization
 created: 2026-06-08
-last_updated: 2026-06-08
+last_updated: 2026-07-23
 source_count: 1
 confidence: medium
 status: active
@@ -36,6 +36,6 @@ Because the multinomial sampling that defines the mask is **non-differentiable**
 
 ## Sensitivity
 
-The number of perturbation units M trades off environment diversity against difficulty: too small M gives insufficient diversity (under-regularized); too large M generates overly complex environments that raise the learning difficulty of extracting causal knowledge[^src-stop]. The paper uses M ∈ {3, 3, 3, 3, 2, 4} across its six datasets[^src-stop].
+The number of perturbation units M trades off environment diversity against difficulty: too small M gives insufficient diversity (under-regularized); too large M generates overly complex environments that raise the learning difficulty of extracting causal knowledge[^src-stop]. The paper uses M ∈ {3, 3, 3, 3, 2, 4} across its six datasets[^src-stop]. For the broader ST-OOD solution landscape in which GenPU operates, see [[spatio-temporal-ood-learning]].
 
 [^src-stop]: [[source-stop]]

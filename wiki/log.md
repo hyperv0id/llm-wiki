@@ -1,3 +1,25 @@
+## [2026-07-23] ingest | STOP — PDF 归档 + 补全缺口 + 交叉引用 + 新建衍生页面
+
+STOP (Ma et al., USTC, ICML 2025) 已于 2026-06-09 在批量 ingest 时建立了 source-stop.md（source-summary）、stop.md（entity）、centralized-message-passing.md（technique）、context-aware-units.md（technique）、generalized-perturbation-unit.md（technique）。当时无本地 PDF，仅有 PMLR 在线版。本次补全：
+
+**PDF 归档**：将用户提供的完整 PDF（14 页正文 + appendix）拷贝至 raw/stop-robust-spatio-temporal-centralized-interaction-ood-learning.pdf。
+
+**验证现有页面**：对照 pdftotext 提取的 5993 行全文逐条验证已有页面，所有方法描述、实验数字（17.01%/18.44%/20× 加速）、数据集（LargeST×4 + PEMSD3-Stream + KnowAir）、OOD 协议（T-OOD: 第一年训练后续年测试；S-OOD: 移除 10% + 新增 30% 节点）与原文一致，无需修正。
+
+**增强 source-stop.md**：新增「ST-OOD Evaluation Protocol」节，详述 T-OOD/S-OOD 评估协议和六数据集详情；修正 source_count: 1→0（source-summary 自引用不计入）。
+
+**新建概念页**：
+- [[spatio-temporal-ood-learning]] — ST-OOD 学习的系统概念页，定义 T-OOD/S-OOD 双轴、解释 STGNN 为何在 OOD 下失效、汇总六种解决路线（causal/centralized messaging/IB/continual/test-time/perturbation+DRO），以 [^src-stop] 和 [^src-cast] 为引用
+
+**反向链接**：[[ood-generalization]] 添加 → [[spatio-temporal-ood-learning]] 链接；[[index]] 新增 spatio-temporal-ood-learning 条目。
+
+**更新 frontmatter**：source-stop.md、stop.md、centralized-message-passing.md、context-aware-units.md、generalized-perturbation-unit.md、ood-generalization.md、distributionally-robust-optimization.md 全部更新 last_updated: 2026-07-23。
+
+创建的页面：[[spatio-temporal-ood-learning]]
+更新的页面：[[source-stop]], [[stop]], [[centralized-message-passing]], [[context-aware-units]], [[generalized-perturbation-unit]], [[ood-generalization]], [[distributionally-robust-optimization]], [[index]]
+
+源文件：raw/stop-robust-spatio-temporal-centralized-interaction-ood-learning.pdf（本次新增）
+
 ## [2026-07-22] ingest | STBP — 补全缺口 + 交叉引用 + 新建衍生页面
 
 STBP (Liu & Zhang, ICLR 2026) 论文已于早期 ingest（~2026-06-08）建立了 source-stbp.md（source-summary）、stbp.md（entity）、contextual-pattern-bank.md（technique）。本次补全：
@@ -2565,3 +2587,23 @@ ST-TTC 已于 2026-06-09 批量摄入，页面完整（source-summary/entity/con
 
 创建的页面：ingest-reports/ingest-st-ttc.md（WHY 报告）
 更新的页面：[[label-autocorrelation]]（source_count 2→3，新增 ST-TTC 行 + 段落 + 交叉链接）, [[test-time-computing-st]]（wikilink label-autocorrelation + 相关页面）, [[st-ttc]]（wikilink label-autocorrelation）, [[source-st-ttc]]（wikilink label-autocorrelation）
+
+## [2026-07-23] lint | STOP 本轮 ingest 全面 Lint（含幻觉检查）
+
+对 [[source-stop]]、[[stop]]、[[spatio-temporal-ood-learning]]、[[ood-generalization]]、[[centralized-message-passing]]、[[context-aware-units]]、[[generalized-perturbation-unit]]、[[distributionally-robust-optimization]]、[[index]] 共 9 个页面执行 Lint 检查清单 + 幻觉验证。
+
+### 幻觉检查（通过）
+- 对照 pdftotext 提取的 5993 行 PDF 全文验证：作者/会议/实验数字/方法名/数据集/指标与已有页面一致，无捏造或错引
+- 关键验证项：17.01%（OOD）、18.44%（inductive）、14.01%（大规模数据集）、16.35%（rapid-expansion, train 30% nodes）、20× 加速（60.57 vs 1220.79 s/epoch）、K = {8,24,32,64,8,4}、M = {3,3,3,3,2,4}、窗口=12（traffic）/24（KnowAir）、ξ=3/7、8 head、dp=64：**全部与原文一致**
+
+### 发现并修复
+- [[index]] `last_updated: 2026-07-22` → `2026-07-23`（新增 spatio-temporal-ood-learning 条目后未更新）
+- [[distributionally-robust-optimization]] 缺少到 [[spatio-temporal-ood-learning]] 的交叉引用 → 在「Application in STOP」节末尾补回向链接
+- [[centralized-message-passing]] 缺少到 [[spatio-temporal-ood-learning]] 的交叉引用 → 在「Role in STOP」节末尾补回向链接
+- [[context-aware-units]] 缺少到 [[spatio-temporal-ood-learning]] 的交叉引用 → 在「Hyperparameter sensitivity」节末尾补回向链接
+- [[generalized-perturbation-unit]] 缺少到 [[spatio-temporal-ood-learning]] 的交叉引用 → 在「Sensitivity」节末尾补回向链接
+
+### 仍存风险（低）
+- [[ood-generalization]]：source_count=1, confidence=medium。开篇对 ERM/OOD 的概括性断言仅以 STOP 为唯一 source。广义 ML 概念页仅有单一来源，日后有新 OOD 论文 ingress 时建议补引。
+- [[distributionally-robust-optimization]]：同上，DRO 理论概念页仅有 [^src-stop]。STOP Appendix D 对 DRO 推导充分，但非 DRO 原典。
+- [[spatio-temporal-ood-learning]] 表格中 CaST/STONE 行未逐一加脚注——但 [^src-cast] 已在首句使用，source_count=2 准确，属可接受的表格简化写法。

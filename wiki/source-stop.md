@@ -9,8 +9,8 @@ tags:
   - graph-neural-network
   - inductive-learning
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-07-23
+source_count: 0
 confidence: medium
 status: active
 ---
@@ -22,6 +22,10 @@ status: active
 ## Core Problem
 
 Spatio-temporal graph convolutional networks (STGNNs) dominate [[traffic-forecasting|traffic forecasting]] but rest on an IID assumption that breaks in practice: distributional statistics (mean, variance) and graph structures evolve over time, creating [[ood-generalization|out-of-distribution (OOD)]] challenges[^src-stop]. The paper's central diagnosis is that the **node-to-node messaging mechanism** itself (GCN aggregation or self-attention) is the culprit — knowledge learned through it is coupled to the training graph and fails to transfer to unseen graphs, and removed nodes break the aggregation paths of their neighbors[^src-stop]. Strikingly, ablations show that some advanced STGNNs perform *better* in OOD settings once their node-to-node messaging is removed[^src-stop].
+
+## ST-OOD Evaluation Protocol
+
+The paper defines two OOD axes: **temporal OOD (T-OOD)** — training on the first year, testing on each subsequent year (6:2:2 train/val/test split per year, input/prediction window=12 for traffic, 24 for KnowAir) — and **structural OOD (S-OOD)** — training on a subset of nodes, then at test time removing 10% of nodes and adding 30% new ones to simulate graph structure and scale shifts[^src-stop]. Six multi-year datasets are used: four LargeST subsets (SD/GBA/GLA/CA, traffic flow), PEMSD3-Stream (traffic, 2011–2017), and KnowAir (atmospheric pollutant concentrations, 2015–2018, 184 nodes)[^src-stop].
 
 ## Method
 

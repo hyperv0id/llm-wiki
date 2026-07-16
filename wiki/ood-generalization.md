@@ -8,7 +8,7 @@ tags:
   - robustness
   - machine-learning-theory
 created: 2026-06-08
-last_updated: 2026-06-08
+last_updated: 2026-07-23
 source_count: 1
 confidence: medium
 status: active
@@ -26,6 +26,8 @@ For [[traffic-forecasting|traffic]] and other spatio-temporal tasks, OOD arises 
 - **Structural OOD (S-OOD)** — the underlying graph itself changes: sensors are added, removed, or relocated, so the node set and adjacency at test time differ from training.
 
 Spatio-temporal graph neural networks (STGNNs) are especially brittle under S-OOD because their node-to-node message-passing weights are coupled to the training graph and cannot transfer to unseen structures; [[stop|STOP]] (ICML 2025) shows that *removing* node-to-node messaging can even improve OOD accuracy[^src-stop]. Closely related is **inductive learning** — producing accurate representations for nodes never seen during training — which is the structural-OOD challenge in its sharpest form[^src-stop].
+
+For a systematic comparison of ST-OOD solution approaches (causal, centralized messaging, information bottleneck, continual fine-tuning, test-time computing), see [[spatio-temporal-ood-learning]].
 
 ## Approaches
 

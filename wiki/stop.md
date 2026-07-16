@@ -9,7 +9,7 @@ tags:
   - inductive-learning
   - graph-neural-network
 created: 2026-06-08
-last_updated: 2026-06-08
+last_updated: 2026-07-23
 source_count: 1
 confidence: medium
 status: active
@@ -49,6 +49,8 @@ GenPU sampling (a multinomial mask) is non-differentiable, so STOP **alternates*
 ## Relationship to Other Work
 
 STOP is the successor to **STONE** (KDD 2024, same group), which used a causal graph structure for ST-OOD learning; STOP reframes the problem at the message-passing level instead[^src-stop]. It is evaluated against STONE, CaST, and continual-learning baselines ([[continual-spatio-temporal-forecasting|TrafficStream, PECPM, TFMoE]]), arguing the latter only work under near-IID fine-tuning and fail under true OOD[^src-stop]. It shares an OOD-robustness goal with [[rstib|RSTIB-MLP]] (ICML 2025), which instead uses an information-bottleneck objective; both are MLP-centric and target spatio-temporal distribution shift[^src-stop].
+
+For a survey of ST-OOD solution approaches, see [[spatio-temporal-ood-learning]].
 
 ## Code
 

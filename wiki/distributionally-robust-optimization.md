@@ -8,7 +8,7 @@ tags:
   - robustness
   - machine-learning-theory
 created: 2026-06-08
-last_updated: 2026-06-08
+last_updated: 2026-07-23
 source_count: 1
 confidence: medium
 status: active
@@ -32,7 +32,7 @@ The literature characterizes an objective as DRO if it (1) models different envi
 
 ## Application in STOP
 
-[[stop|STOP]] (ICML 2025) customizes a **spatio-temporal DRO** for its [[generalized-perturbation-unit|GenPU]] perturbation mechanism: rather than optimizing all M generated environments, it selects only the highest-loss (worst-case) branch for the gradient step[^src-stop]. The paper proves this strategy satisfies all three DRO membership conditions — diverse environments, constrained perturbation ratio, and worst-case emphasis — thereby inheriting DRO's generalization guarantees while keeping training efficient[^src-stop].
+[[stop|STOP]] (ICML 2025) customizes a **spatio-temporal DRO** for its [[generalized-perturbation-unit|GenPU]] perturbation mechanism: rather than optimizing all M generated environments, it selects only the highest-loss (worst-case) branch for the gradient step[^src-stop]. The paper proves this strategy satisfies all three DRO membership conditions — diverse environments, constrained perturbation ratio, and worst-case emphasis — thereby inheriting DRO's generalization guarantees while keeping training efficient[^src-stop]. For a broader view of ST-OOD solution approaches including STOP's DRO, see [[spatio-temporal-ood-learning]].
 
 [^src-stop]: [[source-stop]]
 

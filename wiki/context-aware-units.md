@@ -7,7 +7,7 @@ tags:
   - out-of-distribution
   - representation-learning
 created: 2026-06-08
-last_updated: 2026-06-08
+last_updated: 2026-07-23
 source_count: 1
 confidence: medium
 status: active
@@ -25,6 +25,6 @@ After interaction, STOP isolates a node's **personalized features** by subtracti
 
 ## Hyperparameter sensitivity
 
-K is critical. Too many ConAUs (large K) prevents the model from focusing on invariant contextual features and injects noise; too few cannot capture sufficient invariant knowledge[^src-stop]. The paper uses K ∈ {8, 24, 32, 64, 8, 4} across its six datasets[^src-stop]. Ablating ConAU entirely ("w/o ConAU") sharply increases error, confirming spatial interaction remains necessary even in OOD scenarios[^src-stop].
+K is critical. Too many ConAUs (large K) prevents the model from focusing on invariant contextual features and injects noise; too few cannot capture sufficient invariant knowledge[^src-stop]. The paper uses K ∈ {8, 24, 32, 64, 8, 4} across its six datasets[^src-stop]. Ablating ConAU entirely ("w/o ConAU") sharply increases error, confirming spatial interaction remains necessary even in OOD scenarios[^src-stop]. For the broader ST-OOD solution landscape in which ConAU operates, see [[spatio-temporal-ood-learning]].
 
 [^src-stop]: [[source-stop]]
