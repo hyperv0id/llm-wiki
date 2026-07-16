@@ -1,3 +1,35 @@
+## [2026-07-23] lint | STPDE ingest 完整 Lint + 幻觉检查 + 修复
+
+对照 PDF (pdftotext) 逐条验证作者、方法名、数据集、指标数字。
+
+### 幻觉交叉验证通过
+作者 (Aoyu Liu, Liming Wei, Yaying Zhang, Tongji University)、ICML 2026 (PMLR 306)、方法名/公式 (Eq 1, Theorem 4.1/4.2)、超参数 (K=4, Top-2, D=256, ρ=0.2, λ=0.1)、数据集、基线、消融发现 — 全部与 PDF 原文一致。
+
+### 严重（已修复）
+- [x] source-stpde.md — source_count: 1→0, confidence: high→low（source-summary 无 body 内联 [^src-*]）
+
+### 警告（已修复）
+- [x] stpde.md — confidence: high→medium（单源 entity 页）
+- [x] invariant-diffusion-operator.md — confidence: high→medium（单源 technique 页）
+- [x] environment-basis-manifold.md — confidence: high→medium（单源 technique 页）；"w/o P 的退化最大"→"OOD 下 w/o P 的退化最大"
+- [x] pde-driven-spatio-temporal-forecasting.md — type: technique→concept（匹配 index）；DYffusion/PI-MFM wikilinks 补全
+- [x] stpde.md — 补 → [[pde-driven-spatio-temporal-forecasting]] 反向链接
+
+### 仍存风险
+- "Spatio-Temporal Partial Differential Equation" 为推断性全称展开，论文原文未给出 STPDE 缩略词全称
+- pde-driven-spatio-temporal-forecasting.md 中非 STPDE 方法（CTENet/DYffusion/PI-MFM）描述依赖单 source
+
+更新的页面：[[source-stpde]], [[stpde]], [[invariant-diffusion-operator]], [[environment-basis-manifold]], [[pde-driven-spatio-temporal-forecasting]]
+更新的文件：ingest-reports/stpde-2026-07-23.md
+
+## [2026-07-23] ingest | STPDE — PDE-inspired framework for robust spatio-temporal forecasting
+
+STPDE (Liu, Wei & Zhang, Tongji University, ICML 2026) 论文入仓。核心贡献：将时空预测重新形式化为非齐次 PDE 演化，通过 Invariant Diffusion Operator（Green 函数 ↔ 线性注意力）和 Environment Basis Manifold 的显式解耦，统一处理 ID/OOD/跨城迁移/持续学习四场景。
+
+创建的页面：[[source-stpde]], [[stpde]], [[invariant-diffusion-operator]], [[environment-basis-manifold]], [[pde-driven-spatio-temporal-forecasting]]
+更新的页面：[[index]]
+
+
 ## [2026-07-23] ingest | STOP — PDF 归档 + 补全缺口 + 交叉引用 + 新建衍生页面
 
 STOP (Ma et al., USTC, ICML 2025) 已于 2026-06-09 在批量 ingest 时建立了 source-stop.md（source-summary）、stop.md（entity）、centralized-message-passing.md（technique）、context-aware-units.md（technique）、generalized-perturbation-unit.md（technique）。当时无本地 PDF，仅有 PMLR 在线版。本次补全：

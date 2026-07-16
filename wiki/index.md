@@ -263,6 +263,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-uomo]] — UoMo: A Universal Model of Mobile Traffic Forecasting for Wireless Network Optimization (KDD 2025 ADS Track)
 - [[source-craft]] — CRAFT: Cross City Traffic Flow Generation via Retrieval Augmented Diffusion Model (NeurIPS 2025)
 - [[source-stbp]] — STBP: General Spatio-Temporal Backbone with Scalable Contextual Pattern Bank for Urban Continual Forecasting (ICLR 2026)
+- [[source-stpde]] — STPDE: PDE-inspired framework decoupling invariant diffusion operator + environment basis manifold for robust ST forecasting (ICML 2026)
 - [[source-mmckm]] — MMCKM: Micro-Macro Coupled Koopman Modeling for Traffic Flow Prediction (ICLR 2026)
 - [[source-bist]] — BiST: A Lightweight and Efficient Bi-Directional Model for Spatiotemporal Prediction (PVLDB 2025)
 - [[source-graphsparsenet]] — GraphSparseNet: A Novel Method for Large Scale Traffic Flow Prediction (PVLDB 2025)
@@ -279,6 +280,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[team]] — TEAM, first framework for traffic forecasting on evolving road networks with continual learning (PVLDB 2024)
 - [[mmckm]] — MMCKM, history-free micro-macro coupled Koopman model unifying vehicle trajectory + traffic density prediction (ICLR 2026 Poster)
 - [[stbp]] — STBP, continual spatio-temporal forecasting with fixed backbone + scalable contextual pattern bank (ICLR 2026)
+- [[stpde]] — STPDE, PDE-driven ST forecasting decoupling invariant diffusion operator + environment basis manifold (ICML 2026)
 - [[trafficstream]] — TrafficStream, first CSTF framework with historical data replay + parameter smoothing (IJCAI 2021)
 - [[pecpm]] — PECPM, pattern-matching-based CSTF with expandable pattern bank without historical data replay (KDD 2023)
 - [[craft]] — CRAFT, cross-city retrieval-augmented diffusion model for zero-shot traffic flow generation (NeurIPS 2025)
@@ -1073,12 +1075,15 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Concepts (continued)
 - [[fine-grained-traffic-prediction]] — fine-grained traffic prediction unifying road-level and lane-level forecasting
+- [[pde-driven-spatio-temporal-forecasting]] — PDE-driven ST forecasting paradigm, reformulating ST dynamics as continuous PDE evolution vs discrete graph inference (STPDE, ICML 2026)
 - [[module-embedding-theorem-subfactor]] — 模嵌入定理（子因子），有限深子因子平面代数嵌入其任意循环模融合图的二部图平面代数中
 - [[arctic-amplification]] — 北极放大效应，北极升温速度 2-4 倍于全球平均的气候现象
 - [[multi-granularity-sea-ice-forecasting]] — 多粒度海冰预测，联合日/周/月 SIC 跨粒度建模新范式
 - [[sea-ice-concentration-forecasting]] — 海冰密集度预测，从数值模型到深度学习的领域概览
 ## Techniques (continued)
 - [[frequency-domain-stability-augmentation]] — FDA, frequency-domain perturbation with spectral constraints for road→lane transfer in MiniTraffic
+- [[invariant-diffusion-operator]] — Invariant Diffusion Operator, Green-function attention as linear-complexity global diffusion for ST PDE evolution (STPDE, ICML 2026)
+- [[environment-basis-manifold]] — Environment Basis Manifold, K learnable bases + sparse Top-K routing + stochastic perturbation for heterogeneity modeling (STPDE, ICML 2026)
 - [[multimodal-crosstalk]] — MCT block, concatenated per-modality CNF tokens with global feature z injection for cross-modal exchange (OmniField, ICLR 2026)
 - [[iterative-cross-modal-refinement]] — ICMR, multi-round MCT with pooled global feature bridge for progressive multimodal signal alignment (OmniField, ICLR 2026)
 - [[fleximodal-fusion]] — presence-mask gating at encoder/attention/loss levels enabling one model for arbitrary input modality subsets (OmniField, ICLR 2026)
