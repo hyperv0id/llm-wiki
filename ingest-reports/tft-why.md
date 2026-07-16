@@ -1,3 +1,7 @@
+## 2026-07-24 补全
+- **raw/ 新增 PDF**：`raw/tft-temporal-fusion-transformers-for-interpretable-multi-horizon-time-series-forecasting.pdf`（与已有 `raw/1912.09363.pdf` 并存）
+- **Lint 修复**：source-tft、gated-residual-network、variable-selection-network、interpretable-multi-head-attention 的 confidence high→medium（source_count:1 不合规）
+
 # Ingest 报告：TFT / arXiv:1912.09363
 
 ## 创建
@@ -27,3 +31,18 @@
 ## 源文件
 - 仓库内：`raw/1912.09363.pdf`（不可变，已存在）
 - 外部任务路径：`/run/media/jcheng/WD-Data/yjs/INSIS/多模态外生信息引导的长期时空预测/1912.09363.pdf`
+
+## 2026-07-24 Lint 复查
+
+对照 PDF (pdftotext) 完整执行 CLAUDE.md Lint 检查清单。
+
+### 修复
+- wiki/source-tft.md：补充缺失的 `created: 2026-07-13` 字段
+- wiki/tft.md：Historical Position 段落添加编辑性定位 callout（跨模型比较基于 wiki 知识，非全部来自 TFT 论文）
+
+### 验证通过
+- 幻觉检查：作者、年份、方法名、数据集配置、性能/消融数字、可解释用例全部与 PDF 原文一致
+- 结构：所有页面 frontmatter 齐全、type 合法
+- 引用：所有 [^src-tft] 脚注定义存在，source_count 一致
+- 链接：全部 wikilink 存在，交叉引用完整
+- 时效/置信：source_count:1 + confidence:medium 合规

@@ -1,3 +1,33 @@
+## [2026-07-24] maintenance | TFT ingest 补全 + lint 修复
+
+将新 PDF 副本复制到 raw/（tft-temporal-fusion-transformers-for-interpretable-multi-horizon-time-series-forecasting.pdf）。
+修复 lint 违规：source-tft、gated-residual-network、variable-selection-network、interpretable-multi-head-attention 四个页面 confidence:high→medium（source_count:1，不合规）。
+更新的页面：[[source-tft]], [[gated-residual-network]], [[variable-selection-network]], [[interpretable-multi-head-attention]]
+
+## [2026-07-24] lint | TFT ingest 完整 Lint + 幻觉检查 + 修复
+
+对照 PDF (pdftotext) 逐条验证作者、方法名、数据集、指标数字。
+
+### 严重（已修复）
+- [x] source-tft.md — 缺少 `created` 字段（frontmatter 必需）。已补充 `created: 2026-07-13`
+
+### 警告（已修复）
+- [x] tft.md — Historical Position 段落对 NBEATSx/TiDE/TimeXer/ExoTST/ExoST/CrossLinear 的跨模型论断超出单一源 [^src-tft] 支持范围，添加编辑性定位 callout 标注
+
+### 幻觉交叉验证通过
+作者(Bryan Lim/Sercan Ö. Arık/Nicolas Loeff/Tomas Pfister)、机构(Oxford/Google Cloud AI)、arXiv:1912.09363v3 Sep 2020、方法名(GRN/GLU/Variable Selection/Static Covariate Encoders/Interpretable Multi-Head Attention/Temporal Fusion Decoder)、数据集配置(Electricity 370/k=168/τmax=24、Traffic 440/k=168/τmax=24、Retail 130k/k=90/τmax=30、Volatility 41/k=252/τmax=5)、性能数字(P50 ~7% lower/P90 ~9% lower vs next-best)、消融数字(gating +1.9% avg +4.1% Vol、variable selection >4.1% avg、local processing+self-attention >6% avg)、可解释用例(Bhattacharyya distance/2008 S&P 500/Favorita 变量重要性)——全部与 PDF 原文一致，无捏造或错引。
+
+### 已验证
+- tft.md / source-tft.md / gated-residual-network.md / variable-selection-network.md / interpretable-multi-head-attention.md — source_count:1, confidence:medium，合规
+- 全部 frontmatter type 合法，无 superseded/disputed 违规
+- 全部 wikilink 存在，无断链
+- 交叉引用页面（direct-forecast/heterogeneous-covariates/nbeatsx/tide/source-timexer/source-exost/glu-gated-linear-unit）均已正确添加 TFT 反向链接
+- index.md 中 source/entity/technique 条目齐全
+
+### 仍存风险
+- tft.md Historical Position 跨模型比较属编辑性分析，待对应模型 source 页面被更多来源交叉验证后升级
+- source-tft.md source_count:1 + confidence:medium，source-summary 无独立验证来源
+
 ## [2026-07-24] ingest | TCP-Diffusion: A Multi-modal Diffusion Model for Global Tropical Cyclone Precipitation Forecasting
 
 ICML 2025 论文。浙江工业大学 + 布里斯托大学。首个基于 DL 的全球热带气旋降水预测模型。核心创新：ARP（Adjacent Residual Prediction）将训练目标从绝对降水值改为相邻时间步变化量、多模态编码器框架（3D CNN + MLP-Transformer + ResNet-18）、NWP 集成（ERA5-IFS 引导扩散去噪）。12h 预测时效，超越 ECMWF-IFS。

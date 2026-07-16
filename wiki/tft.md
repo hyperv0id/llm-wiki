@@ -70,7 +70,9 @@ TFT aggregates selection and attention weights **across the dataset** (not only 
 
 ## Historical Position
 
-TFT is an early **covariate-complete** deep multi-horizon baseline: it codifies static / known / observed inputs and quantile intervals years before the LTSF Transformer boom. Later residual exogenous MLPs ([[nbeatsx|NBEATSx]], [[tide|TiDE]]) emphasize efficient dense maps; later Transformer exogenous models ([[source-timexer|TimeXer]], [[source-exotst|ExoTST]]) reframe endo/exo token fusion; ST select-then-balance ([[source-exost|ExoST]]) and linear plug-ins ([[source-crosslinear|CrossLinear]]) push many-to-one exogenous efficiency. Heterogeneous **image/text** covariates and TSFM adapters ([[heterogeneous-covariates|UniCA]]-class) remain outside TFT’s original scope. TFT remains a standard reference for **interpretable multi-horizon** architecture design and a frequent baseline in exogenous forecasting tables.[^src-tft]
+> [!note] 编辑性定位：以下跨模型比较基于 wiki 层级的时序与架构知识，非全部直接来自 TFT 论文。
+
+TFT is an early **covariate-complete** deep multi-horizon baseline: it codifies static / known / observed inputs and quantile intervals years before the LTSF Transformer boom. Later residual exogenous MLPs ([[nbeatsx|NBEATSx]], [[tide|TiDE]]) emphasize efficient dense maps; later Transformer exogenous models ([[source-timexer|TimeXer]], [[source-exotst|ExoTST]]) reframe endo/exo token fusion; ST select-then-balance ([[source-exost|ExoST]]) and linear plug-ins ([[source-crosslinear|CrossLinear]]) push many-to-one exogenous efficiency. Heterogeneous **image/text** covariates and TSFM adapters ([[heterogeneous-covariates|UniCA]]-class) remain outside TFT's original scope. TFT remains a standard reference for **interpretable multi-horizon** architecture design and a frequent baseline in exogenous forecasting tables.[^src-tft]
 
 ## Limitations
 
