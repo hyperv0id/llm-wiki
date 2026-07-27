@@ -111,6 +111,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-consistency-models]] — Consistency Models: one-step generation (ICML 2023)
 - [[source-glow]] — Glow: Generative Flow with Invertible 1×1 Convolutions (NeurIPS 2018)
 - [[source-gloeckle-2024-multi-token-prediction]] — Better & Faster LLMs via Multi-token Prediction: shared trunk + n independent heads, sample-efficient code LM pretraining + self-speculative 3× decode, ICML 2024 / arXiv:2404.19737 (Meta FAIR)
+- [[source-stunet]] — STUNet: Unified Spatio-Temporal Tokens are Bases for Generalizable Traffic Forecasting; adjacency-matrix spatial tokenizer + query-aggregate attention + frozen spatial tokens for cross-network zero-shot (KDD 2026, ZJU/SUPCON)
 - [[source-freqflow]] — FreqFlow: Frequency-Aware Flow Matching for High-Quality Image Generation (arXiv 2026)
 - [[source-shortcut-models]] — Shortcut Models: one-step diffusion via self-consistency (arXiv 2025)
 - [[source-rectified-flow]] — Rectified Flow: Flow Straight and Fast, ODE-based generation with few-step sampling (arXiv 2022)
@@ -283,6 +284,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[bist]] — BiST, lightweight bidirectional spatio-temporal prediction with MLP backbone + residual correction (PVLDB 2025)
 - [[graphsparsenet]] — GraphSparseNet (GSNet), scalable GNN with low-dimensional compressed adjacency for large-scale traffic (PVLDB 2025)
 - [[team]] — TEAM, first framework for traffic forecasting on evolving road networks with continual learning (PVLDB 2024)
+- [[stunet]] — STUNet, explicit adjacency-patch spatial tokens + query-aggregate attention for generalizable traffic forecasting / cross-network zero-shot (KDD 2026)
 - [[mmckm]] — MMCKM, history-free micro-macro coupled Koopman model unifying vehicle trajectory + traffic density prediction (ICLR 2026 Poster)
 - [[stbp]] — STBP, continual spatio-temporal forecasting with fixed backbone + scalable contextual pattern bank (ICLR 2026)
 - [[stpde]] — STPDE, PDE-driven ST forecasting decoupling invariant diffusion operator + environment basis manifold (ICML 2026)
@@ -603,6 +605,8 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Techniques
 - [[fenchel-young-loss]] — FY loss, convex surrogate for Bregman divergence enabling end-to-end training through combinatorial layers
+- [[spatial-tokenizer-adjacency-patches]] — STUNet spatial tokenizer: adjacency-matrix ViT-style patches, AE pretrain + node permutation, frozen at backbone stage (KDD 2026)
+- [[query-aggregate-attention]] — STUNet two-stage fusion: query upstream/downstream via spatial tokens, then aggregate causal sensor info with dual RoPE (KDD 2026)
 - [[almost-linear-rnn]] — AL-RNN，近乎线性 RNN（P<<M ReLU），拓扑简约+可解释 DSR 架构（NeurIPS 2024）
 - [[benamou-brenier-algorithm]] — OT 的动态公式化，转化为时空凸优化问题并以增广拉格朗日方法求解
 - [[hopf-cole-transform]] — Hopf-Cole 变换，将非线性 HJB-FP 系统线性化为 Kolmogorov PDE 对

@@ -6,8 +6,8 @@ tags:
   - spatial-temporal
   - intelligent-transportation
 created: 2026-04-27
-last_updated: 2026-07-21
-source_count: 47
+last_updated: 2026-07-27
+source_count: 48
 confidence: high
 status: active
 ---
@@ -198,9 +198,11 @@ Key methods in this paradigm:
 - **[[eac|EAC]]** (Chen & Liang, ICLR 2025): Dynamic prompt pool with expand-and-compress operations, lightweight parameter-efficient CSTF[^src-stbp].
 - **[[stbp|STBP]]** (Liu & Zhang, ICLR 2026): Fixed general backbone + incrementally expanding [[contextual-pattern-bank|contextual pattern bank]]. Freezes backbone to prevent forgetting, expands only parametric bank for adaptation. Achieves 21.44% MAE reduction over EAC on PEMS-Stream via frequency-domain processing (FreNet) and dual-stream linear graph attention (DLGA)[^src-stbp].
 
-### Out-of-Distribution Generalization
+### Out-of-Distribution Generalization / Cross-Network Zero-Shot
 
 Recent work argues the node-to-node message-passing core of STGNNs is itself a source of out-of-distribution fragility: [[stop|STOP]] (ICML 2025) blocks node-to-node messages and routes all interaction through a small set of shared Context-Aware Units, improving OOD generalization by up to 17.01% and inductive performance on new sensors by up to 18.44%[^src-stop].
+
+A complementary **explicit graph modeling** line is [[stunet|STUNet]] (KDD 2026): instead of blocking messaging, it tokenizes the **adjacency matrix into frozen spatial patches**, fuses them with temporal tokens via [[query-aggregate-attention|query-aggregate attention]], and evaluates **train-on-A / zero-shot-on-B** across non-overlapping LargeST subnetworks (SD/GBA/GLA) and velocity datasets—claiming best zero-shot metrics vs STGCN, PatchSTG, STID, etc., while remaining competitive in-domain (often best RMSE)[^src-stunet].
 
 ### Test-Time Calibration / Distribution Shift
 [[st-ttc|ST-TTC]] (NeurIPS 2025 Spotlight) corrects non-stationary distribution shift at inference time without retraining: it appends a lightweight [[spectral-domain-calibration|spectral-domain calibrator]] (per-node amplitude/phase modulation) after a frozen backbone and updates it via a leakage-free [[flash-gradient-update|flash gradient update]] on historical labels, yielding consistent ~1–2% MAE/RMSE gains across 6 backbones on PEMS03/04/07/08, KnowAir, and UrbanEV (METR-LA RMSE 7.43→7.21 with GWNet), and complementing OOD and continual learning methods[^src-st-ttc].
@@ -287,3 +289,4 @@ The XTraffic benchmark provides incident-aligned traffic datasets for California
 [^src-minitraffic]: [[source-minitraffic]]
 [^src-pn-train]: [[source-pn-train]]
 [^src-st-ssdl]: [[source-st-ssdl]]
+[^src-stunet]: [[source-stunet]]

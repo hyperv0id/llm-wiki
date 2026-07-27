@@ -8,8 +8,8 @@ tags:
   - generalization
   - distribution-shift
 created: 2026-07-23
-last_updated: 2026-07-23
-source_count: 2
+last_updated: 2026-07-27
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -41,16 +41,20 @@ The core diagnosis from [[stop|STOP]] (ICML 2025) is that the **node-to-node mes
 | **Continual Fine-tuning** | [[continual-spatio-temporal-forecasting|CSTF methods]] | Freeze backbone, expand pattern bank; criticized as near-IID only[^src-stop] |
 | **Test-Time Computing** | [[st-ttc|ST-TTC]] (NeurIPS 2025) | Lightweight spectral calibrator at inference, no retraining |
 | **Perturbation + DRO** | [[stop|STOP]] (ICML 2025) | GenPU-generated variant environments + worst-case optimization |
+| **Explicit Graph Tokenization** | [[stunet|STUNet]] (KDD 2026) | Adjacency-matrix patches as frozen spatial tokens + [[query-aggregate-attention|query-aggregate attention]]; cross-network zero-shot (train A → test B)[^src-stunet] |
 
-The field is moving toward unified frameworks that handle both temporal and structural OOD simultaneously, with [[stop|STOP]]'s centralized messaging emerging as a novel paradigm that reframes the problem at the architecture level rather than treating OOD as a training objective alone[^src-stop].
+The field is moving toward unified frameworks that handle both temporal and structural OOD simultaneously. [[stop|STOP]]'s centralized messaging reframes the problem at the architecture level rather than treating OOD as a training objective alone[^src-stop]. [[stunet|STUNet]] takes the opposite architectural bet on structure: **keep** topology, but make it an explicit, time-invariant token basis and evaluate transfer across whole non-overlapping road networks rather than only within-graph node add/remove[^src-stunet].
 
 ## Related Pages
 
 - [[ood-generalization]] — general OOD concept beyond spatio-temporal domain
 - [[distributionally-robust-optimization]] — the DRO framework STOP adapts for ST-OOD
 - [[stop]] — the STOP model
+- [[stunet]] — STUNet, explicit adjacency tokenization for cross-network zero-shot
 - [[centralized-message-passing]] — STOP's core mechanism
 - [[continual-spatio-temporal-forecasting]] — alternative paradigm for evolving ST data
 
 [^src-stop]: [[source-stop]]
 [^src-cast]: [[source-cast]]
+[^src-stunet]: [[source-stunet]]
+

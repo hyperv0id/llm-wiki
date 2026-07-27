@@ -7,8 +7,8 @@ tags:
   - transformer
   - kdtree
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-07-27
+source_count: 2
 confidence: high
 status: active
 ---
@@ -58,5 +58,7 @@ PatchSTG is the only paradigm that simultaneously avoids information loss, maint
 - Related to [[traffic-forecasting]], [[large-scale-spatial-temporal-graph]], and [[ragc|RAGC]] (another large-scale efficiency method).
 - Contrasts with low-rank methods like [[specstg|SpecSTG]] and [[ustd|USTD]] that sacrifice fidelity for speed.
 - The patching paradigm parallels vision models: [[source-patchtst|PatchTST]] (temporal patching) and ViT (spatial patching).
+- [[stunet|STUNet]] (KDD 2026) also uses patching, but on the **adjacency matrix** (not geo-points) to build frozen spatial tokens for **cross-network zero-shot**; PatchSTG is the main in-domain large-scale baseline STUNet compares against on LargeST[^src-stunet].
 
 [^src-patchstg]: [[source-patchstg]]
+[^src-stunet]: [[source-stunet]]

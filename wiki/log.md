@@ -1,3 +1,10 @@
+## [2026-07-27] ingest | STUNet: Unified Spatio-Temporal Tokens for Generalizable Traffic Forecasting (KDD 2026)
+
+PDF 归档到 raw/stunet-unified-spatio-temporal-tokens-generalizable-traffic-forecasting.pdf（Zotero V92EZQHC）。Chen/Tu 等，KDD 2026。用户侧重点：论文主叙事是**跨网络泛化/零样本**——显式邻接矩阵 spatial tokens + 冻结，避免时序污染结构表示；Query-Aggregate Attention 融合。
+
+创建的页面：[[source-stunet]], [[stunet]], [[spatial-tokenizer-adjacency-patches]], [[query-aggregate-attention]]
+更新的页面：[[traffic-forecasting]], [[ood-generalization]], [[spatio-temporal-ood-learning]], [[patchstg]], [[stop]], [[index]]
+
 ## [2026-07-16] maintenance | 清理 ICML 2026 Spotlight 筛选分析整组
 删除 analysis 页与 source-summary；index 去掉对应条目；保留 immutable 源 `raw/icml-2026-spotlight-papers.md`。
 删除的页面：[[icml-2026-spotlight-vs-multimodal-exogenous-spatiotemporal]], [[source-icml-2026-spotlight-papers]]
