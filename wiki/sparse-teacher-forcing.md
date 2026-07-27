@@ -6,8 +6,8 @@ tags:
   - dynamical-systems
   - rnn
 created: 2026-07-17
-last_updated: 2026-07-17
-source_count: 1
+last_updated: 2026-07-27
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -42,4 +42,15 @@ $$z_{t+1} = \begin{cases} F_\theta(\tilde{z}_t, C) & \text{if } t \in \mathcal{T
 
 消融实验中，将 STF 替换为标准 BPTT 训练导致零样本 DSR 性能急剧下降，是 DynaMix 成功的最关键组件之一[^src-dynamix]。这表明训练算法、架构选择和训练语料库共同构成了 DSR 基础模型的"DSR 包"。
 
+## 与 LLM 多 token 训练的对照
+
+STF 通过**间歇写入真值状态**缓解 teacher forcing ↔ 自由运行错配；Gloeckle et al. 的 [[multi-token-prediction|multi-token prediction]] 则在**不改输入为模型采样 token** 的前提下，用并行多步损失强化 choice points 与长期依赖，并明确反对把 scheduled sampling 直接搬到离散文本上[^src-gloeckle-2024-multi-token-prediction]。两者同属 exposure-bias / 分布错配家族，作用域不同（连续 DSR 状态 vs 离散 LM token）。
+
+## 相关
+
+- [[multi-token-prediction]] — LLM 预训练中的多步预测目标
+- [[self-speculative-decoding]] — 多头加速推理（与多 token 预训练配套）
+- [[dynamix]] — 使用 STF 的 DSR 基础模型
+
 [^src-dynamix]: [[source-dynamix]]
+[^src-gloeckle-2024-multi-token-prediction]: [[source-gloeckle-2024-multi-token-prediction]]

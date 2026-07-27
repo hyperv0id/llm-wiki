@@ -7,7 +7,7 @@ tags:
   - graph-neural-networks
   - diffusion-convolution
 created: 2026-05-31
-last_updated: 2026-06-08
+last_updated: 2026-07-27
 source_count: 1
 confidence: medium
 status: active
@@ -164,7 +164,7 @@ As of 2026, DCRNN has accumulated 3,000+ citations and remains a standard baseli
 - [[diffstg]] — Probabilistic diffusion-based successor
 - [[specstg]] — Spectral domain diffusion approach
 - [[seq2seq]] — The original encoder-decoder paradigm
-- [[scheduled-sampling]] — Exposure bias mitigation technique
+- [[scheduled-sampling]] — Exposure bias mitigation technique; cf. also [[multi-token-prediction]] for discrete LM alternative to scheduled sampling
 - [[stgcn]] — Contemporaneous IJCAI 2018 work, pure convolutional STG approach (RNN-free)
 - [[generative-time-series-forecasting]] — Generative forecasting paradigm
 - [[spatio-temporal-foundation-model]] — The next generation beyond single-city models

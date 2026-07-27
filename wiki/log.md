@@ -3039,3 +3039,11 @@ source-terra.md 第73行原称未评审的 ExoST (arXiv:2509.05779) 为“方法
 - 外生ST-研究地图WHY报告.md
 
 已从 wiki/index 与议程页移除对应 wikilink，避免断链。
+
+## [2026-07-27] ingest | Better & Faster Large Language Models via Multi-token Prediction (Gloeckle et al., ICML 2024)
+
+创建的页面：[[source-gloeckle-2024-multi-token-prediction]], [[multi-token-prediction]], [[self-speculative-decoding]]
+更新的页面：[[sparse-teacher-forcing]], [[dcrnn]], [[index]]
+
+Ingest Gloeckle / Youbi Idrissi / Rozière / Lopez-Paz / Synnaeve (FAIR Meta), arXiv:2404.19737。用共享 trunk + n 独立输出头做多 token 预训练；逐 head 串行反传保持 O(V+d) 峰值显存；代码任务随规模增益（13B HumanEval/MBPP 约 +12%/+17% 解题），4-token self-speculative 约 3× 推理，byte-level 更显著。机制：加重 choice points、放大 I(X;Y)、促进 induction。PDF → raw/gloeckle-2024-multi-token-prediction.pdf。
+

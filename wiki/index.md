@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-07-25
+last_updated: 2026-07-27
 tags:
   - meta
 ---
@@ -110,6 +110,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-dpm-solver]] — DPM-Solver: Fast ODE solver for diffusion models (NeurIPS 2022)
 - [[source-consistency-models]] — Consistency Models: one-step generation (ICML 2023)
 - [[source-glow]] — Glow: Generative Flow with Invertible 1×1 Convolutions (NeurIPS 2018)
+- [[source-gloeckle-2024-multi-token-prediction]] — Better & Faster LLMs via Multi-token Prediction: shared trunk + n independent heads, sample-efficient code LM pretraining + self-speculative 3× decode, ICML 2024 / arXiv:2404.19737 (Meta FAIR)
 - [[source-freqflow]] — FreqFlow: Frequency-Aware Flow Matching for High-Quality Image Generation (arXiv 2026)
 - [[source-shortcut-models]] — Shortcut Models: one-step diffusion via self-consistency (arXiv 2025)
 - [[source-rectified-flow]] — Rectified Flow: Flow Straight and Fast, ODE-based generation with few-step sampling (arXiv 2022)
@@ -634,6 +635,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[dlga-dual-stream-linear-graph-attention]] — DLGA, dual-stream linear graph attention with random feature mapping + prompt-based key stream reducing $O(N^2)$ to $O(N)$ (STBP, ICLR 2026)
 - [[frenet-frequency-domain-network]] — FreNet, frequency-domain network using FFT + learnable frequency embedding to extract stable low-frequency components resilient to distribution drift (STBP, ICLR 2026)
 - [[sparse-teacher-forcing]] — STF，间歇性数据推断状态重校准的 DSR 训练方法，控制梯度爆炸同时探索长期动力学
+- [[multi-token-prediction]] — Multi-token prediction, shared trunk + n heads predicting n future tokens as LM pretraining objective (Gloeckle et al., ICML 2024)
+- [[self-speculative-decoding]] — Self-speculative decoding, same-model multi-head draft + verify for faster autoregressive generation (Stern/Medusa; strengthened by multi-token pretraining)
 - [[spatial-temporal-tokenizer]] — 空间+时间双维度 token 生成，激活 PLM 对时空数据的理解 (AAAI 2025)
 - [[spatio-temporal-retrieval-store]] — 基于 FAISS 的双维度向量记忆库 + 动量 EMA 管理 (RAST, AAAI 2026)
 - [[topology-aware-node-embedding]] — 基于拉普拉斯特征向量的归纳式节点嵌入，支持跨图结构迁移 (AAAI 2025)
