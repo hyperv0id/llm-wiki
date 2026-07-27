@@ -3025,3 +3025,17 @@ WeatherPEFT 是首个针对 WFM 的 PEFT 框架，包含 TADP（前向任务自�
 ## [2026-07-16] 勘误 | source-terra 对 ExoST 的定性拔高
 source-terra.md 第73行原称未评审的 ExoST (arXiv:2509.05779) 为“方法论级别的框架”，属定性拔高且无审稿状态标注。已降格为中性描述并补“arXiv 预印本，未经同行评审”标注。
 更新的页面：[[source-terra]]
+
+## [2026-07-17] maintenance | 多模态外生 ST 研究地图（canon + 爬虫 brief + 可迁移流派）
+
+基于只读盘点 paper-catalog（OpenReview 25/26）、Zotero sqlite（~276 关键词命中）与既有 wiki，写入三份 analysis 与两份 inventory/WHY 报告；并抽样 12 篇 catalog .txt 作内容证据。
+
+产物已移出 wiki，现位于：
+`/run/media/jcheng/WD-Data/yjs/INSIS/多模态外生信息引导的长期时空预测/0717/`
+- 外生ST-Canon必读地图.md
+- 外生ST-非OpenReview数据源与爬虫规格.md
+- 外生ST-可迁移技术流派地图.md
+- 外生ST-库存盘点.md
+- 外生ST-研究地图WHY报告.md
+
+已从 wiki/index 与议程页移除对应 wikilink，避免断链。
