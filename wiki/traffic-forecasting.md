@@ -7,7 +7,7 @@ tags:
   - intelligent-transportation
 created: 2026-04-27
 last_updated: 2026-07-27
-source_count: 48
+source_count: 50
 confidence: high
 status: active
 ---
@@ -204,6 +204,8 @@ Recent work argues the node-to-node message-passing core of STGNNs is itself a s
 
 A complementary **explicit graph modeling** line is [[stunet|STUNet]] (KDD 2026): instead of blocking messaging, it tokenizes the **adjacency matrix into frozen spatial patches**, fuses them with temporal tokens via [[query-aggregate-attention|query-aggregate attention]], and evaluates **train-on-A / zero-shot-on-B** across non-overlapping LargeST subnetworks (SD/GBA/GLA) and velocity datasets—claiming best zero-shot metrics vs STGCN, PatchSTG, STID, etc., while remaining competitive in-domain (often best RMSE)[^src-stunet].
 
+For **same-city year-over-year** shifts, the [[st-ood|ST-OOD]] benchmark (IEEE TMC 2025) trains on year *Y* and tests on the same calendar window of *Y+1* across six urban tasks (bike, taxi, pedestrians, speed, flow, 311). Leading STGNNs suffer ~40%–116% RMSE degradation on OUT; STID/MLP often generalize better than complex graph/attention models, specialized OOD methods (CaST/CauSTG/STONE) tend to underfit rather than learn invariants, and moderate dropout (0.2–0.3) substantially improves OUT with little IN cost[^src-st-ood].
+
 ### Test-Time Calibration / Distribution Shift
 [[st-ttc|ST-TTC]] (NeurIPS 2025 Spotlight) corrects non-stationary distribution shift at inference time without retraining: it appends a lightweight [[spectral-domain-calibration|spectral-domain calibrator]] (per-node amplitude/phase modulation) after a frozen backbone and updates it via a leakage-free [[flash-gradient-update|flash gradient update]] on historical labels, yielding consistent ~1–2% MAE/RMSE gains across 6 backbones on PEMS03/04/07/08, KnowAir, and UrbanEV (METR-LA RMSE 7.43→7.21 with GWNet), and complementing OOD and continual learning methods[^src-st-ttc].
 
@@ -290,3 +292,5 @@ The XTraffic benchmark provides incident-aligned traffic datasets for California
 [^src-pn-train]: [[source-pn-train]]
 [^src-st-ssdl]: [[source-st-ssdl]]
 [^src-stunet]: [[source-stunet]]
+[^src-st-ood]: [[source-st-ood]]
+[^src-team]: [[source-team]]

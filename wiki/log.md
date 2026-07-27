@@ -1,3 +1,34 @@
+## [2026-07-27] lint | ST-OOD ingest 全量检查 + 修复
+
+对照 PDF（pdftotext）与 CLAUDE.md 清单，聚焦本轮新建/修改页。
+
+### 严重（已修复）
+- [x] traffic-forecasting.md — 正文已有 `[^src-team]` 但脚注未定义（ingest 前既有）；补 `[^src-team]: [[source-team]]`，source_count 同步为 50
+
+### 本轮页面验证通过
+- source-st-ood.md: source_count:0, confidence:low（source-summary 仓库惯例，无自引用）
+- st-ood.md: source_count:1, confidence:medium
+- ood-generalization.md: source_count:3（stop/stunet/st-ood）
+- spatio-temporal-ood-learning.md: source_count:4（cast/stop/stunet/st-ood）
+- traffic-forecasting.md: source_count:50，含 st-ood
+- 全部 frontmatter type 合法；无 broken 新 wikilink；inbound ≥6
+- 关键交叉：作者/TMC 2025/六场景/RMSE 40.06–116.44%/STID·MLP/CaST·CauSTG·STONE underfitting/dropout 0.2–0.3/FlowSC 54.35→24.12 与 PDF 一致
+
+### 信息（预存，未动）
+- traffic-forecasting.md — 历史断链 [[astgcn]]、[[wasserstein-metric]]（非本轮引入）
+- log/index 中若干历史维护删除留下的断链记录
+
+更新的页面：[[traffic-forecasting]], [[log]]
+
+
+## [2026-07-27] ingest | ST-OOD: Evaluating Spatiotemporal Generalization in Urban Scenarios (IEEE TMC 2025)
+
+PDF 归档到 raw/st-ood-evaluating-generalization-spatiotemporal-urban.pdf。Wang/Chen/Pan/Dong/Jiang/Song，IEEE TMC 24(12) 2025。主叙事：现有 ST 基准近 IID；提出六场景跨年 IN/OUT 协议；SOTA 跨年 RMSE 退化 40–116%；STID/MLP 常优于复杂 GNN；CaST/CauSTG/STONE 更像 underfitting；dropout 0.2–0.3 抬 OUT。
+
+创建的页面：[[source-st-ood]], [[st-ood]]
+更新的页面：[[ood-generalization]], [[spatio-temporal-ood-learning]], [[traffic-forecasting]], [[index]]
+
+
 ## [2026-07-27] ingest | STUNet: Unified Spatio-Temporal Tokens for Generalizable Traffic Forecasting (KDD 2026)
 
 PDF 归档到 raw/stunet-unified-spatio-temporal-tokens-generalizable-traffic-forecasting.pdf（Zotero V92EZQHC）。Chen/Tu 等，KDD 2026。用户侧重点：论文主叙事是**跨网络泛化/零样本**——显式邻接矩阵 spatial tokens + 冻结，避免时序污染结构表示；Query-Aggregate Attention 融合。
