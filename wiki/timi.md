@@ -9,9 +9,9 @@ tags:
   - forecasting
   - icml-2026
 created: 2026-07-25
-last_updated: 2026-07-25
-source_count: 1
-confidence: medium
+last_updated: 2026-07-28
+source_count: 2
+confidence: high
 status: active
 ---
 
@@ -31,6 +31,8 @@ TiMi 提出 **[[non-fusion-guidance|Non-Fusion Guidance]]** 范式，区别于�
 
 TiMi 与 [[vot|VoT]] 都使用 LLM 推理文本，但 VoT 仍依赖 feature-level 对齐（多级对齐），而 TiMi 完全放弃模态融合，改为 MoE routing 实现知识引导[^src-timi]。
 
+与 [[constrained-text-fusion|Constrained Text Fusion / CFA]]（Lee et al., arXiv:2603.22372）对照：CFA 同样发现 Time-MMD 上 **naive 融合常低于 unimodal**，但用 **低秩残差 / 门控等受控融合** 保留特征注入；TiMi 则彻底 **Non-Fusion**，用 MoE 路由代替表示融合——问题诊断相近，机制正交[^src-timi][^src-constrained-text-fusion]。
+
 ## 架构
 
 1. **Text Reasoning** — 冻结 LLM (Qwen2.5-7B-Instruct) 处理外生文本，通过平均池化生成含因果知识的文本 token[^src-timi]。
@@ -49,4 +51,10 @@ TiMi 与 [[vot|VoT]] 都使用 LLM 推理文本，但 VoT 仍依赖 feature-leve
 - 不规则数据：TiMi 降低平均 MSE 29.57%（vs PatchTST backbone），远超 Time-MMD 11.26%[^src-timi]。
 - SMoE 可解释性：专家选择与 MK 趋势检验强相关，上升/下降趋势自动路由至不同专家[^src-timi]。
 
+
+## 相关页面
+
+- [[source-timi]] · [[non-fusion-guidance]] · [[mmoe]] · [[vot]] · [[time-mmd]] · [[constrained-text-fusion]] · [[multimodal-time-series-forecasting]]
+
 [^src-timi]: [[source-timi]]
+[^src-constrained-text-fusion]: [[source-constrained-text-fusion]]

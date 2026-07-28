@@ -1,3 +1,10 @@
+## [2026-07-28] ingest | Rethinking Multimodal Fusion: Text Modalities Need Constrained Fusion
+
+PDF: `raw/rethinking-multimodal-fusion-for-time-series-text-modalities-need-constrained-fusion.pdf`（arXiv:2603.22372v3, KDD ’26 MILETS）。Time-MMD 九域 ×14 TS×4 文本：naive add/concat 常低于 unimodal；Gating/FiLM/Orthogonal/CFA 约束融合更稳；CFA 低秩残差 plug-in（+0.61% 参），9/9 域胜 unimodal、13/14 骨干提升。
+
+创建的页面：[[source-constrained-text-fusion]], [[constrained-text-fusion]]
+更新的页面：[[multimodal-time-series-forecasting]], [[time-mmd]], [[non-fusion-guidance]], [[timi]], [[vot]], [[time-vlm]], [[ts-vl-alignment]], [[index]]
+
 ## [2026-07-28] ingest | Time Series, Vision, and Language: Exploring the Limits of Alignment
 
 PDF: `raw/time-series-vision-language-exploring-the-limits-of-alignment.pdf`（arXiv:2602.19367v1）。独立预训练 TS/V/L 近正交；冻编码器 + 对称 InfoNCE 投影对齐有限且不对称（TS–IMG ≫ TS–TXT）；ID/尺度饱和；图像可中介；外生多模态需显式耦合。
@@ -2027,7 +2034,7 @@ Integration ingest: CSDI (Tashiro, Song, Song & Ermon, NeurIPS 2021) and PriSTI 
 
 扫描 404 个 wiki 页面，发现 6 大类共 197 个问题。严重问题 22 个，警告 54 个，信息 121 个。
 
-严重：2 个 YAML 解析错误 + 8 个断链（缺 source 页面）+ 9 个断链（缺 concept/technique 页面）+ 9 个 `\|` 格式错误 + 7 个脚注指向不存在页面
+严重：2 个 YAML 解析错误 + 8 个断链（缺 source 页面）+ 9 个断链（缺 concept/technique 页面）+ 9 个 `|` 格式错误 + 7 个脚注指向不存在页面
 警告：17 个子目录页面孤立 + 23 个 confidence 过高 + 25 个 source_count 不一致 + 29 个孤立脚注定义
 信息：137 个过期页面（>30 天未更新）+ 2 个概括性陈述缺支撑 + 1 个缺 required 字段
 

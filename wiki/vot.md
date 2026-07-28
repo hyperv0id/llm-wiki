@@ -10,7 +10,7 @@ tags:
   - iclr-2026
 created: 2026-05-03
 last_updated: 2026-07-28
-source_count: 3
+source_count: 4
 confidence: high
 status: active
 ---
@@ -66,6 +66,8 @@ VoT achieves state-of-the-art results on 10 real-world multimodal datasets (doma
 
 VoT is unique in using LLMs for **reasoning** (not just feature extraction) and supporting **both** exogenous and endogenous text simultaneously[^src-event-driven-ts-forecasting]. In contrast, [[tats|TaTS]] achieves multimodal integration through a simpler plug-and-play approach — treating text as auxiliary variables without LLM reasoning or architecture modification[^src-language-in-the-flow-of-time].
 
+[[constrained-text-fusion|CFA]] 在 Time-MMD 上系统显示 **naive 表示级 add/concat 常伤预测**，主张低秩等 **constrained fusion**；VoT 则用 **推理 + 多级对齐 + 频域预测融合** 挖文本价值——同属外生文本路线，但对「如何融合」的答案不同（受控残差 vs 事件推理与 AFF）[^src-constrained-text-fusion]。
+
 ## Related Pages
 
 - [[source-event-driven-ts-forecasting]] — source summary
@@ -80,7 +82,9 @@ VoT is unique in using LLMs for **reasoning** (not just feature extraction) and 
 - [[aurora]] — Aurora generative multimodal TS foundation model (different paradigm: generative vs. LLM reasoning)
 - [[tats]] — TaTS plug-and-play multimodal framework (simpler alternative approach)
 - [[time-vlm]] · [[source-time-vlm]] — VLM-bridged endogenous multimodal forecasting (ICML 2025 baseline in VoT)
+- [[constrained-text-fusion]] · [[source-constrained-text-fusion]] — naive vs constrained 融合实证（Time-MMD）
 
 [^src-event-driven-ts-forecasting]: [[source-event-driven-ts-forecasting]]
 [^src-language-in-the-flow-of-time]: [[source-language-in-the-flow-of-time]]
 [^src-time-mmd]: [[source-time-mmd]]
+[^src-constrained-text-fusion]: [[source-constrained-text-fusion]]

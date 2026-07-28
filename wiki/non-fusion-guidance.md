@@ -8,8 +8,8 @@ tags:
   - forecasting
   - mixture-of-experts
 created: 2026-07-25
-last_updated: 2026-07-25
-source_count: 1
+last_updated: 2026-07-28
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -44,5 +44,12 @@ Non-Fusion Guidance 将文本和时序建模**完全解耦**[^src-timi]：
 
 - **vs VoT**：[[vot|VoT]] 也使用 LLM 推理，但最终通过多级对齐（表示级+预测级）融合文本与数值特征，属于 Late Fusion[^src-timi]。
 - **vs TaTS**：[[tats|TaTS]] 将文本编码后作为辅助变量拼接至数值序列，虽然即插即用但仍是特征层面的简单融合，未利用因果推理[^src-timi]。
+- **vs Constrained Text Fusion / CFA**：[[constrained-text-fusion|CFA]] 与本文同认「naive add/concat 常低于 unimodal」，但选择 **受控特征融合**（低秩残差 / 门控 / FiLM / 正交）而非完全解耦；TiMi 走 **不融合、只路由**，CFA 走 **过滤后仍残差注入 TS 表示**——二者是互补的反-naive 路线[^src-constrained-text-fusion][^src-timi]。
+
+## 相关页面
+
+- [[timi]] · [[mmoe]] · [[vot]] · [[tats]] · [[constrained-text-fusion]] · [[source-constrained-text-fusion]] · [[multimodal-time-series-forecasting]]
+
 
 [^src-timi]: [[source-timi]]
+[^src-constrained-text-fusion]: [[source-constrained-text-fusion]]

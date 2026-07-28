@@ -70,6 +70,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-chronosx]] — ChronosX: Adapting Pretrained Time Series Models with Exogenous Variables; IIB+OIB modular adapters, 32 synthetic + 18 real (AISTATS 2025, arXiv:2503.12107)
 - [[source-time-vlm]] — Time-VLM: frozen VLM bridges temporal/visual/textual via RAL+VAL+TAL; few/zero-shot strong (ICML 2025, arXiv:2502.04395)
 - [[source-ts-vl-alignment]] — TS–VL Alignment: near-orthogonal frozen TS/V/L; post-hoc contrastive projection limits (arXiv:2602.19367)
+- [[source-constrained-text-fusion]] — Constrained Text Fusion / CFA: naive add/concat often hurts vs unimodal; low-rank plug-in (KDD ’26 MILETS, arXiv:2603.22372)
 - [[source-zhou-informer-2021]] — Informer: Beyond Efficient Transformer for Long Sequence Time-Series Forecasting (AAAI 2021 Best Paper)
 - [[source-timedit]] — TimeDiT: General-purpose Diffusion Transformers for Time Series Foundation Model (KDD 2025)
 - [[source-tips]] — TIPS: transformer with inductive prior synthesis for financial forecasting
@@ -378,6 +379,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[chronosx]] — ChronosX, modular past/future covariate injection for Chronos/TimesFM/MOMENT (AISTATS 2025)
 - [[time-vlm]] — Time-VLM, endogenous multimodal TS forecasting with retrieval memory + VLM (ICML 2025)
 - [[ts-vl-alignment]] — Yashwante & Yu trimodal contrastive alignment limits for TS–vision–language (arXiv:2602.19367)
+- [[constrained-text-fusion]] — CFA / constrained text fusion for multimodal TS (Lee et al., arXiv:2603.22372)
 - [[probts]] — ProbTS, unified point+distributional time-series forecasting benchmark tool (NeurIPS 2024)
 - [[cora-tsfm]] — CoRA, covariate-aware adaptation framework for TSFMs with Causality Embedding and zero-initialization (ICLR 2026)
 - [[unified-covariate-adaptation]] — UniCA, unified covariate adaptation framework for TSFMs (ICLR 2026)
@@ -1150,9 +1152,11 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-time-mmd]] — Time-MMD: 9-domain multimodal numeric–text TS dataset + MM-TSFlib; fine-grained alignment & contamination control (NeurIPS 2024 D&B, arXiv:2406.08627v4)
 - [[source-time-vlm]] — Time-VLM: RAL/VAL/TAL + frozen ViLT/CLIP/BLIP-2 for augmented TSF (ICML 2025, arXiv:2502.04395v2)
 - [[source-ts-vl-alignment]] — TS–VL Alignment source: 34 configs, ID saturation, image-as-intermediary (arXiv:2602.19367v1)
+- [[source-constrained-text-fusion]] — CFA source: >20K Time-MMD settings, Gating/FiLM/Orthogonal/CFA (arXiv:2603.22372)
 
 ## Entities (continued)
 - [[chronosx]] — ChronosX 实体：past/future Injection Blocks + 跨骨干扩展
 - [[time-mmd]] — Time-MMD 实体：9 域数值–文本数据集 + MM-TSFlib（NeurIPS 2024 D&B）
 - [[time-vlm]] — Time-VLM 实体：检索记忆 + 时序成图/成文 + VLM 融合
 - [[ts-vl-alignment]] — TS–VL Alignment 实体：近正交 / 后验投影上限 / 外生多模态含义
+- [[constrained-text-fusion]] — Constrained Text Fusion / CFA：naive vs 受控文本注入

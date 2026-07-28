@@ -8,7 +8,7 @@ tags:
   - covariate
   - satellite-imagery
 created: 2026-04-29
-source_count: 15
+source_count: 16
 last_updated: 2026-07-28
 confidence: high
 status: active
@@ -120,6 +120,10 @@ UniCA 在多模态场景下的表现：
 
 **[[ts-vl-alignment|TS–VL Alignment]]**（Yashwante & Yu, arXiv:2602.19367）用 34 组冻结编码器 + 共享投影头、对称 InfoNCE，系统探测时序–折线图–文本的对比空间几何。**无显式耦合时跨模态表示近正交（MAD≈90°）**；后验对齐随尺度改善但不均匀——**TS–IMG ≫ TS–TXT**，全局 cosine/Procrustes 可强而 mutual kNN 弱；文本 information density 仅在低–中段抬升后**饱和**；图像可作 TS–TXT 中介；间接临床文本 / 跨语报告进一步削弱对齐。对外生多模态 ST 的含义：不能默认 Chronos/CLIP/LLM 表示已共享 latent；**轻量投影有上限，需显式耦合与匹配的语义显式性**（与 [[time-vlm|Time-VLM]] 的内生图文桥接、Time-MMD/VoT 的任务侧融合形成互补的诊断层）[^src-ts-vl-alignment]。
 
+## Constrained Text Fusion：Naive 常伤、约束才稳
+
+**[[constrained-text-fusion|Constrained Text Fusion / CFA]]**（Lee et al., LG AI Research, KDD ’26 MILETS, arXiv:2603.22372）在 [[time-mmd|Time-MMD]] 九域上做 **>20K** 设定对照：冻结文本编码器（BERT / GPT-2 / Llama3 / Doc2Vec）× 14 TS 骨干 × first/middle/last × add/concat，发现 **naive 融合经常低于 unimodal TS**（甚至 Div.：MSE>单模态 10×），归因于辅助文本的无关/冲突信号无控注入。**Constrained** 族——Gating、FiLM 调制、正交分量注入、以及 **CFA**（低秩瓶颈残差 \(z_{\mathrm{TS}}+W_{\mathrm{up}}\phi(W_{\mathrm{down}}z_{\mathrm{Text}})\)，\(r=8\)，近零 init）——系统优于 naive；CFA 在 9 域全胜 unimodal、7/9 rank-1、13/14 骨干提升，参数仅约 +0.61%。相对 [[tats|TaTS]]（first-add naive plug-in）与 [[timi|TiMi]] 的 [[non-fusion-guidance|Non-Fusion Guidance]]（完全不融特征），CFA 是 **plug-in + 受控特征融合** 的中间路线[^src-constrained-text-fusion]。
+
 ### 与其他多模态模型的对比
 
 | 维度 | Aurora | TiMi | UniCA | MoST | VoT | TaTS | ChannelMTS | PIPE |
@@ -222,6 +226,8 @@ UniCA 在多模态场景下的表现：
 - [[source-time-vlm]] — Time-VLM 源摘要
 - [[ts-vl-alignment]] — 时序–视觉–语言对比对齐极限诊断（arXiv:2602.19367）
 - [[source-ts-vl-alignment]] — TS–VL Alignment 源摘要
+- [[constrained-text-fusion]] — Constrained Text Fusion / CFA：naive 常伤、低秩受控融合（KDD ’26 MILETS）
+- [[source-constrained-text-fusion]] — CFA 源摘要
 
 ---
 
@@ -242,3 +248,4 @@ UniCA 在多模态场景下的表现：
 [^src-time-mmd]: [[source-time-mmd]]
 [^src-time-vlm]: [[source-time-vlm]]
 [^src-ts-vl-alignment]: [[source-ts-vl-alignment]]
+[^src-constrained-text-fusion]: [[source-constrained-text-fusion]]
