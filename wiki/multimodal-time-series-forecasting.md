@@ -8,7 +8,7 @@ tags:
   - covariate
   - satellite-imagery
 created: 2026-04-29
-source_count: 14
+source_count: 15
 last_updated: 2026-07-28
 confidence: high
 status: active
@@ -116,6 +116,10 @@ UniCA 在多模态场景下的表现：
 
 **[[time-vlm|Time-VLM]]** (Zhong et al., ICML 2025, arXiv:2502.04395) 用冻结预训练 VLM（默认 ViLT；亦支持 CLIP / BLIP-2）统一 **时序 · 视觉 · 文本**：[[time-vlm|RAL]] 做 patch + local/global 检索记忆，[[time-vlm|VAL]] 将时序经 FFT/周期编码与多尺度卷积渲染为图像，[[time-vlm|TAL]] 生成统计与域描述 prompt；跨模态注意力 + 门控融合后预测。**不依赖外生文本/图像**，仅由原始时序自增强——相对 [[time-mmd|Time-MMD]]/[[vot|VoT]] 的外生文本路线，以及 UniCA/CoRA 的协变量适配路线，是一条 **内生多模态 + 检索** 路径[^src-time-vlm]。约 143.6M 参数（≈1/20 Time-LLM）；5% few-shot 上 ETTh1 相对 Time-LLM MSE 约 −29.5%；Weather 消融显示去 RAL +35.6% MSE、去 VAL +9.0%、去 TAL 仅 +2.1%（文本 token 稀疏）[^src-time-vlm]。
 
+## 对齐极限：独立预训练三模态近正交
+
+**[[ts-vl-alignment|TS–VL Alignment]]**（Yashwante & Yu, arXiv:2602.19367）用 34 组冻结编码器 + 共享投影头、对称 InfoNCE，系统探测时序–折线图–文本的对比空间几何。**无显式耦合时跨模态表示近正交（MAD≈90°）**；后验对齐随尺度改善但不均匀——**TS–IMG ≫ TS–TXT**，全局 cosine/Procrustes 可强而 mutual kNN 弱；文本 information density 仅在低–中段抬升后**饱和**；图像可作 TS–TXT 中介；间接临床文本 / 跨语报告进一步削弱对齐。对外生多模态 ST 的含义：不能默认 Chronos/CLIP/LLM 表示已共享 latent；**轻量投影有上限，需显式耦合与匹配的语义显式性**（与 [[time-vlm|Time-VLM]] 的内生图文桥接、Time-MMD/VoT 的任务侧融合形成互补的诊断层）[^src-ts-vl-alignment]。
+
 ### 与其他多模态模型的对比
 
 | 维度 | Aurora | TiMi | UniCA | MoST | VoT | TaTS | ChannelMTS | PIPE |
@@ -216,6 +220,8 @@ UniCA 在多模态场景下的表现：
 - [[time-mmd]] — Time-MMD 多领域数值–文本时序数据集与 MM-TSFlib（NeurIPS 2024 D&B）
 - [[time-vlm]] — Time-VLM：冻结 VLM 桥接时序/视觉/文本 + RAL/VAL/TAL（ICML 2025）
 - [[source-time-vlm]] — Time-VLM 源摘要
+- [[ts-vl-alignment]] — 时序–视觉–语言对比对齐极限诊断（arXiv:2602.19367）
+- [[source-ts-vl-alignment]] — TS–VL Alignment 源摘要
 
 ---
 
@@ -235,3 +241,4 @@ UniCA 在多模态场景下的表现：
 [^src-timi]: [[source-timi]]
 [^src-time-mmd]: [[source-time-mmd]]
 [^src-time-vlm]: [[source-time-vlm]]
+[^src-ts-vl-alignment]: [[source-ts-vl-alignment]]

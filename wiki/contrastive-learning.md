@@ -6,8 +6,8 @@ tags:
   - self-supervised
   - multimodal-alignment
 created: 2026-05-03
-last_updated: 2026-07-21
-source_count: 4
+last_updated: 2026-07-28
+source_count: 5
 confidence: medium
 status: active
 ---
@@ -19,6 +19,10 @@ Contrastive learning is a representation learning paradigm that trains encoders 
 ## In Multimodal Time Series
 
 In the multimodal TS context, contrastive learning is used to align time series and text representations in a shared embedding space. Positive pairs are typically time-text pairs from the same temporal segment; negative pairs come from different segments[^src-multimodal-ts-anomaly-detection].
+
+### Trimodal limits (TS · vision · language)
+
+[[ts-vl-alignment|Yashwante & Yu (2026)]] probe CLIP-style **post-hoc** contrastive alignment with **frozen** pretrained encoders and shared projection heads over time series, plots, and text. Independently pretrained spaces are **near-orthogonal** without coupling; after InfoNCE, alignment is **asymmetric** (TS–IMG stronger than TS–TXT), improves unevenly with scale, and **saturates** with caption information density—so contrastive projection alone does not guarantee fine-grained multimodal convergence for numeric series[^src-ts-vl-alignment].
 
 ### InfoNCE Loss
 
@@ -34,7 +38,7 @@ $$\mathcal{L} = -\log \frac{\exp(\text{sim}(z_i, z_j^+) / \tau)}{\sum_k \exp(\te
 - [[endogenous-text-alignment]] — VoT's decomposed trend/seasonal contrastive learning
 - [[multi-level-alignment]] — VoT's multi-level alignment framework using contrastive losses
 - [[nuwats]] — NuwaTS's mask-invariant patch representations across missing patterns
-- [[minitraffic]] — MiniTraffic's contrastive clustering for patch-level graph construction in fine-grained traffic prediction
+- [[ts-vl-alignment]] — limits of post-hoc contrastive alignment across time series, vision, and language
 
 ## Related
 
@@ -48,3 +52,4 @@ $$\mathcal{L} = -\log \frac{\exp(\text{sim}(z_i, z_j^+) / \tau)}{\sum_k \exp(\te
 [^src-multimodal-ts-anomaly-detection]: [[source-multimodal-ts-anomaly-detection]]
 [^src-minitraffic]: [[source-minitraffic]]
 [^src-nuwats]: [[source-nuwats]]
+[^src-ts-vl-alignment]: [[source-ts-vl-alignment]]

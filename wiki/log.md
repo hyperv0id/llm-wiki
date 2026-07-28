@@ -1,3 +1,10 @@
+## [2026-07-28] ingest | Time Series, Vision, and Language: Exploring the Limits of Alignment
+
+PDF: `raw/time-series-vision-language-exploring-the-limits-of-alignment.pdf`（arXiv:2602.19367v1）。独立预训练 TS/V/L 近正交；冻编码器 + 对称 InfoNCE 投影对齐有限且不对称（TS–IMG ≫ TS–TXT）；ID/尺度饱和；图像可中介；外生多模态需显式耦合。
+
+创建的页面：[[source-ts-vl-alignment]], [[ts-vl-alignment]]
+更新的页面：[[time-vlm]], [[multimodal-time-series-forecasting]], [[contrastive-learning]], [[index]]
+
 ## [2026-07-28] ingest | Time-VLM: Exploring Multimodal Vision-Language Models for Augmented Time Series Forecasting
 
 PDF: `raw/time-vlm-exploring-multimodal-vision-language-models-for-augmented-time-series-forecasting.pdf`（arXiv:2502.04395v2, ICML 2025）。冻结 VLM 统一时序/视觉/文本：RAL 层次检索记忆、VAL 时序成图、TAL 统计/域 prompt；自增强无外生模态。~143.6M 参；5% few-shot ETTh1 相对 Time-LLM MSE 约 −29.5%；消融 RAL 主导。

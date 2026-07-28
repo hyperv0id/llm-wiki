@@ -9,7 +9,7 @@ tags:
   - icml-2025
 created: 2026-07-28
 last_updated: 2026-07-28
-source_count: 1
+source_count: 2
 confidence: high
 status: active
 ---
@@ -90,6 +90,7 @@ flowchart LR
 | [[st-vision-llm|ST-Vision-LLM]] | 亦“时序当图像”，面向交通网格 + 生成式 Vision-LLM；Time-VLM 是通用 LTSF 基准 + 冻结 VLM 编码器融合[^src-time-vlm] |
 | [[source-solar-vlm|Solar-VLM]] | 外生卫星图 + 天气文本 + 跨站点图；Time-VLM 强调**无外生**自增强，Solar-VLM 基线含 TimeVLM[^src-time-vlm] |
 | [[time-mmd|Time-MMD]] / [[vot|VoT]] | 外生/事件文本与数值对齐；Time-VLM 不吃外生语料，VoT 报告中亦将 Time-VLM 列为多模态对照[^src-time-vlm] |
+| [[ts-vl-alignment|TS–VL Alignment]] (Yashwante & Yu) | **对齐几何诊断**（非预测器）：独立预训练 TS/V/L 近正交；后验对比投影有限且不对称，图像可作中介；外生多模态不能默认 foundation 空间自然贴合——支撑 Time-VLM 依赖**显式 VLM 耦合 + 时序成图/成文**而非 PRH 自动收敛[^src-time-vlm][^src-ts-vl-alignment] |
 | [[unica|UniCA]] / [[cora-tsfm|CoRA]] | TSFM **外生协变量适配**；Time-VLM 是 backbone+VLM 的端到端多模态预测器，非适配器框架[^src-time-vlm] |
 
 ## 局限
@@ -101,6 +102,7 @@ TAL 受通用 VLM 时序语义与短文本限制；全量高维集可落后专�
 - [[source-time-vlm]] — 源摘要  
 - [[multimodal-time-series-forecasting]] · [[source-raf]] · [[retrieval-augmented-spatio-temporal-forecasting]]  
 - [[source-solar-vlm]] · [[st-vision-llm]] · [[vision-language-traffic-forecasting]]  
-- [[vot]] · [[time-mmd]] · [[source-time-llm]] · [[source-time-mmd]]
+- [[vot]] · [[time-mmd]] · [[source-time-llm]] · [[source-time-mmd]] · [[ts-vl-alignment]] · [[source-ts-vl-alignment]]
 
 [^src-time-vlm]: [[source-time-vlm]]
+[^src-ts-vl-alignment]: [[source-ts-vl-alignment]]
