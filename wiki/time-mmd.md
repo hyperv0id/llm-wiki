@@ -73,6 +73,7 @@ Time-MMD 是**数据与评测基础设施**，不是预测模型。下游常引�
 | [[source-gpt4mts|DP-GPT4MTS]] | Agriculture / Public Health 子集 SOTA |
 | [[vot|VoT]]、[[timi|TiMi]]、TaTS 等 | 多域多模态预测 / 插补评测 |
 | [[tsfm-covariate-adaptation-comparison]] | 文本模态一行的公共参照 |
+| [[time-vlm|Time-VLM]] | 不直接用 Time-MMD 外生文本；内生图文自增强的 VLM 路线，与本基准形成「外生对齐 vs 内生 VLM」对照 |
 
 释放元数据：数值（起止、目标、协变量）+ 文本（起止、fact/prediction 内容与来源）。GitHub: `https://github.com/AdityaLab/Time-MMD`[^src-time-mmd]。
 
@@ -85,6 +86,7 @@ Time-MMD 是**数据与评测基础设施**，不是预测模型。下游常引�
 - [[source-time-mmd]] — 源摘要  
 - [[multimodal-time-series-forecasting]] · [[source-cora]] · [[cora-tsfm]] · [[source-unica]] · [[unica]]  
 - [[source-gpt4mts]] · [[source-from-news-to-forecast]] · [[source-event-driven-ts-forecasting]] · [[vot]]  
+- [[time-vlm]] · [[source-time-vlm]] — 内生 VLM 多模态预测（对照外生文本基准）
 - [[tsfm-covariate-adaptation-comparison]] · [[covariate-homogenization]]
 
 [^src-time-mmd]: [[source-time-mmd]]

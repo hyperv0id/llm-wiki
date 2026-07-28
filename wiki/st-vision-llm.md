@@ -9,7 +9,7 @@ tags:
   - few-shot
   - spatio-temporal
 created: 2026-06-08
-last_updated: 2026-06-08
+last_updated: 2026-07-28
 source_count: 1
 confidence: medium
 status: active
@@ -80,6 +80,7 @@ Removing the image encoder, the LLM backbone, or the GRPO stage each degrades ac
 | [[streasoner|STReasoner]] | graph reasoning (CoT) | TS + text | **S-GRPO** | TS-LM |
 
 ST-Vision-LLM and [[streasoner|STReasoner]] are the two members of this run that pair an LLM with **GRPO reinforcement learning** for spatio-temporal tasks, but differ in objective: ST-Vision-LLM optimizes numerical forecasting accuracy, while STReasoner optimizes multi-step natural-language reasoning[^src-st-vision-llm]. Unlike [[most|MoST]] (which uses real satellite imagery as a genuine modality), ST-Vision-LLM's "images" are a *rendering of the numerical traffic field itself* — a visual representation chosen for its 2D inductive bias, placing it within [[multimodal-time-series-forecasting|multimodal time-series forecasting]] but with a unique time-series-as-image route[^src-st-vision-llm].
+Relative to [[time-vlm|Time-VLM]] (ICML 2025), both treat time series as images for a vision-language stack, but Time-VLM freezes a smaller VLM encoder, adds retrieval-augmented temporal memory and self-generated text prompts for general LTSF benchmarks, whereas ST-Vision-LLM targets grid traffic with generative numerical tokens and GRPO[^src-st-vision-llm].
 
 ## Related Pages
 
@@ -93,6 +94,7 @@ ST-Vision-LLM and [[streasoner|STReasoner]] are the two members of this run that
 - [[most]] — multimodal ST foundation model (genuine image modality contrast)
 - [[streasoner]] — sibling LLM+GRPO ST model (reasoning vs forecasting)
 - [[multimodal-time-series-forecasting]] — broader multimodal TS landscape
+- [[time-vlm]] · [[source-time-vlm]] — general LTSF VLM bridge (TS-as-image + text self-augmentation)
 - [[traffic-forecasting]] — general traffic prediction
 - [[flow-grpo]] — GRPO applied to flow-matching generation (RL analogue in vision)
 

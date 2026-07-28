@@ -8,7 +8,7 @@ tags:
   - zero-shot
   - 2024
 created: 2026-07-07
-last_updated: 2026-07-07
+last_updated: 2026-07-28
 source_count: 1
 confidence: medium
 status: active
@@ -68,5 +68,6 @@ RAF 将时序检索定义为 **TS-R（Time-Series Retrieval）问题**：给定�
 - [[chronos|Chronos]] — RAF 的主要评估对象，时序基础模型
 - [[source-sundial|Sundial]] — 基于 Flow Matching 的时序基础模型系列
 - [[retrieval-augmented-spatio-temporal-forecasting]] — 检索增强时空预测泛式
+- [[time-vlm]] · [[source-time-vlm]] — Time-VLM RAL: hierarchical local/global patch memory inside a VLM multimodal pipeline (vs RAF motif concat for TSFM)
 
 [^src-raf]: [[source-raf]]

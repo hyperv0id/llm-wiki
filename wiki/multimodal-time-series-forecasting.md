@@ -8,7 +8,7 @@ tags:
   - covariate
   - satellite-imagery
 created: 2026-04-29
-source_count: 13
+source_count: 14
 last_updated: 2026-07-28
 confidence: high
 status: active
@@ -47,6 +47,7 @@ status: active
 
 - **FusionSF**：专为卫星场景设计
 - **MMSP 数据集**：多模态太阳能预测
+- **[[time-vlm|Time-VLM]]**（ICML 2025）：时序自生成图像 + 结构化文本 + 检索记忆，经冻结 VLM 桥接三模态（无外生新闻/卫星）[^src-time-vlm]
 
 ### 3. 时间序列基础模型方法
 
@@ -111,6 +112,10 @@ UniCA 在多模态场景下的表现：
 
 **[[timi|TiMi]]** (ICML 2026) 提出第三种多模态预测范式——**[[non-fusion-guidance|Non-Fusion Guidance]]**：不再尝试在表示层对齐或融合文本与数值模态，而是让冻结 LLM 独立推理文本中的未来趋势因果知识，通过 **[[mmoe|Multimodal Mixture-of-Experts (MMoE)]]** 门控机制注入 Transformer backbone 的时序建模过程[^src-timi]。MMoE 包含 TMoE（基于文本的路由）和 SMoE（基于序列全局趋势的路由）两个互补专家系统，可在不修改 backbone 架构的情况下即插即用[^src-timi]。在 16 个多模态基准上一致 SOTA，PatchTST+MMoE 平均 MSE 提升 18.2%[^src-timi]。与 VoT 同为 LLM 推理式方法但放弃特征融合，与 TaTS 同为即插即用但引入因果推理而非简单特征拼接[^src-timi]。
 
+## Time-VLM：VLM 桥接时序 / 视觉 / 文本
+
+**[[time-vlm|Time-VLM]]** (Zhong et al., ICML 2025, arXiv:2502.04395) 用冻结预训练 VLM（默认 ViLT；亦支持 CLIP / BLIP-2）统一 **时序 · 视觉 · 文本**：[[time-vlm|RAL]] 做 patch + local/global 检索记忆，[[time-vlm|VAL]] 将时序经 FFT/周期编码与多尺度卷积渲染为图像，[[time-vlm|TAL]] 生成统计与域描述 prompt；跨模态注意力 + 门控融合后预测。**不依赖外生文本/图像**，仅由原始时序自增强——相对 [[time-mmd|Time-MMD]]/[[vot|VoT]] 的外生文本路线，以及 UniCA/CoRA 的协变量适配路线，是一条 **内生多模态 + 检索** 路径[^src-time-vlm]。约 143.6M 参数（≈1/20 Time-LLM）；5% few-shot 上 ETTh1 相对 Time-LLM MSE 约 −29.5%；Weather 消融显示去 RAL +35.6% MSE、去 VAL +9.0%、去 TAL 仅 +2.1%（文本 token 稀疏）[^src-time-vlm]。
+
 ### 与其他多模态模型的对比
 
 | 维度 | Aurora | TiMi | UniCA | MoST | VoT | TaTS | ChannelMTS | PIPE |
@@ -173,7 +178,7 @@ UniCA 在多模态场景下的表现：
 
 ## ST-Vision-LLM：时间序列即图像
 
-**[[st-vision-llm|ST-Vision-LLM]]** (Yang et al., arXiv 2025) 代表多模态预测中一条独特路线：它不引入外部模态，而是将数值交通矩阵本身渲染为灰度伪RGB图像，用 Vision-LLM (Qwen2.5-VL-7B) 的原生视觉编码器感知整个网格的全局时空场景，再逐格生成数值 token 预测[^src-st-vision-llm]。与 MoST（使用真实卫星图像作为模态）不同，ST-Vision-LLM 的"图像"是数值场的视觉表示，选择视觉编码器纯粹为利用其 2D 网格归纳偏置，并配合 SFT + GRPO 两阶段训练直接优化预测精度[^src-st-vision-llm]。
+**[[st-vision-llm|ST-Vision-LLM]]** (Yang et al., arXiv 2025) 代表多模态预测中一条独特路线：它不引入外部模态，而是将数值交通矩阵本身渲染为灰度伪RGB图像，用 Vision-LLM (Qwen2.5-VL-7B) 的原生视觉编码器感知整个网格的全局时空场景，再逐格生成数值 token 预测[^src-st-vision-llm]。与 MoST（使用真实卫星图像作为模态）不同，ST-Vision-LLM 的"图像"是数值场的视觉表示，选择视觉编码器纯粹为利用其 2D 网格归纳偏置，并配合 SFT + GRPO 两阶段训练直接优化预测精度[^src-st-vision-llm]。与 [[time-vlm|Time-VLM]] 同属“时序渲染为图像 + VLM”，但 Time-VLM 面向通用 LTSF 基准、冻结编码器 + 门控融合且自带检索记忆与文本自描述；ST-Vision-LLM 面向网格交通、生成式 Vision-LLM + 数值 token / GRPO[^src-time-vlm][^src-st-vision-llm]。
 
 ## PIPE：物理知情位置编码的台风预测
 
@@ -209,6 +214,8 @@ UniCA 在多模态场景下的表现：
 - [[variant-frequency-positional-encoding]] — 变频率正弦编码
 - [[digital-typhoon-dataset]] — Digital Typhoon 台风卫星数据集
 - [[time-mmd]] — Time-MMD 多领域数值–文本时序数据集与 MM-TSFlib（NeurIPS 2024 D&B）
+- [[time-vlm]] — Time-VLM：冻结 VLM 桥接时序/视觉/文本 + RAL/VAL/TAL（ICML 2025）
+- [[source-time-vlm]] — Time-VLM 源摘要
 
 ---
 
@@ -227,3 +234,4 @@ UniCA 在多模态场景下的表现：
 [^src-pipe]: [[source-pipe]]
 [^src-timi]: [[source-timi]]
 [^src-time-mmd]: [[source-time-mmd]]
+[^src-time-vlm]: [[source-time-vlm]]

@@ -7,7 +7,7 @@ tags:
   - solar-energy
   - 2026
 created: 2026-07-07
-last_updated: 2026-07-07
+last_updated: 2026-07-28
 source_count: 1
 confidence: medium
 status: active
@@ -43,6 +43,7 @@ Evaluated on 8 real-world PV stations in Hebei Province, China (14 features, 15-
 
 - [[source-st-vision-llm]] — ST-Vision-LLM, a VLM-based framework for spatiotemporal traffic forecasting using visual encoding of traffic matrices
 - [[source-gpt4mts]] — GPT for Multimodal Time Series (related multimodal LLM forecasting approach)
+- [[time-vlm]] · [[source-time-vlm]] — Time-VLM (ICML 2025): endogenous TS→image/text + frozen VLM; listed as TimeVLM baseline in Solar-VLM
 
 ## Limitations
 

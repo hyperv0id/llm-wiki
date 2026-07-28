@@ -49,7 +49,7 @@ Aligns endogenous text with time series via **[[endogenous-text-alignment|Endoge
 
 ## Performance
 
-VoT achieves state-of-the-art results on 10 real-world multimodal datasets (domains overlapping [[time-mmd|Time-MMD]]-style multi-domain text–TS settings[^src-time-mmd]), with 20/20 first-place counts against time series-only and text-enhanced baselines. It outperforms multimodal methods including GPT4TS, GPT4MTS, TaTS, Time-VLM, and CALF[^src-event-driven-ts-forecasting].
+VoT achieves state-of-the-art results on 10 real-world multimodal datasets (domains overlapping [[time-mmd|Time-MMD]]-style multi-domain text–TS settings[^src-time-mmd]), with 20/20 first-place counts against time series-only and text-enhanced baselines. It outperforms multimodal methods including GPT4TS, GPT4MTS, TaTS, [[time-vlm|Time-VLM]], and CALF[^src-event-driven-ts-forecasting].
 
 ## Comparison with Related Models
 
@@ -62,6 +62,7 @@ VoT achieves state-of-the-art results on 10 real-world multimodal datasets (doma
 | [[unica|UniCA]] | TSFM covariate adaptation | Feature extraction | Heterogeneous covariates | Covariate homogenization |
 | [[aurora|Aurora]] | Forecasting | Feature extraction | Multi-modal (text+image+TS) | Modality-Guided Attention + Flow Matching |
 | GPT4TS | Forecasting | Feature extraction | Endogenous only | LLM as time series encoder |
+| [[time-vlm|Time-VLM]] | Forecasting | Frozen VLM encoders | Endogenous (self-generated image+stats text) | RAL retrieval memory + VAL/TAL + gated fusion |
 
 VoT is unique in using LLMs for **reasoning** (not just feature extraction) and supporting **both** exogenous and endogenous text simultaneously[^src-event-driven-ts-forecasting]. In contrast, [[tats|TaTS]] achieves multimodal integration through a simpler plug-and-play approach — treating text as auxiliary variables without LLM reasoning or architecture modification[^src-language-in-the-flow-of-time].
 
@@ -78,6 +79,7 @@ VoT is unique in using LLMs for **reasoning** (not just feature extraction) and 
 - [[mindts]] — related multimodal TS model (same lab: ECNU)
 - [[aurora]] — Aurora generative multimodal TS foundation model (different paradigm: generative vs. LLM reasoning)
 - [[tats]] — TaTS plug-and-play multimodal framework (simpler alternative approach)
+- [[time-vlm]] · [[source-time-vlm]] — VLM-bridged endogenous multimodal forecasting (ICML 2025 baseline in VoT)
 
 [^src-event-driven-ts-forecasting]: [[source-event-driven-ts-forecasting]]
 [^src-language-in-the-flow-of-time]: [[source-language-in-the-flow-of-time]]

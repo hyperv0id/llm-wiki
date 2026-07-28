@@ -1,3 +1,10 @@
+## [2026-07-28] ingest | Time-VLM: Exploring Multimodal Vision-Language Models for Augmented Time Series Forecasting
+
+PDF: `raw/time-vlm-exploring-multimodal-vision-language-models-for-augmented-time-series-forecasting.pdf`（arXiv:2502.04395v2, ICML 2025）。冻结 VLM 统一时序/视觉/文本：RAL 层次检索记忆、VAL 时序成图、TAL 统计/域 prompt；自增强无外生模态。~143.6M 参；5% few-shot ETTh1 相对 Time-LLM MSE 约 −29.5%；消融 RAL 主导。
+
+创建的页面：[[source-time-vlm]], [[time-vlm]]
+更新的页面：[[multimodal-time-series-forecasting]], [[vot]], [[time-mmd]], [[st-vision-llm]], [[source-raf]], [[source-solar-vlm]], [[index]]
+
 ## [2026-07-28] ingest | Time-MMD: Multi-Domain Multimodal Dataset for Time Series Analysis
 
 PDF: `raw/time-mmd-multi-domain-multimodal-dataset-for-time-series-analysis.pdf`（arXiv:2406.08627v4, NeurIPS 2024 D&B）。首个 9 域数值–文本时序数据集：细粒度对齐、fact/prediction 拆分控污染、MM-TSFlib 试点；>1000 实验约 95% 多模态优于单模态，MSE 平均降 >15%（富文本域 ~40%）。
