@@ -8,8 +8,8 @@ tags:
   - iclr-2026
 created: 2026-04-29
 created: 2026-04-29
-last_updated: 2026-07-04
-source_count: 2
+last_updated: 2026-07-28
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -64,7 +64,7 @@ UniCA 在以下基准上验证有效性：
 - **单模态**（12 个数据集）：能源、交通、医疗等领域的时序预测
 - **多模态**：MMSP（图像）、Time-MMD（文本）
 
-相比 ChronosX、TTM-R2、线性回归等基线方法，UniCA 在 MAE、MAPE、MSE、CRPS 等指标上取得一致提升[^src-unica]。
+相比 [[chronosx|ChronosX]]、TTM-R2、线性回归等基线方法，UniCA 在 MAE、MAPE、MSE、CRPS 等指标上取得一致提升[^src-unica]。ChronosX 原文机制为 IIB（past→嵌入）+ OIB（future→logits），并扩展 TimesFMX/MOMENTX 与 32 合成协变量集；UniCA 则强调异构模态同质化 + CAP 双融合[^src-chronosx]。
 
 ## 局限性
 
@@ -78,6 +78,7 @@ UniCA 在以下基准上验证有效性：
 ## 相关页面
 
 - [[source-unica]] — 源文件摘要
+- [[chronosx]] · [[source-chronosx]] — 早期模块适配对照（AISTATS 2025）
 - [[cora-tsfm|CoRA]] — 同期 ICLR 2026 的竞争框架，后置注入 + 零初始化 + 因果嵌入
 - [[tsfm-covariate-adaptation-comparison]] — 六种 TSFM 适配方法的系统对比
 - [[unified-covariate-adaptation]] — 统一协变量适应概念
@@ -92,3 +93,4 @@ UniCA 在以下基准上验证有效性：
 
 [^src-unica]: [[source-unica]]
 [^src-cora]: [[source-cora]]
+[^src-chronosx]: [[source-chronosx]]

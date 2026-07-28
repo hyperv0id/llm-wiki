@@ -8,7 +8,7 @@ tags:
   - multimodal
   - iclr-2026
 last_updated: 2026-07-28
-source_count: 4
+source_count: 6
 confidence: high
 status: active
 ---
@@ -22,7 +22,10 @@ status: active
 
 ## 动机
 
-大多数 TSFMs（[[timesfm|TimesFM]]、[[chronos|Chronos]]、[[sundial|Sundial]]、Moirai）在单变量时间序列上预训练，天然忽略了对真实预测任务至关重要的外生协变量——包括时间序列、文本、图像等多模态信息[^src-cora]。现有适配方法（ChronosX、AdaPTS、[[unica|UniCA]]）虽然在 TSFM 编码器前注入协变量，但这一设计改变了预训练嵌入空间，且缺乏零初始化，导致训练不稳定和灾难性遗忘[^src-cora][^src-unica]。
+大多数 TSFMs（[[timesfm|TimesFM]]、[[chronos|Chronos]]、[[sundial|Sundial]]、Moirai）在单变量时间序列上预训练，天然忽略了对真实预测任务至关重要的外生协变量——包括时间序列、文本、图像等多模态信息[^src-cora]。现有适配方法（[[chronosx|ChronosX]]、AdaPTS、[[unica|UniCA]]）虽可注入协变量，但 ChronosX 的 IIB 在编码器前改 token 嵌入、且整体**无零初始化**，易扰动预训练空间并导致不稳定/遗忘；UniCA 的 CAP 前置融合同属此类风险[^src-cora][^src-unica][^src-chronosx]。
+
+> [!note] ChronosX 机制补全
+> [[chronosx|ChronosX]]（AISTATS 2025）= **IIB（past→嵌入）+ OIB（future→logits）** 模块适配，可冻结 backbone；另有 TimesFMX/MOMENTX 与 32 合成协变量基准。CoRA 表中 ChronosX avg MSE 0.134 为 **Sundial 公平对比协议下的外部对照**，与 ChronosX 原文 18 集 WQL 设定不同[^src-chronosx][^src-cora]。
 
 CoRA 被设计来解决一个更根本的问题：**如何在保持预训练模型完整性的前提下，渐进式地融合异构协变量信息。**
 
@@ -129,7 +132,9 @@ CoRA 在 7 个多元数据集上平均 MSE 降低 14.5%，超越 TimeXer。优�
 - [[chronos]] — 核心兼容 TSFM backbone 之一
 - [[sundial]] — 实验主要 backbone，CoRA 在其上取得最佳适配效果
 - [[dits]] — 协变量感知预测的替代路线（MM-DiT 双流架构）
-- [[tsfm-covariate-adaptation-comparison]] — 六种 TSFM 适配方法的系统对比
+- [[tsfm-covariate-adaptation-comparison]] — 六种 TSFM 适配方法的系统对比（含 ChronosX 机制锚点）
+- [[chronosx]] — 早期模块适配基线（IIB+OIB）
+- [[source-chronosx]] — ChronosX 源摘要
 - [[zero-initialized-adaptation]] — CoRA 零初始化设计的理论基础
 - [[channel-independence]] — CoRA 在多元预测中采用的策略
 - [[cross-dimension-dependency]] — CoRA 通过 CI 隐式处理的跨变量依赖概念
@@ -146,3 +151,4 @@ CoRA 在 7 个多元数据集上平均 MSE 降低 14.5%，超越 TimeXer。优�
 [^src-dit]: [[source-dit]]
 [^src-dits]: [[source-dits]]
 [^src-sundial]: [[source-sundial]]
+[^src-chronosx]: [[source-chronosx]]

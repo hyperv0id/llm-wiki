@@ -7,8 +7,8 @@ tags:
   - multimodal-time-series
   - iclr-2026
 created: 2026-04-29
-last_updated: 2026-05-30
-source_count: 1
+last_updated: 2026-07-28
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -120,7 +120,7 @@ UniCA 在能源、交通、医疗等领域的时序预测数据集上相比：
 | Normalization Independence (SimDiff) | 处理分布漂移的另一种方法，但不处理模态差异 |
 | TIPS | 通过 regime-dependent 适应处理非平稳性，与 UniCA 的统一框架不同 |
 | TimesNet | 作为 TSFM 基线之一，UniCA 可在其上即插即用 |
-| ChronosX | 另一种 TSFMs 适应方法，UniCA 声称优于它 |
+| [[chronosx|ChronosX]] | 早期 TSFM 适配：IIB past + OIB future；无异构模态同质化；UniCA 声称优于它[^src-chronosx] |
 
 ## 引用
 
@@ -131,4 +131,5 @@ UniCA 在能源、交通、医疗等领域的时序预测数据集上相比：
 [^sec5.1]: [[source-unica]]
 [^sec5.2]: [[source-unica]]
 [^appI]: [[source-unica]]
+[^src-chronosx]: [[source-chronosx]]
 [^src-unica]: [[source-unica]]

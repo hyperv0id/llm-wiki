@@ -3092,3 +3092,26 @@ Ingest Gloeckle / Youbi Idrissi / Rozière / Lopez-Paz / Synnaeve (FAIR Meta), a
 更新的页面：[[channel-independence]], [[cora-tsfm]], [[source-cora]], [[index]]
 
 与既有协变量 CoRA（[[cora-tsfm]]）同缩写消歧。本文提出 TSFM 下游通道相关插件：DCE（低秩时变/时不变 + 时间多项式 + Pearson）、异质投影、HPCL 双对比、门控融合；训练 O(N²)、推理 O(N)。10 数据集 5% few-shot 上提升六类 TSFM；优于 LIFT/C-LoRA。PDF → raw/cheng-2025-cora-correlation-aware-adapter.pdf（Zotero KH6B8NT4）。
+
+## [2026-07-28] ingest | ChronosX: Adapting Pretrained Time Series Models with Exogenous Variables (AISTATS 2025)
+
+创建的页面：[[source-chronosx]], [[chronosx]]
+更新的页面：[[tsfm-covariate-adaptation-comparison]], [[cora-tsfm]], [[source-cora]], [[unica]], [[source-unica]], [[chronos]], [[timesfm]], [[zero-initialized-adaptation]], [[index]]
+
+Pineda Arango / Mercado et al. (Amazon, AISTATS 2025, arXiv:2503.12107)。IIB 用 past 协变量残差更新 token 嵌入，OIB 用 future 协变量残差修正 logits；可冻结 backbone；扩展 TimesFMX/MOMENTX。32 合成协变量基准（4 主信号 × 4 协变量 × {+,×}）+ 18 真实集；适配器相对 Chronos Small 约 −22% 聚合 WQL/MASE。PDF → raw/chronosx-adapting-pretrained-time-series-models-with-exogenous-variables.pdf（未改 raw）。
+
+## [2026-07-28] lint | ChronosX ingest 聚焦检查
+
+对照 AGETNS 清单，范围：本轮新建/修改页。
+
+### 严重
+- 无本轮引入的 broken wikilink / 缺 frontmatter（index 历史断链 multimodal-exogenous…、log 无 frontmatter 为仓库惯例）
+
+### 已修
+- [x] source-unica.md — ChronosX 表行补 `[^src-chronosx]`，消除未使用脚注
+- [x] tsfm-covariate-adaptation-comparison.md — 对比表注入位置改为「IIB 前 + OIB 后」与机制锚点一致
+
+### 通过
+- source-chronosx / chronosx frontmatter、自引脚注、index/log/ingest-report 齐全
+- raw PDF 只增（gitignore *.pdf，本地保留）
+

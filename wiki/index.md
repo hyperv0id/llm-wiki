@@ -67,6 +67,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-timexer]] — TimeXer: patch-wise self-attention + variate-wise cross-attention 融合内生 patch 与外生 variate token，NeurIPS 2024 (Tsinghua)
 - [[source-timesfm]] — TimesFM: Decoder-Only Foundation Model for Time-Series Forecasting (ICLR 2024)
 - [[source-chronos]] — Chronos: Learning the Language of Time Series (ICLR 2024)
+- [[source-chronosx]] — ChronosX: Adapting Pretrained Time Series Models with Exogenous Variables; IIB+OIB modular adapters, 32 synthetic + 18 real (AISTATS 2025, arXiv:2503.12107)
 - [[source-zhou-informer-2021]] — Informer: Beyond Efficient Transformer for Long Sequence Time-Series Forecasting (AAAI 2021 Best Paper)
 - [[source-timedit]] — TimeDiT: General-purpose Diffusion Transformers for Time Series Foundation Model (KDD 2025)
 - [[source-tips]] — TIPS: transformer with inductive prior synthesis for financial forecasting
@@ -372,6 +373,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[timesnet]] — TimesNet, task-general time series foundation model (ICLR 2023)
 - [[timesfm]] — TimesFM, decoder-only foundation model for time-series forecasting (ICLR 2024)
 - [[chronos]] — Chronos, pretrained time series language model with tokenizer (ICLR 2024)
+- [[chronosx]] — ChronosX, modular past/future covariate injection for Chronos/TimesFM/MOMENT (AISTATS 2025)
 - [[probts]] — ProbTS, unified point+distributional time-series forecasting benchmark tool (NeurIPS 2024)
 - [[cora-tsfm]] — CoRA, covariate-aware adaptation framework for TSFMs with Causality Embedding and zero-initialization (ICLR 2026)
 - [[unified-covariate-adaptation]] — UniCA, unified covariate adaptation framework for TSFMs (ICLR 2026)
@@ -1138,3 +1140,9 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[dynamic-correlation-estimation]] — DCE：Pearson + Qt V Qtᵀ 低秩动态相关估计（CoRA）
 - [[heterogeneous-partial-contrastive-learning]] — HPCL：正/负空间掩码对比学习 HCorr+PCorr（仅训练）
 - [[time-aware-polynomial-correlation]] — 可学习时间多项式拟合时变相关因子 Qt
+
+## Sources (continued)
+- [[source-chronosx]] — ChronosX: IIB past + OIB future modular covariate adapters for pretrained TS models; 32 synthetic benchmark; TimesFMX/MOMENTX (AISTATS 2025, arXiv:2503.12107)
+
+## Entities (continued)
+- [[chronosx]] — ChronosX 实体：past/future Injection Blocks + 跨骨干扩展

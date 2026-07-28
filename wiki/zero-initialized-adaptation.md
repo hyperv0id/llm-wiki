@@ -6,8 +6,8 @@ tags:
   - model-adaptation
   - tsfm-adaptation
 created: 2026-07-04
-last_updated: 2026-07-04
-source_count: 4
+last_updated: 2026-07-28
+source_count: 5
 confidence: high
 status: active
 ---
@@ -50,7 +50,7 @@ LoRA（Low-Rank Adaptation）将预训练权重的更新分解为低秩矩阵乘
 |------|---------|---------|
 | [[cora-tsfm|CoRA]] | ✅ 全部新增参数 | 最佳性能 |
 | [[unica|UniCA]] | ❌ | 前置注入扰乱预训练嵌入空间；CoRA 在相同 backbone 下超出 23.5% |
-| ChronosX | ❌ | CoRA 超出 97.1%（可能另有原因） |
+| [[chronosx|ChronosX]] | ❌ | IIB 前置改嵌入 + 无零 init；CoRA 在 Sundial 协议超出 97.1%（非唯一原因）[^src-chronosx] |
 | AdaPTS | ❌ | CoRA 超出 23.5% |
 
 需要指出：ChronosX 和 AdaPTS 的差距不能全部归因于零初始化——它们还在编码器前注入协变量（双重劣势）。UniCA 作为最接近的对比，其前置注入 + 无零初始化的组合劣势最为清晰[^src-cora][^src-unica]。
@@ -65,8 +65,10 @@ LoRA（Low-Rank Adaptation）将预训练权重的更新分解为低秩矩阵乘
 - [[dit|DiT]] — adaLN-Zero 的原始出处
 - [[tsfm-covariate-adaptation-comparison]] — 六种 TSFM 适配方法的系统对比
 - [[unica|UniCA]] — 缺乏零初始化的对比方法
+- [[chronosx|ChronosX]] — 早期 IIB+OIB 适配，无零初始化
 
 [^src-cora]: [[source-cora]]
 [^src-dit]: [[source-dit]]
 [^src-unica]: [[source-unica]]
+[^src-chronosx]: [[source-chronosx]]
 [^src-sundial]: [[source-sundial]]

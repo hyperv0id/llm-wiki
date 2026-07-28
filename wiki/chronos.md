@@ -7,8 +7,8 @@ tags:
   - tokenizer
   - iclr2024
 created: 2026-04-29
-last_updated: 2026-07-21
-source_count: 6
+last_updated: 2026-07-28
+source_count: 7
 confidence: high
 status: active
 ---
@@ -56,6 +56,10 @@ Chronos 是 UniCA 论文中验证的主要基础模型之一：
 - **Chronos-Bolt + UniCA**：在单模态数据集上达到 0.506 MAPE（最优结果）
 - **多模态任务**：Time-MMD 上达到 0.601 MAPE，提升 13%[^src-unca]
 
+## 与 ChronosX 的协变量扩展
+
+[[chronosx|ChronosX]]（AISTATS 2025）在 Chronos 上挂接 **Input Injection Block（past 协变量更新 token 嵌入）** 与 **Output Injection Block（future 协变量修正 logits）**，可冻结 backbone 只训适配器，或 ChronosX(FF) 全参微调；同框架扩展为 TimesFMX / MOMENTX。作者报告适配器相对 Chronos Small 约 **−22%** 聚合 WQL/MASE，并贡献 32 合成协变量基准与 18 真实集评测[^src-chronosx]。
+
 ## 与 Sundial 的对比
 
 Sundial (ICML 2025) 提出了与 Chronos 形成鲜明对比的设计选择[^src-sundial]:
@@ -73,6 +77,8 @@ Sundial 团队在 Table 8 中报告：使用相同 94B 预训练数据子集时�
 ## 相关页面
 
 - [[unified-covariate-adaptation]] — UniCA 框架
+- [[chronosx]] · [[source-chronosx]] — Chronos 的协变量模块适配（AISTATS 2025）
+- [[tsfm-covariate-adaptation-comparison]] — 含 ChronosX 的适配路线对比
 - [[timesfm]] — TimesFM 基础模型
 - [[timesnet]] — TimesNet 基础模型
 - [[most]] — MoST 多模态时空基础模型（不同领域：TS vs ST）
@@ -103,4 +109,5 @@ Sundial 团队在 Table 8 中报告：使用相同 94B 预训练数据子集时�
 [^src-sundial]: [[source-sundial]]
 [^src-probts]: [[source-probts]]
 [^src-dynamix]: [[source-dynamix]]
+[^src-chronosx]: [[source-chronosx]]
 [^src-moirai-moe]: [[source-moirai-moe]]

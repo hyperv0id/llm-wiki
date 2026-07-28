@@ -7,8 +7,8 @@ tags:
   - decoder-only
   - iclr2024
 created: 2026-04-29
-last_updated: 2026-07-21
-source_count: 7
+last_updated: 2026-07-28
+source_count: 8
 confidence: high
 status: active
 ---
@@ -72,6 +72,10 @@ TimesFM 可以通过 UniCA 框架适配到协变量感知预测任务：
 - **多变量耦合缺失**：TimesFM 将各维度独立处理，无法捕获非线性动力系统中维度间的耦合关系——这是 DSR 失败的根本原因[^src-dynamix]
 - **6D Lorenz-96 失败**：TimesFM 完全无法重建更高维的动力学结构，MASE=4.82 vs DynaMix 的 1.02[^src-dynamix]
 
+## TimesFMX（协变量适配）
+
+[[chronosx|ChronosX]] 将同一 IIB/OIB 式适配推广到 patch 输入与点预测骨干，得到 **TimesFMX**：协变量与目标同步 patch 后进注入块；OIB 在点预测 \(\hat z_t\) 上加残差（式 6）。合成/真实评测中 TimesFMX 相对零样本 TimesFM 明显受益，但真实集聚合 WQL 通常仍落后 ChronosX[^src-chronosx]。
+
 ---
 
 ## 引用
@@ -83,3 +87,4 @@ TimesFM 可以通过 UniCA 框架适配到协变量感知预测任务：
 [^src-probts]: [[source-probts]]
 [^src-dynamix]: [[source-dynamix]]
 [^src-moirai-moe]: [[source-moirai-moe]]
+[^src-chronosx]: [[source-chronosx]]

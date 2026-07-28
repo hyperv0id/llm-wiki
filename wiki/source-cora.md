@@ -9,7 +9,7 @@ tags:
   - iclr-2026
 created: 2026-05-31
 last_updated: 2026-07-28
-source_count: 1
+source_count: 3
 confidence: high
 status: active
 ---
@@ -25,7 +25,7 @@ status: active
 
 ### 1. 问题：TSFM 在协变量感知预测上的空白
 
-大多数时间序列基础模型（TSFMs）在单变量时间序列上预训练，无法利用现实预测任务中的多样协变量信息——包括分类变量、图像、文本等异构模态[^src-cora]。现有的协变量适配方法（ChronosX、AdaPTS、UniCA）虽然在 TSFM 编码器前注入协变量信号，但这种设计会扰乱预训练的嵌入空间，且缺乏零初始化，容易导致灾难性遗忘[^src-cora]。
+大多数时间序列基础模型（TSFMs）在单变量时间序列上预训练，无法利用现实预测任务中的多样协变量信息——包括分类变量、图像、文本等异构模态[^src-cora]。现有的协变量适配方法（[[chronosx|ChronosX]]、AdaPTS、UniCA）虽注入协变量，但 ChronosX 的 past **IIB** 改 token 嵌入、整体**无零初始化**，易扰乱预训练嵌入空间并诱发灾难性遗忘；UniCA 的编码器前 CAP 融合同属前置风险[^src-cora][^src-chronosx]。
 
 ### 2. 核心贡献：CoRA 三大组件
 
@@ -70,7 +70,7 @@ UniCA 将协变量在 TSFM 编码器前注入（通过 CAP + 自注意力），�
 
 | 方法 | 与 CoRA 的关系 |
 |------|-----------------|
-| ChronosX | 前置注入协变量，无零初始化，CoRA 优于它 |
+| [[chronosx|ChronosX]] | IIB past 嵌入 + OIB future logits；无零初始化；32 合成基准；CoRA 在 Sundial 协议上优于它 |
 | AdaPTS | 前置注入，CoRA 将协变量保留在预测头 |
 | [[unica|UniCA]] | 同为 ICLR 2026，CAP 前置融合 vs CoRA 零初始化后置注入 |
 | LoRA | 低秩适配，CoRA 借鉴了其零初始化思想，详见 [[zero-initialized-adaptation|零初始化适配]] |
@@ -79,4 +79,5 @@ UniCA 将协变量在 TSFM 编码器前注入（通过 CAP + 自注意力），�
 ## 引用
 
 [^src-cora]: [[source-cora]]
+[^src-chronosx]: [[source-chronosx]]
 [^src-unica]: [[source-unica]]

@@ -7,8 +7,8 @@ tags:
   - time-series-foundation-model
   - iclr-2026
 created: 2026-07-04
-last_updated: 2026-07-04
-source_count: 6
+last_updated: 2026-07-28
+source_count: 7
 confidence: high
 status: active
 ---
@@ -28,17 +28,19 @@ status: active
 
 前置注入的根本问题在于：**协变量嵌入扰乱了预训练的嵌入空间分布，触发灾难性遗忘**。UniCA 试图通过 CAP + 自注意力缓解这一问题，但仍未采用零初始化[^src-unica]。CoRA 的立场最激进：预训练嵌入空间应当**绝对保护**，协变量仅作为预测头的条件调制信号[^src-cora]。
 
+**ChronosX 机制锚点（AISTATS 2025）**：并非笼统“编码器前塞协变量”。默认由 **IIB**（past 协变量残差更新 token 嵌入，属前置）+ **OIB**（future 协变量残差修正 logits / 点预测，属后置）组成；可只开 IIB 或 OIB；并可扩展为 TimesFMX / MOMENTX（patch 对齐 + 点预测 OIB）。作者另发布 32 合成协变量基准与 18 真实集评测；适配器-only 相对 Chronos 零样本约 **−22%** 聚合 WQL/MASE，真实集上 ChronosX 在适配后的预训练系中 WQL 最优。文中**无零初始化**；适配需下游训练，牺牲纯零样本[^src-chronosx]。
+
 ## 六方法系统对比
 
 | 维度 | CoRA | UniCA | DiTS | ChronosX | AdaPTS | Gen-P-Tuning |
 |------|------|-------|------|----------|--------|-------------|
-| **注入位置** | 预测头（adaLN） | 编码器前+后 | 双流 cross-attn | 编码器前 | 编码器前 | 上下文前缀 |
+| **注入位置** | 预测头（adaLN） | 编码器前+后 | 双流 cross-attn | IIB 前 + OIB 后 | 编码器前 | 上下文前缀 |
 | **backbone 处理** | 完全冻结 | 冻结 | 双流并行 | 冻结 | 冻结 | 冻结 |
 | **协变量选择** | Causality Embedding（可解释） | CAP 注意力池化（黑盒） | Token-level conditioning | 无显式选择 | 无显式选择 | Prompt 学习 |
 | **零初始化** | ✅ 全部新增参数 | ❌ | ❌（MM-DiT 标准初始化） | ❌ | ❌ | 部分 |
 | **多模态支持** | TS + 文本 + 图像 | TS 为主 | TS 协变量流 | TS 协变量 | TS 协变量 | TS 协变量 |
-| **核心优势** | 渐进式融合、可解释选择 | 双阶段融合、同质化处理 | Token 级细粒度控制 | 首个 TSFM 协变量适配 | 概率化多元适配 | 最小结构改动 |
-| **核心局限** | 协变量数量可扩展性未讨论 | 前置注入扰乱嵌入空间 | 计算开销（双流 attention） | 无零初始化 | 无零初始化 | 仅前缀级信息注入 |
+| **核心优势** | 渐进式融合、可解释选择 | 双阶段融合、同质化处理 | Token 级细粒度控制 | IIB past + OIB future 模块化；32 合成基准 | 概率化多元适配 | 最小结构改动 |
+| **核心局限** | 协变量数量可扩展性未讨论 | 前置注入扰乱嵌入空间 | 计算开销（双流 attention） | 无零初始化；IIB 改嵌入；需适配训练失零样本 | 无零初始化 | 仅前缀级信息注入 |
 | **backbone 兼容** | Sundial/TimesFM/Chronos-Bolt/FlowState/Moirai | Chronos-Bolt/TimesFM/Moirai | 自有 MM-DiT backbone | Chronos | 自有 | TimesFM/Lag-Llama |
 
 ## 性能对比
@@ -88,8 +90,11 @@ DiTS 代表了与前两者不同的范式：它不使用现有 TSFM，而是从�
 - [[heterogeneous-covariates]] — 异构协变量的分类与挑战
 - [[sundial|Sundial]] — CoRA 和对比实验的主要 backbone
 - [[timesfm|TimesFM]] — CoRA 兼容的 decoder-only TSFM
-- [[chronos|Chronos]] — CoRA 兼容的 tokenized TSFM
+- [[chronos]] — CoRA 兼容的 tokenized TSFM；ChronosX 的默认骨干
 - [[multimodal-time-series-forecasting]] — 多模态时间序列预测的总体概念
+- [[chronosx]] — ChronosX 实体（IIB+OIB 模块适配，AISTATS 2025）
+- [[source-chronosx]] — ChronosX 源摘要
+- [[timesfm]] — TimesFM；同框架扩展 TimesFMX
 
 [^src-cora]: [[source-cora]]
 [^src-unica]: [[source-unica]]
@@ -97,3 +102,4 @@ DiTS 代表了与前两者不同的范式：它不使用现有 TSFM，而是从�
 [^src-timesfm]: [[source-timesfm]]
 [^src-chronos]: [[source-chronos]]
 [^src-sundial]: [[source-sundial]]
+[^src-chronosx]: [[source-chronosx]]
