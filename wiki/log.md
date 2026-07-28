@@ -1,3 +1,10 @@
+## [2026-07-28] ingest | On the Value of Cross-Modal Misalignment in Multimodal Representation Learning
+
+PDF: `raw/on-the-value-of-cross-modal-misalignment-in-multimodal-representation-learning.pdf`（arXiv:2504.10143v7, NeurIPS 2025）。LVM 形式化 selection/perturbation bias；MMCL block-identify 无偏共享语义；全语义预训练应缓解、OOD 不变表示可利用；仿真 + MPI3D + Causal3DIdent + OpenCLIP/LAION 验证。
+
+创建的页面：[[source-cross-modal-misalignment]], [[cross-modal-misalignment]]
+更新的页面：[[ts-vl-alignment]], [[constrained-text-fusion]], [[contrastive-learning]], [[multimodal-time-series-forecasting]], [[time-mmd]], [[index]]
+
 ## [2026-07-28] ingest | Rethinking Multimodal Fusion: Text Modalities Need Constrained Fusion
 
 PDF: `raw/rethinking-multimodal-fusion-for-time-series-text-modalities-need-constrained-fusion.pdf`（arXiv:2603.22372v3, KDD ’26 MILETS）。Time-MMD 九域 ×14 TS×4 文本：naive add/concat 常低于 unimodal；Gating/FiLM/Orthogonal/CFA 约束融合更稳；CFA 低秩残差 plug-in（+0.61% 参），9/9 域胜 unimodal、13/14 骨干提升。

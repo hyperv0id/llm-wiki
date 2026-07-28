@@ -10,7 +10,7 @@ tags:
   - kdd-2026
 created: 2026-07-28
 last_updated: 2026-07-28
-source_count: 1
+source_count: 2
 confidence: high
 status: active
 ---
@@ -60,6 +60,7 @@ CFA：\(W_{\mathrm{down}}:D\to D/r\)，ReLU∘LN，\(W_{\mathrm{up}}\) 回 \(D\)
 | [[timi|TiMi]] / [[non-fusion-guidance|Non-Fusion Guidance]] | **放弃特征融合**，LLM 知识 → MoE 路由；与 CFA 同认“乱融有害”，解法正交（不融合 vs 约束融合） |
 | [[time-vlm|Time-VLM]] | 架构特定 VLM 桥接 + 门控；文内归 architecture-specific；门控与 constrained 思想可对照 |
 | [[ts-vl-alignment|TS–VL Alignment]] | 表示空间诊断：TS–TXT 难对齐 → 与“文本不可无控注入”互补 |
+| [[cross-modal-misalignment|Cross-modal misalignment]] | 预训练 MMCL：省略/扰动语义进不了对比表示；CFA 是**任务侧**再过滤，理论层解释“为何文本容量应压低”[^src-cross-modal-misalignment] |
 
 ## 局限
 
@@ -68,6 +69,7 @@ CFA：\(W_{\mathrm{down}}:D\to D/r\)，ReLU∘LN，\(W_{\mathrm{up}}\) 回 \(D\)
 ## 相关页面
 
 - [[source-constrained-text-fusion]] — 源摘要  
-- [[time-mmd]] · [[multimodal-time-series-forecasting]] · [[non-fusion-guidance]] · [[timi]] · [[vot]] · [[time-vlm]] · [[ts-vl-alignment]] · [[tats]]
+- [[time-mmd]] · [[multimodal-time-series-forecasting]] · [[non-fusion-guidance]] · [[timi]] · [[vot]] · [[time-vlm]] · [[ts-vl-alignment]] · [[tats]] · [[cross-modal-misalignment]] · [[source-cross-modal-misalignment]]
 
 [^src-constrained-text-fusion]: [[source-constrained-text-fusion]]
+[^src-cross-modal-misalignment]: [[source-cross-modal-misalignment]]

@@ -9,7 +9,7 @@ tags:
   - platonic-representation
 created: 2026-07-28
 last_updated: 2026-07-28
-source_count: 2
+source_count: 3
 confidence: high
 status: active
 ---
@@ -79,6 +79,7 @@ flowchart LR
 | 时序渲染为图再进 VLM | 与“图像中介”一致，格式匹配利于对齐[^src-ts-vl-alignment] |
 | [[time-vlm|Time-VLM]] 自生成图文 + 冻 VLM | 应用层桥接；本文说明桥接**依赖显式耦合与显式性**，非 PRH 自动收敛 |
 | [[time-mmd|Time-MMD]] / [[vot|VoT]] / [[timi|TiMi]] / [[constrained-text-fusion|CFA]] 外生文本 | 文本若仅高阶解读（诊断/新闻）而非结构描述，对齐信号更稀；任务侧需融合/引导设计——CFA 进一步显示 **naive 表示融合常伤预测**，需 constrained 注入[^src-ts-vl-alignment][^src-constrained-text-fusion] |
+| [[cross-modal-misalignment|Cross-modal misalignment]]（MMCL 理论） | 配对训练下表示只 **block-identify 无偏共享语义**；selection/perturbation 解释“文本只写部分/写错”时共享空间为何变窄——与本文后验几何诊断互补[^src-cross-modal-misalignment] |
 | 端到端联合预训练 / 任务耦合 | 协议未覆盖；作者标为未来方向，暗示**仅投影不够**时需更深耦合[^src-ts-vl-alignment] |
 
 ## 局限
@@ -89,7 +90,8 @@ flowchart LR
 
 - [[source-ts-vl-alignment]] — 源摘要  
 - [[multimodal-time-series-forecasting]] · [[contrastive-learning]] · [[time-vlm]] · [[source-time-vlm]]  
-- [[chronos]] · [[timesfm]] · [[time-mmd]] · [[vot]] · [[st-vision-llm]] · [[constrained-text-fusion]] · [[source-constrained-text-fusion]]
+- [[chronos]] · [[timesfm]] · [[time-mmd]] · [[vot]] · [[st-vision-llm]] · [[constrained-text-fusion]] · [[source-constrained-text-fusion]] · [[cross-modal-misalignment]] · [[source-cross-modal-misalignment]]
 
 [^src-ts-vl-alignment]: [[source-ts-vl-alignment]]
 [^src-constrained-text-fusion]: [[source-constrained-text-fusion]]
+[^src-cross-modal-misalignment]: [[source-cross-modal-misalignment]]

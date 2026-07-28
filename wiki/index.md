@@ -71,6 +71,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-time-vlm]] — Time-VLM: frozen VLM bridges temporal/visual/textual via RAL+VAL+TAL; few/zero-shot strong (ICML 2025, arXiv:2502.04395)
 - [[source-ts-vl-alignment]] — TS–VL Alignment: near-orthogonal frozen TS/V/L; post-hoc contrastive projection limits (arXiv:2602.19367)
 - [[source-constrained-text-fusion]] — Constrained Text Fusion / CFA: naive add/concat often hurts vs unimodal; low-rank plug-in (KDD ’26 MILETS, arXiv:2603.22372)
+- [[source-cross-modal-misalignment]] — Cross-modal misalignment: selection/perturbation bias; MMCL block-identifies unbiased semantics (NeurIPS 2025, arXiv:2504.10143)
 - [[source-zhou-informer-2021]] — Informer: Beyond Efficient Transformer for Long Sequence Time-Series Forecasting (AAAI 2021 Best Paper)
 - [[source-timedit]] — TimeDiT: General-purpose Diffusion Transformers for Time Series Foundation Model (KDD 2025)
 - [[source-tips]] — TIPS: transformer with inductive prior synthesis for financial forecasting
@@ -380,6 +381,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[time-vlm]] — Time-VLM, endogenous multimodal TS forecasting with retrieval memory + VLM (ICML 2025)
 - [[ts-vl-alignment]] — Yashwante & Yu trimodal contrastive alignment limits for TS–vision–language (arXiv:2602.19367)
 - [[constrained-text-fusion]] — CFA / constrained text fusion for multimodal TS (Lee et al., arXiv:2603.22372)
+- [[cross-modal-misalignment]] — selection/perturbation bias in MMCL; mitigate vs leverage (Cai & Liu et al., NeurIPS 2025)
 - [[probts]] — ProbTS, unified point+distributional time-series forecasting benchmark tool (NeurIPS 2024)
 - [[cora-tsfm]] — CoRA, covariate-aware adaptation framework for TSFMs with Causality Embedding and zero-initialization (ICLR 2026)
 - [[unified-covariate-adaptation]] — UniCA, unified covariate adaptation framework for TSFMs (ICLR 2026)
@@ -807,6 +809,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[event-prior-augmentation]] — EPA, categorized extreme event memory pool + dual-level attention fusion for hierarchical extreme modeling (arXiv 2025)
 - [[cross-view-text-fusion]] — MindTS's cross-view attention fusing endogenous and exogenous text views (ICLR 2026)
 - [[contrastive-learning]] — representation learning via positive/negative pair similarity optimization
+- [[cross-modal-misalignment]] — formal selection/perturbation bias; what contrastive multimodal encoders retain (NeurIPS 2025)
 - [[information-bottleneck-principle]] — IB, compressed representations retaining maximal task-relevant information
 - [[efficient-cosine-operator]] — ECO, linear-complexity graph convolution via cosine similarity decomposition (arXiv 2026)
 - [[stochastic-shared-embedding]] — SSE, stochastic shared embedding regularization for graph node embeddings (NeurIPS 2019, adapted 2026)
@@ -1153,6 +1156,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-time-vlm]] — Time-VLM: RAL/VAL/TAL + frozen ViLT/CLIP/BLIP-2 for augmented TSF (ICML 2025, arXiv:2502.04395v2)
 - [[source-ts-vl-alignment]] — TS–VL Alignment source: 34 configs, ID saturation, image-as-intermediary (arXiv:2602.19367v1)
 - [[source-constrained-text-fusion]] — CFA source: >20K Time-MMD settings, Gating/FiLM/Orthogonal/CFA (arXiv:2603.22372)
+- [[source-cross-modal-misalignment]] — Cross-modal misalignment LVM: selection/perturbation; MMCL retains unbiased semantics (NeurIPS 2025, arXiv:2504.10143v7)
 
 ## Entities (continued)
 - [[chronosx]] — ChronosX 实体：past/future Injection Blocks + 跨骨干扩展
@@ -1160,3 +1164,4 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[time-vlm]] — Time-VLM 实体：检索记忆 + 时序成图/成文 + VLM 融合
 - [[ts-vl-alignment]] — TS–VL Alignment 实体：近正交 / 后验投影上限 / 外生多模态含义
 - [[constrained-text-fusion]] — Constrained Text Fusion / CFA：naive vs 受控文本注入
+- [[cross-modal-misalignment]] — Cross-modal misalignment 概念：缓解 vs 利用；block-id 无偏语义

@@ -8,7 +8,7 @@ tags:
   - covariate
   - satellite-imagery
 created: 2026-04-29
-source_count: 16
+source_count: 17
 last_updated: 2026-07-28
 confidence: high
 status: active
@@ -124,6 +124,10 @@ UniCA 在多模态场景下的表现：
 
 **[[constrained-text-fusion|Constrained Text Fusion / CFA]]**（Lee et al., LG AI Research, KDD ’26 MILETS, arXiv:2603.22372）在 [[time-mmd|Time-MMD]] 九域上做 **>20K** 设定对照：冻结文本编码器（BERT / GPT-2 / Llama3 / Doc2Vec）× 14 TS 骨干 × first/middle/last × add/concat，发现 **naive 融合经常低于 unimodal TS**（甚至 Div.：MSE>单模态 10×），归因于辅助文本的无关/冲突信号无控注入。**Constrained** 族——Gating、FiLM 调制、正交分量注入、以及 **CFA**（低秩瓶颈残差 \(z_{\mathrm{TS}}+W_{\mathrm{up}}\phi(W_{\mathrm{down}}z_{\mathrm{Text}})\)，\(r=8\)，近零 init）——系统优于 naive；CFA 在 9 域全胜 unimodal、7/9 rank-1、13/14 骨干提升，参数仅约 +0.61%。相对 [[tats|TaTS]]（first-add naive plug-in）与 [[timi|TiMi]] 的 [[non-fusion-guidance|Non-Fusion Guidance]]（完全不融特征），CFA 是 **plug-in + 受控特征融合** 的中间路线[^src-constrained-text-fusion]。
 
+## Cross-Modal Misalignment：缓解 vs 利用
+
+**[[cross-modal-misalignment|Cross-modal misalignment]]**（Cai, Liu et al., NeurIPS 2025, arXiv:2504.10143）在 CLIP 式 **MMCL** 下形式化 **selection bias**（文本省略语义）与 **perturbation bias**（选中语义被改写）：对比表示 **只 block-identify 无偏共享语义子集**，省略/扰动与模态噪声一律剔除。对多模态时序的含义：（1）外生文本若只描述部分动力学因子或含错误展望，对齐空间天然变窄，不能指望规模 alone 补回；（2）若目标是 OOD 稳健，可**有意**让文本省略/扰动环境敏感因子；（3）与 [[ts-vl-alignment|TS–VL]] 的几何上限、[[constrained-text-fusion|CFA]] 的任务侧约束融合形成「预训练可辨识 → 表示几何 → 预测融合」三层互补[^src-cross-modal-misalignment]。
+
 ### 与其他多模态模型的对比
 
 | 维度 | Aurora | TiMi | UniCA | MoST | VoT | TaTS | ChannelMTS | PIPE |
@@ -228,6 +232,8 @@ UniCA 在多模态场景下的表现：
 - [[source-ts-vl-alignment]] — TS–VL Alignment 源摘要
 - [[constrained-text-fusion]] — Constrained Text Fusion / CFA：naive 常伤、低秩受控融合（KDD ’26 MILETS）
 - [[source-constrained-text-fusion]] — CFA 源摘要
+- [[cross-modal-misalignment]] — 跨模态 selection/perturbation bias 与 MMCL 可辨识性（NeurIPS 2025）
+- [[source-cross-modal-misalignment]] — 源摘要
 
 ---
 
@@ -249,3 +255,4 @@ UniCA 在多模态场景下的表现：
 [^src-time-vlm]: [[source-time-vlm]]
 [^src-ts-vl-alignment]: [[source-ts-vl-alignment]]
 [^src-constrained-text-fusion]: [[source-constrained-text-fusion]]
+[^src-cross-modal-misalignment]: [[source-cross-modal-misalignment]]
