@@ -8,8 +8,8 @@ tags:
   - time-series
   - 2025
 created: 2026-07-07
-last_updated: 2026-07-07
-source_count: 1
+last_updated: 2026-07-28
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -32,9 +32,9 @@ Time series inputs are processed with RevIN (reversible instance normalization) 
 
 Experiments use two multimodal time series sources:
 - **GDELT-based dataset** (Jia et al., 2024): 10 event types across 53 US regions, daily frequency, lookback=15, predict=7 days
-- **Time-MMD dataset** (Liu et al., 2024a): agriculture (monthly, lookback=12, predict=4 months) and public health (weekly, lookback=36, predict=12 weeks)
+- **[[time-mmd|Time-MMD]] dataset** (Liu et al., 2024a / NeurIPS 2024 D&B): agriculture (monthly, lookback=12, predict=4 months) and public health (weekly, lookback=36, predict=12 weeks)[^src-time-mmd]
 
-DP-GPT4MTS achieves the lowest MSE on 8/10 GDELT events and best average MSE (0.976 vs GPT4MTS 0.997) and MAE. On Time-MMD, it achieves MSE/MAE of 0.098/0.211 (Agriculture) and 0.890/0.601 (Public Health), outperforming PatchTST, Autoformer, iTransformer, TimeLLM, and GPT4MTS[^src-gpt4mts].
+DP-GPT4MTS achieves the lowest MSE on 8/10 GDELT events and best average MSE (0.976 vs GPT4MTS 0.997) and MAE. On [[time-mmd|Time-MMD]], it achieves MSE/MAE of 0.098/0.211 (Agriculture) and 0.890/0.601 (Public Health), outperforming PatchTST, Autoformer, iTransformer, TimeLLM, and GPT4MTS[^src-gpt4mts].
 
 ## Significance
 
@@ -43,5 +43,8 @@ DP-GPT4MTS provides a clean architectural insight: decoupling task-level instruc
 ## 相关页面
 
 - [[source-exollm]] — LLM 外生变量预测
+- [[time-mmd]] · [[source-time-mmd]] — 多领域数值–文本基准
+- [[multimodal-time-series-forecasting]] — 多模态预测概念
 
 [^src-gpt4mts]: [[source-gpt4mts]] — DP-GPT4MTS: Dual-Prompt Large Language Model for Textual-Numerical Time Series Forecasting (Liu, Wang & Zhu, arXiv 2025)
+[^src-time-mmd]: [[source-time-mmd]]

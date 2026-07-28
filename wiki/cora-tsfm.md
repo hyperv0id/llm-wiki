@@ -91,7 +91,7 @@ CoRA 通过 `[[channel-independence|Channel Independence]]` 机制处理多元�
 ### 多模态预测
 
 - **RT-1**（图像协变量）：超越最佳端到端监督模型 12.7% MSE[^src-cora]
-- **Time-MMD**（文本协变量）：超越 UniCA 1.9% MSE[^src-cora]
+- **[[time-mmd|Time-MMD]]**（文本协变量）：超越 UniCA 1.9% MSE[^src-cora][^src-time-mmd]
 
 ### Few-Shot 预测（EPF）
 
@@ -118,7 +118,7 @@ CoRA 在 7 个多元数据集上平均 MSE 降低 14.5%，超越 TimeXer。优�
 | 预训练空间保护 | 严格保护（冻结 backbone + 零初始化） | 前置注入扰乱了编码器输入空间 |
 | 协变量选择 | Causality Embedding（可解释） | 注意力池化（黑盒） |
 | 零初始化 | 是 | 否 |
-| 性能（Time-MMD） | MSE 0.641 | MSE 0.653 |
+| 性能（[[time-mmd|Time-MMD]]） | MSE 0.641 | MSE 0.653 |
 
 ## 局限性
 
@@ -140,6 +140,8 @@ CoRA 在 7 个多元数据集上平均 MSE 降低 14.5%，超越 TimeXer。优�
 - [[cross-dimension-dependency]] — CoRA 通过 CI 隐式处理的跨变量依赖概念
 - [[heterogeneous-covariates]] — 异构协变量的分类与处理挑战
 - [[multimodal-time-series-forecasting]] — 多模态预测的总体概念
+- [[time-mmd]] — 文本协变量多领域基准（NeurIPS 2024 D&B）
+- [[source-time-mmd]] — Time-MMD 源摘要
 - [[unified-covariate-adaptation]] — UniCA 的详细介绍（对比方法）
 - [[covariate-homogenization]] — UniCA 的协变量同质化技术（对比）
 - [[conditional-attention-pooling]] — UniCA 的融合机制（对比）
@@ -152,3 +154,4 @@ CoRA 在 7 个多元数据集上平均 MSE 降低 14.5%，超越 TimeXer。优�
 [^src-dits]: [[source-dits]]
 [^src-sundial]: [[source-sundial]]
 [^src-chronosx]: [[source-chronosx]]
+[^src-time-mmd]: [[source-time-mmd]]

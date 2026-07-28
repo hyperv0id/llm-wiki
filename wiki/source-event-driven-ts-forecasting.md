@@ -9,8 +9,8 @@ tags:
   - event-driven
   - iclr-2026
 created: 2026-05-03
-last_updated: 2026-07-25
-source_count: 1
+last_updated: 2026-07-28
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -40,7 +40,7 @@ The event-driven prediction branch processes exogenous text via LLM reasoning, w
 
 ## Experimental Results
 
-Evaluated on 10 real-world multimodal datasets across diverse domains (Agriculture, Climate, Economy, Energy, Environment, Health, Security, Social Good, Traffic, Weather). VoT achieves 20/20 first-place counts against time series-only and text-enhanced baselines (PatchTST, iTransformer, RaFT and their text-enhanced variants), and outperforms multimodal methods including GPT4TS, GPT4MTS, TaTS, Time-VLM, and CALF.[^src-event-driven-ts-forecasting]
+Evaluated on 10 real-world multimodal datasets across diverse domains (Agriculture, Climate, Economy, Energy, Environment, Health, Security, Social Good, Traffic, Weather)—largely aligned with the [[time-mmd|Time-MMD]] multi-domain coverage for text–numeric forecasting[^src-time-mmd]. VoT achieves 20/20 first-place counts against time series-only and text-enhanced baselines (PatchTST, iTransformer, RaFT and their text-enhanced variants), and outperforms multimodal methods including GPT4TS, GPT4MTS, TaTS, Time-VLM, and CALF.[^src-event-driven-ts-forecasting]
 
 ## Limitations
 
@@ -57,7 +57,9 @@ Evaluated on 10 real-world multimodal datasets across diverse domains (Agricultu
 - [[endogenous-text-alignment]] — ETA technique
 - [[adaptive-frequency-fusion]] — AFF technique
 - [[multimodal-time-series-forecasting]] — task concept
+- [[time-mmd]] · [[source-time-mmd]] — multi-domain text–numeric dataset/benchmark
 - [[mindts]] — related multimodal TS model (anomaly detection)
 - [[fine-grained-time-text-semantic-alignment]] — MindTS's alignment technique (compare with ETA)[^src-event-driven-ts-forecasting]
 
 [^src-event-driven-ts-forecasting]: [[source-event-driven-ts-forecasting]]
+[^src-time-mmd]: [[source-time-mmd]]

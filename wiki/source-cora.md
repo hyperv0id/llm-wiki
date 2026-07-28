@@ -9,7 +9,7 @@ tags:
   - iclr-2026
 created: 2026-05-31
 last_updated: 2026-07-28
-source_count: 3
+source_count: 4
 confidence: high
 status: active
 ---
@@ -51,15 +51,14 @@ CoRA 已验证与多种 TSFM 兼容：Sundial、TimesFM、Chronos-Bolt、FlowSta
 | 单模态协变量预测 | ETTh/ETTm/Weather/ECL/Traffic | 比次优方法 TimeXer 降低 ~14.5% MSE |
 | 短时协变量预测 | EPF（5个电力市场） | 比 TimeXer 和 ChronosX 优势显著，数据稀缺下更突出 |
 | 多模态预测 | RT-1（图像协变量） | 比最佳监督模型降低 12.7% MSE |
-| 多模态预测 | Time-MMD（文本协变量） | 比 UniCA 降低 1.9% MSE |
+| 多模态预测 | [[time-mmd|Time-MMD]]（文本协变量） | 比 UniCA 降低 1.9% MSE |
 | 多元预测 | TSLib 7 数据集 | 比 TimeXer 降低 14.5% MSE |
 
 消融实验揭示：(1) 无协变量→性能退化 6.5% MSE；(2) 无 adaLN（直接加条件到输入）→退化 12.9%；(3) 无因果选择（均值聚合）→退化 8.3%；(4) 无零初始化→退化 4.3%[^src-cora]。
 
 ## 与 UniCA 的关键差异
 
-UniCA 将协变量在 TSFM 编码器前注入（通过 CAP + 自注意力），而 CoRA 将协变量作为外部条件注入预测头[^src-unica]。CoRA 的三个增量优势：(1) 严格保持预训练嵌入空间不变；(2) 因果嵌入实现可解释的协变量选择；(3) 零初始化保证渐进适配[^src-cora]。此外，CoRA 在 Time-MMD 和 RT-1 上均优于 UniCA。详见 [[tsfm-covariate-adaptation-comparison|TSFM 协变量适配全景对比]]。
-
+UniCA 将协变量在 TSFM 编码器前注入（通过 CAP + 自注意力），而 CoRA 将协变量作为外部条件注入预测头[^src-unica]。CoRA 的三个增量优势：(1) 严格保持预训练嵌入空间不变；(2) 因果嵌入实现可解释的协变量选择；(3) 零初始化保证渐进适配[^src-cora]。此外，CoRA 在 [[time-mmd|Time-MMD]] 和 RT-1 上均优于 UniCA[^src-cora][^src-time-mmd]。详见 [[tsfm-covariate-adaptation-comparison|TSFM 协变量适配全景对比]]。
 ## 局限性（隐性）
 
 1. 未讨论协变量数量极大（N → ∞）时的可扩展性
@@ -81,3 +80,4 @@ UniCA 将协变量在 TSFM 编码器前注入（通过 CAP + 自注意力），�
 [^src-cora]: [[source-cora]]
 [^src-chronosx]: [[source-chronosx]]
 [^src-unica]: [[source-unica]]
+[^src-time-mmd]: [[source-time-mmd]]

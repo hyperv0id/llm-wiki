@@ -7,8 +7,8 @@ tags:
   - reasoning
   - 2024
 created: 2026-07-07
-last_updated: 2026-07-07
-source_count: 1
+last_updated: 2026-07-28
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -67,10 +67,15 @@ status: active
 
 ---
 
+同属“外生文本 + 数值”路线；与自建新闻配对不同，[[time-mmd|Time-MMD]] 提供跨 9 域、控污染的公共对齐语料与 MM-TSFlib 试点评测，常被后续多模态方法并列为文本协变量基准[^src-time-mmd]。
+
 ## 相关页面
 
 - [[source-gpt4mts]] — 双提示 LLM 文本-数值时序预测
+- [[time-mmd]] · [[source-time-mmd]] — 多领域对齐数值–文本基准（对照：本工作自建新闻配对）
+- [[multimodal-time-series-forecasting]] — 多模态预测概念
 
 ## 引用
 
 [^src-from-news-to-forecast]: [[source-from-news-to-forecast]]
+[^src-time-mmd]: [[source-time-mmd]]

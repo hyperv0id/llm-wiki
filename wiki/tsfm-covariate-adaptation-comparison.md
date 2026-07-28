@@ -8,7 +8,7 @@ tags:
   - iclr-2026
 created: 2026-07-04
 last_updated: 2026-07-28
-source_count: 7
+source_count: 5
 confidence: high
 status: active
 ---
@@ -55,7 +55,7 @@ status: active
 | ChronosX | 0.134 | +97.1% |
 | TimeXer（监督） | 0.090 | +32.4% |
 
-多模态场景下差距同样显著：RT-1（图像协变量）上 CoRA 比最佳端到端模型降低 12.7% MSE；Time-MMD（文本协变量）上比 UniCA 降低 1.9% MSE[^src-cora]。
+多模态场景下差距同样显著：RT-1（图像协变量）上 CoRA 比最佳端到端模型降低 12.7% MSE；[[time-mmd|Time-MMD]]（文本协变量）上比 UniCA 降低 1.9% MSE[^src-cora][^src-time-mmd]。
 
 ## 为什么后置注入 + 零初始化更优
 
@@ -94,6 +94,8 @@ DiTS 代表了与前两者不同的范式：它不使用现有 TSFM，而是从�
 - [[multimodal-time-series-forecasting]] — 多模态时间序列预测的总体概念
 - [[chronosx]] — ChronosX 实体（IIB+OIB 模块适配，AISTATS 2025）
 - [[source-chronosx]] — ChronosX 源摘要
+- [[time-mmd]] — 文本协变量多领域基准
+- [[source-time-mmd]] — Time-MMD 源摘要
 - [[timesfm]] — TimesFM；同框架扩展 TimesFMX
 
 [^src-cora]: [[source-cora]]
@@ -103,3 +105,4 @@ DiTS 代表了与前两者不同的范式：它不使用现有 TSFM，而是从�
 [^src-chronos]: [[source-chronos]]
 [^src-sundial]: [[source-sundial]]
 [^src-chronosx]: [[source-chronosx]]
+[^src-time-mmd]: [[source-time-mmd]]

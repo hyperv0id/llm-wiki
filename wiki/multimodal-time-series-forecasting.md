@@ -8,8 +8,8 @@ tags:
   - covariate
   - satellite-imagery
 created: 2026-04-29
-source_count: 12
-last_updated: 2026-07-25
+source_count: 13
+last_updated: 2026-07-28
 confidence: high
 status: active
 ---
@@ -73,11 +73,12 @@ UniCA 通过**协变量同质化**将不同模态转换为统一表示：
 - 输入：历史发电量 + 卫星云图
 - 评估指标：MAE（MAPE 不稳定）
 
-### Time-MMD
+### [[time-mmd|Time-MMD]]
 
-- 多模态时间序列数据集
-- 输入：数值序列 + 文本描述
-- 评估指标：MAPE
+- NeurIPS 2024 D&B 多领域**数值–文本**时序数据集（9 主域；日/周/月；cutoff 至 2024-05）[^src-time-mmd]
+- 设计要点：细粒度目标变量对齐；报告+检索互补；LLM 拆分 **fact vs prediction** 控污染；二元时间戳多任务切片[^src-time-mmd]
+- 配套 [[time-mmd|MM-TSFlib]]：20+ TSF 骨干 × 开源 LLM，分路建模 + 投影融合；>1000 实验约 95% 多模态更优，MSE 平均降 >15%（富文本域可达 ~40%）[^src-time-mmd]
+- 下游评测锚点：[[cora-tsfm|CoRA]] / [[unica|UniCA]] 文本协变量、[[source-gpt4mts|DP-GPT4MTS]]、[[vot|VoT]]、[[timi|TiMi]] 等[^src-time-mmd]
 
 ## 实验结果
 
@@ -207,6 +208,7 @@ UniCA 在多模态场景下的表现：
 - [[physics-informed-position-encoding]] — 物理知情位置编码技术
 - [[variant-frequency-positional-encoding]] — 变频率正弦编码
 - [[digital-typhoon-dataset]] — Digital Typhoon 台风卫星数据集
+- [[time-mmd]] — Time-MMD 多领域数值–文本时序数据集与 MM-TSFlib（NeurIPS 2024 D&B）
 
 ---
 
@@ -224,3 +226,4 @@ UniCA 在多模态场景下的表现：
 [^src-st-vision-llm]: [[source-st-vision-llm]]
 [^src-pipe]: [[source-pipe]]
 [^src-timi]: [[source-timi]]
+[^src-time-mmd]: [[source-time-mmd]]

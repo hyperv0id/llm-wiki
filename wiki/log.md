@@ -1,3 +1,10 @@
+## [2026-07-28] ingest | Time-MMD: Multi-Domain Multimodal Dataset for Time Series Analysis
+
+PDF: `raw/time-mmd-multi-domain-multimodal-dataset-for-time-series-analysis.pdf`（arXiv:2406.08627v4, NeurIPS 2024 D&B）。首个 9 域数值–文本时序数据集：细粒度对齐、fact/prediction 拆分控污染、MM-TSFlib 试点；>1000 实验约 95% 多模态优于单模态，MSE 平均降 >15%（富文本域 ~40%）。
+
+创建的页面：[[source-time-mmd]], [[time-mmd]]
+更新的页面：[[multimodal-time-series-forecasting]], [[source-cora]], [[cora-tsfm]], [[tsfm-covariate-adaptation-comparison]], [[source-gpt4mts]], [[source-from-news-to-forecast]], [[source-event-driven-ts-forecasting]], [[vot]], [[index]]
+
 ## [2026-07-27] lint | ST-OOD ingest 全量检查 + 修复
 
 对照 PDF（pdftotext）与 CLAUDE.md 清单，聚焦本轮新建/修改页。

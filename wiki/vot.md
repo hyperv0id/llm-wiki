@@ -9,8 +9,8 @@ tags:
   - event-driven
   - iclr-2026
 created: 2026-05-03
-last_updated: 2026-05-03
-source_count: 2
+last_updated: 2026-07-28
+source_count: 3
 confidence: high
 status: active
 ---
@@ -49,7 +49,7 @@ Aligns endogenous text with time series via **[[endogenous-text-alignment|Endoge
 
 ## Performance
 
-VoT achieves state-of-the-art results on 10 real-world multimodal datasets, with 20/20 first-place counts against time series-only and text-enhanced baselines. It outperforms multimodal methods including GPT4TS, GPT4MTS, TaTS, Time-VLM, and CALF[^src-event-driven-ts-forecasting].
+VoT achieves state-of-the-art results on 10 real-world multimodal datasets (domains overlapping [[time-mmd|Time-MMD]]-style multi-domain text–TS settings[^src-time-mmd]), with 20/20 first-place counts against time series-only and text-enhanced baselines. It outperforms multimodal methods including GPT4TS, GPT4MTS, TaTS, Time-VLM, and CALF[^src-event-driven-ts-forecasting].
 
 ## Comparison with Related Models
 
@@ -74,9 +74,11 @@ VoT is unique in using LLMs for **reasoning** (not just feature extraction) and 
 - [[endogenous-text-alignment]] — ETA technique
 - [[adaptive-frequency-fusion]] — AFF technique
 - [[multimodal-time-series-forecasting]] — task concept
+- [[time-mmd]] · [[source-time-mmd]] — multi-domain text–numeric benchmark
 - [[mindts]] — related multimodal TS model (same lab: ECNU)
 - [[aurora]] — Aurora generative multimodal TS foundation model (different paradigm: generative vs. LLM reasoning)
 - [[tats]] — TaTS plug-and-play multimodal framework (simpler alternative approach)
 
 [^src-event-driven-ts-forecasting]: [[source-event-driven-ts-forecasting]]
 [^src-language-in-the-flow-of-time]: [[source-language-in-the-flow-of-time]]
+[^src-time-mmd]: [[source-time-mmd]]

@@ -1143,6 +1143,8 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Sources (continued)
 - [[source-chronosx]] — ChronosX: IIB past + OIB future modular covariate adapters for pretrained TS models; 32 synthetic benchmark; TimesFMX/MOMENTX (AISTATS 2025, arXiv:2503.12107)
+- [[source-time-mmd]] — Time-MMD: 9-domain multimodal numeric–text TS dataset + MM-TSFlib; fine-grained alignment & contamination control (NeurIPS 2024 D&B, arXiv:2406.08627v4)
 
 ## Entities (continued)
 - [[chronosx]] — ChronosX 实体：past/future Injection Blocks + 跨骨干扩展
+- [[time-mmd]] — Time-MMD 实体：9 域数值–文本数据集 + MM-TSFlib（NeurIPS 2024 D&B）
