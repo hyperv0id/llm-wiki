@@ -2,12 +2,10 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-07-27
+last_updated: 2026-07-28
 tags:
   - meta
 ---
-
-# Wiki Index
 
 All wiki pages, organized by type. Updated on every ingest.
 
@@ -1129,3 +1127,14 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-rainpro]] — RainPro-8: 高效 8h 概率降水预报模型，多源融合（雷达/卫星/NWP/地形）+ 有序一致性损失 + 单次前向预测，ICLR 2026
 - [[source-sifusion]] — SIFusion: 统一多粒度北极海冰预测框架，Swin V2 空间编码 + granularity variate 跨粒度融合 (NeurIPS 2025)
 - [[source-wardropnet]] — WardropNet: COAML pipeline embedding Wardrop equilibrium as differentiable layer for traffic flow prediction, Fenchel-Young loss + perturbation regularization, ICLR 2025
+
+## Sources (continued)
+- [[source-cheng-2025-cora-correlation-aware-adapter]] — CoRA (Correlation-aware Adapter): TSFM 下游通道相关插件，DCE 低秩时变/时不变 + HPCL 异质-部分对比，推理 O(N)（Cheng et al., ICLR 2026）
+
+## Entities (continued)
+- [[cora-correlation-aware-adapter]] — CoRA 通道相关适配器实体（≠ 协变量 [[cora-tsfm]]）
+
+## Techniques (continued)
+- [[dynamic-correlation-estimation]] — DCE：Pearson + Qt V Qtᵀ 低秩动态相关估计（CoRA）
+- [[heterogeneous-partial-contrastive-learning]] — HPCL：正/负空间掩码对比学习 HCorr+PCorr（仅训练）
+- [[time-aware-polynomial-correlation]] — 可学习时间多项式拟合时变相关因子 Qt

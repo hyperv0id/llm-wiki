@@ -8,11 +8,14 @@ tags:
   - granger-causality
   - iclr-2026
 created: 2026-05-31
-last_updated: 2026-07-04
+last_updated: 2026-07-28
 source_count: 1
 confidence: high
 status: active
 ---
+
+> [!warning] 同缩写消歧
+> 本页是协变量适配 CoRA。通道相关插件 CoRA（Cheng et al., ICLR 2026）见 [[source-cheng-2025-cora-correlation-aware-adapter]] / [[cora-correlation-aware-adapter]]。
 
 # CoRA 源文件摘要
 

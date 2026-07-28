@@ -3085,3 +3085,10 @@ source-terra.md 第73行原称未评审的 ExoST (arXiv:2509.05779) 为“方法
 
 Ingest Gloeckle / Youbi Idrissi / Rozière / Lopez-Paz / Synnaeve (FAIR Meta), arXiv:2404.19737。用共享 trunk + n 独立输出头做多 token 预训练；逐 head 串行反传保持 O(V+d) 峰值显存；代码任务随规模增益（13B HumanEval/MBPP 约 +12%/+17% 解题），4-token self-speculative 约 3× 推理，byte-level 更显著。机制：加重 choice points、放大 I(X;Y)、促进 induction。PDF → raw/gloeckle-2024-multi-token-prediction.pdf。
 
+
+## [2026-07-28] ingest | CoRA: Boosting TSFMs through Correlation-aware Adapter (Cheng et al., ICLR 2026)
+
+创建的页面：[[source-cheng-2025-cora-correlation-aware-adapter]], [[cora-correlation-aware-adapter]], [[dynamic-correlation-estimation]], [[heterogeneous-partial-contrastive-learning]], [[time-aware-polynomial-correlation]]
+更新的页面：[[channel-independence]], [[cora-tsfm]], [[source-cora]], [[index]]
+
+与既有协变量 CoRA（[[cora-tsfm]]）同缩写消歧。本文提出 TSFM 下游通道相关插件：DCE（低秩时变/时不变 + 时间多项式 + Pearson）、异质投影、HPCL 双对比、门控融合；训练 O(N²)、推理 O(N)。10 数据集 5% few-shot 上提升六类 TSFM；优于 LIFT/C-LoRA。PDF → raw/cheng-2025-cora-correlation-aware-adapter.pdf（Zotero KH6B8NT4）。

@@ -7,8 +7,8 @@ tags:
   - channel-processing
   - multivariate
 created: 2026-04-28
-last_updated: 2026-07-21
-source_count: 11
+last_updated: 2026-07-28
+source_count: 12
 confidence: high
 status: active
 ---
@@ -101,6 +101,7 @@ CPiRi 的通道打乱测试暴露了一个关键问题：大多数 CD 模型在�
 - 相关：[[nuwats]] — NuwaTS，CI 支撑插补基础模型的跨变量/跨域零样本 (arXiv 2024)
 - 相关：[[crosslinear]] / [[cross-correlation-embedding]] — CI 骨干 + 轻量外生 CD 注入 (KDD 2025)
 - 相关：[[srsnet|SRSNet]] / [[selective-representation-space|SRS]] — SRS module 在 CI 设定下对每个通道独立做选择性 patch + 重排 + 融合 (NeurIPS 2025)
+- 相关：[[cora-correlation-aware-adapter|CoRA (Correlation-aware)]] — 在 CI 主导 TSFM 上用 DCE+HPCL 下游插件补 DCorr/HCorr/PCorr；推理 O(N)（ICLR 2026）[^src-cheng-2025-cora-correlation-aware-adapter]
 
 [^src-simdiff]: [[source-simdiff]]
 [^src-patchtst]: [[source-patchtst]]
@@ -113,3 +114,4 @@ CPiRi 的通道打乱测试暴露了一个关键问题：大多数 CD 模型在�
 [^src-crosslinear]: [[source-crosslinear]]
 [^src-srsnet]: [[source-srsnet]]
 [^src-tide]: [[source-tide]]
+[^src-cheng-2025-cora-correlation-aware-adapter]: [[source-cheng-2025-cora-correlation-aware-adapter]]

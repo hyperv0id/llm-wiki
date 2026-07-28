@@ -7,14 +7,16 @@ tags:
   - granger-causality
   - multimodal
   - iclr-2026
-created: 2026-05-31
-last_updated: 2026-07-04
+last_updated: 2026-07-28
 source_count: 4
 confidence: high
 status: active
 ---
 
 # CoRA: Covariate-Aware Adaptation
+
+> [!warning] 同缩写消歧
+> 本页是 **Covariate-awaRe Adaptation**（外生协变量注入）。另有一篇 ICLR 2026 的 **CoRrelation-aware Adapter**（通道相关插件），见 [[cora-correlation-aware-adapter]] / [[source-cheng-2025-cora-correlation-aware-adapter]]。
 
 **CoRA** (Covariate-awaRe Adaptation) 是一个面向时间序列基础模型（TSFMs）的通用、可解释、零初始化协变量适配框架，ICLR 2026 投稿[^src-cora]。
 
