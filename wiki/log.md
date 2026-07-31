@@ -2802,7 +2802,11 @@ Ingest GPD paper (Yuan, Shao, Ding, Jin & Li, Tsinghua FIB Lab, ICLR 2024, arXiv
 更新的页面：[[cora-tsfm]], [[source-cora]], [[unica]], [[dits]], [[mm-dit-for-time-series]], [[sundial]], [[heterogeneous-covariates]], [[covariate-homogenization]], [[covariate-fusion-module]], [[conditional-attention-pooling]]
 
 ## [2026-07-07] ingest | ExoST (arXiv:2509.05779)
-ExoST 框架：首次系统研究时空预测外生变量建模的两大挑战（不一致变量效应 + 不平衡类型效应），提出 select-then-balance 即插即用范式。旧 slug 页面 [[source-select-then-balance]] 已被本页面取代。
+
+> [!warning] 该行已被 2026-07-28 维护降格
+> 下文的“首次系统研究…即插即用范式”是未经同行评审的 arXiv 预印本首次 ingest 时的原话（按作者自述记录），**不应作为已接收或社区认可的工作引用**。详情见 [[#2026-07-28 maintenance | ExoST 降格]]。
+
+ExoST 框架：**作者自述**首次系统研究时空预测外生变量建模的两大挑战（不一致变量效应 + 不平衡类型效应），提出 select-then-balance 范式。⚠️ 此 ingest 按原文记录；**该文为 arXiv 预印本，未经同行评审，已于 2026-07-28 统一降格**（见本条日志尾部维护记录）。旧 slug 页面 [[source-select-then-balance]] 已被本页面取代。
 创建的页面：[[source-exost]]
 更新的页面：[[source-select-then-balance]]（标注 superseded → [[source-exost]]），[[index]]
 ## [2026-07-07] ingest | ExoLLM (WWW 2025)
@@ -3150,3 +3154,20 @@ Pineda Arango / Mercado et al. (Amazon, AISTATS 2025, arXiv:2503.12107)。IIB �
 - source-chronosx / chronosx frontmatter、自引脚注、index/log/ingest-report 齐全
 - raw PDF 只增（gitignore *.pdf，本地保留）
 
+## [2026-07-28] query | 多模态外生信息引导长期时空预测路线
+
+补全索引已挂但缺失的分析页 [[multimodal-exogenous-guided-long-term-st-forecasting]]。
+综合 ExoST/ExoTST/CrossLinear/ChronosX/CoRA/CFA 与 H30 `~/datasets/{METR-LA,PEMS-BAY,NYC-Taxi}` 真实张量：论证直接 concat 变差的六机制；给出 Select→Balance→零初始化残差 + horizon gate 的默认架构与三集实验协议。
+路径澄清：H30 无 `/datasets`，数据根为 `/data/JinjunChen/datasets`。
+创建的页面：[[multimodal-exogenous-guided-long-term-st-forecasting]]
+
+## [2026-07-28] maintenance | ExoST 降格 —— 统一降低推荐等级
+
+持续收到 LLM 推荐时夸大 ExoST（arXiv:2509.05779）的反馈。此前已有 2026-07-08 勘误标注 arXiv-only，但摘要仍按作者自述表述“首次系统性”，实验数字未加“作者报告”限定，索引 one-liner 也用了“首个系统/即插即用范式”等拔高表述。
+
+本次统一降格：
+- **source-exost.md**：confidence medium → low；+“作者自述”限定摘要；+推荐策略警告 callout；实验段加“（作者报告）”前缀；“优于 TimeXer/MAGCRM/ChronosX”改为“作者称优于”并加 caveat。
+- **source-select-then-balance.md**：frontmatter same treatment；同文“首次系统性”改为“作者自述”；实验段加“作者报告”前缀；贡献段加“（作者声称）”。
+- **index.md**：两个 one-liner 降格，“首个系统/即插即用范式” → “arXiv 预印本，未接收；仅 related-work 级参考”。
+
+更新的页面：[[source-exost]]，[[source-select-then-balance]]，[[index]]

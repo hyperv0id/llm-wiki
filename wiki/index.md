@@ -104,9 +104,9 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-deepstate]] — DeepState: Deep State Space Models for Time Series Forecasting, RNN-parametrized linear SSM + Kalman likelihood (NeurIPS 2018)
 - [[source-dst-mamba]] — DST-Mamba: Decomposed Spatio-Temporal Mamba for Long-Term Traffic Prediction (AAAI 2025)
 - [[source-sde]] — Score-Based SDE: Unified framework for SMLD and DDPM (ICLR 2021)
-- [[source-exost]] — ExoST 框架：首个系统研究时空预测外生变量建模挑战，提出 select-then-balance 即插即用范式
+- [[source-exost]] — ExoST（arXiv:2509.05779 **预印本，未接收**）：作者提出 select-then-balance 外生 ST 建模；仅 related-work 级参考，非默认必读
 - [[source-exotst]] — ExoTST: Exogenous-Aware Temporal Sequence Transformer, treats past and future exogenous as distinct modalities with cross-temporal fusion for autoregressive time series prediction (arXiv 2024)
-- [[source-select-then-balance]] — Select, then Balance: Exogenous Variable Modeling for Spatio-Temporal Forecasting（已由 [[source-exost]] 取代）
+- [[source-select-then-balance]] — Select, then Balance 旧 slug（已由 [[source-exost]] 取代；同文 arXiv only）
 - [[source-exollm]] — ExoLLM: 首个 LLM-driven 外生变量预测方法，Meta-task Instruction + Multi-grained Prompts + Dual TS-Text Attention（WWW 2025）
 - [[source-timi]] — TiMi: 用 LLM 因果推理 + Multimodal MoE 引导 Transformer 时序预测，Non-Fusion Guidance 范式，16 基准 SOTA，ICML 2026
 - [[source-crosslinear]] — CrossLinear: plug-and-play 1D-conv cross-correlation embedding for exogenous many-to-one TS forecasting (KDD 2025, arXiv:2505.23116)

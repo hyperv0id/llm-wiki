@@ -7,17 +7,20 @@ tags:
   - multimodal-fusion
   - 2025
 created: 2026-07-07
-last_updated: 2026-07-08
+last_updated: 2026-07-28
 source_count: 1
-confidence: medium
+confidence: low
 status: active
 ---
 
 # ExoST: Select, then Balance — Exploring Exogenous Variable Modeling of Spatio-Temporal Forecasting
 
-> Wei Chen, Yuqian Wu, Yuanshao Zhu, Xixuan Hao, Shiyu Wang, Xiaofang Zhou, Yuxuan Liang (CityMind-Lab, HKUST(GZ) / HKUST / CityU / ByteDance). arXiv:2509.05779, 2025. **arXiv only，未经同行评审（截至 2026-07）。**
+> Wei Chen, Yuqian Wu, Yuanshao Zhu, Xixuan Hao, Shiyu Wang, Xiaofang Zhou, Yuxuan Liang (CityMind-Lab, HKUST(GZ) / HKUST / CityU / ByteDance). arXiv:2509.05779, 2025. **arXiv only，未经同行评审（截至 2026-07-28 仍无公开接收证据）。**
 
-该论文首次系统性地探索了时空预测中的外生变量建模问题，并提出 **ExoST** 框架，采用"**先选择，后平衡**"（Select, then Balance）范式作为与骨干网络无关的即插即用模块。[^src-exost]
+> [!warning] 推荐策略
+> 仅作 **arXiv 预印本** 参考；**不得**当作已接收顶会/顶刊工作，也**不得**作为默认必读、方法主线或“外生 ST 标准框架”推荐。可在 related work 中引用其问题设定（不一致变量效应 / 不平衡类型效应），但实验数字与“首次系统性”表述一律按作者自述处理。
+
+该论文**自述**首次探索时空预测中的外生变量建模，并提出 **ExoST** 框架，采用"**先选择，后平衡**"（Select, then Balance）范式作为与骨干网络无关的即插即用模块。[^src-exost]
 
 ---
 
@@ -49,15 +52,15 @@ ExoST 以"select-then-balance"为核心理念，包含两个完全可微分且�
 
 ## 实验与发现
 
-在 Madrid-19 和 Madrid-22 两个真实世界数据集（空气质量 NO₂、交通速度、交通强度四项任务）上进行评估。[^src-exost]
+以下为论文**报告**的实验结果，未经独立复现，亦无同行评审背书：[^src-exost]
 
-### 主要结果
+### 主要结果（作者报告）
 
-- **通用性**：ExoST 嵌入 6 种不同 ST 骨干（AGCRN, GWNet, GGNN, GRUGCN, STGCN, DCRNN）后一致提升性能。3 天预测下 MRE 平均降低 20% 以上。
-- **外生变量增益随预测时长增长**：性能提升幅度随预测时间窗口（1天→2天→3天）显著放大，表明外生变量在长期预测中扮演更关键的角色。
-- **鲁棒性**：在 20%–80% 外生变量缺失或随机掩码的异常条件下，ExoST 性能下降极小，表现出优秀的容错能力。
-- **消融分析**：去除 Selector 或 Balancer 均导致显著退化，且 Balancer 影响更大——说明历史/未来的时间分布偏移是更大挑战。未来外生变量优于过去外生变量，但两者结合效果最佳。
-- **效率**：ExoST 参数量 12.08M，训练 100 epoch 约 396 秒，在性能-效率权衡上优于 TimeXer、MAGCRN、ChronosX 等同类方法。
+- **通用性**：嵌入 6 种 ST 骨干（AGCRN, GWNet, GGNN, GRUGCN, STGCN, DCRNN）后性能提升；3 天预测下 MRE 平均降低 20% 以上。
+- **外生增益随 horizon 增长**：性能提升幅度随 1→2→3 天窗口放大。
+- **鲁棒性**：20%–80% 外生缺失/随机掩码下性能下降较小。
+- **消融**：去 Selector 或 Balancer 均退化，Balancer 影响更大；未来外生优于过去外生，二者结合最佳。
+- **效率**：参数量 12.08M，训练 100 epoch 约 396 秒；作者称性能-效率权衡优于 TimeXer、MAGCRN、ChronosX 等——**对比结论以作者表格为准，不应直接当社区定论**。
 
 ---
 

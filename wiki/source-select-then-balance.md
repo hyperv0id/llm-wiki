@@ -9,9 +9,9 @@ tags:
   - traffic-prediction
   - air-quality
 created: 2026-06-18
-last_updated: 2026-07-08
+last_updated: 2026-07-28
 source_count: 1
-confidence: medium
+confidence: low
 status: superseded
 superseded_by: [[source-exost]]
 ---
@@ -21,9 +21,9 @@ superseded_by: [[source-exost]]
 
 # Select, Then Balance: Exogenous Variable Modeling for Spatio-Temporal Forecasting
 
-arXiv:2509.05779, 2025. **arXiv only，未经同行评审（截至 2026-07）。**
+arXiv:2509.05779, 2025. **arXiv only，未经同行评审（截至 2026-07-28 仍无公开接收证据）。** 本页已由 [[source-exost]] 取代，保留仅用于引用历史；**同样不得**当作已接收工作推荐。
 
-该论文首次系统性地研究了外生变量（exogenous variables）在时空预测中的建模挑战，并提出 ExoST 框架。[^src-select-then-balance]
+该论文**自述**首次系统研究外生变量在时空预测中的建模挑战，并提出 ExoST 框架。[^src-select-then-balance] “首次/系统性”为作者定位。
 
 ---
 
@@ -58,14 +58,14 @@ $$f(x, y) = (1 - w(x, y))x + w(x, y)y + (x + y) = \Phi(x, y)$$
 
 ## 实验
 
-在 Madrid-19 和 Madrid-22 两个数据集（空气质量、交通速度、交通强度四项任务）上，以 AGCRN 为骨干进行 1/2/3 天预测。[^src-select-then-balance]
+以下为论文**报告**结果（未评审、未复现）：[^src-select-then-balance]
 
-### 主要发现
+### 主要发现（作者报告）
 
-- **通用性**：ExoST 嵌入 6 种不同 ST 骨干网络（AGCRN、GWNet、GGNN、GRUGCN、STGCN、DCRNN）后，在大部分任务上一致提升性能，3 天预测下 MRE 平均降低 20% 以上。
-- **鲁棒性**：在 20%-80% 外生变量缺失/噪声的异常条件下，ExoST 性能下降极小，且适度缺失信号反而可作为数据增强，提升泛化能力。
-- **效率**：ExoST 参数量为 12.08M，训练时间（前 100 epoch）为 396s，在性能-效率权衡上优于 ChronosX、MAGCRN、TimeXer 等同类方法。
-- **消融实验**：去除 Selector 或 Balancer 均导致显著性能退化，且 Balancer 的影响更大，说明时间分布偏移是更大的挑战。未来外生变量优于过去外生变量，但二者结合效果最佳。
+- **通用性**：嵌入 6 种 ST 骨干后多数任务提升，3 天预测 MRE 平均降低 20% 以上。
+- **鲁棒性**：20%–80% 外生缺失/噪声下下降较小。
+- **效率**：参数量 12.08M，前 100 epoch 约 396s；作者称优于 ChronosX、MAGCRN、TimeXer 等。
+- **消融**：去 Selector 或 Balancer 均退化，Balancer 影响更大。
 
 ### 对比基准
 
@@ -75,10 +75,10 @@ $$f(x, y) = (1 - w(x, y))x + w(x, y)y + (x + y) = \Phi(x, y)$$
 
 ## 贡献与局限
 
-### 贡献
-1. 首次系统定义外生变量时空建模的两大核心挑战
-2. 提出"先选择后平衡"的解耦范式，理论分析完备（附录 A）
-3. 实验证明通用性、鲁棒性和效率的综合优势
+### 贡献（作者声称）
+1. 作者声称首次系统定义外生变量时空建模的两大核心挑战
+2. 提出“先选择后平衡”解耦范式（附录 A 含作者理论分析）
+3. 实验报告通用性/鲁棒性/效率优势——**仅预印本证据**
 
 ### 局限
 - 外生变量模态仅限于数值型，未探索图像、文本等多模态
