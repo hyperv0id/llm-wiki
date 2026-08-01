@@ -8,8 +8,8 @@ tags:
   - covariate
   - satellite-imagery
 created: 2026-04-29
-source_count: 17
-last_updated: 2026-07-28
+source_count: 18
+last_updated: 2026-08-01
 confidence: high
 status: active
 ---
@@ -112,6 +112,10 @@ UniCA 在多模态场景下的表现：
 
 **[[timi|TiMi]]** (ICML 2026) 提出第三种多模态预测范式——**[[non-fusion-guidance|Non-Fusion Guidance]]**：不再尝试在表示层对齐或融合文本与数值模态，而是让冻结 LLM 独立推理文本中的未来趋势因果知识，通过 **[[mmoe|Multimodal Mixture-of-Experts (MMoE)]]** 门控机制注入 Transformer backbone 的时序建模过程[^src-timi]。MMoE 包含 TMoE（基于文本的路由）和 SMoE（基于序列全局趋势的路由）两个互补专家系统，可在不修改 backbone 架构的情况下即插即用[^src-timi]。在 16 个多模态基准上一致 SOTA，PatchTST+MMoE 平均 MSE 提升 18.2%[^src-timi]。与 VoT 同为 LLM 推理式方法但放弃特征融合，与 TaTS 同为即插即用但引入因果推理而非简单特征拼接[^src-timi]。
 
+## TESS：离散原语瓶颈的 Non-Fusion 实现
+
+**[[tess|TESS]]**（Li et al., arXiv:2603.12664v2）是 Non-Fusion Guidance 的第二条实现。先用半合成实验（FNSPID 真实序列 + GPT-5.2 生成文本、token 级标注）定位两个瓶颈：冗余 token 分散注意力（焦点比 $R_t<0$）、删冗余后语义仍难解码为数值信号（Signal-Only ≪ Numerical）；再冻结 LLM 将外生新闻分类为四类离散 [[temporal-semantic-primitives|时间演化原语]]（mean shift/volatility/shape/lag），以 top-1/top-2 margin 为不确定度信号经置信门控过滤，最后以 prefix token 条件化 PatchTST[^src-tess]。与 TiMi 的 MoE 路由相比：知识形态从自由文本变为受限类别、引导从路由变为条件化+门控；信息瓶颈定理（4.1）保证预测互信息不损，gating 误差按 $g^2$ 衰减（A.5）。四数据集上相对最强基线最高 +29.1% MSE 降幅（Bitcoin）。其半合成诊断与 [[constrained-text-fusion|CFA]] 的 >20K 实证共同构成「naive 融合有害」的证据链[^src-tess]。
+
 ## Time-VLM：VLM 桥接时序 / 视觉 / 文本
 
 **[[time-vlm|Time-VLM]]** (Zhong et al., ICML 2025, arXiv:2502.04395) 用冻结预训练 VLM（默认 ViLT；亦支持 CLIP / BLIP-2）统一 **时序 · 视觉 · 文本**：[[time-vlm|RAL]] 做 patch + local/global 检索记忆，[[time-vlm|VAL]] 将时序经 FFT/周期编码与多尺度卷积渲染为图像，[[time-vlm|TAL]] 生成统计与域描述 prompt；跨模态注意力 + 门控融合后预测。**不依赖外生文本/图像**，仅由原始时序自增强——相对 [[time-mmd|Time-MMD]]/[[vot|VoT]] 的外生文本路线，以及 UniCA/CoRA 的协变量适配路线，是一条 **内生多模态 + 检索** 路径[^src-time-vlm]。约 143.6M 参数（≈1/20 Time-LLM）；5% few-shot 上 ETTh1 相对 Time-LLM MSE 约 −29.5%；Weather 消融显示去 RAL +35.6% MSE、去 VAL +9.0%、去 TAL 仅 +2.1%（文本 token 稀疏）[^src-time-vlm]。
@@ -130,14 +134,14 @@ UniCA 在多模态场景下的表现：
 
 ### 与其他多模态模型的对比
 
-| 维度 | Aurora | TiMi | UniCA | MoST | VoT | TaTS | ChannelMTS | PIPE |
-|------|--------|------|-------|------|-----|------|------------|------|
-| 范式 | 生成式基础模型 | Non-Fusion Guidance | 适配框架 | 判别式基础模型 | LLM 推理 | 即插即用框架 | 任务专用 | 位置编码注入 |
-| 模态 | 文本 + 图像 + TS | 文本 + TS | 分类 + 图像 + 文本 | 图像 + 文本 + 位置 + TS | 文本 + TS | 文本 + TS | 环境 + TS | 卫星图像 + TS |
-| 零样本 | ✓ | ✗ | ✓ (via TSFM) | ✓ | ✗ | ✗ | ✗ | ✓ (跨洋区) |
-| 生成方式 | Flow Matching | N/A | N/A | N/A | LLM 生成 | N/A | N/A | N/A |
-| 概率预测 | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
-| 架构修改 | 需要 | **仅 FFN 替换** | 需要 (fusion module) | 需要 | 需要 (dual-branch) | **不需要** | 需要 | **仅位置编码** |
+| 维度 | Aurora | TiMi | UniCA | MoST | VoT | TaTS | ChannelMTS | PIPE | TESS |
+|------|--------|------|-------|------|-----|------|------------|------|------|
+| 范式 | 生成式基础模型 | Non-Fusion Guidance | 适配框架 | 判别式基础模型 | LLM 推理 | 即插即用框架 | 任务专用 | 位置编码注入 | Non-Fusion Guidance（原语瓶颈） |
+| 模态 | 文本 + 图像 + TS | 文本 + TS | 分类 + 图像 + 文本 | 图像 + 文本 + 位置 + TS | 文本 + TS | 文本 + TS | 环境 + TS | 卫星图像 + TS | 文本 + TS |
+| 零样本 | ✓ | ✗ | ✓ (via TSFM) | ✓ | ✗ | ✗ | ✗ | ✓ (跨洋区) | ✗ |
+| 生成方式 | Flow Matching | N/A | N/A | N/A | LLM 生成 | N/A | N/A | N/A | N/A |
+| 概率预测 | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
+| 架构修改 | 需要 | **仅 FFN 替换** | 需要 (fusion module) | 需要 | 需要 (dual-branch) | **不需要** | 需要 | **仅位置编码** | 需 PatchTST prefix 注入 |
 
 ### 与 VoT 的区别
 
@@ -218,6 +222,8 @@ UniCA 在多模态场景下的表现：
 - [[allspark]] — AllSpark 10 模态时空通用智能模型
 - [[language-as-reference-framework]] — LaRF 以语言为参考框架的多模态统一原理
 
+- [[tess]] — TESS 实体：离散原语瓶颈的 Non-Fusion 实现（arXiv:2603.12664v2）
+- [[temporal-semantic-primitives]] — 时间演化原语技术页
 - [[e2-cstp]] — E²-CSTP 因果多模态时空预测框架
 - [[streasoner]] — STReasoner 时空推理 TS-LM
 - [[spatio-temporal-reasoning]] — 时空推理概念
@@ -256,3 +262,4 @@ UniCA 在多模态场景下的表现：
 [^src-ts-vl-alignment]: [[source-ts-vl-alignment]]
 [^src-constrained-text-fusion]: [[source-constrained-text-fusion]]
 [^src-cross-modal-misalignment]: [[source-cross-modal-misalignment]]
+[^src-tess]: [[source-tess]]

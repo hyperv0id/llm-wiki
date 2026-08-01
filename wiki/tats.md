@@ -9,8 +9,8 @@ tags:
   - text-alignment
   - iclr-2026
 created: 2026-05-03
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-08-01
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -84,6 +84,17 @@ TaTS was evaluated on 18 datasets across 9 time series models:
 
 TaTS is simpler and more widely compatible, while VoT achieves deeper semantic integration through LLM reasoning[^src-language-in-the-flow-of-time].
 
+### vs. TESS
+
+| Dimension | TaTS | [[tess|TESS]] |
+|-----------|------|------|
+| Text handling | Whole-text embedding → concat as auxiliary variables | Frozen LLM classification → 4 discrete temporal primitives → gated prefix tokens |
+| Filtering | None (naive concat) | Discrete candidate set + confidence gating |
+| LLM usage | Feature extraction (GPT-2) | Classification (frozen LLM) |
+| Architecture | Plug-in (no modification) | Requires PatchTST prefix injection |
+
+[[tess|TESS]]（arXiv:2603.12664v2）同属「文本作为辅助输入、保留 TS 模型主体」路线，但把 TaTS 的「整段文本 embedding 拼接」替换为「冻结 LLM 分类成离散时序原语 + 置信门控后再注入」。TESS 的半合成诊断（冗余 token 越多增益越差、焦点比 R<sub>t</sub><0）恰为 TaTS 式无过滤 concat 提供反面机制证据：TaTS 赌文本与序列同构（CTR 视角），TESS 赌文本可投影到预定义统计语义[^src-tess][^src-language-in-the-flow-of-time]。
+
 ### vs. UniCA
 
 | Dimension | TaTS | [[unica|UniCA]] |
@@ -130,6 +141,8 @@ TaTS's advantage over these methods comes from preserving the temporal position 
 - [[unica]] — UniCA comparison
 - [[aurora]] — Aurora comparison
 - [[chronos]] — Chronos comparison
+- [[tess]] — TESS comparison (discrete primitives vs naive concat)
 - [[heterogeneous-covariates]] — covariate classification concept
 
 [^src-language-in-the-flow-of-time]: [[source-language-in-the-flow-of-time]]
+[^src-tess]: [[source-tess]]

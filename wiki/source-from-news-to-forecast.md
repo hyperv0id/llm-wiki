@@ -7,8 +7,8 @@ tags:
   - reasoning
   - 2024
 created: 2026-07-07
-last_updated: 2026-07-28
-source_count: 2
+last_updated: 2026-08-01
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -69,13 +69,19 @@ status: active
 
 同属“外生文本 + 数值”路线；与自建新闻配对不同，[[time-mmd|Time-MMD]] 提供跨 9 域、控污染的公共对齐语料与 MM-TSFlib 试点评测，常被后续多模态方法并列为文本协变量基准[^src-time-mmd]。
 
+## 与 [[tess|TESS]] 的对照
+
+TESS（arXiv:2603.12664v2）将本工作列为多模态基线并在 Bitcoin 上以其为最强基线超越（MAE/MSE/RMSE +18.2%/+29.1%/+15.8%），其余三数据集亦全面更优。机制差异：TESS 以单次冻结 LLM 分类成离散时序原语（mean shift/volatility/shape/lag）+ 置信门控，替代本工作的智能体迭代过滤 + LoRA 微调 LLM 自回归——两者都认「未过滤新闻有害」（本工作：未过滤新闻劣于纯数值基线；TESS 诊断：冗余 token 分散注意力），但过滤策略从多轮反思闭环简化为一次性判别分类[^src-tess]。
+
 ## 相关页面
 
 - [[source-gpt4mts]] — 双提示 LLM 文本-数值时序预测
 - [[time-mmd]] · [[source-time-mmd]] — 多领域对齐数值–文本基准（对照：本工作自建新闻配对）
 - [[multimodal-time-series-forecasting]] — 多模态预测概念
+- [[tess]] — TESS：离散时序原语 + 置信门控（本工作在 Bitcoin 上的最强基线）
 
 ## 引用
 
 [^src-from-news-to-forecast]: [[source-from-news-to-forecast]]
 [^src-time-mmd]: [[source-time-mmd]]
+[^src-tess]: [[source-tess]]

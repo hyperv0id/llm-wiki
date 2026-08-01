@@ -10,8 +10,8 @@ tags:
   - self-supervised
   - ICLR-2023
 created: 2026-05-30
-last_updated: 2026-07-13
-source_count: 4
+last_updated: 2026-08-01
+source_count: 5
 confidence: medium
 status: active
 ---
@@ -102,6 +102,7 @@ PatchTST 是 LSTF 领域的关键转折点 [^src-patchtst]：
 - **前驱/基线**：[[informer|Informer]], [[autoformer|Autoformer]], [[fedformer|FEDformer]], [[ltsf-linear|DLinear / LTSF-Linear]]
 - **同期/对照**：[[tide|TiDE]] — residual MLP + 协变量高速路，线性复杂度；在 Traffic 等大数据集上可超过 PatchTST，且训练/推理显著更快[^src-tide]
 - **后续/继承**：[[simdiff|SimDiff]]（patch + CI + diffusion）, [[cvpe|CVPE]]（CI + CD 折中）, [[sparsetsf|SparseTSF]]（patch + 极致压缩）, [[srsnet|SRSNet]] / [[selective-representation-space|SRS]]（自适应 patch 表示空间插件）
+- **多模态改造**：[[tess|TESS]]（arXiv:2603.12664v2）直接以 PatchTST 为 backbone，输入前拼接 4 个离散时序原语（mean shift/volatility/shape/lag）类别 embedding 并附加门控 BCE 监督，四数据集全面超过原版 PatchTST（Bitcoin MSE 2.2726 vs 3.2456）；[[timi|TiMi]] 则用 MMoE 替换 FFN——两者同为 PatchTST 的多模态改造样板[^src-tess]
 - **核心概念**：[[patch-based-tokenization]], [[channel-independence]], [[instance-normalization]], [[lstf]]
 - **自监督/预训练**：[[mae|MAE]], [[videomae]], [[timesfm|TimesFM]], [[chronos]]
 
@@ -109,3 +110,4 @@ PatchTST 是 LSTF 领域的关键转折点 [^src-patchtst]：
 [^src-srsnet]: [[source-srsnet]]
 [^src-probts]: [[source-probts]]
 [^src-tide]: [[source-tide]]
+[^src-tess]: [[source-tess]]

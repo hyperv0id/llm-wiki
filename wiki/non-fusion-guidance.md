@@ -8,8 +8,8 @@ tags:
   - forecasting
   - mixture-of-experts
 created: 2026-07-25
-last_updated: 2026-07-28
-source_count: 2
+last_updated: 2026-08-01
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -45,11 +45,17 @@ Non-Fusion Guidance 将文本和时序建模**完全解耦**[^src-timi]：
 - **vs VoT**：[[vot|VoT]] 也使用 LLM 推理，但最终通过多级对齐（表示级+预测级）融合文本与数值特征，属于 Late Fusion[^src-timi]。
 - **vs TaTS**：[[tats|TaTS]] 将文本编码后作为辅助变量拼接至数值序列，虽然即插即用但仍是特征层面的简单融合，未利用因果推理[^src-timi]。
 - **vs Constrained Text Fusion / CFA**：[[constrained-text-fusion|CFA]] 与本文同认「naive add/concat 常低于 unimodal」，但选择 **受控特征融合**（低秩残差 / 门控 / FiLM / 正交）而非完全解耦；TiMi 走 **不融合、只路由**，CFA 走 **过滤后仍残差注入 TS 表示**——二者是互补的反-naive 路线[^src-constrained-text-fusion][^src-timi]。
+- **vs TESS**：[[tess|TESS]]（arXiv:2603.12664v2）是范式下第二条实现。同判：LLM 独立处理文本、知识引导 backbone、不做表示对齐。实现差异：TiMi 用 MMoE 连续路由（文本门控选专家），TESS 用离散原语分类（LLM 输出受限类别）+ 置信门控 + prefix 条件化 PatchTST；TESS 把 LLM 从生成式推理改为判别式分类，并以门控降低对 LLM 推理质量的依赖——可视为对「依赖 LLM 推理质量」这一局限的缓解尝试[^src-tess]。
+
+## 两种实现路线
+
+Non-Fusion Guidance 当前含两条实现：**MoE 路由**（TiMi，连续知识、替换 FFN）与**离散原语瓶颈**（TESS，受限类别、门控 + 条件化）[^src-timi][^src-tess]。
 
 ## 相关页面
 
-- [[timi]] · [[mmoe]] · [[vot]] · [[tats]] · [[constrained-text-fusion]] · [[source-constrained-text-fusion]] · [[multimodal-time-series-forecasting]]
+- [[timi]] · [[mmoe]] · [[vot]] · [[tats]] · [[constrained-text-fusion]] · [[source-constrained-text-fusion]] · [[multimodal-time-series-forecasting]] · [[tess]]
 
 
 [^src-timi]: [[source-timi]]
 [^src-constrained-text-fusion]: [[source-constrained-text-fusion]]
+[^src-tess]: [[source-tess]]

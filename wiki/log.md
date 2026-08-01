@@ -1,3 +1,10 @@
+## [2026-08-01] ingest | From Text to Forecasts: Bridging Modality Gap with Temporal Evolution Semantic Space
+
+PDF: `raw/Li_2026_ICLR_TemporalEvolutionSpace.pdf`（arXiv:2603.12664v2，标注 ICLR 2026，Li/Wang/Deng/Gong 等，山东大学/波士顿大学/北航/南科大）。TESS：半合成诊断（FNSPID+GPT-5.2、焦点比 Rt<0、Signal-Only≪Numerical）→ 冻结 LLM 分类四类离散时序原语（mean shift/volatility/shape/lag）+ margin 置信门控 → prefix 条件化 PatchTST；定理 4.1/A.5/A.6；四数据集最高 29% MSE 降幅（Bitcoin vs NewsForecasting +18.2%/+29.1%/+15.8%）；Non-Fusion Guidance 第二实现（TiMi 后）；论文内部不一致：正文消融百分比 vs Table 2、FNSPID 粒度栏 vs 表题。
+
+创建的页面：[[source-tess]], [[tess]], [[temporal-semantic-primitives]]
+更新的页面：[[timi]], [[non-fusion-guidance]], [[constrained-text-fusion]], [[event-driven-reasoning]], [[multimodal-time-series-forecasting]], [[patchtst]], [[time-llm]], [[tats]], [[source-from-news-to-forecast]], [[index]]
+
 ## [2026-07-31] ingest | FusionBench: Unified Library and Benchmark for Deep Model Fusion
 
 PDF: `raw/jmlr-25-1243.pdf`（JMLR 26 (2025) 1–38，Tang/Shen/Luo et al.）。首个深度模型融合综合基准+库：Algorithm/ModelPool/TaskPool；ensemble/merging/mixing(+compression)；CLIP 八任务上 WEMoE/SMILE≈89.2–89.3 逼近 MTL 88.6；层间 AdaMerging 82.6≫任务级 68.7；任务向量近正交；未见任务负迁移与腐蚀鲁棒；对照 MergeKit/MergeBench。

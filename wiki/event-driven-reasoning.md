@@ -8,8 +8,8 @@ tags:
   - reasoning
   - event-driven
 created: 2026-05-03
-last_updated: 2026-07-25
-source_count: 2
+last_updated: 2026-08-01
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -55,10 +55,13 @@ This enables LLMs to learn from past errors without expensive fine-tuning.
 | GPT4MTS | Feature extraction | Exogenous | No |
 | TaTS | Feature extraction | Exogenous | No |
 | **TiMi** | **Reasoning → Guidance** | Exogenous | **Yes** |
+| **TESS** | **Classification → Guidance** | Exogenous | **分类式** |
 
 VoT is the first method to use LLMs for **reasoning** (not just feature extraction) in multimodal time series forecasting[^src-event-driven-ts-forecasting]。
 
 [[timi|TiMi]] (ICML 2026) 进一步将 LLM 推理提升为 **[[non-fusion-guidance|Non-Fusion Guidance]]** 范式：LLM 独立推理生成未来趋势的结构化因果知识，通过 [[mmoe|MMoE]] 门控路由引导时序 backbone，完全放弃特征融合[^src-timi]。与 VoT 的 Reasoning → Summarization → Multi-Level Alignment 流水线不同，TiMi 的 Reasoning → MoE Routing 路径更短且不需要模态对齐[^src-timi]。
+
+[[tess|TESS]]（arXiv:2603.12664v2）是该概念页首个非 Late Fusion 成员：推理产物是四类离散时序原语（mean shift/volatility/shape/lag）而非数值预测+推理链，不做表示级/预测级对齐（对照 VoT 的 ETA+AFF），以语义 prefix + 置信门控条件化 PatchTST——可视为「事件驱动推理」向「离散语义瓶颈」的变体[^src-tess]。
 
 ## Related Pages
 
@@ -70,6 +73,8 @@ VoT is the first method to use LLMs for **reasoning** (not just feature extracti
 - [[non-fusion-guidance]] — Non-Fusion Guidance paradigm
 - [[mmoe]] — MMoE plugin module
 - [[mindts]] — related multimodal TS model (anomaly detection, same lab)
+- [[tess]] — TESS, discrete primitive bottleneck variant
 
 [^src-event-driven-ts-forecasting]: [[source-event-driven-ts-forecasting]]
 [^src-timi]: [[source-timi]]
+[^src-tess]: [[source-tess]]

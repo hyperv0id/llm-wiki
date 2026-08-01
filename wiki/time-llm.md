@@ -8,8 +8,8 @@ tags:
   - forecasting
   - iclr
 created: 2026-06-04
-last_updated: 2026-06-15
-source_count: 5
+last_updated: 2026-08-01
+source_count: 6
 confidence: high
 status: active
 ---
@@ -65,6 +65,8 @@ Time-LLM 是 Jin et al. (ICLR 2024) 提出的框架，首次通过 **model repro
 | 输出 | Projection | 直接预测 | Token 解码 | 直接预测 |
 | 模态对齐 | Cross-attention to text prototypes | 隐式 | 文本化 | 隐式 |
 
+**方向相反的方法**：[[tess|TESS]]（arXiv:2603.12664v2）把映射方向倒过来——冻结 LLM 不接收时序，只把外生新闻分类为四类离散时序原语（mean shift/volatility/shape/lag），数值预测完全交给 PatchTST；在 Bitcoin/FNSPID/Electricity/Environment 四数据集上全面优于 TimeLLM（如 Bitcoin MSE 3.4477→2.2726）[^src-tess]。
+
 ## 局限与未来
 
 - LLM backbone 推理开销大（Llama-7B ~32GB 显存）[^src-time-llm]
@@ -90,6 +92,7 @@ Time-LLM 是 Jin et al. (ICLR 2024) 提出的框架，首次通过 **model repro
 - 反例：[[nuwats]] — NuwaTS 证明文本对齐对不完整序列不如线性嵌入，且复用 NLP 权重做插补基础模型
 - 演化/对比：[[fstllm|FSTLLM]] (ICML 2025) — 针对 Time-LLM 等方法"通用任务提示 + 数值微调"未充分利用 LLM 推理的批评，FSTLLM 改用节点专属描述、时序模式总结与 STGNN 预测 token 构成的六段 prompt 对 LLaMA-2-7B 做 QLoRA 微调，并以 LLM 构图增强空间相关性，专攻 few-shot 时空预测[^src-fstllm]
 - 对比：[[st-vision-llm|ST-Vision-LLM]] (arXiv 2025) uses Time-LLM as an LLM baseline and frames it as a representative 1D-sequence reprogramming approach that, despite strong temporal modeling, lacks mechanisms for the 2D topological/spatial structure of grid-based traffic; on the Telecom Italia mobile-traffic benchmark ST-Vision-LLM substantially outperforms Time-LLM (which uses a Qwen2.5-7B backbone)[^src-st-vision-llm]
+- 反方向：[[tess]] — TESS 把文本压成离散时序原语注入 PatchTST，而非把 TS reprogram 进 LLM 空间[^src-tess]
 - 演化：[[std-plm|STD-PLM]] (AAAI 2025) — 在 PLM-for-TS 思路上增加空间+时间双维度 tokenizer、拉普拉斯节点嵌入和 Sandglass Attention，统一预测+插补[^src-std-plm]
 
 [^src-time-llm]: [[source-time-llm]]
@@ -97,3 +100,4 @@ Time-LLM 是 Jin et al. (ICLR 2024) 提出的框架，首次通过 **model repro
 [^src-fstllm]: [[source-fstllm]]
 [^src-st-vision-llm]: [[source-st-vision-llm]]
 [^src-std-plm]: [[source-std-plm]]
+[^src-tess]: [[source-tess]]

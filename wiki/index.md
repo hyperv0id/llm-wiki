@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-07-31
+last_updated: 2026-08-01
 tags:
   - meta
 ---
@@ -1157,6 +1157,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-ts-vl-alignment]] — TS–VL Alignment source: 34 configs, ID saturation, image-as-intermediary (arXiv:2602.19367v1)
 - [[source-constrained-text-fusion]] — CFA source: >20K Time-MMD settings, Gating/FiLM/Orthogonal/CFA (arXiv:2603.22372)
 - [[source-cross-modal-misalignment]] — Cross-modal misalignment LVM: selection/perturbation; MMCL retains unbiased semantics (NeurIPS 2025, arXiv:2504.10143v7)
+- [[source-tess]] — TESS: LLM 分类离散时序原语 + 置信门控 + PatchTST prefix 条件化，Non-Fusion Guidance 第二实现（ICLR 2026, arXiv:2603.12664v2）
 
 ## Entities (continued)
 - [[chronosx]] — ChronosX 实体：past/future Injection Blocks + 跨骨干扩展
@@ -1166,6 +1167,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[constrained-text-fusion]] — Constrained Text Fusion / CFA：naive vs 受控文本注入
 - [[cross-modal-misalignment]] — Cross-modal misalignment 概念：缓解 vs 利用；block-id 无偏语义
 - [[fusionbench]] — FusionBench：深度模型融合统一库与基准（JMLR 2025）
+- [[tess]] — TESS 实体：离散时序原语 + 置信门控 + prefix 条件化 PatchTST（ICLR 2026）
 
 ## Concepts (continued)
 - [[deep-model-fusion]] — 深度模型融合：ensemble / merging / mixing 三分法与 learn-from-model 定位
@@ -1173,6 +1175,7 @@ All wiki pages, organized by type. Updated on every ingest.
 ## Techniques (continued)
 - [[model-merging]] — 同构参数合并：Soup / Fisher / RegMean / Ties / AdaMerging 等
 - [[task-arithmetic]] — 任务向量算术：微调位移的加减组合与编辑
+- [[temporal-semantic-primitives]] — 时间演化原语：mean shift/volatility/shape/lag-decay 四类离散语义，数值可验证 + 置信门控
 
 ## Sources (continued)
 - [[source-jmlr-25-1243]] — FusionBench: unified library + benchmark for deep model fusion (JMLR 26, 2025; PDF raw/jmlr-25-1243.pdf)

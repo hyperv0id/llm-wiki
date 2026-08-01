@@ -9,8 +9,8 @@ tags:
   - forecasting
   - icml-2026
 created: 2026-07-25
-last_updated: 2026-07-28
-source_count: 2
+last_updated: 2026-08-01
+source_count: 3
 confidence: high
 status: active
 ---
@@ -33,6 +33,8 @@ TiMi 与 [[vot|VoT]] 都使用 LLM 推理文本，但 VoT 仍依赖 feature-leve
 
 与 [[constrained-text-fusion|Constrained Text Fusion / CFA]]（Lee et al., arXiv:2603.22372）对照：CFA 同样发现 Time-MMD 上 **naive 融合常低于 unimodal**，但用 **低秩残差 / 门控等受控融合** 保留特征注入；TiMi 则彻底 **Non-Fusion**，用 MoE 路由代替表示融合——问题诊断相近，机制正交[^src-timi][^src-constrained-text-fusion]。
 
+同族第二成员 [[tess|TESS]]（arXiv:2603.12664v2）给出另一条 Non-Fusion 实现：冻结 LLM 不做生成式推理，只把文本分类为四类离散 [[temporal-semantic-primitives|时间演化原语]]（mean shift/volatility/shape/lag），经置信门控后作 prefix token 条件化 PatchTST。与 TiMi 的差异在知识形态（自由文本 vs 受限类别）与注入机制（MMoE 路由 vs 离散原语 + 门控 + 条件化）；TESS 另提供信息瓶颈与 gating 误差衰减定理（4.1、A.5）[^src-tess]。
+
 ## 架构
 
 1. **Text Reasoning** — 冻结 LLM (Qwen2.5-7B-Instruct) 处理外生文本，通过平均池化生成含因果知识的文本 token[^src-timi]。
@@ -54,7 +56,8 @@ TiMi 与 [[vot|VoT]] 都使用 LLM 推理文本，但 VoT 仍依赖 feature-leve
 
 ## 相关页面
 
-- [[source-timi]] · [[non-fusion-guidance]] · [[mmoe]] · [[vot]] · [[time-mmd]] · [[constrained-text-fusion]] · [[multimodal-time-series-forecasting]]
+- [[source-timi]] · [[non-fusion-guidance]] · [[mmoe]] · [[vot]] · [[time-mmd]] · [[constrained-text-fusion]] · [[multimodal-time-series-forecasting]] · [[tess]]
 
 [^src-timi]: [[source-timi]]
 [^src-constrained-text-fusion]: [[source-constrained-text-fusion]]
+[^src-tess]: [[source-tess]]
