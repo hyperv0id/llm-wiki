@@ -1,3 +1,16 @@
+## [2026-08-01] ingest | Language in the Flow of Time: Time-Series-Paired Texts Weaved into a Unified Temporal Narrative
+
+PDF: `raw/language-in-the-flow-of-time-iclr2026.pdf`（ICLR 2026 camera-ready；与 raw/language-flow-time-tats.pdf 即 arXiv:2502.08942v3 实质同文，新增 ACK/ethics/reproducibility 声明）。TaTS：CTR 现象（PRH 依据、月度序列与文本同周期 12）+ TT-Wasserstein 谱距离度量 + 文本作辅助变量拼接（GPT-2 1.5B 编码 → 三层 MLP → U=[X;Zᵀ]），任意 TS 模型即插即用；18 数据集 × 9 模型，6/9 超 5% 提升、Environment >30%、插补最高 30%、~1% 参数/~8% 训练时间换 ~14% MSE。
+
+创建的页面：无（同文已有页面，更新为主）
+更新的页面：[[source-language-in-the-flow-of-time]], [[source-language-flow-time]], [[tats]], [[tess]], [[index]]
+
+## [2026-08-01] maintenance | 合并重复 source 页面：Language in the Flow of Time
+
+2026-06-18 Bulk Ingest 静默创建的中文 source 页 [[source-language-flow-time]] 与 2026-05-03 的 [[source-language-in-the-flow-of-time]] 为同一论文（ICLR 2026, arXiv:2502.08942）。核对两版论文文本后：中文页内容更全且无错误，英文页有 2 处无据论断（RoBERTa 编码器、monthly>daily 增益，被 Table 5 反证）已修正。方案：保留英文 slug（完整标题 + 8 引用页），中文独有内容（14% 效率分析、编码器消融、鲁棒性消融）并入英文页；中文页标 superseded → [[source-language-in-the-flow-of-time]]，内容存档保留。
+
+更新的页面：[[source-language-in-the-flow-of-time]], [[source-language-flow-time]], [[index]]
+
 ## [2026-08-01] ingest | From Text to Forecasts: Bridging Modality Gap with Temporal Evolution Semantic Space
 
 PDF: `raw/Li_2026_ICLR_TemporalEvolutionSpace.pdf`（arXiv:2603.12664v2，标注 ICLR 2026，Li/Wang/Deng/Gong 等，山东大学/波士顿大学/北航/南科大）。TESS：半合成诊断（FNSPID+GPT-5.2、焦点比 Rt<0、Signal-Only≪Numerical）→ 冻结 LLM 分类四类离散时序原语（mean shift/volatility/shape/lag）+ margin 置信门控 → prefix 条件化 PatchTST；定理 4.1/A.5/A.6；四数据集最高 29% MSE 降幅（Bitcoin vs NewsForecasting +18.2%/+29.1%/+15.8%）；Non-Fusion Guidance 第二实现（TiMi 后）；论文内部不一致：正文消融百分比 vs Table 2、FNSPID 粒度栏 vs 表题。

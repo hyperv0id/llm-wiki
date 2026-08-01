@@ -93,7 +93,12 @@ TaTS is simpler and more widely compatible, while VoT achieves deeper semantic i
 | LLM usage | Feature extraction (GPT-2) | Classification (frozen LLM) |
 | Architecture | Plug-in (no modification) | Requires PatchTST prefix injection |
 
-[[tess|TESS]]（arXiv:2603.12664v2）同属「文本作为辅助输入、保留 TS 模型主体」路线，但把 TaTS 的「整段文本 embedding 拼接」替换为「冻结 LLM 分类成离散时序原语 + 置信门控后再注入」。TESS 的半合成诊断（冗余 token 越多增益越差、焦点比 R<sub>t</sub><0）恰为 TaTS 式无过滤 concat 提供反面机制证据：TaTS 赌文本与序列同构（CTR 视角），TESS 赌文本可投影到预定义统计语义[^src-tess][^src-language-in-the-flow-of-time]。
+[[tess|TESS]]（arXiv:2603.12664v2）同属「文本作为辅助输入、保留 TS 模型主体」路线，但把 TaTS 的「整段文本 embedding 拼接」替换为「冻结 LLM 分类成离散时序原语 + 置信门控后再注入」。TESS 的半合成诊断（冗余 token 越多增益越差、焦点比 R<sub>t</sub><0）为 TaTS 式无过滤 concat 提供反面机制证据：TaTS 赌文本与序列同构（CTR 视角），TESS 赌文本可投影到预定义统计语义[^src-tess][^src-language-in-the-flow-of-time]。
+
+两点限定（避免与 TESS 诊断表面冲突）：
+
+1. **TaTS 无的是显式语义门控，不是无压缩**。TaTS 有均值池化（折叠 token）+ 三层 MLP 投影 + 联合训练；文本打乱消融显示模型能学会给噪声文本通道小权重。TESS 诊断的「直接融合失败」针对 token 级注意力注入，TaTS 输入预测器的每个时间戳只有一个池化向量，token 级注意力分散在结构上不存在[^src-language-in-the-flow-of-time]。
+2. **两篇证据可并立**：TaTS 证明序列级谱对齐（CTR/TT-Wasserstein，结构信号），TESS 证明 token 级语义难解码（R<sub>t</sub>、Signal-Only ≪ Numerical）——包络对齐存在与逐 token 解码失败可同时为真。两篇评测在 FNSPID/Bitcoin/Electricity 上有重叠，结论差异源于融合形态（池化+投影+联合训练 vs token 级注入），而非数据。判定标准亦互补：TaTS 用 TT-Wasserstein 语料级预判（训练前、谱距离，Table 5 同采样频率内低比值→大增益，除 Climate），TESS 用置信门控实例级在线过滤（数值可验证 BCE）[^src-tess][^src-language-in-the-flow-of-time]。
 
 ### vs. UniCA
 

@@ -183,8 +183,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-bluuuuue-scaling-factor-intuition]] — 数学直觉系列（一）：缩放因子1/√dₖ——注意力机制的数值稳定性条件 (bluuuuue, 小红书)
 - [[source-bluuuuue-reparameterization-trick]] — 数学直觉系列（二）：VAE与重参数化——将不可逆的随机采样重构为可微的确定性变换 (bluuuuue, 小红书)
 - [[source-2605-07319]] — Generative Modeling with Flux Matching：全新生成建模范式，推广得分函数为任意生成向量场 (Pao-Huang et al., Stanford, arXiv 2026)
-- [[source-language-flow-time]] — Language in the Flow of Time: TaTS Framework (ICLR 2026)
-- [[source-language-in-the-flow-of-time]] — Language in the Flow of Time: TaTS framework for multimodal TS (ICLR 2026)
+- [[source-language-flow-time]] — Language in the Flow of Time: TaTS Framework (ICLR 2026) ⚠️ superseded by [[source-language-in-the-flow-of-time]]
+- [[source-language-in-the-flow-of-time]] — Language in the Flow of Time: TaTS framework for multimodal TS: CTR/TT-Wasserstein + 编码器与鲁棒性消融 (ICLR 2026, arXiv:2502.08942)
 - [[source-uniextreme]] — UniExtreme: universal extreme weather forecasting foundation model (arXiv 2025)
 - [[source-uniflow]] — UniFlow: foundation model for unified urban spatio-temporal flow prediction (arXiv 2024)
 - [[source-unist]] — UniST: prompt-empowered universal model for urban spatio-temporal prediction (KDD 2024)

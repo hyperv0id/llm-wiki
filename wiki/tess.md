@@ -53,7 +53,7 @@ status: active
 | [[vot|VoT]] | 同为事件驱动文本推理 | VoT 生成数值预测 + 推理链并做多级对齐；TESS 只做原语分类，不做任何对齐 |
 | [[time-llm|Time-LLM]] | 方向相反（基线对比） | Time-LLM 把 TS reprogram 进 LLM 空间；TESS 把文本压成原语注入 TS 模型空间 |
 | [[source-from-news-to-forecast|NewsForecasting]] | Bitcoin 上的最强基线 | NewsForecasting 智能体迭代过滤 + LoRA 微调 LLM 自回归；TESS 单次冻结 LLM 分类 + PatchTST |
-| [[tats|TaTS]] | 同为文本辅助输入 | TaTS 整段文本 embedding 拼接（无过滤）；TESS 离散原语 + 门控（有过滤） |
+| [[tats|TaTS]] | 同为文本辅助输入 | TaTS 整段文本 embedding 拼接（无显式门控，但有池化+MLP+联合训练）；TESS 离散原语 + 门控（有过滤）。判定机制：TT-Wasserstein 语料级预判（训练前、谱距离）vs 置信门控实例级在线过滤（数值可验证 BCE）。两篇在 FNSPID/Bitcoin/Electricity 评测重叠，结论差异源于融合形态而非数据 |
 | [[patchtst|PatchTST]] | backbone | 仅两处改动：语义 prefix token + 门控 BCE 监督 |
 
 ## 相关页面

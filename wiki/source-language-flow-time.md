@@ -8,13 +8,17 @@ tags:
   - forecasting
   - plug-and-play
 created: 2026-06-18
-last_updated: 2026-06-18
+last_updated: 2026-08-01
 source_count: 1
 confidence: medium
-status: active
+status: superseded
+superseded_by: [[source-language-in-the-flow-of-time]]
 ---
 
 # Language in the Flow of Time: TaTS
+
+> [!warning] 已取代
+> 本页与 [[source-language-in-the-flow-of-time]] 重复（同一论文 ICLR 2026, arXiv:2502.08942）；内容已合并至后者，本页保留存档。
 
 ## 概述
 
