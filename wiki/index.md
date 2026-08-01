@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-07-28
+last_updated: 2026-07-31
 tags:
   - meta
 ---
@@ -1165,3 +1165,14 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[ts-vl-alignment]] — TS–VL Alignment 实体：近正交 / 后验投影上限 / 外生多模态含义
 - [[constrained-text-fusion]] — Constrained Text Fusion / CFA：naive vs 受控文本注入
 - [[cross-modal-misalignment]] — Cross-modal misalignment 概念：缓解 vs 利用；block-id 无偏语义
+- [[fusionbench]] — FusionBench：深度模型融合统一库与基准（JMLR 2025）
+
+## Concepts (continued)
+- [[deep-model-fusion]] — 深度模型融合：ensemble / merging / mixing 三分法与 learn-from-model 定位
+
+## Techniques (continued)
+- [[model-merging]] — 同构参数合并：Soup / Fisher / RegMean / Ties / AdaMerging 等
+- [[task-arithmetic]] — 任务向量算术：微调位移的加减组合与编辑
+
+## Sources (continued)
+- [[source-jmlr-25-1243]] — FusionBench: unified library + benchmark for deep model fusion (JMLR 26, 2025; PDF raw/jmlr-25-1243.pdf)

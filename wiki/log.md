@@ -1,3 +1,11 @@
+## [2026-07-31] ingest | FusionBench: Unified Library and Benchmark for Deep Model Fusion
+
+PDF: `raw/jmlr-25-1243.pdf`（JMLR 26 (2025) 1–38，Tang/Shen/Luo et al.）。首个深度模型融合综合基准+库：Algorithm/ModelPool/TaskPool；ensemble/merging/mixing(+compression)；CLIP 八任务上 WEMoE/SMILE≈89.2–89.3 逼近 MTL 88.6；层间 AdaMerging 82.6≫任务级 68.7；任务向量近正交；未见任务负迁移与腐蚀鲁棒；对照 MergeKit/MergeBench。
+
+创建的页面：[[source-jmlr-25-1243]], [[fusionbench]], [[deep-model-fusion]], [[model-merging]], [[task-arithmetic]]
+更新的页面：[[mixture-of-experts]], [[index]]
+笔记：`notes/20260731T204831--paper-fusionbench__paper.org`
+
 ## [2026-07-28] ingest | On the Value of Cross-Modal Misalignment in Multimodal Representation Learning
 
 PDF: `raw/on-the-value-of-cross-modal-misalignment-in-multimodal-representation-learning.pdf`（arXiv:2504.10143v7, NeurIPS 2025）。LVM 形式化 selection/perturbation bias；MMCL block-identify 无偏共享语义；全语义预训练应缓解、OOD 不变表示可利用；仿真 + MPI3D + Causal3DIdent + OpenCLIP/LAION 验证。

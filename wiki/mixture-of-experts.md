@@ -6,8 +6,8 @@ tags:
   - architecture
   - scalability
 created: 2026-04-29
-last_updated: 2026-07-25
-source_count: 8
+last_updated: 2026-07-31
+source_count: 9
 references:
   - [[source-fast-long-horizon-forecasting]]
 confidence: high
@@ -113,6 +113,16 @@ FaST 首次将 MoE 应用于大规模长视野时空图预测：
 
 [[timi|TiMi]] (ICML 2026) 提出 **[[mmoe|Multimodal Mixture-of-Experts (MMoE)]]**——一种将 MoE 用于跨模态知识引导而非特征融合的创新范式[^src-timi]。MMoE 包含两个互补的 MoE 子系统：**TMoE** 用 LLM 提取的文本因果知识作为门控信号路由 experts；**SMoE** 用全局序列表示路由 experts 捕获趋势[^src-timi]。与标准 Sparse/Dense MoE（仅基于输入 token 的 routing）不同，MMoE 的核心创新在于**门控信号的来源**——text-based routing 使 LLM 推理可以动态选择 experts 而非简单地将特征融合[^src-timi]。该模块可替换任意 Transformer backbone 的标准 FFN 层，PatchTST+MMoE 平均 MSE 降低 18.2%[^src-timi]。
 
+## 事后模型混合中的 MoE（FusionBench）
+
+[[fusionbench|FusionBench]]（JMLR 2025）把 **WE-MoE / SMILE** 等归为 [[deep-model-fusion|深度模型融合]] 的 *model mixing*：输入是多个*已微调*同构检查点，输出常为扩参或稀疏专家结构，而不是在预训练阶段从零学路由[^src-jmlr-25-1243]。
+
+- **与训时 MoE 的分界**：Time-MoE / Moirai-MoE / FaST / TiMi MMoE 在训练（或微调）中学 gating；WE-MoE/SMILE 是多专家检查点的*后置装配*，可配合测试时适配[^src-jmlr-25-1243]。
+- **经验量级**（CLIP-ViT-B/32 八任务 AVG）：WEMoE 89.2 / SMILE 89.3，接近传统 MTL 88.6 与 STL 上界 90.3，明显高于纯 [[model-merging|参数合并]] 的平均/Ties 档[^src-jmlr-25-1243]。
+- **代价**：mixing 通常扩大模型或增加适配成本；资源紧时应先看无参合并与 RegMean，而非默认升 MoE[^src-jmlr-25-1243]。
+
+详见 [[fusionbench]]、[[deep-model-fusion]]、[[source-jmlr-25-1243]]。
+
 ## 相关技术
 
 - [[glu-gated-linear-unit|Gated Linear Units (GLU)]]
@@ -126,6 +136,7 @@ FaST 首次将 MoE 应用于大规模长视野时空图预测：
 - [[moirai-moe|Moirai-MoE]]
 - [[time-moe|Time-MoE]]
 - [[time-300b|Time-300B]]
+- [[fusionbench|FusionBench]] · [[deep-model-fusion]] · [[model-merging]]
 
 [^src-fast-long-horizon-forecasting]: [[source-fast-long-horizon-forecasting]]
 [^src-most]: [[source-most]]
@@ -135,3 +146,4 @@ FaST 首次将 MoE 应用于大规模长视野时空图预测：
 [^src-time-moe]: [[source-time-moe]]
 [^src-moirai-moe]: [[source-moirai-moe]]
 [^src-timi]: [[source-timi]]
+[^src-jmlr-25-1243]: [[source-jmlr-25-1243]]
