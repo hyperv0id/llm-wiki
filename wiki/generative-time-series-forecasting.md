@@ -8,7 +8,7 @@ tags:
   - flow-matching
   - diffusion-models
 created: 2026-05-03
-last_updated: 2026-07-19
+last_updated: 2026-08-05
 source_count: 19
 confidence: high
 status: active
@@ -59,7 +59,7 @@ status: active
 
 **[[freqflow-ts|FrèqFlow/SpectFlow]]** (NeurIPS 2025) 首次将条件流匹配引入频域进行确定性 MTS 预测。通过复值线性层在频域中插值频谱，配合流匹配头进行残差学习，仅 89k 参数即达到 SOTA。采用 ODE 单次确定性采样，推理速度远超扩散方法[^src-2511-16426]。
 
-**[[aurora|Aurora]]** (arXiv 2026) 提出 Prototype-Guided Flow Matching，使用多模态领域知识生成条件和原型来引导流匹配过程，实现生成式概率预测[^src-aurora]。Aurora 支持多模态输入（文本、图像、数值）和零样本推理。
+**[[aurora|Aurora]]** (ICLR 2026) 提出 Prototype-Guided Flow Matching，使用多模态领域知识生成条件和原型来引导流匹配过程，实现生成式概率预测[^src-aurora]。与 Sundial/TSFlow 从高斯噪声出发不同，Aurora 的生成起点是"未来原型 + 噪声"（$y^{(0)}=\tilde{P}_i+\epsilon_i$）——原型由 1000 个周期/趋势基向量按文本/图像知识检索加权合成，论文称该起点已包含未来周期与趋势的雏形（rudiments of periodicity and trend），流匹配在此基础上生成具体数值。Aurora 支持多模态输入（文本、图像、数值）和零样本推理。
 
 ### 归一化流方法
 

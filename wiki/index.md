@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-08-01
+last_updated: 2026-08-05
 tags:
   - meta
 ---
@@ -175,7 +175,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-multimodal-ts-survey]] — Multi-modal Time Series Analysis: A Tutorial and Survey, unified cross-modal interaction framework (fusion/alignment/transference), 40+ methods catalog, Terra/Time-MMD benchmarks, arXiv 2025
 - [[source-event-driven-ts-forecasting]] — VoT: event-driven reasoning and multi-level alignment for time series forecasting (ICLR 2026)
 - [[source-fence]] — FENCE: Spatial-Temporal Feedback Diffusion Guidance for Controlled Traffic Imputation (AAAI 2026)
-- [[source-aurora]] — Aurora: universal generative multimodal time series forecasting (arXiv 2026)
+- [[source-aurora]] — Aurora: universal generative multimodal time series forecasting (ICLR 2026)
 - [[source-bigcity]] — BIGCity: first MTMD spatio-temporal model unifying trajectory + traffic state (arXiv 2024)
 - [[source-time-llm]] — Time-LLM: Time Series Forecasting by Reprogramming Large Language Models (ICLR 2024)
 - [[source-time-moe]] — Time-MoE: 首个稀疏 MoE 时序基础模型，decoder-only + 逐点 token 化 + 多分辨率预测头，2.4B 参数，Time-300B (309B pts)，ICLR 2025
@@ -393,7 +393,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[metadg]] — MetaDG, meta dynamic graph for traffic flow prediction unifying dynamics and heterogeneity (AAAI 2026)
 - [[mindts]] — MindTS, multimodal time series anomaly detection model (ICLR 2026)
 - [[vot]] — VoT (Value of Text), multimodal time series forecasting model with event-driven reasoning (ICLR 2026)
-- [[aurora]] — Aurora, universal generative multimodal time series foundation model (arXiv 2026)
+- [[aurora]] — Aurora, universal generative multimodal time series foundation model (ICLR 2026)
 - [[climatear]] — ClimateAR, VAR autoregressive probabilistic climate forecasting, ACC +37.56% (ICML 2026)
 - [[tats]] — TaTS (Texts as Time Series), plug-and-play multimodal TS framework (ICLR 2026)
 - [[timi]] — TiMi, LLM 因果推理 + MMoE 即插即用引导 Transformer 多模态时序预测，Non-Fusion Guidance 范式，ICML 2026
@@ -801,8 +801,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[historical-in-context-learning]] — HIC, retrieve corrected historical reasoning examples as error-informed guidance (ICLR 2026)
 - [[endogenous-text-alignment]] — ETA, decomposed pattern extraction and contrastive learning for text-TS alignment (ICLR 2026)
 - [[adaptive-frequency-fusion]] — AFF, frequency-domain fusion with learnable per-band weights (ICLR 2026)
-- [[modality-guided-self-attention]] — Aurora's attention mechanism injecting multimodal domain knowledge into temporal representations (arXiv 2026)
-- [[prototype-guided-flow-matching]] — Aurora's generative probabilistic forecasting via prototype-conditioned flow matching (arXiv 2026)
+- [[modality-guided-self-attention]] — Aurora's attention mechanism injecting multimodal domain knowledge into temporal representations (ICLR 2026)
+- [[prototype-guided-flow-matching]] — Aurora's generative probabilistic forecasting via prototype-conditioned flow matching (ICLR 2026)
 - [[tt-wasserstein]] — TT-Wasserstein metric for quantifying CTR alignment quality (ICLR 2026)
 - [[topology-aware-graph-transformer]] — TGT, learnable blend of global self-attention and local graph topology (AAAI 2026)
 - [[adaptive-frequency-modulation]] — AFM, learnable Beta-distribution spectral filters + band aggregation for normal-extreme weather discrimination (arXiv 2025)

@@ -3199,3 +3199,9 @@ Pineda Arango / Mercado et al. (Amazon, AISTATS 2025, arXiv:2503.12107)。IIB �
 - **index.md**：两个 one-liner 降格，“首个系统/即插即用范式” → “arXiv 预印本，未接收；仅 related-work 级参考”。
 
 更新的页面：[[source-exost]]，[[source-select-then-balance]]，[[index]]
+
+## [2026-08-05] ingest | Aurora 完整论文补全（ICLR 2026 full paper）
+
+PDF: `raw/2509.22295.pdf`（40 页 ICLR 2026 camera-ready，arXiv:2509.22295v6）。此前 2026-05-03 仅基于 arXiv 摘要 ingest（当时 raw 无 PDF），本次基于完整论文补全：Corr 桥接公式（$V_{\text{Attn}}\cdot W\cdot T_{\text{Attn}}^\top$ 注入自注意力打分）、1000 原型（三角/指数/对数/多项式基初始化）+ PrototypeRetriever + Algorithm 1 + OT 路径损失、预训练语料（>10 亿点、9 域来源、GPT-4 生成 + 双重质检）、训练配置（8×A800 ~30 天、batch 8192、11+4 token）、实验细节（TimeMMD vs Sundial −27.0%、TSFM-Bench vs Time-MoE −15.1%、ProbTS vs CSDI −21.5%、TFB MASE 2.13）、消融（Economy MSE 0.033→0.277 ≈8.4×）、效率（210.8M/83.5ms/样本）、模态缺失训练。`source-aurora` confidence medium→high。笔记：`notes/20260805T181911--paper-aurora__paper.org`。
+
+更新的页面：[[source-aurora]], [[aurora]], [[modality-guided-self-attention]], [[prototype-guided-flow-matching]], [[generative-time-series-forecasting]], [[index]]
