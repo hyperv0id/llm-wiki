@@ -9,8 +9,8 @@ tags:
   - contrastive-learning
   - information-bottleneck
 created: 2026-05-03
-last_updated: 2026-05-31
-source_count: 5
+last_updated: 2026-08-05
+source_count: 6
 confidence: high
 status: active
 ---
@@ -92,8 +92,11 @@ status: active
 | **同质化投影** | [[unica|UniCA]] | 投影到统一空间 + Pre/Post-Fusion | 适配现有 TSFM |
 | **SNR 门控** | [[most|MoST]] | 信噪比估计 + Gumbel-Sigmoid 门控[^src-most] | 时空基础模型 |
 | **频域加权** | [[vot|VoT/AFF]] | FFT 分解 + 自适应频带权重[^src-event-driven-ts-forecasting] | 事件驱动预测 |
+| **不确定性加权** | [[midas|MIDAS]] | 变分后验方差微分熵映射为可靠性权重[^src-midas] | 不完全多模态情感分析 |
 
 [[modality-guided-self-attention|Aurora 的 Modality-Guided Self-Attention]] 是唯一将多模态知识作为**注意力引导信号**而非直接特征融合的方法——知识不替换时间特征，而是引导时间建模的方向[^src-aurora]。这与 MoST 的[[multi-modality-refinement|SNR 模态选择]]（筛选后融合）和 UniCA 的[[covariate-homogenization|协变量同质化]]（投影后融合）形成鲜明对比。
+
+MIDAS 的不确定性加权与 MoST 的 SNR 门控同属"按可靠性分配模态权重"一族，但机制不同：MoST 用 Gumbel-Sigmoid 在模态级做离散选择，MIDAS 用变分后验方差的微分熵在 token 级做连续加权，且权重来自编码器自带的不确定性估计而非额外模块[^src-midas]。
 
 ---
 
@@ -166,3 +169,4 @@ Layer 1: 模型实例
 [^src-language-in-the-flow-of-time]: [[source-language-in-the-flow-of-time]]
 [^src-aurora]: [[source-aurora]]
 [^src-most]: [[source-most]]
+[^src-midas]: [[source-midas]]

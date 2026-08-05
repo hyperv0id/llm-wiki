@@ -64,6 +64,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-stg-mamba]] — STG-Mamba: 首个将选择性 SSM (Mamba) 应用于 STG 预测的工作，GS3B + KFGN 实现线性复杂度 (arXiv 2024)
 - [[source-middir]] — MiDDiR: Mixed Channel Dependency Diffusion Model with Retrieval Guidance (ICLR 2026 under review)
 - [[source-metadg]] — MetaDG: Meta Dynamic Graph for Traffic Flow Prediction (AAAI 2026)
+- [[source-midas]] — MIDAS: Mutual Information Disentanglement with Uncertainty-Aware Fusion, MI minimax 解耦 + 变分不确定性加权处理不完全多模态情感分析 (TPAMI 2026)
 - [[source-timesnet]] — TimesNet: temporal 2D-variation modeling for general time series analysis (ICLR 2023)
 - [[source-timexer]] — TimeXer: patch-wise self-attention + variate-wise cross-attention 融合内生 patch 与外生 variate token，NeurIPS 2024 (Tsinghua)
 - [[source-timesfm]] — TimesFM: Decoder-Only Foundation Model for Time-Series Forecasting (ICLR 2024)
@@ -392,6 +393,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[most]] — MoST, multi-modality spatio-temporal traffic prediction foundation model (KDD 2026)
 - [[mtp]] — MTP, multimodal urban traffic profiling with modality augmentation and spectrum fusion (AAAI 2026)
 - [[metadg]] — MetaDG, meta dynamic graph for traffic flow prediction unifying dynamics and heterogeneity (AAAI 2026)
+- [[midas]] — MIDAS, 变分建模 + 互信息 minimax 解耦 + 不确定性感知融合的不完全多模态情感分析框架 (TPAMI 2026)
 - [[mindts]] — MindTS, multimodal time series anomaly detection model (ICLR 2026)
 - [[vot]] — VoT (Value of Text), multimodal time series forecasting model with event-driven reasoning (ICLR 2026)
 - [[aurora]] — Aurora, universal generative multimodal time series foundation model (ICLR 2026)
@@ -572,6 +574,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[autoregressive-consistency-models]] — 自回归一致性模型，将单步 CM 扩展到序列自回归预测 (arXiv 2025)
 - [[signal-to-noise-ratio-modality-selection]] — SNR-based adaptive modality weighting for multi-modal prediction
 - [[mutual-information]] — 互信息，衡量两个随机变量之间共享信息量的信息论度量
+- [[mutual-information-disentanglement]] — MI minimax 解耦：最小化共享/独有互信息 + 最大化跨模态共享互信息 (MIDAS)
 - [[energy-based-model]] — EBM, energy-based model with unnormalized probability via energy function
 - [[tweedies-formula]] — Tweedie 公式，加噪数据分数函数与干净数据后验期望的关系
 - [[score-based-generative-models]] — 基于分数的生成模型，通过估计对数密度梯度生成样本

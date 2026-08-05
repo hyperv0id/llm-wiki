@@ -3212,3 +3212,10 @@ PDF: `raw/2512.20002.pdf`（12 页，KDD 2026 camera-ready，arXiv:2512.20002v3�
 
 创建的页面：[[source-loft-llm]], [[loft-llm]], [[patch-low-frequency-forecasting]]
 更新的页面：[[index]]
+
+## [2026-08-05] ingest | MIDAS: Mutual Information Disentanglement with Uncertainty-Aware Fusion for Incomplete Multimodal Sentiment Analysis
+
+PDF: `raw/Wen 等 - 2026 - MIDAS Mutual Information Disentanglement With Uncertainty-Aware Fusion for Incomplete Multimodal Se.pdf`（14 页，IEEE TPAMI accepted，DOI 10.1109/TPAMI.2026.3713694；Wen 等，北邮 + 清华）。不完全多模态情感分析统一框架，三组件：① 变分建模（VM）——每模态分解为共享/独有多元高斯潜变量，方差量化 aleatoric 不确定性；② 互信息 minimax（MIM）——最小化 I(Z^s;Z^e)（interaction information 分解 + 变分上界）实现解耦，最大化跨模态 I(Z^s;Z^s)（Deep InfoMax JSD 估计器 + 独有特征硬负样本）实现对齐，另加辅助分类与重构损失防塌缩；③ 不确定性感知融合（UAF）——后验方差微分熵映射为可靠性权重做自适应加权。实验：MOSI/MOSEI/CH-SIMS 三基准，论文报告 CH-SIMS 全指标最优（Acc-2 73.68%、F1 72.15%，超 EMT-DLFR 2.27%/1.06%）、MOSEI 全指标最优（MAE 0.653、Corr 0.607）、MOSI 多数指标最优（MAE 1.074 略高于基线最低 1.065）；消融显示 MIM 最关键、去掉 L_pred 退化最大（MOSI Acc-2 71.88→61.96）。随机缺失率实验设置；论文自述现实缺失模式更复杂（不对称、时间演化）留待未来。领域为情感分析（非时序预测），与 wiki 现有 multi-modality/不确定性内容交叉链接。
+
+创建的页面：[[source-midas]], [[midas]], [[mutual-information-disentanglement]]
+更新的页面：[[mutual-information]], [[multimodal-semantic-understanding]], [[index]]
