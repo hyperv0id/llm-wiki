@@ -63,9 +63,9 @@ Fixed Fourier bases do not adapt to data geometry; PCA-style adaptive orthogonal
 - Entity: [[fredf]]
 - Concept: [[label-autocorrelation]]
 - Source: [[source-fredf]]
+- Frequency-domain low-frequency supervision: [[patch-low-frequency-forecasting]] (LoFT-LLM)
 
 ---
 
 [^src-fredf]: [[source-fredf]]
 [^src-distdf]: [[source-distdf]]
-

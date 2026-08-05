@@ -42,6 +42,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-qcgs]] — QCGS (Station2Radar): Query-Conditioned Gaussian Splatting fusing AWS + satellite for radar-free precipitation field generation, >50% RMSE improvement vs IMERG/MSWEP/GSMaP (ICLR 2026)
 - [[source-qdf]] — QDF: Quadratic Direct Forecast, learns PSD weighting matrix Σ for quadratic NLL objective addressing label autocorrelation + heterogeneous task weights (ICLR 2026 preprint, arXiv:2511.00053)
 - [[source-rivermamba]] — RiverMamba: 首个全球 0.05° 河流流量和洪水预报 Mamba 模型，双向 SSM + 空间填充曲线 + LOAN + Hindcast-Forecast，NeurIPS 2025
+- [[source-loft-llm]] — LoFT-LLM: Low-Frequency Time-Series Forecasting with LLMs, PLFM 低频监督 + 残差学习 + LLM 语义校准三阶段流水线 (KDD 2026)
 - [[source-frets]] — FreTS: frequency-domain MLPs for time series forecasting (NeurIPS 2023)
 - [[source-from-news-to-forecast]] — From News to Forecast: LLM generative agent iteratively filters news events with reflection + CoT for time series prediction (NeurIPS 2024)
 - [[source-grid-world-code-readme]] — 网格世界环境官方代码说明（Zhao, Mi & Li）
@@ -475,6 +476,7 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Entities (continued)
 - [[freqflow-ts]] — FrèqFlow/SpectFlow, lightweight frequency-domain flow matching for time series forecasting (NeurIPS 2025)
+- [[loft-llm]] — LoFT-LLM, 低频频域学习 + LLM 语义校准的三阶段时序预测流水线 (KDD 2026)
 
 ## Concepts
 - [[combinatorial-optimization-augmented-machine-learning]] — COAML, hybrid ML-CO pipeline paradigm embedding combinatorial optimization as differentiable neural network layer
@@ -1057,6 +1059,7 @@ All wiki pages, organized by type. Updated on every ingest.
 ## Techniques (continued)
 - [[dual-correlation-injection]] — Dual Correlation Injection，跨模块提取 Wq',Wk' 并注入内生预测注意力
 - [[frequency-enhanced-direct-forecast]] — FreDF 训练技术：时域 MSE + 频域模长损失混合，模型无关的 DF 升级 (FreDF)
+- [[patch-low-frequency-forecasting]] — PLFM 技术：重叠 patch 频谱 + 低通监督 + FALoss 的低频趋势学习 (LoFT-LLM)
 - [[quadratic-form-weighted-objective]] — QDF 二次型加权目标 L_Σ 与双层学习 Σ 的训练技术 (ICLR 2026)
 
 ## Sources (continued)

@@ -3205,3 +3205,10 @@ Pineda Arango / Mercado et al. (Amazon, AISTATS 2025, arXiv:2503.12107)。IIB �
 PDF: `raw/2509.22295.pdf`（40 页 ICLR 2026 camera-ready，arXiv:2509.22295v6）。此前 2026-05-03 仅基于 arXiv 摘要 ingest（当时 raw 无 PDF），本次基于完整论文补全：Corr 桥接公式（$V_{\text{Attn}}\cdot W\cdot T_{\text{Attn}}^\top$ 注入自注意力打分）、1000 原型（三角/指数/对数/多项式基初始化）+ PrototypeRetriever + Algorithm 1 + OT 路径损失、预训练语料（>10 亿点、9 域来源、GPT-4 生成 + 双重质检）、训练配置（8×A800 ~30 天、batch 8192、11+4 token）、实验细节（TimeMMD vs Sundial −27.0%、TSFM-Bench vs Time-MoE −15.1%、ProbTS vs CSDI −21.5%、TFB MASE 2.13）、消融（Economy MSE 0.033→0.277 ≈8.4×）、效率（210.8M/83.5ms/样本）、模态缺失训练。`source-aurora` confidence medium→high。笔记：`notes/20260805T181911--paper-aurora__paper.org`。
 
 更新的页面：[[source-aurora]], [[aurora]], [[modality-guided-self-attention]], [[prototype-guided-flow-matching]], [[generative-time-series-forecasting]], [[index]]
+
+## [2026-08-05] ingest | LoFT-LLM: Low-Frequency Time-Series Forecasting with LLMs (KDD 2026)
+
+PDF: `raw/2512.20002.pdf`（12 页，KDD 2026 camera-ready，arXiv:2512.20002v3；You/Jingcheng Yang 等，哈工大深圳为主）。三阶段流水线：① PLFM（Patch Low-Frequency forecasting Module）——LPF 低通监督 + FFT 频域目标 + 重叠 patch 局部谱 + 双 MLP 拟合实/虚部，FALoss（受 FreDF 启发的傅里叶系数 L1）训练；② 残差学习——HPF 高通输入 + iTransformer 骨干拟合高频残差，同一 FALoss；③ LLM 校准——Qwen3-8B + QLoRA SFT，PromptBuilder 打包低频/残差/辅助变量，LLM 输出数值列表，prompt 模板由 ChatGPT-4o 辅助生成。实验：FundAR（日频基金流，2024 天池）与 Solar（GEFCom 2014）两数据集，70/10/20 划分，12 基线对比，论文报告 FundAR 30 项中 26 项最优（平均 MAE 较最佳基线降 26.53%）、Solar 30 项中 27 项最优（降 15.42%）；few-shot（FundAR 10% 数据、Solar 最近 7 天）平均 MAE 降幅超 40%；消融显示 FundAR 上 LLM 模块退化更大、Solar 上频率模块退化更大；低频有效性（表 6）平均改善约 23%。论文无独立局限性章节；source 页按「论文自述 / 本课程评估」分层标注（仅两数据集、小样本、未讨论概念漂移）。
+
+创建的页面：[[source-loft-llm]], [[loft-llm]], [[patch-low-frequency-forecasting]]
+更新的页面：[[index]]
