@@ -59,5 +59,8 @@ PIR 由失败识别与两路修订组成，各组件机制与公式见 [[post-ho
 - [[error-based-uncertainty-estimation]] — 误差代理不确定性估计
 - [[channel-independence]] · [[patchtst]] · [[sparsetsf]] · [[itransformer]] · [[timemixer]] — CI/CD 骨干表现
 - [[gtr]] · [[ratd]] · [[time-mmd]] · [[instance-normalization]]
+- [[prediction-refinement]] · [[test-time-computing-st]] — 邻近后处理范式
+- [[retrieval-augmented-spatio-temporal-forecasting]] — 检索增强范式
+- [[source-time-mmd]] — 文本协变量场景验证
 
 [^src-pir]: [[source-pir]]

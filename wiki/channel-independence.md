@@ -26,7 +26,7 @@ Channel Independence 是时间序列预测中的一种处理策略，要求模�
 1. **数据量增加**：将 M 个通道转为 M 个独立样本，显著增加训练数据量 [^src-simdiff]
 2. **分布学习改善**：各通道独立处理能更好地学习各自的分布模式 [^src-simdiff]
 3. **全局注意力聚焦**：使注意力机制能够专注于时间维度上的关键模式，而非被通道间相关性分散 [^src-simdiff]
-4. **计算效率**：各通道��并行处理，降低计算复杂度
+4. **计算效率**：各通道并行处理，降低计算复杂度
 
 ## 在 PatchTST 中的应用
 
@@ -111,7 +111,7 @@ CPiRi 的通道打乱测试暴露了一个关键问题：大多数 CD 模型在�
 - 相关：[[uniflow]] — UniFlow，CI 策略在时空基础模型中的应用 (arXiv 2024)
 - 相关：[[nuwats]] — NuwaTS，CI 支撑插补基础模型的跨变量/跨域零样本 (arXiv 2024)
 - 相关：[[crosslinear]] / [[cross-correlation-embedding]] — CI 骨干 + 轻量外生 CD 注入 (KDD 2025)
-- 相关：[[srsnet|SRSNet]] / [[selective-representation-space|SRS]] — SRS module 在 CI 设定下对每个通道独立做选择性 patch + 重排 + 融合 (NeurIPS 2025)
+- 相关：[[srsnet|SRSNet]] / [[selective-representation-space|SRS]] — SRS module 在 CI 设定下对每个通道独立做选择性 patch + 重排 + 融合 (NeurIPS 2025)[^src-srsnet]
 - 相关：[[cora-correlation-aware-adapter|CoRA (Correlation-aware)]] — 在 CI 主导 TSFM 上用 DCE+HPCL 下游插件补 DCorr/HCorr/PCorr；推理 O(N)（ICLR 2026）[^src-cheng-2025-cora-correlation-aware-adapter]
 - 相关：[[zeus]] — CI + point tokenization + RevIN 的 tuning-free TSFM（ICML 2026）[^src-2607-01918]
 
