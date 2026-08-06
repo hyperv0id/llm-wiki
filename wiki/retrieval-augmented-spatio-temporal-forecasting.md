@@ -7,8 +7,8 @@ tags:
   - rag
   - traffic-forecasting
 created: 2026-06-08
-last_updated: 2026-06-09
-source_count: 2
+last_updated: 2026-08-06
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -41,6 +41,7 @@ STF 场景的核心挑战在于时空纠缠——一个 $N \times T \times d$ �
 - **[[ragc|RAGC]]**（arXiv 2026）：名称中含 "R"，但 RAGC 是正则化自适应图卷积，并非 RAG 范式——RAST 是首个将 RAG 显式应用于 STF 的工作。[^src-rast]
 - **[[uniflow|UniFlow]]**（arXiv 2024）：使用时空记忆检索增强（ST-MRA），但 RAST 的检索基于 FAISS 向量索引和 L2 距离，不同于 UniFlow 的余弦相似度记忆检索。
 - RAG 范式同样被引入纯时间序列（非时空图）的生成式预测：[[ratd|RATD]]（NeurIPS 2024）是首个检索增强的时间序列扩散模型，从数据库检索 k 个最近邻参照引导扩散去噪，早于 RAST 将 RAG 应用于预测[^src-ratd]。
+- **PIR**（Liu et al., NeurIPS 2025）是纯时序的轻量实例检索修订：后处理阶段在训练输入–目标对上以实例归一化编码 + 余弦相似度检索 top-K 相似实例、softmax 加权求和作为全局修订项，不经生成模型；与 RAST 的双维 FAISS 检索、RATD 的扩散参照引导均不同[^src-pir]。
 
 ## 开放问题
 
@@ -50,3 +51,4 @@ STF 场景的核心挑战在于时空纠缠——一个 $N \times T \times d$ �
 
 [^src-rast]: [[source-rast]]
 [^src-ratd]: [[source-ratd]]
+[^src-pir]: [[source-pir]]

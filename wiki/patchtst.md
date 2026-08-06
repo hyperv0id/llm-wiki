@@ -10,8 +10,8 @@ tags:
   - self-supervised
   - ICLR-2023
 created: 2026-05-30
-last_updated: 2026-08-01
-source_count: 5
+last_updated: 2026-08-06
+source_count: 6
 confidence: medium
 status: active
 ---
@@ -95,6 +95,7 @@ PatchTST 是 LSTF 领域的关键转折点 [^src-patchtst]：
 - Channel Independence 完全忽略跨变量依赖 [^src-patchtst]
 - 小数据集（ETT 系列）优势不明显
 - CI 的跨变量建模能力有限——[[cvpe|CVPE]] 和 [[crossformer|Crossformer]] 尝试补充此缺陷
+- 实例级失效现象：PIR 论文（Liu et al., NeurIPS 2025）报告在 ETTh1 上 PatchTST 的逐实例 MSE 呈长尾分布——多数实例误差低，但误差曲线存在尖峰，即平均性能良好时仍有预测失效的个别实例（Fig 1）[^src-pir]
 - [[probts|ProbTS]] 显示：作为长程 **NAR 点预测** 代表，PatchTST 在长程趋势/季节场景强势，但短程高 [[non-gaussianity|非高斯性]] 上优势收缩；强季节 Traffic 上可被 AR 概率模型（TimeGrad）超过[^src-probts]
 
 ## Connections
@@ -103,6 +104,7 @@ PatchTST 是 LSTF 领域的关键转折点 [^src-patchtst]：
 - **同期/对照**：[[tide|TiDE]] — residual MLP + 协变量高速路，线性复杂度；在 Traffic 等大数据集上可超过 PatchTST，且训练/推理显著更快[^src-tide]
 - **后续/继承**：[[simdiff|SimDiff]]（patch + CI + diffusion）, [[cvpe|CVPE]]（CI + CD 折中）, [[sparsetsf|SparseTSF]]（patch + 极致压缩）, [[srsnet|SRSNet]] / [[selective-representation-space|SRS]]（自适应 patch 表示空间插件）
 - **多模态改造**：[[tess|TESS]]（arXiv:2603.12664v2）直接以 PatchTST 为 backbone，输入前拼接 4 个离散时序原语（mean shift/volatility/shape/lag）类别 embedding 并附加门控 BCE 监督，四数据集全面超过原版 PatchTST（Bitcoin MSE 2.2726 vs 3.2456）；[[timi|TiMi]] 则用 MMoE 替换 FFN——两者同为 PatchTST 的多模态改造样板[^src-tess]
+- **后处理插件**：PIR（Liu et al., NeurIPS 2025）以 PatchTST 为 channel-independent 骨干测试后处理修订，论文报告 48 个实验设置平均 MSE 降低 8.99%（Table 1）[^src-pir]
 - **核心概念**：[[patch-based-tokenization]], [[channel-independence]], [[instance-normalization]], [[lstf]]
 - **自监督/预训练**：[[mae|MAE]], [[videomae]], [[timesfm|TimesFM]], [[chronos]]
 
@@ -111,3 +113,4 @@ PatchTST 是 LSTF 领域的关键转折点 [^src-patchtst]：
 [^src-probts]: [[source-probts]]
 [^src-tide]: [[source-tide]]
 [^src-tess]: [[source-tess]]
+[^src-pir]: [[source-pir]]

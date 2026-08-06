@@ -8,8 +8,8 @@ tags:
   - text-numeric-alignment
   - neurips-2024
 created: 2026-07-28
-last_updated: 2026-07-28
-source_count: 3
+last_updated: 2026-08-06
+source_count: 4
 confidence: high
 status: active
 ---
@@ -76,6 +76,7 @@ Time-MMD 是**数据与评测基础设施**，不是预测模型。下游常引�
 | [[time-vlm|Time-VLM]] | 不直接用 Time-MMD 外生文本；内生图文自增强的 VLM 路线，与本基准形成「外生对齐 vs 内生 VLM」对照 |
 | [[constrained-text-fusion|CFA / Constrained Fusion]] | 同九域系统证伪 naive add/concat；CFA 低秩 plug-in 约束融合（KDD ’26 MILETS）[^src-constrained-text-fusion] |
 | [[cross-modal-misalignment|Cross-modal misalignment]] | 配对 MMCL 理论：文本省略/扰动 = selection/perturbation；表示只保留无偏共享语义——解释为何“对齐文本”质量与覆盖决定可学因子[^src-cross-modal-misalignment] |
+| PIR（Liu et al., NeurIPS 2025） | Energy / Health 子集上验证对齐文本描述作为外生信息的后处理修订（周频，Lin=24）[^src-pir] |
 
 释放元数据：数值（起止、目标、协变量）+ 文本（起止、fact/prediction 内容与来源）。GitHub: `https://github.com/AdityaLab/Time-MMD`[^src-time-mmd]。
 
@@ -96,3 +97,4 @@ Time-MMD 是**数据与评测基础设施**，不是预测模型。下游常引�
 [^src-time-mmd]: [[source-time-mmd]]
 [^src-constrained-text-fusion]: [[source-constrained-text-fusion]]
 [^src-cross-modal-misalignment]: [[source-cross-modal-misalignment]]
+[^src-pir]: [[source-pir]]

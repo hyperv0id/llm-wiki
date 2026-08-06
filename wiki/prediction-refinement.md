@@ -9,8 +9,8 @@ tags:
   - langevin-dynamics
   - neurips-2023
 created: 2026-07-13
-last_updated: 2026-07-25
-source_count: 1
+last_updated: 2026-08-06
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -100,6 +100,10 @@ $$
 | 推理开销 | 完整 reverse diffusion + 每步自微分 | 少量数据空间迭代 |
 | 精度依赖 | 引导尺度 $s$ | 基预测器质量 + 代表步 $\tau$ |
 
+## 同族方案：PIR 的识别–修订式后处理
+
+**PIR**（Post-forecasting Identification and Revision，Liu et al., NeurIPS 2025）是另一类预测后处理技术：先用两层全连接网络估计逐实例的预测误差（以 MSE 为代理、MAE 辅助约束）识别可能的失效实例，再用局部修订（协变量预测与外生信息经 Transformer 通道间注意力）与全局修订（训练集实例检索的 top-K 软加权求和）加权融合，直接产出修订后的点预测 [^src-pir]。与 TSDiff 精炼的对照：TSDiff 把扩散模型的隐式密度当作能量先验，在数据空间迭代优化基预测初值（概率式、不需要协变量与外生信息）；PIR 则是误差估计驱动的加权融合，需要可用的协变量/外生信息与历史检索库 [^src-pir]。
+
 ## 相关页面
 
 - [[tsdiff]] — 承载精炼能力的无条件扩散模型
@@ -110,3 +114,4 @@ $$
 - [[linear-predictive-score]] — 同文提出的合成数据指标
 
 [^src-prs]: [[source-prs]]
+[^src-pir]: [[source-pir]]

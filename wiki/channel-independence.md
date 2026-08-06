@@ -7,8 +7,8 @@ tags:
   - channel-processing
   - multivariate
 created: 2026-04-28
-last_updated: 2026-07-28
-source_count: 12
+last_updated: 2026-08-06
+source_count: 13
 confidence: high
 status: active
 ---
@@ -51,6 +51,12 @@ SimDiff 采用 Channel Independence 策略处理多元时间序列 [^src-simdiff
 | **iTransformer** | **独立** | **attention 显式建模** | **高（一次前向传播）** |
 
 iTransformer 的 FFN 在每个 variate token 内部学习序列表示，等价于为每个变量训练共享线性预测器（与 CI 的共享 backbone 思路一致），同时 attention 在变量间建模相关性。消融实验表明：移除 attention 后性能下降在高维数据集上尤为显著，说明多变量相关性在高维场景下不可或缺[^src-itransformer]。此外，iTransformer 的变量泛化能力（20% 变量训练泛化到全部）优于 CI-Transformer（需要逐变量推理），因为 FFN 学到的序列表示可在变量间迁移[^src-itransformer]。
+
+## PIR：CI 与 CD 骨干上的后处理实证对照
+
+**PIR**（Post-forecasting Identification and Revision，Liu et al., NeurIPS 2025）是模型无关的后处理修订插件，先估计逐实例预测误差以识别失效实例，再用局部与全局上下文修订预测。论文在长程 8 数据集 × 4 预测长度与短程 4 个 PEMS 子集 × 4 预测长度、共 48 个实验设置上报告的平均 MSE 降幅呈现 CI/CD 分化：channel-independent 的 [[patchtst|PatchTST]] 平均降低 8.99%、[[sparsetsf|SparseTSF]] 降低 25.87%，channel-dependent 的 [[itransformer|iTransformer]] 降低 3.47%、[[timemixer|TimeMixer]] 降低 2.34% [^src-pir]。作者将这一差异归因于 channel-dependent 模型已显式利用协变量信息、基线更强，留给后处理的提升空间更小 [^src-pir]。
+
+论文报告的两点设计佐证与 CI/CD 分化直接相关：其一，局部修订模块按变量独立投影协变量预测并做通道间注意力，论文称这种利用局部上下文的方式对"优先鲁棒性而非容量"的 CI 策略尤其有益 [^src-pir]；其二，局部修订模块与 [[itransformer|iTransformer]] 结构相似（逐变量投影 + 通道间注意力），论文指出即便如此它仍能在 iTransformer 上带来相对提升 [^src-pir]。例外同样如实报告：ETTm2 上 PatchTST 的 MSE 不降反升 0.71%（表 1），论文以"在大多数场景下持续提升"概括总体结论 [^src-pir]。
 
 ## CI + CD 的折中
 
@@ -115,3 +121,4 @@ CPiRi 的通道打乱测试暴露了一个关键问题：大多数 CD 模型在�
 [^src-srsnet]: [[source-srsnet]]
 [^src-tide]: [[source-tide]]
 [^src-cheng-2025-cora-correlation-aware-adapter]: [[source-cheng-2025-cora-correlation-aware-adapter]]
+[^src-pir]: [[source-pir]]

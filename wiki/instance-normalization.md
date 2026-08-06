@@ -6,8 +6,8 @@ tags:
   - normalization
   - distribution-shift
 created: 2026-04-28
-last_updated: 2026-07-21
-source_count: 7
+last_updated: 2026-08-06
+source_count: 8
 confidence: high
 status: active
 ---
@@ -63,6 +63,8 @@ RevIN 已被多种主流模型采用：iTransformer、PatchTST、SparseTSF 等[^
 
 [[srsnet|SRSNet]] / [[selective-representation-space|SRS]] 同样采用 RevIN 作为预处理：在 Selective Patching 之前对每个通道做 instance normalization 以缓解训练/测试分布差异[^src-srsnet]。这与 PatchTST 的 pipeline 一致——RevIN → CI → patch → backbone。
 
+**PIR**（Liu et al., NeurIPS 2025）将 RevIN 用作检索编码器：全局修订在训练集上检索相似实例时，用实例归一化对查询与候选序列编码，论文称该设计"简单有效"，可缓解非平稳性导致的相似度估计不稳定[^src-pir]。
+
 ### ProbTS 对 RevIN vs 均值缩放的跨场景结论
 
 [[probts|ProbTS]] 将归一化作为与 [[ar-vs-nar-decoding|AR/NAR 解码]]、分布估计并列的第三方法轴，并系统对比了长程点预测线常用的 RevIN 与短程概率线常用的**均值缩放**（mean scaling）[^src-probts]：
@@ -90,3 +92,4 @@ RevIN 已被多种主流模型采用：iTransformer、PatchTST、SparseTSF 等[^
 [^src-probts]: [[source-probts]]
 [^src-tide]: [[source-tide]]
 [^src-srsnet]: [[source-srsnet]]
+[^src-pir]: [[source-pir]]
