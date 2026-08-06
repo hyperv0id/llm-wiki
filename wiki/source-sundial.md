@@ -8,8 +8,8 @@ tags:
   - generative-model
   - icml-2025
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 0
+last_updated: 2026-08-06
+source_count: 1
 confidence: high
 status: active
 ---
@@ -42,6 +42,7 @@ TimeBench 包含 **1.032 万亿时间点** (Table 4)，来源: Chronos (94B)、E
 
 - **TSLib 点预测**: Sundial-Large 在 8 个获胜数中最高（表 9），平均 MSE 较 Time-MoE 降低 7.57%, MAE 降低 4.71%
 - **GIFT-Eval (23 datasets)**: MASE 排名第 1，CRPS 排名第 2，超过所有监督模型和先进基础模型（表 2）
+- **GIFT-Eval 对照（[[zeus|Zeus]] 论文表 2）**：Zeus（ICML 2026）报告 GIFT-Eval MASE 0.693 / CRPS 0.480，优于 Sundial 的 0.750 / 0.559（实证结果）[^src-2607-01918]
 - **FEV Leaderboard (27 datasets)**: 零样本性能超过 70% 的分布内训练的统计方法和深度模型，仅作为第二好的零样本预训练模型（仅次于 Chronos），但推理速度 **35× 加速**（图 4-5）
 - **GIFT-Eval CRPS**: TimeFlow 在 GIFT-Eval 上 CRPS=0.505，Diffusion=0.534，MSE=0.642
 
@@ -71,5 +72,9 @@ TimeBench 包含 **1.032 万亿时间点** (Table 4)，来源: Chronos (94B)、E
 - [[chronos]] — Chronos，离散 tokenization 的对比方法
 - [[timesfm]] — TimesFM，单模态确定性预测基础模型
 - [[patch-based-tokenization]] — Patch 级别的 tokenization
+- [[zeus]] — GIFT-Eval 零样本对照中的新近基础模型（ICML 2026）
+
+## 引用
 
 [^src-sundial]: (self-reference — this is the source page for all [^src-sundial] citations across the wiki)
+[^src-2607-01918]: [[source-2607-01918]]

@@ -9,7 +9,7 @@ tags:
   - tabpfn
   - in-context-learning
 created: 2026-06-08
-last_updated: 2026-06-08
+last_updated: 2026-08-06
 source_count: 1
 confidence: medium
 status: active
@@ -45,6 +45,7 @@ TabPFN-TS 的哲学与 [[motm|MoTM]] **互逆**——用手工特征搭配高表
 - **vs [[motm|MoTM]]**：互逆设计（强回归器+简单特征 vs 学习表征+简单回归器）；TabPFN-TS 更准但慢两个数量级。
 - **vs [[nuwats|NuwaTS]]**：两者都做零样本插补，但 NuwaTS 走 PLM 重编程 + patch；基准中 **NuwaTS 在所有设定下显著落后于 TabPFN-TS**[^src-time-indexed-imputation]。
 - **基座 TabPFN**：Hollmann et al. 2025 的表格基础模型，prior-fitted network，靠合成先验 + in-context learning 实现零样本表格回归。
+- **vs [[zeus|Zeus]]**（范式层面对比，课程组织，非直接基准对照）：Zeus（ICML 2026）走掩码重建路线——以 MOTM 多目标掩码预训练 + 重建误差做零样本插补；TabPFN-TS 与 [[motm|MoTM]] 走时间索引 + in-context 回归路线。两者是不同范式。
 
 ## 关联页面
 
@@ -53,5 +54,6 @@ TabPFN-TS 的哲学与 [[motm|MoTM]] **互逆**——用手工特征搭配高表
 - [[nuwats]] — PLM 重编程零样本插补（基准中落后）
 - [[source-time-indexed-imputation]] — 评估 TabPFN-TS 的 TMLR 2026 基准
 - [[missing-not-at-random]] — 缺失机制谱系
+- [[zeus]] — 掩码重建路线的零样本插补基础模型（对比范式）
 
 [^src-time-indexed-imputation]: [[source-time-indexed-imputation]]

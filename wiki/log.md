@@ -1,3 +1,10 @@
+## [2026-08-06] ingest | Zeus: Towards Tuning-Free Foundation Model for Time Series Analysis
+
+PDF: `raw/2607.01918.pdf`（arXiv:2607.01918v1, ICML 2026, PMLR 306；中科院计算所/国科大/厦门数据智能研究院）。Zeus：unified tuning-free TSFM，点/概率预测、插补、异常检测、分类五任务免微调；point-wise tokenization + U 形多尺度 encoder-only（[1,8,32,8,1]，约 100M 参、ctx 4096）+ MOTM 三级掩码预训练 + quantile head；约 300B 观测（Chronos 94B + GiftEvalPretrain 230B + Aegis-Syn ~10%）。点预测 24 项 19 最优（MSE −9.0% vs 前 SOTA、−40.3% vs Timer）、GIFT-Eval MASE 0.693/CRPS 0.480 第一、插补全面优于监督基线（−24.4%/−18.8%）、UCR 42 数据集 adjusted F1 0.900 第一、UEA linear probing 0.728 最高；vs Time-MoEbase 2.1×/3.1× 效率。
+
+创建的页面：[[source-2607-01918]], [[zeus]], [[multi-objective-temporal-masking]]
+更新的页面：[[patch-based-tokenization]], [[channel-independence]], [[instance-normalization]], [[time-moe]], [[motm]], [[tabpfn-ts]], [[source-sundial]], [[source-time-moe]], [[patchtst]], [[index]]
+
 ## [2026-08-01] ingest | Language in the Flow of Time: Time-Series-Paired Texts Weaved into a Unified Temporal Narrative
 
 PDF: `raw/language-in-the-flow-of-time-iclr2026.pdf`（ICLR 2026 camera-ready；与 raw/language-flow-time-tats.pdf 即 arXiv:2502.08942v3 实质同文，新增 ACK/ethics/reproducibility 声明）。TaTS：CTR 现象（PRH 依据、月度序列与文本同周期 12）+ TT-Wasserstein 谱距离度量 + 文本作辅助变量拼接（GPT-2 1.5B 编码 → 三层 MLP → U=[X;Zᵀ]），任意 TS 模型即插即用；18 数据集 × 9 模型，6/9 超 5% 提升、Environment >30%、插补最高 30%、~1% 参数/~8% 训练时间换 ~14% MSE。

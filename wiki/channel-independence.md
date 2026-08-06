@@ -8,7 +8,7 @@ tags:
   - multivariate
 created: 2026-04-28
 last_updated: 2026-08-06
-source_count: 13
+source_count: 14
 confidence: high
 status: active
 ---
@@ -80,6 +80,10 @@ CPiRi 的通道打乱测试暴露了一个关键问题：大多数 CD 模型在�
 
 [[nuwats|NuwaTS]] (arXiv 2024) 把 CI 作为其插补基础模型**跨变量/跨域零样本**的关键支撑[^src-nuwats]。因各变量独立处理、对变量数无固定要求，NuwaTS 可在 LargeST（交通）上预训练后零样本迁移到变量数完全不同的 ECL、Weather 等数据集；而 channel-dependent 的 TimesNet、GPT4TS 需固定输入维度，只能在同变量数数据集间零样本[^src-nuwats]。在 NuwaTS 提出的 [[variable-wise-partitioning|变量维度划分基准]]下，CI 模型（NuwaTS、PatchTST）天然契合"训练变量 ≠ 测试变量"的评测设定。这与 [[itransformer|iTransformer]] 的发现一致——CI backbone 学到的序列表示可在变量间迁移[^src-nuwats]。
 
+## 在 Zeus 中的应用
+
+[[zeus|Zeus]]（ICML 2026）以 channel-independent 策略处理多变量（论文自述引用 PatchTST），并与 point tokenization、[[instance-normalization|RevIN]] 组合：各通道独立送入逐点 token 化的多尺度 encoder，用 RevIN 去尺度变化 [^src-2607-01918]。论文自述其局限为"单变量聚焦"——CI 处理多变量但未显式建模变量间相关，建议未来可配合 CoRA 式适配 [^src-2607-01918]。
+
 ## 与其他方法对比
 
 - **Channel-mixing**：传统方法，将所有通道拼接后一起处理
@@ -87,6 +91,7 @@ CPiRi 的通道打乱测试暴露了一个关键问题：大多数 CD 模型在�
 - **Crossformer (全 CD)**：2D embedding + 两阶段注意力，全层建模跨维度依赖 [^src-crossformer-2023]
 - **CVPE 折中**：CI backbone + patch 级 CD 注入，保留鲁棒性同时增加跨变量容量 [^src-cvpe-2025]
 - **CrossLinear 折中**：CI 时序骨干 + 1D conv 外生交叉相关残差注入（外生 many-to-one）[^src-crosslinear]
+- **Zeus**：CI + point tokenization + RevIN 的 tuning-free 多任务基础模型（ICML 2026），局限为未显式建模变量间相关 [^src-2607-01918]
 
 ## 相关技术
 
@@ -108,6 +113,7 @@ CPiRi 的通道打乱测试暴露了一个关键问题：大多数 CD 模型在�
 - 相关：[[crosslinear]] / [[cross-correlation-embedding]] — CI 骨干 + 轻量外生 CD 注入 (KDD 2025)
 - 相关：[[srsnet|SRSNet]] / [[selective-representation-space|SRS]] — SRS module 在 CI 设定下对每个通道独立做选择性 patch + 重排 + 融合 (NeurIPS 2025)
 - 相关：[[cora-correlation-aware-adapter|CoRA (Correlation-aware)]] — 在 CI 主导 TSFM 上用 DCE+HPCL 下游插件补 DCorr/HCorr/PCorr；推理 O(N)（ICLR 2026）[^src-cheng-2025-cora-correlation-aware-adapter]
+- 相关：[[zeus]] — CI + point tokenization + RevIN 的 tuning-free TSFM（ICML 2026）[^src-2607-01918]
 
 [^src-simdiff]: [[source-simdiff]]
 [^src-patchtst]: [[source-patchtst]]
@@ -122,3 +128,4 @@ CPiRi 的通道打乱测试暴露了一个关键问题：大多数 CD 模型在�
 [^src-tide]: [[source-tide]]
 [^src-cheng-2025-cora-correlation-aware-adapter]: [[source-cheng-2025-cora-correlation-aware-adapter]]
 [^src-pir]: [[source-pir]]
+[^src-2607-01918]: [[source-2607-01918]]

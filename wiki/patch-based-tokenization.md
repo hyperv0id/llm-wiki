@@ -7,8 +7,8 @@ tags:
   - tokenization
   - patch
 created: 2026-04-28
-last_updated: 2026-07-13
-source_count: 7
+last_updated: 2026-08-06
+source_count: 8
 confidence: high
 status: active
 ---
@@ -29,6 +29,16 @@ Patch-based tokenization 是现代时间序列 Transformer 使用的关键预处
 - **计算效率**：输入 token 数从 $L$ 降至 $L/S$，注意力复杂度按 $S^2$ 下降 [^src-patchtst]
 - **更长历史窗口**：相同计算约束下可看到更长历史（L=336→MSE 0.367 vs L=96→MSE 0.518）[^src-patchtst]
 - **信息聚合**：patch 内信息自动聚合，减少噪声 [^src-simdiff]
+
+## 论文自述的批评（Zeus, ICML 2026）
+
+[[zeus|Zeus]]（ICML 2026）在论文附录 C.1 中对 patch tokenization 提出三点自述批评 [^src-2607-01918]：
+
+- **纠缠细粒度变化**：patch 将细粒度变化纠缠在一起，削弱逐点推理能力
+- **预训练目标过拟合 patch-wise 缺失**：patch 级重建预训练过拟合 patch 粒度的缺失模式，难以泛化到逐点缺失
+- **周期退化为 FFN**：当序列周期恰好等于 patch 长度时，所有 patch 相同，Transformer 退化为 FFN
+
+论文报告了对应实证（表 6）：将 MOMENT 的预训练掩码从 patch-missing 换成 point-missing 后，插补平均 MSE 恶化 −22.4%（ETTm1 −21.7%、ETTh2 −24.8%、Weather −16.9%），论文归因于 patch 预训练目标与逐点缺失分布不匹配（OOD）[^src-2607-01918]。
 
 ## 在 PatchTST 中的应用
 
@@ -72,6 +82,8 @@ iTransformer 论文指出 PatchTST 在 PEMS 波动序列上表现不佳——pat
 - 相关：[[dsw-embedding]] — Crossformer 的 2D 分段嵌入
 - 相关：[[sundial]] — Sundial 使用 patch tokenization (P=16) 实现 patch 级预测，减少自回归步数 (ICML 2025)[^src-sundial]
 - **固定 → 自适应**：[[selective-representation-space|SRS]] / [[selective-patching|Selective Patching]] 批评固定 stride 的 representation space，以可微选 patch + 重排 + 融合增强 patch 骨干（含 [[srsnet|SRSNet]]）[^src-srsnet]
+- 批评者：[[zeus]] — Zeus 自述批评 patch 纠缠细粒度变化、patch 级重建对逐点缺失 OOD、周期 = patch 长度时退化为 FFN (ICML 2026)[^src-2607-01918]
+- 相关：[[multi-objective-temporal-masking]] — Zeus 的 MOTM（Multi-Objective Temporal Masking）多目标掩码预训练
 
 [^src-simdiff]: [[source-simdiff]]
 [^src-patchtst]: [[source-patchtst]]
@@ -80,3 +92,4 @@ iTransformer 论文指出 PatchTST 在 PEMS 波动序列上表现不佳——pat
 [^src-itransformer]: [[source-itransformer]]
 [^src-sundial]: [[source-sundial]]
 [^src-srsnet]: [[source-srsnet]]
+[^src-2607-01918]: [[source-2607-01918]]

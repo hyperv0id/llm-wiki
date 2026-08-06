@@ -7,7 +7,7 @@ tags:
   - distribution-shift
 created: 2026-04-28
 last_updated: 2026-08-06
-source_count: 8
+source_count: 9
 confidence: high
 status: active
 ---
@@ -57,7 +57,7 @@ pred = pred * (std + eps) + mean
 
 ## 与其他模型的关系
 
-RevIN 已被多种主流模型采用：iTransformer、PatchTST、SparseTSF 等[^src-cyclenet]。**PatchTST** 在 patching 前对每个单变量序列做零均值单位方差归一化，预测后将均值和标准差加回，与 [[channel-independence|Channel Independence]] 配合使用 [^src-patchtst]。**[[tide|TiDE]]** 将 RevIN 作为可调超参（on/off），与 residual MLP 骨干和协变量路径一起在验证集上选择[^src-tide]。**[[nuwats|NuwaTS]]** 在插补场景中对每个变量先做 RevIN（**缺失值置零**后再归一化）以消除跨域幅度/分布差异，存储原始均值方差供反归一化[^src-nuwats]。
+RevIN 已被多种主流模型采用：iTransformer、PatchTST、SparseTSF 等[^src-cyclenet]。**PatchTST** 在 patching 前对每个单变量序列做零均值单位方差归一化，预测后将均值和标准差加回，与 [[channel-independence|Channel Independence]] 配合使用 [^src-patchtst]。**[[tide|TiDE]]** 将 RevIN 作为可调超参（on/off），与 residual MLP 骨干和协变量路径一起在验证集上选择[^src-tide]。**[[nuwats|NuwaTS]]** 在插补场景中对每个变量先做 RevIN（**缺失值置零**后再归一化）以消除跨域幅度/分布差异，存储原始均值方差供反归一化[^src-nuwats]。**[[zeus|Zeus]]**（ICML 2026）在 point tokenization 前用 RevIN 去尺度变化（论文自述）[^src-2607-01918]。
 
 [[srsnet|SRSNet]] / [[selective-representation-space|SRS]] 同样采用 RevIN 作为预处理：在 Selective Patching 之前对每个通道做 instance normalization 以缓解训练/测试分布差异[^src-srsnet]。这与 PatchTST 的 pipeline 一致——RevIN → CI → patch → backbone。
 
@@ -82,6 +82,7 @@ RevIN 已被多种主流模型采用：iTransformer、PatchTST、SparseTSF 等[^
 - [[nuwats|NuwaTS]] — 插补基础模型，对缺失值置零后做 RevIN 消除跨域分布差异[^src-nuwats]
 - [[probts|ProbTS]] — 统一基准下 RevIN vs 均值缩放的系统对比[^src-probts]
 - [[ar-vs-nar-decoding]] — 与归一化交互的解码方案轴
+- [[zeus|Zeus]] — 论文自述在 point tokenization 前用 RevIN 去尺度变化 (ICML 2026)[^src-2607-01918]
 
 ## 引用
 
@@ -93,3 +94,4 @@ RevIN 已被多种主流模型采用：iTransformer、PatchTST、SparseTSF 等[^
 [^src-tide]: [[source-tide]]
 [^src-srsnet]: [[source-srsnet]]
 [^src-pir]: [[source-pir]]
+[^src-2607-01918]: [[source-2607-01918]]

@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-08-05
+last_updated: 2026-08-06
 tags:
   - meta
 ---
@@ -1185,3 +1185,12 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Sources (continued)
 - [[source-jmlr-25-1243]] — FusionBench: unified library + benchmark for deep model fusion (JMLR 26, 2025; PDF raw/jmlr-25-1243.pdf)
+
+## Sources (continued)
+- [[source-2607-01918]] — Zeus: Towards Tuning-Free Foundation Model for Time Series Analysis，U 形多尺度 encoder-only + MOTM 掩码预训练，五任务 tuning-free（ICML 2026; PDF raw/2607.01918.pdf）
+
+## Entities (continued)
+- [[zeus]] — Zeus，unified tuning-free TSFM，point tokenization + U 形多尺度 encoder + MOTM，五任务零微调（ICML 2026）
+
+## Techniques (continued)
+- [[multi-objective-temporal-masking]] — MOTM：掩码比例→时序范围→掩码策略三级采样，多目标掩码预训练（Zeus, ICML 2026）

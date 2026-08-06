@@ -9,7 +9,7 @@ tags:
   - implicit-neural-representation
   - continuous-time
 created: 2026-06-08
-last_updated: 2026-06-09
+last_updated: 2026-08-06
 source_count: 2
 confidence: high
 status: active
@@ -49,6 +49,9 @@ MoTM 不学单个函数，而是学 **K 个不同的 INR**。每个 INR 是小�
 - **谱系**：扩展自 TimeFlow（Le Naour et al. 2024），属调制 INR 时序建模一脉。
 
 ## 关联页面
+
+> [!note] 同名消歧
+> 本页 **MoTM** = Mixture of TimeFlow Models（TMLR 2026 零样本插补方法）；[[zeus|Zeus]]（ICML 2026）的 **MOTM** = Multi-Objective Temporal Masking 是另一套多目标掩码预训练机制，见 [[multi-objective-temporal-masking]]。
 
 - [[source-motm]] — **原始论文**（AALTD/ECML 2025）摘要页
 - [[motm-ridge-orchestrator]] — MoTM 的核心 ridge 编排机制（原始论文）

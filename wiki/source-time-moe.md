@@ -9,8 +9,8 @@ tags:
   - pretraining
   - scaling-laws
 created: 2026-07-25
-last_updated: 2026-07-25
-source_count: 0
+last_updated: 2026-08-06
+source_count: 1
 confidence: low
 status: active
 ---
@@ -41,6 +41,7 @@ status: active
 - **零样本**：vs Moirai/TimesFM/Moment/Chronos 平均 MSE 降低 20%+。Time-MoEultra 相对 Chronoslarge/Moment/Moirailarge MSE 分别降低 23%/30%/11%。
 - **全样本微调**（仅 1 epoch）：vs iTransformer/TimeMixer/PatchTST 等平均 MSE 降低 24%。
 - **效率**：相比等激活参数量的 Dense 模型，训练成本降 78%、推理成本降 39%。
+- **与 Zeus 的实测效率对比**：[[zeus|Zeus]] 论文报告与 Time-MoEbase 的实测对比——L=4096、各 1000 次运行平均、均开 FlashAttention 时 Zeus 推理 2.1× 更快、GPU 显存省 3.1×（实证结果，Zeus 论文图 8）[^src-2607-01918]。
 
 ## 消融与缩放分析
 
@@ -53,3 +54,7 @@ status: active
 ## 局限与意义
 
 第一次将时序基础模型推到 2.4B 参数规模，验证了稀疏 MoE 在时序预训练中的可行性和效率优势。但采样频率从秒到年级别的极端跨度可能带来 token 语义不一致问题；多分辨率头的贪心调度在超长 horizon 下可能累积误差。
+
+## 引用
+
+[^src-2607-01918]: [[source-2607-01918]]

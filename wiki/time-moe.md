@@ -7,8 +7,8 @@ tags:
   - mixture-of-experts
   - forecasting
 created: 2026-07-25
-last_updated: 2026-07-25
-source_count: 2
+last_updated: 2026-08-06
+source_count: 3
 confidence: high
 status: active
 ---
@@ -56,5 +56,10 @@ Time-MoE 采用 **decoder-only Transformer** 架构，核心创新在于将标�
 
 Time-MoE 是首个 2.4B 参数的时序基础模型。随后 [[moirai-moe|Moirai-MoE]]（ICML 2025）进一步改进了门控函数设计。两者共同确立了稀疏 MoE 作为时序基础模型缩放的核心范式[^src-moirai-moe]。
 
+### 与 Zeus 的实测对比
+
+[[zeus|Zeus]]（ICML 2026）论文报告了与 Time-MoEbase（约 113M 参数，同为 point tokenization）的实测效率对比：L=4096、各 1000 次运行平均、均开启 FlashAttention 时，Zeus 推理 2.1× 更快、GPU 显存节省 3.1×（实证结果，论文图 8）[^src-2607-01918]。
+
 [^src-time-moe]: [[source-time-moe]]
 [^src-moirai-moe]: [[source-moirai-moe]]
+[^src-2607-01918]: [[source-2607-01918]]
