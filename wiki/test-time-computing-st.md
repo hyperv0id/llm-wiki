@@ -8,8 +8,8 @@ tags:
   - distribution-shift
   - online-learning
 created: 2026-06-08
-last_updated: 2026-07-15
-source_count: 1
+last_updated: 2026-08-06
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -31,6 +31,8 @@ ST-TTC contrasts TTC against four prior generalization strategies for STF[^src-s
 | **Test-time computing (TTC)** | none | update only a lightweight calibrator $g_\theta$ | ST-TTC |
 
 Unlike TTT (which needs a pretext task in both training and test) and online continual learning (which modifies internal network parameters/architecture), TTC requires only a **seamless, plug-and-play calibrator** and leaves the backbone untouched[^src-st-ttc].
+
+The plug-in spirit also extends to offline post-processing: [[pir|PIR]] (NeurIPS 2025) appends an identification-and-revision module after the backbone, but trains it offline (jointly with the forecasting task) and performs no inference-time update — the opposite timing choice from TTC's online calibration[^src-pir].
 
 ## Two enabling properties of STF
 
@@ -56,4 +58,5 @@ TTC is closely related to **test-time adaptation (TTA)**. The label-free, masked
 - [[label-autocorrelation]] — the enabling property that makes supervised TTC possible
 
 [^src-st-ttc]: [[source-st-ttc]]
+[^src-pir]: [[source-pir]]
 

@@ -7,8 +7,8 @@ tags:
   - multivariate-forecasting
   - ICLR-2024
 created: 2026-05-30
-last_updated: 2026-07-21
-source_count: 1
+last_updated: 2026-08-06
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -79,5 +79,7 @@ iTransformer 属于论文定义的第四类 Transformer 修改：仅改架构、
 - [[informer]] — iTransformer 框架可直接提升 Informer 性能 28.5%
 - [[granularity-variates]] — SIFusion 将 variate 思路迁移至时间粒度维度（跨粒度 attention）
 - [[sifusion]] — SIFusion 中应用 granularity variates 做多粒度海冰预测
+- [[pir|PIR]] — 后处理修订插件以 iTransformer 为骨干；论文报告 PIR 的局部修订模块（逐变量投影 + 通道间注意力）与 iTransformer 结构相似，且在其上仍带来 48 个设置平均 MSE 降 3.47%[^src-pir]
 
 [^src-itransformer]: [[source-itransformer]]
+[^src-pir]: [[source-pir]]

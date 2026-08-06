@@ -8,8 +8,8 @@ tags:
   - mlp
   - iclr-2024
 created: 2026-05-31
-last_updated: 2026-06-08
-source_count: 2
+last_updated: 2026-08-06
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -91,6 +91,7 @@ GPU 内存和运行时间均优于 PatchTST，在输入长度 192–3072 范围�
 - **[[cyclenet|CycleNet]]**：CycleNet 显式建模全局周期并将周期分量作为残差；TimeMixer 通过多尺度混合隐式建模周期性（seasonal mixing 的自下而上性质），但允许不同尺度呈现不同周期模式[^src-timemixer]。
 - **[[lstf|LSTF]]**：TimeMixer 在 LSTF 的所有 8 个 benchmark 上均取得 SOTA，是该问题当前最优模型之一[^src-timemixer]。
 - **[[hephestus|HEPHAESTUS]]**：HEPHAESTUS（ICLR 2026 审稿中）将 TimeMixer 的固定下采样多尺度混合替换为输入自适应的 [[ams-moe|AMS-MoE]] 动态路由，并通过 [[periodic-temporal-attention|PTA]] 显式建模日/周周期。两者共享多尺度混合的基本思想，但 HEPHAESTUS 以 MoE 路由取代固定分解策略[^src-timemixer]。
+- **[[pir|PIR]]**：PIR（NeurIPS 2025）以 TimeMixer 为 channel-dependent 骨干测试后处理修订，论文报告 48 个设置平均 MSE 降 2.34%，作者将较小收益归因于 CD 模型已利用协变量信息[^src-pir]。
 
 ## 局限性
 
@@ -102,3 +103,4 @@ GPU 内存和运行时间均优于 PatchTST，在输入长度 192–3072 范围�
 
 [^src-timemixer]: [[source-timemixer]]
 [^src-rstib]: [[source-rstib-mlp]]
+[^src-pir]: [[source-pir]]

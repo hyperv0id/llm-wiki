@@ -59,7 +59,7 @@ SparseTSF 是 IEEE TPAMI 2026 接收的极轻量级时序预测模型，由华�
 
 ## 在 PIR 后处理中的表现
 
-PIR（Post-forecasting Identification and Revision，Liu et al., NeurIPS 2025）将 SparseTSF 作为 channel-independent 骨干测试后处理修订：论文报告在 48 个实验设置上平均 MSE 降低 25.87%，为四个骨干（PatchTST 8.99%、iTransformer 3.47%、TimeMixer 2.34%）中最大 [^src-pir]。定性分析中，论文报告 SparseTSF 在 ETTh1 上的最大单实例预测误差从 2.85 降至 0.81（加 PIR 后），作为其存在实例级失效的直接证据 [^src-pir]。
+[[pir|PIR]]（Post-forecasting Identification and Revision，Liu et al., NeurIPS 2025）将 SparseTSF 作为 channel-independent 骨干测试后处理修订：论文报告在 48 个实验设置上平均 MSE 降低 25.87%，为四个骨干（PatchTST 8.99%、iTransformer 3.47%、TimeMixer 2.34%）中最大 [^src-pir]。定性分析中，论文报告 SparseTSF 在 ETTh1 上的最大单实例预测误差从 2.85 降至 0.81（加 PIR 后），作为其存在实例级失效的直接证据 [^src-pir]。
 
 ## 引用
 
