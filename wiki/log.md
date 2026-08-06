@@ -1,3 +1,21 @@
+## [2026-08-06] lint | PIR ingest 终审（AGETNS 全量）
+
+对照 AGETNS 清单，范围：PIR 本轮新建/修改页（5 新建 + 13 更新 + index/log/ingest-report）。终审全页通读，数字与论文全文逐项核对。
+
+### 已修
+- [x] source-pir.md — 移除 source-summary 自引用循环（8 处 `[^src-pir]` 自引 + 自指脚注），source_count 1→0、confidence medium→low（WeatherPEFT 2026-07-25 lint 同款修复）
+- [x] pir.md — 相关页面补 4 个反向链接：[[prediction-refinement]] · [[test-time-computing-st]]、[[retrieval-augmented-spatio-temporal-forecasting]]、[[source-time-mmd]]
+- [x] ingest-reports/2026-08-06-pir.md — 4 对单向链接标注（↔ → →）+ M5 链接转换审计行
+- [x] channel-independence.md — 修复预存乱码字节（U+FFFD）；`[^src-srsnet]` 定义未用 → 在 SRSNet 提及处补引用；simdiff 引用未补（论文不支持"降低计算复杂度"表述）
+
+### 通过
+- 结构：18/18 frontmatter 齐全、type 合法、status active，无 superseded/disputed 违规
+- 引用：18/18 source_count == 正文实际唯一引用数；全部引用有定义且指向存在的 source-* 页（16 个）
+- 链接：全部 wikilink 目标存在（~70 唯一目标）；5 个新页均非孤立（source-pir ← 19 文件）
+- 时效：last_updated 均为 2026-08-06；无 source_count:1 概括性陈述；无 confidence:high 且 source_count<2
+- 文案/口径：无禁用词、无 emoji；结果全部归因（论文报告/作者报告/论文自述）；ETTm2 −0.71% 负增益如实记录
+- PIR ↔ Zeus 并发 ingest 交互检查：提交交错无覆盖，共享文件（channel-independence/patchtst/instance-normalization/index/log）脚注集不相交、source_count 各自计入、无重复登记
+
 ## [2026-08-06] ingest | PIR: Improving Time Series Forecasting via Instance-aware Post-hoc Revision
 
 PDF: `raw/improving-time-series-forecasting-via-instance-aware-post-hoc-revision.pdf`（26 页，NeurIPS 2025；Zhiding Liu 等，中科大认知智能全国重点实验室；代码 github.com/icantnamemyself/PIR）。PIR：模型无关的预测后（post-forecasting）识别-修订框架——两层 FC 误差估计器 δ=f_ue(x,ȳ,E) 以逐实例 MSE 为代理（MAE 损失 L_ue）识别失效实例；局部修订用协变量预测 + 外生信息（时间戳/文本）经通道注意力 Transformer 输出 y_local；全局修订用仅含训练对的检索库，RevIN 编码 + 余弦 top-K {10,20,50} Softmax 加权求和输出 y_global；融合 y=ȳ+α·y_local+β·y_global（α=σ(Linear(δ))、β=σ(MLP(δ,w))）。论文报告 48 设置平均 MSE 降幅：PatchTST 8.99% / SparseTSF 25.87% / iTransformer 3.47% / TimeMixer 2.34%；ETTm2 PatchTST −0.71%；SparseTSF ETTh1 最大单实例误差 2.85→0.81；R² 0.9067/0.7500（ETTm1，附录 D）。局限（论文自述）：只处理输入序列侧实例级变化、组件结构简单。
