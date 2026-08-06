@@ -1,3 +1,10 @@
+## [2026-08-06] ingest | PIR: Improving Time Series Forecasting via Instance-aware Post-hoc Revision
+
+PDF: `raw/improving-time-series-forecasting-via-instance-aware-post-hoc-revision.pdf`（26 页，NeurIPS 2025；Zhiding Liu 等，中科大认知智能全国重点实验室；代码 github.com/icantnamemyself/PIR）。PIR：模型无关的预测后（post-forecasting）识别-修订框架——两层 FC 误差估计器 δ=f_ue(x,ȳ,E) 以逐实例 MSE 为代理（MAE 损失 L_ue）识别失效实例；局部修订用协变量预测 + 外生信息（时间戳/文本）经通道注意力 Transformer 输出 y_local；全局修订用仅含训练对的检索库，RevIN 编码 + 余弦 top-K {10,20,50} Softmax 加权求和输出 y_global；融合 y=ȳ+α·y_local+β·y_global（α=σ(Linear(δ))、β=σ(MLP(δ,w))）。论文报告 48 设置平均 MSE 降幅：PatchTST 8.99% / SparseTSF 25.87% / iTransformer 3.47% / TimeMixer 2.34%；ETTm2 PatchTST −0.71%；SparseTSF ETTh1 最大单实例误差 2.85→0.81；R² 0.9067/0.7500（ETTm1，附录 D）。局限（论文自述）：只处理输入序列侧实例级变化、组件结构简单。
+
+创建的页面：[[source-pir]], [[pir]], [[instance-level-variation]], [[post-hoc-forecast-revision]], [[error-based-uncertainty-estimation]]
+更新的页面：[[channel-independence]], [[prediction-refinement]], [[gtr]], [[instance-normalization]], [[time-mmd]], [[source-time-mmd]], [[retrieval-augmented-spatio-temporal-forecasting]], [[ratd]], [[patchtst]], [[sparsetsf]], [[itransformer]], [[timemixer]], [[test-time-computing-st]], [[index]]
+
 ## [2026-08-06] ingest | Zeus: Towards Tuning-Free Foundation Model for Time Series Analysis
 
 PDF: `raw/2607.01918.pdf`（arXiv:2607.01918v1, ICML 2026, PMLR 306；中科院计算所/国科大/厦门数据智能研究院）。Zeus：unified tuning-free TSFM，点/概率预测、插补、异常检测、分类五任务免微调；point-wise tokenization + U 形多尺度 encoder-only（[1,8,32,8,1]，约 100M 参、ctx 4096）+ MOTM 三级掩码预训练 + quantile head；约 300B 观测（Chronos 94B + GiftEvalPretrain 230B + Aegis-Syn ~10%）。点预测 24 项 19 最优（MSE −9.0% vs 前 SOTA、−40.3% vs Timer）、GIFT-Eval MASE 0.693/CRPS 0.480 第一、插补全面优于监督基线（−24.4%/−18.8%）、UCR 42 数据集 adjusted F1 0.900 第一、UEA linear probing 0.728 最高；vs Time-MoEbase 2.1×/3.1× 效率。

@@ -63,7 +63,7 @@ RevIN 已被多种主流模型采用：iTransformer、PatchTST、SparseTSF 等[^
 
 ### PIR 中的 RevIN 检索编码
 
-**PIR**（Post-forecasting Identification and Revision，Liu et al., NeurIPS 2025）将 RevIN 用作检索编码器：全局修订在训练集上检索相似实例时，用实例归一化对查询与候选序列编码，论文称该设计"简单有效"，可缓解非平稳性导致的相似度估计不稳定[^src-pir]。
+**[[pir|PIR]]**（Post-forecasting Identification and Revision，Liu et al., NeurIPS 2025）将 RevIN 用作检索编码器：全局修订在训练集上检索相似实例时，用实例归一化对查询与候选序列编码，论文称该设计"简单有效"，可缓解非平稳性导致的相似度估计不稳定[^src-pir]。
 
 ### ProbTS 对 RevIN vs 均值缩放的跨场景结论
 

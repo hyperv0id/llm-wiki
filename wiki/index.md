@@ -55,6 +55,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-math-foundation-rl-readme]] — "Mathematical Foundations of Reinforcement Learning" 配套 Readme（Zhao, 2025）
 - [[source-mhc-manifold-constrained-hyper-connections]] — mHC: Manifold-Constrained Hyper-Connections (DeepSeek-AI, arXiv 2026)
 - [[source-penguin]] — PENGUIN: periodic-nested group attention for long-term forecasting (AISTATS 2026)
+- [[source-pir]] — PIR: Improving Time Series Forecasting via Instance-aware Post-hoc Revision，模型无关预测后识别-修订框架，误差估计识别失败实例 + 局部/全局上下文修订（NeurIPS 2025）
 - [[source-prnet]] — PRNet: periodic residual learning for crowd flow forecasting
 - [[source-simdiff]] — SimDiff: simpler yet better diffusion model for time series point forecasting (AAAI 2026)
 - [[source-siren-rope]] — Learning to Rotate: Temporal and Semantic Rotary Encoding for Sequential Modeling (arXiv 2026)
@@ -423,6 +424,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[cpiri]] — CPiRi, CI+CD decoupled with channel shuffling for permutation-invariant MTSF (ICLR 2026)
 - [[phat]] — PHAT, period heterogeneity-aware Transformer, 3D bucket + PNA cross-bucket attention (ICLR 2026)
 - [[pipe]] — PIPE, physics-informed position encoding for multimodal typhoon forecasting (NeurIPS 2025)
+- [[pir]] — PIR（Post-forecasting Identification and Revision），模型无关预测后识别-修订框架，误差估计识别失败实例 + 局部/全局上下文修订（Liu et al., NeurIPS 2025, USTC）
 - [[cora-tsfm]] — CoRA, TSFM covariate adaptation with Causality Embedding + zero-init injection (ICLR 2026)
 - [[gtr]] — GTR, plug-and-play global temporal retrieval for extending temporal awareness (ICLR 2026)
 - [[lstnet]] — LSTNet, first cross-dimension MTS deep learning model, CNN+RNN+Skip-RNN+AR (SIGIR 2018)
@@ -516,6 +518,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[multimodal-traffic-profiling]] — classification of urban traffic states using multimodal numerical/visual/textual data (AAAI 2026)
 - [[multimodal-time-series-anomaly-detection]] — detecting anomalies using multimodal time series and text data (ICLR 2026)
 - [[hybrid-periodicity-decoupling]] — explicitly separating short-term and long-term periodicity in time-series signals
+- [[instance-level-variation]] — 实例级变化：逐实例误差差异显著、少数实例大误差长尾分布，被整体指标掩盖的预测失效来源（PIR, NeurIPS 2025）
 - [[traffic-forecasting]] — predicting future traffic states from historical sensor data
 - [[continual-spatio-temporal-forecasting]] — CSTF, incremental learning on streaming evolving ST graphs without catastrophic forgetting (ICLR 2026)
 - [[meta-dynamic-graph]] — extending dynamics from adjacency matrices to meta-parameters in ST models
@@ -730,6 +733,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[truncated-policy-iteration]] — 值迭代与策略迭代��间的截断折中
 - [[monte-carlo-methods-rl]] — 基于轨迹回报的无模型策略优化方法
 - [[epsilon-greedy]] — 经典探索策略
+- [[error-based-uncertainty-estimation]] — 误差代理不确定性估计，两层 FC 以逐实例 MSE 为代理预测误差以识别失效实例（PIR, NeurIPS 2025）
 - [[temporal-query-technique]] — periodically shifted learnable vectors as queries for global correlation
 - [[cross-period-sparse-forecasting]] — cross-period downsampling for extreme model compression
 - [[radial-basis-function-interpolation]] — RBF 插值，Multiquadric 核从离散站点构建连续污染物场
@@ -836,6 +840,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[unified-prompt-learning]] — UrbanDiT 的三个 memory pool（时域/频域/空域）+任务掩码 prompt 的自适应引导机制
 - [[csdi]] — CSDI, conditional score-based diffusion model for probabilistic time series imputation (NeurIPS 2021)
 - [[observation-self-guidance]] — Observation self-guidance: inference-time conditioning of unconditional TS diffusion without auxiliary nets (TSDiff, NeurIPS 2023)
+- [[post-hoc-forecast-revision]] — 预测后修订：骨干预测完成后独立模块修正输出，误差估计识别 + 局部/全局上下文加权融合（PIR, NeurIPS 2025）
 - [[prediction-refinement]] — Prediction Refinement: post-hoc refinement of base forecaster predictions using diffusion model as energy-based prior (TSDiff, NeurIPS 2023)
 - [[linear-predictive-score]] — LPS: train-on-synthetic ridge CRPS for evaluating generative time-series samples (TSDiff, NeurIPS 2023)
 - [[bam]] — BAM, Bidirectional Attention Mamba for intra-channel dependency in diffusion denoising (KDD 2025)
