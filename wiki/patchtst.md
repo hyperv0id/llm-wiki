@@ -95,7 +95,7 @@ PatchTST 是 LSTF 领域的关键转折点 [^src-patchtst]：
 - Channel Independence 完全忽略跨变量依赖 [^src-patchtst]
 - 小数据集（ETT 系列）优势不明显
 - CI 的跨变量建模能力有限——[[cvpe|CVPE]] 和 [[crossformer|Crossformer]] 尝试补充此缺陷
-- 实例级失效现象：PIR 论文（Liu et al., NeurIPS 2025）报告在 ETTh1 上 PatchTST 的逐实例 MSE 呈长尾分布——多数实例误差低，但误差曲线存在尖峰，即平均性能良好时仍有预测失效的个别实例（Fig 1）[^src-pir]
+- 实例级失效现象：PIR 论文（Post-forecasting Identification and Revision，Liu et al., NeurIPS 2025）报告在 ETTh1 上 PatchTST 的逐实例 MSE 呈长尾分布——多数实例误差低，但误差曲线存在尖峰，即平均性能良好时仍有预测失效的个别实例（Fig 1）[^src-pir]
 - [[probts|ProbTS]] 显示：作为长程 **NAR 点预测** 代表，PatchTST 在长程趋势/季节场景强势，但短程高 [[non-gaussianity|非高斯性]] 上优势收缩；强季节 Traffic 上可被 AR 概率模型（TimeGrad）超过[^src-probts]
 
 ## Connections

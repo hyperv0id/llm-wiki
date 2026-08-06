@@ -77,7 +77,7 @@ GTR 模块仅 40.1K 参数、4.50M MACs。完整系统（GTR + MLP）0.98M 参�
 - 与 [[timesnet|TimesNet]] 的 1D→2D 变换共享将时间序列视为 2D 结构的思路，但 GTR 的 2D 用于融合局部与全局参考，而非捕捉周期内和跨周期变化。[^src-gtr]
 - 与 [[phat|PHAT]] 的周期性建模侧重异质周期的分桶策略，GTR 则侧重全局检索。[^src-gtr]
 - **[[rast|RAST]]**（AAAI 2026）同为检索增强的预测方法，但 RAST 在时空双维度（时间+空间）执行 FAISS 向量检索，且面向交通预测场景；GTR 仅在时间维度通过可学习参数 $Q$ 进行全局周期检索。[^src-gtr]
-- **PIR**（Liu et al., NeurIPS 2025）同为即插即用的检索增强预测框架，但检索对象不同：PIR 的全局修订在训练输入–目标对上按实例相似度检索（实例归一化编码 + 余弦相似度，top-K 软加权求和作为修订项）；GTR 则通过可学习的全局周期参数矩阵按绝对时间位置检索周期模式。[^src-pir]
+- **PIR**（Post-forecasting Identification and Revision，Liu et al., NeurIPS 2025）同为即插即用的检索增强预测框架，但检索对象不同：PIR 的全局修订在训练输入–目标对上按实例相似度检索（实例归一化编码 + 余弦相似度，top-K 软加权求和作为修订项）；GTR 则通过可学习的全局周期参数矩阵按绝对时间位置检索周期模式。[^src-pir]
 - **[[retrieval-guidance|Retrieval Guidance]]**（MiDDiR, ICLR 2026 under review）类似地使用检索增强生成，但采用不同的机制：MiDDiR 在推理时检索训练样本并分析性偏置扩散得分函数，而非将检索结果作为模型输入特征。GTR 在训练时就学习检索模块，MiDDiR 则训练后仅推理时检索。[^src-gtr]
 
 ## 关键参数

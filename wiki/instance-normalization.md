@@ -59,11 +59,11 @@ pred = pred * (std + eps) + mean
 
 RevIN 已被多种主流模型采用：iTransformer、PatchTST、SparseTSF 等[^src-cyclenet]。**PatchTST** 在 patching 前对每个单变量序列做零均值单位方差归一化，预测后将均值和标准差加回，与 [[channel-independence|Channel Independence]] 配合使用 [^src-patchtst]。**[[tide|TiDE]]** 将 RevIN 作为可调超参（on/off），与 residual MLP 骨干和协变量路径一起在验证集上选择[^src-tide]。**[[nuwats|NuwaTS]]** 在插补场景中对每个变量先做 RevIN（**缺失值置零**后再归一化）以消除跨域幅度/分布差异，存储原始均值方差供反归一化[^src-nuwats]。
 
-### ProbTS 对 RevIN vs 均值缩放的跨场景结论
-
 [[srsnet|SRSNet]] / [[selective-representation-space|SRS]] 同样采用 RevIN 作为预处理：在 Selective Patching 之前对每个通道做 instance normalization 以缓解训练/测试分布差异[^src-srsnet]。这与 PatchTST 的 pipeline 一致——RevIN → CI → patch → backbone。
 
-**PIR**（Liu et al., NeurIPS 2025）将 RevIN 用作检索编码器：全局修订在训练集上检索相似实例时，用实例归一化对查询与候选序列编码，论文称该设计"简单有效"，可缓解非平稳性导致的相似度估计不稳定[^src-pir]。
+### PIR 中的 RevIN 检索编码
+
+**PIR**（Post-forecasting Identification and Revision，Liu et al., NeurIPS 2025）将 RevIN 用作检索编码器：全局修订在训练集上检索相似实例时，用实例归一化对查询与候选序列编码，论文称该设计"简单有效"，可缓解非平稳性导致的相似度估计不稳定[^src-pir]。
 
 ### ProbTS 对 RevIN vs 均值缩放的跨场景结论
 

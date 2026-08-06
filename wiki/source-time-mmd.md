@@ -32,7 +32,7 @@ status: active
 
 ## 局限与谱系位置
 
-局限包括：文本仅为英语；融合框架是投影加权 first-cut 而非最优架构；未纳入图像/音频；其它 TSA 任务仍需额外 curation。展望覆盖多模态插补、异常检测与多模态基础模型。作为**数据与评测基础设施**，Time-MMD 已成为 [[cora-tsfm|CoRA]]、[[unica|UniCA]]、[[source-gpt4mts|DP-GPT4MTS]]、[[vot|VoT]]、[[timi|TiMi]]、TaTS 等文本协变量/多模态工作的公共参照；实体细节见 [[time-mmd]][^src-time-mmd]。PIR（Liu et al., NeurIPS 2025）在 Energy / Health 子集（周频，1996/1997–2024-05）上用对齐文本描述作为外生信息，验证其后处理修订框架在文本协变量场景下的泛化性[^src-pir]。
+局限包括：文本仅为英语；融合框架是投影加权 first-cut 而非最优架构；未纳入图像/音频；其它 TSA 任务仍需额外 curation。展望覆盖多模态插补、异常检测与多模态基础模型。作为**数据与评测基础设施**，Time-MMD 已成为 [[cora-tsfm|CoRA]]、[[unica|UniCA]]、[[source-gpt4mts|DP-GPT4MTS]]、[[vot|VoT]]、[[timi|TiMi]]、TaTS 等文本协变量/多模态工作的公共参照；实体细节见 [[time-mmd]][^src-time-mmd]。PIR（Post-forecasting Identification and Revision，Liu et al., NeurIPS 2025）在 Energy / Health 子集（周频，1996/1997–2024-05）上用对齐文本描述作为外生信息，验证其后处理修订框架在文本协变量场景下的泛化性[^src-pir]。
 
 ## 相关页面
 

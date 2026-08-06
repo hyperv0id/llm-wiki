@@ -111,7 +111,7 @@ $$L_{t-1} = \gamma_t \| x_0 - \hat{x}_0 \|^2$$
 - [[craft|CRAFT]] — 跨城市检索增强扩散生成 (NeurIPS 2025)
 - [[rast|RAST]] — 检索增强时空交通预测 (AAAI 2026)
 - [[gtr|GTR]] — 全局时序检索模块 (ICLR 2026)
-- PIR（Liu et al., NeurIPS 2025）— 检索增强预测家族的确定性后处理成员：全局修订用实例检索 + top-K 加权求和，不经扩散去噪[^src-pir]
+- PIR（Post-forecasting Identification and Revision，Liu et al., NeurIPS 2025）— 检索增强预测家族的确定性后处理成员：全局修订用实例检索 + top-K 加权求和，不经扩散去噪[^src-pir]
 
 [^src-ratd]: [[source-ratd]]
 [^src-pir]: [[source-pir]]
