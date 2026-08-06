@@ -8,7 +8,7 @@ tags:
   - auxiliary-loss
 created: 2026-08-06
 last_updated: 2026-08-06
-source_count: 1
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -40,8 +40,8 @@ status: active
 ## 边界与对照
 
 - **失败模式不解耦**：论文自述失败原因缺乏 ground truth 与度量，无法识别并解耦每个实例的具体失败原因，因此不显式定位失败模式，而是用误差代理统一覆盖[^src-pir]。
-- **与分布式的区别**：生成式方法直接输出预测分布（[[generative-time-series-forecasting]]），共形预测提供有限样本覆盖保证（[[conformal-prediction]]）；误差代理是学习式点估计，不提供概率或保证[^src-pir]。
-- **与状态空间不确定性的区别**：[[kalmannet-uncertainty-modeling|KalmanNet]] 从线性状态空间模型的滤波协方差得到不确定性，PIR 直接回归误差标量——两种不同的学习式路线。
+- **与分布式的区别**：作为对照，生成式方法直接输出预测分布（[[generative-time-series-forecasting]]），共形预测提供有限样本覆盖保证（[[conformal-prediction]]）；误差代理则按论文描述是学习式点估计，不提供概率或保证[^src-pir]。
+- **与状态空间不确定性的区别**：[[kalmannet-uncertainty-modeling|KalmanNet]] 从线性状态空间模型的滤波协方差得到不确定性[^src-k2vae]，PIR 直接回归误差标量——两种不同的学习式路线。
 
 ## 相关页面
 
@@ -51,3 +51,4 @@ status: active
 - [[conformal-prediction]] · [[generative-time-series-forecasting]] · [[kalmannet-uncertainty-modeling]] — 其他不确定性量化路线
 
 [^src-pir]: [[source-pir]]
+[^src-k2vae]: [[source-k2vae]]

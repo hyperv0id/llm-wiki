@@ -32,7 +32,7 @@ ST-TTC contrasts TTC against four prior generalization strategies for STF[^src-s
 
 Unlike TTT (which needs a pretext task in both training and test) and online continual learning (which modifies internal network parameters/architecture), TTC requires only a **seamless, plug-and-play calibrator** and leaves the backbone untouched[^src-st-ttc].
 
-The plug-in spirit also extends to offline post-processing: [[pir|PIR]] (NeurIPS 2025) appends an identification-and-revision module after the backbone, but trains it offline (jointly with the forecasting task) and performs no inference-time update — the opposite timing choice from TTC's online calibration[^src-pir].
+The plug-in spirit also extends to offline post-processing: [[pir|PIR]] (NeurIPS 2025) appends an identification-and-revision module after the backbone, but trains it offline (jointly with the forecasting task); the paper does not describe an inference-time update mechanism — the opposite timing choice from TTC's online calibration[^src-pir].
 
 ## Two enabling properties of STF
 

@@ -25,12 +25,12 @@ status: active
 
 ## 机制
 
-PIR 由失败识别与两路修订组成，技术细节见 [[post-hoc-forecast-revision]] 与 [[error-based-uncertainty-estimation]]：
+PIR 由失败识别与两路修订组成，各组件机制与公式见 [[post-hoc-forecast-revision]] 与 [[error-based-uncertainty-estimation]]：
 
-1. **失败识别（Failure Identification）**：不确定性估计器 δ = f_ue(x, ȳ, E) 用带非线性激活的两层全连接网络预测逐实例 MSE；E ∈ R^(N×d) 为通道嵌入矩阵，提供通道身份上下文。辅助 MAE 损失 L_ue = (1/N)Σ||δ − ||ȳ−y||²||₁ 将 δ 对齐真实误差[^src-pir]。
-2. **局部修订（Local Revising）**：逐变量投影中间预测（CoVariateEmb）与外生信息（ExoVariateEmb；数值特征用线性投影、文本描述用语言模型），拼接为 H0 = [h_co, h_exo] 后经带通道注意力（channel-wise attention）的 Transformer 与线性头输出 y_local。论文的动机是协变量间的领先-滞后依赖与外生先验（时间、节假日等）；论文称该设计对采用 [[channel-independence|channel-independent]] 策略（以鲁棒性换容量）的模型尤其有益[^src-pir]。
-3. **全局修订（Global Revising）**：检索库仅由训练输入-目标对 (X_train, Y_train) 构成，论文称这防止数据泄漏并便于扩展到多源数据集；编码器采用实例归一化（[[instance-normalization|RevIN]]）缓解非平稳性，以余弦相似度检索 top-K（K ∈ {10, 20, 50}）相似实例，Softmax 加权求和其目标得到 y_global——假设相似实例有相似未来趋势[^src-pir]。
-4. **融合**：y_pred = ȳ + α·y_local + β·y_global；α = σ(Linear(δ))，线性层权重/偏置初始化为 1/0 以保证 δ 越大 α 越大；β = σ(MLP(δ, w)) 同时考虑估计误差与检索相似度。总损失 L = L_pr + λ·L_ue（λ = 1），L_pr 为修订后预测的 MSE；论文将融合定位为残差式（residual）修订[^src-pir]。
+1. **失败识别（Failure Identification）**：用带非线性激活的两层全连接网络预测逐实例 MSE 作为误差代理（通道嵌入提供通道身份上下文），识别结果决定修订强度[^src-pir]。
+2. **局部修订（Local Revising）**：逐变量投影中间预测与外生信息（数值或文本），经带通道注意力的 Transformer 输出局部修订，针对协变量间领先-滞后依赖与外生先验；论文称该设计对 [[channel-independence|channel-independent]] 骨干尤其有益[^src-pir]。
+3. **全局修订（Global Revising）**：在仅由训练输入-目标对构成的检索库中，以实例归一化（[[instance-normalization|RevIN]]）+ 余弦相似度检索 top-K 相似实例并加权求和其目标，覆盖长尾罕见模式[^src-pir]。
+4. **融合**：以不确定性加权的残差方式修订——估计误差越大，局部与全局修订权重越大[^src-pir]。
 
 ## 论文报告的实验证据
 

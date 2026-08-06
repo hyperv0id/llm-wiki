@@ -9,7 +9,7 @@ tags:
   - distribution-shift
 created: 2026-08-06
 last_updated: 2026-08-06
-source_count: 1
+source_count: 5
 confidence: medium
 status: active
 ---
@@ -39,8 +39,8 @@ status: active
 ## 相关脉络
 
 - **CI/CD 与鲁棒性权衡**：论文引用 channel-independent 策略"以鲁棒性换容量"的讨论（[[channel-independence]]），并报告局部上下文修订对 CI 骨干的收益更大[^src-pir]。
-- **长尾与全局模式**：[[gtr|GTR]] 处理"真实周期长于回看窗口、全局周期模式不可见"的问题，与 PIR 的全局修订同属用全局信息覆盖局部建模盲区的路线（周期模式 vs 罕见实例模式）。
-- **缺失数据家族**：缺失值是论文点名的来源之一。插补方法在数据层面修复缺失（[[csdi|CSDI]] 条件扩散插补、[[prdim|PRDIM]] 非随机缺失建模、[[nuwats|NuwaTS]] 通用插补基础模型），与 PIR 在预测层面修订失效实例的路线互补。
+- **长尾与全局模式**：[[gtr|GTR]] 处理"真实周期长于回看窗口、全局周期模式不可见"的问题，与 PIR 的全局修订同属用全局信息覆盖局部建模盲区的路线（周期模式 vs 罕见实例模式）[^src-gtr]。
+- **缺失数据家族**：缺失值是论文点名的来源之一。插补方法在数据层面修复缺失（[[csdi|CSDI]] 条件扩散插补[^src-csdi]、[[prdim|PRDIM]] 非随机缺失建模[^src-prdim]、[[nuwats|NuwaTS]] 通用插补基础模型[^src-nuwats]），与 PIR 在预测层面修订失效实例的路线互补。
 
 ## 相关页面
 
@@ -50,3 +50,7 @@ status: active
 - [[patchtst]] · [[channel-independence]] · [[gtr]] · [[csdi]] · [[prdim]] · [[nuwats]]
 
 [^src-pir]: [[source-pir]]
+[^src-gtr]: [[source-gtr]]
+[^src-csdi]: [[source-csdi]]
+[^src-prdim]: [[source-prdim]]
+[^src-nuwats]: [[source-nuwats]]
