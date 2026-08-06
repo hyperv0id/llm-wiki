@@ -19,6 +19,8 @@ status: active
 
 **Zhiding Liu, Mingyue Cheng, Guanhao Zhao, Jiqian Yang, Qi Liu & Enhong Chen（2025），NeurIPS 2025（第 39 届）**。作者单位：中科大认知智能全国重点实验室。代码：https://github.com/icantnamemyself/PIR [^src-pir]
 
+完整论文（26 页）：`raw/improving-time-series-forecasting-via-instance-aware-post-hoc-revision.pdf`。
+
 ## 核心论题
 
 论文指出现有预测方法优化整体指标，却忽视实例级变化（分布漂移、缺失值、长尾数值模式）造成的逐实例失效：PatchTST 在 ETTh1 上的逐实例 MSE 呈长尾分布，多数实例误差低而少数尖峰高（图 1）。论文提出 PIR，模型无关的预测后（post-forecasting）识别-修订框架：先估计逐实例误差识别失效实例，再从局部与全局视角利用上下文修订预测 [^src-pir]。
@@ -38,4 +40,5 @@ status: active
 
 论文只处理输入序列侧的实例级变化，未处理目标序列侧（噪声、离群、缺失数据）；失败识别与局部修订采用较简单的网络结构；checklist 注明未做统计显著性检验，实验在单张 RTX 4090 上完成 [^src-pir]。
 
+[^src-pir]: [[source-pir]]
 ---
