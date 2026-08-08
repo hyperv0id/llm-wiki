@@ -9,7 +9,7 @@ tags:
   - event-driven
   - iclr-2026
 created: 2026-05-03
-last_updated: 2026-07-28
+last_updated: 2026-08-08
 source_count: 2
 confidence: medium
 status: active
@@ -46,7 +46,7 @@ Evaluated on 10 real-world multimodal datasets across diverse domains (Agricultu
 
 - Relies on LLM inference for the event-driven branch, which may introduce latency
 - HIC requires constructing and maintaining a knowledge base of corrected reasoning samples
-- The approach assumes availability of both exogenous and endogenous text, which may not hold in all domains[^src-event-driven-ts-forecasting]
+- Performance degrades significantly only in the extreme case where no valid text is available; the approach remains robust to sparse or noisy text (Appendix B.3)[^src-event-driven-ts-forecasting]
 
 ## Related Pages
 

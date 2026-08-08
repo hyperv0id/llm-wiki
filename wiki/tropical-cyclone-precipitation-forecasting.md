@@ -7,7 +7,7 @@ tags:
   - extreme-weather
   - deep-learning
 created: 2026-07-24
-last_updated: 2026-07-25
+last_updated: 2026-08-08
 source_count: 1
 confidence: medium
 status: active
@@ -28,10 +28,10 @@ TC 降水预测需整合多种异构数据[^src-tcp]：
 - **降水观测**：MSWEP（Multi-Source Weighted-Ensemble Precipitation），3h 分辨率 0.1°
 - **环境变量**：ERA5 地表数据（2m 温度、SST、MSLP、地形）和气压层数据（温度、比湿、U/V 风分量、位势高度），覆盖 200/600/850/925 hPa
 - **TC 属性**：IBTrACS 中的强度、移动速度、月份和轨迹位置
-- **NWP 预测**：ERA5-IFS 或 ECMWF-IFS 的未来预测作为物理约束
+- **NWP 预测**：ERA5-IFS 未来预测数据（ECMWF-IFS 仅用于对比）
 
 ## 现状
 
-截至 2025 年，绝大多数 TC 预测研究聚焦于路径和强度，TC 降水被严重忽视[^src-tcp]。[[tcp-diffusion|TCP-Diffusion]]（ICML 2025）是首个基于 DL 的全球 TC 降水预测工作，12h 预测时效内在中等和强降水预测上超越 ECMWF-IFS。TC 形成期和消散期仍是性能瓶颈[^src-tcp]。
+截至 2025 年，绝大多数 TC 预测研究聚焦于路径和强度，TC 降水被严重忽视[^src-tcp]。[[tcp-diffusion|TCP-Diffusion]]（ICML 2025）是论文自称（To our knowledge）首个基于 DL 的全球 TC 降水预测工作，12h 预测时效内在中等和强降水预测上超越 ECMWF-IFS。TC 形成期和消散期仍是性能瓶颈[^src-tcp]。
 
 [^src-tcp]: [[source-tcp]]

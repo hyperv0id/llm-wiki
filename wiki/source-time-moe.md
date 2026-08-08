@@ -9,7 +9,7 @@ tags:
   - pretraining
   - scaling-laws
 created: 2026-07-25
-last_updated: 2026-08-06
+last_updated: 2026-08-08
 source_count: 1
 confidence: low
 status: active
@@ -51,9 +51,9 @@ status: active
 - Top-K 从 1→8 变化：Top2 最优，更多 expert 性能持平但推理变慢
 - 模型和数据规模持续增长均带来性能提升，验证了时序领域的缩放定律
 
-## 局限与意义
+## 意义
 
-第一次将时序基础模型推到 2.4B 参数规模，验证了稀疏 MoE 在时序预训练中的可行性和效率优势。但采样频率从秒到年级别的极端跨度可能带来 token 语义不一致问题；多分辨率头的贪心调度在超长 horizon 下可能累积误差。
+第一次将时序基础模型推到 2.4B 参数规模，验证了稀疏 MoE 在时序预训练中的可行性和效率优势。
 
 ## 引用
 

@@ -10,7 +10,7 @@ tags:
   - fisher-information
   - iclr-2026
 created: 2026-07-25
-last_updated: 2026-07-25
+last_updated: 2026-08-08
 source_count: 0
 confidence: low
 status: active
@@ -52,6 +52,5 @@ WeatherPEFT 包含两个协同运作的模块：
 ## 局限性
 
 - 主要基于 Aurora 单一骨干验证，对其他 WFM（如 Prithvi WxC）仅在附录提供初步结果
-- Top-k 超参数 k 需按任务调节，尚未探索自适应选择机制
-- 未涉及概率预报/不确定性量化（论文使用确定性 RMSE/CRPS 评估）
+- 未显式融入大气物理机制/约束
 

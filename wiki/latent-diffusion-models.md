@@ -7,7 +7,7 @@ tags:
   - text-to-image
   - cvpr-2022
 created: 2026-04-28
-last_updated: 2026-07-21
+last_updated: 2026-08-08
 source_count: 2
 confidence: medium
 status: active
@@ -56,7 +56,7 @@ $$Attention(Q, K, V) = softmax\left(\frac{QK^T}{\sqrt{d}}\right)V$$
 - ImageNet 类别条件：FID 3.60（LDM-4-G）
 ## 气象领域扩展
 
-LDM 的潜空间压缩策略已在气象预测中得到成功应用。[[omnicast|OmniCast]]（NeurIPS 2025）将连续 VAE 潜空间与掩码生成式 Transformer 结合，在 S2S 天气预测上达到 SOTA，并实现 10–20× 推理加速[^src-omnicast]。与图像 LDM 的关键差异：
+LDM 的潜空间压缩策略已在气象预测中得到成功应用。[[omnicast|OmniCast]]（NeurIPS 2025）将连续 VAE 潜空间与掩码生成式 Transformer 结合，论文报告其在 S2S 天气预测上达到 SOTA，并实现 10–20× 推理加速[^src-omnicast]。与图像 LDM 的关键差异：
 
 - **连续 vs 离散潜空间**：天气数据（69+ 变量）的高度多通道特性使 VQ-VAE 面临 ~3938:1 的极端压缩比，导致重建误差比连续 VAE 高 2–3×[^src-omnicast]
 - **掩码生成 vs 完整扩散**：OmniCast 仅需一次 Transformer 前向传播 + 轻量 MLP 扩散头，而非每扩散步都走完整 UNet，显著降低推理成本[^src-omnicast]

@@ -8,7 +8,7 @@ tags:
   - predictability-desert
   - sea-ice
 created: 2026-07-14
-last_updated: 2026-07-21
+last_updated: 2026-08-08
 source_count: 3
 confidence: medium
 status: active
@@ -36,7 +36,7 @@ S2S 时间尺度的根本挑战在于[^src-cirt]：
 - **全球迭代模型**：FourCastNetV2、PanguWeather、GraphCast 等中期预报模型通过自回归迭代扩展到 S2S 尺度，但累积误差严重
 - **全球直接模型**：ClimaX 和 CirT 直接预测 S2S 时间窗口的平均值，避免迭代误差
 - **几何感知模型**：[[cirt|CirT]]（ICLR 2025）首次将球面几何归纳偏置引入 S2S Transformer，在高纬度区域改善尤为显著[^src-cirt]
-- **掩码生成模型**：[[omnicast|OmniCast]]（NeurIPS 2025）首次将掩码生成建模应用于 S2S 预测，跨时空联合并行解码避免累积误差，S2S 尺度 SOTA，10–20× 快于 GenCast[^src-omnicast]
+- **掩码生成模型**：[[omnicast|OmniCast]]（NeurIPS 2025）将掩码生成建模应用于 S2S 预测（论文提出的新应用），跨时空联合并行解码避免累积误差，论文报告其在 S2S 尺度达到 SOTA，10–20× 快于 GenCast[^src-omnicast]
 - **海冰多粒度预测**：[[sifusion|SIFusion]]（NeurIPS 2025）首次将多时间粒度（日/周/月）统一建模引入北极海冰 S2S 预测，通过 granularity variate attention 捕获跨粒度相关性，仅用 SIC 数据超越所有单粒度 baseline[^src-sifusion]
 
 ## 与其他预测尺度的关系

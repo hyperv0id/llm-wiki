@@ -10,7 +10,7 @@ tags:
   - neurips-2025
   - vae
 created: 2026-07-21
-last_updated: 2026-07-21
+last_updated: 2026-08-08
 source_count: 1
 confidence: medium
 status: active
@@ -34,12 +34,12 @@ Nguyen et al. (UCLA, UCI, Argonne National Laboratory, AI2; NeurIPS 2025) propos
 
 ## Results
 
-On ChaosBench, OmniCast achieves SOTA S2S performance across RMSE, bias, SSIM, spectral divergence, residual, CRPS, and SSR metrics, matching or exceeding ECMWF-ENS beyond day 10–15. On WeatherBench2 medium-range, it performs competitively with GenCast and IFS-ENS while being 10–20× faster. The model generates stable rollouts up to 100 years[^src-omnicast].
+On ChaosBench, the paper reports per-metric results: OmniCast achieves the lowest bias among all baselines; SDIV/SRES physical consistency is better than all deep learning methods; on CRPS/SSR it leads alongside ECMWF-ENS and outperforms it beyond day 15; on deterministic RMSE/SSIM it ranks top-two together with ECMWF-ENS only beyond day 10, performing worse at shorter lead times. On WeatherBench2 medium-range, it performs comparably with IFS-ENS, slightly behind GenCast, while being 10–20× faster. The model generates stable rollouts up to 100 years[^src-omnicast].
 
 ## Limitations
 
 - VAE reconstruction quality imposes an upper bound on forecasting skill; the continuous VAE still smooths fine details[^src-omnicast].
-- Does not yet incorporate multimodal inputs (e.g., ocean/land surface boundary conditions) that could further improve S2S skill.
-- 32 A100 GPUs × 4 days training is substantial, though still more efficient than comparable methods.
+- The paper leaves the fundamental trade-off between VAE reconstruction quality and transformer modeling capacity for future work[^src-omnicast].
+- 32 A100 GPUs × 4 days training is substantial, though still more efficient than comparable methods[^src-omnicast].
 
 [^src-omnicast]: [[source-omnicast]]

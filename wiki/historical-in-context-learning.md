@@ -8,7 +8,7 @@ tags:
   - error-correction
   - time-series
 created: 2026-05-03
-last_updated: 2026-07-25
+last_updated: 2026-08-08
 source_count: 1
 confidence: medium
 status: active
@@ -50,7 +50,7 @@ The basic event-driven reasoning pipeline in VoT operates in an unsupervised man
 | [[retrieval-augmented-statistical-channel|RAGC]] | [[channelmts|ChannelMTS]] | Retrieve similar channel statistics | Pre-cached高铁 map lookup |
 | [[content-condenser-reconstruction|Content Condenser]] | [[mindts|MindTS]] | Filter redundant text | IB-based Bernoulli masking |
 
-HIC is unique in using **corrected reasoning examples** (not raw data) as retrieval targets, providing explicit error analysis rather than just similar data points[^src-event-driven-ts-forecasting].
+HIC uses **corrected reasoning examples** (not raw data) as retrieval targets, providing explicit error analysis rather than just similar data points[^src-event-driven-ts-forecasting].
 
 ## Related Pages
 

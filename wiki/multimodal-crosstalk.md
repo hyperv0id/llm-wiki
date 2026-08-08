@@ -6,7 +6,7 @@ tags:
   - neural-field
   - self-attention
 created: 2026-07-21
-last_updated: 2026-07-21
+last_updated: 2026-08-08
 source_count: 1
 confidence: medium
 status: active
@@ -41,5 +41,6 @@ $z$ 既是**跨模态通信的全局信息聚合**，也是**紧凑的信息瓶�
 
 - [[iterative-cross-modal-refinement]] — MCT 的迭代版本
 - [[omnifield]] — 使用了 MCT 的完整模型
+- [[fleximodal-fusion]] — 处理缺失模态子集的配套机制
 
 [^src-omnifield]: [[source-omnifield]]

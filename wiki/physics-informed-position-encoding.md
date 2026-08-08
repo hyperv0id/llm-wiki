@@ -8,7 +8,7 @@ tags:
   - multimodal
   - time-series
 created: 2025-07-14
-last_updated: 2025-07-14
+last_updated: 2026-08-08
 source_count: 1
 confidence: medium
 status: active
@@ -16,7 +16,7 @@ status: active
 
 # Physics-Informed Position Encoding
 
-**Physics-Informed Position Encoding（物理知情位置编码）**是一种将物理元数据（时间戳、地理坐标等）嵌入 Transformer 位置编码的方法，由 [[pipe|PIPE]] 首次提出[^src-pipe]。
+**Physics-Informed Position Encoding（物理知情位置编码）**是一种将物理元数据（时间戳、地理坐标等）嵌入 Transformer 位置编码的方法，由 [[pipe|PIPE]] 提出[^src-pipe]。
 
 ## 动机
 
@@ -61,7 +61,7 @@ Physics-Informed Position Encoding 代表了将物理知识注入神经网络的
 | 架构嵌入型 | PDE 离散形式作为网络层 | CTENet |
 | **编码知情型** | **物理量注入位置编码** | **PIPE** |
 
-编码知情型无需修改损失函数或架构，仅通过位置编码层的改动即可实现物理知识注入，是最轻量的 PINN 变体[^src-pipe]。
+编码知情型无需修改损失函数或架构，仅通过位置编码层的改动即可实现物理知识注入，论文称其为 a lightweight method[^src-pipe]。
 
 ## 应用场景
 

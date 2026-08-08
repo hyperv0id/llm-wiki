@@ -8,7 +8,7 @@ tags:
   - fusion
   - fft
 created: 2026-05-03
-last_updated: 2026-05-03
+last_updated: 2026-08-08
 source_count: 1
 confidence: medium
 status: active
@@ -50,7 +50,7 @@ The weights are learned per frequency band and per branch, enabling domain-drive
 
 | Design Choice | Rationale |
 |---------------|-----------|
-| Frequency-domain fusion | Different frequency components carry different types of information (trends in low freq, events in mid/high freq) |
+| Frequency-domain fusion | Low freq (0–10%): event-driven branch stronger (trends + event shocks); high freq (70–100%): numerical branch stronger |
 | Learnable weights (not fixed) | Datasets vary in how much they depend on text vs. numerical patterns |
 | Three-band partition | Balances granularity with parameter efficiency |
 | FFT + iFFT | Enables clean separation and recombination of frequency components |
@@ -64,7 +64,7 @@ The weights are learned per frequency band and per branch, enabling domain-drive
 | [[multi-modality-refinement|SNR-based Selection]] | [[most|MoST]] | Modality | Yes (SNR + Gumbel-Sigmoid) |
 | Cross-view Attention | [[mindts|MindTS]] | Representation | Yes (attention) |
 
-AFF is unique in performing fusion in the **frequency domain** with **learnable per-band weights**, rather than in the time domain or at the modality level[^src-event-driven-ts-forecasting].
+AFF performs fusion in the **frequency domain** with **learnable per-band weights**, rather than in the time domain or at the modality level[^src-event-driven-ts-forecasting].
 
 ## Related Pages
 

@@ -10,9 +10,9 @@ tags:
   - physics-informed
   - vlm
 created: 2025-07-14
-last_updated: 2025-07-14
+last_updated: 2026-08-08
 source_count: 0
-confidence: high
+confidence: medium
 status: active
 ---
 

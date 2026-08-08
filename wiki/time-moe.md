@@ -7,7 +7,7 @@ tags:
   - mixture-of-experts
   - forecasting
 created: 2026-07-25
-last_updated: 2026-08-06
+last_updated: 2026-08-08
 source_count: 3
 confidence: high
 status: active
@@ -40,7 +40,7 @@ Time-MoE 采用 **decoder-only Transformer** 架构，核心创新在于将标�
 | Time-MoElarge | 200M | 453M | 12 | 768 |
 | Time-MoEultra | 1.1B | 2.4B | 36 | 1024 |
 
-所有模型共享 4096 的最大上下文长度、16 个专家（含 1 个共享）、Top-2 激活[^src-time-moe]。
+所有模型共享 4096 的最大上下文长度、8 个专家（+1 共享专家，Top-2 激活）[^src-time-moe]。
 
 ## 训练
 
@@ -54,7 +54,7 @@ Time-MoE 采用 **decoder-only Transformer** 架构，核心创新在于将标�
 
 ## 与其他时序基础模型的对比
 
-Time-MoE 是首个 2.4B 参数的时序基础模型。随后 [[moirai-moe|Moirai-MoE]]（ICML 2025）进一步改进了门控函数设计。两者共同确立了稀疏 MoE 作为时序基础模型缩放的核心范式[^src-moirai-moe]。
+论文称其首次将时序基础模型扩展到 2.4B 参数（PDF p.2 自述）。随后 [[moirai-moe|Moirai-MoE]]（ICML 2025）进一步改进了门控函数设计。两者共同确立了稀疏 MoE 作为时序基础模型缩放的核心范式[^src-moirai-moe]。
 
 ### 与 Zeus 的实测对比
 

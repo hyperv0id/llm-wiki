@@ -8,7 +8,7 @@ tags:
   - icml-2025
   - tsinghua
 created: 2026-06-08
-last_updated: 2026-06-08
+last_updated: 2026-08-08
 source_count: 1
 confidence: high
 status: active
@@ -61,5 +61,6 @@ TimeBench 是目前**最大规模**的时间序列预训练数据集，验证了
 - [[sundial]] — 基于 TimeBench 预训练的 Sundial 模型系列
 - [[timeflow-loss]] — Sundial 使用的生成式训练目标
 - [[chronos]] — Chronos，使用 94B 时间点子集
+- [[time-300b]] — 同期发布的 309B 时间点开源时序数据集
 
 [^src-sundial]: [[source-sundial]]

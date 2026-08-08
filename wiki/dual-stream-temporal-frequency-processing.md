@@ -7,7 +7,7 @@ tags:
   - time-frequency
   - dual-stream
 created: 2026-05-11
-last_updated: 2026-05-30
+last_updated: 2026-08-08
 source_count: 1
 confidence: medium
 status: active
@@ -82,7 +82,7 @@ $$C_{con} = \text{softmax}\left(\frac{QK^T}{\sqrt{d}}\right) \cdot V$$
 - [[timesnet]] — TimesNet 也使用 2D-variation 将时序转为"图像"处理
 - [[frequency-enhanced-attention]] — FEDformer 的频域注意力机制
 - [[spectral-recurrent-encoder]] — SpecSTG 的谱域循环编码器
-- [[adaptive-frequency-fusion]] — UniCA 的自适应频域融合
+- [[adaptive-frequency-fusion]] — VoT 的自适应频域融合
 
 ## 适用场景
 

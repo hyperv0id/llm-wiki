@@ -7,7 +7,7 @@ tags:
   - physics-informed
   - frequency
 created: 2025-07-14
-last_updated: 2025-07-14
+last_updated: 2026-08-08
 source_count: 1
 confidence: medium
 status: active
@@ -41,7 +41,7 @@ $$PE(pos, 2i+1) = \cos\left(\frac{2\pi \cdot pos}{p \cdot 10000^{2i/d_{\text{mod
 
 ## 维度分配
 
-在 PIPE-3B 中，$d_{\text{model}}=128$ 的维度被划分为两半：前半分配给时间维度（t_day + t_hour），后半分配给空间维度（latitude + longitude）。每 4 个维度为一组，依次编码 t_day、t_hour、lat、lng 的 sin/cos 分量[^src-pipe]。
+在 PIPE-3B 中，$d_{\text{model}}$ 的维度被划分为两半：前半分配给时间维度（t_day + t_hour），后半分配给空间维度（latitude + longitude）。每 4 个维度为一组，依次编码 t_day、t_hour、lat、lng 的 sin/cos 分量（论文 Figure 4 以 $d_{\text{model}}=128$ 为例可视化）[^src-pipe]。
 
 ## 与标准正弦编码的对比
 
@@ -49,13 +49,13 @@ $$PE(pos, 2i+1) = \cos\left(\frac{2\pi \cdot pos}{p \cdot 10000^{2i/d_{\text{mod
 |------|------------|--------------|
 | 编码对象 | 序列位置 | 物理量 |
 | 波长起点 | $10000^{0/d}$ | $p \cdot 10000^{0/d}$ |
-| 几何级数 | $1 \to 10000$ | $p \to p \cdot 10000$ |
+| 几何级数 | $1 \to 10000$ | $p \to p \cdot 10000/2$ |
 | 多变量区分 | 不支持 | 通过不同 $p$ 区分 |
 | 物理可解释性 | ❌ | ✅ |
 
 ## 消融结果
 
-在 PIPE 的消融实验中，移除整个正弦函数导致强度 MAE 从 1.515 升至 1.545；仅移除变频率变体（保留标准正弦）导致升至 1.639。变频率设计贡献了约 6% 的改进（1.639 → 1.545）[^src-pipe]。
+在 PIPE 的消融实验中，移除整个正弦函数导致强度 MAE 从 1.515 升至 1.545；仅移除变频率变体（保留标准正弦）导致升至 1.639。变频率设计相对完整 PIPE 贡献约 7.6%（1.639→1.515）；论文报告物理知情索引贡献约 6%（1.617→1.515）[^src-pipe]。
 
 ## 相关页面
 

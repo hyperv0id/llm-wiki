@@ -11,7 +11,7 @@ tags:
   - paradigm-comparison
   - problem-evolution
 created: 2026-06-01
-last_updated: 2026-06-08
+last_updated: 2026-08-08
 source_count: 12
 confidence: high
 status: active
@@ -220,7 +220,7 @@ MoST 的解法是 SNR 门控：估计每个模态的"信噪比"——高质量�
 
 - **开放世界空间**：所有 STFM 仍需目标域的空间信息。真正的零样本应无需任何拓扑知识。FactoST 的 transductive node embeddings 是一个未解的局限[^src-factost]。
 - **时空幻象**：[[spatiotemporal-mirage|短输入窗口导致预测困境]]，[[std-mae|STD-MAE]] 通过 864 步预训练缓解，但推理时仍受限于下游模型的输入长度[^src-2312-00516-std-mae]。
-- **外生事件**：[[conformer|ConFormer]] 和 [[igstgnn|IGSTGNN]] 证明事故对交通有剧烈影响，但当前 STFM 均未建模外生事件。[[vot|VoT]] 和 [[timecap|TimeCAP]] 尝试用 LLM 提取事件信号，但尚未与 STFM 架构集成。系统的研究路线（统一架构论点 + 分层方向）见 [[multimodal-exogenous-guided-long-term-st-forecasting]]。
+- **外生事件**：[[conformer|ConFormer]] 和 [[igstgnn|IGSTGNN]] 证明事故对交通有剧烈影响，但当前 STFM 均未建模外生事件。[[vot|VoT]] 和 [[timecap|TimeCAP]] 尝试用 LLM 提取事件信号，但尚未与 STFM 架构集成。系统的研究路线（统一架构论点 + 分层方向）见 multimodal-exogenous-guided-long-term-st-forecasting。
 - **不确定性量化**：STFM 的点预测已超越 full-shot 专家，但概率预测仍是空白。[[ustd|USTD]] 用扩散模型做概率预测但非基础模型范式。FactoST 的分位数预测头是当前最接近的方案[^src-factost]。
 - **跨域泛化边界**：当前 STFM 泛化主要在交通领域验证。天气/地球系统领域形成独立 FM 谱系（NVIDIA Atlas、WIND、ESFM），两者能否统一仍未知。
 - **评估标准化**：EvalST（12 数据集、22 baseline）是迄今最系统的城市 ST 基准，但尚未被社区广泛采用。STFM 领域需要一个等价于 GIFT-Eval 的统一基准。

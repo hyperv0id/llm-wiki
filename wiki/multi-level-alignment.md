@@ -8,7 +8,7 @@ tags:
   - contrastive-learning
   - frequency-fusion
 created: 2026-05-03
-last_updated: 2026-05-03
+last_updated: 2026-08-08
 source_count: 1
 confidence: medium
 status: active
@@ -61,6 +61,7 @@ Both methods come from the same lab (ECNU) and share the idea of decomposing tex
 - [[endogenous-text-alignment]] — ETA technique
 - [[adaptive-frequency-fusion]] — AFF technique
 - [[event-driven-reasoning]] — complementary reasoning paradigm
+- [[chronological-textual-resonance]] — CTR phenomenon (periodicity-aligned text–TS pairs)
 - [[fine-grained-time-text-semantic-alignment]] — MindTS's alignment (compare)
 - [[multimodal-time-series-forecasting]] — task concept
 

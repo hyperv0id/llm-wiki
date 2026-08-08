@@ -8,7 +8,7 @@ tags:
   - radar
   - satellite
 created: 2026-07-16
-last_updated: 2026-07-25
+last_updated: 2026-08-08
 source_count: 4
 confidence: high
 status: active
@@ -72,10 +72,10 @@ status: active
 
 与常规降水临近预报不同，[[tropical-cyclone-precipitation-forecasting|热带气旋降水预测]]聚焦随 TC 中心移动的动态 10°×10° 窗口，而非固定地理区域[^src-tcp]。将常规方法直接迁移效果不佳——现有 DL 模型在 TC 降水任务上甚至不如 Persistence 基线[^src-tcp]。
 
-[[tcp-diffusion|TCP-Diffusion]]（ICML 2025）是首个基于扩散模型的全球 TC 降水预测工作，核心创新包括：
+[[tcp-diffusion|TCP-Diffusion]]（ICML 2025）是论文自称首个基于深度学习的全球 TC 降水预测工作，核心创新包括：
 - **[[adjacent-residual-prediction|ARP]]**：将预测目标从绝对降水值改为相邻时间步的变化量，赋予模型变化感知能力
 - **多模态编码器**：3D CNN 编码 2D 降水/环境数据 + MLP-Transformer 编码 TC 属性 + ResNet-18 编码 ERA5-IFS 预测
-- **NWP 集成**：以低成本 ERA5-IFS 为条件引导扩散去噪，最终超越高质量 ECMWF-IFS[^src-tcp]
+- **NWP 集成**：以低成本 ERA5-IFS 为条件引导扩散去噪，论文报告在 TIGGE 对比中超越 ECMWF-IFS（ETS-6 0.412 vs 0.302、TPM AE 0.474 vs 0.507）[^src-tcp]
 
 在 12h 预测窗口内，ETS-24 达 0.147（PreDiff 仅 0.119），ETS-60 是唯一超越 Persistence 的 DL 模型[^src-tcp]。
 

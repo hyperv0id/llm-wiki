@@ -10,7 +10,7 @@ tags:
   - vlm
   - physics-informed
 created: 2025-07-14
-last_updated: 2025-07-14
+last_updated: 2026-08-08
 source_count: 1
 confidence: medium
 status: active
@@ -28,7 +28,7 @@ PIPE 基于 Qwen-2.5-VL 架构，改动集中在位置编码层：
 
 2. **变频率位置编码（Variant-Frequency Positional Encoding）**：针对不同物理变量使用不同波长的正弦函数。时间维度：$p_{\text{day}}=366$、$p_{\text{hour}}=24$；空间维度：$p_{\text{lat}}=180$、$p_{\text{lng}}=360$。文本 token 保留标准正弦位置编码以保持与预训练 LLM 的兼容性[^src-pipe]。
 
-3. **RoPE 应用**：物理知情位置索引的结果通过 RoPE 编码为旋转矩阵，与变频率正弦位置编码相加后融入输入嵌入[^src-pipe]。
+3. **RoPE 应用**：变频率正弦位置编码被加到输入嵌入中；物理知情索引产生的 position IDs 经 RoPE 编码，在注意力机制内表达相对位置关系[^src-pipe]。
 
 ## 性能
 
@@ -45,6 +45,9 @@ PIPE 与传统 PINN（损失约束型或架构嵌入型）不同，属于第三�
 
 - [[source-pipe]] — 论文摘要
 - [[multimodal-time-series-forecasting]] — 多模态时间序列预测
+- [[physics-informed-position-encoding]] — 物理知情位置编码技术
+- [[variant-frequency-positional-encoding]] — 变频率正弦编码
+- [[digital-typhoon-dataset]] — Digital Typhoon 台风卫星数据集
 - [[rope]] — RoPE 旋转位置编码
 - [[physics-informed-neural-network]] — PINN 方法论
 

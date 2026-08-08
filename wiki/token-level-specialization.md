@@ -7,7 +7,7 @@ tags:
   - pretraining
   - foundation-model
 created: 2026-07-20
-last_updated: 2026-07-25
+last_updated: 2026-08-08
 source_count: 2
 confidence: high
 status: active
@@ -43,7 +43,7 @@ Token 级专业化是更细粒度的替代：不预设任何分组，让模型�
 
 ## 与 Time-MoE 的对比
 
-[[time-moe|Time-MoE]] (ICLR 2025) 比 Moirai-MoE 更早将 Sparse MoE 引入时序基础模型，但采用不同的专业化范式：使用标准线性门控 + Top-K 路由 + 辅助负载均衡损失[^src-time-moe]。Time-MoE 对专家的路由是通过与输入 token 无关的线性参数 $W_i^l$ 计算的——这意味着专业化是由输入数据的统计分布隐式驱动的，而非通过显式的簇分配[^src-time-moe]。
+[[time-moe|Time-MoE]] (ICLR 2025) 比 Moirai-MoE 更早将 Sparse MoE 引入时序基础模型，但采用不同的专业化范式：使用标准线性门控 + Top-K 路由 + 辅助负载均衡损失[^src-time-moe]。Time-MoE 对专家的路由是通过线性投影 $W_i^l$ 对输入表示打分（隐式数据驱动），区别于 Moirai-MoE 的簇中心距离门控[^src-time-moe]。
 
 这种差异反映了两种专业化哲学：（1）Time-MoE 的隐式数据驱动方式——让辅助均衡 loss 在训练中自然地塑造专家分工；（2）Moirai-MoE 的显式结构驱动方式——通过预训练 dense 模型的嵌入聚类来显式引导专家分配[^src-moirai-moe]。两者都实现了 token 级的细粒度专业化，但路由机制和初始化策略不同。
 

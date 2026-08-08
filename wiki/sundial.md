@@ -9,10 +9,9 @@ tags:
   - tsinghua
   - icml-2025
 created: 2026-06-08
-created: 2026-06-08
-last_updated: 2026-07-04
+last_updated: 2026-08-08
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
@@ -63,8 +62,8 @@ Sundial 是 Fig.1 分类中的**原生连续 tokenization + 灵活无先验分�
 
 | 维度 | Sundial | Chronos | TimesFM | Moirai | Time-MoE |
 |------|---------|---------|---------|--------|----------|
-| Tokenization | 连续 Patch | 离散 Point | 连续 Patch | 连续 Patch | 离散 Point |
-| 训练目标 | TimeFlow (FM) | Cross-Entropy | MSE | Parametric | Cross-Entropy |
+| Tokenization | 连续 Patch | 离散 Point | 连续 Patch | 连续 Patch | 连续 Point |
+| 训练目标 | TimeFlow (FM) | Cross-Entropy | MSE | Parametric | Huber |
 | 概率预测 | ✓ | ✓ | ✗ | ✓ | ✗ |
 | 预训练规模 | 1032B | 94B | 100B | 231B | 300B |
 | 推理速度 | 快 (~1s on CPU) | 慢 | 快 | 快 | - |

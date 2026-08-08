@@ -6,7 +6,7 @@ tags:
   - architecture
   - scalability
 created: 2026-04-29
-last_updated: 2026-07-31
+last_updated: 2026-08-08
 source_count: 9
 references:
   - [[source-fast-long-horizon-forecasting]]
@@ -74,14 +74,14 @@ FaST 首次将 MoE 应用于大规模长视野时空图预测：
 
 ## 在时间序列基础模型中的应用
 
-[[time-moe|Time-MoE]] (ICLR 2025) 是**首个将 Sparse MoE 引入时序基础模型预训练**的框架，首次将时序模型推到 2.4B 参数规模[^src-time-moe]：
+[[time-moe|Time-MoE]] (ICLR 2025) 是首个将 Sparse MoE 引入时序基础模型预训练的框架（论文自述），首次将时序模型推到 2.4B 参数规模[^src-time-moe]：
 
 - **架构**：decoder-only Transformer，每层 FFN 替换为 MoE（N 个独立专家 + 1 个共享专家），Top-K 稀疏激活 + 辅助负载均衡损失[^src-time-moe]
 - **门控**：标准线性门控 + Softmax Top-K（与 Switch Transformer 一致），通过辅助均衡损失（fi×ri）防止路由坍塌——移除该损失导致专家坍塌为更小 FFN，性能从 0.262→0.275[^src-time-moe]
 - **Token 化**：逐点（point-wise）SwiGLU 嵌入，保留全部时序精度，区别于 patch token 化[^src-time-moe]
 - **多分辨率预测**：4 个输出头（horizon {1,8,32,64}），多任务联合优化 + 贪心调度组合实现灵活预测长度[^src-time-moe]
 - **效果**：Time-MoEultra (1.1B 激活/2.4B 总参) 零样本平均 MSE 降低 20%+ vs Moirai/TimesFM/Chronos，训练成本比等激活 Dense 模型降 78%、推理降 39%[^src-time-moe]
-- **缩放定律验证**：随模型规模和数据量增长，性能持续提升——首次在时序领域实证验证缩放定律[^src-time-moe]
+- **缩放定律验证**：随模型规模和数据量增长，性能持续提升——论文报告其实证验证了时序领域的缩放定律[^src-time-moe]
 
 [[moirai-moe|Moirai-MoE]] (ICML 2025) 随后进一步改进了门控函数设计[^src-moirai-moe]：
 

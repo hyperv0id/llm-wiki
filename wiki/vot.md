@@ -9,7 +9,7 @@ tags:
   - event-driven
   - iclr-2026
 created: 2026-05-03
-last_updated: 2026-07-28
+last_updated: 2026-08-08
 source_count: 4
 confidence: high
 status: active
@@ -17,7 +17,7 @@ status: active
 
 # VoT (Value of Text)
 
-**VoT** (Value of Text) is a multimodal time series forecasting model proposed by Wang et al. from East China Normal University, accepted at ICLR 2026[^src-event-driven-ts-forecasting]. It is the first method to jointly leverage LLMs for both feature extraction and reasoning while supporting both exogenous and endogenous text types for comprehensive multimodal forecasting.
+**VoT** (Value of Text) is a multimodal time series forecasting model proposed by Wang et al. from East China Normal University, accepted at ICLR 2026[^src-event-driven-ts-forecasting]. Among the 13 methods compared in the paper's Table 1, it is the only one to jointly leverage LLMs for both feature extraction and reasoning while supporting both exogenous and endogenous text types for comprehensive multimodal forecasting.
 
 ## Core Problem
 
@@ -64,7 +64,7 @@ VoT achieves state-of-the-art results on 10 real-world multimodal datasets (doma
 | GPT4TS | Forecasting | Feature extraction | Endogenous only | LLM as time series encoder |
 | [[time-vlm|Time-VLM]] | Forecasting | Frozen VLM encoders | Endogenous (self-generated image+stats text) | RAL retrieval memory + VAL/TAL + gated fusion |
 
-VoT is unique in using LLMs for **reasoning** (not just feature extraction) and supporting **both** exogenous and endogenous text simultaneously[^src-event-driven-ts-forecasting]. In contrast, [[tats|TaTS]] achieves multimodal integration through a simpler plug-and-play approach — treating text as auxiliary variables without LLM reasoning or architecture modification[^src-language-in-the-flow-of-time].
+Among the compared methods in the paper's Table 1, VoT is unique in using LLMs for **reasoning** (not just feature extraction) and supporting **both** exogenous and endogenous text simultaneously[^src-event-driven-ts-forecasting]. In contrast, [[tats|TaTS]] achieves multimodal integration through a simpler plug-and-play approach — treating text as auxiliary variables without LLM reasoning or architecture modification[^src-language-in-the-flow-of-time].
 
 [[constrained-text-fusion|CFA]] 在 Time-MMD 上系统显示 **naive 表示级 add/concat 常伤预测**，主张低秩等 **constrained fusion**；VoT 则用 **推理 + 多级对齐 + 频域预测融合** 挖文本价值——同属外生文本路线，但对「如何融合」的答案不同（受控残差 vs 事件推理与 AFF）[^src-constrained-text-fusion]。
 
@@ -76,6 +76,8 @@ VoT is unique in using LLMs for **reasoning** (not just feature extraction) and 
 - [[multi-level-alignment]] — multi-level alignment concept
 - [[endogenous-text-alignment]] — ETA technique
 - [[adaptive-frequency-fusion]] — AFF technique
+- [[timi]] — TiMi, Non-Fusion Guidance paradigm comparison (ICML 2026)
+- [[tess]] — TESS, discrete semantic bottleneck variant
 - [[multimodal-time-series-forecasting]] — task concept
 - [[time-mmd]] · [[source-time-mmd]] — multi-domain text–numeric benchmark
 - [[mindts]] — related multimodal TS model (same lab: ECNU)

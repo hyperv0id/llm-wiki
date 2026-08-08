@@ -9,7 +9,7 @@ tags:
   - reinforcement-learning
   - benchmark
 created: 2026-06-04
-last_updated: 2026-06-09
+last_updated: 2026-08-08
 source_count: 2
 confidence: high
 status: active
@@ -96,7 +96,7 @@ All three stages are essential; removing S-GRPO costs ~3.9% on etiological reaso
 | [[time-llm|Time-LLM]] | ✗ | ✗ | Forecasting only | Prompt reprogramming |
 | ChatTS | ✗ | ✓ basic QA | Univariate TS QA | SFT |
 | Time-R1 | ✗ | ✓ multi-step | Multivariate TS reasoning | SFT+RL |
-| [[vot|VoT]] | ✗ | ✓ LLM reasoning | Event-driven forecasting | SFT+alignment |
+| [[vot|VoT]] | ✗ | ✓ LLM reasoning | Event-driven forecasting | Multi-stage alignment training (LLM frozen) |
 | Time-MQA | ✗ | ✓ QA | TS question answering | SFT |
 
 STReasoner is unique in combining **explicit spatial graph reasoning**, **multi-step CoT**, and **spatial-aware RL**[^src-streasoner].

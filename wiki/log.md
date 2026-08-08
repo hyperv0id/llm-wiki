@@ -3251,3 +3251,35 @@ PDF: `raw/Wen 等 - 2026 - MIDAS Mutual Information Disentanglement With Uncerta
 
 创建的页面：[[source-midas]], [[midas]], [[mutual-information-disentanglement]]
 更新的页面：[[mutual-information]], [[multimodal-semantic-understanding]], [[index]]
+
+## [2026-08-08] lint-fix | OmniField | AGETNS 审查修复
+修复严重 0 项、警告 4 项：补 [[omnifield]] 反向链接、ICMR 对比表补 [^src-omnifield] 引用、MCT 相关区补 [[fleximodal-fusion]] 反向链接、修正局限中「线性增长」措辞（PDF 原文仅说随 token 与潜容量增长）。
+更新的页面：[[source-omnifield]], [[iterative-cross-modal-refinement]], [[multimodal-crosstalk]]
+
+## [2026-08-08] lint-fix | ERDM | AGETNS 审查修复
+修复严重 2 项、警告 3 项：更正 ERDM vs DYffusion 的 CRPS 归属（3× 为重训练 DYffusion 相对原论文的改进）、EDM source_count 3→2、index 的 Navier-Stokes/ERA5 SOTA 口径、GenCast 对比补论文口径（附录 D.4 六项差异）、diffusionblocks 时效刷新。
+更新的页面：[[dyffusion]], [[edm]], [[erdm]], [[diffusionblocks]], [[index]]
+
+## [2026-08-08] lint-fix | PIPE | AGETNS 审查修复
+修复严重 5 项、警告 8 项：RoPE 机制改论文口径（变频率编码加入输入嵌入、物理索引 position IDs 经 RoPE 编码相对位置）、补 3 个缺失互链、几何级数表格改 $p \to p \cdot 10000/2$、消融归因更正（变频率 7.6% 1.639→1.515、物理索引 6% 1.617→1.515）、五页时效刷新；警告：source-pipe confidence high→medium、删「首次提出」「训练成本极低」无据表述、lightweight 挂论文口径、PINN 页补写推论标注 wiki 分析、digital-typhoon [21] 改 [^src-pipe]、d_model=128 标注为 Figure 4 示例。
+更新的页面：[[pipe]], [[source-pipe]], [[physics-informed-position-encoding]], [[variant-frequency-positional-encoding]], [[digital-typhoon-dataset]], [[multimodal-time-series-forecasting]], [[physics-informed-neural-network]]
+
+## [2026-08-08] lint-fix | OmniCast | AGETNS 审查修复
+修复严重 2 项、警告 11 项：S2S/中期结果按指标归因（ECMWF-ENS 并列/超越边界、Stormer 短中期更优、ClimaX 可比）、删除 PDF 无据的多模态局限改为论文自述 VAE 重建质量权衡、补「论文报告」SOTA 归因与 ClimaX/Stormer/GenCast/NeuralGCM/Fuxi-S2S 引用、MAGE 改 MAGVIT、对比表补引用并标注课程无来源行、CirT 描述去除 ClimaX 逐 lead time 微调特性、mae 补反向链接。
+更新的页面：[[omnicast]], [[source-omnicast]], [[masked-generative-modeling]], [[subseasonal-to-seasonal-forecasting]], [[latent-diffusion-models]], [[mae]]
+
+## [2026-08-08] lint-fix | Time-MoE | AGETNS 审查修复
+修复严重 5 项、警告 9 项：专家数 16→8（PDF Table 2 为 N=8+1 共享；log.md:261 曾误验证 16 专家，予以更正）、source-time-moe 删除 PDF 无据的两条局限、LOTSA 归属与规模更正（Moirai 数据集 27B/231B、Chronos 语料 84B）、Time-300B 删去幻造 3~10 倍、各页「首个」论断补论文自述归因、缩放定律与 Monash 对比口径修正、Time-MoE 门控描述按 Eq 8 更正、sundial 对比表 Time-MoE 行改连续 Point/Huber（Sundial Table 6 归类为 Continuous）、sundial/source-moirai-moe frontmatter 合规化、补建 [[time-300b]] ↔ [[timebench]] 交叉链接。
+更新的页面：[[time-moe]], [[source-time-moe]], [[time-300b]], [[mixture-of-experts]], [[moirai-moe]], [[token-level-specialization]], [[sundial]], [[source-moirai-moe]], [[timebench]], [[index]]
+
+## [2026-08-08] lint-fix | VoT | AGETNS 审查修复
+修复严重 2 项、警告 11 项：AFF 频域方向按 PDF 修正（低频 0–10% 事件驱动分支更强、高频 70–100% 数值分支更强）、局限第 3 条改按论文附录 B.3 口径（仅无有效文本极端情形显著下降）、vot/event-driven-reasoning/streasoner 的 first/unique/SFT 表述改归因或修正口径、vot 补 [[timi]]/[[tess]] 互链、multi-level-alignment 补 [[chronological-textual-resonance]]、三页时效刷新、dual-stream 张冠李戴修正；index 与 landscape 断链改纯文本——git 历史确认 commit f876596（2026-07-17）系有意删除该页（产物已移出 wiki 至 /run/media/jcheng/WD-Data/yjs/INSIS/多模态外生信息引导的长期时空预测/0717/），故不恢复页面仅移除 wikilink。
+更新的页面：[[vot]], [[source-event-driven-ts-forecasting]], [[adaptive-frequency-fusion]], [[event-driven-reasoning]], [[historical-in-context-learning]], [[multi-level-alignment]], [[endogenous-text-alignment]], [[dual-stream-temporal-frequency-processing]], [[streasoner]], [[index]], [[spatio-temporal-foundation-model-landscape]]
+
+## [2026-08-08] lint-fix | TCP-Diffusion | AGETNS 审查修复
+修复严重 4 项、警告 8 项：性能节 5 条量化论断逐句补 [^src-tcp]；「首个」表述统一为论文自称（To our knowledge）口径（含 index）；删除论文未声称的 NWP 集成「首次」；GenCast/GraphCast 残差预测推断改为论文引用文献（Price et al. 2025 等）；TIGGE 对比补数字（ETS-6 0.412 vs 0.302、TPM AE 0.474 vs 0.507）；NWP 数据描述更正为 ERA5-IFS 输入 / ECMWF-IFS 仅对比；「依赖 ERA5-IFS 外生输入」改为条件输入口径（消融支持）；ARP「独特之处」改中性表述；补 tcp-diffusion 反向链接小节。
+更新的页面：[[tcp-diffusion]], [[source-tcp]], [[adjacent-residual-prediction]], [[tropical-cyclone-precipitation-forecasting]], [[precipitation-nowcasting]], [[diffusion-models]], [[index]]
+
+## [2026-08-08] lint-fix | WeatherPEFT | AGETNS 审查修复
+修复严重 2 项、警告 7 项：删除两处补写/幻觉局限（Top-k 自适应选择、概率预报口径——ENS-10 实为输出均值+标准差并用 CRPS 评估的概率任务），改为论文自述局限；「首个」表述统一归因论文（含 index）；降尺度结果按参数档位区分口径（默认 3.48M 优于全部 PEFT 基线，~4% 预算 52.47M 下逼近 Full-Tuning）；机构列表补深圳国家超算中心；WeatherGFM/VPT 对比标注本课程对比并修正引用错配，删 AdaptFormer/SSF 无据引申；weather-foundation-model 的 ~0.3% 预算表述改为「大幅缩小差距」+「~3-4% 预算持平或更优」；跨领域借鉴论断改本课程认为并移除引用。
+更新的页面：[[weatherpeft]], [[source-weatherpeft]], [[task-adaptive-dynamic-prompting]], [[weather-foundation-model]], [[index]]

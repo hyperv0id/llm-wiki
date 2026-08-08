@@ -9,7 +9,7 @@ tags:
   - neurips-2025
   - vae
 created: 2026-07-21
-last_updated: 2026-07-21
+last_updated: 2026-08-08
 source_count: 1
 confidence: medium
 status: active
@@ -17,7 +17,7 @@ status: active
 
 # OmniCast
 
-**OmniCast** 是 Nguyen 等人（UCLA, UCI, Argonne National Laboratory, AI2）在 NeurIPS 2025 提出的掩码潜扩散模型，用于跨时间尺度的概率性天气预测[^src-omnicast]。它统一了中期预报（≤15 天）和次季节到季节（S2S，2–6 周）预测，在 S2S 尺度达到 SOTA，且比同类概率方法快 10–20 倍[^src-omnicast]。
+**OmniCast** 是 Nguyen 等人（UCLA, UCI, Argonne National Laboratory, AI2）在 NeurIPS 2025 提出的掩码潜扩散模型，用于跨时间尺度的概率性天气预测[^src-omnicast]。它统一了中期预报（≤15 天）和次季节到季节（S2S，2–6 周）预测，论文报告其在 S2S 尺度达到 SOTA，且比同类概率方法快 10–20 倍[^src-omnicast]。
 
 ## 核心架构
 
@@ -40,17 +40,17 @@ OmniCast 由两个组件构成：
 
 ## 实验结果
 
-- **S2S 预测（ChaosBench）**：在 T850、Z500、Q700 上超越所有深度学习基线（PanguWeather、GraphCast、ClimaX、Stormer）和多数数值系统，10–15 天后匹配/超越 ECMWF-ENS。物理一致性指标（SDIV、SRES）显著优于其他 DL 方法[^src-omnicast]。
-- **中期预报（WeatherBench2）**：与 GenCast 和 IFS-ENS 性能可比，但推理速度快 10–20×（A100 上 29s vs GenCast TPUv5 480s）[^src-omnicast]。
+- **S2S 预测（ChaosBench）**：day 10 后确定性指标与 ECMWF-ENS 并列前二，day 15 后概率指标（CRPS/SSR）超越 ECMWF-ENS；SDIV/SRES 物理一致性优于所有 DL 方法；短中期逊于 Stormer，S2S 尺度与 ClimaX 可比[^src-omnicast]。
+- **中期预报（WeatherBench2）**：与 IFS-ENS 可比、略逊于 GenCast，推理快 10–20×（A100 上 29s vs GenCast TPUv5 480s）[^src-omnicast]。
 - **稳定性**：可生成 100 年稳定 rollout 而无物理崩溃[^src-omnicast]。
 - **效率来源**：① 45 × 90 潜网格 vs 721 × 1440 原始网格（256× 减少）；② 仅一次 Transformer 前向传播 + 轻量 MLP 扩散头（而非每扩散步都走完整网络）[^src-omnicast]。
 
 ## 与相关工作的关系
 
-- 同一 UCLA 组的前序工作：[[source-climax|ClimaX]]（ICML 2023，首个天气基础模型）、Stormer（缩放 Transformer 中期预报）
+- 同一 UCLA 组的前序工作：[[source-climax|ClimaX]]（ICML 2023，首个天气基础模型）、Stormer（缩放 Transformer 中期预报）[^src-omnicast]
 - 掩码生成框架来自 CV 领域的 [[mae|MAE]]（He et al., 2022）、MaskGIT（Chang et al., 2022）、MAR（Li et al., 2024）
-- 概率天气预测对比：GenCast（扩散模型，更慢）、NeuralGCM（混合物理-ML，更贵）
-- S2S 其他方案：[[cirt|CirT]]（直接预测平均值，需每 lead time 单独微调）、Fuxi-S2S（预测日平均值，不可比）
+- 概率天气预测对比：GenCast（扩散模型，更慢）、NeuralGCM（论文报告训练成本 10 天/128 TPUv5e）[^src-omnicast]
+- S2S 其他方案：[[cirt|CirT]]（直接预测平均值）、Fuxi-S2S（预测日平均值，不可比）[^src-omnicast]
 
 ## 相关页面
 

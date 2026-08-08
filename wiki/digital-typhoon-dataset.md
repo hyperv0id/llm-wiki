@@ -9,7 +9,7 @@ tags:
   - time-series
   - climate
 created: 2025-07-14
-last_updated: 2025-07-14
+last_updated: 2026-08-08
 source_count: 1
 confidence: medium
 status: active
@@ -42,7 +42,7 @@ PIPE 将该数据集的卫星图像与最佳路径时间序列（经纬度、中
 
 ## 相关数据集
 
-- 澳大利亚区域扩展版本 [21]：PIPE 用于跨区域泛化实验（零样本迁移）
+- 澳大利亚区域扩展版本 [^src-pipe]：PIPE 用于跨区域泛化实验（零样本迁移）
 
 ## 相关页面
 

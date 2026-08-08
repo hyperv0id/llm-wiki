@@ -8,7 +8,7 @@ tags:
   - representation-learning
   - pretraining
 created: 2026-05-31
-last_updated: 2026-05-31
+last_updated: 2026-08-08
 source_count: 1
 confidence: medium
 status: active
@@ -103,6 +103,7 @@ MAE 的特征在非线性变换下更强大——这暗示人类视觉更接近 
 ## 相关页面
 
 - [[source-mae]] — MAE 论文摘要
+- [[masked-generative-modeling]] — 掩码生成建模，MAE 掩码思想向生成任务的延伸（OmniCast 天气预测应用）
 - [[std-mae]] — STD-MAE，时空解耦掩码自编码器（时空预测应用）
 - [[videomae]] — VideoMAE，视频掩码自编码器（MAE 的视频扩展）
 - [[dit]] — DiT，继承 ViT/MAE patchify + Transformer 设计的扩散模型架构

@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-08-06
+last_updated: 2026-08-08
 tags:
   - meta
 ---
@@ -139,7 +139,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-ncsn]] — NCSN: Generative Modeling by Estimating Gradients of the Data Distribution (Song & Ermon, 2020)
 - [[source-understanding-diffusion-models]] — Understanding Diffusion Models: A Unified Perspective (Luo, 2022)
 - [[source-edm]] — EDM: Elucidating the Design Space of Diffusion-Based Generative Models (Karras et al., NeurIPS 2022)
-- [[source-erdm]] — ERDM: Elucidated Rolling Diffusion Models, EDM + 滚动扩散统一框架，渐进噪声 + 混合 3D 架构，Navier-Stokes/ERA5 SOTA (Cachay et al., NeurIPS 2025)
+- [[source-erdm]] — ERDM: Elucidated Rolling Diffusion Models, EDM + 滚动扩散统一框架，渐进噪声 + 混合 3D 架构，Navier-Stokes 超越 DYffusion/PDE-Refiner；ERA5 中长程与 IFS ENS/NeuralGCM ENS 竞争 (Cachay et al., NeurIPS 2025)
 - [[source-rombach-ldm-2022]] — LDM: High-Resolution Image Synthesis with Latent Diffusion Models (Rombach et al., CVPR 2022)
 - [[source-neural-ode]] — Neural ODE: Neural Ordinary Differential Equations (Chen et al., NeurIPS 2018)
 - [[source-nsdiff]] — NsDiff: Non-stationary Diffusion for Probabilistic Time Series Forecasting (ICML 2025 Spotlight)
@@ -181,7 +181,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-aurora]] — Aurora: universal generative multimodal time series forecasting (ICLR 2026)
 - [[source-bigcity]] — BIGCity: first MTMD spatio-temporal model unifying trajectory + traffic state (arXiv 2024)
 - [[source-time-llm]] — Time-LLM: Time Series Forecasting by Reprogramming Large Language Models (ICLR 2024)
-- [[source-time-moe]] — Time-MoE: 首个稀疏 MoE 时序基础模型，decoder-only + 逐点 token 化 + 多分辨率预测头，2.4B 参数，Time-300B (309B pts)，ICLR 2025
+- [[source-time-moe]] — Time-MoE: 论文称首个稀疏 MoE 时序基础模型，decoder-only + 逐点 token 化 + 多分辨率预测头，2.4B 参数，Time-300B (309B pts)，ICLR 2025
 - [[source-timecap]] — TimeCAP: contextualize, augment, and predict time series events with LLM agents (AAAI 2025 Oral)
 - [[source-bluuuuue-scaling-factor-intuition]] — 数学直觉系列（一）：缩放因子1/√dₖ——注意力机制的数值稳定性条件 (bluuuuue, 小红书)
 - [[source-bluuuuue-reparameterization-trick]] — 数学直觉系列（二）：VAE与重参数化——将不可逆的随机采样重构为可微的确定性变换 (bluuuuue, 小红书)
@@ -298,9 +298,9 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[stpde]] — STPDE, PDE-driven ST forecasting decoupling invariant diffusion operator + environment basis manifold (ICML 2026)
 - [[stormbench]] — StormBench, 多源观测+ERA5 再分析对流临近预报基准，美法双区域 (ICML 2026)
 - [[storminsight]] — StormInsight, 环境条件化对流临近预报框架，三分量编码 + CFM 分层调制 (ICML 2026)
-- [[tcp-diffusion]] — TCP-Diffusion, 首个 DL 全球 TC 降水预测模型，ARP + 多模态编码器 + NWP 集成 (ICML 2025)
+- [[tcp-diffusion]] — TCP-Diffusion, 论文自称首个 DL 全球 TC 降水预测模型，ARP + 多模态编码器 + NWP 集成 (ICML 2025)
 - [[time-300b]] — Time-300B, Time-MoE 的 309B 时间点预训练数据集，9+ 领域，当时最大开放访问时序数据集合
-- [[time-moe]] — Time-MoE, 首个稀疏 MoE 时序基础模型系列，decoder-only + 逐点 token 化 + 多分辨率预测，最高 2.4B 参数，ICLR 2025
+- [[time-moe]] — Time-MoE, 论文称首个稀疏 MoE 时序基础模型系列，decoder-only + 逐点 token 化 + 多分辨率预测，最高 2.4B 参数，ICLR 2025
 - [[trafficstream]] — TrafficStream, first CSTF framework with historical data replay + parameter smoothing (IJCAI 2021)
 - [[pecpm]] — PECPM, pattern-matching-based CSTF with expandable pattern bank without historical data replay (KDD 2023)
 - [[craft]] — CRAFT, cross-city retrieval-augmented diffusion model for zero-shot traffic flow generation (NeurIPS 2025)
@@ -920,7 +920,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[zero-initialized-adaptation]] — 零初始化适配，LoRA/DiT/CoRA 跨领域的设计原则，确保适配起点与预训练模型等价
 
 ## Analyses
-- [[multimodal-exogenous-guided-long-term-st-forecasting]] — 多模态外生信息引导长期时空预测的研究路线：中心缺口（四拼图无人拼合）、消歧重构、统一架构论点、分层研究方向与优先级议程
+- multimodal-exogenous-guided-long-term-st-forecasting — 多模态外生信息引导长期时空预测的研究路线：中心缺口（四拼图无人拼合）、消歧重构、统一架构论点、分层研究方向与优先级议程
 - [[multimodal-semantic-understanding]] — 多模态数据语义理解的对齐范式、融合策略与冗余过滤综合分析
 - [[spatio-temporal-foundation-model-landscape]] — 时空基础模型全景：设计哲学三重分裂、架构范式六条路线、预训练策略四象限、泛化机制深度比较
 - [[diffusion-frequency-domain-theory]] — 扩散模型为什么先学低频——频域理论的统一视角：谱偏置→频率层级→频域噪声控制→EqualSNR→SNR-t Bias→范式转移
@@ -972,7 +972,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[koopman-linearization-for-forecasting]] — Koopman 线性化预测范式，把非线性 TS 提升到测量空间用线性算子 (DMD/eDMD/神经网络) 建模 (K²VAE/MMCKM)
 - [[kalman-filter]] — Kalman 滤波，线性动力系统状态估计的递归 Predict/Update 算法 + 不确定性建模
 - [[weather-foundation-model]] — 天气基础模型，在大规模气象数据上预训练、服务多种天气/气候任务的通用模型范式 (ICLR 2025)
-- [[weatherpeft]] — WeatherPEFT，首个 WFM 参数高效微调框架，TADP + SFAS 双阶段任务自适应（ICLR 2026）
+- [[weatherpeft]] — WeatherPEFT，论文自称首个 WFM 参数高效微调框架，TADP + SFAS 双阶段任务自适应（ICLR 2026）
 - [[mask-aware-imputation-no-prefilling]] — 无预填充的掩码感知填补，用可学习缺失嵌入直接表征缺失值而非零初始化 (MagiNet, arXiv 2024)
 - [[vision-language-traffic-forecasting]] — reframing 2D grid traffic forecasting as a vision-language fusion problem via traffic-matrix-as-image (arXiv 2025)
 - [[in-context-learning]] — ICL，冻结基础模型仅凭上下文演示适配新任务的范式；WeatherGFM 视觉 ICL 的基础 (2026)

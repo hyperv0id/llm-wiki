@@ -6,7 +6,7 @@ tags:
   - dataset
   - pretraining
 created: 2026-07-25
-last_updated: 2026-07-25
+last_updated: 2026-08-08
 source_count: 1
 confidence: medium
 status: active
@@ -43,10 +43,14 @@ Time-MoE 设计了专用的时间序列数据清洗流程[^src-time-moe]：
 | 数据集 | 时间点 | 发布方 |
 |--------|--------|--------|
 | **Time-300B** | **309B** | Time-MoE (ICLR 2025) |
-| Moirai 数据集 | 27B/231B | Salesforce |
-| LOTSA (Chronos) | 84B | Amazon |
+| Moirai 数据集（LOTSA） | 27B/231B | Salesforce |
+| Chronos 语料 | 84B | Amazon |
 | TimesFM | 100B | Google |
 
-Time-300B 比同时期最大的时序预训练数据集大 3~10 倍，且开源了完整的数据处理管线代码[^src-time-moe]。
+Time-300B 大于同期各主要公开时序数据集（见上表），且开源了完整的数据处理管线代码[^src-time-moe]。
+
+## 相关页面
+
+- [[timebench]] — 后续更大规模的时序预训练数据集（1.032T 时间点）
 
 [^src-time-moe]: [[source-time-moe]]

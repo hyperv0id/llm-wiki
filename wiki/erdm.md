@@ -10,7 +10,7 @@ tags:
   - neurips-2025
   - edm
 created: 2026-07-16
-last_updated: 2026-07-16
+last_updated: 2026-08-08
 source_count: 1
 confidence: medium
 status: active
@@ -66,7 +66,7 @@ Navier-Stokes 上 ERDM 显著超越 DYffusion 和 PDE-Refiner。ERA5 上中长�
 - **vs [[edm|EDM]]**：ERDM 是 EDM 在序列滚动预测场景的扩展，保留 EDM 预处理/采样/损失框架并适配渐进噪声[^src-erdm]
 - **vs [[dyffusion|DYffusion]]**：DYffusion 用插值替代高斯噪声，ERDM 保留高斯噪声框架但引入 snapshot-dependent 渐进噪声和 EDM design[^src-erdm]
 - **vs [[tedm|TEDM]]**：两者都基于 EDM 框架，TEDM 将扩散时间轴 = 物理时间轴（O(H) 采样），ERDM 用滚动窗口 + 渐进噪声显式建模不确定性传播[^src-erdm]
-- **vs GenCast**：ERDM 的 EDM baseline 可视为 GenCast 复现；ERDM 在此基础上引入滚动扩散机制[^src-erdm]
+- **vs GenCast**：按论文主文表述，EDM baseline 可视为 GenCast 复现；论文附录 D.4 列有 6 项实质差异[^src-erdm]
 
 ## 局限
 

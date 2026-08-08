@@ -7,7 +7,7 @@ tags:
   - pde
   - deep-learning
 created: 2026-07-14
-last_updated: 2026-07-14
+last_updated: 2026-08-08
 source_count: 4
 confidence: high
 status: active
@@ -40,7 +40,7 @@ Physics-Informed Neural Network（PINN）是将物理定律（通常以 PDE 形�
 
 将物理元数据（时间戳、地理坐标等）注入模型的位置编码中，无需修改损失函数或架构[^src-pipe]。[[pipe|PIPE]] 是这一范式的代表：将图像 token 的 RoPE 位置 ID 替换为物理量（年日、小时、纬度、经度），配合[[variant-frequency-positional-encoding|变频率正弦编码]]实现物理知识注入[^src-pipe]。
 
-优势是极轻量（仅改动位置编码层），训练开销几乎不变；劣势是表达能力受限于位置编码的容量，无法编码复杂的 PDE 约束[^src-pipe]。
+优势是极轻量（仅改动位置编码层）[^src-pipe]；论文提出未来工作将融入物理定律或约束（如 PDE 约束）以提升可解释性与鲁棒性[^src-pipe]。（「训练开销几乎不变」「表达能力受限于位置编码容量」为 wiki 分析，论文未作断言。）
 
 
 ## 三种范式对比

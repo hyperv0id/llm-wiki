@@ -9,7 +9,7 @@ tags:
   - satellite-imagery
 created: 2026-04-29
 source_count: 18
-last_updated: 2026-08-01
+last_updated: 2026-08-08
 confidence: high
 status: active
 ---
@@ -198,7 +198,7 @@ UniCA 在多模态场景下的表现：
 
 ## PIPE：物理知情位置编码的台风预测
 
-**[[pipe|PIPE]]** (Li et al., HKUST, NeurIPS 2025) 首次提出将物理元数据（时间戳、经纬度）嵌入 VLM 位置编码的多模态台风预测方法[^src-pipe]。基于 Qwen-2.5-VL，PIPE 通过两个核心机制在位置编码层注入物理知识：（1）[[physics-informed-position-encoding#1. 物理知情位置索引|物理知情位置索引]]——将图像 token 的位置 ID 替换为物理量（年日、小时、纬度、经度），并映射到负值以避免与文本 token 冲突；（2）[[variant-frequency-positional-encoding|变频率位置编码]]——为不同物理变量分配不同波长的正弦函数[^src-pipe]。在 [[digital-typhoon-dataset|Digital Typhoon]] 数据集上达到 SOTA，台风强度预测 MAE 比此前最优的无视觉方法（TiDE）提升 12%[^src-pipe]。消融实验显示：视觉数据贡献约 8% 改善，物理知情编码额外贡献约 6%[^src-pipe]。PIPE 代表了多模态融合的一条独特路线：不通过额外的融合模块或适配器，仅通过**位置编码层的物理知识注入**实现跨模态对齐，训练成本极低（PIPE-3B 仅需 2.1 小时 4×H800）[^src-pipe]。
+**[[pipe|PIPE]]** (Li et al., HKUST, NeurIPS 2025) 提出将物理元数据（时间戳、经纬度）嵌入 VLM 位置编码的多模态台风预测方法[^src-pipe]。基于 Qwen-2.5-VL，PIPE 通过两个核心机制在位置编码层注入物理知识：（1）[[physics-informed-position-encoding#1. 物理知情位置索引|物理知情位置索引]]——将图像 token 的位置 ID 替换为物理量（年日、小时、纬度、经度），并映射到负值以避免与文本 token 冲突；（2）[[variant-frequency-positional-encoding|变频率位置编码]]——为不同物理变量分配不同波长的正弦函数[^src-pipe]。在 [[digital-typhoon-dataset|Digital Typhoon]] 数据集上达到 SOTA，台风强度预测 MAE 比此前最优的无视觉方法（TiDE）提升 12%[^src-pipe]。消融实验显示：视觉数据贡献约 8% 改善，物理知情编码额外贡献约 6%[^src-pipe]。PIPE 代表了多模态融合的一条独特路线：不通过额外的融合模块或适配器，仅通过**位置编码层的物理知识注入**实现跨模态对齐，PIPE-3B 在 4×H800 上训练 2.1 小时（附录 C）[^src-pipe]。
 
 ## 相关概念
 

@@ -6,7 +6,7 @@ tags:
   - neural-field
   - iterative-refinement
 created: 2026-07-21
-last_updated: 2026-07-21
+last_updated: 2026-08-08
 source_count: 1
 confidence: medium
 status: active
@@ -35,6 +35,8 @@ $z$ 在此充当**通信桥梁**：每轮 MCT 融合后，通过平均池化将�
 ICMR 的关键价值体现在**噪声鲁棒性**：在 ClimSim-THW 实验中，当 1–2 个模态被注入不同程度的高斯噪声时，ICMR 保持接近干净输入的性能，而 Mid-Fusion 随噪声增加持续衰减[^src-omnifield]。原因是 ICMR 的迭代交换机制能将信息路由到更干净的通道并抑制受污染通道，而 Mid-Fusion 缺乏预条件交换，会将单模态噪声放大传播到共享表示中[^src-omnifield]。
 
 ## 对比
+
+四种融合策略的特点对比[^src-omnifield]：
 
 | 策略 | 特点 |
 |------|------|

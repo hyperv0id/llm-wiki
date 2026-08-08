@@ -8,7 +8,7 @@ tags:
   - adapter
   - iclr-2026
 created: 2026-07-25
-last_updated: 2026-07-25
+last_updated: 2026-08-08
 source_count: 1
 confidence: medium
 status: active
@@ -20,7 +20,7 @@ status: active
 
 ## 设计动机
 
-天气下游任务的编码器嵌入层隐式编码了任务的独特特征——输入变量、分辨率和天气现象信息[^src-weatherpeft]。TADP 的设计目标是显式提取并利用这些信息，而非像通用 PEFT 方法那样对所有输入统一处理。不同于 WeatherGFM 的 [[weather-prompt|in-context weather prompt]]（通过示例对指定任务），TADP 从模型自身的嵌入权重中动态生成提示[^src-weatherpeft]。
+天气下游任务的编码器嵌入层隐式编码了任务的独特特征——输入变量、分辨率和天气现象信息[^src-weatherpeft]。TADP 的设计目标是显式提取并利用这些信息，而非像通用 PEFT 方法那样对所有输入统一处理[^src-weatherpeft]。不同于 WeatherGFM 的 [[weather-prompt|in-context weather prompt]]（通过示例对指定任务；本课程对比），TADP 从模型自身的嵌入权重中动态生成提示[^src-weatherpeft]。
 
 ## 两步流程
 
@@ -46,9 +46,9 @@ status: active
 
 ## 与相关技术的关系
 
-- **[[weather-prompt|WeatherGFM 的 weather prompt]]**：两者机制不同——TADP 从嵌入权重内生生成提示，WeatherGFM 的 prompt 是外部示例对指定任务
-- **VPT（Visual Prompt Tuning）**：VPT 学习与任务无关的固定提示向量，TADP 则为每个输入动态生成任务自适应提示
-- **通用适配器方法（AdaptFormer, SSF）**：使用固定结构的适配模块，缺乏对气象变量/分辨率异质性的显式建模
+- **[[weather-prompt|WeatherGFM 的 weather prompt]]**（本课程对比）：两者机制不同——TADP 从嵌入权重内生生成提示，WeatherGFM 的 prompt 是外部示例对指定任务
+- **VPT（Visual Prompt Tuning）**（本课程对比）：VPT 使用按任务学习的提示向量，TADP 提示则源自嵌入权重 E，非逐输入生成
+- **通用适配器方法（AdaptFormer, SSF）**：使用固定结构的适配模块
 
 ## 相关页面
 

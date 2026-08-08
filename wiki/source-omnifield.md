@@ -7,7 +7,7 @@ tags:
   - cross-modal-fusion
   - scientific-ml
 created: 2026-07-21
-last_updated: 2026-07-21
+last_updated: 2026-08-08
 source_count: 1
 confidence: medium
 status: active
@@ -16,6 +16,8 @@ status: active
 # OmniField: Conditioned Neural Fields for Robust Multimodal Spatiotemporal Learning
 
 **Venue**: ICLR 2026 | **arXiv**: 2511.02205 | **Authors**: Kevin Valencia (UCLA), Thilina Balasooriya (Columbia), Xihaier Luo, Shinjae Yoo & David Keetae Park (BNL)
+
+- 模型页：[[omnifield|OmniField]] — 框架总览、核心能力与关键结果
 
 ## 核心论点
 
@@ -44,6 +46,6 @@ OmniField 提出了一种**连续性感知（continuity-aware）框架**，基�
 
 ## 局限性
 
-计算和内存随 token 数量线性增长；解码器仅提供点估计缺乏校准不确定性；跨域泛化（季节变化、传感器重定位）未充分量化；更长预测视界需额外时序结构[^src-omnifield]。
+计算和内存随 token 数量（及潜容量）增长；解码器仅提供点估计缺乏校准不确定性；跨域泛化（季节变化、传感器重定位）未充分量化；更长预测视界需额外时序结构[^src-omnifield]。
 
 [^src-omnifield]: [[source-omnifield]]
