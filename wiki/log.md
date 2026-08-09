@@ -3283,3 +3283,9 @@ PDF: `raw/Wen 等 - 2026 - MIDAS Mutual Information Disentanglement With Uncerta
 ## [2026-08-08] lint-fix | WeatherPEFT | AGETNS 审查修复
 修复严重 2 项、警告 7 项：删除两处补写/幻觉局限（Top-k 自适应选择、概率预报口径——ENS-10 实为输出均值+标准差并用 CRPS 评估的概率任务），改为论文自述局限；「首个」表述统一归因论文（含 index）；降尺度结果按参数档位区分口径（默认 3.48M 优于全部 PEFT 基线，~4% 预算 52.47M 下逼近 Full-Tuning）；机构列表补深圳国家超算中心；WeatherGFM/VPT 对比标注本课程对比并修正引用错配，删 AdaptFormer/SSF 无据引申；weather-foundation-model 的 ~0.3% 预算表述改为「大幅缩小差距」+「~3-4% 预算持平或更优」；跨领域借鉴论断改本课程认为并移除引用。
 更新的页面：[[weatherpeft]], [[source-weatherpeft]], [[task-adaptive-dynamic-prompting]], [[weather-foundation-model]], [[index]]
+
+## [2026-08-09] ingest | Rotary Position Encodings for Graphs (WIRE)
+创建 WIRE 技术页面（wiki/wire.md）：图 Laplacian 谱坐标驱动的旋转位置编码，覆盖算法、理论性质（RoPE 特例、有效电阻依赖、线性注意力兼容）、实验证据与局限性；更新 index 增加 [[wire]] 与 [[source-2509-22259]] 条目，rope.md 补 WIRE 反向链接。
+创建的页面：[[source-2509-22259]], [[wire]]
+
+更新的页面：[[index]], [[rope]]

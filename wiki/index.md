@@ -125,6 +125,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-instaflow]] — InstaFlow: One Step is Enough, reflow+distill SD to one-step generation (ICLR 2024)
 - [[source-alibi]] — ALiBi: attention with linear biases enables input length extrapolation (ICLR 2022)
 - [[source-roformer]] — RoFormer: Enhanced Transformer with Rotary Position Embedding (Su et al., arXiv 2021/2023)
+- [[source-2509-22259]] — Rotary Position Encodings for Graphs (WIRE): 用 Laplacian 谱坐标对 query/key 施加旋转，RoPE 的图推广 (ICML 2026)
 - [[source-yarn]] — YaRN: efficient context window extension of large language models (2023)
 - [[source-paperbench]] — Long Context, Less Focus: A Scaling Gap in LLMs (Gu et al., 2026)
 - [[source-vetcha-2026-towards-infinite-length-extrapolation]] — Vetcha 2026: Towards Infinite Length Extrapolation - A Unified Approach
@@ -749,6 +750,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[geometric-slope-schedule]] — ALiBi's slope assignment method for multi-head attention
 - [[ntk-aware-interpolation]] — RoPE interpolation by changing base parameter to preserve high-frequency info
 - [[rope]] — Rotary Position Embedding, 乘法型相对位置编码，现代 LLM 的标准方案
+- [[wire]] — WIRE，图 Laplacian 谱坐标驱动的旋转位置编码，RoPE 的图推广，兼容线性注意力 (ICML 2026)
 - [[ntk-by-parts-interpolation]] — wavelength-based piecewise RoPE interpolation
 - [[attention-temperature-scaling]] — YaRN's technique to control attention entropy via temperature
 - [[dynamic-scaling]] — inference-time technique to dynamically adjust RoPE scaling factor

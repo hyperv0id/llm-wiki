@@ -8,8 +8,8 @@ tags:
   - rotary-position-embedding
   - llm
 created: 2026-06-22
-last_updated: 2026-07-14
-source_count: 2
+last_updated: 2026-08-09
+source_count: 3
 confidence: high
 status: active
 ---
@@ -120,6 +120,7 @@ RoPE 引发了大量后续研究，包括但不限于：
 - **时间序列适配**：[[temporal-rotation]]（SIREN-RoPE，将固定序数索引替换为可学习时间条件化旋转）、[[learnable-frequency-scaling]]（可学习频率缩放）
 - **物理知情位置编码**：[[physics-informed-position-encoding|PIPE]] 将 RoPE 的位置 ID 替换为物理量（经纬度+时间），配合[[variant-frequency-positional-encoding|变频率正弦编码]]，在台风预测中实现 SOTA（NeurIPS 2025）[^src-pipe]
 - **统一理论框架**：[[generalized-positional-encoding-framework]]
+- **图结构扩展**：[[wire|WIRE]] 将 RoPE 的旋转机制推广到图数据，用图 Laplacian 谱特征作旋转坐标，在网格图上恢复标准 RoPE（ICML 2026）[^src-2509-22259]
 - **注意力温度**：[[attention-temperature-scaling]]（等价于缩放 RoPE 旋转嵌入）
 - **收敛性分析**：[[convergent-normalization]]
 
@@ -135,3 +136,4 @@ RoPE 引发了大量后续研究，包括但不限于：
 
 [^src-roformer]: [[source-roformer]]
 [^src-pipe]: [[source-pipe]]
+[^src-2509-22259]: [[source-2509-22259]]
