@@ -10,7 +10,7 @@ tags:
   - super-resolution
   - iclr-2025
 created: 2026-06-08
-last_updated: 2026-06-08
+last_updated: 2026-08-09
 source_count: 1
 confidence: medium
 status: active
@@ -18,11 +18,11 @@ status: active
 
 # WeatherGFM
 
-**WeatherGFM** (Weather Generalist Foundation Model) 是首个天气通用基础模型，由 Zhao 等人（上海 AI Lab、香港理工大学等）提出（ICLR 2025, arXiv:2411.05420）[^src-weathergfm]。它通过**视觉 in-context learning** 在单一模型内统一处理 10+ 种天气理解任务，包括天气预报、超分辨率（降尺度）、天气图像翻译和后处理[^src-weathergfm]。
+**WeatherGFM** (Weather Generalist Foundation Model) 由 Zhao 等人（上海 AI Lab、香港理工大学等）提出，论文将其定位为首个天气通用基础模型（ICLR 2025, arXiv:2411.05420）[^src-weathergfm]。它通过**视觉 in-context learning** 在单一模型内统一处理 10+ 种天气理解任务，包括天气预报、超分辨率（降尺度）、天气图像翻译和后处理[^src-weathergfm]。
 
 ## 核心动机
 
-现有天气模型聚焦单一任务且依赖单场景有限观测，限制了性能上限；ClimaX、Aurora 等天气基础模型主要面向预报/降尺度，未建模多模态多任务且需按任务微调[^src-weathergfm]。WeatherGFM 借鉴 LLM 与视觉基础模型（[[mae|MAE]]、Painter）的 in-context learning 范式，将"是否能用一个通用模型处理多样天气任务与数据模态"作为核心问题[^src-weathergfm]。
+论文指出，现有天气模型聚焦单一任务且依赖单场景有限观测，限制了性能上限；ClimaX、Aurora 等天气基础模型主要面向预报/降尺度，未建模多模态多任务且需按任务微调[^src-weathergfm]。WeatherGFM 借鉴 LLM 与视觉基础模型（[[mae|MAE]]、Painter）的 in-context learning 范式，将"是否能用一个通用模型处理多样天气任务与数据模态"作为核心问题[^src-weathergfm]。
 
 ## 统一任务表示
 
@@ -67,11 +67,11 @@ Reconstructed Target
 
 ## 关键结果
 
-- 单一 WeatherGFM 在 10 个任务上多数优于各任务单训的 UNet/ViT 单任务模型，表明统一建模可突破单任务性能上限[^src-weathergfm]。
-- **Scaling law**：数据与模型规模增大普遍提升性能（雷达超分尤其需要同时放大数据和模型）；但小模型增大数据可能因任务特异性而变差[^src-weathergfm]。
-- **OOD 泛化**：对接近训练分布的 IR107 外推、IR107→IR069 翻译、15min 时序超分可直接泛化；对差异大的多卫星空间超分失败[^src-weathergfm]。
-- **ERA5**：单模型在 120h/168h T2m 预报上优于 ClimaX 与 ECMWF IFS，收敛更快（20 epochs/8 A100 vs ClimaX 100 epochs/80 V100）[^src-weathergfm]。
-- **Prompt 敏感性**：超分任务对 prompt 随机性不敏感；预报与翻译任务波动较大（CSI 标准差约 0.02），且 searched/high-quality prompt 优于随机 prompt[^src-weathergfm]。
+- 论文报告：在 SEVIR 与 POMINO-TROPOMI/GEOS-CF 设置下，单一 WeatherGFM 在 10 个任务上多数优于各任务单训的 UNet/ViT 单任务模型，并据此认为统一建模可突破单任务性能上限[^src-weathergfm]。
+- **Scaling law**：论文报告数据与模型规模增大普遍提升性能（雷达超分尤其需要同时放大数据和模型）；小模型增大数据可能因任务特异性而变差[^src-weathergfm]。
+- **OOD 泛化**：论文报告，对接近训练分布的 IR107 外推、IR107→IR069 翻译、15min 时序超分可直接泛化；对差异大的多卫星空间超分失败[^src-weathergfm]。
+- **ERA5**：论文报告，单模型在 120h/168h T2m 预报上优于 ClimaX 与 ECMWF IFS，收敛更快（20 epochs/8 A100 vs ClimaX 100 epochs/80 V100）[^src-weathergfm]。
+- **Prompt 敏感性**：论文报告，超分任务对 prompt 随机性不敏感；预报与翻译任务波动较大（CSI 标准差约 0.02），searched/high-quality prompt 优于随机 prompt[^src-weathergfm]。
 
 ## 局限
 
@@ -80,6 +80,9 @@ Reconstructed Target
 - OOD 泛化对与训练分布差异大的任务失效[^src-weathergfm]。
 
 ## 与相关模型的对比
+
+> [!note] 本课程对照
+> 下表及随后互补段为本课程按各论文自述整理的跨论文对照，非论文原文结论。
 
 | 维度 | WeatherGFM | [[uniextreme\|UniExtreme]] | [[swift\|Swift]] | ClimaX / Aurora |
 |------|-----------|------------|--------|-----------------|
@@ -90,7 +93,7 @@ Reconstructed Target
 | 生成方式 | 判别式（掩码重建） | 判别式 | 生成式（一致性模型） | 判别式 / 生成式 |
 | 未见任务泛化 | 是（OOD prompt） | 否 | 否 | 否 |
 
-WeatherGFM 与 [[uniextreme|UniExtreme]] 互补：前者横向统一多任务/多模态，后者纵向深耕极端事件预测；二者均不做概率预报，而 [[swift|Swift]] 则专注生成式概率集合预报。它是 [[spatio-temporal-foundation-model|时空基础模型]]在天气领域中"任务统一 + in-context"路线的代表，区别于交通/城市领域的 [[unist|UniST]]、[[urbandit|UrbanDiT]] 等。
+（本课程对照）WeatherGFM 与 [[uniextreme|UniExtreme]] 互补：前者横向统一多任务/多模态，后者纵向深耕极端事件预测；二者均不做概率预报，而 [[swift|Swift]] 则专注生成式概率集合预报。它是 [[spatio-temporal-foundation-model|时空基础模型]]在天气领域中"任务统一 + in-context"路线的代表，区别于交通/城市领域的 [[unist|UniST]]、[[urbandit|UrbanDiT]] 等。
 
 ## 相关页面
 
@@ -104,5 +107,7 @@ WeatherGFM 与 [[uniextreme|UniExtreme]] 互补：前者横向统一多任务/�
 - [[spatio-temporal-foundation-model]] — 时空基础模型范式
 - [[mae]] — MAE，掩码图像建模的来源
 - [[in-context-learning]] — in-context learning 范式
+- [[weatherpeft]] — WeatherPEFT，WFM 参数高效微调框架
+- [[task-adaptive-dynamic-prompting]] — TADP，任务自适应软提示（与天气提示对照）
 
 [^src-weathergfm]: [[source-weathergfm]]

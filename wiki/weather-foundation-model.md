@@ -8,7 +8,7 @@ tags:
   - generalization
   - parameter-efficient-fine-tuning
 created: 2026-06-08
-last_updated: 2026-08-08
+last_updated: 2026-08-09
 source_count: 4
 confidence: medium
 status: active
@@ -26,7 +26,7 @@ status: active
 
 - **预训练-微调预报模型**：FourCastNet（自监督预训练 + 自回归微调）、PanguWeather（3D Earth-specific Transformer）、ClimaX（监督式预训练，灵活适配多种预报任务）主要面向天气预报与降尺度[^src-weathergfm]。
 - **LoRA / 适配统一**：Aurora 用 LoRA 统一天气预报与大气化学快速预测，但仍需按任务微调，且未建模多模态多任务[^src-weathergfm]。[[weatherpeft|WeatherPEFT]]（ICLR 2026）论文自称是首个针对 WFM 的 PEFT 框架，以 [[task-adaptive-dynamic-prompting|TADP]] + [[stochastic-fisher-guided-adaptive-selection|SFAS]] 实现任务自适应微调，在三类下游任务上以极少参数逼近甚至超越全量微调[^src-weatherpeft]。
-- **In-context 任务统一**：[[weathergfm|WeatherGFM]]（ICLR 2025）是首个天气**通用**基础模型，通过 [[weather-prompt|天气提示]] 与 [[mixed-modal-masked-image-modeling|MMIM]] 在单一 ViT 内统一 10+ 种天气理解任务（预报、超分、图像翻译、后处理），并展示对未见任务的 in-context 泛化[^src-weathergfm]。
+- **In-context 任务统一**：[[weathergfm|WeatherGFM]]（ICLR 2025）论文定位为首个天气**通用**基础模型，通过 [[weather-prompt|天气提示]] 与 [[mixed-modal-masked-image-modeling|MMIM]] 在单一 ViT 内统一 10+ 种天气理解任务（预报、超分、图像翻译、后处理），并展示对未见任务的 in-context 泛化[^src-weathergfm]。
 - **极端事件专用基础模型**：[[uniextreme|UniExtreme]] 聚焦多样化极端天气预测，用频域调制 + 事件先验记忆补足通用预报模型在极端事件上的性能差距。
 - **生成式概率预报**：[[swift|Swift]] 以自回归一致性模型做单步概率集合预报，关注不确定性量化。[[climatear|ClimateAR]]（ICML 2026）以 VAR 范式做多尺度自回归概率气候预测，在月尺度上 ACC 提升 37.56%[^src-climatear].
 - **几何感知 S2S 预报**：[[cirt|CirT]]（ICLR 2025）以圆形分块 + 傅里叶域自注意力显式编码球面几何偏置，直接预测 2-6 周平均态，超越 ECMWF 等数值系统[^src-cirt]。
@@ -41,7 +41,7 @@ status: active
 
 ## 相关页面
 
-- [[weathergfm]] — WeatherGFM，首个天气通用基础模型
+- [[weathergfm]] — WeatherGFM，论文定位的首个天气通用基础模型
 - [[uniextreme]] — UniExtreme，极端天气基础模型
 - [[swift]] — Swift，生成式概率天气预报
 - [[extreme-weather-forecasting]] — 极端天气预测

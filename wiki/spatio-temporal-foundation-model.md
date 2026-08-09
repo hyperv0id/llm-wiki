@@ -7,7 +7,7 @@ tags:
   - zero-shot
   - generalization
 created: 2026-05-03
-last_updated: 2026-06-09
+last_updated: 2026-08-09
 source_count: 18
 confidence: high
 status: active
@@ -44,7 +44,7 @@ Before the emergence of true foundation models, **[[gpt-st|GPT-ST]]** (NeurIPS 2
 - **[[urbangpt|UrbanGPT]]** (KDD 2024): First spatio-temporal LLM using Vicuna-7b + instruction-tuning paradigm. Encoder uses multi-level gated dilated convolution (no graph), spatial reasoning delegated to LLM via textual POI descriptions. Processes one sensor at a time, making it computationally expensive (7B parameters, 174s inference)[^src-urbangpt].
 - **[[urbanmind|UrbanMind]]** (KDD 2025): Extends the LLM-based ST paradigm with multifaceted dynamics learning. Core innovations: (1) Muffin-MAE — dual-encoder masked autoencoder with temporal/spatial/global masking that captures inter-correlations across multiple urban dynamics (speed, inflow, demand); (2) selective LLaMA3 fine-tuning — frozen early layers, query-only update in later layers; (3) test-time adaptation — masked reconstruction module that shares layers with predictor, adapting to distributional shifts at inference. SOTA zero-shot across 9 urban dynamics datasets (3 cities × 3 dynamics), 8.5% MAE improvement over UrbanGPT in cross-city transfer, ~33-47% MAE reduction on multiple tasks[^src-urbanmind].
 - **Pangu-Weather / Fengwu**: Weather-specific foundation models on Euclidean grids[^src-most].
-- **[[weathergfm|WeatherGFM]]** (ICLR 2025): First *weather generalist* foundation model. Unlike grid forecasters such as Pangu-Weather/Fengwu, it unifies 10+ heterogeneous weather understanding tasks (forecasting, super-resolution/downscaling, image translation, post-processing) within a single plain-ViT model via [[weather-prompt|weather prompts]] and [[mixed-modal-masked-image-modeling|mixed-modal masked image modeling]]. Represents the "task-unification + in-context" route in the weather domain, analogous to [[unist|UniST]]/[[urbandit|UrbanDiT]] in the urban domain; demonstrates generalization to unseen (OOD) tasks[^src-weathergfm].
+- **[[weathergfm|WeatherGFM]]** (ICLR 2025): Paper-proposed first *weather generalist* foundation model. Unlike grid forecasters such as Pangu-Weather/Fengwu, it unifies 10+ heterogeneous weather understanding tasks (forecasting, super-resolution/downscaling, image translation, post-processing) within a single plain-ViT model via [[weather-prompt|weather prompts]] and [[mixed-modal-masked-image-modeling|mixed-modal masked image modeling]]. Represents the "task-unification + in-context" route in the weather domain, analogous to [[unist|UniST]]/[[urbandit|UrbanDiT]] in the urban domain; demonstrates generalization to unseen (OOD) tasks[^src-weathergfm].
 
 ### Continuous Learning / Continual Adaptation
 - **[[urbanpg|UrbanPG]]** (AAAI 2026): Prompt-backbone decoupled architecture with STCA linear attention (O(N·d²)), unifying large-scale, few-shot, and continual learning under one framework. Freeze general backbone, fine-tune/expand only personalized context prompts. SOTA on CA 8600 nodes with 48-72% efficiency gains over PatchSTG[^src-urbanpg].

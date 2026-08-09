@@ -3289,3 +3289,7 @@ PDF: `raw/Wen 等 - 2026 - MIDAS Mutual Information Disentanglement With Uncerta
 创建的页面：[[source-2509-22259]], [[wire]]
 
 更新的页面：[[index]], [[rope]]
+
+## [2026-08-09] lint-fix | WeatherGFM | AGETNS 审查修复
+修复严重 6 项、警告 4 项、信息 3 项：weathergfm/source-weathergfm/weather-foundation-model/index/spatio-temporal-foundation-model 五处「首个」表述统一归因论文（含 index 的 first 与 landscape 的 First）；weathergfm 关键结果 5 条与 source-weathergfm 结果节补「论文报告/作者报告」口径，删除「表明/验证了突破上限」越级结论；对比表与互补段标注本课程对照（weatherpeft 先例）；source-weathergfm 移除自引用循环（全文 `[^src-weathergfm]` + 自指脚注），source_count 1→0、confidence medium→low（仓库惯例），并按 300-500 字指引压缩；weathergfm 相关页面补 [[weatherpeft]]/[[task-adaptive-dynamic-prompting]] 反向链接；index 的 weather-foundation-model 条目删误导性 (ICLR 2025) 后缀；五页 last_updated 刷新。mixed-modal-masked-image-modeling 复核无内容问题，仅时效警告保留。
+更新的页面：[[weathergfm]], [[source-weathergfm]], [[weather-foundation-model]], [[spatio-temporal-foundation-model]], [[index]]

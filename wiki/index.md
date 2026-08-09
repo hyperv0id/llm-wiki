@@ -956,7 +956,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[armd]] — ARMD, first continuous sequential diffusion TSF model; sliding-window evolution + linear distance-based devolution, unconditional, >10x faster (AAAI 2025)
 - [[doflow]] — DoFlow, flow-based generative model on a causal DAG with per-node time-conditioned CNFs unifying observational/interventional/counterfactual forecasting + likelihood anomaly detection (ICLR 2026)
 - [[k2vae]] — K²VAE, VAE-based one-step generative model linearizing TS via KoopmanNet + refining uncertainty via KalmanNet for long-term probabilistic forecasting (ICML 2025)
-- [[weathergfm]] — WeatherGFM, first weather generalist foundation model unifying 10+ weather understanding tasks via visual in-context learning on a plain ViT (ICLR 2025)
+- [[weathergfm]] — WeatherGFM, paper-proposed first weather generalist foundation model unifying 10+ weather understanding tasks via visual in-context learning on a plain ViT (ICLR 2025)
 - [[maginet]] — MagiNet, mask-aware graph imputation network replacing pre-filling with learnable missing encoding + mask-weighted Chebyshev graph convolution (arXiv 2024)
 - [[stamimputer]] — STAMImputer, outer-layer MoE with temporal (MSAT) + spatial (LrSGAT) attention experts + observation-expert routing for traffic data imputation under block missing (arXiv 2025)
 - [[st-vision-llm]] — ST-Vision-LLM, vision-language fusion framework rendering 2D traffic grids as images for a Vision-LLM with single-token numerical encoding + SFT/GRPO (arXiv 2025)
@@ -973,7 +973,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[causal-time-series-forecasting]] — 因果时间序列预测，超越观测的干预与反事实查询范式 (ICLR 2026)
 - [[koopman-linearization-for-forecasting]] — Koopman 线性化预测范式，把非线性 TS 提升到测量空间用线性算子 (DMD/eDMD/神经网络) 建模 (K²VAE/MMCKM)
 - [[kalman-filter]] — Kalman 滤波，线性动力系统状态估计的递归 Predict/Update 算法 + 不确定性建模
-- [[weather-foundation-model]] — 天气基础模型，在大规模气象数据上预训练、服务多种天气/气候任务的通用模型范式 (ICLR 2025)
+- [[weather-foundation-model]] — 天气基础模型，在大规模气象数据上预训练、服务多种天气/气候任务的通用模型范式
 - [[weatherpeft]] — WeatherPEFT，论文自称首个 WFM 参数高效微调框架，TADP + SFAS 双阶段任务自适应（ICLR 2026）
 - [[mask-aware-imputation-no-prefilling]] — 无预填充的掩码感知填补，用可学习缺失嵌入直接表征缺失值而非零初始化 (MagiNet, arXiv 2024)
 - [[vision-language-traffic-forecasting]] — reframing 2D grid traffic forecasting as a vision-language fusion problem via traffic-matrix-as-image (arXiv 2025)
