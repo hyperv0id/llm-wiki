@@ -84,7 +84,7 @@ GTR 模块仅 40.1K 参数、4.50M MACs。完整系统（GTR + MLP）0.98M 参�
 
 - **[[pfrp|PFRP]]**（AAAI 2026）同为检索增强的单变量时序预测框架，但 PFRP 通过 PCL 编码 + K-medoids 聚类构建固定大小 Global Memory Bank，按特征余弦相似度检索历史模式片段而非按绝对时间位置检索周期参数矩阵。PFRP 引入 confidence gate 和 output gate 调制检索结果，再与局部预测动态融合。[^src-predicting-the-future-by-retrieving-the-past-aaai2026]
 - **[[saraf|SARAF]]**（KDD 2026）同为检索增强预测框架，但 SARAF 检索历史窗口段并通过平稳性控制的多样性选择和自适应 Gaussian 聚合处理非平稳性，而非按绝对时间位置检索周期参数矩阵；SARAF 还引入时间对齐奖励和多维度时间正则性匹配。[^src-stationarity-aware-retrieval-augmented-forecasting-kdd26]
-- **[[ts-memory|TS-Memory]]**（KDD 2026）同为即插即用的检索增强预测方法，但 TS-Memory 将 kNN 检索蒸馏为参数化记忆模块，推理时无需检索；GTR 的检索为可学习参数矩阵按绝对位置检索，推理时仍含检索操作但 $O(1)$[^src-ts-memory]。
+- **[[ts-memory|TS-Memory]]**（KDD 2026）同为即插即用的检索增强预测方法，但 TS-Memory 将 kNN 检索蒸馏为参数化记忆模块，推理时无需检索；GTR 的检索为可学习参数矩阵按绝对位置检索，推理时仍含检索操作但 $O(1)$[^src-ts-memory-time-series-foundation-models-kdd26]。
 
 ## 关键参数
 
@@ -100,4 +100,4 @@ GTR 模块仅 40.1K 参数、4.50M MACs。完整系统（GTR + MLP）0.98M 参�
 [^src-pir]: [[source-pir]]
 [^src-predicting-the-future-by-retrieving-the-past-aaai2026]: [[source-predicting-the-future-by-retrieving-the-past-aaai2026]]
 [^src-stationarity-aware-retrieval-augmented-forecasting-kdd26]: [[source-stationarity-aware-retrieval-augmented-forecasting-kdd26]]
-[^src-ts-memory]: [[source-ts-memory-time-series-foundation-models-kdd26]]
+[^src-ts-memory-time-series-foundation-models-kdd26]: [[source-ts-memory-time-series-foundation-models-kdd26]]

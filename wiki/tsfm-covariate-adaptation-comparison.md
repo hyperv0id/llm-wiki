@@ -97,7 +97,7 @@ DiTS 代表了与前两者不同的范式：它不使用现有 TSFM，而是从�
 - [[time-mmd]] — 文本协变量多领域基准
 - [[source-time-mmd]] — Time-MMD 源摘要
 - [[timesfm]] — TimesFM；同框架扩展 TimesFMX
-- [[ts-memory]] — TS-Memory (KDD 2026)：正交于协变量适配，通过参数记忆蒸馏将检索知识内化为轻量模块，推理 $O(1)$ 无检索[^src-ts-memory]
+- [[ts-memory]] — TS-Memory (KDD 2026)：正交于协变量适配，通过参数记忆蒸馏将检索知识内化为轻量模块，推理 $O(1)$ 无检索[^src-ts-memory-time-series-foundation-models-kdd26]
 
 [^src-cora]: [[source-cora]]
 [^src-unica]: [[source-unica]]
@@ -107,4 +107,4 @@ DiTS 代表了与前两者不同的范式：它不使用现有 TSFM，而是从�
 [^src-sundial]: [[source-sundial]]
 [^src-chronosx]: [[source-chronosx]]
 [^src-time-mmd]: [[source-time-mmd]]
-[^src-ts-memory]: [[source-ts-memory-time-series-foundation-models-kdd26]]
+[^src-ts-memory-time-series-foundation-models-kdd26]: [[source-ts-memory-time-series-foundation-models-kdd26]]
