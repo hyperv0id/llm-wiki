@@ -1,6 +1,12 @@
-## [2026-08-13] lint | 谱核线性注意力：双审查（规范 + 数学）与修复
+## [2026-08-19] ingest | TS-Memory: Plug-and-Play Memory for Time Series Foundation Models
+
+PDF: `raw/ts-memory-time-series-foundation-models-kdd26.pdf`（11 页，KDD 2026；Lyu/Zhong/Chen/Ruan/Liu/Lv/Wen/Wong/Liang，HKUST-GZ + Tencent + Squirrel AI）。TS-Memory 提出 Parametric Memory Distillation 范式——将在线 kNN 检索的预测分布知识离线蒸馏为轻量 PlugMem 模块，推理时仅两次前向传播、$O(1)$ 复杂度、无外部检索。Stage I 构建泄漏安全 kNN 教师（冻结 TSFM 编码器嵌入 + shift alignment + softmax 加权分位数目标 + 检索置信度）；Stage II 置信门控蒸馏（advantage gate 选择性蒸馏 + anchor loss 回归 backbone + quantile crossing 正则 + 线性融合 $\alpha$）。4 种冻结 backbone（ChronosBolt/Chronos2/Sundial/TimesFM）× 8 数据集平均 MSE 降 5.8%/MAE 降 2.1%，推理延迟仅增 3.8–4.7%；跨 backbone 迁移 MSE 降 6–10%；跨模型规模复用（205M→9M）。
+
+创建的页面：[[source-ts-memory-time-series-foundation-models-kdd26]], [[ts-memory]], [[parametric-memory-distillation]], [[confidence-gated-distillation]]
+
 
 两个只读审查子代理（WikiConformanceReview、MathDerivationReview）完成，数学侧对照 WIRE 原文 PDF 并做 numpy 数值验证（电阻恒等式/度量/树等号/逐块旋转 MC/网格电阻/精确路线消元），推导主体全 OK。修复：规范 3 项（S_i 式改挂 [[linear-attention-unified-framework]]；图频率句收紧至源页覆盖范围；index last_updated）；数学 4 项（记号统一：γ 为核衰减率、ω²=2γ，消除 e^{−γR} 与 e^{−γR/2} 分歧；幂律指数修正为 d^{−γ/π} 且仅 2D 成立，1D 指数衰减、3D 饱和；秩≤m 改秩≤特征维；补 O(N) 特征维因子与一次性谱预计算、精确路线 C(m+T,T)）。
+
 
 更新的页面：[[spectral-kernel-linear-attention]], [[index]]
 

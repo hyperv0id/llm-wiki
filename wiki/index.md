@@ -1227,3 +1227,12 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Concepts (continued)
 - [[chronorag-base]] — ChronoRAG Base, hierarchical tree-structured TS database for RAG-augmented zero-shot forecasting (WWW 2026)
+
+## Entities (continued)
+- [[ts-memory]] — TS-Memory, plug-and-play memory adapter for frozen TSFMs, parametric memory distillation from offline kNN teacher, retrieval-free O(1) inference (KDD 2026)
+
+## Concepts (continued)
+- [[parametric-memory-distillation]] — 参数化记忆蒸馏，将在线检索的预测分布知识离线蒸馏为轻量参数模块，推理时无需检索 (TS-Memory, KDD 2026)
+
+## Techniques (continued)
+- [[confidence-gated-distillation]] — 置信门控蒸馏，advantage gate + 置信加权选择性蒸馏检索教师分布校正 (TS-Memory, KDD 2026)

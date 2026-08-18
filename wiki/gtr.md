@@ -9,8 +9,8 @@ tags:
   - multivariate
   - iclr-2026
 created: 2026-05-31
-PUT last_updated: 2026-08-19
-PUT source_count: 4
+last_updated: 2026-08-19
+source_count: 5
 confidence: medium
 status: active
 ---
@@ -80,6 +80,12 @@ GTR 模块仅 40.1K 参数、4.50M MACs。完整系统（GTR + MLP）0.98M 参�
 - **[[pir|PIR]]**（Post-forecasting Identification and Revision，Liu et al., NeurIPS 2025）同为即插即用的检索增强预测框架，但检索对象不同：PIR 的全局修订在训练输入–目标对上按实例相似度检索（实例归一化编码 + 余弦相似度，top-K 软加权求和作为修订项）；GTR 则通过可学习的全局周期参数矩阵按绝对时间位置检索周期模式。[^src-pir]
 - **[[retrieval-guidance|Retrieval Guidance]]**（MiDDiR, ICLR 2026 under review）类似地使用检索增强生成，但采用不同的机制：MiDDiR 在推理时检索训练样本并分析性偏置扩散得分函数，而非将检索结果作为模型输入特征。GTR 在训练时就学习检索模块，MiDDiR 则训练后仅推理时检索。[^src-gtr]
 
+## 与其他方法的关系（续）
+
+- **[[pfrp|PFRP]]**（AAAI 2026）同为检索增强的单变量时序预测框架，但 PFRP 通过 PCL 编码 + K-medoids 聚类构建固定大小 Global Memory Bank，按特征余弦相似度检索历史模式片段而非按绝对时间位置检索周期参数矩阵。PFRP 引入 confidence gate 和 output gate 调制检索结果，再与局部预测动态融合。[^src-predicting-the-future-by-retrieving-the-past-aaai2026]
+- **[[saraf|SARAF]]**（KDD 2026）同为检索增强预测框架，但 SARAF 检索历史窗口段并通过平稳性控制的多样性选择和自适应 Gaussian 聚合处理非平稳性，而非按绝对时间位置检索周期参数矩阵；SARAF 还引入时间对齐奖励和多维度时间正则性匹配。[^src-stationarity-aware-retrieval-augmented-forecasting-kdd26]
+- **[[ts-memory|TS-Memory]]**（KDD 2026）同为即插即用的检索增强预测方法，但 TS-Memory 将 kNN 检索蒸馏为参数化记忆模块，推理时无需检索；GTR 的检索为可学习参数矩阵按绝对位置检索，推理时仍含检索操作但 $O(1)$[^src-ts-memory]。
+
 ## 关键参数
 
 | 参数 | 含义 | 典型值 |
@@ -90,11 +96,8 @@ GTR 模块仅 40.1K 参数、4.50M MACs。完整系统（GTR + MLP）0.98M 参�
 | T | 回溯窗口 | 96（默认） |
 | S | 预测长度 | {96, 192, 336, 720} |
 
-- **[[pfrp|PFRP]]**（AAAI 2026）同为检索增强的单变量时序预测框架，但 PFRP 通过 PCL 编码 + K-medoids 聚类构建固定大小 Global Memory Bank，按特征余弦相似度检索历史模式片段而非按绝对时间位置检索周期参数矩阵。PFRP 引入 confidence gate 和 output gate 调制检索结果，再与局部预测动态融合。[^src-predicting-the-future-by-retrieving-the-past-aaai2026]
-[[^src-stationarity-aware-retrieval-augmented-forecasting-kdd26]: [[source-stationarity-aware-retrieval-augmented-forecasting-kdd26]]
-^src-gtr]: [[source-gtr]]
-[^src-predicting-the-future-by-retrieving-the-past-aaai2026]: [[source-predicting-the-future-by-retrieving-the-past-aaai2026]]
-- **[[saraf|SARAF]]**（KDD 2026）同为检索增强预测框架，但 SARAF 检索历史窗口段并通过平稳性控制的多样性选择和自适应 Gaussian 聚合处理非平稳性，而非按绝对时间位置检索周期参数矩阵；SARAF 还引入时间对齐奖励和多维度时间正则性匹配。[^src-stationarity-aware-retrieval-augmented-forecasting-kdd26]
-- **[[ts-memory|TS-Memory]]**（KDD 2026）同为即插即用的检索增强预测方法，但 TS-Memory 将 kNN 检索蒸馏为参数化记忆模块，推理时无需检索；GTR 的检索为可学习参数矩阵按绝对位置检索，推理时仍含检索操作但 $O(1)$[^src-ts-memory]。
-[^src-ts-memory]: [[source-ts-memory-time-series-foundation-models-kdd26]]
+[^src-gtr]: [[source-gtr]]
 [^src-pir]: [[source-pir]]
+[^src-predicting-the-future-by-retrieving-the-past-aaai2026]: [[source-predicting-the-future-by-retrieving-the-past-aaai2026]]
+[^src-stationarity-aware-retrieval-augmented-forecasting-kdd26]: [[source-stationarity-aware-retrieval-augmented-forecasting-kdd26]]
+[^src-ts-memory]: [[source-ts-memory-time-series-foundation-models-kdd26]]

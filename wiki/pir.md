@@ -9,7 +9,8 @@ tags:
   - model-agnostic-plugin
   - neurips-2025
 created: 2026-08-06
-PUT source_count: 3
+last_updated: 2026-08-19
+source_count: 3
 confidence: medium
 status: active
 ---
