@@ -9,7 +9,7 @@ tags:
   - www-2026
 created: 2026-08-19
 last_updated: 2026-08-19
-source_count: 0
+source_count: 1
 confidence: low
 status: active
 ---
@@ -46,25 +46,9 @@ QuiZSF 由三个组件构成[^src-quizsf-zero-shot-forecasting-www26]：
 - **效率**：模型大小和推理时间具竞争力，检索模块引入的开销可控[^src-quizsf-zero-shot-forecasting-www26]。
 - **超参数**：CRB-Medium, K=8, ρ=60% 为最佳配置[^src-quizsf-zero-shot-forecasting-www26]。
 
-## 贡献
+## 贡献与局限
 
-- 首次将 RAG 系统性扩展到时序预测，构建大规模时序数据库 CRB[^src-quizsf-zero-shot-forecasting-www26]；
-- 设计 HHTR 混合检索策略和 MSIL 多粒度交互学习[^src-quizsf-zero-shot-forecasting-www26]；
-- 设计双分支 MCC 适配器，同时支持 Non-LLM 和 LLM-based TSPMs[^src-quizsf-zero-shot-forecasting-www26]；
-- 在 5 个公开基准上取得 SOTA，Non-LLM 设定 75% Top1，LLM 设定 87.5% Top1[^src-quizsf-zero-shot-forecasting-www26]。
-
-## 局限性
-
-- 对短时细粒度数据集效果有限，因粗粒度检索知识难以与目标序列的细粒度波动对齐[^src-quizsf-zero-shot-forecasting-www26]；
-- 评测仅覆盖 ETT/Weather 五个数据集[^src-quizsf-zero-shot-forecasting-www26]；
-- 检索和交互模块引入额外开销（论文称「minimal」）[^src-quizsf-zero-shot-forecasting-www26]。
+贡献：首次将 RAG 系统性扩展到时序预测并构建 CRB；设计 HHTR 混合检索与 MSIL 多粒度交互学习；提出 MCC 双分支适配器同时支持 Non-LLM 与 LLM-based TSPMs；在 5 个基准上取得 SOTA，Non-LLM 设定 75% Top1，LLM 设定 87.5% Top1[^src-quizsf-zero-shot-forecasting-www26]。
+局限：短时细粒度数据集上检索知识与目标波动对齐困难；评测仅覆盖 ETT/Weather；检索与交互引入额外开销[^src-quizsf-zero-shot-forecasting-www26]。
 
 [^src-quizsf-zero-shot-forecasting-www26]: [[source-quizsf-zero-shot-forecasting-www26]]
-
-## 案例分析
-
-论文在 ETTh2 上进行案例可视化分析[^src-quizsf-zero-shot-forecasting-www26]。通过 HHTR 检索 Top-8 相似序列后，MSIL 更新目标序列表示，Language Coherer 生成提示输入 LLM。对比有/无 RAG 的预测输出：RAG 能揭示检索序列的平均模式，使预测更平滑、避免过拟合；无 RAG 的输出波动更大、包含更多不准确细节。论文指出 RAG 有效抑制了 LLM 的时序幻觉[^src-quizsf-zero-shot-forecasting-www26]。
-
-## 与现有检索增强方法的关系
-
-QuiZSF 与 [[ratd|RATD]]（NeurIPS 2024）、[[gtr|GTR]]（ICLR 2026）、[[pir|PIR]]（NeurIPS 2025）等检索增强预测工作形成研究线，但 QuiZSF 的独特之处在于同时支持 Non-LLM 和 LLM-based 两类 TSPMs，并构建了最大规模的时序检索数据库（CRB-Large 143M time points）[^src-quizsf-zero-shot-forecasting-www26]。与 [[retrieval-augmented-spatio-temporal-forecasting|RAST]]（AAAI 2026）聚焦时空预测不同，QuiZSF 专注单变量零样本泛化[^src-quizsf-zero-shot-forecasting-www26]。
