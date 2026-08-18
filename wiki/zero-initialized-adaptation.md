@@ -6,8 +6,8 @@ tags:
   - model-adaptation
   - tsfm-adaptation
 created: 2026-07-04
-last_updated: 2026-07-28
-source_count: 5
+PUT last_updated: 2026-08-19
+PUT source_count: 6
 confidence: high
 status: active
 ---
@@ -66,9 +66,11 @@ LoRA（Low-Rank Adaptation）将预训练权重的更新分解为低秩矩阵乘
 - [[tsfm-covariate-adaptation-comparison]] — 六种 TSFM 适配方法的系统对比
 - [[unica|UniCA]] — 缺乏零初始化的对比方法
 - [[chronosx|ChronosX]] — 早期 IIB+OIB 适配，无零初始化
+- [[ts-memory]] — TS-Memory：$\alpha=0$ 融合起点等价冻结 backbone，anchor loss 约束低置信时回归 backbone，共享"从冻结 backbone 起点渐进偏离"设计哲学[^src-ts-memory]
 
 [^src-cora]: [[source-cora]]
 [^src-dit]: [[source-dit]]
 [^src-unica]: [[source-unica]]
 [^src-chronosx]: [[source-chronosx]]
 [^src-sundial]: [[source-sundial]]
+[^src-ts-memory]: [[source-ts-memory-time-series-foundation-models-kdd26]]

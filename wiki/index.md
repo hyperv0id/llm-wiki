@@ -288,6 +288,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-predicting-the-future-by-retrieving-the-past-aaai2026]] — PFRP: Predicting the Future by Retrieving the Past, 检索增强单变量 TSF，GMB + PCL + K-medoids + 双门控 + 动态融合，AAAI 2026
 - [[source-trace-neurips2025]] — TRACE: Grounding Time Series in Context for Multimodal Embedding and Retrieval, cross-modal TS-text retriever with CIT + CbA + dual-level hard negative mining, NeurIPS 2025
 - [[source-stationarity-aware-retrieval-augmented-forecasting-kdd26]] — SARAF: 平稳性感知检索增强预测，时间对齐 + 多样性 MMR + 自适应 Gaussian 聚合，KDD 2026
+- [[source-ts-memory-time-series-foundation-models-kdd26]] — TS-Memory: Plug-and-Play Memory for TSFMs, parametric memory distillation from offline kNN teacher → lightweight PlugMem, retrieval-free O(1) inference (KDD 2026)
 
 ## Entities
 - [[std-plm]] — STD-PLM, unified PLM-based ST forecasting+imputation with spatial+time dual tokenizer (AAAI 2025)
@@ -630,6 +631,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[graph-learning-as-self-attention]] — 图学习即自注意力，图学习模块数学等价于 Transformer 自注意力但参数远少于 Q/K/V
 
 ## Techniques
+- [[predictive-contrastive-learning]] — PCL，正样本按预测区间 MSE 而非回溯窗口相似度选择的对比学习策略 (PFRP, AAAI 2026)
+- [[global-memory-bank]] — GMB，固定大小历史模式记忆库，PCL 编码 + K-medoids 聚类 + 特征余弦相似度检索 (PFRP, AAAI 2026)
 - [[time-aligned-retrieval-enhancement]] — 时间对齐检索增强，在形态相似度上叠加多粒度时间对齐奖励 (SARAF, KDD 2026)
 - [[diversity-based-retrieval-selection]] — 平稳性控制的随机 MMR 多样性检索选择，从 Top-M 候选池选择 Top-K 多样化子集 (SARAF, KDD 2026)
 - [[fenchel-young-loss]] — FY loss, convex surrogate for Bregman divergence enabling end-to-end training through combinatorial layers

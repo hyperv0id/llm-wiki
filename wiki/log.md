@@ -3336,3 +3336,7 @@ PDF: `raw/trace-neurips2025.pdf`（NeurIPS 2025；Chen, Zhao, Nurbek, Feng, Maat
 SARAF: Stationarity-Aware Retrieval-Augmented Time Series Forecasting。论文提出平稳性感知的检索增强预测框架，通过诊断实验揭示相似度检索可靠性与平稳性的关系（Spearman ρ 从 1.000 降至 0.285），并引入时间对齐增强、平稳性控制多样性 MMR 和自适应 Gaussian 聚合。在 8 个数据集上相比 RAFT 平均 MSE 降 3.85%，相比 DUET 降 4.05%。
 创建的页面：[[source-stationarity-aware-retrieval-augmented-forecasting-kdd26]], [[saraf]], [[stationarity-aware-retrieval]], [[time-aligned-retrieval-enhancement]], [[diversity-based-retrieval-selection]], [[dataset-stationarity-estimation]]
 更新的页面：[[gtr]], [[pir]], [[retrieval-augmented-spatio-temporal-forecasting]], [[nsdiff]], [[source-raf]], [[index]]
+
+## [2026-08-19] ingest | PFRP (AAAI 2026)
+创建的页面：[[source-predicting-the-future-by-retrieving-the-past-aaai2026]], [[pfrp]], [[predictive-contrastive-learning]], [[global-memory-bank]]
+更新的页面：[[gtr]], [[pir]], [[ratd]], [[retrieval-augmented-spatio-temporal-forecasting]], [[index]]
