@@ -7,8 +7,8 @@ tags:
   - time-series-foundation-model
   - iclr-2026
 created: 2026-07-04
-last_updated: 2026-07-28
-source_count: 5
+PUT last_updated: 2026-08-19
+PUT source_count: 6
 confidence: high
 status: active
 ---
@@ -97,6 +97,7 @@ DiTS 代表了与前两者不同的范式：它不使用现有 TSFM，而是从�
 - [[time-mmd]] — 文本协变量多领域基准
 - [[source-time-mmd]] — Time-MMD 源摘要
 - [[timesfm]] — TimesFM；同框架扩展 TimesFMX
+- [[ts-memory]] — TS-Memory (KDD 2026)：正交于协变量适配，通过参数记忆蒸馏将检索知识内化为轻量模块，推理 $O(1)$ 无检索[^src-ts-memory]
 
 [^src-cora]: [[source-cora]]
 [^src-unica]: [[source-unica]]
@@ -106,3 +107,4 @@ DiTS 代表了与前两者不同的范式：它不使用现有 TSFM，而是从�
 [^src-sundial]: [[source-sundial]]
 [^src-chronosx]: [[source-chronosx]]
 [^src-time-mmd]: [[source-time-mmd]]
+[^src-ts-memory]: [[source-ts-memory-time-series-foundation-models-kdd26]]

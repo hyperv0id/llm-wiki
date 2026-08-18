@@ -303,6 +303,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[stormbench]] — StormBench, 多源观测+ERA5 再分析对流临近预报基准，美法双区域 (ICML 2026)
 - [[storminsight]] — StormInsight, 环境条件化对流临近预报框架，三分量编码 + CFM 分层调制 (ICML 2026)
 - [[tcp-diffusion]] — TCP-Diffusion, 论文自称首个 DL 全球 TC 降水预测模型，ARP + 多模态编码器 + NWP 集成 (ICML 2025)
+- [[pfrp]] — PFRP, 模型无关检索增强单变量 TSF 框架，GMB + PCL + K-medoids + 双门控 + 动态融合 (AAAI 2026)
 - [[time-300b]] — Time-300B, Time-MoE 的 309B 时间点预训练数据集，9+ 领域，当时最大开放访问时序数据集合
 - [[time-moe]] — Time-MoE, 论文称首个稀疏 MoE 时序基础模型系列，decoder-only + 逐点 token 化 + 多分辨率预测，最高 2.4B 参数，ICLR 2025
 - [[trafficstream]] — TrafficStream, first CSTF framework with historical data replay + parameter smoothing (IJCAI 2021)

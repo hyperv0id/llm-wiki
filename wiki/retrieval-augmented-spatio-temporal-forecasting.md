@@ -7,8 +7,8 @@ tags:
   - rag
   - traffic-forecasting
 created: 2026-06-08
-last_updated: 2026-08-19
-source_count: 4
+PUT last_updated: 2026-08-19
+PUT source_count: 6
 confidence: medium
 status: active
 ---
@@ -49,12 +49,16 @@ STF 场景的核心挑战在于时空纠缠——一个 $N \times T \times d$ �
 1. 检索增强范式是否可推广到其他时空任务（如插补、异常检测）？[^src-rast]
 2. 多模态检索增强（天气、事件、文本）是否进一步提升预测精度？[^src-rast]
 3. 联邦检索增强——跨组织共享检索库同时保护数据隐私。[^src-rast]
+- **[[ts-memory|TS-Memory]]**（KDD 2026）提出检索到参数蒸馏范式——将在线 kNN 检索的预测分布知识离线蒸馏为轻量参数模块，推理时无需检索、$O(1)$ 复杂度，解决在线检索的推理延迟问题[^src-ts-memory]。
 
 [^src-rast]: [[source-rast]]
 [^src-ratd]: [[source-ratd]]
+- **[[pfrp|PFRP]]**（AAAI 2026）是检索增强的单变量时序预测框架：通过 PCL 训练编码器 + K-medoids 聚类构建固定大小 Global Memory Bank，推理时按特征余弦相似度检索 top-k 历史模式，经 confidence gate 和 output gate 调制后与局部预测动态融合。与 RAST 的双维度时空检索不同，PFRP 仅在时间维度检索；与 RATD 的扩散参照引导不同，PFRP 不依赖扩散模型[^src-predicting-the-future-by-retrieving-the-past-aaai2026]。
 [^src-pir]: [[source-pir]]
 [^src-trace-neurips2025]: [[source-trace-neurips2025]]
+[^src-predicting-the-future-by-retrieving-the-past-aaai2026]: [[source-predicting-the-future-by-retrieving-the-past-aaai2026]]
 ## 平稳性感知的检索增强
 
 - **[[saraf|SARAF]]**（KDD 2026）从非平稳性角度改进检索增强预测：通过诊断实验证明相似度检索的可靠性随平稳性变化（Spearman ρ 从 1.000 降至 0.285），提出时间对齐增强 + 平稳性控制的多样性 MMR + 自适应 Gaussian 聚合。与 RAST 的双维 FAISS 检索不同，SARAF 在纯时间序列上通过平稳性分数 s̄ 自适应调节检索策略。[^src-stationarity-aware-retrieval-augmented-forecasting-kdd26]
 [^src-stationarity-aware-retrieval-augmented-forecasting-kdd26]: [[source-stationarity-aware-retrieval-augmented-forecasting-kdd26]]
+[^src-ts-memory]: [[source-ts-memory-time-series-foundation-models-kdd26]]

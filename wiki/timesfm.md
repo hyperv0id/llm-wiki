@@ -7,8 +7,8 @@ tags:
   - decoder-only
   - iclr2024
 created: 2026-04-29
-last_updated: 2026-07-28
-source_count: 8
+PUT last_updated: 2026-08-19
+PUT source_count: 9
 confidence: high
 status: active
 ---
@@ -62,6 +62,7 @@ TimesFM 可以通过 UniCA 框架适配到协变量感知预测任务：
 - [[sundial]] — Sundial (ICML 2025)，原生 Flow Matching TS 基础模型。Sundial 在 TSLib 零样本预测上全面超越 TimesFM（Table 9，TimesFM 在所有 24 个指标中仅 1 个获胜），并支持概率预测（TimesFM 仅点估计）[^src-sundial]
 - [[probts|ProbTS]] — 将 TimesFM 作为 **AR 解码基础模型** 纳入零样本分析：短 horizon 有竞争力，长 horizon 相对 MOIRAI 等 NAR 基础模型劣势扩大（误差累积）[^src-probts]
 - [[moirai-moe|Moirai-MoE]] — ICML 2025 的 MoE 时间序列基础模型。在 10 个零样本数据集上，Moirai-MoE-B (86M activated) 在 CRPS 总评（Avg all: 0.478）上超越 TimesFM (0.488)，排除 Electricity/Solar 含泄露数据集后 Avg non-leak 两者持平（0.439 vs 0.439）。Moirai-MoE-S (11M) 则在 Solar、Power、ETT2、Traffic 上 CRPS 优于 TimesFM，但总体 Avg 不及[^src-moirai-moe]
+- [[ts-memory]] — TS-Memory (KDD 2026)：以 TimesFM 为冻结 backbone 验证参数记忆蒸馏，ETTm2 上 MSE 降 16.0%、Weather 降 7.6%[^src-ts-memory]
 
 ## DynaMix 对比
 
@@ -88,3 +89,4 @@ TimesFM 可以通过 UniCA 框架适配到协变量感知预测任务：
 [^src-dynamix]: [[source-dynamix]]
 [^src-moirai-moe]: [[source-moirai-moe]]
 [^src-chronosx]: [[source-chronosx]]
+[^src-ts-memory]: [[source-ts-memory-time-series-foundation-models-kdd26]]

@@ -9,8 +9,8 @@ tags:
   - tsinghua
   - icml-2025
 created: 2026-06-08
-last_updated: 2026-08-08
-source_count: 1
+PUT last_updated: 2026-08-19
+PUT source_count: 2
 confidence: medium
 status: active
 ---
@@ -87,6 +87,8 @@ Sundial 是 Fig.1 分类中的**原生连续 tokenization + 灵活无先验分�
 - [[tsfm-covariate-adaptation-comparison]] — TSFM 适配方法全景对比（含 CoRA 基于 Sundial 的详细结果）
 - [[hybrid-llm-flow-matching-forecasting]] — 混合 LLM-流匹配预测范式
 - [[hybrid-llm-flow-matching-forecasting]] — 混合 LLM-流匹配预测范式
+- [[ts-memory]] — TS-Memory：以 Sundial 为冻结 backbone 验证参数记忆蒸馏，Weather 上 MSE 降 2.5%、ETTm1 降 3.6%[^src-ts-memory]
+[^src-ts-memory]: [[source-ts-memory-time-series-foundation-models-kdd26]]
 
 [^src-sundial]: [[source-sundial]]
 [^src-sundiel]: [[source-sundial]]
