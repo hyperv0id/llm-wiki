@@ -8,8 +8,8 @@ tags:
   - covariate
   - satellite-imagery
 created: 2026-04-29
-source_count: 18
-last_updated: 2026-08-11
+source_count: 19
+last_updated: 2026-08-19
 confidence: high
 status: active
 ---
@@ -200,6 +200,10 @@ UniCA 在多模态场景下的表现：
 
 **[[pipe|PIPE]]** (Li et al., HKUST, NeurIPS 2025) 提出将物理元数据（时间戳、经纬度）嵌入 VLM 位置编码的多模态台风预测方法[^src-pipe]。基于 Qwen-2.5-VL，PIPE 通过两个核心机制在位置编码层注入物理知识：（1）[[physics-informed-position-encoding#1. 物理知情位置索引|物理知情位置索引]]——将图像 token 的位置 ID 替换为物理量（年日、小时、纬度、经度），并映射到负值以避免与文本 token 冲突；（2）[[variant-frequency-positional-encoding|变频率位置编码]]——为不同物理变量分配不同波长的正弦函数[^src-pipe]。在 [[digital-typhoon-dataset|Digital Typhoon]] 数据集上达到 SOTA，台风强度预测 MAE 比此前最优的无视觉方法（TiDE）提升 12%[^src-pipe]。消融实验显示：视觉数据贡献约 8% 改善，物理知情编码额外贡献约 6%[^src-pipe]。PIPE 代表了多模态融合的一条独特路线：不通过额外的融合模块或适配器，仅通过**位置编码层的物理知识注入**实现跨模态对齐，PIPE-3B 在 4×H800 上训练 2.1 小时（附录 C）[^src-pipe]。
 
+## TRACE：跨模态时序检索器
+
+**[[trace|TRACE]]** (Chen et al., NeurIPS 2025) 是首个多模态时序检索器，将时间序列嵌入与对齐文本上下文锚定到共享语义空间[^src-trace-neurips2025]。与此前多模态方法的关键区别在于通道级细粒度对齐：[[channel-identity-token|CIT]] 嵌入与对应通道文本描述做 [[dual-level-hard-negative-mining|双级硬负采样]] 对比学习，而非仅做全局文本对齐[^src-trace-neurips2025]。TRACE 兼具两重用途：(1) 通用检索器，通过 soft prompt 增强 [[time-moe|Time-MoE]] / Timer-XL / Moment 等冻结 TSFM（分类 +4.56%、预测 −4.55%）；(2) 独立编码器，在 Weather/Health/Energy/Environment 上预测 SOTA，10.78M 参数微调仅激活 0.12M[^src-trace-neurips2025]。自建天气多模态数据集（74,337 实例，NOAA 事件报告 + GHCN-h 时序 + ChatGPT 通道描述），并在 [[time-mmd|Time-MMD]] 公开集上验证跨域泛化[^src-trace-neurips2025]。
+
 ## 相关概念
 
 - [[heterogeneous-covariates]] — 异构协变量
@@ -239,6 +243,10 @@ UniCA 在多模态场景下的表现：
 - [[constrained-text-fusion]] — Constrained Text Fusion / CFA：naive 常伤、低秩受控融合（KDD ’26 MILETS）
 - [[source-constrained-text-fusion]] — CFA 源摘要
 - [[cross-modal-misalignment]] — 跨模态 selection/perturbation bias 与 MMCL 可辨识性（NeurIPS 2025）
+- [[trace]] — TRACE 跨模态时序检索器（NeurIPS 2025）
+- [[channel-identity-token]] — Channel Identity Tokens
+- [[channel-biased-attention]] — Channel-biased Attention
+- [[dual-level-hard-negative-mining]] — 双级硬负采样
 - [[source-cross-modal-misalignment]] — 源摘要
 
 ---
@@ -263,3 +271,4 @@ UniCA 在多模态场景下的表现：
 [^src-constrained-text-fusion]: [[source-constrained-text-fusion]]
 [^src-cross-modal-misalignment]: [[source-cross-modal-misalignment]]
 [^src-tess]: [[source-tess]]
+[^src-trace-neurips2025]: [[source-trace-neurips2025]]

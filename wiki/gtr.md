@@ -9,8 +9,8 @@ tags:
   - multivariate
   - iclr-2026
 created: 2026-05-31
-last_updated: 2026-08-06
-source_count: 2
+last_updated: 2026-08-19
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -90,5 +90,9 @@ GTR 模块仅 40.1K 参数、4.50M MACs。完整系统（GTR + MLP）0.98M 参�
 | T | 回溯窗口 | 96（默认） |
 | S | 预测长度 | {96, 192, 336, 720} |
 
-[^src-gtr]: [[source-gtr]]
+- **[[pfrp|PFRP]]**（AAAI 2026）同为检索增强的单变量时序预测框架，但 PFRP 通过 PCL 编码 + K-medoids 聚类构建固定大小 Global Memory Bank，按特征余弦相似度检索历史模式片段而非按绝对时间位置检索周期参数矩阵。PFRP 引入 confidence gate 和 output gate 调制检索结果，再与局部预测动态融合。[^src-predicting-the-future-by-retrieving-the-past-aaai2026]
+[[^src-stationarity-aware-retrieval-augmented-forecasting-kdd26]: [[source-stationarity-aware-retrieval-augmented-forecasting-kdd26]]
+^src-gtr]: [[source-gtr]]
+[^src-predicting-the-future-by-retrieving-the-past-aaai2026]: [[source-predicting-the-future-by-retrieving-the-past-aaai2026]]
+- **[[saraf|SARAF]]**（KDD 2026）同为检索增强预测框架，但 SARAF 检索历史窗口段并通过平稳性控制的多样性选择和自适应 Gaussian 聚合处理非平稳性，而非按绝对时间位置检索周期参数矩阵；SARAF 还引入时间对齐奖励和多维度时间正则性匹配。[^src-stationarity-aware-retrieval-augmented-forecasting-kdd26]
 [^src-pir]: [[source-pir]]

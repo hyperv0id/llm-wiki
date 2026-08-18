@@ -6,8 +6,8 @@ tags:
   - self-supervised
   - multimodal-alignment
 created: 2026-05-03
-last_updated: 2026-07-28
-source_count: 6
+last_updated: 2026-08-19
+source_count: 7
 confidence: medium
 status: active
 ---
@@ -36,6 +36,10 @@ $$\mathcal{L} = -\log \frac{\exp(\text{sim}(z_i, z_j^+) / \tau)}{\sum_k \exp(\te
 
 [[nuwats|NuwaTS]] (arXiv 2024) applies contrastive learning to a different axis — robustness to **missing patterns** rather than modality alignment[^src-nuwats]. For each input, it generates two views with **different mask ratios** and feeds both through the PLM. The representation of the *same patch* under the two masks forms a positive pair, while representations from other patches and other series are negatives. NuwaTS uses an InfoNCE objective with a **bi-linear inner product** $q^\top W k_+$ (learnable $W$) combined with MSE reconstruction loss[^src-nuwats]. The effect is **mask-invariant patch embeddings**: the model learns to produce consistent representations regardless of how much of a patch is missing, which ablations show is necessary for cross-domain zero-shot imputation[^src-nuwats].
 
+## Dual-level Hard Negative Mining in TRACE
+
+[[trace|TRACE]]（NeurIPS 2025）在跨模态对齐中提出 [[dual-level-hard-negative-mining|双级硬负采样]]——在 sample-level（[CLS] 嵌入 vs 样本文本）和 channel-level（[[channel-identity-token|CIT]] 嵌入 vs 通道文本）两个粒度上动态挖掘硬负样本。channel-level 引入 intra-instance（同实例其他通道）和 inter-instance（跨实例同通道）两类 distractor，使模型区分"看起来相似但语义不同"的通道模式[^src-trace-neurips2025]。这与传统 CLIP 式仅做 sample-level 随机负采样不同，因为文本常引用具体变量（如温度峰值、风速），单全局嵌入无法精确对齐[^src-trace-neurips2025]。
+
 ## Applications
 
 - [[fine-grained-time-text-semantic-alignment]] — MindTS's patch-level time-text contrastive alignment
@@ -44,6 +48,7 @@ $$\mathcal{L} = -\log \frac{\exp(\text{sim}(z_i, z_j^+) / \tau)}{\sum_k \exp(\te
 - [[nuwats]] — NuwaTS's mask-invariant patch representations across missing patterns
 - [[ts-vl-alignment]] — limits of post-hoc contrastive alignment across time series, vision, and language
 - [[cross-modal-misalignment]] — selection/perturbation bias; what MMCL retains under misaligned pairs
+- [[trace]] — TRACE dual-level hard negative mining for cross-modal TS-text retrieval
 
 ## Related
 
@@ -60,3 +65,4 @@ $$\mathcal{L} = -\log \frac{\exp(\text{sim}(z_i, z_j^+) / \tau)}{\sum_k \exp(\te
 [^src-nuwats]: [[source-nuwats]]
 [^src-ts-vl-alignment]: [[source-ts-vl-alignment]]
 [^src-cross-modal-misalignment]: [[source-cross-modal-misalignment]]
+[^src-trace-neurips2025]: [[source-trace-neurips2025]]

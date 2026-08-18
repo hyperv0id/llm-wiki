@@ -9,8 +9,8 @@ tags:
   - non-stationary
   - icml-2025
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 3
+last_updated: 2026-08-19
+source_count: 4
 confidence: high
 status: active
 ---
@@ -65,6 +65,11 @@ NsDiff 从两个维度突破了传统 DDPM 在时序预测中的限制：
 4. 被 [[stats|StaTS]] (arXiv 2026) 在所有 CRPS 和 MAE 上超越，StaTS 以频谱轨迹调度+频率引导去噪在 8 个基准上取得 10.67%–17.43% CRPS 改进[^src-stats]
 5. 被 [[middir|MiDDiR]] (ICLR 2026 under review) 在 CRPS 上超越约 21.9%，QICE 超越约 46.5%；MiDDiR 通过混合通道依赖和检索引导在 7 个数据集上取得更优概率预测性能[^src-middir]
 
+[^src-stationarity-aware-retrieval-augmented-forecasting-kdd26]: [[source-stationarity-aware-retrieval-augmented-forecasting-kdd26]]
 [^src-nsdiff]: [[source-nsdiff]]
 [^src-stats]: [[source-stats]]
 [^src-middir]: [[source-middir]]
+
+## 与 SARAF 的关系
+
+- **[[saraf|SARAF]]**（KDD 2026）同样关注非平稳性，但从检索质量角度应对：SARAF 证明相似度检索在非平稳数据集上不可靠，提出平稳性控制的多样性选择和自适应聚合。NsDiff 从概率扩散角度建模非平稳性（LSNM + UANS），SARAF 从检索增强角度处理非平稳性。[^src-stationarity-aware-retrieval-augmented-forecasting-kdd26]

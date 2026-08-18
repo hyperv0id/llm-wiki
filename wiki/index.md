@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-08-13
+last_updated: 2026-08-19
 tags:
   - meta
 ---
@@ -285,6 +285,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-whatif-tsf]] — WIT: What If TSF benchmark, scenario-guided multimodal forecasting with expert-crafted plausible/counterfactual futures, 4 domains, 5,352 samples, arXiv 2026
 - [[source-gmf]] — GMF: Geometry-based Schrödinger Bridges for Trustworthy Multimodal Fusion, 潜在空间传输几何用于多模态融合可靠性评估，打破统计方法的循环依赖
 - [[source-lightweight-mixed-graph-unrolling]] — Lightweight & Interpretable Transformer via Mixed Graph Algorithm Unrolling for Traffic Forecast, ADMM 展开混合图优化为轻量级类 Transformer，ICML 2026
+- [[source-trace-neurips2025]] — TRACE: Grounding Time Series in Context for Multimodal Embedding and Retrieval, cross-modal TS-text retriever with CIT + CbA + dual-level hard negative mining, NeurIPS 2025
 
 ## Entities
 - [[std-plm]] — STD-PLM, unified PLM-based ST forecasting+imputation with spatial+time dual tokenizer (AAAI 2025)
@@ -1199,6 +1200,19 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Entities (continued)
 - [[zeus]] — Zeus，unified tuning-free TSFM，point tokenization + U 形多尺度 encoder + MOTM，五任务零微调（ICML 2026）
+- [[trace]] — TRACE, first multimodal time-series retriever with channel-level alignment + dual-level hard negative mining (NeurIPS 2025)
 
 ## Techniques (continued)
 - [[multi-objective-temporal-masking]] — MOTM：掩码比例→时序范围→掩码策略三级采样，多目标掩码预训练（Zeus, ICML 2026）
+- [[channel-identity-token]] — CIT, per-channel learnable token for channel-level semantic anchoring (TRACE, NeurIPS 2025)
+- [[channel-biased-attention]] — CbA, channel-disentangled attention mask allowing limited cross-channel interaction (TRACE, NeurIPS 2025)
+- [[dual-level-hard-negative-mining]] — Dual-level hard negative mining at sample + channel granularity for cross-modal TS-text alignment (TRACE, NeurIPS 2025)
+
+## Sources (continued)
+- [[source-quizsf-zero-shot-forecasting-www26]] — QuiZSF: RAG for zero-shot TSF, ChronoRAG Base + HHTR + MSIL + MCC, 75%/87.5% Top1 (WWW 2026)
+
+## Techniques (continued)
+- [[quizsf]] — QuiZSF, retrieval-augmented zero-shot TSF framework, ChronoRAG Base + MSIL + MCC dual-branch adapter (WWW 2026)
+
+## Concepts (continued)
+- [[chronorag-base]] — ChronoRAG Base, hierarchical tree-structured TS database for RAG-augmented zero-shot forecasting (WWW 2026)

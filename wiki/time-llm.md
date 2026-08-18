@@ -8,8 +8,8 @@ tags:
   - forecasting
   - iclr
 created: 2026-06-04
-last_updated: 2026-08-01
-source_count: 6
+last_updated: 2026-08-19
+source_count: 7
 confidence: high
 status: active
 ---
@@ -77,6 +77,7 @@ Time-LLM 是 Jin et al. (ICLR 2024) 提出的框架，首次通过 **model repro
 > [[nuwats|NuwaTS]] (arXiv 2024) 在**插补**场景中给出了与 Time-LLM 相反的证据：对于缺失比例高、缺失位置多变的不完整 patch，把时序 patch 通过 [[patch-reprogramming|Patch Reprogramming]] 对齐到 LLM 词嵌入的"文本对齐"策略**不如简单线性嵌入**[^src-nuwats]。NuwaTS 的表 14 显示，简单线性层在全部 6 个数据集上均优于文本对齐（如 ETTh1 MSE 0.164 vs 0.250）。NuwaTS 据此摒弃硬文本提示，改用统计嵌入 + 缺失嵌入直接编码序列信息[^src-nuwats]。这提示 Time-LLM 的文本对齐增益可能依赖**完整序列**——缺失会破坏 patch 与文本原型的语义匹配。
 
 ## Connections
+- 演化/应用：[[quizsf|QuiZSF]] (WWW 2026) — 以 Time-LLM + LLaMA-7B 为基座构建 QuiZSF_L 单源迁移零样本预测，Language Coherer 将检索序列转化为结构化文本提示注入[^src-quizsf-zero-shot-forecasting-www26]
 
 - 基于：[[patch-based-tokenization]] — Patching + 线性 embedder
 - 基于：[[instance-normalization]] — RevIN 归一化
@@ -101,3 +102,4 @@ Time-LLM 是 Jin et al. (ICLR 2024) 提出的框架，首次通过 **model repro
 [^src-st-vision-llm]: [[source-st-vision-llm]]
 [^src-std-plm]: [[source-std-plm]]
 [^src-tess]: [[source-tess]]
+[^src-quizsf-zero-shot-forecasting-www26]: [[source-quizsf-zero-shot-forecasting-www26]]

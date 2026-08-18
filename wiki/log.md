@@ -3320,3 +3320,14 @@ PDF: `raw/Wen 等 - 2026 - MIDAS Mutual Information Disentanglement With Uncerta
 ## [2026-08-09] lint-fix | WeatherGFM | AGETNS 审查修复
 修复严重 6 项、警告 4 项、信息 3 项：weathergfm/source-weathergfm/weather-foundation-model/index/spatio-temporal-foundation-model 五处「首个」表述统一归因论文（含 index 的 first 与 landscape 的 First）；weathergfm 关键结果 5 条与 source-weathergfm 结果节补「论文报告/作者报告」口径，删除「表明/验证了突破上限」越级结论；对比表与互补段标注本课程对照（weatherpeft 先例）；source-weathergfm 移除自引用循环（全文 `[^src-weathergfm]` + 自指脚注），source_count 1→0、confidence medium→low（仓库惯例），并按 300-500 字指引压缩；weathergfm 相关页面补 [[weatherpeft]]/[[task-adaptive-dynamic-prompting]] 反向链接；index 的 weather-foundation-model 条目删误导性 (ICLR 2025) 后缀；五页 last_updated 刷新。mixed-modal-masked-image-modeling 复核无内容问题，仅时效警告保留。
 更新的页面：[[weathergfm]], [[source-weathergfm]], [[weather-foundation-model]], [[spatio-temporal-foundation-model]], [[index]]
+## [2026-08-19] ingest | QuiZSF (WWW 2026)
+QuiZSF: A Retrieval-Augmented Framework for Zero-Shot Time Series Forecasting (Ma et al., WWW 2026)。将 RAG 从 NLP 扩展到时序预测：构建 ChronoRAG Base 层次化时序数据库（27 数据集/7 域/48M time points），设计 HHTR 混合检索（域内局部+全局原型）、MSIL 多粒度交互学习（Interaction Pattern + Average Pattern + Cross-Attention）、MCC 双分支适配器（Numerical Coherer for TTM-Base, Language Coherer for Time-LLM + LLaMA-7B）。Non-LLM 设定 75% Top1，LLM 设定 87.5% Top1。消融：去 RAG 降 3.14–5.34%，去 MSIL 降，去 Coherer 降~2%。
+创建的页面：[[quizsf]], [[chronorag-base]], [[source-quizsf-zero-shot-forecasting-www26]]
+更新的页面：[[time-llm]], [[ratd]], [[index]]
+
+## [2026-08-19] ingest | TRACE: Grounding Time Series in Context for Multimodal Embedding and Retrieval
+
+PDF: `raw/trace-neurips2025.pdf`（NeurIPS 2025；Chen, Zhao, Nurbek, Feng, Maatouk, Tassiulas, Gao, Ying；Yale / McGill / UTRGV；代码 github.com/Graph-and-Geometric-Learning/TRACE-Multimodal-TSEncoder）。TRACE：首个多模态时序检索器——两阶段训练（Stage 1 encoder-only Transformer + CIT + CbA + RoPE + patch + 掩码重建；Stage 2 冻结编码器 + 冻结 Sentence-Transformer + 双级硬负采样 InfoNCE 跨模态对齐）。RAG 框架：soft prompt 增强冻结 TSFM（Time-MoE/Timer-XL/Moment），分类 +4.56%、预测 −4.55%。独立编码器在 Weather/Health/Energy/Environment 预测 SOTA，分类 89.76% Acc（+RAG）。自建 74,337 实例天气多模态数据集（NOAA 事件报告 + GHCN-h 时序 + ChatGPT 通道描述），在 Time-MMD 上验证跨域泛化。10.78M 总参数，微调激活 0.12M。
+
+创建的页面：[[source-trace-neurips2025]], [[trace]], [[channel-identity-token]], [[channel-biased-attention]], [[dual-level-hard-negative-mining]]
+更新的页面：[[contrastive-learning]], [[retrieval-augmented-spatio-temporal-forecasting]], [[multimodal-time-series-forecasting]], [[channel-independence]], [[time-mmd]], [[index]]

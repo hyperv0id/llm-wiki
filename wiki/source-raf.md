@@ -8,8 +8,8 @@ tags:
   - zero-shot
   - 2024
 created: 2026-07-07
-last_updated: 2026-07-28
-source_count: 1
+last_updated: 2026-08-19
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -71,3 +71,8 @@ RAF 将时序检索定义为 **TS-R（Time-Series Retrieval）问题**：给定�
 - [[time-vlm]] · [[source-time-vlm]] — Time-VLM RAL: hierarchical local/global patch memory inside a VLM multimodal pipeline (vs RAF motif concat for TSFM)
 
 [^src-raf]: [[source-raf]]
+
+## 与 SARAF 的关系
+
+- **[[saraf|SARAF]]**（KDD 2026）以 RAFT 为主要基线，指出 RAFT 仅依赖相似度检索（multi-period 匹配 + Pearson 相关），在非平稳数据集上检索可靠性下降。SARAF 在此基础上增加时间对齐增强和平稳性控制的多样性选择。相比 RAFT，SARAF 平均 MSE 降低 3.85%、MAE 降低 1.87%。[^src-stationarity-aware-retrieval-augmented-forecasting-kdd26]
+[^src-stationarity-aware-retrieval-augmented-forecasting-kdd26]: [[source-stationarity-aware-retrieval-augmented-forecasting-kdd26]]

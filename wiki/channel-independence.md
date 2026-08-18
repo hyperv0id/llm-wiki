@@ -7,8 +7,8 @@ tags:
   - channel-processing
   - multivariate
 created: 2026-04-28
-last_updated: 2026-08-06
-source_count: 14
+last_updated: 2026-08-19
+source_count: 15
 confidence: high
 status: active
 ---
@@ -84,6 +84,10 @@ CPiRi 的通道打乱测试暴露了一个关键问题：大多数 CD 模型在�
 
 [[zeus|Zeus]]（ICML 2026）以 channel-independent 策略处理多变量（论文自述引用 PatchTST），并与 point tokenization、[[instance-normalization|RevIN]] 组合：各通道独立送入逐点 token 化的多尺度 encoder，用 RevIN 去尺度变化 [^src-2607-01918]。论文自述其局限为"单变量聚焦"——CI 处理多变量但未显式建模变量间相关，建议未来可配合 CoRA 式适配 [^src-2607-01918]。
 
+## TRACE：CIT + CbA 的通道折中
+
+[[trace|TRACE]]（NeurIPS 2025）提出 [[channel-identity-token|Channel Identity Tokens (CITs)]] + [[channel-biased-attention|Channel-biased Attention (CbA)]] 作为 CI 与 CD 的折中方案。CIT 是每通道唯一的可学习 token，充当通道级摘要锚点；CbA 通过偏置注意力掩码使 CIT 仅关注本通道 token，但非 CIT token 可自由跨通道交互[^src-trace-neurips2025]。这与 [[cvpe|CVPE]] 的"仅 patch 层注入 CD"和 [[cpiri|CPiRi]] 的"通道打乱 + 空间模块"不同——TRACE 在注意力掩码级别实现通道解耦而非特征注入或排列不变正则化。消融显示移除 CIT 导致 Avg MSE 0.670->0.713，CbA->Full Attn 导致 0.670->0.713[^src-trace-neurips2025]。
+
 ## 与其他方法对比
 
 - **Channel-mixing**：传统方法，将所有通道拼接后一起处理
@@ -114,6 +118,7 @@ CPiRi 的通道打乱测试暴露了一个关键问题：大多数 CD 模型在�
 - 相关：[[srsnet|SRSNet]] / [[selective-representation-space|SRS]] — SRS module 在 CI 设定下对每个通道独立做选择性 patch + 重排 + 融合 (NeurIPS 2025)[^src-srsnet]
 - 相关：[[cora-correlation-aware-adapter|CoRA (Correlation-aware)]] — 在 CI 主导 TSFM 上用 DCE+HPCL 下游插件补 DCorr/HCorr/PCorr；推理 O(N)（ICLR 2026）[^src-cheng-2025-cora-correlation-aware-adapter]
 - 相关：[[zeus]] — CI + point tokenization + RevIN 的 tuning-free TSFM（ICML 2026）[^src-2607-01918]
+- 相关：[[trace]] — CIT + CbA 通道折中方案（NeurIPS 2025）[^src-trace-neurips2025]
 
 [^src-simdiff]: [[source-simdiff]]
 [^src-patchtst]: [[source-patchtst]]
@@ -129,3 +134,4 @@ CPiRi 的通道打乱测试暴露了一个关键问题：大多数 CD 模型在�
 [^src-cheng-2025-cora-correlation-aware-adapter]: [[source-cheng-2025-cora-correlation-aware-adapter]]
 [^src-pir]: [[source-pir]]
 [^src-2607-01918]: [[source-2607-01918]]
+[^src-trace-neurips2025]: [[source-trace-neurips2025]]

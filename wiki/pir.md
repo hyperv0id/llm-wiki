@@ -9,8 +9,8 @@ tags:
   - model-agnostic-plugin
   - neurips-2025
 created: 2026-08-06
-last_updated: 2026-08-06
-source_count: 1
+last_updated: 2026-08-19
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -62,5 +62,11 @@ PIR 由失败识别与两路修订组成，各组件机制与公式见 [[post-ho
 - [[prediction-refinement]] · [[test-time-computing-st]] — 邻近后处理范式
 - [[retrieval-augmented-spatio-temporal-forecasting]] — 检索增强范式
 - [[source-time-mmd]] — 文本协变量场景验证
+- [[pfrp]] — PFRP 同为即插即用检索增强单变量预测框架，但训练阶段即构建 GMB + PCL 编码 + 双门控 + 动态融合，PIR 在后处理阶段做实例检索修订
 
 [^src-pir]: [[source-pir]]
+
+## 与 SARAF 的关系
+
+- **[[saraf|SARAF]]**（KDD 2026）同为即插即用检索增强预测框架，但 PIR 是后处理修订（检索训练目标加权求和作为修订项），SARAF 在预测前检索历史窗口的未来段并加权聚合。SARAF 还引入平稳性感知的多样性选择和时间对齐增强，而 PIR 的检索是纯相似度 top-K 软加权。[^src-stationarity-aware-retrieval-augmented-forecasting-kdd26]
+[^src-stationarity-aware-retrieval-augmented-forecasting-kdd26]: [[source-stationarity-aware-retrieval-augmented-forecasting-kdd26]]

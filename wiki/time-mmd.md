@@ -8,8 +8,8 @@ tags:
   - text-numeric-alignment
   - neurips-2024
 created: 2026-07-28
-last_updated: 2026-08-06
-source_count: 4
+last_updated: 2026-08-19
+source_count: 5
 confidence: high
 status: active
 ---
@@ -77,6 +77,7 @@ Time-MMD 是**数据与评测基础设施**，不是预测模型。下游常引�
 | [[constrained-text-fusion|CFA / Constrained Fusion]] | 同九域系统证伪 naive add/concat；CFA 低秩 plug-in 约束融合（KDD ’26 MILETS）[^src-constrained-text-fusion] |
 | [[cross-modal-misalignment|Cross-modal misalignment]] | 配对 MMCL 理论：文本省略/扰动 = selection/perturbation；表示只保留无偏共享语义——解释为何“对齐文本”质量与覆盖决定可学因子[^src-cross-modal-misalignment] |
 | [[pir|PIR]]（Post-forecasting Identification and Revision，Liu et al., NeurIPS 2025） | Energy / Health 子集上验证对齐文本描述作为外生信息的后处理修订（周频，Lin=24）[^src-pir] |
+| [[trace|TRACE]] | Health/Energy/Environment 子集预测验证，TRACE 独立编码器 SOTA |
 
 释放元数据：数值（起止、目标、协变量）+ 文本（起止、fact/prediction 内容与来源）。GitHub: `https://github.com/AdityaLab/Time-MMD`[^src-time-mmd]。
 
@@ -91,6 +92,7 @@ Time-MMD 是**数据与评测基础设施**，不是预测模型。下游常引�
 - [[source-gpt4mts]] · [[source-from-news-to-forecast]] · [[source-event-driven-ts-forecasting]] · [[vot]]  
 - [[time-vlm]] · [[source-time-vlm]] — 内生 VLM 多模态预测（对照外生文本基准）
 - [[constrained-text-fusion]] · [[source-constrained-text-fusion]] — naive 常伤、CFA 受控融合（同九域 >20K 实验）
+- [[trace]] · [[source-trace-neurips2025]] — TRACE 跨模态检索器，在 Health/Energy/Environment 子集上验证跨域预测
 - [[cross-modal-misalignment]] · [[source-cross-modal-misalignment]] — selection/perturbation 与缓解 vs 利用
 - [[tsfm-covariate-adaptation-comparison]] · [[covariate-homogenization]]
 
@@ -98,3 +100,4 @@ Time-MMD 是**数据与评测基础设施**，不是预测模型。下游常引�
 [^src-constrained-text-fusion]: [[source-constrained-text-fusion]]
 [^src-cross-modal-misalignment]: [[source-cross-modal-misalignment]]
 [^src-pir]: [[source-pir]]
+[^src-trace-neurips2025]: [[source-trace-neurips2025]]
