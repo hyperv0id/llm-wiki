@@ -633,6 +633,7 @@ All wiki pages, organized by type. Updated on every ingest.
 ## Techniques
 - [[predictive-contrastive-learning]] — PCL，正样本按预测区间 MSE 而非回溯窗口相似度选择的对比学习策略 (PFRP, AAAI 2026)
 - [[global-memory-bank]] — GMB，固定大小历史模式记忆库，PCL 编码 + K-medoids 聚类 + 特征余弦相似度检索 (PFRP, AAAI 2026)
+- [[k-medoids-clustering]] — K-medoids 聚类，以真实样本为簇中心的划分式聚类，用于构建可解释的历史模式记忆库 (PFRP, AAAI 2026)
 - [[time-aligned-retrieval-enhancement]] — 时间对齐检索增强，在形态相似度上叠加多粒度时间对齐奖励 (SARAF, KDD 2026)
 - [[diversity-based-retrieval-selection]] — 平稳性控制的随机 MMR 多样性检索选择，从 Top-M 候选池选择 Top-K 多样化子集 (SARAF, KDD 2026)
 - [[fenchel-young-loss]] — FY loss, convex surrogate for Bregman divergence enabling end-to-end training through combinatorial layers

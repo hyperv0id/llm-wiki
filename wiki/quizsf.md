@@ -117,7 +117,7 @@ QuiZSF_T 在模型大小和 CPU 推理时间上保持竞争力，仅略逊于 TT
 - [[timesnet]] — 对比基线
 - [[itransformer]] — 对比基线
 - [[crossformer]] — 对比基线
-- [[dlinear]] — 对比基线（DLinear 对比在 source-summary）
+- [[ltsf-linear|DLinear]] — 对比基线（DLinear 对比在 source-summary）
 - [[fedformer]] — 对比基线
 - [[tide]] — 对比基线
 - [[retrieval-augmented-spatio-temporal-forecasting]] — RAG-for-STF 范式

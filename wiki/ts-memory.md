@@ -17,7 +17,7 @@ status: active
 
 # TS-Memory
 
-**TS-Memory** 是 HKUST(GZ) / Tencent / Squirrel AI 团队提出的即插即用记忆适配器，发表于 KDD 2026 [^src-ts-memory-time-series-foundation-models-kdd26]。它通过 [[parametric-memory-distillation|参数化记忆蒸馏]] 范式，将在线检索的分布知识离线蒸馏为轻量模块 PlugMem，使冻结 [[time-series-foundation-model|TSFM]] 获得检索增强的域适应能力，推理时 $O(1)$ 复杂度且无需外部数据库 [^src-ts-memory-time-series-foundation-models-kdd26]。
+**TS-Memory** 是 HKUST(GZ) / Tencent / Squirrel AI 团队提出的即插即用记忆适配器，发表于 KDD 2026 [^src-ts-memory-time-series-foundation-models-kdd26]。它通过 [[parametric-memory-distillation|参数化记忆蒸馏]] 范式，将在线检索的分布知识离线蒸馏为轻量模块 PlugMem，使冻结 TSFM（时间序列基础模型） 获得检索增强的域适应能力，推理时 $O(1)$ 复杂度且无需外部数据库 [^src-ts-memory-time-series-foundation-models-kdd26]。
 
 ## 核心设计
 

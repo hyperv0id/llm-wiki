@@ -21,7 +21,7 @@ status: active
 
 ## 核心论点
 
-TS-Memory 提出 Parametric Memory Distillation 范式——将在线检索的预测分布知识离线蒸馏为轻量参数化记忆模块（PlugMem），使冻结的 [[time-series-foundation-model|TSFM]] 在推理时无需检索即可获得检索增强的适应能力。该方法在冻结 backbone 上实现 $O(1)$ 推理，避免了参数适配的灾难性遗忘和非参数检索的推理延迟。
+TS-Memory 提出 Parametric Memory Distillation 范式——将在线检索的预测分布知识离线蒸馏为轻量参数化记忆模块（PlugMem），使冻结的 TSFM（时间序列基础模型） 在推理时无需检索即可获得检索增强的适应能力。该方法在冻结 backbone 上实现 $O(1)$ 推理，避免了参数适配的灾难性遗忘和非参数检索的推理延迟。
 
 ## 方法
 
