@@ -3343,6 +3343,11 @@ SARAF: Stationarity-Aware Retrieval-Augmented Time Series Forecasting。论文�
 创建的页面：[[source-stationarity-aware-retrieval-augmented-forecasting-kdd26]], [[saraf]], [[stationarity-aware-retrieval]], [[time-aligned-retrieval-enhancement]], [[diversity-based-retrieval-selection]], [[dataset-stationarity-estimation]]
 更新的页面：[[gtr]], [[pir]], [[retrieval-augmented-spatio-temporal-forecasting]], [[nsdiff]], [[source-raf]], [[index]]
 
-## [2026-08-19] ingest | PFRP (AAAI 2026)
-创建的页面：[[source-predicting-the-future-by-retrieving-the-past-aaai2026]], [[pfrp]], [[predictive-contrastive-learning]], [[global-memory-bank]]
-更新的页面：[[gtr]], [[pir]], [[ratd]], [[retrieval-augmented-spatio-temporal-forecasting]], [[index]]
+## [2026-08-19] maintenance | SARAF ingest 后 frontmatter/结构清理
+SARAF ingest 时因多 Agent 并发，shared wiki/ 工作区已含 TS-Memory/PFRP 未提交编辑；提交后导致部分文件 frontmatter 出现 `PUT` 前缀或 source_count 不匹配。本次清理：
+- 全 wiki 修复 `PUT last_updated:` / `PUT source_count:` 前缀
+- 修复 `retrieval-augmented-spatio-temporal-forecasting.md` 脚注与章节结构
+- 校正 source_count：[[sundial]] 2→3、[[tsfm-covariate-adaptation-comparison]] 6→9、[[retrieval-augmented-spatio-temporal-forecasting]] 6→7
+更新的页面：[[retrieval-augmented-spatio-temporal-forecasting]], [[sundial]], [[tsfm-covariate-adaptation-comparison]]
+
+
