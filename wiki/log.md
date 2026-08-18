@@ -1,3 +1,30 @@
+## [2026-08-13] lint | 谱核线性注意力：双审查（规范 + 数学）与修复
+
+两个只读审查子代理（WikiConformanceReview、MathDerivationReview）完成，数学侧对照 WIRE 原文 PDF 并做 numpy 数值验证（电阻恒等式/度量/树等号/逐块旋转 MC/网格电阻/精确路线消元），推导主体全 OK。修复：规范 3 项（S_i 式改挂 [[linear-attention-unified-framework]]；图频率句收紧至源页覆盖范围；index last_updated）；数学 4 项（记号统一：γ 为核衰减率、ω²=2γ，消除 e^{−γR} 与 e^{−γR/2} 分歧；幂律指数修正为 d^{−γ/π} 且仅 2D 成立，1D 指数衰减、3D 饱和；秩≤m 改秩≤特征维；补 O(N) 特征维因子与一次性谱预计算、精确路线 C(m+T,T)）。
+
+更新的页面：[[spectral-kernel-linear-attention]], [[index]]
+
+## [2026-08-13] query | 谱核线性注意力：从 WIRE 推导链重推为线性注意力
+
+用户问：能否从 WIRE 推导链重推，但不推导成位置编码而是一种线性注意力。答案：WIRE 旋转 = 内容×有效电阻核的随机特征映射；Theorem 3 的一阶展开是高斯特征函数的 Taylor 首项，期望下精确值为 $q^\top k\, e^{-\gamma R}$；落地为 O(N) 归一化线性注意力。两条实现路线（旋转路线固定维度、精确路线 Taylor+key 重加权）；设计旋钮（多尺度 ω、逐层时标、m 截断低通、谱核菜单 $f(\lambda)$）；风险（γR>1 负注意力、仅 2D 网格幂律、秩≤特征维）。综合 WIRE/SpecSTG/Mamba↔LA/HiFiNet 四源。
+
+创建的页面：[[spectral-kernel-linear-attention]]
+更新的页面：[[wire]], [[index]]
+
+## [2026-08-11] maintenance | IGSTGNN venue 与数字核实（KDD 2026 确认）
+
+对 IGSTGNN 按 AGENTS.md 证据等级做全量核查。结论：**原 wiki 标注全部正确**——论文正文明确 "accepted for publication at KDD 2026"（DOI 10.1145/3770854.3780215，pp. 243-254，researchr/dblp 佐证），arXiv HTML 全文可访问。此前 leads.md 标注 "VENUE UNVERIFIED" 系当时论文 PDF 不可访问所致，现已通过 arXiv HTML 逐项核实：数据集统计（表 1）、avg MAE 12.69/13.43/13.13（表 4）、5.65%/4.1%（§4.2）、σ_t=1.0（§4.1.3）、ICSF 8.85%/TIID 9.85%/双模块 13.23%（§4.3）、ICSF vs MLP/IMP 10.3%/12.5%（§4.4）、消融 12.69→13.23（表 5）——全部与 wiki 一致，无瞎讲内容。
+
+操作：`raw/2602.02528.pdf` 收录论文全文；[[source-incident-guided-st-forecasting]] 补 DOI/页码/raw 路径；[[igstgnn]] 补 DOI；4 页 last_updated 更新。中间曾误标 "venue 未确认" 并加证据警告块，已全部回滚（用户指正 ConFormer 系 KDD，IGSTGNN 同理）。
+
+更新的页面：[[igstgnn]], [[source-incident-guided-st-forecasting]], [[temporal-incident-impact-decay]], [[incident-context-spatial-fusion]]
+
+## [2026-08-11] maintenance | 压缩 Non-Fusion / TiMi / TESS 笔记
+
+去掉范式升格与免责声明墙；只留机制、设定、数字。TESS 术语用 Temporal Evolution Semantic Space。
+
+更新：[[non-fusion-guidance]], [[source-timi]], [[timi]], [[source-tess]], [[tess]], [[event-driven-reasoning]], [[multimodal-time-series-forecasting]], [[mmoe]], [[mixture-of-experts]], [[constrained-text-fusion]], [[vot]], [[index]]
+
 ## [2026-08-06] lint | PIR ingest 终审（AGETNS 全量）
 
 对照 AGETNS 清单，范围：PIR 本轮新建/修改页（5 新建 + 13 更新 + index/log/ingest-report）。终审全页通读，数字与论文全文逐项核对。

@@ -6,7 +6,7 @@ tags:
   - architecture
   - scalability
 created: 2026-04-29
-last_updated: 2026-08-08
+last_updated: 2026-08-11
 source_count: 9
 references:
   - [[source-fast-long-horizon-forecasting]]
@@ -109,9 +109,9 @@ FaST 首次将 MoE 应用于大规模长视野时空图预测：
 
 - [[stamimputer|STAMImputer]] (arXiv 2025) 将 MoE 上移到框架外层，用观测专家 (O-Expert) 依据稀疏度特征动态路由时间/空间注意力专家，号称首次把 MoE 用于交通数据填补[^src-stamimputer]。
 
-## 在多模态时序预测中的 Non-Fusion Guidance
+## MMoE（TiMi）
 
-[[timi|TiMi]] (ICML 2026) 提出 **[[mmoe|Multimodal Mixture-of-Experts (MMoE)]]**——一种将 MoE 用于跨模态知识引导而非特征融合的创新范式[^src-timi]。MMoE 包含两个互补的 MoE 子系统：**TMoE** 用 LLM 提取的文本因果知识作为门控信号路由 experts；**SMoE** 用全局序列表示路由 experts 捕获趋势[^src-timi]。与标准 Sparse/Dense MoE（仅基于输入 token 的 routing）不同，MMoE 的核心创新在于**门控信号的来源**——text-based routing 使 LLM 推理可以动态选择 experts 而非简单地将特征融合[^src-timi]。该模块可替换任意 Transformer backbone 的标准 FFN 层，PatchTST+MMoE 平均 MSE 降低 18.2%[^src-timi]。
+[[timi|TiMi]] **[[mmoe|MMoE]]**：TMoE 文本门控 + SMoE 序列门控；消融优于标准 MoE / Cross-Attention。换 FFN；PatchTST+MMoE 平均 MSE −18.2%。标签 [[non-fusion-guidance|Non-Fusion Guidance]][^src-timi]。
 
 ## 事后模型混合中的 MoE（FusionBench）
 

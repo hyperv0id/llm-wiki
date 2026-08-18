@@ -10,7 +10,7 @@ tags:
   - linear-attention
   - icml-2026
 created: 2026-08-09
-last_updated: 2026-08-09
+last_updated: 2026-08-13
 source_count: 1
 confidence: medium
 status: active
@@ -105,6 +105,7 @@ WIRE 可以区分在 1 维 Weisfeiler-Lehman 同构测试下不可区分的图�
 
 - [[rope]] — RoPE 技术详解；WIRE 在网格图上恢复标准 RoPE，是其特例
 - [[roformer]] — RoFormer 模型实体
+- [[spectral-kernel-linear-attention]] — WIRE 旋转读作核的随机特征后落地为线性注意力（本 wiki 分析）
 - [[source-2509-22259]] — WIRE 论文源摘要
 
 [^src-2509-22259]: [[source-2509-22259]]

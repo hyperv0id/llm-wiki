@@ -7,7 +7,7 @@ tags:
   - decay-modeling
   - incident-aware
 created: 2026-05-03
-last_updated: 2026-05-03
+last_updated: 2026-08-11
 source_count: 1
 confidence: medium
 status: active

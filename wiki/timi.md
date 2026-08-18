@@ -9,50 +9,47 @@ tags:
   - forecasting
   - icml-2026
 created: 2026-07-25
-last_updated: 2026-08-01
+last_updated: 2026-08-11
 source_count: 3
-confidence: high
+confidence: medium
 status: active
 ---
 
 # TiMi
 
-**TiMi**（**Ti**me Series Transformers with **Mi**xture of Experts）是清华大学提出的多模态时间序列预测框架，发表于 ICML 2026[^src-timi]。核心思想：用 LLM 的因果推理能力从外生文本中提取未来趋势的结构化知识，通过 **[[mmoe|Multimodal Mixture-of-Experts (MMoE)]]** 模块注入 Transformer-based 时间序列模型进行预测引导[^src-timi]。
+**TiMi**（Time Series Transformers with Mixture of Experts）：清华，arXiv:2602.21693，标注 ICML 2026[^src-timi]。
 
-## 与其他多模态方法的核心区别
+冻结 LLM 抽外生文本结构知识 → **[[mmoe|MMoE]]** 换 FFN 路由 → Transformer 时序主干预测[^src-timi]。论文方法标签：[[non-fusion-guidance|Non-Fusion Guidance]][^src-timi]。
 
-TiMi 提出 **[[non-fusion-guidance|Non-Fusion Guidance]]** 范式，区别于两类主流方法[^src-timi]：
+## 对照
 
-| 范式 | 代表方法 | 机制 | 局限性 |
-|------|---------|------|--------|
-| Early Fusion | [[time-llm|Time-LLM]], UniTime, AutoTimes | 将 TS 嵌入 LLM 文本空间，LLM 作为 backbone | 计算开销大，未利用外部因果知识 |
-| Late Fusion | Time-MMD, IMM-TSF, [[vot|VoT]] | 分别编码 TS 和文本，后融合映射为预测 | 文本与数值缺乏语义对应，对齐困难 |
-| **Non-Fusion Guidance** | **TiMi** | LLM 独立推理 → 结构化因果知识 → 通过 MoE 引导 TS backbone | — |
+| | 机制 |
+|--|------|
+| Early Fusion（Time-LLM 等） | TS 进 LLM 空间 |
+| Late Fusion（Time-MMD、[[vot\|VoT]]） | 分路编码后对齐/映射 |
+| TiMi | 文本知识 → MoE 路由，无表示融合[^src-timi] |
 
-TiMi 与 [[vot|VoT]] 都使用 LLM 推理文本，但 VoT 仍依赖 feature-level 对齐（多级对齐），而 TiMi 完全放弃模态融合，改为 MoE routing 实现知识引导[^src-timi]。
-
-与 [[constrained-text-fusion|Constrained Text Fusion / CFA]]（Lee et al., arXiv:2603.22372）对照：CFA 同样发现 Time-MMD 上 **naive 融合常低于 unimodal**，但用 **低秩残差 / 门控等受控融合** 保留特征注入；TiMi 则彻底 **Non-Fusion**，用 MoE 路由代替表示融合——问题诊断相近，机制正交[^src-timi][^src-constrained-text-fusion]。
-
-同族第二成员 [[tess|TESS]]（arXiv:2603.12664v2）给出另一条 Non-Fusion 实现：冻结 LLM 不做生成式推理，只把文本分类为四类离散 [[temporal-semantic-primitives|时间演化原语]]（mean shift/volatility/shape/lag），经置信门控后作 prefix token 条件化 PatchTST。与 TiMi 的差异在知识形态（自由文本 vs 受限类别）与注入机制（MMoE 路由 vs 离散原语 + 门控 + 条件化）；TESS 另提供信息瓶颈与 gating 误差衰减定理（4.1、A.5）[^src-tess]。
+- vs [[vot|VoT]]：都用 LLM 读外生文本；VoT 做多级对齐，TiMi 做路由[^src-timi]。
+- vs [[constrained-text-fusion|CFA]]：CFA 低秩/门控特征注入；TiMi 不做特征融合[^src-constrained-text-fusion]。
+- vs [[tess|TESS]]：TESS 是 4 类离散原语 + 门控 + PatchTST prefix；术语是 Temporal Evolution Semantic Space[^src-tess]。
 
 ## 架构
 
-1. **Text Reasoning** — 冻结 LLM (Qwen2.5-7B-Instruct) 处理外生文本，通过平均池化生成含因果知识的文本 token[^src-timi]。
-2. **Series Embedding** — Patch-based tokenization（同 PatchTST）将历史序列分割为重叠 patch 并线性投影[^src-timi]。
-3. **MMoE Plugin** — 替换 Transformer backbone 中的标准 FFN：
+1. 冻结 Qwen2.5-7B-Instruct 处理文本 → 池化 token[^src-timi]
+2. Patch embedding（PatchTST 风格）[^src-timi]
+3. MMoE：TMoE（文本门控 Top-K）+ SMoE（全局序列门控 Top-K）[^src-timi]
 
-   - **TMoE**（Text-Informed MoE）：文本 token 经线性门控 → sparse Top-K routing → 选中的 experts 处理所有时序 token，注入文本推导的未来趋势[^src-timi]。
-   - **SMoE**（Series-Aware MoE）：所有时序 patch token 拼接为全局序列表示 → 门控 → Top-K routing → 基于全局趋势的互补引导[^src-timi]。
+$$\text{MMoE}(h,\bar H)=\sum_{i\in\tau_x}s_{i,x}\mathrm{FFN}_i(h)+\sum_{i\in\tau_s}s_{i,s}\mathrm{FFN}_i(h)$$
 
-输出为两路加权和：$\text{MMoE}(h, \bar{H}) = \sum_{i\in\tau_x} s_{i,x}\text{FFN}_i(h) + \sum_{i\in\tau_s} s_{i,s}\text{FFN}_i(h)$[^src-timi]。
+## 结果（文内 16 基准）
 
-## 关键结果
+| 项 | 数字 |
+|----|------|
+| PatchTST / TimeXer / Autoformer +MMoE | 平均 MSE −18.2% / −12.5% / −12.4% |
+| Time-IMM vs PatchTST | 平均 MSE −29.57% |
+| Time-MMD vs PatchTST | 平均 MSE −11.26%[^src-timi] |
 
-- 16 个多模态基准上一致 SOTA（9 Time-MMD + 7 Time-IMM 不规则数据集）[^src-timi]。
-- 即插即用：PatchTST +18.2%、TimeXer +12.5%、Autoformer +12.4%（平均 MSE 提升）[^src-timi]。
-- 不规则数据：TiMi 降低平均 MSE 29.57%（vs PatchTST backbone），远超 Time-MMD 11.26%[^src-timi]。
-- SMoE 可解释性：专家选择与 MK 趋势检验强相关，上升/下降趋势自动路由至不同专家[^src-timi]。
-
+SMoE 路由与 MK 趋势方向相关[^src-timi]。
 
 ## 相关页面
 

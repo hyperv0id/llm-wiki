@@ -76,7 +76,7 @@ Among the compared methods in the paper's Table 1, VoT is unique in using LLMs f
 - [[multi-level-alignment]] — multi-level alignment concept
 - [[endogenous-text-alignment]] — ETA technique
 - [[adaptive-frequency-fusion]] — AFF technique
-- [[timi]] — TiMi, Non-Fusion Guidance paradigm comparison (ICML 2026)
+- [[timi]] — TiMi: MoE 路由引导，无多级对齐
 - [[tess]] — TESS, discrete semantic bottleneck variant
 - [[multimodal-time-series-forecasting]] — task concept
 - [[time-mmd]] · [[source-time-mmd]] — multi-domain text–numeric benchmark

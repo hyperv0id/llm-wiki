@@ -7,7 +7,7 @@ tags:
   - graph-neural-network
   - kdd-2026
 created: 2026-05-03
-last_updated: 2026-05-03
+last_updated: 2026-08-11
 source_count: 1
 confidence: medium
 status: active
@@ -15,7 +15,7 @@ status: active
 
 # IGSTGNN
 
-**IGSTGNN**（Incident-Guided Spatiotemporal Graph Neural Network）是 Fan 等人在 KDD 2026 提出的交通预测框架，通过显式建模非重复性事件（事故、恶劣天气、道路施工等）的时空影响来提升预测精度[^src-incident-guided-st-forecasting]。
+**IGSTGNN**（Incident-Guided Spatiotemporal Graph Neural Network）是 Fan 等人在 KDD 2026 提出的交通预测框架（arXiv:2602.02528，DOI 10.1145/3770854.3780215），通过显式建模非重复性事件（事故、恶劣天气、道路施工等）的时空影响来提升预测精度[^src-incident-guided-st-forecasting]。
 
 ## 核心创新
 

@@ -7,7 +7,7 @@ tags:
   - spatial-temporal
   - kdd-2026
 created: 2026-05-03
-last_updated: 2026-05-03
+last_updated: 2026-08-11
 source_count: 1
 confidence: medium
 status: active
@@ -15,7 +15,7 @@ status: active
 
 # Incident-Guided Spatiotemporal Traffic Forecasting
 
-Fan, Li, Zou, Ye & Du (Beihang University). KDD 2026. arXiv:2602.02528v2.
+Fan, Li, Zou, Ye & Du (Beihang University). KDD 2026. arXiv:2602.02528v2. DOI 10.1145/3770854.3780215（pp. 243-254）。完整论文：`raw/2602.02528.pdf`；代码：https://github.com/fanlixiang/IGSTGNN 。
 
 ## 核心论点
 

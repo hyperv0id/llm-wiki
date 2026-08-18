@@ -9,7 +9,7 @@ tags:
   - satellite-imagery
 created: 2026-04-29
 source_count: 18
-last_updated: 2026-08-08
+last_updated: 2026-08-11
 confidence: high
 status: active
 ---
@@ -108,13 +108,13 @@ UniCA 在多模态场景下的表现：
 
 **[[tats|TaTS (Texts as Time Series)]]** (ICLR 2026) 是一个即插即用的多模态时间序列框架，由 Li et al. (UIUC/Meta/IBM) 提出[^src-language-in-the-flow-of-time]。TaTS 基于 **[[chronological-textual-resonance|Chronological Textual Resonance (CTR)]]** 现象——时间序列配对的文本天然展现出与数值序列一致的周期性——将文本编码后作为辅助变量拼接到原始时间序列中，无需修改任何现有模型架构[^src-language-in-the-flow-of-time]。在 18 个数据集和 9 个模型上验证，预测和插补任务均取得一致提升。TaTS 的核心优势在于极简设计：仅需 MLP 降维 + 拼接操作，与 Transformer-based、线性、频域模型均兼容[^src-language-in-the-flow-of-time]。
 
-## TiMi：Non-Fusion Guidance 多模态预测
+## TiMi
 
-**[[timi|TiMi]]** (ICML 2026) 提出第三种多模态预测范式——**[[non-fusion-guidance|Non-Fusion Guidance]]**：不再尝试在表示层对齐或融合文本与数值模态，而是让冻结 LLM 独立推理文本中的未来趋势因果知识，通过 **[[mmoe|Multimodal Mixture-of-Experts (MMoE)]]** 门控机制注入 Transformer backbone 的时序建模过程[^src-timi]。MMoE 包含 TMoE（基于文本的路由）和 SMoE（基于序列全局趋势的路由）两个互补专家系统，可在不修改 backbone 架构的情况下即插即用[^src-timi]。在 16 个多模态基准上一致 SOTA，PatchTST+MMoE 平均 MSE 提升 18.2%[^src-timi]。与 VoT 同为 LLM 推理式方法但放弃特征融合，与 TaTS 同为即插即用但引入因果推理而非简单特征拼接[^src-timi]。
+**[[timi|TiMi]]**（arXiv:2602.21693）：冻结 LLM 抽外生文本结构知识 → **[[mmoe|MMoE]]**（TMoE+SMoE）换 FFN → 时序主干。标签 [[non-fusion-guidance|Non-Fusion Guidance]]。16 基准；PatchTST+MMoE 平均 MSE −18.2%[^src-timi]。
 
-## TESS：离散原语瓶颈的 Non-Fusion 实现
+## TESS
 
-**[[tess|TESS]]**（Li et al., arXiv:2603.12664v2）是 Non-Fusion Guidance 的第二条实现。先用半合成实验（FNSPID 真实序列 + GPT-5.2 生成文本、token 级标注）定位两个瓶颈：冗余 token 分散注意力（焦点比 $R_t<0$）、删冗余后语义仍难解码为数值信号（Signal-Only ≪ Numerical）；再冻结 LLM 将外生新闻分类为四类离散 [[temporal-semantic-primitives|时间演化原语]]（mean shift/volatility/shape/lag），以 top-1/top-2 margin 为不确定度信号经置信门控过滤，最后以 prefix token 条件化 PatchTST[^src-tess]。与 TiMi 的 MoE 路由相比：知识形态从自由文本变为受限类别、引导从路由变为条件化+门控；信息瓶颈定理（4.1）保证预测互信息不损，gating 误差按 $g^2$ 衰减（A.5）。四数据集上相对最强基线最高 +29.1% MSE 降幅（Bitcoin）。其半合成诊断与 [[constrained-text-fusion|CFA]] 的 >20K 实证共同构成「naive 融合有害」的证据链[^src-tess]。
+**[[tess|TESS]]**（arXiv:2603.12664v2）：半合成定位冗余注意力与语义–数值难解码；冻结 LLM → 四类 [[temporal-semantic-primitives|原语]] → 门控 → PatchTST prefix。Bitcoin vs NewsForecasting MSE −29.1%[^src-tess]。
 
 ## Time-VLM：VLM 桥接时序 / 视觉 / 文本
 
@@ -126,7 +126,7 @@ UniCA 在多模态场景下的表现：
 
 ## Constrained Text Fusion：Naive 常伤、约束才稳
 
-**[[constrained-text-fusion|Constrained Text Fusion / CFA]]**（Lee et al., LG AI Research, KDD ’26 MILETS, arXiv:2603.22372）在 [[time-mmd|Time-MMD]] 九域上做 **>20K** 设定对照：冻结文本编码器（BERT / GPT-2 / Llama3 / Doc2Vec）× 14 TS 骨干 × first/middle/last × add/concat，发现 **naive 融合经常低于 unimodal TS**（甚至 Div.：MSE>单模态 10×），归因于辅助文本的无关/冲突信号无控注入。**Constrained** 族——Gating、FiLM 调制、正交分量注入、以及 **CFA**（低秩瓶颈残差 \(z_{\mathrm{TS}}+W_{\mathrm{up}}\phi(W_{\mathrm{down}}z_{\mathrm{Text}})\)，\(r=8\)，近零 init）——系统优于 naive；CFA 在 9 域全胜 unimodal、7/9 rank-1、13/14 骨干提升，参数仅约 +0.61%。相对 [[tats|TaTS]]（first-add naive plug-in）与 [[timi|TiMi]] 的 [[non-fusion-guidance|Non-Fusion Guidance]]（完全不融特征），CFA 是 **plug-in + 受控特征融合** 的中间路线[^src-constrained-text-fusion]。
+**[[constrained-text-fusion|CFA]]**（arXiv:2603.22372）：Time-MMD 九域 >20K 设定，naive add/concat 常差于 unimodal；Gating/FiLM/正交/低秩 CFA 更好（9/9 域、13/14 骨干，+0.61% 参）。相对 [[tats|TaTS]] 拼接与 [[timi|TiMi]] MoE 路由，CFA 是特征侧受控注入[^src-constrained-text-fusion]。
 
 ## Cross-Modal Misalignment：缓解 vs 利用
 
@@ -136,7 +136,7 @@ UniCA 在多模态场景下的表现：
 
 | 维度 | Aurora | TiMi | UniCA | MoST | VoT | TaTS | ChannelMTS | PIPE | TESS |
 |------|--------|------|-------|------|-----|------|------------|------|------|
-| 范式 | 生成式基础模型 | Non-Fusion Guidance | 适配框架 | 判别式基础模型 | LLM 推理 | 即插即用框架 | 任务专用 | 位置编码注入 | Non-Fusion Guidance（原语瓶颈） |
+| 做法 | 生成式 FM | Non-Fusion（TiMi） | 适配 | 判别式 FM | LLM 推理+对齐 | 即插即用 | 任务专用 | 位置编码 | 原语瓶颈（TESS） |
 | 模态 | 文本 + 图像 + TS | 文本 + TS | 分类 + 图像 + 文本 | 图像 + 文本 + 位置 + TS | 文本 + TS | 文本 + TS | 环境 + TS | 卫星图像 + TS | 文本 + TS |
 | 零样本 | ✓ | ✗ | ✓ (via TSFM) | ✓ | ✗ | ✗ | ✗ | ✓ (跨洋区) | ✗ |
 | 生成方式 | Flow Matching | N/A | N/A | N/A | LLM 生成 | N/A | N/A | N/A | N/A |
@@ -222,7 +222,7 @@ UniCA 在多模态场景下的表现：
 - [[allspark]] — AllSpark 10 模态时空通用智能模型
 - [[language-as-reference-framework]] — LaRF 以语言为参考框架的多模态统一原理
 
-- [[tess]] — TESS 实体：离散原语瓶颈的 Non-Fusion 实现（arXiv:2603.12664v2）
+- [[tess]] — TESS：离散原语 + PatchTST prefix（arXiv:2603.12664v2）
 - [[temporal-semantic-primitives]] — 时间演化原语技术页
 - [[e2-cstp]] — E²-CSTP 因果多模态时空预测框架
 - [[streasoner]] — STReasoner 时空推理 TS-LM

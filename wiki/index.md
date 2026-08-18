@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-08-08
+last_updated: 2026-08-13
 tags:
   - meta
 ---
@@ -111,7 +111,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-exotst]] — ExoTST: Exogenous-Aware Temporal Sequence Transformer, treats past and future exogenous as distinct modalities with cross-temporal fusion for autoregressive time series prediction (arXiv 2024)
 - [[source-select-then-balance]] — Select, then Balance 旧 slug（已由 [[source-exost]] 取代；同文 arXiv only）
 - [[source-exollm]] — ExoLLM: 首个 LLM-driven 外生变量预测方法，Meta-task Instruction + Multi-grained Prompts + Dual TS-Text Attention（WWW 2025）
-- [[source-timi]] — TiMi: 用 LLM 因果推理 + Multimodal MoE 引导 Transformer 时序预测，Non-Fusion Guidance 范式，16 基准 SOTA，ICML 2026
+- [[source-timi]] — TiMi: LLM + MMoE 路由引导时序预测（arXiv:2602.21693）
 - [[source-crosslinear]] — CrossLinear: plug-and-play 1D-conv cross-correlation embedding for exogenous many-to-one TS forecasting (KDD 2025, arXiv:2505.23116)
 - [[source-dpm-solver]] — DPM-Solver: Fast ODE solver for diffusion models (NeurIPS 2022)
 - [[source-consistency-models]] — Consistency Models: one-step generation (ICML 2023)
@@ -401,7 +401,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[aurora]] — Aurora, universal generative multimodal time series foundation model (ICLR 2026)
 - [[climatear]] — ClimateAR, VAR autoregressive probabilistic climate forecasting, ACC +37.56% (ICML 2026)
 - [[tats]] — TaTS (Texts as Time Series), plug-and-play multimodal TS framework (ICLR 2026)
-- [[timi]] — TiMi, LLM 因果推理 + MMoE 即插即用引导 Transformer 多模态时序预测，Non-Fusion Guidance 范式，ICML 2026
+- [[timi]] — TiMi: LLM + MMoE 插件引导时序预测
 - [[uniextreme]] — UniExtreme, universal extreme weather forecasting foundation model (arXiv 2025)
 - [[uniflow]] — UniFlow, foundation model for unified grid+graph urban spatio-temporal flow prediction (arXiv 2024)
 - [[ragc]] — RAGC, regularized adaptive graph convolution for large-scale traffic forecasting (arXiv 2026)
@@ -556,7 +556,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[large-scale-spatial-temporal-graph]] — 大规模时空图预测的计算复杂度与解决方案
 - [[spatio-temporal-foundation-model]] — 时空基础模型，跨城市零样本预测范式
 - [[event-driven-reasoning]] — 事件驱动推理，利用 LLM 从外生文本中提取预测信号 (ICLR 2026)
-- [[non-fusion-guidance]] — Non-Fusion Guidance，第三种多模态预测范式：LLM 独立推理→MoE 引导，放弃特征融合 (TiMi, ICML 2026)
+- [[non-fusion-guidance]] — TiMi 方法标签：文本支路 + MoE 路由，无表示融合
 - [[gaussian-process-prior-flow-matching]] — GP 先验流匹配，在 CFM 中使用非各向同性高斯过程先验
 - [[rectified-flow-for-time-series]] — Rectified Flow 在时间序列生成中的应用范式 (FlowTS, 2025)
 - [[multi-level-alignment]] — 多级对齐，在表示级和预测级融合文本与时间序列模态 (ICLR 2026)
@@ -927,6 +927,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[spatio-temporal-foundation-model-landscape]] — 时空基础模型全景：设计哲学三重分裂、架构范式六条路线、预训练策略四象限、泛化机制深度比较
 - [[diffusion-frequency-domain-theory]] — 扩散模型为什么先学低频——频域理论的统一视角：谱偏置→频率层级→频域噪声控制→EqualSNR→SNR-t Bias→范式转移
 - [[tsfm-covariate-adaptation-comparison]] — TSFM 协变量适配方法全景对比：CoRA vs UniCA vs DiTS vs ChronosX vs AdaPTS vs Gen-P-Tuning 六种路线的系统比较
+- [[spectral-kernel-linear-attention]] — WIRE 旋转读作核的随机特征后落地为线性注意力：内容×有效电阻核、O(N)、旋转/精确两条实现路线
 
 
 ## Sources (continued)
@@ -1170,7 +1171,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-ts-vl-alignment]] — TS–VL Alignment source: 34 configs, ID saturation, image-as-intermediary (arXiv:2602.19367v1)
 - [[source-constrained-text-fusion]] — CFA source: >20K Time-MMD settings, Gating/FiLM/Orthogonal/CFA (arXiv:2603.22372)
 - [[source-cross-modal-misalignment]] — Cross-modal misalignment LVM: selection/perturbation; MMCL retains unbiased semantics (NeurIPS 2025, arXiv:2504.10143v7)
-- [[source-tess]] — TESS: LLM 分类离散时序原语 + 置信门控 + PatchTST prefix 条件化，Non-Fusion Guidance 第二实现（ICLR 2026, arXiv:2603.12664v2）
+- [[source-tess]] — TESS: 离散原语 + 门控 + PatchTST prefix（arXiv:2603.12664v2）
 
 ## Entities (continued)
 - [[chronosx]] — ChronosX 实体：past/future Injection Blocks + 跨骨干扩展

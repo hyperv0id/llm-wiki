@@ -9,7 +9,7 @@ tags:
   - time-mmd
   - kdd-2026
 created: 2026-07-28
-last_updated: 2026-08-01
+last_updated: 2026-08-11
 source_count: 3
 confidence: high
 status: active
@@ -57,8 +57,8 @@ CFA：\(W_{\mathrm{down}}:D\to D/r\)，ReLU∘LN，\(W_{\mathrm{up}}\) 回 \(D\)
 | [[tats|TaTS]] | Plug-in 但 **first-add naive**；本文基线 |
 | [[unica|UniCA]] / [[cora-tsfm|CoRA]] | TSFM 协变量适配；CFA 是**任意 TS 骨干**的融合层约束，非 foundation 适配框架 |
 | [[vot|VoT]] | Late / multi-level 融合 + LLM 推理；仍属任务侧融合，非低秩 residual 族 |
-| [[timi|TiMi]] / [[non-fusion-guidance|Non-Fusion Guidance]] | **放弃特征融合**，LLM 知识 → MoE 路由；与 CFA 同认“乱融有害”，解法正交（不融合 vs 约束融合） |
-| [[tess|TESS]] | 半合成证据（FNSPID + GPT-5.2 生成文本、token 级标注）定位两个机制级瓶颈：冗余 token 分散注意力（R<sub>t</sub><0）、删冗余后语义仍难解码为数值；解法比 CFA 更彻底——不做特征层受控融合，把文本压成 4 个离散时序原语 + 置信门控后注入 PatchTST（语义瓶颈 vs 低秩特征残差）；与 TiMi 的完全不融合构成「约束注入→语义瓶颈→不融合」谱系[^src-tess] |
+| [[timi|TiMi]] | 文本知识 → MoE 路由，无特征融合 |
+| [[tess|TESS]] | 四类原语 + 门控 + PatchTST prefix；半合成 $R_t$ 常负、Signal-Only ≪ Numerical[^src-tess] |
 | [[time-vlm|Time-VLM]] | 架构特定 VLM 桥接 + 门控；文内归 architecture-specific；门控与 constrained 思想可对照 |
 | [[ts-vl-alignment|TS–VL Alignment]] | 表示空间诊断：TS–TXT 难对齐 → 与“文本不可无控注入”互补 |
 | [[cross-modal-misalignment|Cross-modal misalignment]] | 预训练 MMCL：省略/扰动语义进不了对比表示；CFA 是**任务侧**再过滤，理论层解释“为何文本容量应压低”[^src-cross-modal-misalignment] |

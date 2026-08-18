@@ -8,7 +8,7 @@ tags:
   - reasoning
   - event-driven
 created: 2026-05-03
-last_updated: 2026-08-08
+last_updated: 2026-08-11
 source_count: 3
 confidence: medium
 status: active
@@ -54,14 +54,14 @@ This enables LLMs to learn from past errors without expensive fine-tuning.
 | CALF | Feature extraction | Endogenous | No |
 | GPT4MTS | Feature extraction | Exogenous | No |
 | TaTS | Feature extraction | Exogenous | No |
-| **TiMi** | **Reasoning → Guidance** | Exogenous | **Yes** |
-| **TESS** | **Classification → Guidance** | Exogenous | **分类式** |
+| **TiMi** | 推理 → MoE 路由 | Exogenous | 结构知识，无数值预测头 |
+| **TESS** | 分类 → prefix | Exogenous | 四类原语，无开放推理链 |
 
-Among the compared methods in the paper's Table 1, VoT is the first method to use LLMs for **reasoning** (not just feature extraction) in multimodal time series forecasting[^src-event-driven-ts-forecasting].
+VoT Table 1：LLM 做 reasoning，不只 feature extraction[^src-event-driven-ts-forecasting]。
 
-[[timi|TiMi]] (ICML 2026) 进一步将 LLM 推理提升为 **[[non-fusion-guidance|Non-Fusion Guidance]]** 范式：LLM 独立推理生成未来趋势的结构化因果知识，通过 [[mmoe|MMoE]] 门控路由引导时序 backbone，完全放弃特征融合[^src-timi]。与 VoT 的 Reasoning → Summarization → Multi-Level Alignment 流水线不同，TiMi 的 Reasoning → MoE Routing 路径更短且不需要模态对齐[^src-timi]。
+[[timi|TiMi]]：结构知识 + [[mmoe|MMoE]] 路由，无特征融合；标签 [[non-fusion-guidance|Non-Fusion Guidance]]。管线短于 VoT 的 Summarization → Reasoning → Multi-Level Alignment[^src-timi]。
 
-[[tess|TESS]]（arXiv:2603.12664v2）是该概念页首个非 Late Fusion 成员：推理产物是四类离散时序原语（mean shift/volatility/shape/lag）而非数值预测+推理链，不做表示级/预测级对齐（对照 VoT 的 ETA+AFF），以语义 prefix + 置信门控条件化 PatchTST——可视为「事件驱动推理」向「离散语义瓶颈」的变体[^src-tess]。
+[[tess|TESS]]：四类离散原语 + 门控 + PatchTST prefix，无 ETA/AFF[^src-tess]。
 
 ## Related Pages
 
