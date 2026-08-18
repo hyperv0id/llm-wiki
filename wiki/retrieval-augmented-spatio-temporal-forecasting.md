@@ -8,7 +8,7 @@ tags:
   - traffic-forecasting
 created: 2026-06-08
 last_updated: 2026-08-19
-source_count: 6
+source_count: 7
 confidence: medium
 status: active
 ---
