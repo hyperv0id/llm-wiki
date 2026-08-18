@@ -10,7 +10,7 @@ tags:
   - neurips-2024
 created: 2026-06-08
 last_updated: 2026-08-19
-source_count: 3
+source_count: 4
 confidence: medium
 status: active
 ---
@@ -114,6 +114,8 @@ $$L_{t-1} = \gamma_t \| x_0 - \hat{x}_0 \|^2$$
 - [[quizsf|QuiZSF]] — 检索增强零样本时序预测 (WWW 2026)，将 RAG 从 NLP 扩展到时序，构建 ChronoRAG Base 数据库 + HHTR 混合检索 + MSIL 多粒度交互 + MCC 双分支适配[^src-quizsf-zero-shot-forecasting-www26]
 - [[pir|PIR]]（Post-forecasting Identification and Revision，Liu et al., NeurIPS 2025）— 检索增强预测家族的确定性后处理成员：全局修订用实例检索 + top-K 加权求和，不经扩散去噪[^src-pir]
 
+- [[pfrp|PFRP]] — 检索增强单变量预测框架 (AAAI 2026)，固定大小 GMB + PCL 编码 + 双门控 + 动态融合，不依赖扩散模型，效率更高[^src-predicting-the-future-by-retrieving-the-past-aaai2026]
 [^src-ratd]: [[source-ratd]]
 [^src-pir]: [[source-pir]]
+[^src-predicting-the-future-by-retrieving-the-past-aaai2026]: [[source-predicting-the-future-by-retrieving-the-past-aaai2026]]
 [^src-quizsf-zero-shot-forecasting-www26]: [[source-quizsf-zero-shot-forecasting-www26]]

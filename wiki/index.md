@@ -285,7 +285,9 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-whatif-tsf]] — WIT: What If TSF benchmark, scenario-guided multimodal forecasting with expert-crafted plausible/counterfactual futures, 4 domains, 5,352 samples, arXiv 2026
 - [[source-gmf]] — GMF: Geometry-based Schrödinger Bridges for Trustworthy Multimodal Fusion, 潜在空间传输几何用于多模态融合可靠性评估，打破统计方法的循环依赖
 - [[source-lightweight-mixed-graph-unrolling]] — Lightweight & Interpretable Transformer via Mixed Graph Algorithm Unrolling for Traffic Forecast, ADMM 展开混合图优化为轻量级类 Transformer，ICML 2026
+- [[source-predicting-the-future-by-retrieving-the-past-aaai2026]] — PFRP: Predicting the Future by Retrieving the Past, 检索增强单变量 TSF，GMB + PCL + K-medoids + 双门控 + 动态融合，AAAI 2026
 - [[source-trace-neurips2025]] — TRACE: Grounding Time Series in Context for Multimodal Embedding and Retrieval, cross-modal TS-text retriever with CIT + CbA + dual-level hard negative mining, NeurIPS 2025
+- [[source-stationarity-aware-retrieval-augmented-forecasting-kdd26]] — SARAF: 平稳性感知检索增强预测，时间对齐 + 多样性 MMR + 自适应 Gaussian 聚合，KDD 2026
 
 ## Entities
 - [[std-plm]] — STD-PLM, unified PLM-based ST forecasting+imputation with spatial+time dual tokenizer (AAAI 2025)
@@ -483,8 +485,11 @@ All wiki pages, organized by type. Updated on every ingest.
 ## Entities (continued)
 - [[freqflow-ts]] — FrèqFlow/SpectFlow, lightweight frequency-domain flow matching for time series forecasting (NeurIPS 2025)
 - [[loft-llm]] — LoFT-LLM, 低频频域学习 + LLM 语义校准的三阶段时序预测流水线 (KDD 2026)
+- [[saraf]] — SARAF, stationarity-aware retrieval-augmented forecasting with time-aligned enhancement + diversity MMR + adaptive Gaussian aggregation (KDD 2026)
 
 ## Concepts
+- [[dataset-stationarity-estimation]] — 基于矩统计量的数据集级平稳性估计，滑动窗口局部统计量跨窗口变异，O(NLC) 复杂度 (SARAF, KDD 2026)
+- [[stationarity-aware-retrieval]] — 平稳性感知检索，根据数据集平稳性自适应调节检索多样性和聚合锐度 (SARAF, KDD 2026)
 - [[combinatorial-optimization-augmented-machine-learning]] — COAML, hybrid ML-CO pipeline paradigm embedding combinatorial optimization as differentiable neural network layer
 - [[wardrop-equilibrium]] — generalized Wardrop equilibrium with non-decomposable latency functions, convex characterization via potential functions
 - [[vehicle-centric-graph-traffic-pde]] — Lagrangian discretization of LWR traffic PDE on dynamic vehicle graphs with skew-symmetric advection + PSD diffusion (ICLR 2026)
@@ -624,6 +629,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[graph-learning-as-self-attention]] — 图学习即自注意力，图学习模块数学等价于 Transformer 自注意力但参数远少于 Q/K/V
 
 ## Techniques
+- [[time-aligned-retrieval-enhancement]] — 时间对齐检索增强，在形态相似度上叠加多粒度时间对齐奖励 (SARAF, KDD 2026)
+- [[diversity-based-retrieval-selection]] — 平稳性控制的随机 MMR 多样性检索选择，从 Top-M 候选池选择 Top-K 多样化子集 (SARAF, KDD 2026)
 - [[fenchel-young-loss]] — FY loss, convex surrogate for Bregman divergence enabling end-to-end training through combinatorial layers
 - [[spatial-tokenizer-adjacency-patches]] — STUNet spatial tokenizer: adjacency-matrix ViT-style patches, AE pretrain + node permutation, frozen at backbone stage (KDD 2026)
 - [[query-aggregate-attention]] — STUNet two-stage fusion: query upstream/downstream via spatial tokens, then aggregate causal sensor info with dual RoPE (KDD 2026)
