@@ -9,8 +9,8 @@ tags:
   - meta-ai
   - neurips-2023
 created: 2026-04-28
-last_updated: 2026-07-18
-source_count: 4
+last_updated: 2026-08-26
+source_count: 5
 confidence: medium
 status: active
 ---
@@ -432,6 +432,8 @@ $$
 - [[storminsight]] — StormInsight，环境条件化对流临近预报，Global/Local AdaLN 分层调制 Conditional Flow Matching (ICML 2026)
 - [[one-step-flow-generation]] — 一步流生成，平均速度建模 + JVP 修正实现 NFE=1 生成
 - [[average-velocity-modeling]] — 平均速度建模，区间条件化速度场 + JVP 修正的 FM 训练技术
+- [[loft]] — LOFT，低秩先验 + 轨迹一致性 CFM 的交通插补模型，2 NFE 推理 (KDD 2026)
+- [[trajectory-consistency-flow-matching]] — 轨迹一致性流匹配，在 CFM 之外约束速度场沿轨迹恒定
 - [[schrodinger-bridge]] — Schrödinger bridge，统一 diffusion/score/flow 的路径空间变分框架
 - [[building-schrodinger-bridges]] — 六种 SB 构造方法，包含 stochastic interpolant 视角
 - [[stochastic-interpolant]] — 随机插值：任意 $\rho_0,\rho_1$ 的有限时间路径与二次速度目标

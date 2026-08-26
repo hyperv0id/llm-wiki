@@ -9,9 +9,8 @@ tags:
   - graph-neural-networks
   - air-quality
   - traffic
-created: 2026-05-31
-last_updated: 2026-06-09
-source_count: 3
+last_updated: 2026-08-26
+source_count: 4
 confidence: medium
 status: active
 ---
@@ -203,6 +202,7 @@ FENCE 进一步指出 PriSTI 的固定引导尺度在低条件信息场景（如
 - [[cofill]] — 基于 PriSTI 的几何增强条件扩散插补
 - [[imputeformer]] — 基于 Transformer 的扩散插补
 - [[fence]] — FENCE，动态反馈引导扩散插补，PriSTI 的后续升级
+- [[loft]] — LOFT (KDD 2026)，流匹配 + 低秩先验 + 轨迹一致性的插补模型，以 PriSTI 为生成式基线对比并作者报告占优[^src-loft]
 
 ## 相关工作
 
@@ -211,3 +211,4 @@ FENCE 进一步指出 PriSTI 的固定引导尺度在低条件信息场景（如
 [^src-pristi]: [[source-pristi]]
 [^src-fence]: [[source-fence]]
 [^src-maginet]: [[source-maginet]]
+[^src-loft]: [[source-loft]]

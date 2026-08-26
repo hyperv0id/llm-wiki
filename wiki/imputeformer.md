@@ -8,8 +8,8 @@ tags:
   - low-rank
   - kdd-2024
 created: 2026-05-11
-last_updated: 2026-06-09
-source_count: 5
+last_updated: 2026-08-26
+source_count: 6
 confidence: medium
 status: active
 ---
@@ -166,6 +166,7 @@ L = L_recon + λ · L_FIL
 - [[nuwats]] — NuwaTS，实现 ImputeFormer 设想的跨域插补基础模型（PLM 路线）
 - [[t1]] — T1 (ICLR 2026)，将 ImputeFormer 归为"双轴 tokenization"类（缺失阻断中间路径时受限），并以 channel-head 绑定的 CNN-Transformer 超越之[^src-t1]
 - [[maginet|MagiNet]] (arXiv 2024)，与 ImputeFormer 同为交通时空填补，但取消预填充（可学习缺失嵌入）并用掩码加权 Chebyshev 图卷积，是另一条缓解过平滑的路线[^src-maginet]。
+- [[loft]] — LOFT (KDD 2026)，把低秩归纳偏置从判别式结构约束转为生成式流匹配的信息先验，并以 ImputeFormer 为判别式基线对比[^src-loft]
 - [[traffic-forecasting]] — 交通预测
 - [[generative-time-series-forecasting]] — 生成式时序预测
 
@@ -175,4 +176,5 @@ L = L_recon + λ · L_FIL
 [^src-nuwats]: [[source-nuwats]]
 [^src-t1]: [[source-t1]]
 [^src-maginet]: [[source-maginet]]
+[^src-loft]: [[source-loft]]
 [^src-stamimputer]: [[source-stamimputer]]

@@ -7,8 +7,8 @@ tags:
   - data-imputation
   - dual-stream-architecture
 created: 2026-05-11
-last_updated: 2026-06-08
-source_count: 2
+last_updated: 2026-08-26
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -108,6 +108,8 @@ https://github.com/joyHJL/CoFILL
 
 - [[sadi]] — SADI，针对 [[partial-blackout|partial blackout]] 的双阶段扩散插补（AAAI 2025），同样超越 CSDI 但采用联合特征-时间建模而非双流架构
 - [[partial-blackout]] — SADI 引入的通用缺失模式，CoFILL 也可在此场景评估
+- [[loft]] — LOFT (KDD 2026)，流匹配路线的时空插补，以 CoFill 为基线对比（PeMS08 SC-TC RMSE 43.90 vs 48.03）[^src-loft]
 
 [^src-cofill-spatiotemporal-imputation]: [[source-cofill-spatiotemporal-imputation]]
 [^src-sadi]: [[source-sadi]]
+[^src-loft]: [[source-loft]]

@@ -7,8 +7,8 @@ tags:
   - ode
   - few-step-generation
 created: 2026-05-31
-last_updated: 2026-07-18
-source_count: 4
+last_updated: 2026-08-26
+source_count: 5
 confidence: high
 status: active
 ---
@@ -80,6 +80,10 @@ Reflow 是 Rectification 的无监督版本，仅使用从 $\pi_0$ 采样的数�
 
 Rectification 思想启发了 [[shortcut-models|Shortcut Models]]（arXiv 2025），后者将自一致性推广到任意流模型，实现 1 步生成 [^src-rectified-flow]。
 
+### LOFT：一致性目标直线化时空插补轨迹
+
+[[loft|LOFT]]（KDD 2026）不走 reflow 迭代路线，而是在 CFM 目标上直接加速度一致性目标 $L_{CT}$ 并用不确定性感知矫正仲裁梯度冲突，把交通插补的生成轨迹拉直到 2 步欧拉积分可用[^src-loft]。与 rectification 的差异：reflow 需要重新生成耦合数据做二次训练，LOFT 的 bootstrap 目标在单阶段训练内完成直线化。
+
 ### FlowTS：第一个时间序列 Rectified Flow 模型
 
 [[flowts|FlowTS]] (arXiv 2025) 是首个将 rectified flow 应用于时间序列生成的工作[^src-flowts]。与图像域需要 reflow 迭代不同，FlowTS 直接在时间序列域学习直线 ODE 轨迹，30 步采样即 SOTA（Context-FID Stocks 0.019 vs Diffusion-TS 0.067）[^src-flowts]。
@@ -97,3 +101,4 @@ Rectification 思想启发了 [[shortcut-models|Shortcut Models]]（arXiv 2025�
 [^src-flowts]: [[source-flowts]]
 [^src-stochasticinterpolants]: [[source-stochasticinterpolants]]
 [^src-gmf]: [[source-gmf]]
+[^src-loft]: [[source-loft]]

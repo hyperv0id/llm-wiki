@@ -3,9 +3,9 @@
 PDF 归档到 `raw/loft-low-rank-prior-induced-consistency-flow-matching-efficient-traffic-imputation.pdf`（12 页，KDD 2026，DOI 10.1145/3770855.3818063；Xiaowei Mao 等，北京交通大学 + Aalborg University；代码 github.com/maoxiaowei97/LOFT）。LOFT 面向高稀疏交通插补：(1) 低秩先验估计——掩码低秩分解经神经参数化单次前向求解（结合律重排等价线性注意力，O(NKd_m)），解码先验均值与 MIS 监督的不确定性，流初始化为 N(μ_prior, I)；(2) 速度一致性目标 L_CT + Lemma 4.1/误差界 Theorem 4.2；(3) 不确定性感知矫正——论文报告 L_CFM 与 L_CT 梯度余弦相似度全程为负且与数据不确定性相关，矫正系数 α 按样本不确定性与训练进度动态仲裁。作者报告：推理 2 NFE（扩散基线 50、流匹配基线 20），PEMS03/04/08 SR-TC/SC-TC 80% 全部 MAE/RMSE/MAPE 组合最低，PeMS04 SC-TC 90% 下 RMSE 47.01（次优 FENCE 53.61），效率约十倍提升，NFE=2 为精度-效率平衡点。
 
 创建的页面：[[source-loft]], [[loft]], [[low-rank-prior-estimation]], [[uncertainty-aware-rectification]], [[trajectory-consistency-flow-matching]]
-更新的页面：[[flow-matching]], [[rectified-flow]], [[consistency-models]], [[tsflow]], [[imputeformer]], [[csdi]], [[pristi]], [[cofill]], [[loft-llm]], [[index]]
+更新的页面：[[flow-matching]], [[rectified-flow]], [[consistency-models]], [[tsflow]], [[imputeformer]], [[csdi]], [[pristi]], [[cofill]], [[fence]], [[loft-llm]], [[index]]
 
-备注：ingest 进行中检测到并发进程覆写 /tmp 共享提取文件（疑似另一会话在 ingest FENCE），故未编辑 wiki/fence.md（该文件 last_updated 已被并发更新）；fence 方向的反向链接暂缺，待并发 ingest 结束后可补。
+备注：ingest 进行中检测到并发 FENCE 重审会话（/tmp 共享提取文件被覆写、wiki/fence.md 被并发更新），故 fence.md 的反向链接在并发会话落定后补做（另见列表 + [^src-loft] 脚注 + source_count 1→2）。
 
 ## [2026-08-26] ingest | FENCE: Spatial-Temporal Feedback Diffusion Guidance for Controlled Traffic Imputation (Mao et al., AAAI 2026) — 重审校正
 

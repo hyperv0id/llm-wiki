@@ -57,6 +57,7 @@ status: active
 - [[time-llm]] — LLM 作前端提示的对比
 - [[source-fstllm]] — few-shot LLM 时序预测
 - [[source-frets]] — 频域 MLP 方法 FreTS
+- [[loft]] — 同名缩写 LOFT 的另一篇 KDD 2026 论文（低秩先验一致性流匹配交通插补），与本条目无关
 - [[generative-time-series-forecasting]] — 生成式时序预测概念
 
 [^src-loft-llm]: [[source-loft-llm]]

@@ -8,8 +8,8 @@ tags:
   - probabilistic-model
   - iclr-2025
 created: 2026-06-08
-last_updated: 2026-07-13
-source_count: 2
+last_updated: 2026-08-26
+source_count: 3
 confidence: high
 status: active
 ---
@@ -74,6 +74,7 @@ TSFlow 使用 DiffWave 风格的残差架构，搭配 S4 层沿时间维度建�
 - [[aurora]] — Aurora，原型引导流匹配 (arXiv 2026)
 - [[kite]] — KITE：可学历史条件流形源 + 外生知识引导 + CFG（ICML 2026）
 - [[history-conditional-manifold]] — 相对 GP 固定核的可学信息源
+- [[loft]] — LOFT，同为"信息先验替代高斯源分布"的流匹配插补（低秩先验 vs GP 先验，插补 vs 预测）(KDD 2026)
 - [[kite-manifold-guidance-chain]] — HCM–KGC–CFG 串联
 [^src-tsflow]: [[source-tsflow]]
 [^src-prs]: [[source-prs]]

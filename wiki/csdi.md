@@ -9,8 +9,8 @@ tags:
   - probabilistic-modeling
   - neurips-2021
 created: 2026-05-31
-last_updated: 2026-07-14
-source_count: 9
+last_updated: 2026-08-26
+source_count: 10
 confidence: medium
 status: active
 ---
@@ -128,6 +128,7 @@ CSDI 的三个核心设计——(1) 观测值作为条件直接注入去噪网�
 - **CSDI 的 SDE 连续化**：一些后续工作将离散时间框架扩展到连续时间 SDE
 - **[[probts|ProbTS]] 基准视角**：CSDI 作为 **NAR 概率** 代表在短程 CRPS 上常最强，并作为复杂分布下相对 TSFM（MOIRAI/Chronos）的参照；长程上面临显存与学习效率问题，且 RevIN 不总是优于均值缩放（如 Weather）[^src-probts]
 - **[[tsdiff|TSDiff]]** (NeurIPS 2023)：在 8 个单变量基准上直接与 CSDI 对比 CRPS；主张**无条件**训练 + [[observation-self-guidance|observation self-guidance]] 可在不按任务重训的情况下接近条件扩散，并保留合成数据生成能力[^src-prs]
+- **[[loft|LOFT]]** (KDD 2026)：跳出扩散框架的后续路线——以流匹配替代扩散、低秩信息先验替代高斯源分布、轨迹一致性目标压缩推理至 2 NFE（CSDI 类扩散基线为 50 NFE）；在 PEMS03/04/08 高缺失设置上作者报告全面优于 CSDI[^src-loft]
 
 ## 局限性
 
@@ -164,4 +165,5 @@ CSDI 的三个核心设计——(1) 观测值作为条件直接注入去噪网�
 [^src-ratd]: [[source-ratd]]
 [^src-s2dbm]: [[source-s2dbm]]
 [^src-probts]: [[source-probts]]
+[^src-loft]: [[source-loft]]
 [^src-prs]: [[source-prs]]

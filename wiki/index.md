@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-08-19
+last_updated: 2026-08-26
 tags:
   - meta
 ---
@@ -1237,3 +1237,14 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Techniques (continued)
 - [[confidence-gated-distillation]] — 置信门控蒸馏，advantage gate + 置信加权选择性蒸馏检索教师分布校正 (TS-Memory, KDD 2026)
+
+## Sources (continued)
+- [[source-loft]] — LOFT: Low-Rank Prior-Induced Consistency Flow Matching for Efficient Traffic Imputation, 低秩先验 + 速度一致性 + 不确定性矫正，2 NFE 推理 (KDD 2026)
+
+## Entities (continued)
+- [[loft]] — LOFT，低秩信息先验 + 轨迹一致性 CFM 交通插补，2 NFE 推理超越 50 NFE 扩散基线 (KDD 2026)
+
+## Techniques (continued)
+- [[low-rank-prior-estimation]] — 掩码低秩分解神经参数化构造流匹配信息先验，单次前向、线性复杂度 (LOFT, KDD 2026)
+- [[uncertainty-aware-rectification]] — 不确定性感知矫正，按样本不确定性与训练进度动态仲裁 CFM 精度与轨迹线性化的梯度冲突 (LOFT, KDD 2026)
+- [[trajectory-consistency-flow-matching]] — 轨迹一致性流匹配，在 CFM 之外约束速度场沿轨迹恒定并给出少步积分误差界 (LOFT, KDD 2026)
