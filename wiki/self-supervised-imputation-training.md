@@ -7,8 +7,8 @@ tags:
   - time-series
   - diffusion-models
 created: 2026-07-14
-last_updated: 2026-07-14
-source_count: 1
+last_updated: 2026-08-26
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -47,7 +47,7 @@ Random 策略的采样比例从 $[0\%, 100\%]$ 均匀抽取，使模型适应测
 
 - [[pristi|PriSTI]]：在 CSDI 自监督框架上添加线性插值增强的条件先验和先验引导注意力，将条件信息使用从"混合输入"升级为"先提取先验、后引导去噪"
 - [[cofill|CoFILL]]：沿用 CSDI 的自监督掩码训练，扩展为时域+频域双流架构
-- [[fence|FENCE]]：在 CSDI 的自监督训练基础上，将推理时的固定 CFG 引导尺度升级为动态反馈引导
+- [[fence|FENCE]]：采用两阶段训练（先训练无条件模型学习先验，再以该模型为初始化微调条件插补），将推理时的固定 CFG 引导尺度升级为基于后验似然的动态反馈引导[^src-fence]
 - [[lscd|LSCD]]：继承 CSDI 的自监督框架，扩展为频谱条件化——用可微 Lomb–Scargle 周期图替代 FFT
 - [[sadi|SADI]]：在自监督训练基础上引入 partial blackout 缺失模式，统一随机缺失、插值、完全停电和预测
 
@@ -58,3 +58,4 @@ Random 策略的采样比例从 $[0\%, 100\%]$ 均匀抽取，使模型适应测
 - **[[score-matching|得分匹配]]**：自监督目标的形式化工具——CSDI 在伪目标上使用 denoising score matching
 
 [^src-csdi]: [[source-csdi]]
+[^src-fence]: [[source-fence]]

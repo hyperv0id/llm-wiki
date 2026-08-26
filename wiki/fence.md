@@ -9,15 +9,15 @@ tags:
   - classifier-free-guidance
   - aaai-2026
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-08-26
+source_count: 2
 confidence: medium
 status: active
 ---
 
 # FENCE (Spatial-Temporal Feedback Diffusion GuidaNCE)
 
-**FENCE** 是 Mao, Ding 等人于 AAAI 2026 提出的动态反馈扩散引导方法，用于受控交通数据时空插补[^src-fence]。它是 [[csdi|CSDI]] 和 [[pristi|PriSTI]] 等扩散插补方法在引导机制上的关键升级——将固定的 [[classifier-free-guidance|无分类器引导]] 尺度 $\lambda$ 替换为基于后验似然动态调整的反馈引导，解决了高缺失率节点因条件信息不足而漂移到先验分布的问题[^src-fence]。
+**FENCE** 是 Mao, Ding 等人发表于 AAAI 2026 的动态反馈扩散引导方法，用于受控交通数据时空插补[^src-fence]。针对 [[csdi|CSDI]]、[[pristi|PriSTI]] 等扩散插补方法使用统一引导尺度的问题，FENCE 将固定的 [[classifier-free-guidance|无分类器引导]] 尺度 $\lambda$ 替换为基于后验似然动态调整的反馈引导（该机制的理论公式采用自 Koulischer et al. 2025 的 Feedback Guidance 工作[^src-fence]），以应对高缺失率节点因条件信息不足而漂移到先验分布的现象[^src-fence]。
 
 ## 问题与动机
 
@@ -70,14 +70,17 @@ $$\log p_{\theta,k-1,C_j}(c|x_{k-1}) = \frac{1}{|C_j|} \sum_{l \in C_j} \log p_{
 
 | 方法 | 引导机制 | 引导尺度 | 空间信息 |
 |------|---------|---------|---------|
-| [[csdi|CSDI]] | 固定 CFG | 统一 $\lambda$ | 无 |
-| [[pristi|PriSTI]] | 固定 CFG + 先验引导注意力 | 统一 $\lambda$ | 静态地理邻接矩阵 |
-| **FENCE** | 动态反馈引导 | $\lambda(x_k, k)$，聚类级 | 动态注意力聚类 |
+| [[csdi|CSDI]] | 固定 CFG | 统一 $\lambda$ | 无（论文未提及其空间处理） |
+| [[pristi|PriSTI]] | 固定 CFG | 统一 $\lambda$ | 论文仅述"integrates geographic context"，未详述机制 |
+| **FENCE** | 动态反馈引导 | $\lambda(x_k, k)$，聚类级 | 动态注意力分数 k-means 聚类 |
 
 ## 局限性
 
-- 两阶段训练增加训练开销
-- 每步去噪需 k-means 聚类，推理效率受影响
-- 仅在 PEMS 交通数据集验证，其他时空数据类型（如空气质量、气象）的泛化性未知
+- 论文实验仅在 PEMS04、PEMS07、PEMS08 交通数据集上验证，其他时空数据类型的泛化性未在论文中报告[^src-fence]
+
+## 另见
+
+- [[loft]] — 同组（Mao 等）后续工作，KDD 2026：以流匹配 + 低秩先验 + 轨迹一致性替代扩散路线做交通插补，将 FENCE 列为生成式基线对比（作者报告 PEMS04 SC-TC RMSE 41.67 vs FENCE 44.28）[^src-loft]
 
 [^src-fence]: [[source-fence]]
+[^src-loft]: [[source-loft]]

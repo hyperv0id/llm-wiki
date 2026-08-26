@@ -8,7 +8,7 @@ tags:
   - spatial-temporal
   - aaai-2026
 created: 2026-06-08
-last_updated: 2026-06-08
+last_updated: 2026-08-26
 source_count: 1
 confidence: medium
 status: active
@@ -33,7 +33,7 @@ status: active
 
 在每一步去噪 $k$ 中，FENCE 从条件去噪网络的**空间注意力分数** $A_{\text{attn}} \in \mathbb{R}^{N \times N}$ 提取节点间的动态相关性，然后使用 k-means 聚类将 $N$ 个节点划分为 $K_c$ 个聚类 $\{C_1, C_2, \dots, C_{K_c}\}$[^src-fence]。
 
-与静态地理邻接矩阵不同，注意力分数在去噪过程中动态演化，反映了不同扩散步下节点间关系的变化[^src-fence]。
+注意力分数在去噪过程中动态演化，反映了不同扩散步下节点间关系的变化[^src-fence]。
 
 ### 聚类级后验聚合
 

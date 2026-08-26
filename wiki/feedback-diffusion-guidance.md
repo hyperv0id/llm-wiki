@@ -8,7 +8,7 @@ tags:
   - posterior-likelihood
   - aaai-2026
 created: 2026-06-08
-last_updated: 2026-06-08
+last_updated: 2026-08-26
 source_count: 1
 confidence: medium
 status: active

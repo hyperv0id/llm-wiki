@@ -9,7 +9,7 @@ tags:
   - classifier-free-guidance
   - aaai-2026
 created: 2026-06-08
-last_updated: 2026-06-08
+last_updated: 2026-08-26
 source_count: 1
 confidence: medium
 status: active
@@ -18,8 +18,9 @@ status: active
 # Source: FENCE
 
 **作者**: Xiaowei Mao, Huihu Ding, Yan Lin, Tingrui Wu, Shengnan Guo, Dazhuo Qiu, Feiling Fang, Jilin Hu, Huaiyu Wan (北京交通大学, Aalborg University, 中国地质大学, 华东师范大学)
-**发表**: AAAI 2026 (arXiv:2601.04572, Jan 2026)
+**发表**: AAAI 2026 会议论文（Proceedings pp. 15528–15536）；arXiv:2601.04572（2026-01 v1，含附录推导）
 **代码**: https://github.com/maoxiaowei97/FENCE
+**raw 版本**: arXiv v1（`2601.04572.pdf`）与 AAAI-26 会议版（`fence-spatial-temporal-feedback-diffusion-guidance-aaai26.pdf`），两者正文内容一致，会议版无附录。
 
 ## 核心论点
 
@@ -29,7 +30,7 @@ FENCE 提出了一个面向扩散模型时空交通数据插补的动态反馈�
 
 ### 后验驱动的动态引导缩放
 
-FENCE 采用加性误差假设：学习的条件分布 $p_{\theta,k}(x_k|c)$ 是真实条件分布 $p_k(x_k|c)$ 和真实无条件分布 $p_k(x_k)$ 的线性组合，权重 $\pi \in [0,1]$ 表示对条件模型学习效果的事先置信度[^src-fence]。通过推导，引导尺度直接表达为后验似然的函数：
+FENCE 采用加性误差假设（论文标注该公式采用自 Koulischer et al. 2025 的 Feedback Guidance 工作[^src-fence]）：学习的条件分布 $p_{\theta,k}(x_k|c)$ 是真实条件分布 $p_k(x_k|c)$ 和真实无条件分布 $p_k(x_k)$ 的线性组合，权重 $\pi \in [0,1]$ 表示对条件模型学习效果的事先置信度[^src-fence]。通过推导，引导尺度直接表达为后验似然的函数：
 
 $$\lambda(x_k, k) \approx \frac{p_{\theta,k}(c|x_k)}{p_{\theta,k}(c|x_k) - (1-\pi)}$$
 
@@ -37,7 +38,7 @@ $$\lambda(x_k, k) \approx \frac{p_{\theta,k}(c|x_k)}{p_{\theta,k}(c|x_k) - (1-\p
 
 ### 后验似然估计
 
-FENCE 通过追踪扩散反向马尔可夫链来估计后验似然[^src-fence]：
+FENCE 通过追踪扩散反向马尔可夫链来估计后验似然（论文注明该方法受 Koulischer et al. 2025 启发[^src-fence]）：
 
 $$\log p_{\theta,k-1}(c|x_{k-1}) = \log p_{\theta,k}(c|x_k) + \log p_\theta(x_{k-1}|x_k, c) - \log p_\theta(x_{k-1}|x_k)$$
 
@@ -49,7 +50,7 @@ $$\log p_{\theta,k-1}(c|x_{k-1}) = \log p_{\theta,k}(c|x_k) + \log p_\theta(x_{k
 
 ### 两阶段训练
 
-为避免无条件先验学习干扰条件插补，FENCE 采用两阶段训练：先训练无条件生成模型学习先验 $p_\theta(x)$，收敛后冻结权重；再以此为初始化微调条件插补模型[^src-fence]。
+为避免无条件先验学习干扰条件插补，FENCE 采用两阶段训练：先训练无条件生成模型学习先验 $p_\theta(x)$，收敛后保存权重作为初始化；再在条件观测上微调该模型（权重继续更新）以学习条件分布[^src-fence]。
 
 ## 关键结果
 
@@ -58,16 +59,16 @@ $$\log p_{\theta,k-1}(c|x_{k-1}) = \log p_{\theta,k}(c|x_k) + \log p_\theta(x_{k
 - 消融实验验证了反馈引导（wo-F）和聚类感知（wo-C）两个组件的必要性[^src-fence]
 - $\pi=0.5$ 时性能最佳，聚类数 $N/20$ 时最优[^src-fence]
 
-## 贡献
+## 贡献（论文自述）
 
-1. 首次将动态反馈引导引入扩散模型时间序列插补，解决了固定引导尺度在高缺失率下的漂移问题
-2. 聚类感知引导机制利用时空相关性为不同节点提供定制化引导尺度
-3. 两阶段训练策略确保无条件先验和条件引导的独立学习
+1. 提出 FENCE，一种时空反馈扩散引导方法，在生成过程中动态控制引导尺度，实现对缺失交通数据的高保真插补[^src-fence]
+2. 提出聚类感知引导机制，利用时空相关性为每个节点计算更准确的定制化引导尺度[^src-fence]
+3. 大量实验表明 FENCE 显著提升真实世界时空交通数据集上的插补精度[^src-fence]
+
+注：论文将加性误差公式标注为采用 Koulischer et al. 2025 的 Feedback Guidance 工作，后验似然估计方法亦受其启发；FENCE 的定位是将该反馈引导机制应用于时空交通插补场景并增加聚类感知设计。
 
 ## 局限性
 
-- 两阶段训练增加训练时间（需要先训练无条件模型）
-- 每步去噪需做 k-means 聚类，增加推理开销
-- 仅在 PEMS 交通数据集上验证，在更多样的时空数据类型（如空气污染、气象）上的泛化性未经验证
+- 论文实验仅在 PEMS04、PEMS07、PEMS08 交通数据集上验证，其他时空数据类型（如空气污染、气象）的泛化性未在论文中报告[^src-fence]
 
 [^src-fence]: [[source-fence]]

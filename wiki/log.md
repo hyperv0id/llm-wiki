@@ -1,3 +1,26 @@
+## [2026-08-26] ingest | LOFT: Low-Rank Prior-Induced Consistency Flow Matching for Efficient Traffic Imputation
+
+PDF 归档到 `raw/loft-low-rank-prior-induced-consistency-flow-matching-efficient-traffic-imputation.pdf`（12 页，KDD 2026，DOI 10.1145/3770855.3818063；Xiaowei Mao 等，北京交通大学 + Aalborg University；代码 github.com/maoxiaowei97/LOFT）。LOFT 面向高稀疏交通插补：(1) 低秩先验估计——掩码低秩分解经神经参数化单次前向求解（结合律重排等价线性注意力，O(NKd_m)），解码先验均值与 MIS 监督的不确定性，流初始化为 N(μ_prior, I)；(2) 速度一致性目标 L_CT + Lemma 4.1/误差界 Theorem 4.2；(3) 不确定性感知矫正——论文报告 L_CFM 与 L_CT 梯度余弦相似度全程为负且与数据不确定性相关，矫正系数 α 按样本不确定性与训练进度动态仲裁。作者报告：推理 2 NFE（扩散基线 50、流匹配基线 20），PEMS03/04/08 SR-TC/SC-TC 80% 全部 MAE/RMSE/MAPE 组合最低，PeMS04 SC-TC 90% 下 RMSE 47.01（次优 FENCE 53.61），效率约十倍提升，NFE=2 为精度-效率平衡点。
+
+创建的页面：[[source-loft]], [[loft]], [[low-rank-prior-estimation]], [[uncertainty-aware-rectification]], [[trajectory-consistency-flow-matching]]
+更新的页面：[[flow-matching]], [[rectified-flow]], [[consistency-models]], [[tsflow]], [[imputeformer]], [[csdi]], [[pristi]], [[cofill]], [[loft-llm]], [[index]]
+
+备注：ingest 进行中检测到并发进程覆写 /tmp 共享提取文件（疑似另一会话在 ingest FENCE），故未编辑 wiki/fence.md（该文件 last_updated 已被并发更新）；fence 方向的反向链接暂缺，待并发 ingest 结束后可补。
+
+## [2026-08-26] ingest | FENCE: Spatial-Temporal Feedback Diffusion Guidance for Controlled Traffic Imputation (Mao et al., AAAI 2026) — 重审校正
+
+用户提交 `3.pdf`（AAAI-26 会议版，Proceedings pp. 15528–15536），经核验与 raw/ 已有 arXiv v1（`2601.04572.pdf`）为同一篇论文，核心内容一致（π=0.5、N/20、6.26% MAPE 提升均吻合），会议版无附录。将会议版另存为 `raw/fence-spatial-temporal-feedback-diffusion-guidance-aaai26.pdf`（raw 不可变，原 arXiv 版不动）。
+
+按用户要求"不瞎整理、客观、不乱加料"，对照论文逐页校正现有 FENCE 相关 wiki 页面中的臆测与无引用推断：
+1. source-fence.md — 修正发表信息（补 AAAI 会议出处与页码）；补 Koulischer et al. 2025 归因（加性误差公式与后验估计均论文标注采用/受启发）；贡献章节改为论文自述三条并标注归因；删除无依据的"两阶段训练增加训练时间""k-means 增加推理开销"局限性推断，仅保留论文未报告泛化性一条；修正两阶段训练描述（权重初始化后微调，非冻结）。
+2. fence.md — 同步 Koulischer 归因；对比表 PriSTI 行删除"先验引导注意力""静态地理邻接矩阵"等论文未提及的臆测细节，改为如实标注"论文仅述 integrates geographic context"；局限性删除无引用推断，仅保留论文未报告泛化性。
+3. cluster-aware-guidance.md — 删除"与静态地理邻接矩阵不同"的论文未做对比；保留方差/稳定性论断（论文原文 "statistically unstable"/"more stable estimate" 支持）。
+4. self-supervised-imputation-training.md — 修正 FENCE 训练描述：原写"在 CSDI 的自监督训练基础上"，实为论文所述两阶段训练（先无条件后条件微调），非 CSDI 掩码自监督；补 [^src-fence] 引用与脚注定义；source_count 1→2。
+5. feedback-diffusion-guidance.md — 校验通过，"首次引入时空插补领域"范围界定准确，加性误差引用 Koulischer 正确，仅更新日期。
+6. test-time-adaptation-st.md — 校验通过，FENCE 表行内容准确（无需标签、后验动态 CFG），未改。
+
+更新的页面：[[source-fence]], [[fence]], [[cluster-aware-guidance]], [[feedback-diffusion-guidance]], [[self-supervised-imputation-training]]
+
 ## [2026-08-19] ingest | TS-Memory: Plug-and-Play Memory for Time Series Foundation Models
 
 PDF: `raw/ts-memory-time-series-foundation-models-kdd26.pdf`（11 页，KDD 2026；Lyu/Zhong/Chen/Ruan/Liu/Lv/Wen/Wong/Liang，HKUST-GZ + Tencent + Squirrel AI）。TS-Memory 提出 Parametric Memory Distillation 范式——将在线 kNN 检索的预测分布知识离线蒸馏为轻量 PlugMem 模块，推理时仅两次前向传播、$O(1)$ 复杂度、无外部检索。Stage I 构建泄漏安全 kNN 教师（冻结 TSFM 编码器嵌入 + shift alignment + softmax 加权分位数目标 + 检索置信度）；Stage II 置信门控蒸馏（advantage gate 选择性蒸馏 + anchor loss 回归 backbone + quantile crossing 正则 + 线性融合 $\alpha$）。4 种冻结 backbone（ChronosBolt/Chronos2/Sundial/TimesFM）× 8 数据集平均 MSE 降 5.8%/MAE 降 2.1%，推理延迟仅增 3.8–4.7%；跨 backbone 迁移 MSE 降 6–10%；跨模型规模复用（205M→9M）。
