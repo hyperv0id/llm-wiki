@@ -7,15 +7,15 @@ tags:
   - conditioning
   - image-generation
 created: 2026-05-09
-last_updated: 2026-05-09
-source_count: 1
+last_updated: 2026-08-29
+source_count: 2
 confidence: medium
 status: active
 ---
 
 # 频率感知条件化（Frequency-Aware Conditioning）
 
-**频率感知条件化**是一种在生成模型中显式利用频域信息作为条件信号的建模范式。其核心理念是：生成模型在空域操作时天然对频率成分的恢复是非均匀的，通过显式的频率条件引导可以使模型更好地保留全局结构和局部细节。
+**频率感知条件化**是一种在生成模型中显式利用频域信息作为条件信号的建模范式。其核心理念是：生成模型在空域操作时天然对频率成分的恢复是非均匀的，通过显式的频率条件引导可以使模型更好地保留全局结构和局部细节。该范式同时出现在时序插补任务中（见下节 FGTI）[^src-fgti]。
 
 ## 动机
 
@@ -52,6 +52,12 @@ $$
 
 自适应权重 $\omega_t = \sigma(\text{MLP}(h_t^L, h_t^H, t))$ ��现时变的频率条件化。[^src-freqflow]
 
+## 时序插补中的实例：FGTI
+
+[[fgti|FGTI]]（NeurIPS 2024）把该范式用于多变量时间序列插补：high-frequency filter（保留截止频率 F 以上分量，用于引导残差项插补）与 dominant-frequency filter（取幅值 top-κ 分量，提供趋势/季节项背景结构）从观测序列提取两组频域条件，经 Transformer 编码后由 time-frequency 与 attribute-frequency 两个 cross-attention 模块（Q、K 来自频域表示、V 来自时域隐表示）融入 DDPM 式去噪网络；论文并以条件熵命题（Prop 3.1）论证加入频域条件严格降低扩散反向过程的不确定性[^src-fgti]。
+
+与 FreqFlow 的差异：条件信号从"噪声图像的频域分解"[^src-freqflow]变为"观测数据的频域分解"（FGTI 的两组条件均提取自观测序列，不来自加噪中间态 X̂_t）[^src-fgti]；注入方式从逐元素加法[^src-freqflow]变为 cross-attention[^src-fgti]；任务从图像生成变为条件插补。
+
 ## 与其他条件化范式的关系
 
 | 范式 | 条件信号 | 注入方式 | 效果 |
@@ -73,8 +79,10 @@ $$
 ## 链接
 
 - [[freqflow]] — FreqFlow，频率感知条件化的代表性实现
+- [[fgti]] — FGTI，该范式在时序插补中的实例（NeurIPS 2024）
 - [[diffusion-frequency-domain-theory]] — 频域理论统一视角（问题演化叙事）
 
 ## 引用
 
 [^src-freqflow]: [[source-freqflow]]
+[^src-fgti]: [[source-fgti]]

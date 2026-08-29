@@ -9,8 +9,8 @@ tags:
   - linear-attention
   - kdd-2026
 created: 2026-08-26
-last_updated: 2026-08-26
-source_count: 1
+last_updated: 2026-08-29
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -56,8 +56,10 @@ $$\mu_{prior}=\mathrm{Linear}_\mu(\hat Z),\qquad \Sigma=\mathrm{Softplus}(\mathr
 - [[loft]] — 使用该技术的模型
 - [[uncertainty-aware-rectification]] — 消费 Σ 聚合出的样本级不确定性信号
 - [[imputeformer]] — 同样采用低秩归纳偏置，但作为判别式 Transformer 的结构约束而非生成式先验
+- [[lcr]] — LCR（Chen et al., arXiv 2022/2024）：低秩性质的另一条实现路线——circulant matrix nuclear norm 刻画全局低秩 + Laplacian 核时域正则刻画局部趋势，凸优化 + FFT 频域求解，无神经参数化[^src-lcr]
 - [[gaussian-process-prior-flow-matching]] — TSFlow 用 GP 核先验对齐时序结构（预测任务）
 - [[history-conditional-manifold]] — KITE 用历史内生序列构造可学源分布（预测任务）
 - [[linear-attention-unified-framework]] — 结合律重排与线性注意力的同构关系
 
 [^src-loft]: [[source-loft]]
+[^src-lcr]: [[source-lcr]]

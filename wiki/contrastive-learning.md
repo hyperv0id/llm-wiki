@@ -6,8 +6,8 @@ tags:
   - self-supervised
   - multimodal-alignment
 created: 2026-05-03
-last_updated: 2026-08-19
-source_count: 7
+last_updated: 2026-08-29
+source_count: 8
 confidence: medium
 status: active
 ---
@@ -46,6 +46,7 @@ $$\mathcal{L} = -\log \frac{\exp(\text{sim}(z_i, z_j^+) / \tau)}{\sum_k \exp(\te
 - [[endogenous-text-alignment]] — VoT's decomposed trend/seasonal contrastive learning
 - [[multi-level-alignment]] — VoT's multi-level alignment framework using contrastive losses
 - [[nuwats]] — NuwaTS's mask-invariant patch representations across missing patterns
+- [[mtsci]] — MTSCI's complementary-mask two-view contrastive loss for imputation consistency ([[imputation-consistency]])[^src-mtsci]
 - [[ts-vl-alignment]] — limits of post-hoc contrastive alignment across time series, vision, and language
 - [[cross-modal-misalignment]] — selection/perturbation bias; what MMCL retains under misaligned pairs
 - [[trace]] — TRACE dual-level hard negative mining for cross-modal TS-text retrieval
@@ -66,3 +67,4 @@ $$\mathcal{L} = -\log \frac{\exp(\text{sim}(z_i, z_j^+) / \tau)}{\sum_k \exp(\te
 [^src-ts-vl-alignment]: [[source-ts-vl-alignment]]
 [^src-cross-modal-misalignment]: [[source-cross-modal-misalignment]]
 [^src-trace-neurips2025]: [[source-trace-neurips2025]]
+[^src-mtsci]: [[source-mtsci]]

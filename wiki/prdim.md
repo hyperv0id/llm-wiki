@@ -9,7 +9,7 @@ tags:
   - expectation-maximization
 created: 2026-06-08
 last_updated: 2026-08-29
-source_count: 2
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -42,7 +42,7 @@ status: active
 
 ## 实验结果
 
-跨**三种模态**在 MNAR 下评测，对比 10 个基线（Mean；判别式 TimesNet/TimeMixer++/BRITS/SAITS；生成式 GP-VAE/not-MIWAE；扩散 CSDI/MTSCI/cDiffPuter）[^src-prdim]：
+跨**三种模态**在 MNAR 下评测，对比 10 个基线（Mean；判别式 TimesNet/TimeMixer++/BRITS/SAITS；生成式 GP-VAE/not-MIWAE；扩散 [[csdi|CSDI]]/[[mtsci|MTSCI]]/cDiffPuter）[^src-prdim]：
 
 - **时序**（ETT、STOCK、PEMS-Bay）：原始缺失上较最强扩散基线 cDiffPuter 改善（如 RMSE 1.209→1.057、MAE 0.782→0.663、MRE 46.19→39.16），**out-of-sample（未见缺失）增益最显著**。
 - **图像**（FMNIST、CelebA-HQ）：恢复眼/鼻/嘴等语义结构，而 vanilla 扩散仅用全局均值色填充。
@@ -67,9 +67,11 @@ status: active
 - [[classifier-guidance]] — 同构的扩散条件引导
 - [[tweedies-formula]] — 后验均值估计依据
 - [[csdi]] — 条件扩散插补（MCAR 假设，PRDIM 基线）
+- [[mtsci]] — MTSCI（CIKM 2024），互补掩码对比 + mixup 相邻窗口条件的条件扩散插补，PRDIM 的扩散基线之一（其表中数字为 PRDIM 评测口径）[^src-mtsci]
 - [[diffputer]] — EM 交替式扩散插补（soft EM，本文 hard EM 的对照）
 - [[diffusion-models]] — 扩散模型总览
 - [[nuwats]] / [[t1]] — 假设随机缺失的插补方法（对照）
 
 [^src-prdim]: [[source-prdim]]
 [^src-diffputer]: [[source-diffputer]]
+[^src-mtsci]: [[source-mtsci]]

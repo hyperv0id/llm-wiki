@@ -8,8 +8,8 @@ tags:
   - noise-schedule
   - sagd
 created: 2026-05-09
-last_updated: 2026-05-09
-source_count: 2
+last_updated: 2026-08-29
+source_count: 3
 confidence: high
 status: active
 ---
@@ -222,6 +222,7 @@ $$b_l = a_c,\quad a_h = b_c$$
 | [[frequency-enhanced-block|FEB]] | 注意力计算 | 频域自注意力替代 | 正交 |
 | [[adaptive-frequency-modulation|AFM]] | 模型内部 | Beta 分布谱滤波器分频段 | 互补——AFM 模型内，频域扩散数据层 |
 | EDM 噪声调度 | 前向过程 | 调整 $\sigma(t)$ 数值 | **正交可组合**——EDM 改量级，频域扩散改频谱形状 |
+| [[fgti\|FGTI]] | 条件信号 | 高频/主频滤波条件经 cross-attention 注入去噪网络（时序插补）[^src-fgti] | 正交——频域扩散改前向噪声谱，FGTI 改条件 |
 | 冷扩散（Cold Diffusion） | 前向过程 | 非高斯退化 | 不同方向——退化类型 vs 频谱形状 |
 
 ## 链接
@@ -235,9 +236,11 @@ $$b_l = a_c,\quad a_h = b_c$$
 - [[spectral-bias-training-dynamics]] — 扩散模型训练谱偏置理论
 - [[freqflow]] — FreqFlow，频率感知流匹配
 - [[frequency-aware-conditioning]] — 频率感知条件化概念
+- [[fgti]] — FGTI，频域条件化扩散插补（时序任务实例）
 - [[diffusion-frequency-domain-theory]] — 频域理论统一视角（问题演化叙事）
 
 ## 引用
 
 [^src-2502-10236]: [[source-2502-10236]]
 [^src-sagd]: [[source-sagd]]
+[^src-fgti]: [[source-fgti]]

@@ -7,8 +7,8 @@ tags:
   - time-series
   - diffusion-models
 created: 2026-07-14
-last_updated: 2026-08-26
-source_count: 2
+last_updated: 2026-08-29
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -50,6 +50,7 @@ Random 策略的采样比例从 $[0\%, 100\%]$ 均匀抽取，使模型适应测
 - [[fence|FENCE]]：采用两阶段训练（先训练无条件模型学习先验，再以该模型为初始化微调条件插补），将推理时的固定 CFG 引导尺度升级为基于后验似然的动态反馈引导[^src-fence]
 - [[lscd|LSCD]]：继承 CSDI 的自监督框架，扩展为频谱条件化——用可微 Lomb–Scargle 周期图替代 FFT
 - [[sadi|SADI]]：在自监督训练基础上引入 partial blackout 缺失模式，统一随机缺失、插值、完全停电和预测
+- [[mtsci|MTSCI]]：沿用自监督掩码建模生成插补目标——point 策略随机选 $r \in [0\%, 100\%]$ 观测值为目标、block 策略以概率 $r \in [0\%, 15\%]$ 取长度 $[L/2, L]$ 的片段（Sec. 5.1）——并在此之上用互补掩码把同一窗口切成两个互补视图、以 intra contrastive loss 约束两视图表示，形成对自监督训练的"一致性"扩展（见 [[imputation-consistency]]）[^src-mtsci]
 
 ## 与相关概念的关系
 
@@ -59,3 +60,4 @@ Random 策略的采样比例从 $[0\%, 100\%]$ 均匀抽取，使模型适应测
 
 [^src-csdi]: [[source-csdi]]
 [^src-fence]: [[source-fence]]
+[^src-mtsci]: [[source-mtsci]]

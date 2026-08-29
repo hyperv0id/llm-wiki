@@ -1315,3 +1315,25 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Concepts (continued)
 - [[mts-imputation-taxonomy]] — MTSI 综述的双视角分类框架：插补不确定性（预测式/生成式）× 网络架构，附 wiki 各插补方法（CSDI/PriSTI/GRIN/ImputeFormer/SADI/NuwaTS/TimesNet 等）的综述归类定位与二手口径警示 (arXiv 2024/2025 survey)
+
+## Sources (continued)
+- [[source-mtsci]] — MTSCI: A Conditional Diffusion Model for Multivariate Time Series Consistent Imputation, 插补一致性（intra/inter）条件扩散插补：互补掩码双视图对比损失 + mixup 相邻窗口条件，ETT/Weather/METR-LA point/block 缺失 9 组设置作者报告数值最低（CIKM 2024, DOI 10.1145/3627673.3679532, PDF 内核实）
+
+## Techniques (continued)
+- [[mtsci]] — MTSCI，条件扩散插补：complementary mask 双视图 intra contrastive loss + mixup inter-consistency 条件网络 + vanilla/inverted transformer 双块编码器，ε-预测（CIKM 2024）
+
+## Concepts (continued)
+- [[imputation-consistency]] — 插补一致性，intra（插补值与观测值互相可重构）+ inter（相邻窗口时序一致），MTSCI 提出并以 CRPS 度量；与 Consistency Models 的少步自一致性不同义 (CIKM 2024)
+
+## Sources (continued)
+- [[source-lcr]] — LCR: Laplacian Convolutional Representation for Traffic Time Series Imputation, circulant matrix nuclear norm 低秩 + Laplacian 核时域正则的凸优化插补，FFT 频域 ADMM，arXiv:2212.01529v3（TKDE 2024 著录来自用户，未在 PDF 内核实）
+
+## Techniques (continued)
+- [[lcr]] — LCR，非深度低秩 + Laplacian 正则凸优化插补：全局 circulant nuclear norm + 局部 Laplacian 核 circular convolution 正则，O(T log T) FFT 求解，PeMS-4W（11160×8064、约 9000 万观测）大规模验证 (arXiv 2022/2024)
+- [[laplacian-kernel-temporal-regularization]] — Laplacian 核时域正则：度 2τ 无向 circulant 图 Laplacian 第一列 + circular convolution，Parseval 频域等价，QV 正则为其有向度 2 特例 (LCR, arXiv 2022/2024)
+
+## Sources (continued)
+- [[source-fgti]] — FGTI: Frequency-aware Generative Models for Multivariate Time Series Imputation, 高频/主频双频域条件 + time/attribute-frequency 跨域表示学习 + DDPM 条件扩散插补，命题 3.1 条件熵论证，KDD/Guangzhou/PhysioNet MCAR 10-40% 作者报告最优（NeurIPS 2024 官方 proceedings，PDF 内核实）
+
+## Techniques (continued)
+- [[fgti]] — FGTI，频率感知生成式插补：high-frequency filter（引导残差项）+ dominant-frequency filter（趋势/季节项背景结构）+ 双 cross-attention（Q/K 来自频域、V 来自时域）融入条件扩散去噪网络 (NeurIPS 2024)

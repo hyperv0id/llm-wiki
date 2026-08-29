@@ -6,8 +6,8 @@ tags:
   - signal-decomposition
   - traffic-forecasting
 created: 2026-04-27
-last_updated: 2026-05-04
-source_count: 1
+last_updated: 2026-08-29
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -48,5 +48,7 @@ The FR module's frequency-band separation principle relates to other frequency-d
 - **FEDformer** (ICML 2022) uses [[frequency-enhanced-block|Fourier-enhanced (FEB-f)]] and Wavelet-enhanced (FEB-w) attention blocks to capture frequency patterns, though it processes all frequency components uniformly without explicit band separation.
 - **FreTS** (NeurIPS 2023) applies MLPs in the frequency domain to all components uniformly, in contrast to FR's targeted embedding per frequency band.
 - **AFE-TFNet** combines wavelet transform (WT) and FFT for adaptive multi-scale feature extraction, sharing FR's motivation of multi-resolution frequency analysis for time-series modeling.
+- **[[fgti|FGTI]]** (NeurIPS 2024) supports the same high-frequency-to-residual assignment from the imputation side: its high-frequency filter keeps above-cutoff FFT components to guide residual-term imputation, and an STL-decomposed case study (paper Table 7) reports the residual term corresponds mainly to the high-frequency condition while the high-frequency condition may interfere with the trend term[^src-fgti]. Together with HyperD's frequency-band clustering (traffic forecasting), this is a second independent use of the band-to-component mapping across tasks.
 
 [^src-hyperd-hybrid-periodicity-decoupling]: [[source-hyperd-hybrid-periodicity-decoupling]]
+[^src-fgti]: [[source-fgti]]

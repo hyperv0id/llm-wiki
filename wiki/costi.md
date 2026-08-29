@@ -84,7 +84,7 @@ U-Net 骨干、双分支（主信号 + 条件信息），在 bottleneck 汇合[^
 - Table 4/5 中 CSDI/PriSTI/TIMBA 的数字是 CoSTI 论文转引自 TIMBA 论文的数字（Sec. 5.2），不是各原论文自己报告的数字，也与 [[giflow|GiFlow]] 等后续论文复测的数字无关；三套口径不可混用[^src-costi]。
 - 正文（Sec. 5.4.1）称 AQI-36 上 CoSTI 用 TIMBA 时间的 0.91%，但按 Table 3 数字直接相除为 1.14%（0.005/0.44）；论文未给出该百分比的计算口径，两处分立记录。
 - Table 3 与 Table A.13 在 PriSTI 的 PhysioNet 推理时间上相差 0.01 h（15.86 vs 15.87），论文内部不一致，无实质影响。
-- [[fence|FENCE]] 论文相关工作节将 CoSTI 与 CSBI、MTSCI、DSDI 并列为"改进一致性与推理速度"的扩散插补扩展，定性为"用一致性训练降低推理时间"[^src-fence]；[[giflow|GiFlow]] 把 CoSTI 列为基线，其 Table 7 的 CoSTI 推理时间（Air-36 0.37 min 等）为 GiFlow 在 A100 上的复测口径，非 CoSTI 原文数字[^src-giflow]。
+- [[fence|FENCE]] 论文相关工作节将 CoSTI 与 CSBI、[[mtsci|MTSCI]]、DSDI 并列为"改进一致性与推理速度"的扩散插补扩展，定性为"用一致性训练降低推理时间"[^src-fence]；[[giflow|GiFlow]] 把 CoSTI 列为基线，其 Table 7 的 CoSTI 推理时间（Air-36 0.37 min 等）为 GiFlow 在 A100 上的复测口径，非 CoSTI 原文数字[^src-giflow]。
 - [[loft|LOFT]]（KDD 2026）将自身贡献定位为"一致性路线在时空插补中的应用此前未被探索"（论文表述，本 wiki 按原文记录于 [[loft]] 页）；该表述与 CoSTI（2025-07 已刊出、同样面向时空插补的一致性模型工作）之间存在口径张力，见 [[loft]] 页的注记。
 
 ## 论文自述局限（Sec. 6）

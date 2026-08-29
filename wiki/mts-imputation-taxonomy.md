@@ -9,7 +9,7 @@ tags:
   - classification-framework
 created: 2026-08-29
 last_updated: 2026-08-29
-source_count: 2
+source_count: 5
 confidence: medium
 status: active
 ---
@@ -56,10 +56,14 @@ Wang & Du 等人的 MTSI 综述（arXiv:2402.04059v3）提出一个双视角分�
 - [[grin|GRIN]]：预测式-GNN 类；综述称其为首个基于图的循环 MTSI 架构，并提到 SPIN 通过稀疏时空注意力缓解 GRIN 的误差传播。
 - [[imputeformer|ImputeFormer]]：预测式-Attention 类；注意综述对其的转述未涉及其低秩归纳偏置核心，细节以原论文口径为准。
 - [[sadi|SADI]]：生成式-扩散类；综述概述其为利用自注意力捕获病患间相似性的相似度感知扩散模型。
+- [[mtsci|MTSCI]]：生成式-扩散类（Table 1 收录）；原文口径为条件扩散插补，以互补掩码对比损失与 mixup 相邻窗口条件实现插补一致性（详见 [[mtsci]] 与 [[imputation-consistency]]），主实验在 ETT/Weather/METR-LA 的 point/block 缺失下[^src-mtsci]。
+- [[fgti|FGTI]]：生成式-扩散类（综述 Table 1 的 FGTI 行标注 generative + 架构 Diffusion, Attention；综述正文 Sec 4.4 Diffusion-based Models 亦讨论之）；原文口径为高频/主频双频域条件 + 条件扩散插补（NeurIPS 2024，详见 [[fgti]]）。引用为双向：FGTI 原文同时引用了该综述——其参考文献 [48] 即 arXiv:2402.04059，用于"预测模型可改造用于插补"的论断（FGTI raw PDF 参考文献已核实）[^src-fgti]。
 - [[nuwats|NuwaTS]]：大模型-PFM 类；综述将其概括为"复用预训练语言模型做时序插补，用专用嵌入与对比学习处理跨域缺失模式"。
 - [[timesnet|TimesNet]]：预测式-CNN 类；综述归因于其 FFT 将 1D 序列重组为 2D 格式以适配 CNN 处理。
 
 综述发表于 2024 年前后，未覆盖其后的流匹配插补路线（如 [[loft|LOFT]]、[[giflow|GiFlow]]）；按其不确定性视角，这些方法属于生成式一类，但这是 wiki 的分析性外推，非综述原文论断。后继论文引用情况：[[fence|FENCE]]（AAAI 2026）参考文献含该综述（arXiv:2402.04059，raw PDF 已核实）[^src-fence]；[[loft|LOFT]]（KDD 2026）是否引用该综述未在仓库内核实（raw/ 无 LOFT PDF）。
+
+非深度方法同样超出综述范围：[[lcr|LCR]]（circulant matrix nuclear norm 低秩 + Laplacian 核时域正则的凸优化插补，FFT 求解，不训练神经网络）[^src-lcr]未被该综述收录——截至 2026-08-29，本 wiki 对综述 raw PDF（`raw/wang-mts-imputation-survey-arxiv-2024.pdf`）的全文检索未见 LCR、Laplacian 或 circulant 相关条目。
 
 ## 与其他页面
 
@@ -69,3 +73,6 @@ Wang & Du 等人的 MTSI 综述（arXiv:2402.04059v3）提出一个双视角分�
 
 [^src-mts-imputation-survey]: [[source-mts-imputation-survey]]
 [^src-fence]: [[source-fence]]
+[^src-mtsci]: [[source-mtsci]]
+[^src-lcr]: [[source-lcr]]
+[^src-fgti]: [[source-fgti]]

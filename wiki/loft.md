@@ -10,7 +10,7 @@ tags:
   - kdd-2026
 created: 2026-08-26
 last_updated: 2026-08-29
-source_count: 3
+source_count: 6
 confidence: medium
 status: active
 ---
@@ -55,7 +55,10 @@ $$L_{CT}(\theta)=\mathbb{E}_{t,s,z_0,z_1}\|v_\theta(z_t,t)-\mathrm{sg}(v_\theta(
 
 ## 实验结果（作者报告）
 
-**设置**: PEMS03/04/08 按时间顺序 60%/20%/20% 划分；SR-TC 与 SC-TC 缺失模式、80% 缺失率，另测 PeMS04 SC-TC 90%。11 个基线：IGNNK、GCASTN、ImputeFormer、LCR（判别式）；CSDI、PriSTI、FGTI、MTSCI、CoFill、MSFM、FENCE（生成式）。扩散基线训练与推理均 50 NFE，MSFM 均 20，LOFT 训练 10、推理 2[^src-loft]。
+**设置**: PEMS03/04/08 按时间顺序 60%/20%/20% 划分；SR-TC 与 SC-TC 缺失模式、80% 缺失率，另测 PeMS04 SC-TC 90%。11 个基线：IGNNK、GCASTN、ImputeFormer、[[lcr|LCR]]（判别式）；CSDI、PriSTI、FGTI、MTSCI、CoFill、MSFM、FENCE（生成式）。扩散基线训练与推理均 50 NFE，MSFM 均 20，LOFT 训练 10、推理 2[^src-loft]。
+
+> [!note] LCR 基线口径
+> 基线中的 [[lcr|LCR]] 是非深度的凸优化插补方法：circulant matrix nuclear norm 刻画全局低秩 + Laplacian 核时域正则刻画局部趋势，FFT 频域求解[^src-lcr]。LOFT 表格中 LCR 的数字为 LOFT 在其 PEMS 设置下的复现结果，非 LCR 原文报告——LCR 原文实验使用 Portland 速度/体积序列、HighD/CitySim 速度场与 PeMS 速度矩阵（MAPE/RMSE 口径），与 LOFT 的 PEMS03/04/08 + MAE/RMSE/MAPE 设置不同[^src-lcr]。
 
 | 实验 | 设置 | 结果（作者报告） |
 |------|------|------|
@@ -71,10 +74,15 @@ $$L_{CT}(\theta)=\mathbb{E}_{t,s,z_0,z_1}\|v_\theta(z_t,t)-\mathrm{sg}(v_\theta(
 
 | 方法族 | 代表 | 推理步数（本文设置） | 与 LOFT 的关系 |
 |--------|------|------|------|
-| 条件扩散插补 | [[csdi\|CSDI]]、[[pristi\|PriSTI]]、[[cofill\|CoFill]]、FENCE、FGTI、MTSCI | 50 | SDE 迭代去噪，实时应用受限（论文表述）；LOFT 以 2 NFE 对比并全面占优（Table 2） |
+| 条件扩散插补 | [[csdi\|CSDI]]、[[pristi\|PriSTI]]、[[cofill\|CoFill]]、FENCE、FGTI、[[mtsci\|MTSCI]] | 50 | SDE 迭代去噪，实时应用受限（论文表述）；LOFT 以 2 NFE 对比并全面占优（Table 2） |
 | 流匹配插补 | MSFM（时间门控多尺度速度场） | 20 | 同为 ODE 流匹配，无一致性约束 → 轨迹弯曲；LOFT 在相同数据集上误差更低 |
 | 轨迹矫正基线 | [[consistency-fm\|Consistency-FM]]、[[alphaflow\|AlphaFlow]] | —（Table 1 中测 2/20 NFE） | 静态施加线性化约束；论文报告即使配低秩先验初始化，两者精度仍低于 LOFT，归因于稀疏目标下分布匹配与轨迹线性化的梯度冲突 |
 | 低秩判别式 | [[imputeformer\|ImputeFormer]] | —（非迭代） | 同样利用低秩归纳偏置，但作为 Transformer 结构约束做确定性映射；LOFT 把低秩用作生成式先验构造 |
+| 低秩判别式（非深度） | [[lcr\|LCR]] | —（无 NFE 口径；ADMM 迭代求解，每次迭代以 FFT 为主） | circulant matrix nuclear norm 低秩 + Laplacian 核时域正则的凸优化插补，FFT 频域求解；LOFT 以其为判别式基线（Table 2 数字为 LOFT 复现口径）[^src-lcr] |
+
+> [!note] 数字口径
+> LOFT Table 2 中 MTSCI 等基线数字为 LOFT 论文自己的复现/适配口径；MTSCI 原文自报数字在其 ETT/Weather/METR-LA 的 point/block 缺失设置下（[[mtsci]]，Table 2/3），与 PEMS 交通高缺失设置不同，两套口径不可混用[^src-mtsci]。
+> FGTI 同理：其原文评测在 KDD/Guangzhou/PhysioNet 的 MCAR 10-40% 设置下（[[fgti]]，Table 1，附 CRPS 对比 Table 5），本页表中 FGTI 数字为 LOFT 在 PEMS、50 NFE 下的复现口径，不可与原文数字混用[^src-fgti]。
 
 论文将自身贡献定位为：一致性模型路线（[[consistency-fm\|Consistency-FM]]、[[shortcut-models\|Shortcut Models]]、[[meanflow\|MeanFlow]]）在图像生成已验证，但在时空插补中的应用此前未被探索（论文表述）[^src-loft]。
 
@@ -102,11 +110,16 @@ $$L_{CT}(\theta)=\mathbb{E}_{t,s,z_0,z_1}\|v_\theta(z_t,t)-\mathrm{sg}(v_\theta(
 - [[tsflow]] — GP 信息先验 + CFM（预测任务对照）
 - [[history-conditional-manifold]] — KITE 的可学历史条件源分布（预测任务对照）
 - [[fence]] — FENCE，同组前作的动态引导扩散插补基线
+- [[lcr]] — LCR（Chen et al., arXiv 2022/2024），非深度的低秩 + Laplacian 正则凸优化插补，LOFT 的判别式基线之一[^src-loft][^src-lcr]
 - [[giflow]] — GiFlow (ICML 2026)，同为流匹配插补，以时空图滤波的图信息先验替代高斯先验；LOFT 参考文献引用该工作[^src-loft]
 - [[loft-llm]] — 同名缩写的另一篇 KDD 2026 论文（低频时序预测）
 - [[mts-imputation-taxonomy]] — Wang & Du 等人的 MTSI 综述分类框架：按其插补不确定性视角，LOFT 的流匹配生成路线属生成式插补一类；综述发表于 LOFT 之前、未覆盖流匹配插补路线[^src-mts-imputation-survey]。注："LOFT 论文引用了该综述"未在仓库内核实（raw/ 无 LOFT PDF，[[source-loft]] 未记录其参考文献），此定位是 wiki 依据框架的分析性归类
 - [[costi]] — CoSTI（KBS 2025），Consistency Training 直接用于 MTSI；与 LOFT 定位表述存在口径张力（见定位节的注记）[^src-costi]
+- [[fgti]] — FGTI (NeurIPS 2024)，频率感知扩散插补（高频/主频双频域条件 + 条件扩散）[^src-fgti]，LOFT 的 50-NFE 扩散基线之一[^src-loft]
 
 [^src-loft]: [[source-loft]]
 [^src-mts-imputation-survey]: [[source-mts-imputation-survey]]
 [^src-costi]: [[source-costi]]
+[^src-mtsci]: [[source-mtsci]]
+[^src-lcr]: [[source-lcr]]
+[^src-fgti]: [[source-fgti]]

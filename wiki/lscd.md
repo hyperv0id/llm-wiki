@@ -10,8 +10,8 @@ tags:
   - spectral-conditioning
   - icml-2025
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-08-29
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -53,6 +53,9 @@ $$H(X_{t-1}^{\text{ta}} \mid X_t^{\text{ta}}, X_0^{\text{co}}, Z_S) < H(X_{t-1}^
 
 这一结果直接引自 Yang et al. (2024a) 的频率条件扩散理论[^src-lscd]。
 
+> [!note] 考证注记（wiki 层面）
+> 该 "Yang et al. (2024a)" 频率条件扩散理论与 [[fgti|FGTI]]（Yang et al., NeurIPS 2024）的 Proposition 3.1 结构一致——加入频域条件严格降低扩散反向过程条件熵（$H(\hat{X}_{t-1} \mid \hat{X}_t, X_C, C_H, C_D) < H(\hat{X}_{t-1} \mid \hat{X}_t, X_C)$）[^src-fgti]；因仓库内无 LSCD raw PDF，此引用对应关系未在 LSCD 参考文献层面核实。另注意频谱来源口径差异：LSCD 主张对含缺失序列先插值再 FFT 会扭曲频谱、故改用可微 Lomb–Scargle 周期图[^src-lscd]，而 FGTI 的两个频域 filter 均为先插值再 FFT[^src-fgti]。
+
 ## 与 CSDI 的关系
 
 LSCD 直接继承 [[csdi|CSDI]] 的条件扩散框架（自监督掩码训练 + 观测值作为条件 + 双轴注意力），但将 $\epsilon_\theta(x_t^{\text{ta}}, t \mid x_0^{\text{co}})$ 扩展为 $\epsilon_\theta(x_t^{\text{ta}}, t \mid x_0^{\text{co}}, \text{LS}(x_0^{\text{co}}))$，并增加频谱编码器和频谱一致性损失[^src-lscd]。
@@ -89,6 +92,8 @@ LSCD 直接继承 [[csdi|CSDI]] 的条件扩散框架（自监督掩码训练 + 
 - [[source-csdi]] — CSDI 源文件
 - [[diffusion-model]] — 扩散模型总览
 - [[frequency-aware-conditioning]] — 频率感知条件化
+- [[fgti]] — FGTI (NeurIPS 2024)，频域条件扩散插补；其命题 3.1 与 LSCD 所引条件熵理论结构一致（对应关系未核实，见理论基础节注记）
 - [[generative-time-series-forecasting]] — 生成式时间序列预测
 
 [^src-lscd]: [[source-lscd]]
+[^src-fgti]: [[source-fgti]]

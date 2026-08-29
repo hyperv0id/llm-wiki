@@ -10,7 +10,7 @@ tags:
   - neurips-2021
 created: 2026-05-31
 last_updated: 2026-08-29
-source_count: 14
+source_count: 16
 confidence: medium
 status: active
 ---
@@ -132,6 +132,8 @@ CSDI 的三个核心设计——(1) 观测值作为条件直接注入去噪网�
 - **[[costi|CoSTI]]** (KBS 2025)：一致性训练路线——沿用 CSDI 的 NEM（噪声估计）模块并适配一致性模型（时间 transformer 换为双向 Mamba，因 Mamba 不支持 cross-attention 而保留 transformer 承担该功能），1–2 步采样替代 50–100 步去噪；作者报告推理时间最多降低 98%（CoSTI Table 3）；注意其 Table 4/5 中的 CSDI 数字转引自 TIMBA 论文，非本文原始数字[^src-costi]
 - **表格数据方向**：TabCSDI（Zheng & Charoenphakdee, 2022）将条件扩散适配到表格数据；[[diffputer|DiffPuter]]（ICLR 2025）则不采用条件扩散，而是用无条件扩散学习完整数据联合分布、以 EM 交替迭代插补（M 步密度估计 / E 步条件采样），其论文报告在 9 个表格数据集的 MCAR in-sample 设置下明显优于 TabCSDI 与 MissDiff 两个扩散基线（图 2、表 1）[^src-diffputer]
 - **[[rdpi|RDPI]]** (AAAI 2025 / arXiv 2024)：批评 CSDI 类条件扩散只在反向去噪训练中使用观测条件、前向与插补过程忽略条件，据此把观测值写入前向转移（见 [[forward-process-conditioning]]），并以确定性初值与真值间的残差为扩散目标（初始模型用 [[grin|GRIN]]、两阶段联合训练）；作者报告在其评测的 4 个时空数据集上 MAE/MSE 优于 CSDI（Table 3/4；其中 AQI 的 Out-of-sample 未报告 CSDI）[^src-rdpi]
+- **[[mtsci|MTSCI]]** (CIKM 2024)：在 CSDI 式条件扩散插补设定上加入插补一致性约束（见 [[imputation-consistency]]）——前向加噪用互补掩码生成双视图、以 intra contrastive loss 约束插补值与观测值互相重构，去噪阶段用 mixup 机制融合相邻窗口条件信息；作者报告在 ETT/Weather/METR-LA 的 point/block 缺失下数值低于 CSDI（Table 2/3），CRPS 一致性指标亦低于 CSDI（Table 5）；该论文对 CSDI/CSBI 的批评是仅靠自监督掩码策略生成插补目标、直接以插补目标归纳偏置引导去噪网络（Sec. 5.2，作者观点）[^src-mtsci]
+- **[[fgti|FGTI]]** (Yang et al., NeurIPS 2024)：保留条件扩散 + 自监督掩码训练，把条件从观测值扩展为"观测值 + 高频/主频两组频域条件"（经 cross-attention 融入去噪网络），并以条件熵命题（其 Prop 3.1）论证加条件降低反向过程不确定性；其 Table 1 报告在 KDD/Guangzhou/PhysioNet 的 MCAR 10-40% 下优于 CSDI（如 KDD 10% RMSE 0.406 vs 0.459），附录 Table 5 的 CRPS 对比同向[^src-fgti]
 
 ## 综述归类
 
@@ -166,6 +168,8 @@ Wang & Du 等人的 MTSI 综述将 CSDI 归为生成式-扩散类插补方法（
 - [[diffputer]] — DiffPuter，EM 交替式扩散插补（表格数据），以 TabCSDI 为扩散基线
 - [[mts-imputation-taxonomy]] — MTSI 综述的分类框架，CSDI 归为生成式-扩散类
 - [[costi]] — CoSTI，沿用 CSDI NEM 模块的一致性训练插补 (KBS 2025)
+- [[mtsci]] — MTSCI，条件扩散 + 插补一致性约束 (CIKM 2024)
+- [[fgti]] — FGTI (NeurIPS 2024)，频域条件化扩散插补，把 CSDI 的观测值条件扩展为观测值 + 高频/主频条件
 
 [^src-csdi]: [[source-csdi]]
 [^src-timegrad]: [[source-timegrad]]
@@ -181,3 +185,5 @@ Wang & Du 等人的 MTSI 综述将 CSDI 归为生成式-扩散类插补方法（
 [^src-rdpi]: [[source-rdpi]]
 [^src-mts-imputation-survey]: [[source-mts-imputation-survey]]
 [^src-costi]: [[source-costi]]
+[^src-mtsci]: [[source-mtsci]]
+[^src-fgti]: [[source-fgti]]

@@ -9,7 +9,7 @@ tags:
   - iclr-2022
 created: 2026-05-30
 last_updated: 2026-08-29
-source_count: 6
+source_count: 7
 confidence: medium
 status: active
 ---
@@ -110,6 +110,7 @@ Wang & Du 等人的 MTSI 综述将 GRIN 归为预测式-GNN 类插补方法（Ta
 ## 相关工作
 
 - [[maginet|MagiNet]] (arXiv 2024) 直接批判 GRIN 的预填充 + 消息传递路线：它认为零预填充注入噪声、且 GRIN 在动态/连续缺失位置产生过平滑插值，转而用可学习缺失嵌入完全取消预填充[^src-maginet]
+- [[fgti|FGTI]] (NeurIPS 2024) 将 GRIN 列入 15 个插补基线，且默认以单位阵作为 GRIN 的邻接矩阵（即不提供图先验）；其 Table 1 报告 KDD 10% 下 FGTI RMSE 0.406 vs GRIN 0.565（作者报告口径）[^src-fgti]
 
 ## 关联页面
 
@@ -124,6 +125,7 @@ Wang & Du 等人的 MTSI 综述将 GRIN 归为预测式-GNN 类插补方法（Ta
 - [[traffic-forecasting]] — 交通预测
 - [[mts-imputation-taxonomy]] — MTSI 综述的分类框架，GRIN 归为预测式-GNN 类
 - [[costi]] — CoSTI (KBS 2025)，一致性训练插补，沿用 GRIN 基准并对比 GRIN[^src-costi]
+- [[fgti]] — FGTI (NeurIPS 2024)，频域条件扩散插补，以 GRIN 为基线（单位阵邻接）[^src-fgti]
 
 [^src-2108-00298]: [[source-2108-00298]]
 [^src-mts-imputation-survey]: [[source-mts-imputation-survey]]
@@ -131,3 +133,4 @@ Wang & Du 等人的 MTSI 综述将 GRIN 归为预测式-GNN 类插补方法（Ta
 [^src-giflow]: [[source-giflow]]
 [^src-rdpi]: [[source-rdpi]]
 [^src-costi]: [[source-costi]]
+[^src-fgti]: [[source-fgti]]

@@ -10,7 +10,7 @@ tags:
   - aaai-2026
 created: 2026-06-08
 last_updated: 2026-08-29
-source_count: 5
+source_count: 7
 confidence: medium
 status: active
 ---
@@ -64,7 +64,10 @@ $$\log p_{\theta,k-1,C_j}(c|x_{k-1}) = \frac{1}{|C_j|} \sum_{l \in C_j} \log p_{
 
 ## 实验结果
 
-在 PEMS04、PEMS07、PEMS08 三个数据集上，两种缺失模式（SR-TC 和 SC-TC，80% 缺失率）下全面超越 [[csdi|CSDI]]、[[pristi|PriSTI]]、[[imputeformer|ImputeFormer]]、ASTGNN、IGNNK、GCASTN、LCR、mTAN 等 8 个基线[^src-fence]。MAPE 平均提升 6.26%[^src-fence]。
+在 PEMS04、PEMS07、PEMS08 三个数据集上，两种缺失模式（SR-TC 和 SC-TC，80% 缺失率）下全面超越 [[csdi|CSDI]]、[[pristi|PriSTI]]、[[imputeformer|ImputeFormer]]、ASTGNN、IGNNK、GCASTN、[[lcr|LCR]]、mTAN 等 8 个基线[^src-fence]。MAPE 平均提升 6.26%[^src-fence]。
+
+> [!note] LCR 基线口径
+> 基线中的 [[lcr|LCR]] 是非深度的凸优化插补方法（circulant matrix nuclear norm 低秩 + Laplacian 核时域正则，FFT 求解），与 FENCE 的扩散路线不同类[^src-lcr]。FENCE 表格中 LCR 的数字为 FENCE 在其 PEMS 设置下的复现结果；LCR 原文实验使用 Portland 速度/体积序列、HighD/CitySim 速度场与 PeMS 速度矩阵，两套口径不可混用[^src-lcr]。
 
 ## 与相关方法的关系
 
@@ -77,7 +80,7 @@ $$\log p_{\theta,k-1,C_j}(c|x_{k-1}) = \frac{1}{|C_j|} \sum_{l \in C_j} \log p_{
 
 FBG 是 Koulischer et al. 的图像生成工作，FENCE 的引导尺度公式与后验追踪机制均采用自该工作，FENCE 的增量在聚类感知引导与时空插补场景适配[^src-fbg][^src-fence]。
 
-FENCE 论文相关工作节还把 [[costi|CoSTI]]（Solís-García et al. 2025，详见 [[costi]]）与 CSBI、MTSCI、DSDI 并列为"改进插补一致性与推理速度"的扩散模型相关扩展，对 CoSTI 的定性是"采用一致性训练以降低推理时间"[^src-fence]。
+FENCE 论文相关工作节还把 [[costi|CoSTI]]（Solís-García et al. 2025，详见 [[costi]]）与 CSBI、[[mtsci|MTSCI]]、DSDI 并列为"改进插补一致性与推理速度"的扩散模型相关扩展，对 CoSTI 的定性是"采用一致性训练以降低推理时间"[^src-fence]。其中 MTSCI（CIKM 2024）是一篇以插补一致性为主题的独立条件扩散插补论文——以互补掩码对比损失与 mixup 相邻窗口条件处理 intra/inter 一致性（详见 [[mtsci]] 与 [[imputation-consistency]]）[^src-mtsci]；FENCE 此处只是相关工作分类提及，未给出 MTSCI 的对比数字。
 
 ## 局限性
 
@@ -90,6 +93,8 @@ FENCE 论文相关工作节还把 [[costi|CoSTI]]（Solís-García et al. 2025�
 - [[loft]] — 同组（Mao 等）后续工作，KDD 2026：以流匹配 + 低秩先验 + 轨迹一致性替代扩散路线做交通插补，将 FENCE 列为生成式基线对比（作者报告 PEMS04 SC-TC RMSE 41.67 vs FENCE 44.28）[^src-loft]
 - [[lets-group]] — Let's Group（IJCAI 2025）：即插即用子图学习，用于降低 STGNN 内存开销。FENCE 的 Related Work 将其列入「判别式时空插补模型」[^src-fence]，但该文原文的任务设定与实验均为交通预测、未包含插补实验[^src-lets-group]——引用语境差异的核对见 [[source-lets-group]] 与 [[source-fence]]
 - [[costi]] — CoSTI（KBS 2025），FENCE 相关工作节提及的一致性训练插补方法[^src-fence]
+- [[lcr]] — LCR（Chen et al., arXiv 2022/2024），非深度的低秩 + Laplacian 正则凸优化插补，FENCE 的基线之一（论文将 8 个基线分为 machine learning / 判别式 / 生成式三类，LCR 被其归入 machine learning 一类）[^src-fence][^src-lcr]
+- [[mtsci]] — MTSCI（CIKM 2024），FENCE 相关工作节与 CSBI/DSDI 并列提及的一致性方向扩散插补[^src-fence][^src-mtsci]
 - [[mts-imputation-taxonomy]] — Wang & Du 等人的 MTSI 综述分类框架：按其插补不确定性视角，FENCE 的条件扩散路线属生成式插补一类。该综述发表于 FENCE 之前、未收录 FENCE[^src-mts-imputation-survey]；FENCE 参考文献含该综述（Wang et al. 2024, arXiv:2402.04059，raw PDF 已核实）[^src-fence]。此定位是 wiki 依据框架的分析性归类，非综述原文论断
 
 [^src-fence]: [[source-fence]]
@@ -97,3 +102,5 @@ FENCE 论文相关工作节还把 [[costi|CoSTI]]（Solís-García et al. 2025�
 [^src-loft]: [[source-loft]]
 [^src-lets-group]: [[source-lets-group]]
 [^src-mts-imputation-survey]: [[source-mts-imputation-survey]]
+[^src-mtsci]: [[source-mtsci]]
+[^src-lcr]: [[source-lcr]]

@@ -10,7 +10,7 @@ tags:
   - air-quality
   - traffic
 last_updated: 2026-08-29
-source_count: 8
+source_count: 10
 confidence: medium
 status: active
 ---
@@ -194,6 +194,8 @@ FENCE 进一步指出 PriSTI 的固定引导尺度在低条件信息场景（如
 
 一致性模型方向的延伸：[[costi|CoSTI]]（KBS 2025）在一致性训练中沿用论文所称"与 PriSTI 类似思路"的条件信息设计（线性插值条件、邻接矩阵与掩码），其 STFEM 模块明确扩展自 PriSTI 的条件特征提取模块，NEM 模块亦标注经 PriSTI 增强；改动在于把迭代去噪整体替换为一致性模型的 1–2 步采样[^src-costi]。
 
+频域条件方向的对照：[[fgti|FGTI]]（NeurIPS 2024）与 PriSTI 同属"在观测值之外增加增强条件"的路线，但条件来源不同——PriSTI 用线性插值[^src-pristi]，FGTI 用高频/主频两组频域条件。FGTI 论文 Table 1 报告在 KDD/Guangzhou/PhysioNet 的 MCAR 10-40% 下优于 PriSTI（如 KDD 10% RMSE 0.406 vs 0.472），并在可视化对比（其图 13）中把优势归因于频域信息相对插值信息（论文自述口径）；其实验中 PriSTI 使用单位阵邻接矩阵（FGTI 论文 Sec 4.1.3）[^src-fgti]。
+
 ## 关联页面
 
 - [[ddpm]] — DDPM，PriSTI 的扩散数学基础
@@ -213,11 +215,13 @@ FENCE 进一步指出 PriSTI 的固定引导尺度在低条件信息场景（如
 - [[rdpi]] — RDPI (AAAI 2025)，两阶段残差条件扩散插补，协议沿用 PriSTI 但未将其列为基线[^src-rdpi]
 - [[costi]] — CoSTI (KBS 2025)，一致性训练插补，条件信息设计与 STFEM 模块均标注承自 PriSTI[^src-costi]
 - [[mts-imputation-taxonomy]] — MTSI 综述的分类框架，PriSTI 归为生成式-扩散类（Diffusion+Attention+GNN+CNN）
+- [[fgti]] — FGTI (NeurIPS 2024)，以频域条件替代插值条件的扩散插补，将 PriSTI 列为主要基线对比[^src-fgti]
 
 ## 相关工作
 
 - [[maginet|MagiNet]] (arXiv 2024) 将 PriSTI 列为基线，并发现 PriSTI 仅在低方差的 PEMS-BAY 数据集上略优于 MagiNet（归因于扩散多步生成更适合低方差数据）；其余四个数据集 MagiNet 更优[^src-maginet]。
 - [[rdpi|RDPI]] (AAAI 2025 / arXiv 2024)：其数据划分与缺失协议沿用 GRIN 与 PriSTI（RDPI 论文 Settings 节自述引 Liu et al. 2023），但其基线清单不含 PriSTI；两篇论文各自报告自己设置下的结果，数字不可直接混用[^src-rdpi]。
+- [[mtsci|MTSCI]] (CIKM 2024)：其相关工作节将 PriSTI 概括为"利用地理数据为时空插补提取条件信息"的扩散方法，并归入"仅用插补目标归纳偏置、未处理插补一致性"的一类——该概括为 MTSCI 作者的转述口径；MTSCI 的基线清单不含 PriSTI，其对 METR-LA 的实验也未使用图结构/邻接信息，按普通多变量时序插补处理[^src-mtsci]。
 
 [^src-pristi]: [[source-pristi]]
 [^src-mts-imputation-survey]: [[source-mts-imputation-survey]]
@@ -227,3 +231,5 @@ FENCE 进一步指出 PriSTI 的固定引导尺度在低条件信息场景（如
 [^src-giflow]: [[source-giflow]]
 [^src-rdpi]: [[source-rdpi]]
 [^src-costi]: [[source-costi]]
+[^src-mtsci]: [[source-mtsci]]
+[^src-fgti]: [[source-fgti]]
