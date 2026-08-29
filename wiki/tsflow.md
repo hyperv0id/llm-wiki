@@ -9,7 +9,7 @@ tags:
   - iclr-2025
 created: 2026-06-08
 last_updated: 2026-08-29
-source_count: 2
+source_count: 3
 confidence: high
 status: active
 ---
@@ -31,6 +31,8 @@ TSFlow 使用 **高斯过程先验** 替代传统的各向同性高斯先验，�
 | **条件先验采样** | Langevin 动力学从 $q_0(x_0 \mid y^p)$ 采样 |
 | **引导生成** | 通过修改向量场实现无条件模型的条件化 |
 | **GP 回归先验** | 条件模型的解析条件先验分布 |
+
+指南框架归类：TSFlow 使用的 mini-batch OT 耦合在 [[source-flow-matching-guide|FM 指南]]的设计体系中被归为 **multisample couplings**——在每批 $k$ 个样本上解 doubly stochastic 匹配以隐式构造非独立耦合；指南转述 Pooladian et al. (2023) 与 Tong et al. (2023) 的结果：该耦合降低传输代价，二次代价下 $k\to\infty$ 逼近 OT 并诱导直轨迹[^src-flow-matching-guide]。
 
 ## 架构
 
@@ -79,3 +81,4 @@ TSFlow 使用 DiffWave 风格的残差架构，搭配 S4 层沿时间维度建�
 - [[kite-manifold-guidance-chain]] — HCM–KGC–CFG 串联
 [^src-tsflow]: [[source-tsflow]]
 [^src-prs]: [[source-prs]]
+[^src-flow-matching-guide]: [[source-flow-matching-guide]]

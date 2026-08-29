@@ -10,7 +10,7 @@ tags:
   - kdd-2026
 created: 2026-08-26
 last_updated: 2026-08-29
-source_count: 6
+source_count: 7
 confidence: medium
 status: active
 ---
@@ -29,6 +29,9 @@ status: active
 ## 动机：三个观察
 
 1. **弯曲轨迹导致多步积分**: CFM 的线性条件路径只逐时刻监督向量场，不约束全局一致性，学到的边缘向量场通常弯曲，推理需数十步欧拉积分[^src-loft]。
+
+   > [!note] 框架层面对照
+   > [[source-flow-matching-guide|FM 指南]]同样把"直概率路径带来更小的 ODE 模拟误差"作为框架性论断，并把线性 conditional OT 路径与 multisample couplings 列为拉直轨迹的两条训练侧途径[^src-flow-matching-guide]。此为指南框架论断与本页动机的 wiki 层面对照；raw/ 无 LOFT PDF，LOFT 原文是否引用指南未核实。
 2. **无信息先验带来冗余**: 标准 CFM 从 N(0,I) 出发，模型必须学习从纯噪声到复杂时空数据的完整变换；在高稀疏观测下这被论文描述为计算冗余并加大分布拟合难度[^src-loft]。
 3. **精度与线性化的梯度冲突**: 论文报告同时最小化 L_CFM 与一致性目标 L_CT 时，两者梯度的余弦相似度在训练全程为负；且冲突与数据不确定性相关——高不确定性样本中流匹配目标与一致性教师速度的对齐度更低（附录 C）[^src-loft]。
 
@@ -118,6 +121,7 @@ $$L_{CT}(\theta)=\mathbb{E}_{t,s,z_0,z_1}\|v_\theta(z_t,t)-\mathrm{sg}(v_\theta(
 - [[fgti]] — FGTI (NeurIPS 2024)，频率感知扩散插补（高频/主频双频域条件 + 条件扩散）[^src-fgti]，LOFT 的 50-NFE 扩散基线之一[^src-loft]
 
 [^src-loft]: [[source-loft]]
+[^src-flow-matching-guide]: [[source-flow-matching-guide]]
 [^src-mts-imputation-survey]: [[source-mts-imputation-survey]]
 [^src-costi]: [[source-costi]]
 [^src-mtsci]: [[source-mtsci]]

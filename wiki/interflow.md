@@ -9,8 +9,8 @@ tags:
   - simulation-free
   - iclr-2023
 created: 2026-07-13
-last_updated: 2026-07-23
-source_count: 1
+last_updated: 2026-08-29
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -40,6 +40,10 @@ status: active
 | Score-SDE / DDPM | 有限时间；任意两端密度；直接学 ODE 速度而非 score；Gaussian base 时速度可导出 score[^src-stochasticinterpolants] |
 | [[flow-matching\|Flow Matching]] | 同期；SI 以任意 $I_t$ 固定路径再回归速度，并给出 max-min→OT 理论[^src-stochasticinterpolants] |
 | [[rectified-flow\|Rectified Flow]] | 同期直线/ reflow 路线；SI 论文指出 reflow 对非精确映射敏感[^src-stochasticinterpolants] |
+
+## 指南口径：双侧条件化的归类与警示
+
+[[source-flow-matching-guide|FM 指南]]（arXiv:2412.06264，2024-12）把 stochastic interpolant 归类为双侧条件化 $Z=(X_0,X_1)$ 的条件流构造（与 $Z=X_1$ 的 FM、$Z=X_0$ 的形式并列），并给出两点口径：其一，当条件流在两个变元上均为 diffeomorphism 时，三种条件化给出相同的边缘速度与边缘路径；其二，单纯插值映射（即使 $C^2$ 光滑，指南给出 ReLU 型插值反例）不足以保证边缘速度生成边缘路径——需要 SI 原文（Albergo & Vanden-Eijnden, 2022）与 Liu et al. (2022) 补充的条件，指南认为这些条件比其定理 3（Marginalization Trick）的条件更难验证[^src-flow-matching-guide]。指南另转述 Shi et al. (2023) 与 Liu et al. (2023)：线性版 FM 可视为 bridge matching 的某种极限情形[^src-flow-matching-guide]。
 
 ## 实验结果（论文报告）
 
@@ -71,3 +75,4 @@ status: active
 - [[score-based-sde]] — Score-SDE 对照
 
 [^src-stochasticinterpolants]: [[source-stochasticinterpolants]]
+[^src-flow-matching-guide]: [[source-flow-matching-guide]]

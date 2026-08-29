@@ -10,9 +10,9 @@ tags:
   - zero-shot
   - aaai
 created: 2026-06-15
-last_updated: 2026-06-15
-source_count: 1
-confidence: high
+last_updated: 2026-08-29
+source_count: 2
+confidence: medium
 status: active
 ---
 
@@ -67,6 +67,10 @@ ST Data (T×N×C) → Spatial-Temporal Embedding → ST Tokenizer → SGA → PL
 
 STD-PLM 是首个同时从空间和时间两个维度构造 token 并整合拓扑信息的 PLM-based 时空模型[^src-std-plm]。
 
+## 统一评测口径（Guo et al. 2025）
+
+Guo、Wei 等人的统一评测（11 模型 × 4 个交通数据集 × 20 个缺失场景，官方代码复现 + 网格搜索调参）将 STD-PLM 列入评测清单[^src-guo-imputation-evaluation]。该评测复现口径下：STD-PLM 列 top-4 深度插补模型，在 PEMS04/PEMS08 上与 GCASTN 报告相当水平；PEMS04、SRTR、0.5 设置的挑战/稳定时段分组中，STD-PLM 与 GCASTN、ImputeFormer 同属表现最好的三个模型（挑战期 MAE 23.57/RMSE 35.38/MAPE 9.14，稳定期 MAE 7.64/RMSE 12.00/MAPE 18.63），评测者归因于其分节点建模时空关系并利用 LLM 语言推理能力学习两种时段的交通模式[^src-guo-imputation-evaluation]。效率上（同设置）内存 8744MB 为表内最大，训练 12206.02s、推理 18.44s[^src-guo-imputation-evaluation]。以上数字均为评测者的复现口径（协议见 [[st-traffic-imputation-benchmark]]），与本页原论文实验数字分立。
+
 ## Connections
 
 - 基于：[[pretrained-language-model-for-ts]] — PLM 在时间序列/时空数据的跨模态应用范式
@@ -77,5 +81,8 @@ STD-PLM 是首个同时从空间和时间两个维度构造 token 并整合拓�
 - 对比：[[nuwats]] — PLM-based 插补基础模型，CI 范式
 - 关系：[[traffic-forecasting]] — 交通预测是 STD-PLM 的主要评估场景
 - 关系：[[few-shot-traffic-forecasting]] — 时空 FSL 的核心挑战
+- 关系：[[st-traffic-imputation-benchmark]] — Guo et al. 统一评测：STD-PLM 的评测口径排名与效率结论
+- 关系：[[traffic-missing-patterns]] — 评测所用缺失模式四分类（SRTR/SRTC/SCTR/SCTC）
 
 [^src-std-plm]: [[source-std-plm]]
+[^src-guo-imputation-evaluation]: [[source-guo-imputation-evaluation]]

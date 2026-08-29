@@ -10,7 +10,7 @@ tags:
   - air-quality
   - traffic
 last_updated: 2026-08-29
-source_count: 10
+source_count: 11
 confidence: medium
 status: active
 ---
@@ -174,6 +174,10 @@ PriSTI 与 [[diffstg|DiffSTG]] 虽然都是"条件扩散+空间建模"，但任�
 
 Wang & Du 等人的 MTSI 综述将 PriSTI 归为生成式-扩散类插补方法（Table 1 架构标注 Diffusion+Attention+GNN+CNN），并将其条件机制概括为"以时空依赖作为条件信息——用条件特征计算的时空注意力权重提供给去噪网络"[^src-mts-imputation-survey]。该概括与本页"先验引导注意力"一节的原论文口径一致；综述 Table 1 将 PriSTI 的缺失机制标注为 MCAR，属综述作者的二手归类[^src-mts-imputation-survey]。
 
+## 统一评测口径（Guo et al. 2025）
+
+Guo、Wei 等人的统一评测（11 模型 × 4 个交通数据集 × 20 个缺失场景，官方代码复现 + 网格搜索调参）将 PriSTI 列入评测清单[^src-guo-imputation-evaluation]。该评测复现口径下：PriSTI 在低缺失率场景报告表现好，评测者归因于其可提前处理缺失值并进一步利用时空依赖；按进入 top-1/2/3 的次数计，PriSTI 与 BRITS、GCASTN、ImputeFormer、LATC 同为最稳健的模型，评测者将这一组模型的共同点归因于先验知识引入（该处将 PriSTI 与 BRITS、GCASTN 同归为利用时延机制，其模型设计建议节则把 PriSTI 的先验表述为先行线性插值）[^src-guo-imputation-evaluation]。评测的数据集级结论未将 PriSTI 列为任一数据集的整体最优（如 Seattle 速度数据上报告一致最优的是 BRITS）[^src-guo-imputation-evaluation]；这与上方 PriSTI 原文在其自设数据集与协议下对 BRITS/GRIN/CSDI 的优势声明分立——协议与数据集不同，两套口径并存、不互相否定。效率上，PriSTI 推理时间 8553.77s（PEMS04、SRTR、0.5 设置）显著长于其余模型，评测者归因于扩散迭代去噪与多次采样估计不确定性；模型选择建议中 PriSTI 被列为性能-内存平衡较好之选，而非实时推理或内存受限场景的首选[^src-guo-imputation-evaluation]。以上数字均为评测者的复现口径（协议见 [[st-traffic-imputation-benchmark]]），与本页原论文实验数字分立。
+
 ## 局限性
 
 1. **线性插值的双刃剑**：在高度非线性时序模式（如交通速度早晚高峰的剧烈脉冲）中，线性插值可能"错误平滑"真实突变信号[^src-pristi]
@@ -216,6 +220,8 @@ FENCE 进一步指出 PriSTI 的固定引导尺度在低条件信息场景（如
 - [[costi]] — CoSTI (KBS 2025)，一致性训练插补，条件信息设计与 STFEM 模块均标注承自 PriSTI[^src-costi]
 - [[mts-imputation-taxonomy]] — MTSI 综述的分类框架，PriSTI 归为生成式-扩散类（Diffusion+Attention+GNN+CNN）
 - [[fgti]] — FGTI (NeurIPS 2024)，以频域条件替代插值条件的扩散插补，将 PriSTI 列为主要基线对比[^src-fgti]
+- [[st-traffic-imputation-benchmark]] — Guo et al. 统一评测：PriSTI 的评测口径排名与效率结论
+- [[traffic-missing-patterns]] — 评测所用缺失模式四分类（SRTR/SRTC/SCTR/SCTC）
 
 ## 相关工作
 
@@ -233,3 +239,4 @@ FENCE 进一步指出 PriSTI 的固定引导尺度在低条件信息场景（如
 [^src-costi]: [[source-costi]]
 [^src-mtsci]: [[source-mtsci]]
 [^src-fgti]: [[source-fgti]]
+[^src-guo-imputation-evaluation]: [[source-guo-imputation-evaluation]]

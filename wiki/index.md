@@ -1337,3 +1337,17 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Techniques (continued)
 - [[fgti]] — FGTI，频率感知生成式插补：high-frequency filter（引导残差项）+ dominant-frequency filter（趋势/季节项背景结构）+ 双 cross-attention（Q/K 来自频域、V 来自时域）融入条件扩散去噪网络 (NeurIPS 2024)
+
+## Sources (continued)
+- [[source-guo-imputation-evaluation]] — Guo et al., A Survey and Benchmarking of Spatial-Temporal Traffic Data Imputation Models（arXiv:2412.04733v2，PDF 内核实；v1 题名 An Experimental Evaluation of Imputation Models for Spatial-Temporal Traffic Data 见 FENCE 参考文献著录），practice-oriented 缺失模式四分类 + 模型双分类 + 11 模型 × 4 交通数据集 × 20 缺失场景统一评测管线，评测复现口径结论与模型选择建议
+
+## Concepts (continued)
+- [[st-traffic-imputation-benchmark]] — 交通插补统一评测基准（Guo et al.）：评测协议（4 数据集 × 4 缺失模式 × 5 缺失率、官方代码复现 + 网格搜索、RMSE/MAE/MAPE 仅缺失位置、效率与挑战/稳定期分组）、主要排名结论（评测复现口径，与各方法原文数字分立）、模型选择建议、覆盖范围警示
+- [[traffic-missing-patterns]] — 交通缺失模式四分类 SRTR/SRTC/SCTR/SCTC：空间/时间维度 × 随机/连续位置，各类掩码构造协议与现实成因；与 Rubin 缺失机制分类（MCAR/MAR/MNAR）维度不同、分立记录
+
+## Sources (continued)
+- [[source-flow-matching-guide]] — Flow Matching Guide and Code（Lipman et al., arXiv:2412.06264v1，2024-12，83 页 PDF 内核实）：FM 长篇教程（含代码指南），设计选择体系（路径/耦合/参数化/引导）+ Marginalization Trick 与 Bregman 散度损失框架 + Riemannian/离散/Generator Matching 扩展 + 与扩散关系的精确口径，配 flow_matching PyTorch 库
+
+## Concepts (continued)
+- [[flow-matching-design-space]] — FM 指南的设计选择体系：路径设计（affine/Gaussian、conditional OT 的 kinetic energy 刻画、geodesic/premetric、mixture）× 数据耦合（independent/paired/multisample）× 速度参数化（velocity/x1/x0/score 转换表与 scheduler 等价）× 条件化（X1/X0/双侧）与引导，以 Marginalization Trick + Bregman 散度为数学主干 (arXiv 2024)
+- [[generator-matching]] — Generator Matching，FM 指南第 8-9 章的 CTMP 统一框架：generator 与 KFE、universal characterization（$\mathbb{R}^d$ 上 generator = flow + diffusion + jump 之和）、GM 损失（Bregman）、组合模型（Markov superposition / divergence-free / predictor-corrector）与多模态 (arXiv 2024)

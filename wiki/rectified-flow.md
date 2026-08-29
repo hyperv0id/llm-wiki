@@ -7,8 +7,8 @@ tags:
   - ode
   - few-step-generation
 created: 2026-05-31
-last_updated: 2026-08-26
-source_count: 5
+last_updated: 2026-08-29
+source_count: 6
 confidence: high
 status: active
 ---
@@ -43,6 +43,8 @@ status: active
 ### 与最优传输 (OT) 的关系
 
 当初始耦合为独立耦合（$X_0 \perp X_1$）时，rectified flow 收敛到从 $\pi_0$ 到 $\pi_1$ 的最优传输映射（在凸代价下）[^src-rectified-flow]。这使得 Rectified Flow 与 [[optimal-transport|最优传输]] 理论紧密相连。
+
+[[source-flow-matching-guide|FM 指南]]为直线化提供了框架级背景：线性 conditional OT 流在所有条件流中最小化 kinetic energy 的一个上界，且该路径下目标样本可被单步 Euler 精确求解；指南并把在 batch 内隐式构造非独立耦合的 **multisample couplings**（Pooladian et al., 2023；Tong et al., 2023）列为从耦合侧降低传输代价、拉直轨迹的训练侧途径（指南未讨论 reflow；把该途径与本页 rectification 的重生成耦合并列对照，是本 wiki 的归类）[^src-flow-matching-guide]。
 
 ### Reflow：无监督变体
 
@@ -98,6 +100,7 @@ Rectification 思想启发了 [[shortcut-models|Shortcut Models]]（arXiv 2025�
 
 [[gmf|GMF]] 将 Rectified Flow 应用于一个全新的领域——多模态融合的可靠性评估[^src-gmf]。通过训练速度网络估计潜在空间中的模态内和模态间传输代价，利用 rectification 使轨迹线性化，使单步速度预测即可作为可靠的传输能量估计（多步 ODE 集成 vs 单步预测准确率差异可忽略，验证了轨迹线性性）。该应用展示了 Rectified Flow 超越图像/时间序列生成的新用途：作为几何审计工具，打破多模态融合中的[[circular-dependency-in-multimodal-fusion|循环依赖]]。
 [^src-rectified-flow]: [[source-rectified-flow]]
+[^src-flow-matching-guide]: [[source-flow-matching-guide]]
 [^src-flowts]: [[source-flowts]]
 [^src-stochasticinterpolants]: [[source-stochasticinterpolants]]
 [^src-gmf]: [[source-gmf]]

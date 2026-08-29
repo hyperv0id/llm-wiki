@@ -7,8 +7,8 @@ tags:
   - manifold
   - training
 created: 2026-05-13
-last_updated: 2026-05-30
-source_count: 1
+last_updated: 2026-08-29
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -50,6 +50,15 @@ x-prediction 是指扩散模型中让神经网络直接预测干净数据 $x$（
 - **bottleneck 设计推荐**：x-prediction 下，将高维输入压缩到 32~512-d bottleneck 不仅无害，反而提升质量
 - **推荐配置**：x-prediction + v-loss（Tab. 1(3)(a)），这是 JiT 采用的最优组合
 
+## FM 指南的参数化体系（affine 路径）
+
+[[source-flow-matching-guide|FM 指南]]（arXiv:2412.06264，2024-12）第 4.8 节在 affine 条件流 $\psi_t=\alpha_t x_1+\sigma_t x$（scheduler $(\alpha_t,\sigma_t)$）下给出与本页同构的参数化体系：边缘速度可由 velocity、$x_1$-prediction（去噪目标 $\mathbb{E}[X_1|X_t=x]$）、$x_0$-prediction（$\mathbb{E}[X_0|X_t=x]$）或 score 学习，四种参数化之间有闭式线性转换表（指南 Table 1）[^src-flow-matching-guide]。与本页扩散记号的对应：指南指出扩散文献的 noise-prediction/ε-prediction 就是 $x_0$-prediction，且高斯路径下 score $=-x_{0|t}/\sigma_t$、与 $x_0$-prediction 成比例[^src-flow-matching-guide]。
+
+指南补充的两点口径：
+
+- **奇点**：$x_1$-prediction 在 $t\to1$、$x_0$-prediction 在 $t\to0$ 处转换系数发散；理论上（条件期望存在时）为可去奇点、与系数奇点相消，但实践中连续的网络输出不能完美回归目标，转换时需用端点解析式 $u_0,u_1$ 处理[^src-flow-matching-guide]。这与本页流形论证互补：Li & He 论证的是输出空间性质（on-manifold），指南指出的是转换公式的数值性质。
+- **scheduler 等价与训练后变换**：对固定耦合，所有 scheduler 在 $t=1$ 理论上给出相同采样结果；affine 路径支持训练后 scheduler 变换（scale-time 变换），可把已训练速度场适配到另一 scheduler（指南引 Karras et al. 2022、Shaul et al. 2023、Pokle et al. 2023）[^src-flow-matching-guide]。
+
 ## 与其他概念的关系
 
 - [[diffusion-model]] — 扩散模型的整体框架，ε-prediction 是其标准参数化
@@ -58,5 +67,7 @@ x-prediction 是指扩散模型中让神经网络直接预测干净数据 $x$（
 - [[elf|ELF]] — 同实验室的连续 DLM，同样使用 x-prediction 实现共享权重 denoiser-decoder
 - [[edm-preconditioning]] — EDM 网络预处理技术，与 x-prediction 存在内在矛盾
 - [[flow-matching]] — v-prediction 的数学框架，与 x-prediction 通过线性变换关联
+- [[flow-matching-design-space]] — FM 指南的设计选择体系（参数化转换表所在框架）
 
 [^src-back-to-basics-let-denoising-generative-models-denoise]: [[source-back-to-basics-let-denoising-generative-models-denoise]]
+[^src-flow-matching-guide]: [[source-flow-matching-guide]]

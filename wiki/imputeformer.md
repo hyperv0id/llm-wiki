@@ -9,7 +9,7 @@ tags:
   - kdd-2024
 created: 2026-05-11
 last_updated: 2026-08-29
-source_count: 7
+source_count: 8
 confidence: medium
 status: active
 ---
@@ -149,6 +149,10 @@ L = L_recon + λ · L_FIL
 
 Wang & Du 等人的 MTSI 综述将 ImputeFormer 归为预测式-Attention 类插补方法（Table 1 缺失机制标注 MCAR），正文转述其为一个"利用自注意力与时间上下文建模来恢复缺失值"的 Transformer 框架[^src-mts-imputation-survey]。注意该转述未涉及本页所述的低秩归纳偏置核心设计；架构细节与实验数字以原论文口径为准，两套口径分立。
 
+## 统一评测口径（Guo et al. 2025）
+
+Guo、Wei 等人的统一评测（11 模型 × 4 个交通数据集 × 20 个缺失场景，官方代码复现 + 网格搜索调参）将 ImputeFormer 列入评测清单[^src-guo-imputation-evaluation]。该评测复现口径下：ImputeFormer 列 top-4 深度插补模型，在 PEMS04/PEMS08 的空间随机（SR-）模式报告最好，空间连续（SC-）模式下则是 LATC 最好——评测者将两者的共同点归因于张量分解/低秩思路对全局模式（如周期性）的捕捉；按进入 top-1/2/3 的次数计，ImputeFormer 与 BRITS、GCASTN、PriSTI、LATC 同为最稳健的模型[^src-guo-imputation-evaluation]。挑战时段与稳定时段分组（PEMS04、SRTR、0.5）中，ImputeFormer 与 GCASTN、STD-PLM 同属表现最好的三个模型（挑战期 MAE 24.31/RMSE 39.35/MAPE 9.32，稳定期 MAE 7.46/RMSE 12.52/MAPE 17.34 为稳定期 MAPE 最低）[^src-guo-imputation-evaluation]。效率上（PEMS04、SRTR、0.5）训练 15320.95s、推理 8.19s、内存 5234MB，评测者将其与 PriSTI、IGNNK 列为性能-内存平衡较好之选，但不属内存受限（LATC 98MB）或实时推理（TC、E2GAN）的首选[^src-guo-imputation-evaluation]。以上数字均为评测者的复现口径（协议见 [[st-traffic-imputation-benchmark]]），与本页原论文实验数字分立。
+
 ## 未来工作方向
 
 精读论文指出的潜在研究方向包括：
@@ -173,6 +177,8 @@ Wang & Du 等人的 MTSI 综述将 ImputeFormer 归为预测式-Attention 类插
 - [[loft]] — LOFT (KDD 2026)，把低秩归纳偏置从判别式结构约束转为生成式流匹配的信息先验，并以 ImputeFormer 为判别式基线对比[^src-loft]
 - [[traffic-forecasting]] — 交通预测
 - [[mts-imputation-taxonomy]] — MTSI 综述的分类框架，ImputeFormer 归为预测式-Attention 类
+- [[st-traffic-imputation-benchmark]] — Guo et al. 统一评测：ImputeFormer 的评测口径排名与效率结论
+- [[traffic-missing-patterns]] — 评测所用缺失模式四分类（SRTR/SRTC/SCTR/SCTC）
 - [[generative-time-series-forecasting]] — 生成式时序预测
 
 [[stamimputer|STAMImputer]] (arXiv 2025) 在论文中将 ImputeFormer 选为主要 SOTA 基线，并继承其低秩诱导思想到 [[lrsgat|LrSGAT]] 空间专家中，但用显式节点采样替代纯可学习 embedding agents[^src-stamimputer]。
@@ -184,3 +190,4 @@ Wang & Du 等人的 MTSI 综述将 ImputeFormer 归为预测式-Attention 类插
 [^src-maginet]: [[source-maginet]]
 [^src-loft]: [[source-loft]]
 [^src-stamimputer]: [[source-stamimputer]]
+[^src-guo-imputation-evaluation]: [[source-guo-imputation-evaluation]]

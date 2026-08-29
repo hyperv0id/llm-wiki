@@ -403,8 +403,21 @@ $$
 
 ---
 
+## 指南的体系归类（Flow Matching Guide and Code）
+
+Lipman 等人的 [[source-flow-matching-guide|Flow Matching Guide and Code]]（arXiv:2412.06264v1，2024-12，全文 83 页）把 FM 组织为四步 blueprint：(a) 确定 source/target 分布，(b) 设计插值概率路径，(c) 回归生成该路径的 velocity field，(d) 数值积分采样；指南认为该 recipe 在 Riemannian 流形、离散 CTMC 与一般 CTMP 上保持不变[^src-flow-matching-guide]。与本页正文对应的几点：
+
+- **命名与推广**：本页"定理 1（边缘化正确性）"在指南中被命名为 **Marginalization Trick**（指南定理 3），且条件化变量推广为任意 RV $Z$（不限于 $X_1$）；本页"定理 2（梯度等价）"被推广为 Bregman 散度学习条件期望的一般命题（指南命题 1）——梯度相等的来源是 Bregman 散度对第二变元的仿射不变性，指南以此统一 FM 家族全部损失[^src-flow-matching-guide]。
+- **线性 conditional OT 路径的变分刻画**：指南证明线性条件流 $\psi_t=(1-t)x+t x_1$ 最小化 kinetic energy 的一个上界（而非直接求解动态 OT），单点 target 时才是动态 OT 的解析解；直线路径下目标样本可被单步 Euler 精确求解[^src-flow-matching-guide]。
+- **三种条件化方式与警示**：指南把条件化归为 $Z=X_1$（FM 原论文）、$Z=X_0$、双侧 $Z=(X_0,X_1)$（stochastic interpolants / rectified flow 的形式），并给出三者的等价条件：当条件流在两侧变元上均为 diffeomorphism 时，三种条件化给出相同的边缘速度；指南强调单纯插值（即使 $C^2$ 光滑）不足以保证边缘速度生成边缘路径——给出一个 $C^2$ 插值反例，并指出 SI/RF 原文的额外条件较其定理 3 的条件更难验证[^src-flow-matching-guide]。
+- **与扩散的精确关系**：指南把扩散训练归类为 FM 家族特例——Gaussian 路径（affine drift 前向 SDE 的闭式边缘）+ $x_0$/score 再参数化 + 时间约定反转；确定性采样对应 FM 的 ODE 采样，随机采样对应叠加 divergence-free 的 Langevin 分量[^src-flow-matching-guide]。
+
+框架级展开见 [[flow-matching-design-space]]（路径/耦合/参数化/引导的设计选择体系）与 [[generator-matching]]（CTMP 统一框架）。
+
 ## 相关页面
 
+- [[flow-matching-design-space]] — FM 指南的设计选择体系（路径/耦合/参数化/引导）
+- [[generator-matching]] — 指南第 8-9 章的 CTMP 统一框架
 - [[continuous-normalizing-flow]] — 连续归一化流
 - [[normalizing-flow]] — 归一化流基础
 - [[diffusion-model]] — 扩散模型
@@ -446,6 +459,7 @@ $$
 ## 引用
 
 [^src-flow-matching]: [[source-flow-matching]]
+[^src-flow-matching-guide]: [[source-flow-matching-guide]]
 [^src-doflow]: [[source-doflow]]
 [^src-schrodinger-bridges-generative-modeling]: [[source-schrodinger-bridges-generative-modeling]]
 [^src-stochasticinterpolants]: [[source-stochasticinterpolants]]

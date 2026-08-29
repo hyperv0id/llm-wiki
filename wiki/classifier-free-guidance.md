@@ -7,7 +7,7 @@ tags:
   - guidance
 created: 2026-04-28
 last_updated: 2026-08-29
-source_count: 9
+source_count: 10
 confidence: high
 status: active
 ---
@@ -91,6 +91,14 @@ CFG 的效果可直觉理解为：在增大条件似然 $p(x|c)$ 的同时**降�
 - **一步生成中的引导尺度条件化**：[[improved-meanflows|iMF]]（MeanFlow 后续）把 CFG 尺度 $\omega$ 与 CFG interval 端点改写为条件变量——训练时从幂律分布随机采样、推理时任选——在保持 1-NFE 采样的同时支持可变引导（原 MeanFlow 需在训练前固定 $\omega$）；作者报告最优尺度随模型大小、训练时长与推理步数移动（iMF Fig. 4）[^src-improved-meanflows]。
 - **与 observation self-guidance 的区分**：[[tsdiff|TSDiff]] 的 [[observation-self-guidance|observation self-guidance]] **不**联合训练条件/无条件分支，也不做条件 dropout；它用无条件去噪网络的一步重构构造 $p(y_{\mathrm{obs}}\mid x_t)$ 引导项，属于“纯无条件训练 + 推理期自引导”，与 CFG 正交[^src-prs]。
 
+## Flow Matching 侧的 CFG 形式
+
+[[source-flow-matching-guide|FM 指南]]（arXiv:2412.06264，2024-12）第 4.10 节把 classifier guidance 与 CFG 统一到条件/无条件 score 的关系式 $\nabla\log p_{t|Y}(x|y) = \nabla\log p_{Y|t}(y|x) + \nabla\log p_t(x)$ 上（CFG 即将该式重排后用条件/无条件 score 之差隐式替代分类器 score），并借速度—score 转换表给出 CFG 在 FM 速度场参数化下的形式（转述 Zheng et al., 2023 的推导）：
+
+$$\tilde{u}^\theta_t(x|y) = (1-w)\,u^\theta_t(x|\varnothing) + w\,u^\theta_t(x|y)$$
+
+训练时仍以 Bernoulli($p_\text{uncond}$) 随机把条件置为 null 占位符 $\varnothing$[^src-flow-matching-guide]。指南同时声明两点口径：其一，CFG 精确采样的分布未知，此前文献给出过不同的直觉或理论解释（引 Dieleman 2022、Guo et al. 2024、Chidambaram et al. 2024、Bradley & Nakkiran 2024）；其二，在其写作时点 CFG 仍是训练条件模型最流行的做法，Esser et al. (2024) 与 Polyak et al. (2024) 展示了大规模 guided FM 模型上的应用[^src-flow-matching-guide]。
+
 ## 动态 CFG（反馈引导）
 
 标准 CFG 使用固定引导尺度 $w$（或 $\lambda$），无法按不同样本对条件的满足程度差异化调整；固定引导会损害样本多样性并可能诱发 memorization[^src-fbg][^src-fence]。[[fence|FENCE]] 所用反馈引导机制的原始出处是 Koulischer et al. 的 Feedback Guidance（FBG，NeurIPS 2025）：以加性误差假设替换 CFG 的隐式乘性假设，导出状态与时间相关的引导尺度 $\lambda(x_t,t)$，并通过追踪扩散反向马尔可夫链估计后验似然实现动态调整——后验降低时增大引导，后验升高时减小引导[^src-fbg]。详见 [[feedback-diffusion-guidance|反馈扩散引导]]。
@@ -112,6 +120,7 @@ $$\lambda(x_k, k) \approx \frac{p_{\theta,k}(c|x_k)}{p_{\theta,k}(c|x_k) - (1-\p
 LDM 成功将无分类器引导应用于文本到图像生成[^src-rombach-ldm-2022]。在 MS-COCO 数据集上，CFG 将 FID 从 23.31 提升到 12.63（引导尺度 s=1.5）。典型引导尺度在 1.5 到 10.0 之间。[[instaflow|InstaFlow]] 为 Rectified Flow 设计了 CFG 等效机制 $v^\alpha = \alpha\cdot v(\cdot|T) + (1-\alpha)\cdot v(\cdot|\text{NULL})$，最佳 $\alpha\approx 1.5$ 远低于 SD 的 5-7.5[^src-instaflow]。
 
 [^src-classifier-free-diffusion-guidance]: [[source-classifier-free-diffusion-guidance]]
+[^src-flow-matching-guide]: [[source-flow-matching-guide]]
 [^src-rombach-ldm-2022]: [[source-rombach-ldm-2022]]
 [^src-dit]: [[source-dit]]
 [^src-instaflow]: [[source-instaflow]]

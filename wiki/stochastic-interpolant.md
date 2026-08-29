@@ -9,8 +9,8 @@ tags:
   - optimal-transport
   - probability-flow-ode
 created: 2026-07-13
-last_updated: 2026-07-23
-source_count: 1
+last_updated: 2026-08-29
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -61,6 +61,8 @@ $$
 
 ## 与相关范式
 
+[[source-flow-matching-guide|FM 指南]]（arXiv:2412.06264，2024-12）把 SI 归类为双侧条件化 $Z=(X_0,X_1)$ 的条件流构造，并指出：单纯插值（即使 $C^2$ 光滑）不足以保证边缘速度生成边缘路径——需 SI 原文补充的额外可验证条件；当插值在两侧变元上均为 diffeomorphism 时，SI 与 $Z=X_1$（FM）、$Z=X_0$ 三种构造给出相同边缘速度[^src-flow-matching-guide]。
+
 | 范式 | 端点 | 时间 | 训练 | 动力学 |
 |------|------|------|------|--------|
 | Stochastic interpolant / InterFlow | 任意 $\rho_0,\rho_1$ | 有限 $[0,1]$ | 二次、仿真无关 | 概率流 ODE |
@@ -93,3 +95,4 @@ $$
 - [[building-schrodinger-bridges]] — SB 中的 SI 视角
 
 [^src-stochasticinterpolants]: [[source-stochasticinterpolants]]
+[^src-flow-matching-guide]: [[source-flow-matching-guide]]
