@@ -3374,3 +3374,13 @@ SARAF ingest 时因多 Agent 并发，shared wiki/ 工作区已含 TS-Memory/PFR
 更新的页面：[[retrieval-augmented-spatio-temporal-forecasting]], [[sundial]], [[tsfm-covariate-adaptation-comparison]]
 
 
+
+## [2026-08-29] ingest | Feedback Guidance of Diffusion Models (NeurIPS 2025)
+FBG（Koulischer, Handke, Deleu, Demeester, Ambrogioni；Ghent University - imec / Radboud Donders Institute；NeurIPS 2025 poster；arXiv:2506.06085 v2；代码开源）。[[fence|FENCE]] 引导机制的理论来源，本次 ingest 补齐该原始出处缺口。论文将引导公式解释为误差模型反转：以加性混合假设 p_θ(x|c)=(1−π)p(x)+πp(x|c) 替换 CFG 的隐式乘性假设，导出状态与时间相关的引导尺度 λ(x,t)=q/(q−(1−π))，q=p(c|x)/p(c)；后验沿反向马尔可夫链追踪（偏移 δ 修正自我参照偏差，τ/δ 重参数化为 t0/t1）。作者报告：ImageNet512 EDM2-XS 随机采样器下 FBG_pure 优于 CFG 与 LinCFG、与 LIG 相当（FID 3.76 vs 5.00，FD_DinoV2 89.0 vs 100.2，表 1），PFODE 设定下亦优于 CFG++；SDv2 T2I MS-COCO FID 18.63 vs CFG 19.64（表 2）；难 prompt 自动获得更强引导。与 FENCE 的差异已记录：FENCE 采用省略 p(c) 归一化的公式简写，π 取值 0.5 vs FBG 论文 ≥0.999（ImageNet）。
+创建的页面：[[source-feedback-guidance-diffusion-models-arxiv25]]
+更新的页面：[[feedback-diffusion-guidance]], [[fence]], [[classifier-free-guidance]], [[index]]
+raw 新增：raw/feedback-guidance-diffusion-models-arxiv25.pdf（arXiv v2 下载）
+
+## [2026-08-29] lint-fix | FBG ingest 审查修复（严重 1 项 + 警告 2 项）
+按 AGENTS.md 文案原则与论文口径审查本次 ingest 涉及页面后的修复。严重：source-summary 与 log 中"FBG_pure 优于 CFG/CFG++/LinCFG"写在"随机采样器"限定下，但表 1 中 CFG++ 无随机采样器结果（附录 F.1：CFG++ 不适用于纯随机 DDPM 采样器），改为"随机采样器下优于 CFG 与 LinCFG、与 LIG 相当；PFODE 设定下亦优于 CFG++（FID 2.50 vs 3.66）"。警告：classifier-free-guidance 动态 CFG 节首句概括性陈述补 [^src-fbg][^src-fence] 引用并改写含混表述；"FBG 是该思路的原始出处"收窄为"FENCE 所用反馈引导机制的原始出处"（FBG 论文自称的"首个"仅限第一性原理导出状态/时间相关尺度，时间调度型动态引导如 LIG 早于它）。信息级 5 项（无条件歧义措辞、图 4/附录 F.5 引注范围、callout 仓库自指、T2I 定位说明两页差异、fence 引注粒度）未修复，待后续处理。
+更新的页面：[[source-feedback-guidance-diffusion-models-arxiv25]], [[classifier-free-guidance]]

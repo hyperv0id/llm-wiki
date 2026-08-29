@@ -6,8 +6,8 @@ tags:
   - conditional-generation
   - guidance
 created: 2026-04-28
-last_updated: 2026-07-13
-source_count: 7
+last_updated: 2026-08-29
+source_count: 8
 confidence: high
 status: active
 ---
@@ -92,11 +92,13 @@ CFG 的效果可直觉理解为：在增大条件似然 $p(x|c)$ 的同时**降�
 
 ## 动态 CFG（反馈引导）
 
-标准 CFG 使用固定引导尺度 $w$（或 $\lambda$），但在高缺失率条件生成场景下（如时空插补），固定尺度会在条件信息不足时导致生成过程漂移到先验分布，远离条件观测[^src-fence]。[[feedback-diffusion-guidance|反馈扩散引导]] 和 [[fence|FENCE]] 将 $\lambda$ 变为去噪步 $k$ 和样本 $x_k$ 的函数[^src-fence]：
+标准 CFG 使用固定引导尺度 $w$（或 $\lambda$），无法按不同样本对条件的满足程度差异化调整；固定引导会损害样本多样性并可能诱发 memorization[^src-fbg][^src-fence]。[[fence|FENCE]] 所用反馈引导机制的原始出处是 Koulischer et al. 的 Feedback Guidance（FBG，NeurIPS 2025）：以加性误差假设替换 CFG 的隐式乘性假设，导出状态与时间相关的引导尺度 $\lambda(x_t,t)$，并通过追踪扩散反向马尔可夫链估计后验似然实现动态调整——后验降低时增大引导，后验升高时减小引导[^src-fbg]。详见 [[feedback-diffusion-guidance|反馈扩散引导]]。
+
+[[fence|FENCE]] 将该机制引入高缺失率时空插补场景：固定尺度在条件信息不足时会导致生成过程漂移到先验分布、远离条件观测，FENCE 采用的简写引导公式为[^src-fence]：
 
 $$\lambda(x_k, k) \approx \frac{p_{\theta,k}(c|x_k)}{p_{\theta,k}(c|x_k) - (1-\pi)}$$
 
-通过追踪扩散反向马尔可夫链估计后验似然 $p(c|x_k)$，实现引导尺度的动态调整——后验降低时增大引导，后验升高时减小引导[^src-fence]。
+（原文公式以后验与条件先验之比 $q = p_{\theta,t}(c|x_t)/p_{\theta,t}(c)$ 代入[^src-fbg]。）
 
 ## 局限性
 
@@ -113,5 +115,6 @@ LDM 成功将无分类器引导应用于文本到图像生成[^src-rombach-ldm-2
 [^src-dit]: [[source-dit]]
 [^src-instaflow]: [[source-instaflow]]
 [^src-fence]: [[source-fence]]
+[^src-fbg]: [[source-feedback-guidance-diffusion-models-arxiv25]]
 [^src-kite]: [[source-kite]]
 [^src-prs]: [[source-prs]]

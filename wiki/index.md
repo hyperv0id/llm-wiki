@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-08-26
+last_updated: 2026-08-29
 tags:
   - meta
 ---
@@ -179,6 +179,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-multimodal-ts-survey]] — Multi-modal Time Series Analysis: A Tutorial and Survey, unified cross-modal interaction framework (fusion/alignment/transference), 40+ methods catalog, Terra/Time-MMD benchmarks, arXiv 2025
 - [[source-event-driven-ts-forecasting]] — VoT: event-driven reasoning and multi-level alignment for time series forecasting (ICLR 2026)
 - [[source-fence]] — FENCE: Spatial-Temporal Feedback Diffusion Guidance for Controlled Traffic Imputation (AAAI 2026)
+- [[source-feedback-guidance-diffusion-models-arxiv25]] — FBG: Feedback Guidance of Diffusion Models, 加性误差假设 + 马尔可夫后验追踪的状态相关动态引导尺度 (NeurIPS 2025)
 - [[source-aurora]] — Aurora: universal generative multimodal time series forecasting (ICLR 2026)
 - [[source-bigcity]] — BIGCity: first MTMD spatio-temporal model unifying trajectory + traffic state (arXiv 2024)
 - [[source-time-llm]] — Time-LLM: Time Series Forecasting by Reprogramming Large Language Models (ICLR 2024)
@@ -797,7 +798,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[classifier-free-guidance]] — 无分类器引导联合训练条件与无条件扩散模型实现条件控制
 - [[cluster-aware-guidance]] — 聚类感知引导，利用空间注意力聚类为每个节点组定制扩散引导尺度 (AAAI 2026)
 - [[dynamic-graph-qualification]] — DGQ, qualifying edge reliability via cross-time-step similarity for adjacency matrix refinement (AAAI 2026)
-- [[feedback-diffusion-guidance]] — 反馈扩散引导，基于后验似然动态调整扩散模型引导尺度 (AAAI 2026)
+- [[feedback-diffusion-guidance]] — FBG 反馈扩散引导，加性误差假设导出的状态/时间相关动态引导尺度 + 马尔可夫后验追踪 (NeurIPS 2025)；FENCE 将其引入时空插补 (AAAI 2026)
 - [[feature-dependency-encoder]] — FDE，SADI 中显式建模时间感知特征间依赖的编码器 (AAAI 2025)
 - [[gated-temporal-attention]] — GTA，SADI 中用自注意力替代膨胀卷积的门控时序注意力 (AAAI 2025)
 - [[two-stage-imputation]] — 双阶段插补，第一阶段初始插补 + 第二阶段精炼 + 可学习加权组合 (SADI, AAAI 2025)

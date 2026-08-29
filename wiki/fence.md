@@ -9,15 +9,15 @@ tags:
   - classifier-free-guidance
   - aaai-2026
 created: 2026-06-08
-last_updated: 2026-08-26
-source_count: 2
+last_updated: 2026-08-29
+source_count: 3
 confidence: medium
 status: active
 ---
 
 # FENCE (Spatial-Temporal Feedback Diffusion GuidaNCE)
 
-**FENCE** 是 Mao, Ding 等人发表于 AAAI 2026 的动态反馈扩散引导方法，用于受控交通数据时空插补[^src-fence]。针对 [[csdi|CSDI]]、[[pristi|PriSTI]] 等扩散插补方法使用统一引导尺度的问题，FENCE 将固定的 [[classifier-free-guidance|无分类器引导]] 尺度 $\lambda$ 替换为基于后验似然动态调整的反馈引导（该机制的理论公式采用自 Koulischer et al. 2025 的 Feedback Guidance 工作[^src-fence]），以应对高缺失率节点因条件信息不足而漂移到先验分布的现象[^src-fence]。
+**FENCE** 是 Mao, Ding 等人发表于 AAAI 2026 的动态反馈扩散引导方法，用于受控交通数据时空插补[^src-fence]。针对 [[csdi|CSDI]]、[[pristi|PriSTI]] 等扩散插补方法使用统一引导尺度的问题，FENCE 将固定的 [[classifier-free-guidance|无分类器引导]] 尺度 $\lambda$ 替换为基于后验似然动态调整的反馈引导（该机制的理论公式与后验追踪方法采用自 [[feedback-diffusion-guidance|反馈扩散引导]]，即 Koulischer et al. 的 FBG 工作，NeurIPS 2025[^src-fbg][^src-fence]），以应对高缺失率节点因条件信息不足而漂移到先验分布的现象[^src-fence]。
 
 ## 问题与动机
 
@@ -72,7 +72,10 @@ $$\log p_{\theta,k-1,C_j}(c|x_{k-1}) = \frac{1}{|C_j|} \sum_{l \in C_j} \log p_{
 |------|---------|---------|---------|
 | [[csdi|CSDI]] | 固定 CFG | 统一 $\lambda$ | 无（论文未提及其空间处理） |
 | [[pristi|PriSTI]] | 固定 CFG | 统一 $\lambda$ | 论文仅述"integrates geographic context"，未详述机制 |
+| [[feedback-diffusion-guidance|FBG]] | 动态反馈引导（图像生成，机制来源） | $\lambda(x_k, k)$，样本级 | 不适用 |
 | **FENCE** | 动态反馈引导 | $\lambda(x_k, k)$，聚类级 | 动态注意力分数 k-means 聚类 |
+
+FBG 是 Koulischer et al. 的图像生成工作，FENCE 的引导尺度公式与后验追踪机制均采用自该工作，FENCE 的增量在聚类感知引导与时空插补场景适配[^src-fbg][^src-fence]。
 
 ## 局限性
 
@@ -80,7 +83,10 @@ $$\log p_{\theta,k-1,C_j}(c|x_{k-1}) = \frac{1}{|C_j|} \sum_{l \in C_j} \log p_{
 
 ## 另见
 
+- [[feedback-diffusion-guidance]] — FBG 原始技术页（NeurIPS 2025），FENCE 引导机制的理论来源
+- [[source-feedback-guidance-diffusion-models-arxiv25]] — FBG 原始论文摘要
 - [[loft]] — 同组（Mao 等）后续工作，KDD 2026：以流匹配 + 低秩先验 + 轨迹一致性替代扩散路线做交通插补，将 FENCE 列为生成式基线对比（作者报告 PEMS04 SC-TC RMSE 41.67 vs FENCE 44.28）[^src-loft]
 
 [^src-fence]: [[source-fence]]
+[^src-fbg]: [[source-feedback-guidance-diffusion-models-arxiv25]]
 [^src-loft]: [[source-loft]]
