@@ -1274,3 +1274,23 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Sources (continued)
 - [[source-meanflow]] — MeanFlow: Mean Flows for One-step Generative Modeling, 平均速度场 + MeanFlow Identity（JVP）一步生成，无预训练/蒸馏/课程（Geng, Deng, Bai, Kolter, He; CMU/MIT, arXiv 2025 v1）
+
+## Sources (continued)
+- [[source-improved-meanflows]] — Improved Mean Flows (iMF): On the Challenges of Fastforward Generative Models, MeanFlow 同团队后续：目标等价改写为 v-loss 再参数化并修正 JVP 输入、CFG 尺度改为条件变量、in-context conditioning，ImageNet-256 从头训练 1-NFE FID 1.72（Geng, Lu, Wu, Shechtman, Kolter, He; CMU/MIT/Adobe/THU, arXiv 2025 v2）
+
+## Techniques (continued)
+- [[improved-meanflows]] — iMF，MeanFlow 后续改进：MeanFlow 目标等价改写为 v-loss 再参数化（JVP 切向量改取网络预测边缘速度）+ 引导尺度/区间条件化 + 多 token in-context conditioning（去 adaLN-zero），1-NFE FID 1.72（作者报告）(arXiv 2025)
+
+## Sources (continued)
+- [[source-diffputer]] — DiffPuter: Empowering Diffusion Models for Missing Data Imputation, EM 交替式扩散插补（M 步扩散密度估计 / E 步前向-反向混合条件采样），9 个表格数据集 MCAR 30% 相对最强基线平均提升 6.94% MAE / 4.78% RMSE（ICLR 2025）
+
+## Techniques (continued)
+- [[diffputer]] — DiffPuter，论文自述首个把扩散生成模型整合进 EM 框架的插补方法，表格数据；TabCSDI/MissDiff 为其一步式扩散基线 (ICLR 2025)
+- [[em-diffusion-interleaving]] — EM 交替式扩散插补，M 步扩散训练=密度 MLE（score matching 为负对数似然上界）、E 步前向/反向混合采样=EAP 估计 (DiffPuter, ICLR 2025)
+
+## Techniques (continued)
+- [[forward-process-conditioning]] — 前向过程条件化：把观测值写入扩散前向转移（而非仅在反向去噪网络输入注入条件），RDPI 据此推导含前向条件的 ELBO；与 CSDI/PriSTI 的仅反向条件化对照 (RDPI, arXiv 2024)
+- [[rdpi]] — RDPI，两阶段时空插补框架：确定性初始模型（GRIN）+ 以"初值−真值"残差为扩散目标的条件扩散，观测值入前向过程、保留随机项的 DDIM 式加速；四时空数据集 MAE/MSE 作者报告最优 (arXiv 2024, AAAI 2025 著录)
+
+## Sources (continued)
+- [[source-rdpi]] — RDPI: A Refine Diffusion Probability Generation Method for Spatiotemporal Data Imputation, 确定性初值 + 残差条件扩散、观测值纳入前向过程并推导新 ELBO，Table 3/4 作者报告 MAE/MSE 最优（Liu, Zhao, Song; 北航, arXiv 2412.12642 v1, AAAI 2025 著录）

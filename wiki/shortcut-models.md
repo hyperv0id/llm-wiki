@@ -10,7 +10,7 @@ tags:
   - arxiv-2025
 created: 2026-04-28
 last_updated: 2026-08-29
-source_count: 3
+source_count: 4
 confidence: medium
 status: active
 ---
@@ -202,7 +202,7 @@ while not converged do:
 
 ### vs MeanFlow
 
-[[meanflow|MeanFlow]]（arXiv 2025）原文将 Shortcut Models 归为条件化两个时间变量、依赖额外两时自洽约束的路线，并称自身仅由平均速度定义驱动、无需此类额外约束（MeanFlow 作者的表述）[^src-meanflow]。同骨干数字对比（MeanFlow 作者报告，ImageNet-256，DiT-XL/2，两者均属 Tab. 2 从头训练 1-NFE 组；240 epochs 训练时长为 MeanFlow 侧设置）：Shortcut-XL/2 1-NFE FID 10.60，MeanFlow-XL/2 3.43[^src-meanflow]。
+[[meanflow|MeanFlow]]（arXiv 2025）原文将 Shortcut Models 归为条件化两个时间变量、依赖额外两时自洽约束的路线，并称自身仅由平均速度定义驱动、无需此类额外约束（MeanFlow 作者的表述）[^src-meanflow]。同骨干数字对比（MeanFlow 作者报告，ImageNet-256，DiT-XL/2，两者均属 Tab. 2 从头训练 1-NFE 组；240 epochs 训练时长为 MeanFlow 侧设置）：Shortcut-XL/2 1-NFE FID 10.60，MeanFlow-XL/2 3.43[^src-meanflow]。后续 [[improved-meanflows|iMF]]（MeanFlow 团队，arXiv:2512.02012）将 Shortcut Models 概括为"建立在两个时间步与其 midpoint 关系上"的 fastforward 方法（iMF Sec. 2），并在其 Tab. 3 报告 Shortcut-XL/2 1-NFE FID 10.60、iMF-XL/2 1.72（iMF 作者报告）[^src-improved-meanflows]。
 
 ### vs Flow Matching
 
@@ -261,6 +261,7 @@ Shortcut Models 还被应用于机器人控制任务：
 
 - [[flow-matching]] — Flow Matching 基础
 - [[consistency-models]] — Consistency Models
+- [[improved-meanflows]] — MeanFlow 后续改进，将 Shortcut Models 概括为 fastforward 路线之一
 - [[diffusion-model]] — 扩散模型
 - [[instaflow]] — InstaFlow，reflow+distill 路线，与 Shortcut 的自一致性路线形成对比 (ICLR 2024)
 - [[rectified-flow|Rectified Flow]] — 通过 rectification 学习直线轨迹的 ODE 生成模型
@@ -270,3 +271,4 @@ Shortcut Models 还被应用于机器人控制任务：
 [^src-shortcut-models]: [[source-shortcut-models]]
 [^src-alphaflow]: [[source-alphaflow]]
 [^src-meanflow]: [[source-meanflow]]
+[^src-improved-meanflows]: [[source-improved-meanflows]]

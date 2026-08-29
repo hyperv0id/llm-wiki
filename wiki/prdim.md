@@ -8,8 +8,8 @@ tags:
   - mnar
   - expectation-maximization
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-08-29
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -57,7 +57,7 @@ status: active
 ## 与相关方法的关系
 
 - **vs [[csdi|CSDI]]**：CSDI 条件扩散 + MCAR 人工掩码、忽略缺失过程；PRDIM 加模式识别器显式建模 $p(M\mid X)$ 处理 MNAR。
-- **vs DiffPuter**：DiffPuter 仅训练联合扩散 + soft EM；PRDIM 同时训练扩散 + 模式识别器，用 hard EM。
+- **vs [[diffputer|DiffPuter]]**：DiffPuter（ICLR 2025）论文自述首个把扩散生成模型整合进 EM 框架[^src-diffputer]，仅训练联合扩散 + soft EM（"soft EM" 系 PRDIM 的转述口径）；PRDIM 同时训练扩散 + 模式识别器，用 hard EM，把 EM 路线扩展到显式建模缺失过程，并将 DiffPuter 刻画为 soft EM 的表格实验基线[^src-prdim]。
 - **vs [[nuwats|NuwaTS]] / [[t1|T1]]**：后两者假设随机缺失（mask-invariant 表示 / mask-aware embedding），PRDIM 专门处理**非随机**缺失，是缺失机制谱系上互补的一极。
 
 ## 关联页面
@@ -67,7 +67,9 @@ status: active
 - [[classifier-guidance]] — 同构的扩散条件引导
 - [[tweedies-formula]] — 后验均值估计依据
 - [[csdi]] — 条件扩散插补（MCAR 假设，PRDIM 基线）
+- [[diffputer]] — EM 交替式扩散插补（soft EM，本文 hard EM 的对照）
 - [[diffusion-models]] — 扩散模型总览
 - [[nuwats]] / [[t1]] — 假设随机缺失的插补方法（对照）
 
 [^src-prdim]: [[source-prdim]]
+[^src-diffputer]: [[source-diffputer]]

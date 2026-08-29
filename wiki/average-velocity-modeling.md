@@ -9,7 +9,7 @@ tags:
   - time-series
 created: 2026-06-08
 last_updated: 2026-08-29
-source_count: 3
+source_count: 4
 confidence: medium
 status: active
 ---
@@ -98,12 +98,13 @@ Linear noise scheduler 与平均速度建模天然配合[^src-cogencast]：
 
 ## 与 MeanFlow 的关系
 
-[[meanflow|MeanFlow]]（Geng et al., arXiv:2505.13447）原文训练目标：$u_{tgt}=v_t-(t-r)(v_t\,\partial_z u_\theta+\partial_t u_\theta)$，其中修正项 $(t-r)\,du/dt$ 是沿轨迹的全导数——Jacobian $[\partial_z u,\partial_r u,\partial_t u]$ 对切向量 $[v,0,1]$ 的 JVP（原文 Eq. 8，$dr/dt=0$）[^src-meanflow]。CoGenCast 的修正项在本页转述中记为 $(r-t)\,\partial u/\partial t$（时间偏导数，经 JVP 计算）[^src-cogencast]。两者同属"区间条件化平均速度 + 一阶导数修正"的目标形式，区间方向约定使修正项符号一致（CoGenCast 记 $r>t$，MeanFlow 记 $t>r$）；差异在于 MeanFlow 的修正项明确包含速度方向分量 $v\,\partial_z u$，而 CoGenCast 的 JVP 切向量取法因其原文未入库暂无法核实——两者是否严格同构待 CoGenCast 原文核对。[[alphaflow|α-Flow]] 进一步把 MeanFlow 目标分解为轨迹流匹配与轨迹一致性两项，报告其梯度强负相关并以课程退火分离两者；图像生成侧的消融显示先充分流匹配预训练再过渡到平均速度目标收敛更好[^src-alphaflow]。
+[[meanflow|MeanFlow]]（Geng et al., arXiv:2505.13447）原文训练目标：$u_{tgt}=v_t-(t-r)(v_t\,\partial_z u_\theta+\partial_t u_\theta)$，其中修正项 $(t-r)\,du/dt$ 是沿轨迹的全导数——Jacobian $[\partial_z u,\partial_r u,\partial_t u]$ 对切向量 $[v,0,1]$ 的 JVP（原文 Eq. 8，$dr/dt=0$）[^src-meanflow]。CoGenCast 的修正项在本页转述中记为 $(r-t)\,\partial u/\partial t$（时间偏导数，经 JVP 计算）[^src-cogencast]。两者同属"区间条件化平均速度 + 一阶导数修正"的目标形式，区间方向约定使修正项符号一致（CoGenCast 记 $r>t$，MeanFlow 记 $t>r$）；差异在于 MeanFlow 的修正项明确包含速度方向分量 $v\,\partial_z u$，而 CoGenCast 的 JVP 切向量取法因其原文未入库暂无法核实——两者是否严格同构待 CoGenCast 原文核对。[[alphaflow|α-Flow]] 进一步把 MeanFlow 目标分解为轨迹流匹配与轨迹一致性两项，报告其梯度强负相关并以课程退火分离两者；图像生成侧的消融显示先充分流匹配预训练再过渡到平均速度目标收敛更好[^src-alphaflow]。后续 [[improved-meanflows|iMF]]（MeanFlow 同团队）将原目标等价改写为瞬时速度（v-loss）的再参数化，并把 JVP 切向量由条件速度改为网络预测的边缘速度；作者报告 ImageNet-256 从头训练 1-NFE FID 1.72[^src-improved-meanflows]。
 
 ## 相关页面
 
 - [[cogencast]] — 首个应用平均速度建模的模型
 - [[meanflow]] — 目标形式相近的图像生成侧框架（原文已入库）
+- [[improved-meanflows]] — MeanFlow 后续改进：v-loss 再参数化 + 修正 JVP 输入
 - [[alphaflow]] — 对 MeanFlow 目标的分解分析与课程退火改进
 - [[one-step-flow-generation]] — 一步流生成的技术全景
 - [[hybrid-llm-flow-matching-forecasting]] — 混合 LLM-FM 预测范式
@@ -113,3 +114,4 @@ Linear noise scheduler 与平均速度建模天然配合[^src-cogencast]：
 [^src-cogencast]: [[source-cogencast]]
 [^src-alphaflow]: [[source-alphaflow]]
 [^src-meanflow]: [[source-meanflow]]
+[^src-improved-meanflows]: [[source-improved-meanflows]]

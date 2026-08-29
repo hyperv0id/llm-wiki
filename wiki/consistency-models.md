@@ -8,7 +8,7 @@ tags:
   - icml-2023
 created: 2026-04-28
 last_updated: 2026-08-29
-source_count: 4
+source_count: 5
 confidence: medium
 status: active
 ---
@@ -60,6 +60,8 @@ $$
 
 [[meanflow|MeanFlow]]（arXiv 2025）作者将 Consistency Models 系刻画为：一致性约束施加在网络行为上而非底层 ground-truth 场的性质上、路径锚定数据侧（在 MeanFlow 记法下相当于固定 $r\equiv 0$），网络只条件化单一时间变量；并认为此类训练可能不稳定、需要"仔细设计的离散化课程"逐步约束时间域——这是 MeanFlow 作者的表述[^src-meanflow]。MeanFlow 自身则由平均速度定义导出恒等式，条件化 $(r,t)$ 两个时间变量，不依赖额外一致性启发式[^src-meanflow]。
 
+后续 [[improved-meanflows|iMF]]（MeanFlow 团队，arXiv:2512.02012 v2）将 CM 系概括为 fastforward generative models 中"从中间时刻直接跳到轨迹终点"的一类（iMF Sec. 2），并在其 1-NFE 从头训练对照中报告 iCT-XL/2 FID 34.24、iMF-XL/2 1.72（iMF 论文 Tab. 3，作者报告）[^src-improved-meanflows]。
+
 ## 应用扩展
 
 ### 自回归一致性模型
@@ -83,6 +85,7 @@ $$
 - [[consistency-fm]] — Consistency-FM，速度一致性直线流 (arXiv 2024)
 - [[alphaflow]] — α-Flow，统一 FM/Shortcut/MeanFlow 的目标族 (arXiv 2025)
 - [[meanflow]] — MeanFlow，区间平均速度少步生成框架 (arXiv 2025)
+- [[improved-meanflows]] — iMF，MeanFlow 后续改进，1-NFE 从头训练 FID 1.72（作者报告）(arXiv 2025)
 - [[trajectory-consistency-flow-matching]] — 轨迹一致性流匹配技术页
 
 ## 引用
@@ -91,3 +94,4 @@ $$
 [^src-swift]: [[source-swift]]
 [^src-loft]: [[source-loft]]
 [^src-meanflow]: [[source-meanflow]]
+[^src-improved-meanflows]: [[source-improved-meanflows]]

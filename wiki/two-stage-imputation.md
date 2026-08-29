@@ -7,8 +7,8 @@ tags:
   - diffusion-models
   - refinement
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 3
+last_updated: 2026-08-29
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -54,8 +54,13 @@ SADI 作者在实践中观察到第二阶段有时会降低精度[^src-sadi]。�
 | **SADI** | GTA₁ (FDE 后) | GTA₂ (噪声接地) | 动态逐元素加权 |
 | [[cofill\|CoFILL]] | 时域 TCN | 频域 DCT | Cross-Attention 融合（非序列化） |
 | ImputeFormer | 投影注意力 | 嵌入注意力 | 堆叠（非加权） |
+| [[rdpi\|RDPI]] (arXiv 2024) | 确定性插补模型（实验用 [[grin\|GRIN]]） | 残差条件扩散（观测值写入前向过程） | 相减：初值减去预测残差（Algorithm 2） |
 
 SADI 的独特之处在于：(1) 第二阶段重新引入原始噪声数据作为接地信号；(2) 逐元素的独立动态权重允许细粒度控制[^src-sadi]。
+
+## 网络级与框架级两种用法
+
+上表前四行的"两阶段"都发生在**单一去噪网络（或注意力块）内部**：两个阶段是同一模型的两个组件，输出经加权或注意力融合——SADI 即两个 GTA 块部署于同一去噪函数内[^src-sadi]。[[rdpi|RDPI]] 的两阶段则是**框架级**的——初始模型 $f_\theta$ 与扩散模型 $g_\theta$ 是两个独立模型，扩散目标不是缺失值本身，而是初始估计与真值之间的残差 $z_0^m = f_\theta(x_0^c) - x_0^m$，采样时以初值减去预测残差得到最终插补，两阶段以 $L_{joint} = L_{simple} + \lambda L_{init}$ 联合训练[^src-rdpi]。两种用法不同义，跨方法比较时应注意层级。
 
 ## 关联页面
 
@@ -64,5 +69,7 @@ SADI 的独特之处在于：(1) 第二阶段重新引入原始噪声数据作�
 - [[feature-dependency-encoder]] — FDE，为第一阶段提供特征依赖信息
 - [[mixed-partial-blackout-training]] — MPB，增强双阶段在 partial blackout 下的鲁棒性
 - [[saits]] — SAITS，双阶段插补的注意力设计灵感来源
+- [[rdpi]] — RDPI，框架级两阶段（确定性初值 + 残差扩散精炼）
 
 [^src-sadi]: [[source-sadi]]
+[^src-rdpi]: [[source-rdpi]]

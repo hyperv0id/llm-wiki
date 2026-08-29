@@ -9,8 +9,8 @@ tags:
   - probabilistic-modeling
   - neurips-2021
 created: 2026-05-31
-last_updated: 2026-08-26
-source_count: 10
+last_updated: 2026-08-29
+source_count: 12
 confidence: medium
 status: active
 ---
@@ -129,6 +129,8 @@ CSDI 的三个核心设计——(1) 观测值作为条件直接注入去噪网�
 - **[[probts|ProbTS]] 基准视角**：CSDI 作为 **NAR 概率** 代表在短程 CRPS 上常最强，并作为复杂分布下相对 TSFM（MOIRAI/Chronos）的参照；长程上面临显存与学习效率问题，且 RevIN 不总是优于均值缩放（如 Weather）[^src-probts]
 - **[[tsdiff|TSDiff]]** (NeurIPS 2023)：在 8 个单变量基准上直接与 CSDI 对比 CRPS；主张**无条件**训练 + [[observation-self-guidance|observation self-guidance]] 可在不按任务重训的情况下接近条件扩散，并保留合成数据生成能力[^src-prs]
 - **[[loft|LOFT]]** (KDD 2026)：跳出扩散框架的后续路线——以流匹配替代扩散、低秩信息先验替代高斯源分布、轨迹一致性目标压缩推理至 2 NFE（CSDI 类扩散基线为 50 NFE）；在 PEMS03/04/08 高缺失设置上作者报告全面优于 CSDI[^src-loft]
+- **表格数据方向**：TabCSDI（Zheng & Charoenphakdee, 2022）将条件扩散适配到表格数据；[[diffputer|DiffPuter]]（ICLR 2025）则不采用条件扩散，而是用无条件扩散学习完整数据联合分布、以 EM 交替迭代插补（M 步密度估计 / E 步条件采样），其论文报告在 9 个表格数据集的 MCAR in-sample 设置下明显优于 TabCSDI 与 MissDiff 两个扩散基线（图 2、表 1）[^src-diffputer]
+- **[[rdpi|RDPI]]** (AAAI 2025 / arXiv 2024)：批评 CSDI 类条件扩散只在反向去噪训练中使用观测条件、前向与插补过程忽略条件，据此把观测值写入前向转移（见 [[forward-process-conditioning]]），并以确定性初值与真值间的残差为扩散目标（初始模型用 [[grin|GRIN]]、两阶段联合训练）；作者报告在其评测的 4 个时空数据集上 MAE/MSE 优于 CSDI（Table 3/4；其中 AQI 的 Out-of-sample 未报告 CSDI）[^src-rdpi]
 
 ## 局限性
 
@@ -156,6 +158,7 @@ CSDI 的三个核心设计——(1) 观测值作为条件直接注入去噪网�
 - [[feedback-diffusion-guidance]] — 反馈扩散引导技术
 - [[sadi]] — SADI，针对 partial blackout 设计的双阶段扩散插补
 - [[feature-dependency-encoder]] — FDE，SADI 中替代 CSDI Feature Transformer 的特征依赖建模
+- [[diffputer]] — DiffPuter，EM 交替式扩散插补（表格数据），以 TabCSDI 为扩散基线
 
 [^src-csdi]: [[source-csdi]]
 [^src-timegrad]: [[source-timegrad]]
@@ -167,3 +170,5 @@ CSDI 的三个核心设计——(1) 观测值作为条件直接注入去噪网�
 [^src-probts]: [[source-probts]]
 [^src-loft]: [[source-loft]]
 [^src-prs]: [[source-prs]]
+[^src-diffputer]: [[source-diffputer]]
+[^src-rdpi]: [[source-rdpi]]

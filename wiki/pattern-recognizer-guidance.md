@@ -8,7 +8,7 @@ tags:
   - guidance
   - expectation-maximization
 created: 2026-06-08
-last_updated: 2026-06-08
+last_updated: 2026-08-29
 source_count: 1
 confidence: medium
 status: active
@@ -31,7 +31,7 @@ $$\mathcal{L}_{PR}(M, X, D_\phi) = -M^\top \log D_\phi(X) - (1-M)^\top \log\big(
 - **M 步（Maximization）**：独立训练扩散模型 $\theta$（捕获联合分布 $p_\theta(X^{obs}, X^{mis})$，X₀-prediction 扩散损失）与模式识别器 $\phi$（BCE 损失 $\mathcal{L}_{PR}$）。
 - **E 步（Expectation）**：扩散模型在 $M, X^{obs}$ 条件下生成 $X^{mis}$，同时模式识别器提供引导信号，把生成偏向与估计缺失模式一致的插补。
 
-PRDIM 采用 **hard EM**（而非 DiffPuter 的 soft EM）以增强对 $X^{mis}$ 分布的探索；交替 E/M 步**单调增加**观测数据与掩码的联合对数似然（Corollary 3.2 EM 单调性）[^src-prdim]。
+PRDIM 采用 **hard EM**（而非 [[diffputer|DiffPuter]] 的 soft EM）以增强对 $X^{mis}$ 分布的探索；交替 E/M 步**单调增加**观测数据与掩码的联合对数似然（Corollary 3.2 EM 单调性）[^src-prdim]。
 
 ## 引导推导（Proposition 3.3）
 
@@ -59,6 +59,7 @@ $$X_{t-1} = \sqrt{\bar\alpha_{t-1}}\Big(\hat{X}_0 - \tfrac{\sqrt{1-\bar\alpha_t}
 ## 关联页面
 
 - [[prdim]] — 提出此机制的 MNAR 扩散插补模型
+- [[diffputer]] — soft EM 交替的出处（DiffPuter, ICLR 2025），本文 hard EM 的对照
 - [[missing-not-at-random]] — MNAR 缺失机制与可忽略性
 - [[classifier-guidance]] — 同构的扩散条件引导技术
 - [[tweedies-formula]] — 后验均值估计 $\hat{X}_0$ 的依据

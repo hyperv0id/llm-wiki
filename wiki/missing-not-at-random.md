@@ -7,8 +7,8 @@ tags:
   - mnar
   - statistics
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-08-29
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -57,6 +57,9 @@ $$
 | [[nuwats\|NuwaTS]] | 随机/连续缺失（训练随机 mask ratio） | 忽略，但学习 mask-invariant 表示 |
 | [[t1\|T1]] | 点/块/自然缺失（mask-aware embedding） | 忽略，掩码作为输入通道 |
 | [[prdim\|PRDIM]] | **MNAR** | **显式建模** $p_\phi(M\mid X)$（模式识别器 + EM） |
+| [[diffputer\|DiffPuter]] | 评测覆盖 MCAR/MAR/MNAR（MCAR 为主实验） | 不显式建模 $p(M\mid X)$——论文的公式化只含数据密度 $p_\theta(x)$，将 $X^{mis}$ 作隐变量做 EM 交替 |
+
+[[diffputer|DiffPuter]] 沿 Muzellec et al. (2020) 与 Zhao et al. (2023) 的协议（MAR/MNAR 的掩码生成具体沿用 Zhao et al. 2023，DiffPuter 附录 D.3）在三种机制下评测插补性能，但其 EM 公式化只建模完整数据密度、不包含缺失掩码分布，与 PRDIM 的显式缺失建模形成对照[^src-diffputer]。
 
 ## 历史脉络
 
@@ -65,8 +68,10 @@ $$
 ## 关联页面
 
 - [[prdim]] — 首个专门处理 MNAR 的扩散插补模型
+- [[diffputer]] — EM 交替式扩散插补，MCAR/MAR/MNAR 三机制评测但不建模缺失过程
 - [[pattern-recognizer-guidance]] — PRDIM 显式建模 $p(M\mid X)$ 的机制
 - [[csdi]] — 采用 MCAR 人工掩码的扩散插补代表
 - [[nuwats]] / [[t1]] — 假设随机缺失的插补方法（忽略缺失过程）
 
 [^src-prdim]: [[source-prdim]]
+[^src-diffputer]: [[source-diffputer]]

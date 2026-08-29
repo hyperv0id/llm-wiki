@@ -9,7 +9,7 @@ tags:
   - iclr-2022
 created: 2026-05-30
 last_updated: 2026-08-29
-source_count: 3
+source_count: 4
 confidence: medium
 status: active
 ---
@@ -91,6 +91,7 @@ GRIN 的空间解码器归纳偏置使其可用于虚拟感知（virtual sensing
 | 低秩 Transformer | [[imputeformer]] (KDD 2024) | 低秩归纳偏置替代 GNN，训练快 15× |
 | 扩散填补 | [[cofill]] (2025) | 非递归扩散解决误差累积 |
 | Primary-Auxiliary | [[past]] (PVLDB 2025) | 外部信息辅助模式增强纤维/块缺失填补 |
+| 残差扩散精炼 | [[rdpi]] (AAAI 2025) | 以 GRIN 为两阶段框架的确定性初始模型并联合训练；作者报告 AQI-36 全节点遮蔽（节点 14/31）上 MAE 相对 GRIN 降低 31%/26%（Table 6）[^src-rdpi] |
 
 GRIN 作为 GNN 填补的开山之作，确立了空间解码和消息传递填补的基本范式，但其固定图结构和自回归误差累积的局限催生了后续改进。
 
@@ -120,3 +121,4 @@ GRIN 作为 GNN 填补的开山之作，确立了空间解码和消息传递填�
 [^src-2108-00298]: [[source-2108-00298]]
 [^src-maginet]: [[source-maginet]]
 [^src-giflow]: [[source-giflow]]
+[^src-rdpi]: [[source-rdpi]]

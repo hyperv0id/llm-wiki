@@ -10,7 +10,7 @@ tags:
   - air-quality
   - traffic
 last_updated: 2026-08-29
-source_count: 5
+source_count: 6
 confidence: medium
 status: active
 ---
@@ -204,13 +204,16 @@ FENCE 进一步指出 PriSTI 的固定引导尺度在低条件信息场景（如
 - [[fence]] — FENCE，动态反馈引导扩散插补，PriSTI 的后续升级
 - [[loft]] — LOFT (KDD 2026)，流匹配 + 低秩先验 + 轨迹一致性的插补模型，以 PriSTI 为生成式基线对比并作者报告占优[^src-loft]
 - [[giflow]] — GiFlow (ICML 2026)，图信息先验流匹配插补，以 PriSTI 为扩散基线；作者报告 Air-36 推理时间 0.28 min vs PriSTI 9.30 min，且确定性 ODE 积分无需多次采样平均[^src-giflow]
+- [[rdpi]] — RDPI (AAAI 2025)，两阶段残差条件扩散插补，协议沿用 PriSTI 但未将其列为基线[^src-rdpi]
 
 ## 相关工作
 
 - [[maginet|MagiNet]] (arXiv 2024) 将 PriSTI 列为基线，并发现 PriSTI 仅在低方差的 PEMS-BAY 数据集上略优于 MagiNet（归因于扩散多步生成更适合低方差数据）；其余四个数据集 MagiNet 更优[^src-maginet]。
+- [[rdpi|RDPI]] (AAAI 2025 / arXiv 2024)：其数据划分与缺失协议沿用 GRIN 与 PriSTI（RDPI 论文 Settings 节自述引 Liu et al. 2023），但其基线清单不含 PriSTI；两篇论文各自报告自己设置下的结果，数字不可直接混用[^src-rdpi]。
 
 [^src-pristi]: [[source-pristi]]
 [^src-fence]: [[source-fence]]
 [^src-maginet]: [[source-maginet]]
 [^src-loft]: [[source-loft]]
 [^src-giflow]: [[source-giflow]]
+[^src-rdpi]: [[source-rdpi]]

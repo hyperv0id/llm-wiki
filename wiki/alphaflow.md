@@ -11,7 +11,7 @@ tags:
   - arxiv-2025
 created: 2026-08-29
 last_updated: 2026-08-29
-source_count: 2
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -63,6 +63,12 @@ ImageNet-1K 256² 类条件生成，DiT 骨干与训练管线与 MeanFlow 一致
 
 论文称 α-Flow-XL/2+ 在 vanilla DiT 从头训练的少步模型中最优；相对 FACM-XL/2（2.07 FID†，需 800+250×2 epochs）以约 23% 训练轮数（epochs）达到 1.95[^src-alphaflow]。消融要点：延长轨迹流匹配预训练与更平滑的过渡均改善结果；α-Flow 在 25–50% 流匹配占比下最佳，MeanFlow 需 75%——支持"预训练降低了 $L_{FM'}$ 依赖"的动机[^src-alphaflow]。
 
+## iMF 的对照解释（本课程层面）
+
+MeanFlow 同团队后续工作 [[improved-meanflows|iMF]]（arXiv:2512.02012 v2）不采用本论文的分解/冲突视角：其将 MF 目标等价改写为 v-loss（瞬时速度目标）经 $u_\theta$ 再参数化的复合函数，把问题归因于 JVP 切向量误用条件速度 $e-x$（方差被放大），修正为切向量取网络预测的边缘 $v_\theta$（边界条件或辅助头）；训练动态上报告在 $t\ne r$ 样本上原 MF 损失非降、高方差（MeanFlow-B/2、基本 $\ell_2$、无自适应加权、无 CFG 设置，iMF Fig. 3）[^src-improved-meanflows]。iMF 论文提及 AlphaFlow 时仅概括为"分解 MF 目标并用调度从 Flow Matching 插值到 MF"，称自身关注的问题与该类同期改进正交，未讨论本论文的梯度冲突分析（iMF Sec. 2）[^src-improved-meanflows]。
+
+数字转引的口径差异：iMF Tab. 3 将 α-Flow-XL/2+ 列为 2-NFE FID 1.95；本论文的常规 2-NFE 自报值为 2.15，1.95 是均衡类采样设定下的结果（见上表）——两组数字分别归因[^src-alphaflow][^src-improved-meanflows]。
+
 ## 与 LOFT 的关系
 
 [[loft|LOFT]] 的速度一致性目标受 AlphaFlow 与 Consistency-FM 启发[^src-loft]，并在匹配预算实验中把 α-Flow 作为轨迹矫正基线：配低秩先验初始化后，PeMS04 SC-TC RMSE 42.02（2 NFE）/ 42.50（20 NFE），高于 LOFT 的 41.67；论文将差距归因于高稀疏训练目标下分布匹配与轨迹线性化的梯度冲突[^src-loft]。两者的冲突处理方式不同：α-Flow 用与样本无关的课程退火分离两目标，LOFT 用按样本不确定性与训练进度调制的 [[uncertainty-aware-rectification|不确定性感知矫正]][^src-loft]。
@@ -75,6 +81,7 @@ ImageNet-1K 256² 类条件生成，DiT 骨干与训练管线与 MeanFlow 一致
 ## 相关页面
 
 - [[meanflow]] — α-Flow 的分析与改进对象
+- [[improved-meanflows]] — MeanFlow 同团队后续改进，对"原目标哪里不理想"给出与本论文不同的机制解释（见对照节）
 - [[shortcut-models]] — α-Flow 目标族的 $\alpha=1/2$ 特例
 - [[consistency-models]] — 一致性模型源头工作
 - [[trajectory-consistency-flow-matching]] — LOFT 的同构目标（时空插补侧）
@@ -84,3 +91,4 @@ ImageNet-1K 256² 类条件生成，DiT 骨干与训练管线与 MeanFlow 一致
 
 [^src-alphaflow]: [[source-alphaflow]]
 [^src-loft]: [[source-loft]]
+[^src-improved-meanflows]: [[source-improved-meanflows]]

@@ -10,7 +10,7 @@ tags:
   - arxiv-2025
 created: 2026-08-29
 last_updated: 2026-08-29
-source_count: 3
+source_count: 4
 confidence: medium
 status: active
 ---
@@ -50,6 +50,7 @@ $$L(\theta)=\mathbb{E}\bigl[\bigl\|u_\theta(z_t,r,t)-\mathrm{sg}(u_{tgt})\bigr\|
 - **$r=t$ 切片**：原文设计节说明对一定比例的随机样本取 $r=t$（Sec. 4.3："We set a certain portion of random samples with $r=t$"）。消融（Tab. 1a）显示 $r\ne t$ 占比 0%（退化为标准 Flow Matching）时 1-NFE 生成无法产生合理结果（论文表述 "fails to produce reasonable results"，FID 328.91），25% 最优（61.06），100% 亦可行（67.32）；论文自己的解释是模型在"学习瞬时速度（$r=t$）与经修改目标传播到 $r\ne t$"之间取得平衡[^src-meanflow]。ImageNet 各模型配置取 25% $r\ne t$，即 75% 样本 $r=t$（Tab. 4）；CIFAR-10 配置则取 75% $r\ne t$（附录 A）——该比例是按设置调节的。$r=t$ 切片上修正项消失、目标退化为普通流匹配监督，这一点原文亦明确指出（Sec. 4.1）[^src-meanflow]。
 - **损失度量**：自适应加权 $w=1/(\|\Delta\|^2+c)^p$（Eq. 22，$p=1-\gamma$，$c>0$ 如 $10^{-3}$；$p=0.5$ 近似 Pseudo-Huber）。消融：$p=1$ 最优（61.06），$p=0$（平方 L2）79.75（Tab. 1e）[^src-meanflow]。
 - **(r,t) 采样与条件化**：logit-normal 采样最优（lognorm(−0.4, 1.0) 61.06 vs uniform 65.90，Tab. 1d）；条件化用位置嵌入，$(t, t-r)$ 最优（61.06），仅嵌区间 $t-r$ 也可行（63.13）（Tab. 1c）[^src-meanflow]。
+- 后续 [[improved-meanflows|iMF]] 的超参表列出 $r\ne t$ 占比 50%（iMF Tab. 4），与本页记录的 ImageNet 配置 25% 不同；iMF 论文未讨论该配置差异[^src-improved-meanflows]。
 
 ## CFG 内建于目标场
 
@@ -68,8 +69,18 @@ $$L(\theta)=\mathbb{E}\bigl[\bigl\|u_\theta(z_t,r,t)-\mathrm{sg}(u_{tgt})\bigr\|
 - **Shortcut Models / IMM**：同样条件化两个时间变量，但依赖额外的两时自洽约束；MeanFlow 仅由平均速度定义驱动（Sec. 4.1）[^src-meanflow]
 - **Flow Map Matching**（Boffi et al.）：Flow Map 对应位移本身（流的积分），MeanFlow 的平均速度是位移除以时间区间（Sec. 2）[^src-meanflow]
 
+## 后续工作：iMF 对原目标的修正
+
+同一团队的后续工作 [[improved-meanflows|iMF]]（arXiv:2512.02012 v2，2026-05-09）针对本框架指出两个问题并修正（改进而非取代，原框架的论断与数字保留在相应章节）[^src-improved-meanflows]：
+
+- **目标网络依赖**：iMF 将 MeanFlow identity 反解，论文说明原 u-loss 目标完全等价于 v-loss（瞬时速度目标）经 $u_\theta$ 再参数化的复合函数（原文 "It is easy to show"），并由此指出该复合函数以条件速度 $e-x$ 为额外输入——按本页上述全导数展开（Eq. 8），JVP 切向量本应取边缘速度 $v$，原目标却代入条件速度，其方差被放大——不是标准回归的合法形式；修正为 JVP 切向量取网络预测的边缘 $v_\theta$（边界条件 $u_\theta(z_t,t,t)$ 或辅助头），stop-gradient 由目标整体移入预测函数内部（iMF Sec. 4.1）[^src-improved-meanflows]。
+- **CFG 尺度固定**：iMF 把引导尺度 $\omega$ 与 CFG interval 端点 $\Omega$ 改写为条件变量，训练时随机采样、推理时可任选，单模型在 1-NFE 下支持可变引导（iMF Sec. 4.2）[^src-improved-meanflows]。
+
+训练动态方面，iMF 作者报告（Fig. 3，MeanFlow-B/2、基本 $\ell_2$、无自适应加权、无 CFG 设置，仅统计 $t\ne r$ 样本）：按本页「训练目标」节的原始目标训练时损失非降且方差大，iMF 修正后损失正常下降。该观察与本页所引原论文"实践中带来更稳定训练"的表述并存：前者是 iMF 论文在特定设置下的训练动态报告，后者是原论文的表述，两组论断分别归因[^src-improved-meanflows]。数字上，iMF 论文报告 iMF-XL/2 从头训练 1-NFE FID 1.72，对照本框架 MF-XL/2 的 3.43（两值均出自 iMF 论文 Tab. 2）[^src-improved-meanflows]。
+
 ## 相关页面
 
+- [[improved-meanflows]] — 同团队后续改进：v-loss 再参数化 + 修正 JVP 输入 + 灵活 CFG 条件化
 - [[alphaflow]] — 对 MeanFlow 的分解分析与改进目标族
 - [[consistency-models]] — 一致性模型源头工作（MeanFlow 原文对其路线有专门讨论）
 - [[shortcut-models]] — 同期少步生成方法（两时自洽约束路线）
@@ -82,3 +93,4 @@ $$L(\theta)=\mathbb{E}\bigl[\bigl\|u_\theta(z_t,r,t)-\mathrm{sg}(u_{tgt})\bigr\|
 [^src-meanflow]: [[source-meanflow]]
 [^src-alphaflow]: [[source-alphaflow]]
 [^src-loft]: [[source-loft]]
+[^src-improved-meanflows]: [[source-improved-meanflows]]
