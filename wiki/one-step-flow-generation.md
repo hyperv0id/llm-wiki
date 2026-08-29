@@ -8,8 +8,8 @@ tags:
   - one-step-generation
   - time-series
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-08-29
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -87,18 +87,23 @@ CoGenCast 的 NFE 消融实验证明[^src-cogencast]：
 | 方法 | 技术路线 | 最少步数 | 领域 |
 |------|---------|---------|------|
 | **CoGenCast** | 平均速度 + JVP 修正 | **1** | 时间序列 |
+| [[meanflow\|MeanFlow]] | 平均速度场 + MeanFlow Identity（JVP 全导数修正） | 1 | 图像 |
 | [[instaflow|InstaFlow]] | Reflow + 蒸馏 | 1 | 图像 |
 | [[consistency-models|Consistency Models]] | 自洽性映射 | 1-2 | 图像 |
 | [[shortcut-models|Shortcut Models]] | 自洽性 + 步长条件化 | 1 | 图像 |
 | [[rectified-flow|Rectified Flow]] | Reflow 迭代拉直 | 2-4 | 图像 |
 | [[flowts|FlowTS]] | Rectified Flow 原生 | 30 | 时间序列 |
 
+图像侧采用同类平均速度建模目标的是 [[meanflow|MeanFlow]]（arXiv 2025）：训练网络预测区间平均速度、以 MeanFlow Identity（含 JVP 全导数修正）导出目标，作者报告 ImageNet-256 从头训练 1-NFE FID 3.43[^src-meanflow]。
+
 ## 相关页面
 
 - [[cogencast]] — CoGenCast，首个一步流生成时间序列模型
 - [[average-velocity-modeling]] — 平均速度建模，一步生成的理论基础
+- [[meanflow]] — MeanFlow，图像侧平均速度一步生成框架（原文已入库）
 - [[hybrid-llm-flow-matching-forecasting]] — 混合 LLM-FM 预测范式
 - [[flow-matching]] — 流匹配理论基础
 - [[generative-time-series-forecasting]] — 生成式时间序列预测全景
 
 [^src-cogencast]: [[source-cogencast]]
+[^src-meanflow]: [[source-meanflow]]

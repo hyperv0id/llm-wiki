@@ -9,7 +9,7 @@ tags:
   - time-series
 created: 2026-06-08
 last_updated: 2026-08-29
-source_count: 2
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -98,12 +98,12 @@ Linear noise scheduler 与平均速度建模天然配合[^src-cogencast]：
 
 ## 与 MeanFlow 的关系
 
-CoGenCast 的 JVP 修正目标与 [[meanflow|MeanFlow]]（Geng et al., arXiv:2505.13447）的训练目标同构：均以区间条件化网络预测平均速度，并用 $(t-r)$ 量级的一阶导数修正项惩罚速度场时间变化（CoGenCast 记为 $(r-t)\,\partial u/\partial t$，MeanFlow 记为 $(t-r)\,du/dt$，符号差异源于区间方向约定）[^src-cogencast][^src-alphaflow]。[[alphaflow|α-Flow]] 进一步把该目标分解为轨迹流匹配与轨迹一致性两项，报告其梯度强负相关并以课程退火分离两者；图像生成侧的消融显示先充分流匹配预训练再过渡到平均速度目标收敛更好[^src-alphaflow]。
+[[meanflow|MeanFlow]]（Geng et al., arXiv:2505.13447）原文训练目标：$u_{tgt}=v_t-(t-r)(v_t\,\partial_z u_\theta+\partial_t u_\theta)$，其中修正项 $(t-r)\,du/dt$ 是沿轨迹的全导数——Jacobian $[\partial_z u,\partial_r u,\partial_t u]$ 对切向量 $[v,0,1]$ 的 JVP（原文 Eq. 8，$dr/dt=0$）[^src-meanflow]。CoGenCast 的修正项在本页转述中记为 $(r-t)\,\partial u/\partial t$（时间偏导数，经 JVP 计算）[^src-cogencast]。两者同属"区间条件化平均速度 + 一阶导数修正"的目标形式，区间方向约定使修正项符号一致（CoGenCast 记 $r>t$，MeanFlow 记 $t>r$）；差异在于 MeanFlow 的修正项明确包含速度方向分量 $v\,\partial_z u$，而 CoGenCast 的 JVP 切向量取法因其原文未入库暂无法核实——两者是否严格同构待 CoGenCast 原文核对。[[alphaflow|α-Flow]] 进一步把 MeanFlow 目标分解为轨迹流匹配与轨迹一致性两项，报告其梯度强负相关并以课程退火分离两者；图像生成侧的消融显示先充分流匹配预训练再过渡到平均速度目标收敛更好[^src-alphaflow]。
 
 ## 相关页面
 
 - [[cogencast]] — 首个应用平均速度建模的模型
-- [[meanflow]] — 同构目标的图像生成侧框架
+- [[meanflow]] — 目标形式相近的图像生成侧框架（原文已入库）
 - [[alphaflow]] — 对 MeanFlow 目标的分解分析与课程退火改进
 - [[one-step-flow-generation]] — 一步流生成的技术全景
 - [[hybrid-llm-flow-matching-forecasting]] — 混合 LLM-FM 预测范式
@@ -112,3 +112,4 @@ CoGenCast 的 JVP 修正目标与 [[meanflow|MeanFlow]]（Geng et al., arXiv:250
 
 [^src-cogencast]: [[source-cogencast]]
 [^src-alphaflow]: [[source-alphaflow]]
+[^src-meanflow]: [[source-meanflow]]

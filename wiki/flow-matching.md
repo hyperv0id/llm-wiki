@@ -431,6 +431,7 @@ $$
 - [[cogencast]] — CoGenCast，首个混合 LLM + FM 编码器-解码器时间序列预测模型，平均速度建模实现一步生成 (ICML 2026)
 - [[storminsight]] — StormInsight，环境条件化对流临近预报，Global/Local AdaLN 分层调制 Conditional Flow Matching (ICML 2026)
 - [[one-step-flow-generation]] — 一步流生成，平均速度建模 + JVP 修正实现 NFE=1 生成
+- [[meanflow]] — MeanFlow，平均速度场 + MeanFlow Identity（JVP）的一步生成框架 (arXiv 2025)
 - [[average-velocity-modeling]] — 平均速度建模，区间条件化速度场 + JVP 修正的 FM 训练技术
 - [[loft]] — LOFT，低秩先验 + 轨迹一致性 CFM 的交通插补模型，2 NFE 推理 (KDD 2026)
 - [[giflow]] — GiFlow，图信息先验（时空图滤波）流匹配时空插补，先验对齐降低传输代价 (ICML 2026)

@@ -8,7 +8,7 @@ tags:
   - icml-2023
 created: 2026-04-28
 last_updated: 2026-08-29
-source_count: 3
+source_count: 4
 confidence: medium
 status: active
 ---
@@ -56,6 +56,10 @@ $$
 - **CIFAR-10**: 1 步 FID 3.55, 2 步 FID 2.93
 - **ImageNet 64×64**: 1 步 FID 6.20, 2 步 FID 4.70
 
+## MeanFlow 原文对 CM 系的定位
+
+[[meanflow|MeanFlow]]（arXiv 2025）作者将 Consistency Models 系刻画为：一致性约束施加在网络行为上而非底层 ground-truth 场的性质上、路径锚定数据侧（在 MeanFlow 记法下相当于固定 $r\equiv 0$），网络只条件化单一时间变量；并认为此类训练可能不稳定、需要"仔细设计的离散化课程"逐步约束时间域——这是 MeanFlow 作者的表述[^src-meanflow]。MeanFlow 自身则由平均速度定义导出恒等式，条件化 $(r,t)$ 两个时间变量，不依赖额外一致性启发式[^src-meanflow]。
+
 ## 应用扩展
 
 ### 自回归一致性模型
@@ -86,3 +90,4 @@ $$
 [^src-consistency-models]: [[source-consistency-models]]
 [^src-swift]: [[source-swift]]
 [^src-loft]: [[source-loft]]
+[^src-meanflow]: [[source-meanflow]]

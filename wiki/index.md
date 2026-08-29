@@ -1269,5 +1269,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-alphaflow]] — AlphaFlow: Understanding and Improving MeanFlow Models, MeanFlow 损失分解为轨迹流匹配 + 轨迹一致性、梯度冲突实证、α 统一目标族与课程退火 (arXiv 2025, Snap Research)
 
 ## Techniques (continued)
-- [[meanflow]] — MeanFlow，区间条件化网络预测平均速度的少步生成框架，α-Flow 的分析与改进对象（本页机制描述暂转述自 α-Flow 论文）(arXiv 2025)
+- [[meanflow]] — MeanFlow，预测区间平均速度的少步生成框架：MeanFlow Identity（JVP 全导数修正）+ CFG 内建目标场，ImageNet-256 从头训练 1-NFE FID 3.43（作者报告）(arXiv 2025)
 - [[alphaflow]] — α-Flow，带一致性步长比 α 的统一少步目标族（涵盖轨迹流匹配/Shortcut/MeanFlow/CT）+ 课程退火分离梯度冲突 (arXiv 2025, Snap Research)
+
+## Sources (continued)
+- [[source-meanflow]] — MeanFlow: Mean Flows for One-step Generative Modeling, 平均速度场 + MeanFlow Identity（JVP）一步生成，无预训练/蒸馏/课程（Geng, Deng, Bai, Kolter, He; CMU/MIT, arXiv 2025 v1）
