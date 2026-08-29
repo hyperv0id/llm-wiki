@@ -8,8 +8,8 @@ tags:
   - message-passing
   - iclr-2022
 created: 2026-05-30
-last_updated: 2026-06-09
-source_count: 2
+last_updated: 2026-08-29
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -114,7 +114,9 @@ GRIN 作为 GNN 填补的开山之作，确立了空间解码和消息传递填�
 - [[cofill]] — CoFILL，条件扩散填补
 - [[gsli]] — GSLI，多尺度图结构学习填补
 - [[past]] — PAST，primary-auxiliary 时空填补 (PVLDB 2025)
+- [[giflow]] — GiFlow (ICML 2026)，图信息先验流匹配填补，以 GRIN 为时空 GNN 基线；作者报告 Air-36 point 20% 下 MAE 9.54 vs GRIN 9.94、RMSE 18.10 vs 19.09[^src-giflow]
 - [[traffic-forecasting]] — 交通预测
 
 [^src-2108-00298]: [[source-2108-00298]]
 [^src-maginet]: [[source-maginet]]
+[^src-giflow]: [[source-giflow]]

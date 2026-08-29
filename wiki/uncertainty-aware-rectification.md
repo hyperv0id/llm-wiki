@@ -9,7 +9,7 @@ tags:
   - curriculum-learning
   - kdd-2026
 created: 2026-08-26
-last_updated: 2026-08-26
+last_updated: 2026-08-29
 source_count: 1
 confidence: medium
 status: active
@@ -53,13 +53,15 @@ $$v_R=\alpha\,v_{FM}+(1-\alpha)\,\mathrm{sg}(v_\theta(z_s,s))$$
 
 ## 与静态矫正的关系
 
-Consistency-FM 与 AlphaFlow 对轨迹线性化施加静态约束。在 LOFT 的匹配预算实验中，即使配低秩先验初始化，两者精度仍低于 LOFT；论文将其归因于高度稀疏训练目标下分布匹配与轨迹线性化的梯度冲突。本机制的区别是以训练进度和样本不确定性为条件动态仲裁两个目标的权衡[^src-loft]。
+[[consistency-fm|Consistency-FM]] 与 [[alphaflow|AlphaFlow]] 对轨迹线性化施加静态约束。在 LOFT 的匹配预算实验中，即使配低秩先验初始化，两者精度仍低于 LOFT；论文将其归因于高度稀疏训练目标下分布匹配与轨迹线性化的梯度冲突。本机制的区别是以训练进度和样本不确定性为条件动态仲裁两个目标的权衡[^src-loft]。
 
 ## 相关页面
 
 - [[loft]] — 使用该机制的模型
 - [[low-rank-prior-estimation]] — 提供机制所消费的不确定性估计 Σ
 - [[consistency-models]] — 一致性模型源头工作（映射轨迹点至起点）
+- [[consistency-fm]] — Consistency-FM，静态速度一致性约束的先源方法
+- [[alphaflow]] — α-Flow，静态约束的另一基线（课程退火分离冲突）
 - [[rectified-flow]] — 迭代 reflow 式轨迹直线化路线
 
 [^src-loft]: [[source-loft]]

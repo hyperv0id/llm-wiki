@@ -7,7 +7,7 @@ tags:
   - one-step-generation
   - icml-2023
 created: 2026-04-28
-last_updated: 2026-08-26
+last_updated: 2026-08-29
 source_count: 3
 confidence: medium
 status: active
@@ -62,7 +62,7 @@ $$
 
 [[swift|Swift]] (arXiv 2025) 是将一致性模型从独立样本生成扩展到自回归序列预测的开创性工作[^src-swift]。Swift 首次将一致性模型应用于天气预测——每一步的单步采样（NFE=1）替代扩散模型的 20–40 NFE，使多步自回归微调成为可能。通过 [[crps-autoregressive-finetuning|CRPS 自回归微调]]，Swift 在 75 天稳定预报中实现 39× 加速，与 IFS ENS 集合系统竞争[^src-swift]。详见 [[autoregressive-consistency-models|自回归一致性模型]]。
 
-[[loft|LOFT]]（KDD 2026）将速度一致性思想引入时空插补：在 CFM 上加速度一致性目标并用 [[uncertainty-aware-rectification|不确定性感知矫正]] 仲裁精度-线性化的梯度冲突，2 NFE 完成推理；论文报告静态施加该约束（Consistency-FM/AlphaFlow 式）在高稀疏目标下因梯度冲突而退化[^src-loft]。详见 [[trajectory-consistency-flow-matching|轨迹一致性流匹配]]。
+[[loft|LOFT]]（KDD 2026）将速度一致性思想引入时空插补：在 CFM 上加速度一致性目标并用 [[uncertainty-aware-rectification|不确定性感知矫正]] 仲裁精度-线性化的梯度冲突，2 NFE 完成推理；论文报告静态施加该约束（[[consistency-fm|Consistency-FM]]/[[alphaflow|AlphaFlow]] 式）在高稀疏目标下因梯度冲突而退化[^src-loft]。详见 [[trajectory-consistency-flow-matching|轨迹一致性流匹配]]。
 
 ## 相关页面
 
@@ -76,6 +76,9 @@ $$
 - [[autoregressive-consistency-models]] — 自回归一致性模型概念
 - [[crps-autoregressive-finetuning]] — CRPS 自回归微调技术
 - [[loft]] — LOFT，速度一致性 + 不确定性矫正的时空插补 (KDD 2026)
+- [[consistency-fm]] — Consistency-FM，速度一致性直线流 (arXiv 2024)
+- [[alphaflow]] — α-Flow，统一 FM/Shortcut/MeanFlow 的目标族 (arXiv 2025)
+- [[meanflow]] — MeanFlow，区间平均速度少步生成框架 (arXiv 2025)
 - [[trajectory-consistency-flow-matching]] — 轨迹一致性流匹配技术页
 
 ## 引用

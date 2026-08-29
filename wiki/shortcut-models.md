@@ -9,8 +9,8 @@ tags:
   - uc-berkeley
   - arxiv-2025
 created: 2026-04-28
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-08-29
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -247,6 +247,12 @@ Shortcut Models 还被应用于机器人控制任务：
 
 ---
 
+## 与 α-Flow 的统一关系
+
+[[alphaflow|α-Flow]]（Zhang et al., arXiv:2510.20771，2025）将 Shortcut Models 纳入其统一目标族：当 $\alpha=1/2$ 且 shift velocity 取模型自身预测时，$L_{SC}=\tfrac12 L_{\alpha}$，即 Shortcut 训练是 α-Flow 目标的 $\alpha=1/2$ 特例[^src-alphaflow]。α-Flow 以课程退火在 $\alpha=1$（轨迹流匹配）与 $\alpha\to0$（MeanFlow）之间过渡；其附录 G.2 另报告采用 $\tilde v_{s,t}=v_t$、不用 EMA 的离散 α-Flow 变体显著缩小了 Shortcut Models 与 MeanFlow 之间的性能差距，并推测 Shortcut 式目标（$\tilde v$ 取模型预测）仅在 α 较大（如 0.5）时有效[^src-alphaflow]。
+
+---
+
 ## 相关页面
 
 - [[flow-matching]] — Flow Matching 基础
@@ -258,3 +264,4 @@ Shortcut Models 还被应用于机器人控制任务：
 ## 引用
 
 [^src-shortcut-models]: [[source-shortcut-models]]
+[^src-alphaflow]: [[source-alphaflow]]

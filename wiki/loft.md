@@ -9,7 +9,7 @@ tags:
   - traffic
   - kdd-2026
 created: 2026-08-26
-last_updated: 2026-08-26
+last_updated: 2026-08-29
 source_count: 1
 confidence: medium
 status: active
@@ -40,7 +40,7 @@ status: active
 
 ### 一致性轨迹流匹配
 
-详见 [[trajectory-consistency-flow-matching]]。在 CFM 目标之外引入速度一致性目标（受 AlphaFlow 与 Consistency-FM 启发）：
+详见 [[trajectory-consistency-flow-matching]]。在 CFM 目标之外引入速度一致性目标（受 [[alphaflow|AlphaFlow]] 与 [[consistency-fm|Consistency-FM]] 启发）：
 
 $$L_{CT}(\theta)=\mathbb{E}_{t,s,z_0,z_1}\|v_\theta(z_t,t)-\mathrm{sg}(v_\theta(z_s,s))\|^2,\quad t<s,\ z_s=(1-s)z_0+s z_1$$
 
@@ -60,7 +60,7 @@ $$L_{CT}(\theta)=\mathbb{E}_{t,s,z_0,z_1}\|v_\theta(z_t,t)-\mathrm{sg}(v_\theta(
 | 实验 | 设置 | 结果（作者报告） |
 |------|------|------|
 | 总体性能（Table 2） | 3 数据集 × SR-TC/SC-TC × MAE/RMSE/MAPE | 全部组合 LOFT 最低，如 PeMS04 SR-TC MAE 24.21（次优 FENCE 26.57）、PeMS08 SC-TC RMSE 43.90（次优 CoFill 47.83） |
-| 匹配预算（Table 1） | PeMS04 SC-TC，结果记为 2 NFE / 20 NFE | 扩散与 MSFM 基线降预算即退化（FENCE RMSE 45.75→49.60）；轨迹矫正基线 Consistency-FM 与 AlphaFlow 两档预算接近（CFM 43.57/44.16、AlphaFlow 42.02/42.50）但均高于 LOFT 的 41.67，论文归因于稀疏训练目标下的梯度冲突 |
+| 匹配预算（Table 1） | PeMS04 SC-TC，结果记为 2 NFE / 20 NFE | 扩散与 MSFM 基线降预算即退化（FENCE RMSE 45.75→49.60）；轨迹矫正基线 [[consistency-fm\|Consistency-FM]] 与 [[alphaflow\|AlphaFlow]] 两档预算接近（CFM 43.57/44.16、AlphaFlow 42.02/42.50）但均高于 LOFT 的 41.67，论文归因于稀疏训练目标下的梯度冲突 |
 | 高稀疏（Table 3） | PeMS04 SC-TC 90% | RMSE 47.01 / MAE 29.76 / CRPS 0.1133，均最低（次优 RMSE FENCE 53.61） |
 | 轨迹线性度（Fig 4） | EPE / VMR | FM 基线 EPE 高、VMR 低于 1.0（弯曲+减速）；LOFT EPE 更低、VMR 接近 1.0；两类模型在 σ̃>Q_0.66 分位上线性度均减弱 |
 | 消融（Fig 5） | Wo-P / Wo-C / Wo-U，均 2 步推理 | 三个变体在各设置下四项指标均劣于完整 LOFT |
@@ -73,10 +73,10 @@ $$L_{CT}(\theta)=\mathbb{E}_{t,s,z_0,z_1}\|v_\theta(z_t,t)-\mathrm{sg}(v_\theta(
 |--------|------|------|------|
 | 条件扩散插补 | [[csdi\|CSDI]]、[[pristi\|PriSTI]]、[[cofill\|CoFill]]、FENCE、FGTI、MTSCI | 50 | SDE 迭代去噪，实时应用受限（论文表述）；LOFT 以 2 NFE 对比并全面占优（Table 2） |
 | 流匹配插补 | MSFM（时间门控多尺度速度场） | 20 | 同为 ODE 流匹配，无一致性约束 → 轨迹弯曲；LOFT 在相同数据集上误差更低 |
-| 轨迹矫正基线 | Consistency-FM、AlphaFlow | —（Table 1 中测 2/20 NFE） | 静态施加线性化约束；论文报告即使配低秩先验初始化，两者精度仍低于 LOFT，归因于稀疏目标下分布匹配与轨迹线性化的梯度冲突 |
+| 轨迹矫正基线 | [[consistency-fm\|Consistency-FM]]、[[alphaflow\|AlphaFlow]] | —（Table 1 中测 2/20 NFE） | 静态施加线性化约束；论文报告即使配低秩先验初始化，两者精度仍低于 LOFT，归因于稀疏目标下分布匹配与轨迹线性化的梯度冲突 |
 | 低秩判别式 | [[imputeformer\|ImputeFormer]] | —（非迭代） | 同样利用低秩归纳偏置，但作为 Transformer 结构约束做确定性映射；LOFT 把低秩用作生成式先验构造 |
 
-论文将自身贡献定位为：一致性模型路线（Consistency-FM、Shortcut Models、MeanFlow）在图像生成已验证，但在时空插补中的应用此前未被探索（论文表述）[^src-loft]。
+论文将自身贡献定位为：一致性模型路线（[[consistency-fm\|Consistency-FM]]、[[shortcut-models\|Shortcut Models]]、[[meanflow\|MeanFlow]]）在图像生成已验证，但在时空插补中的应用此前未被探索（论文表述）[^src-loft]。
 
 ## 局限（可从论文观察到）
 
@@ -89,6 +89,9 @@ $$L_{CT}(\theta)=\mathbb{E}_{t,s,z_0,z_1}\|v_\theta(z_t,t)-\mathrm{sg}(v_\theta(
 - [[source-loft]] — 源文件摘要
 - [[low-rank-prior-estimation]] — 低秩先验构造技术
 - [[trajectory-consistency-flow-matching]] — 速度一致性目标与误差界理论
+- [[consistency-fm]] — Consistency-FM（Yang et al., arXiv 2024），$L_{CT}$ 的方法来源
+- [[alphaflow]] — α-Flow（arXiv 2025），Table 1 轨迹矫正基线之一，MeanFlow 目标的分解分析与统一改进
+- [[meanflow]] — MeanFlow，LOFT 定位段引用的少步生成框架
 - [[uncertainty-aware-rectification]] — 梯度冲突仲裁机制
 - [[flow-matching]] — Flow Matching 理论基础
 - [[consistency-models]] — 一致性模型（少步生成的源头工作）
@@ -96,6 +99,7 @@ $$L_{CT}(\theta)=\mathbb{E}_{t,s,z_0,z_1}\|v_\theta(z_t,t)-\mathrm{sg}(v_\theta(
 - [[tsflow]] — GP 信息先验 + CFM（预测任务对照）
 - [[history-conditional-manifold]] — KITE 的可学历史条件源分布（预测任务对照）
 - [[fence]] — FENCE，同组前作的动态引导扩散插补基线
+- [[giflow]] — GiFlow (ICML 2026)，同为流匹配插补，以时空图滤波的图信息先验替代高斯先验；LOFT 参考文献引用该工作[^src-loft]
 - [[loft-llm]] — 同名缩写的另一篇 KDD 2026 论文（低频时序预测）
 
 [^src-loft]: [[source-loft]]

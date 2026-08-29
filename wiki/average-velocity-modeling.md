@@ -8,8 +8,8 @@ tags:
   - optimal-transport
   - time-series
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-08-29
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -96,12 +96,19 @@ Linear noise scheduler 与平均速度建模天然配合[^src-cogencast]：
 
 实验证实 Linear scheduler 在几乎所有数据集上优于 Cosine[^src-cogencast]。
 
+## 与 MeanFlow 的关系
+
+CoGenCast 的 JVP 修正目标与 [[meanflow|MeanFlow]]（Geng et al., arXiv:2505.13447）的训练目标同构：均以区间条件化网络预测平均速度，并用 $(t-r)$ 量级的一阶导数修正项惩罚速度场时间变化（CoGenCast 记为 $(r-t)\,\partial u/\partial t$，MeanFlow 记为 $(t-r)\,du/dt$，符号差异源于区间方向约定）[^src-cogencast][^src-alphaflow]。[[alphaflow|α-Flow]] 进一步把该目标分解为轨迹流匹配与轨迹一致性两项，报告其梯度强负相关并以课程退火分离两者；图像生成侧的消融显示先充分流匹配预训练再过渡到平均速度目标收敛更好[^src-alphaflow]。
+
 ## 相关页面
 
 - [[cogencast]] — 首个应用平均速度建模的模型
+- [[meanflow]] — 同构目标的图像生成侧框架
+- [[alphaflow]] — 对 MeanFlow 目标的分解分析与课程退火改进
 - [[one-step-flow-generation]] — 一步流生成的技术全景
 - [[hybrid-llm-flow-matching-forecasting]] — 混合 LLM-FM 预测范式
 - [[flow-matching]] — 流匹配理论基础（学习瞬时速度场）
 - [[rectified-flow]] — Rectified Flow，通过 reflow 迭代拉直轨迹
 
 [^src-cogencast]: [[source-cogencast]]
+[^src-alphaflow]: [[source-alphaflow]]

@@ -1249,3 +1249,25 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[low-rank-prior-estimation]] — 掩码低秩分解神经参数化构造流匹配信息先验，单次前向、线性复杂度 (LOFT, KDD 2026)
 - [[uncertainty-aware-rectification]] — 不确定性感知矫正，按样本不确定性与训练进度动态仲裁 CFM 精度与轨迹线性化的梯度冲突 (LOFT, KDD 2026)
 - [[trajectory-consistency-flow-matching]] — 轨迹一致性流匹配，在 CFM 之外约束速度场沿轨迹恒定并给出少步积分误差界 (LOFT, KDD 2026)
+
+## Sources (continued)
+- [[source-giflow]] — GiFlow: Spatiotemporal Imputation with Graph-Informed Flow Matching, 时空图滤波图信息先验 + 混合向量场 CFM 插补，传输代价定理 + 确定性少步推理 (ICML 2026, EPFL)
+
+## Entities (continued)
+- [[giflow]] — GiFlow，图信息先验流匹配时空插补，推理时间远低于扩散基线 PriSTI（作者报告：Air-36 0.28 vs 9.30 min）(ICML 2026)
+
+## Techniques (continued)
+- [[graph-informed-prior]] — 图信息先验，时空图滤波构造流匹配源分布，滤波因子自适应控制感受野并证明传输代价不高于高斯先验 (GiFlow, ICML 2026)
+
+## Sources (continued)
+- [[source-yang-consistency-fm-arxiv24]] — Consistency-FM: Defining Straight Flows with Velocity Consistency, 速度一致性直线流少步 FM，LOFT $L_{CT}$ 的方法来源 (arXiv 2024 preprint, v1)
+
+## Entities (continued)
+- [[consistency-fm]] — Consistency-FM，速度一致性约束直线化 FM 轨迹（f 项 + α 加权速度项、EMA 目标、多段线性化），LOFT $L_{CT}$ 的方法来源 (arXiv 2024)
+
+## Sources (continued)
+- [[source-alphaflow]] — AlphaFlow: Understanding and Improving MeanFlow Models, MeanFlow 损失分解为轨迹流匹配 + 轨迹一致性、梯度冲突实证、α 统一目标族与课程退火 (arXiv 2025, Snap Research)
+
+## Techniques (continued)
+- [[meanflow]] — MeanFlow，区间条件化网络预测平均速度的少步生成框架，α-Flow 的分析与改进对象（本页机制描述暂转述自 α-Flow 论文）(arXiv 2025)
+- [[alphaflow]] — α-Flow，带一致性步长比 α 的统一少步目标族（涵盖轨迹流匹配/Shortcut/MeanFlow/CT）+ 课程退火分离梯度冲突 (arXiv 2025, Snap Research)
