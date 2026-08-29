@@ -6,8 +6,8 @@ tags:
   - spatial-temporal
   - intelligent-transportation
 created: 2026-04-27
-last_updated: 2026-07-27
-source_count: 50
+last_updated: 2026-08-29
+source_count: 51
 confidence: high
 status: active
 ---
@@ -160,6 +160,10 @@ Dynamic spatial attention (dot-product between all node pairs) has quadratic com
 
 [[patchstg|PatchSTG]] (KDD 2025) is the first framework to bridge KDTree spatial data management and Transformer patching. It uses [[irregular-spatial-patching|irregular spatial patching]] (leaf KDTree → BFS → cosine-similarity padding → subtree backtracking) to create balanced, non-overlapping patches, then applies interleaved depth (within-patch local) and breadth (cross-patch global) attention. On LargeST (up to 8,600 nodes), PatchSTG achieves SOTA with **10× training speedup** and **4× memory reduction** vs D2STGNN/DSTAGNN[^src-patchstg]. Ablation confirms leaf KDTree is the most critical component — spatial message passing is only beneficial between geographically adjacent points[^src-patchstg].
 
+### Learnable Subgraph Partitioning / Memory-Efficient STGNN
+
+[[lets-group|Let's Group]] (IJCAI 2025) attacks the same quadratic bottleneck from the memory-overhead angle: SGPM uses M learnable memory vectors as anchors to select top-K similar nodes into overlapping subgraphs, each subgraph builds a K×K correlation matrix with a shared graph constructor, and SGFAM averages each node's features across subgraphs to remove overlap redundancy — overall complexity O(N²)→O(N+K²) (Sec. 3.6 of that paper)[^src-lets-group]. The authors report that attaching SGL to 8 backbone models (GMAN, STWave variants, [[staeformer|STAEformer]], DGCRN, DDGCRN, DGCNet variants) on PEMS03/04/07/08 keeps accuracy comparable while cutting average GPU memory overhead by up to 56.4% (abstract; DDGCRN −60.5% on PEMS07, Table 3)[^src-lets-group].
+
 ### Foundation Model
 
 **[[unist|UniST]]** (KDD 2024) is the first one-for-all spatio-temporal foundation model, using MAE pre-training with four complementary masking strategies and knowledge-guided memory-based prompt learning. A single 6.71M-parameter model covers 20+ datasets across multiple cities and domains with zero-shot prediction surpassing few-shot baselines — e.g., Crowd zero-shot RMSE 14.67 vs ACFM 1%-shot 21.17[^src-unist].
@@ -294,3 +298,4 @@ The XTraffic benchmark provides incident-aligned traffic datasets for California
 [^src-stunet]: [[source-stunet]]
 [^src-st-ood]: [[source-st-ood]]
 [^src-team]: [[source-team]]
+[^src-lets-group]: [[source-lets-group]]

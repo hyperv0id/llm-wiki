@@ -6,8 +6,8 @@ tags:
   - computational-complexity
   - scalability
 created: 2026-04-29
-last_updated: 2026-06-09
-source_count: 5
+last_updated: 2026-08-29
+source_count: 6
 references:
   - [[source-fast-long-horizon-forecasting]]
 confidence: high
@@ -66,6 +66,8 @@ FaST 提出两个核心技术：
 
 局限：依赖准确图结构、丢弃长程依赖
 
+- **可学习子图划分 ([[lets-group|Let's Group]] SGL, IJCAI 2025)**: 与静态划分相对，用 M 个可学习记忆向量按特征相似度选 top-K 节点构成可重叠子图，子图内共享同一图构造函数建 K×K 相关矩阵，跨子图特征平均聚合；复杂度 O(N²)→O(N+K²)（该文 Sec. 3.6）。作者报告在 PEMS03/04/07/08 上为 8 个 backbone 挂载 SGL 后性能相当，平均 GPU 内存最高降 56.4%（摘要，未说明平均口径），DDGCRN 在 883 节点的 PEMS07 上降 60.5%（Sec. 4.1, Table 3）[^src-lets-group]。
+
 ### 无结构方法
 - **线性注意力** ([[bigst|BigST]]): 用正随机特征 (PRF) 核近似 + [[linearized-spatial-convolution|线性化空间卷积]]降到 O(N)，绕过成对节点计算[^src-bigst]
 - **随机投影** (RPMixer): MLPs 融合空间特征
@@ -111,9 +113,11 @@ XTraffic 数据集（2024）：基于加州 2023 年交通数据，包含时间�
 - [[irregular-spatial-patching]] — 三步空间分块管道
 - [[efficient-cosine-operator|ECO]] — 余弦相似度线性复杂度图卷积
 - [[bigst]] — 线性注意力 (PRF 核) 的大规模 STGNN，可扩展到 ~10 万节点
+- [[lets-group]] — 记忆向量锚点的可学习子图划分，建模层面降内存 (IJCAI 2025)
 
 [^src-incident-guided-st-forecasting]: [[source-incident-guided-st-forecasting]]
 [^src-most]: [[source-most]]
 [^src-ragc-efficient-traffic-forecasting]: [[source-ragc-efficient-traffic-forecasting]]
 [^src-patchstg]: [[source-patchstg]]
 [^src-bigst]: [[source-bigst]]
+[^src-lets-group]: [[source-lets-group]]

@@ -8,7 +8,7 @@ tags:
   - icml-2023
 created: 2026-04-28
 last_updated: 2026-08-29
-source_count: 5
+source_count: 6
 confidence: medium
 status: active
 ---
@@ -70,6 +70,8 @@ $$
 
 [[loft|LOFT]]（KDD 2026）将速度一致性思想引入时空插补：在 CFM 上加速度一致性目标并用 [[uncertainty-aware-rectification|不确定性感知矫正]] 仲裁精度-线性化的梯度冲突，2 NFE 完成推理；论文报告静态施加该约束（[[consistency-fm|Consistency-FM]]/[[alphaflow|AlphaFlow]] 式）在高稀疏目标下因梯度冲突而退化[^src-loft]。详见 [[trajectory-consistency-flow-matching|轨迹一致性流匹配]]。
 
+[[costi|CoSTI]]（KBS 2025）走另一条路径：将 Consistency Training 直接用于多变量时间序列插补，以 PriSTI 式条件信息与双分支 U-Net（NEM 模块引入双向 Mamba）参数化一致性模型，1–2 步采样替代扩散插补的 50–100 步去噪；作者报告插补时间最多降低 98%、精度与扩散基线相当，并自述这是 CM 首次被适配到 MTSI 问题[^src-costi]。
+
 ## 相关页面
 
 - [[diffusion-model]] — 扩散模型概念
@@ -87,6 +89,7 @@ $$
 - [[meanflow]] — MeanFlow，区间平均速度少步生成框架 (arXiv 2025)
 - [[improved-meanflows]] — iMF，MeanFlow 后续改进，1-NFE 从头训练 FID 1.72（作者报告）(arXiv 2025)
 - [[trajectory-consistency-flow-matching]] — 轨迹一致性流匹配技术页
+- [[costi]] — CoSTI，Consistency Training 直接适配 MTSI 的插补工作 (KBS 2025)
 
 ## 引用
 
@@ -95,3 +98,4 @@ $$
 [^src-loft]: [[source-loft]]
 [^src-meanflow]: [[source-meanflow]]
 [^src-improved-meanflows]: [[source-improved-meanflows]]
+[^src-costi]: [[source-costi]]

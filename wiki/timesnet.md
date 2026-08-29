@@ -8,8 +8,8 @@ tags:
   - foundation-model
   - ICLR-2023
 created: 2026-04-28
-last_updated: 2026-05-04
-source_count: 3
+last_updated: 2026-08-29
+source_count: 4
 confidence: medium
 status: active
 ---
@@ -41,6 +41,10 @@ TimesNet stacks multiple TimesBlocks in sequence. Each block independently disco
 
 TimesNet outperforms 15+ baselines (Autoformer, FEDformer, DLinear, Informer, etc.) on long-term forecasting across ETT, Electricity, Traffic, Weather, Exchange, and ILI. On M4 short-term forecasting, it surpasses specialized models like N-BEATS and N-HiTS. For classification, it achieves 73.6% accuracy on UEA, surpassing Rocket and Flowformer, and achieves best F1 scores across anomaly detection benchmarks (SMD, MSL, SMAP, SWaT, PSM)[^src-timesnet].
 
+## 综述归类
+
+Wang & Du 等人的 MTSI 综述将 TimesNet 归为预测式-CNN 类插补方法（Table 1 缺失机制标注 MCAR），归因于其用 Fast Fourier Transform 将 1D 序列重组为 2D 格式、从而适配 CNN 处理的思路[^src-mts-imputation-survey]。这是综述从插补任务视角给出的单一任务归类；TimesNet 本身是覆盖五类任务的通用架构（见本页 Overview），两套口径分立。
+
 ## Connections
 
 - **[[informer]]** — Informer (AAAI 2021 Best Paper) pioneered efficient Transformer-based LSTF and is listed as a key baseline in TimesNet's experiments[^src-timesnet].
@@ -54,9 +58,11 @@ TimesNet outperforms 15+ baselines (Autoformer, FEDformer, DLinear, Informer, et
 - [[unified-covariate-adaptation]] — 统一协变量适应概念
 - [[covariate-homogenization]] — 协变量同质化技术
 - [[covariate-fusion-module]] — 协变量融合模块技术
+- [[mts-imputation-taxonomy]] — MTSI 综述的分类框架，TimesNet 归为预测式-CNN 类
 
 ## 引用
 
 [^src-unica]: [[source-unica]]
 [^src-timesnet]: [[source-timesnet]]
 [^src-hyperd-hybrid-periodicity-decoupling]: [[source-hyperd-hybrid-periodicity-decoupling]]
+[^src-mts-imputation-survey]: [[source-mts-imputation-survey]]

@@ -10,7 +10,7 @@ tags:
   - air-quality
   - traffic
 last_updated: 2026-08-29
-source_count: 6
+source_count: 8
 confidence: medium
 status: active
 ---
@@ -170,6 +170,10 @@ PriSTI 与 [[diffstg|DiffSTG]] 虽然都是"条件扩散+空间建模"，但任�
 
 采用二次噪声调度 $\beta_t = \left(\frac{t-1}{T-1}\sqrt{\beta_T} + \frac{T-t}{T-1}\sqrt{\beta_1}\right)^2$，与 [[csdi|CSDI]] 一致[^src-pristi]。
 
+## 综述归类
+
+Wang & Du 等人的 MTSI 综述将 PriSTI 归为生成式-扩散类插补方法（Table 1 架构标注 Diffusion+Attention+GNN+CNN），并将其条件机制概括为"以时空依赖作为条件信息——用条件特征计算的时空注意力权重提供给去噪网络"[^src-mts-imputation-survey]。该概括与本页"先验引导注意力"一节的原论文口径一致；综述 Table 1 将 PriSTI 的缺失机制标注为 MCAR，属综述作者的二手归类[^src-mts-imputation-survey]。
+
 ## 局限性
 
 1. **线性插值的双刃剑**：在高度非线性时序模式（如交通速度早晚高峰的剧烈脉冲）中，线性插值可能"错误平滑"真实突变信号[^src-pristi]
@@ -188,6 +192,8 @@ PriSTI 建立了"条件先验与去噪过程分离"的设计范式——这个�
 
 FENCE 进一步指出 PriSTI 的固定引导尺度在低条件信息场景（如高缺失率节点）下同样面临漂移到先验分布的问题，并通过 [[feedback-diffusion-guidance|反馈扩散引导]] 和 [[cluster-aware-guidance|聚类感知引导]] 两个机制解决[^src-fence]。
 
+一致性模型方向的延伸：[[costi|CoSTI]]（KBS 2025）在一致性训练中沿用论文所称"与 PriSTI 类似思路"的条件信息设计（线性插值条件、邻接矩阵与掩码），其 STFEM 模块明确扩展自 PriSTI 的条件特征提取模块，NEM 模块亦标注经 PriSTI 增强；改动在于把迭代去噪整体替换为一致性模型的 1–2 步采样[^src-costi]。
+
 ## 关联页面
 
 - [[ddpm]] — DDPM，PriSTI 的扩散数学基础
@@ -205,6 +211,8 @@ FENCE 进一步指出 PriSTI 的固定引导尺度在低条件信息场景（如
 - [[loft]] — LOFT (KDD 2026)，流匹配 + 低秩先验 + 轨迹一致性的插补模型，以 PriSTI 为生成式基线对比并作者报告占优[^src-loft]
 - [[giflow]] — GiFlow (ICML 2026)，图信息先验流匹配插补，以 PriSTI 为扩散基线；作者报告 Air-36 推理时间 0.28 min vs PriSTI 9.30 min，且确定性 ODE 积分无需多次采样平均[^src-giflow]
 - [[rdpi]] — RDPI (AAAI 2025)，两阶段残差条件扩散插补，协议沿用 PriSTI 但未将其列为基线[^src-rdpi]
+- [[costi]] — CoSTI (KBS 2025)，一致性训练插补，条件信息设计与 STFEM 模块均标注承自 PriSTI[^src-costi]
+- [[mts-imputation-taxonomy]] — MTSI 综述的分类框架，PriSTI 归为生成式-扩散类（Diffusion+Attention+GNN+CNN）
 
 ## 相关工作
 
@@ -212,8 +220,10 @@ FENCE 进一步指出 PriSTI 的固定引导尺度在低条件信息场景（如
 - [[rdpi|RDPI]] (AAAI 2025 / arXiv 2024)：其数据划分与缺失协议沿用 GRIN 与 PriSTI（RDPI 论文 Settings 节自述引 Liu et al. 2023），但其基线清单不含 PriSTI；两篇论文各自报告自己设置下的结果，数字不可直接混用[^src-rdpi]。
 
 [^src-pristi]: [[source-pristi]]
+[^src-mts-imputation-survey]: [[source-mts-imputation-survey]]
 [^src-fence]: [[source-fence]]
 [^src-maginet]: [[source-maginet]]
 [^src-loft]: [[source-loft]]
 [^src-giflow]: [[source-giflow]]
 [^src-rdpi]: [[source-rdpi]]
+[^src-costi]: [[source-costi]]

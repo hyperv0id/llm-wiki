@@ -10,7 +10,7 @@ tags:
   - aaai-2026
 created: 2026-06-08
 last_updated: 2026-08-29
-source_count: 3
+source_count: 5
 confidence: medium
 status: active
 ---
@@ -77,6 +77,8 @@ $$\log p_{\theta,k-1,C_j}(c|x_{k-1}) = \frac{1}{|C_j|} \sum_{l \in C_j} \log p_{
 
 FBG 是 Koulischer et al. 的图像生成工作，FENCE 的引导尺度公式与后验追踪机制均采用自该工作，FENCE 的增量在聚类感知引导与时空插补场景适配[^src-fbg][^src-fence]。
 
+FENCE 论文相关工作节还把 [[costi|CoSTI]]（Solís-García et al. 2025，详见 [[costi]]）与 CSBI、MTSCI、DSDI 并列为"改进插补一致性与推理速度"的扩散模型相关扩展，对 CoSTI 的定性是"采用一致性训练以降低推理时间"[^src-fence]。
+
 ## 局限性
 
 - 论文实验仅在 PEMS04、PEMS07、PEMS08 交通数据集上验证，其他时空数据类型的泛化性未在论文中报告[^src-fence]
@@ -86,7 +88,12 @@ FBG 是 Koulischer et al. 的图像生成工作，FENCE 的引导尺度公式与
 - [[feedback-diffusion-guidance]] — FBG 原始技术页（NeurIPS 2025），FENCE 引导机制的理论来源
 - [[source-feedback-guidance-diffusion-models-arxiv25]] — FBG 原始论文摘要
 - [[loft]] — 同组（Mao 等）后续工作，KDD 2026：以流匹配 + 低秩先验 + 轨迹一致性替代扩散路线做交通插补，将 FENCE 列为生成式基线对比（作者报告 PEMS04 SC-TC RMSE 41.67 vs FENCE 44.28）[^src-loft]
+- [[lets-group]] — Let's Group（IJCAI 2025）：即插即用子图学习，用于降低 STGNN 内存开销。FENCE 的 Related Work 将其列入「判别式时空插补模型」[^src-fence]，但该文原文的任务设定与实验均为交通预测、未包含插补实验[^src-lets-group]——引用语境差异的核对见 [[source-lets-group]] 与 [[source-fence]]
+- [[costi]] — CoSTI（KBS 2025），FENCE 相关工作节提及的一致性训练插补方法[^src-fence]
+- [[mts-imputation-taxonomy]] — Wang & Du 等人的 MTSI 综述分类框架：按其插补不确定性视角，FENCE 的条件扩散路线属生成式插补一类。该综述发表于 FENCE 之前、未收录 FENCE[^src-mts-imputation-survey]；FENCE 参考文献含该综述（Wang et al. 2024, arXiv:2402.04059，raw PDF 已核实）[^src-fence]。此定位是 wiki 依据框架的分析性归类，非综述原文论断
 
 [^src-fence]: [[source-fence]]
 [^src-fbg]: [[source-feedback-guidance-diffusion-models-arxiv25]]
 [^src-loft]: [[source-loft]]
+[^src-lets-group]: [[source-lets-group]]
+[^src-mts-imputation-survey]: [[source-mts-imputation-survey]]

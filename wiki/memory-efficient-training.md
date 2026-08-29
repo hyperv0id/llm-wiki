@@ -7,8 +7,8 @@ tags:
   - training-efficiency
   - deep-learning
 created: 2026-06-16
-last_updated: 2026-06-16
-source_count: 1
+last_updated: 2026-08-29
+source_count: 2
 confidence: high
 status: active
 ---
@@ -157,11 +157,17 @@ Memory reduction factor equals the number of blocks (B=3 or B=4)[^src-diffusionb
 2. **Communication overhead**: Techniques besides DiffusionBlocks don't parallelize trivially
 3. **Optimizer states**: Often domitted in 2026; typically dominate memory but hard to compress without accuracy loss
 
+## Subgraph Partitioning: Memory Reduction at the Modeling Level
+
+[[lets-group|Let's Group]] (IJCAI 2025) reduces memory from a different direction than the system-level techniques on this page: instead of compressing optimizer states or activations, it restructures the spatial feature extraction of STGNNs. A set of learnable memory vectors partitions the N-node spatio-temporal graph into K-node subgraphs, so the correlation matrix shrinks from N×N to K×K; the paper reports complexity dropping from O(N²) to O(N+K²) (Sec. 3.6), with up to 56.4% average GPU memory reduction claimed in the abstract (average scope unspecified) across four PEMS traffic datasets with eight backbones[^src-lets-group]. The two families act on different layers of the stack.
+
 ## Related Concepts
 
 - [[block-wise-training]] — DiffusionBlocks approach
 - [[activation-checkpointing]] — complementary technique
 - [[gradient-accumulation]] — trading memory for compute in batch dimension
 - [[zero-optimizer]] — sharding optimizer states across devices (ZeRO-1/2/3)
+- [[lets-group]] — SubGraph Learning, STGNN 建模层面的子图划分内存优化 (IJCAI 2025)
 
 [^src-diffusionblocks]: [[source-diffusionblocks]]
+[^src-lets-group]: [[source-lets-group]]

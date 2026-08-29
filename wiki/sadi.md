@@ -9,8 +9,8 @@ tags:
   - partial-blackout
   - aaai-2025
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-08-29
+source_count: 2
 confidence: high
 status: active
 ---
@@ -68,6 +68,10 @@ SADI-MPB 在所有数据集上超越 SADI-RM，证明显式暴露于 partial bla
 | [[lscd\|LSCD]] | 频谱条件编码器 | Transformer | 随机缺失 | 单阶段 |
 | **SADI** | **FDE (卷积+注意力)** | **GTA (自注意力+GLU)** | **部分停电** | **双阶段加权** |
 
+## 综述归类
+
+Wang & Du 等人的 MTSI 综述将 SADI 归为生成式-扩散类插补方法，概述其为"利用自注意力机制捕获病患间相似性以插补缺失值"的相似度感知扩散模型；综述 Table 1 将其缺失机制标注为 MCAR/MAR/MNAR——在综述收录的 33 个方法中，仅 SADI 与 supnotMIWAE（标注 MNAR）覆盖 MNAR 机制[^src-mts-imputation-survey]。该机制标注属综述作者的二手归类；本页"partial blackout"口径来自原论文，两套口径分立。
+
 ## 局限性
 
 - 双阶段架构增加计算量[^src-sadi]
@@ -87,5 +91,7 @@ SADI-MPB 在所有数据集上超越 SADI-RM，证明显式暴露于 partial bla
 - [[cofill]] — CoFILL，双流时空扩散插补
 - [[fence]] — FENCE，动态反馈引导扩散插补
 - [[saits]] — SAITS，FDE/GTA 的注意力设计灵感来源
+- [[mts-imputation-taxonomy]] — MTSI 综述的分类框架，SADI 归为生成式-扩散类且 Table 1 标注覆盖 MCAR/MAR/MNAR
 
 [^src-sadi]: [[source-sadi]]
+[^src-mts-imputation-survey]: [[source-mts-imputation-survey]]

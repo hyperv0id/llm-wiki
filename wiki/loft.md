@@ -10,7 +10,7 @@ tags:
   - kdd-2026
 created: 2026-08-26
 last_updated: 2026-08-29
-source_count: 1
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -78,6 +78,9 @@ $$L_{CT}(\theta)=\mathbb{E}_{t,s,z_0,z_1}\|v_\theta(z_t,t)-\mathrm{sg}(v_\theta(
 
 论文将自身贡献定位为：一致性模型路线（[[consistency-fm\|Consistency-FM]]、[[shortcut-models\|Shortcut Models]]、[[meanflow\|MeanFlow]]）在图像生成已验证，但在时空插补中的应用此前未被探索（论文表述）[^src-loft]。
 
+> [!warning] 口径张力
+> [[costi|CoSTI]]（KBS 2025）已将 Consistency Training 直接用于多变量时间序列插补，作者报告推理时间最多降低 98%[^src-costi]。上句"在时空插补中的应用此前未被探索"为 LOFT 论文自述表述，本页按原文记录；两条论断的适用范围差异（CoSTI 沿用 CM 的样本空间一致性映射，LOFT 为 CFM 速度一致性 + 低秩先验）待对照 LOFT 原文的参考文献处理方式核实，详见 [[costi]]。
+
 ## 局限（可从论文观察到）
 
 - 仅在 PEMS 交通数据集验证，未覆盖空气质量等其他时空数据类型。
@@ -101,5 +104,9 @@ $$L_{CT}(\theta)=\mathbb{E}_{t,s,z_0,z_1}\|v_\theta(z_t,t)-\mathrm{sg}(v_\theta(
 - [[fence]] — FENCE，同组前作的动态引导扩散插补基线
 - [[giflow]] — GiFlow (ICML 2026)，同为流匹配插补，以时空图滤波的图信息先验替代高斯先验；LOFT 参考文献引用该工作[^src-loft]
 - [[loft-llm]] — 同名缩写的另一篇 KDD 2026 论文（低频时序预测）
+- [[mts-imputation-taxonomy]] — Wang & Du 等人的 MTSI 综述分类框架：按其插补不确定性视角，LOFT 的流匹配生成路线属生成式插补一类；综述发表于 LOFT 之前、未覆盖流匹配插补路线[^src-mts-imputation-survey]。注："LOFT 论文引用了该综述"未在仓库内核实（raw/ 无 LOFT PDF，[[source-loft]] 未记录其参考文献），此定位是 wiki 依据框架的分析性归类
+- [[costi]] — CoSTI（KBS 2025），Consistency Training 直接用于 MTSI；与 LOFT 定位表述存在口径张力（见定位节的注记）[^src-costi]
 
 [^src-loft]: [[source-loft]]
+[^src-mts-imputation-survey]: [[source-mts-imputation-survey]]
+[^src-costi]: [[source-costi]]

@@ -85,6 +85,7 @@ status: active
 - [[pristi]] — 扩散插补方法，RDPI 的划分与缺失协议自述沿用其设置（数据集重叠 PEMS-BAY/METR-LA/AQI36），但未被 RDPI 列为基线
 - [[two-stage-imputation]] — 双阶段插补范式（网络级与框架级两种用法辨析）
 - [[ddpm]] / [[ddim]] — RDPI 的扩散训练与加速采样基础
+- [[costi]] — CoSTI（KBS 2025），一致性训练路线的少步时空插补；与 RDPI 的残差条件扩散加速属不同路线，两文互未对比
 
 [^src-rdpi]: [[source-rdpi]]
 [^src-pristi]: [[source-pristi]]

@@ -8,8 +8,8 @@ tags:
   - efficient-ml
   - data-augmentation
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-08-29
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -58,5 +58,7 @@ Node Visibility challenges the conventional wisdom that richer global topology i
 - [[temporal-folding-graph]] — the complementary temporal dimension innovation
 - [[mae|MAE]] — inspiration for the masking strategy
 - [[node-embedding-regularization]] — related regularization concept for node embeddings
+- [[lets-group|Let's Group]] — also partitions nodes into independently processed subgraphs, but partitions by feature similarity against learnable memory vectors (rather than randomly) and explicitly handles cross-subgraph overlap via average feature aggregation (IJCAI 2025)[^src-lets-group]
 
 [^src-visifold]: [[source-visifold]]
+[^src-lets-group]: [[source-lets-group]]

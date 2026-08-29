@@ -9,7 +9,7 @@ tags:
   - iclr-2022
 created: 2026-05-30
 last_updated: 2026-08-29
-source_count: 4
+source_count: 6
 confidence: medium
 status: active
 ---
@@ -92,8 +92,13 @@ GRIN 的空间解码器归纳偏置使其可用于虚拟感知（virtual sensing
 | 扩散填补 | [[cofill]] (2025) | 非递归扩散解决误差累积 |
 | Primary-Auxiliary | [[past]] (PVLDB 2025) | 外部信息辅助模式增强纤维/块缺失填补 |
 | 残差扩散精炼 | [[rdpi]] (AAAI 2025) | 以 GRIN 为两阶段框架的确定性初始模型并联合训练；作者报告 AQI-36 全节点遮蔽（节点 14/31）上 MAE 相对 GRIN 降低 31%/26%（Table 6）[^src-rdpi] |
+| 一致性插补 | [[costi]] (KBS 2025) | 沿用 GRIN 基准（Cini et al.）的数据集、划分与种子，将 GRIN 纳入 Table 6 对比；该表五组设置中 CoSTI 的 MAE/MSE 均低于 GRIN（如 AQI-36 10.13/377.48 vs 12.08/523.14）[^src-costi] |
 
 GRIN 作为 GNN 填补的开山之作，确立了空间解码和消息传递填补的基本范式，但其固定图结构和自回归误差累积的局限催生了后续改进。
+
+## 综述归类
+
+Wang & Du 等人的 MTSI 综述将 GRIN 归为预测式-GNN 类插补方法（Table 1 缺失机制标注 MCAR/MAR），称其为首个基于图的循环 MTSI 架构——用双向图循环神经网络捕获时间动态与空间相似性——并提到 SPIN 通过稀疏时空注意力机制缓解 GRIN 的误差传播、增强对数据稀疏性的鲁棒性[^src-mts-imputation-survey]。该定位与本页"首个基于 GNN 的多元时间序列填补模型"的原文口径一致。
 
 ## 局限性
 
@@ -117,8 +122,12 @@ GRIN 作为 GNN 填补的开山之作，确立了空间解码和消息传递填�
 - [[past]] — PAST，primary-auxiliary 时空填补 (PVLDB 2025)
 - [[giflow]] — GiFlow (ICML 2026)，图信息先验流匹配填补，以 GRIN 为时空 GNN 基线；作者报告 Air-36 point 20% 下 MAE 9.54 vs GRIN 9.94、RMSE 18.10 vs 19.09[^src-giflow]
 - [[traffic-forecasting]] — 交通预测
+- [[mts-imputation-taxonomy]] — MTSI 综述的分类框架，GRIN 归为预测式-GNN 类
+- [[costi]] — CoSTI (KBS 2025)，一致性训练插补，沿用 GRIN 基准并对比 GRIN[^src-costi]
 
 [^src-2108-00298]: [[source-2108-00298]]
+[^src-mts-imputation-survey]: [[source-mts-imputation-survey]]
 [^src-maginet]: [[source-maginet]]
 [^src-giflow]: [[source-giflow]]
 [^src-rdpi]: [[source-rdpi]]
+[^src-costi]: [[source-costi]]

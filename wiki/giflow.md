@@ -9,7 +9,7 @@ tags:
   - icml-2026
 created: 2026-08-29
 last_updated: 2026-08-29
-source_count: 1
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -57,12 +57,15 @@ status: active
 | Euler 步数（Table 9） | 1–20 步 | 20 步最佳；5 步 MAE 9.81 / RMSE 18.95 仍优于次优基线；1 步 MAE 9.87 |
 | 滤波因子优化开销（Table 8） | 100 epochs，batch 64 | Air-36 0.19 min；5 万节点合成图 69.85 min / 19.88 GB |
 
+> [!note] CoSTI 数字口径
+> Table 7 中 CoSTI 的推理时间为 GiFlow 论文在 A100 环境的复测口径，非 CoSTI 原文报告的数字；[[costi|CoSTI]] 原文（Table 3）在 RTX A5000 上报告 AQI-36 0.005 h、METR-LA 0.06 h 等，且其数据集与缺失设置与 GiFlow 不完全相同，两套数字不可混用[^src-costi]。
+
 ## 定位与相关方法
 
 | 方法族 | 代表 | 先验 | 与 GiFlow 的关系 |
 |--------|------|------|------|
 | 条件扩散插补 | [[csdi\|CSDI]]、[[pristi\|PriSTI]]、[[cofill\|CoFILL]] | 高斯 | PriSTI 为基线：多步去噪 + 多次采样平均；GiFlow 确定性 ODE 积分 |
-| 一致性插补 | CoSTI | 高斯 | CoSTI 为基线：加速采样但先验仍是高斯 |
+| 一致性插补 | [[costi\|CoSTI]] (KBS 2025) | 高斯 | CoSTI 为基线：加速采样但先验仍是高斯[^src-costi] |
 | 信息先验流匹配 | [[tsflow\|TSFlow]]（GP 先验，预测）、[[loft\|LOFT]]（低秩先验 + 轨迹一致性，交通插补） | 任务定制 | 同属"先验对齐目标分布"路线；GiFlow 的先验由图滤波闭式给出 |
 | 时空 GNN/Transformer | GRIN、SPIN、OPCR、SAITS、BRITS | — | 迭代传播或逐序列建模基线 |
 
@@ -86,5 +89,8 @@ status: active
 - [[grin]] — GRIN，GiFlow 的时空 GNN 基线
 - [[cofill]] — CoFILL，GiFlow 相关工作中引用的扩散插补
 - [[message-passing-imputation]] — 消息传递插补范式（GiFlow 批评的迭代传播路线）
+- [[costi]] — CoSTI（KBS 2025），一致性训练插补，GiFlow 的基线之一（Table 7 推理时间对比）[^src-costi]
+- [[mts-imputation-taxonomy]] — MTSI 综述（arXiv:2402.04059）分类框架页，含流匹配插补路线相对该综述框架的定位讨论
 
 [^src-giflow]: [[source-giflow]]
+[^src-costi]: [[source-costi]]

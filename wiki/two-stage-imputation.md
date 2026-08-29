@@ -8,7 +8,7 @@ tags:
   - refinement
 created: 2026-06-08
 last_updated: 2026-08-29
-source_count: 2
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -62,6 +62,10 @@ SADI 的独特之处在于：(1) 第二阶段重新引入原始噪声数据作�
 
 上表前四行的"两阶段"都发生在**单一去噪网络（或注意力块）内部**：两个阶段是同一模型的两个组件，输出经加权或注意力融合——SADI 即两个 GTA 块部署于同一去噪函数内[^src-sadi]。[[rdpi|RDPI]] 的两阶段则是**框架级**的——初始模型 $f_\theta$ 与扩散模型 $g_\theta$ 是两个独立模型，扩散目标不是缺失值本身，而是初始估计与真值之间的残差 $z_0^m = f_\theta(x_0^c) - x_0^m$，采样时以初值减去预测残差得到最终插补，两阶段以 $L_{joint} = L_{simple} + \lambda L_{init}$ 联合训练[^src-rdpi]。两种用法不同义，跨方法比较时应注意层级。
 
+## 命名辨析：与综述 "impute-then-predict" 范式的区别
+
+Wang & Du 等人的 MTSI 综述在讨论下游任务集成时使用了另一种"两阶段"表述：主流的 "impute-then-predict"（综述原文为 "impute and predict"）范式把插补当作数据预处理，先填补缺失、再将完整数据交给下游任务模型；替代方案是 "encode-and-predict" 端到端范式，把不完整数据编码为表示后做多任务学习（插补 + 分类/预测等），综述认为当缺失模式本身携带下游有用信息时端到端方式更有前景[^src-mts-imputation-survey]。注意这与本页的"双阶段插补"不同义：本页指单一模型内部的两段式精炼结构，综述的 "impute and predict" 指"插补模块 + 下游模型"的流水线级组装——跨文献检索 "two-stage imputation" 时应先区分层级。
+
 ## 关联页面
 
 - [[sadi]] — SADI，将双阶段插补引入扩散模型的首次实践
@@ -70,6 +74,8 @@ SADI 的独特之处在于：(1) 第二阶段重新引入原始噪声数据作�
 - [[mixed-partial-blackout-training]] — MPB，增强双阶段在 partial blackout 下的鲁棒性
 - [[saits]] — SAITS，双阶段插补的注意力设计灵感来源
 - [[rdpi]] — RDPI，框架级两阶段（确定性初值 + 残差扩散精炼）
+- [[mts-imputation-taxonomy]] — MTSI 综述的分类框架（其 "impute and predict" 是与本页不同层级的"两阶段"概念）
 
 [^src-sadi]: [[source-sadi]]
 [^src-rdpi]: [[source-rdpi]]
+[^src-mts-imputation-survey]: [[source-mts-imputation-survey]]

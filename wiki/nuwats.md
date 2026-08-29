@@ -9,8 +9,8 @@ tags:
   - channel-independence
   - contrastive-learning
 created: 2026-06-08
-last_updated: 2026-06-15
-source_count: 4
+last_updated: 2026-08-29
+source_count: 5
 confidence: high
 status: active
 ---
@@ -94,6 +94,10 @@ patch 级融合：$E_{i,(p)} = Z_{i,(p)} + Z_{i,(v_p)} + z_{i,(m)} \times r_i$�
 > [!warning] 独立基准：落后于时间索引基础模型
 > EDF R&D 的 TMLR 2026 零样本插补基准（[[source-time-indexed-imputation|33 个域外数据集]]）发现：作为零样本方法，**NuwaTS 在所有数据集/设定下显著落后于 [[tabpfn-ts|TabPFN-TS]]，并在 11 个数据集中的 10 个上落后于 [[motm|MoTM]]**（虽优于 MOMENT）[^src-time-indexed-imputation]。这与 NuwaTS 自报的"超越域特定 SOTA"并不直接矛盾（基准/基线不同），但提示：PLM 重编程路线在跨域零样本插补上**弱于** [[time-indexed-foundation-model|时间索引基础模型]]（连续时间 $H(t)\to x(t)$ + in-context 回归）。此外该基准注意到 NuwaTS 公开代码未提供现成预训练模型，仅有固定长度 96 的演示版[^src-time-indexed-imputation]。
 
+## 综述归类
+
+Wang & Du 等人的 MTSI 综述将 NuwaTS 放入大模型类（PFM 方向，§5.1），概括其路线为"复用预训练语言模型做时序插补，用专用嵌入与对比学习处理跨域的多种缺失模式"[^src-mts-imputation-survey]。该归类与本页"PLM 重编程 + 跨域泛化"的原文口径一致；架构与实验细节以原论文口径为准。
+
 ## 关联页面
 
 - [[variable-wise-partitioning]] — NuwaTS 提出的变量维度划分基准
@@ -114,6 +118,7 @@ patch 级融合：$E_{i,(p)} = Z_{i,(p)} + Z_{i,(v_p)} + z_{i,(m)} \times r_i$�
 - 演化：[[std-plm|STD-PLM]] (AAAI 2025) — 同为 PLM-for-ST，但增加空间 token（CI→ST-aware）+ 时间 token（NuwaTS 仅 patch 时间信息），并统一预测+插补[^src-std-plm]
 
 [^src-nuwats]: [[source-nuwats]]
+[^src-mts-imputation-survey]: [[source-mts-imputation-survey]]
 [^src-t1]: [[source-t1]]
 [^src-time-indexed-imputation]: [[source-time-indexed-imputation]]
 [^src-std-plm]: [[source-std-plm]]

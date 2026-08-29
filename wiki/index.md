@@ -1294,3 +1294,24 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Sources (continued)
 - [[source-rdpi]] — RDPI: A Refine Diffusion Probability Generation Method for Spatiotemporal Data Imputation, 确定性初值 + 残差条件扩散、观测值纳入前向过程并推导新 ELBO，Table 3/4 作者报告 MAE/MSE 最优（Liu, Zhao, Song; 北航, arXiv 2412.12642 v1, AAAI 2025 著录）
+
+## Sources (continued)
+- [[source-lets-group]] — Let's Group: A Plug-and-Play SubGraph Learning Method for Memory-Efficient Spatio-Temporal Graph Modeling, SGPM 记忆向量锚点 top-K 子图划分 + SGFAM 跨子图特征平均聚合，O(N²)→O(N+K²)，平均 GPU 内存最高降 56.4%（作者报告），IJCAI-25 官方 proceedings（Weng et al., pp. 3471–3479）
+
+## Techniques (continued)
+- [[lets-group]] — SGL, 即插即用子图学习：可学习记忆向量按特征相似度划分可重叠子图 + 跨子图平均聚合，降低 STGNN 空间特征提取的 GPU 内存开销 (IJCAI 2025)
+
+## Sources (continued)
+- [[source-costi]] — CoSTI: Consistency models for (a faster) spatio-temporal imputation, 一致性训练直接适配 MTSI，1–2 步采样替代扩散插补 50–100 步去噪，作者报告插补时间最多降低 98%（KBS 327 (2025) 114117, Elsevier 正式排版）
+
+## Techniques (continued)
+- [[costi]] — CoSTI，Consistency Training 用于多变量时间序列插补：PriSTI 式条件信息 + 双分支 U-Net（NEM 引入双向 Mamba）+ 线性课程，论文自述首个 CM→MTSI 适配 (KBS 2025)
+
+## Sources (continued)
+- [[source-mts-imputation-survey]] — Deep Learning for Multivariate Time Series Imputation: A Survey, 预测式/生成式（插补不确定性）× 架构（RNN/CNN/GNN/Attention/VAE/GAN/Diffusion + 大模型单列）双视角分类 + PyPOTS 生态与 TSI-Bench + 未来方向（MNAR/下游集成/可扩展性/LLM），arXiv:2402.04059v3（IJCAI 2025 著录来自用户，未在 PDF 内核实）
+
+## Entities (continued)
+- [[pypots]] — PyPOTS，部分观测时序端到端建模工具箱（综述统计含 37 个插补模型）与 TSI-Bench 基准生态（172 数据集、28 算法、34,804 实验）(KDD 2023 workshop / MTSI 综述 §6)
+
+## Concepts (continued)
+- [[mts-imputation-taxonomy]] — MTSI 综述的双视角分类框架：插补不确定性（预测式/生成式）× 网络架构，附 wiki 各插补方法（CSDI/PriSTI/GRIN/ImputeFormer/SADI/NuwaTS/TimesNet 等）的综述归类定位与二手口径警示 (arXiv 2024/2025 survey)

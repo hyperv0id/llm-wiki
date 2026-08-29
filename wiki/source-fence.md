@@ -9,8 +9,8 @@ tags:
   - classifier-free-guidance
   - aaai-2026
 created: 2026-06-08
-last_updated: 2026-08-26
-source_count: 1
+last_updated: 2026-08-29
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -71,4 +71,9 @@ $$\log p_{\theta,k-1}(c|x_{k-1}) = \log p_{\theta,k}(c|x_k) + \log p_\theta(x_{k
 
 - 论文实验仅在 PEMS04、PEMS07、PEMS08 交通数据集上验证，其他时空数据类型（如空气污染、气象）的泛化性未在论文中报告[^src-fence]
 
+## 相关工作引用口径
+
+FENCE 的 Related Work 将判别式插补模型举例为 "(Cao et al. 2018; Che et al. 2018; Weng et al. 2025)"，其中 Weng et al. 2025 即 [[lets-group|Let's Group]]（IJCAI-25，参考文献著录 pp. 3471–3479）[^src-fence]。需要注明的口径差异：Let's Group 原文的任务设定与实验均为交通预测（可学习子图划分以降低 STGNN 内存开销），未包含插补实验；「判别式插补模型」是 FENCE 相关工作段落中的归类，非 Let's Group 原文的自我定位[^src-lets-group]。详见 [[source-lets-group]]。
+
 [^src-fence]: [[source-fence]]
+[^src-lets-group]: [[source-lets-group]]

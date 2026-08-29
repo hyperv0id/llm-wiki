@@ -8,8 +8,8 @@ tags:
   - low-rank
   - kdd-2024
 created: 2026-05-11
-last_updated: 2026-08-26
-source_count: 6
+last_updated: 2026-08-29
+source_count: 7
 confidence: medium
 status: active
 ---
@@ -145,6 +145,10 @@ L = L_recon + λ · L_FIL
 
 空间嵌入注意力在 Block 场景下更重要（移除后 +6.9%），说明块缺失场景更需要全局空间依赖。层次化损失（[[grin]]/SPIN 使用的方式）替代 FIL 后性能下降最显著（+7.0%/+11.1%），证明 FIL 不仅更简单，而且更有效[^src-2312-01728]。
 
+## 综述归类
+
+Wang & Du 等人的 MTSI 综述将 ImputeFormer 归为预测式-Attention 类插补方法（Table 1 缺失机制标注 MCAR），正文转述其为一个"利用自注意力与时间上下文建模来恢复缺失值"的 Transformer 框架[^src-mts-imputation-survey]。注意该转述未涉及本页所述的低秩归纳偏置核心设计；架构细节与实验数字以原论文口径为准，两套口径分立。
+
 ## 未来工作方向
 
 精读论文指出的潜在研究方向包括：
@@ -168,11 +172,13 @@ L = L_recon + λ · L_FIL
 - [[maginet|MagiNet]] (arXiv 2024)，与 ImputeFormer 同为交通时空填补，但取消预填充（可学习缺失嵌入）并用掩码加权 Chebyshev 图卷积，是另一条缓解过平滑的路线[^src-maginet]。
 - [[loft]] — LOFT (KDD 2026)，把低秩归纳偏置从判别式结构约束转为生成式流匹配的信息先验，并以 ImputeFormer 为判别式基线对比[^src-loft]
 - [[traffic-forecasting]] — 交通预测
+- [[mts-imputation-taxonomy]] — MTSI 综述的分类框架，ImputeFormer 归为预测式-Attention 类
 - [[generative-time-series-forecasting]] — 生成式时序预测
 
 [[stamimputer|STAMImputer]] (arXiv 2025) 在论文中将 ImputeFormer 选为主要 SOTA 基线，并继承其低秩诱导思想到 [[lrsgat|LrSGAT]] 空间专家中，但用显式节点采样替代纯可学习 embedding agents[^src-stamimputer]。
 
 [^src-2312-01728]: [[source-2312-01728]]
+[^src-mts-imputation-survey]: [[source-mts-imputation-survey]]
 [^src-nuwats]: [[source-nuwats]]
 [^src-t1]: [[source-t1]]
 [^src-maginet]: [[source-maginet]]
