@@ -1392,3 +1392,10 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Techniques (continued)
 - [[fully-adjacent-layer]] — 全邻接层：仅把最后一层邻接改为全连接以打破 over-squashing 瓶颈的演示性方案，零新增权重，附维度/层位/部分边消融（ICLR 2021）
+
+## Sources (continued)
+- [[source-performer]] — Rethinking Attention with Performers（Choromanski et al., Google/Cambridge/DeepMind/Alan Turing Institute, ICLR 2021，会议标识 PDF 内核实；arXiv:2009.14794v4），FAVOR+：正随机特征无偏估计 softmax 核 + 正交化降方差，线性时空复杂度近似全秩 softmax 注意力（论文自述首个此类架构），MSE/尾界/一致收敛定理与 TrEMBL/ImageNet64/PG-19/LRA 实验
+
+## Techniques (continued)
+- [[performer]] — Performer，FAVOR+ 线性注意力 Transformer：核化注意力按 Q′((K′)ᵀV) 结合律计算，O(Lrd) 时间/O(Lr+Ld+rd) 空间，不依赖稀疏/低秩先验（ICLR 2021）
+- [[positive-random-features]] — PRF，softmax 核的正随机特征无偏估计：trig 特征在核值趋 0 时 MSE 发散、PRF 趋 0，ORF 正交化对任意维度 d 降方差（ICLR 2021）

@@ -6,8 +6,8 @@ tags:
   - spectral-methods
   - deep-learning-theory
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 2
+last_updated: 2026-08-30
+source_count: 4
 confidence: medium
 status: active
 ---
@@ -30,6 +30,10 @@ Over-smoothing is particularly problematic for[^src-hifinet]:
 - **Deep GNNs**: Standard GCN performance degrades beyond 2–3 layers, limiting the model's depth and receptive field.
 - **Heterogeneous graphs**: Nodes with different characteristics get homogenized, losing discriminative power for classification tasks.
 
+## 与 Over-Squashing 的区分
+
+Over-smoothing 不是长程性能退化的唯一候选解释，也不应与 [[over-squashing|over-squashing]] 混用——二者是不同现象：over-smoothing 指层数增加后节点表示趋同、不可区分；over-squashing 指指数增长的感受野信息被压缩进固定长度向量，发生在需要长程交互的任务中。Alon & Yahav（ICLR 2021）指出 over-smoothing 的实证证据主要来自短程任务，并以假设口径提出：在长程问题上，性能退化的解释是 over-squashing 而非 over-smoothing（Sec 1, Sec 6）[^src-over-squashing]。该文用两个构造性例子说明二者可独立发生：三节点完全图（问题半径 r=1）上可能出现 over-smoothing 而无 over-squashing；Tree-Neighbors-Match 任务上存在 over-squashing 而无 over-smoothing（Appendix E）[^src-over-squashing]。
+
 ## Mitigation Strategies
 
 | Strategy | Method | Mechanism |
@@ -37,7 +41,7 @@ Over-smoothing is particularly problematic for[^src-hifinet]:
 | Skip connections | JK-Net, GCNII | Mix shallow (local) and deep (global) features |
 | Frequency-aware GNNs | FAGCN, ACM-GCN | Adaptively balance low- and high-pass filtering |
 | Hierarchical modeling | DiffPool, HRNR, [[hifinet|HiFiNet]] | Different resolutions at different hierarchy levels |
-| Graph transformers | GT, Graphormer | Global attention bypasses iterative smoothing |
+| Graph transformers | GT, Graphormer, [[graphgps\|GPS]] | Global attention lets information spread via full connectivity, bypassing iterative smoothing[^src-hifinet][^src-graphgps] |
 | **Frequency decomposition** | [[hifinet|HiFiNet]] | Explicitly model low- and high-frequency components, reconstruct fused representation |
 | **Sheaf Laplacian** | [[ssf|SSF]] | Replace graph Laplacian with [[sheaf-laplacian|sheaf Laplacian]] — edge-specific restriction maps prevent uniform feature averaging, preserving local discriminative signals[^src-ssf] |
 | **Spectral filtering** | [[ssf|SSF]] | Heat kernel $e^{-\alpha\lambda}$ over sheaf Laplacian eigenspectrum suppresses high-frequency noise while retaining low-frequency structure[^src-ssf] |
@@ -63,3 +67,5 @@ The combined effect: restriction maps provide local protection against over-smoo
 
 [^src-hifinet]: [[source-hifinet]]
 [^src-ssf]: [[source-ssf]]
+[^src-graphgps]: [[source-graphgps]]
+[^src-over-squashing]: [[source-over-squashing]]

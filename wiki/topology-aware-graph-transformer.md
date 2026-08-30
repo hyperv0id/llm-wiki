@@ -6,8 +6,8 @@ tags:
   - attention-mechanism
   - graph-neural-network
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-08-30
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -38,11 +38,13 @@ TGT consists of $N$ stacked blocks. For each block $i$[^src-hifinet]:
 
 ## Motivation
 
-In road network graphs with many nodes, limiting aggregation to local neighborhoods (as in GCN/GAT) fails to capture long-range dependencies, leading to over-smoothing. Pure global attention (as in standard graph transformers) may overlook local connectivity patterns critical for sequential tasks like next-location prediction[^src-hifinite].
+In road network graphs with many nodes, limiting aggregation to local neighborhoods (as in GCN/GAT) fails to capture long-range dependencies, leading to over-smoothing. Pure global attention (as in standard graph transformers) may overlook local connectivity patterns critical for sequential tasks like next-location prediction[^src-hifinet].
 
 TGT's learnable $\\alpha$ allows the model to dynamically balance:
 - **Local**: adjacency-based aggregation preserves the proven inductive bias of graph topology
 - **Global**: self-attention captures long-range dependencies beyond neighborhood boundaries
+
+The long-range motivation also has a capacity-side account: Alon & Yahav (ICLR 2021) formalize the bottleneck of per-layer local aggregation as **over-squashing** — the receptive field grows exponentially with the number of layers while messages are compressed into fixed-size vectors (Sec 3)[^src-over-squashing]. Their control experiment rules out distance itself as the cause (Appendix A), and their fully-adjacent-layer intervention reports a 42% average error reduction on QM9 (Sec 4.2, Table 1/4)[^src-over-squashing]. TGT's global attention branch gives nodes a direct interaction path bypassing per-layer local aggregation — the same route as the [[fully-adjacent-layer|FA layer]], though TGT blends adjacency and attention inside one matrix rather than replacing the last layer's adjacency (wiki organizational note, not a claim from either paper).
 
 ## In HiFiNet's Pipeline
 
@@ -60,6 +62,17 @@ This ensures both frequency components benefit from the same topology-aware glob
 | GAT (2017) | Neighborhood attention | None | Fixed to local |
 | Graph Transformer (2020) | Positional encoding | Full self-attention | Fixed architecture |
 | NodeFormer (2022) | Kernelized Gumbel-Softmax | All-pair attention | Fixed architecture |
+| [[graphgps\|GPS]] (2022) | Per-layer MPNN branch (receives edge features) | Per-layer global attention branch | Fixed sum fusion, then MLP |
 | **TGT (HiFiNet, 2026)** | Raw adjacency matrix | Full self-attention | Learnable $\\alpha$ |
 
+Compared to TGT's convex combination inside a single attention matrix, [[graphgps|GPS]] runs a local MPNN branch and a global attention branch in parallel at every layer and sums their outputs before a 2-layer MLP (GPS paper, Sec 3.3, Eq. 4)[^src-graphgps].
+
+## Related Pages
+
+- [[over-squashing]] — capacity bottleneck of per-layer local aggregation in long-range tasks; grounds the long-range motivation of global-attention routes
+- [[fully-adjacent-layer]] — FA layer intervention from the same source paper (Alon & Yahav, ICLR 2021)
+- [[over-smoothing-in-gnns]] — the other degradation mode of deep local aggregation; distinct from over-squashing
+
 [^src-hifinet]: [[source-hifinet]]
+[^src-graphgps]: [[source-graphgps]]
+[^src-over-squashing]: [[source-over-squashing]]
