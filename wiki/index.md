@@ -942,6 +942,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - multimodal-exogenous-guided-long-term-st-forecasting — 多模态外生信息引导长期时空预测的研究路线：中心缺口（四拼图无人拼合）、消歧重构、统一架构论点、分层研究方向与优先级议程
 - [[multimodal-semantic-understanding]] — 多模态数据语义理解的对齐范式、融合策略与冗余过滤综合分析
 - [[spatio-temporal-foundation-model-landscape]] — 时空基础模型全景：设计哲学三重分裂、架构范式六条路线、预训练策略四象限、泛化机制深度比较
+- [[traffic-forecasting-architecture-trends]] — 交通预测架构趋势：图卷积→Transformer→SSM→基础模型→生成式→检索增强→效率→LLM 融合九时代演化 + 六条跨时代趋势
 - [[diffusion-frequency-domain-theory]] — 扩散模型为什么先学低频——频域理论的统一视角：谱偏置→频率层级→频域噪声控制→EqualSNR→SNR-t Bias→范式转移
 - [[tsfm-covariate-adaptation-comparison]] — TSFM 协变量适配方法全景对比：CoRA vs UniCA vs DiTS vs ChronosX vs AdaPTS vs Gen-P-Tuning 六种路线的系统比较
 - [[spectral-kernel-linear-attention]] — WIRE 旋转读作核的随机特征后落地为线性注意力：内容×有效电阻核、O(N)、旋转/精确两条实现路线

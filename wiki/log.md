@@ -1,3 +1,16 @@
+## [2026-08-26] maintenance | 交通预测架构趋势分析重写
+
+用户反馈原 analysis 页「先射箭后画靶子」——九时代叙事把时间先后说成因果、论文清单式罗列、ASCII 溯源地图事后编排。按 AGENTS.md 文案原则全篇重写为**问题驱动**结构：七个设计矛盾（图先验 vs 数据驱动、容量 vs 效率、生成式 vs 确定性、专用 vs 泛化、窗口 vs 记忆、静态 vs 漂移、数值 vs 语义）+ 两条贯穿主线（复杂度还债、外生信息加冕）+ 未解决问题。证据口径收紧为严格归因：论文自述（「论文提出」「论文报告」「论文自称」）、实证（数据集/指标/对照）、课程推断明确标注。删除 ASCII 图与「范式转折」「直接导火索」等伪因果措辞。68 个 `[^src-*]` 引用 1:1 保留，无孤儿无未用；source_count 68 不变。
+
+更新的页面：[[traffic-forecasting-architecture-trends]]
+
+## [2026-08-26] query | 交通预测架构趋势分析
+
+用户提问「近年来的交通预测架构趋势」。后台 research 子代理通读 wiki/ 68 个 source 页面（raw/ 语料库已入库的交通/时空预测一手源），综合为 analysis 页 [[traffic-forecasting-architecture-trends]]：九时代演化（图卷积 2017–2020 → Transformer 2021–2024 → SSM/Mamba 2024–2026 → 基础模型 → 生成式 → 检索增强 → 效率/大规模 → 持续/鲁棒/OOD → LLM 融合）+ 六条跨时代趋势（图先验→数据驱动、专用→基础模型、点预测→生成式、线性复杂度、外生/多模态/事件、时空解耦）+ 未解决问题。68 个 `[^src-*]` 引用全部 1:1 有定义、指向存在页面；正文 wikilink 全部可解析（7 处裸 entity 链按仓库惯例改指 source 页）。
+
+创建的页面：[[traffic-forecasting-architecture-trends]]
+更新的页面：[[index]]
+
 ## [2026-08-26] ingest | LOFT: Low-Rank Prior-Induced Consistency Flow Matching for Efficient Traffic Imputation
 
 PDF 归档到 `raw/loft-low-rank-prior-induced-consistency-flow-matching-efficient-traffic-imputation.pdf`（12 页，KDD 2026，DOI 10.1145/3770855.3818063；Xiaowei Mao 等，北京交通大学 + Aalborg University；代码 github.com/maoxiaowei97/LOFT）。LOFT 面向高稀疏交通插补：(1) 低秩先验估计——掩码低秩分解经神经参数化单次前向求解（结合律重排等价线性注意力，O(NKd_m)），解码先验均值与 MIS 监督的不确定性，流初始化为 N(μ_prior, I)；(2) 速度一致性目标 L_CT + Lemma 4.1/误差界 Theorem 4.2；(3) 不确定性感知矫正——论文报告 L_CFM 与 L_CT 梯度余弦相似度全程为负且与数据不确定性相关，矫正系数 α 按样本不确定性与训练进度动态仲裁。作者报告：推理 2 NFE（扩散基线 50、流匹配基线 20），PEMS03/04/08 SR-TC/SC-TC 80% 全部 MAE/RMSE/MAPE 组合最低，PeMS04 SC-TC 90% 下 RMSE 47.01（次优 FENCE 53.61），效率约十倍提升，NFE=2 为精度-效率平衡点。

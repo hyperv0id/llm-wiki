@@ -224,6 +224,8 @@ Several influential models span the development of traffic and spatial-temporal 
 
 For a comprehensive overview of deep learning methods for time series, including traffic forecasting, the [[source-deep-time-series-survey|TSLib survey]] provides systematic benchmarking across multiple domains[^src-deep-time-series-survey].
 
+For the architecture evolution across all these paradigms — from graph convolution to Transformers, SSM/Mamba, foundation models, generative/diffusion, retrieval-augmented, efficiency, and LLM fusion — see [[traffic-forecasting-architecture-trends|交通预测架构趋势]].
+
 ## Related Tasks
 
 [[multimodal-traffic-profiling|Multimodal Traffic Profiling]] — Unlike forecasting (predicting future values), profiling is a **classification** task that identifies traffic states (smooth/slow/congested) or events (accidents/construction). [[mtp|MTP]] (AAAI 2026) augments numerical time series into visual and textual modalities, processing all three in the frequency domain with hierarchical contrastive fusion for SOTA classification results on 6 traffic datasets[^src-mtp].
