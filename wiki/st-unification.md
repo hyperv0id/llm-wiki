@@ -6,7 +6,7 @@ tags:
   - spatial-temporal
   - deep-learning
 created: 2026-06-08
-last_updated: 2026-06-08
+last_updated: 2026-08-30
 source_count: 1
 confidence: medium
 status: active
@@ -23,7 +23,7 @@ The paper frames the evolution of spatio-temporal models along a spectrum[^src-m
 | Paradigm | Description | Examples |
 |----------|------------|----------|
 | **ST-Isolated** | Separate base model structures for spatial (GCN/GAT) and temporal (RNN/CNN/Attention) dimensions | [[stgcn|STGCN]], [[gwnet|GWNet]], ASTGCN |
-| **Dynamic** (partial unification) | Dynamics-aware, but limited to spatial topology changes | DGCRN, STSGCN, PDFormer |
+| **Dynamic** (partial unification) | Dynamics-aware, but limited to spatial topology changes | DGCRN, STSGCN, [[pdformer|PDFormer]] |
 | **ST-Unified** | Dynamics govern both spatial and temporal interactions jointly; heterogeneity modeled in unified manner | [[metadg|MetaDG]] |
 
 ## Key Argument

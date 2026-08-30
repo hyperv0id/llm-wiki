@@ -8,7 +8,7 @@ tags:
   - multi-scale
   - iclr-2026
 created: 2026-06-08
-last_updated: 2026-06-08
+last_updated: 2026-08-30
 source_count: 1
 confidence: medium
 status: active
@@ -57,7 +57,7 @@ HEPHAESTUS achieves SOTA across all 6 traffic benchmarks vs 15 baselines[^src-he
 
 ## Efficiency
 
-716K parameters, 5475MB GPU memory during training on PEMS04. Training: 62.07s/epoch; inference: 6.49s/epoch. Lower memory than PDFormer (8295MB) and PathFormer (6652MB)[^src-hephestus].
+716K parameters, 5475MB GPU memory during training on PEMS04. Training: 62.07s/epoch; inference: 6.49s/epoch. Lower memory than [[pdformer|PDFormer]] (8295MB) and PathFormer (6652MB)[^src-hephestus].
 
 ## Case Study: Dynamic Scale Selection
 

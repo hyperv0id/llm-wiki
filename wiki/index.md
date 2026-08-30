@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-08-29
+last_updated: 2026-08-30
 tags:
   - meta
 ---
@@ -13,6 +13,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[overview]] — wiki scope and current state
 
 ## Sources
+- [[source-pdformer-jiang-2023]] — PDFormer: Propagation Delay-Aware Dynamic Long-Range Transformer for Traffic Flow Prediction（AAAI 2023），地理/语义双 mask 空间自注意力 + DFT 显式建模传播时延，6 数据集 17 基线
 - [[source-climax]] — ClimaX: 首个气象/气候基础模型，ViT + variable tokenization + cross-attention aggregation + CMIP6 预训练 + 随机预测目标，WeatherBench/ClimateBench SOTA，ICML 2023
 - [[source-climatear]] — ClimateAR: 首个 VAR 自回归概率气候预测模型，对齐 VQ 分词器 + 混合尺度条件控制，ERA5 ACC 提升 37.56%，ICML 2026
 - [[source-cast]] — CaST: Causal Spatio-Temporal Neural Network for STG Forecasting, SCM + back-door adjustment (temporal OoD) + front-door adjustment with Hodge-Laplacian (dynamic spatial causation), NeurIPS 2023
@@ -292,6 +293,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-ts-memory-time-series-foundation-models-kdd26]] — TS-Memory: Plug-and-Play Memory for TSFMs, parametric memory distillation from offline kNN teacher → lightweight PlugMem, retrieval-free O(1) inference (KDD 2026)
 
 ## Entities
+- [[pdformer]] — PDFormer, propagation delay-aware dynamic long-range Transformer for traffic flow prediction (AAAI 2023)
+- [[jingyuan-wang]] — Jingyuan Wang, Beihang BIGSCITY 团队（鹏城实验室），PDFormer 通讯作者
 - [[std-plm]] — STD-PLM, unified PLM-based ST forecasting+imputation with spatial+time dual tokenizer (AAAI 2025)
 - [[st-ssdl]] — ST-SSDL, self-supervised deviation learning framework with historical anchors + learnable prototypes + GCRU backbone (NeurIPS 2025)
 - [[bist]] — BiST, lightweight bidirectional spatio-temporal prediction with MLP backbone + residual correction (PVLDB 2025)

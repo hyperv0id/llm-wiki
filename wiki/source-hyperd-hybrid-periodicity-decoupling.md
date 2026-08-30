@@ -8,7 +8,7 @@ tags:
   - fourier-transform
   - time-series
 created: 2026-04-27
-last_updated: 2026-05-31
+last_updated: 2026-08-30
 source_count: 1
 confidence: medium
 status: active
@@ -36,7 +36,7 @@ Traffic forecasting models should explicitly **decouple short-term and long-term
 
 ## Results
 
-HyperD achieves state-of-the-art MAE, RMSE, and MAPE on all four PeMS datasets (PEMS03, 04, 07, 08), outperforming 15 baselines including STAEformer, D2STGNN, FreTS, and PDFormer[^src-hyperd-hybrid-periodicity-decoupling]. The performance gap widens at longer horizons (9-step, 12-step), validating the benefit of explicit periodicity decoupling for long-range forecasting. Ablation studies confirm each component (FR, dual-pathway, DVA loss, fDMLP) contributes meaningfully, with the FR module being the most critical.
+HyperD achieves state-of-the-art MAE, RMSE, and MAPE on all four PeMS datasets (PEMS03, 04, 07, 08), outperforming 15 baselines including STAEformer, D2STGNN, FreTS, and [[pdformer|PDFormer]][^src-hyperd-hybrid-periodicity-decoupling]. The performance gap widens at longer horizons (9-step, 12-step), validating the benefit of explicit periodicity decoupling for long-range forecasting. Ablation studies confirm each component (FR, dual-pathway, DVA loss, fDMLP) contributes meaningfully, with the FR module being the most critical.
 
 ## Limitations
 

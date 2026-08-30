@@ -8,8 +8,8 @@ tags:
   - cross-city-transfer
   - generative-model
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-08-30
+source_count: 2
 confidence: high
 status: active
 ---
@@ -59,4 +59,6 @@ Traditional traffic flow generation models require city-specific historical data
 
 ## Relevance to Wiki
 
-CRAFT is the first work explicitly targeting cross-city zero-shot traffic flow generation with a retrieval-augmented diffusion framework. It introduces the concepts of geographic feature alignment and retrieval-based condition augmentation for cross-city transfer, and connects to the broader RAG-for-spatio-temporal paradigm alongside [[rast|RAST]] (AAAI 2026). The [[jingyuan-wang|Jingyuan Wang]] lab at Beihang University is also responsible for BIGCity, GTG, PDformer, and HiFiNet.
+CRAFT is the first work explicitly targeting cross-city zero-shot traffic flow generation with a retrieval-augmented diffusion framework. It introduces the concepts of geographic feature alignment and retrieval-based condition augmentation for cross-city transfer, and connects to the broader RAG-for-spatio-temporal paradigm alongside [[rast|RAST]] (AAAI 2026). The [[jingyuan-wang|Jingyuan Wang]] lab at Beihang University is also responsible for BIGCity, GTG, [[pdformer|PDFormer]], and HiFiNet; PDFormer 原文可核实其通讯作者即 Jingyuan Wang（北航），共同一作为 Jiawei Jiang 与 Chengkai Han[^src-pdformer-jiang-2023]。
+
+[^src-pdformer-jiang-2023]: [[source-pdformer-jiang-2023]]

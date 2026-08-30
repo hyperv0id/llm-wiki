@@ -6,8 +6,8 @@ tags:
   - spatial-temporal
   - intelligent-transportation
 created: 2026-04-27
-last_updated: 2026-08-29
-source_count: 51
+last_updated: 2026-08-30
+source_count: 52
 confidence: high
 status: active
 ---
@@ -32,7 +32,7 @@ ARIMA, VAR, and SVR fail to capture non-linear spatial correlations[^src-hyperd-
 The dominant paradigm since [[dcrnn|DCRNN]] (2018): Graph Neural Networks (GNNs) combined with temporal models (TCN, RNN, attention). Key milestones include [[dcrnn|DCRNN]], [[stgcn|STGCN]] (2018), [[astgcn|ASTGCN]] (2019), [[gwnet|GWNet]] (2019), STSGCN (2020), STFGNN (2020), D2STGNN (2022), and STGODE (2021)[^src-hyperd-hybrid-periodicity-decoupling].
 
 ### Transformer-Based
-STTN (2020), GMAN (2020), PDFormer (2023), and STAEformer (2024) use attention mechanisms to model global spatial-temporal dependencies[^src-hyperd-hybrid-periodicity-decoupling].
+STTN (2020), GMAN (2020), [[pdformer|PDFormer]] (2023)[^src-pdformer-jiang-2023], and [[staeformer|STAEformer]] (2024) use attention mechanisms to model global spatial-temporal dependencies[^src-hyperd-hybrid-periodicity-decoupling].
 
 ### Frequency-Domain
 [[fedformer|FEDformer]] (ICML 2022) applies Fourier and Wavelet transforms in its [[frequency-enhanced-block|FEB]]/[[frequency-enhanced-attention|FEA]] blocks and [[moe-decomposition|MOEDecomp]] for adaptive seasonal-trend decomposition, but treats frequency components uniformly without separating periodic from residual signals. FreTS (NeurIPS 2023) and StemGNN (2020) follow similar uniform processing in the frequency domain[^src-hyperd-hybrid-periodicity-decoupling].
@@ -131,7 +131,7 @@ STID (Shao et al., CIKM 2022) uses learnable node embeddings to characterize spa
 
 A new paradigm that bridges model-based optimization and data-driven learning: instead of designing larger attention mechanisms, **unroll a mixed-graph optimization algorithm into a lightweight, interpretable Transformer**[^src-lightweight-mixed-graph-unrolling].
 
-Qi et al. (ICML 2026) propose constructing two graphs — an undirected graph $G^u$ for spatial correlations and a directed acyclic graph $G^d$ for temporal sequential relationships — and minimizing an optimization objective combining GLR (for $G^u$), [[directed-graph-laplacian-regularizer|DGLR]] ($\ell_2$), and [[directed-graph-total-variation|DGTV]] ($\ell_1$) via ADMM. Each ADMM iteration (CG solve, soft-thresholding, multiplier update) is unrolled into a neural layer, with periodically inserted graph learning modules that serve as [[graph-learning-as-self-attention|self-attention substitutes]]. The unrolled network achieves competitive performance with only **38K parameters** — 7.2% of transformer-based PDFormer (1,404K) and 4.9% of its inference cost[^src-lightweight-mixed-graph-unrolling].
+Qi et al. (ICML 2026) propose constructing two graphs — an undirected graph $G^u$ for spatial correlations and a directed acyclic graph $G^d$ for temporal sequential relationships — and minimizing an optimization objective combining GLR (for $G^u$), [[directed-graph-laplacian-regularizer|DGLR]] ($\ell_2$), and [[directed-graph-total-variation|DGTV]] ($\ell_1$) via ADMM. Each ADMM iteration (CG solve, soft-thresholding, multiplier update) is unrolled into a neural layer, with periodically inserted graph learning modules that serve as [[graph-learning-as-self-attention|self-attention substitutes]]. The unrolled network achieves competitive performance with only **38K parameters** — 7.2% of transformer-based [[pdformer|PDFormer]] (1,404K) and 4.9% of its inference cost[^src-lightweight-mixed-graph-unrolling].
 
 Key advantages[^src-lightweight-mixed-graph-unrolling]:
 - **Interpretability**: each layer corresponds to an optimization step (low-pass graph filter on $G^u$ and $G^d$)
@@ -249,6 +249,7 @@ The standard benchmarks are the PeMS (Caltrans Performance Measurement System) d
 The XTraffic benchmark provides incident-aligned traffic datasets for California (2023), with 521-990 sensor nodes and 5,587-18,700 incident records[^src-incident-guided-st-forecasting].
 
 [^src-hyperd-hybrid-periodicity-decoupling]: [[source-hyperd-hybrid-periodicity-decoupling]]
+[^src-pdformer-jiang-2023]: [[source-pdformer-jiang-2023]]
 [^src-st-resnet]: [[source-st-resnet]]
 [^src-astgcn]: [[source-astgcn]]
 [^src-prnet]: [[source-prnet]]

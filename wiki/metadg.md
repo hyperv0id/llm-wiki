@@ -9,7 +9,7 @@ tags:
   - meta-learning
   - gcru
 created: 2026-06-08
-last_updated: 2026-06-08
+last_updated: 2026-08-30
 source_count: 1
 confidence: high
 status: active
@@ -21,7 +21,7 @@ status: active
 
 ## Core Insight
 
-Traditional spatio-temporal models ([[stgcn|STGCN]], [[gwnet|GWNet]]) use separate base structures for spatial and temporal dimensions — an approach MetaDG calls **ST-isolated**[^src-metadg]. While dynamics-aware methods (DGCRN, PDFormer) and heterogeneity-aware methods (AGCRN, MegaCRN, [[dcrnn|HimNet]]) each improve performance, two gaps persist[^src-metadg]:
+Traditional spatio-temporal models ([[stgcn|STGCN]], [[gwnet|GWNet]]) use separate base structures for spatial and temporal dimensions — an approach MetaDG calls **ST-isolated**[^src-metadg]. While dynamics-aware methods (DGCRN, [[pdformer|PDFormer]]) and heterogeneity-aware methods (AGCRN, MegaCRN, [[dcrnn|HimNet]]) each improve performance, two gaps persist[^src-metadg]:
 
 1. Dynamics is limited to spatial topology changes; meta-parameters and other model intermediates remain static[^src-metadg].
 2. Heterogeneity is modeled separately for space and time — the same ST-isolated problem[^src-metadg].
@@ -78,7 +78,7 @@ SOTA on PEMS03/04/07/08 across all metrics (MAE/RMSE/MAPE)[^src-metadg]. Compare
 | Method Type | Models | MetaDG Advantage |
 |-------------|--------|-----------------|
 | Static meta-learning | AGCRN, MegaCRN, HimNet | Better by dynamically generating components per time step |
-| Dynamic topology | STSGCN, PDFormer, DGCRN | Better by extending dynamics to meta-parameters + edge qualification |
+| Dynamic topology | STSGCN, [[pdformer|PDFormer]], DGCRN | Better by extending dynamics to meta-parameters + edge qualification |
 
 MetaDG shows particular advantage in **long-term predictions**, where ST-unification's benefits compound[^src-metadg].
 

@@ -8,7 +8,7 @@ tags:
   - self-supervised-learning
   - ijcai-2024
 created: 2026-05-12
-last_updated: 2026-05-31
+last_updated: 2026-08-30
 source_count: 1
 confidence: medium
 status: active
@@ -50,7 +50,7 @@ status: active
 
 ## 实验结果
 
-在六个标准基准（PEMS03、PEMS04、PEMS07、PEMS08、METR-LA、PEMS-BAY）上，STD-MAE 以 [[gwnet|GWNet]] 为预测器在所有评价指标上超越所有基线模型（含 PDFormer、STAEformer、STEP 等 SOTA）。关键消融发现[^src-2312-00516-std-mae]：
+在六个标准基准（PEMS03、PEMS04、PEMS07、PEMS08、METR-LA、PEMS-BAY）上，STD-MAE 以 [[gwnet|GWNet]] 为预测器在所有评价指标上超越所有基线模型（含 [[pdformer|PDFormer]]、STAEformer、STEP 等 SOTA）。关键消融发现[^src-2312-00516-std-mae]：
 
 | 结论 | 详情 |
 |------|------|

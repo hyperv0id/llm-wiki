@@ -10,7 +10,7 @@ tags:
   - transformer
   - spatial-temporal
 created: 2026-07-16
-last_updated: 2026-07-16
+last_updated: 2026-08-30
 source_count: 0
 confidence: medium
 status: active
@@ -40,4 +40,4 @@ status: active
 
 ## 实验结果
 
-在 PEMS03 和 METR-LA 上，模型参数量仅 38K（论文声称 PDFormer 的 7.2%；实际 38/1404≈2.7%），推理计算量仅 PDFormer 的 4.9%（0.087/1.771 GFLOPs），同时在 60 分钟预测中至少一个指标进入 Top-3。消融实验验证了 DGLR 和 DGTV 各自的重要性，以及有向时间建模优于无向。
+在 PEMS03 和 METR-LA 上，模型参数量仅 38K（论文声称 [[pdformer|PDFormer]] 的 7.2%；实际 38/1404≈2.7%），推理计算量仅 PDFormer 的 4.9%（0.087/1.771 GFLOPs），同时在 60 分钟预测中至少一个指标进入 Top-3。消融实验验证了 DGLR 和 DGTV 各自的重要性，以及有向时间建模优于无向。

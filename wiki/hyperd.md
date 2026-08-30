@@ -7,7 +7,7 @@ tags:
   - periodicity-decoupling
   - fourier-transform
 created: 2026-04-27
-last_updated: 2026-05-04
+last_updated: 2026-08-30
 source_count: 1
 confidence: medium
 status: active
@@ -31,7 +31,7 @@ HyperD consists of four integrated components[^src-hyperd-hybrid-periodicity-dec
 
 ## Performance
 
-HyperD achieves state-of-the-art results on all four PeMS benchmarks (PEMS03, 04, 07, 08), outperforming 15 baselines including STAEformer, D2STGNN, FreTS, and PDFormer, with particularly strong advantages at longer forecasting horizons (9-step, 12-step)[^src-hyperd-hybrid-periodicity-decoupling].
+HyperD achieves state-of-the-art results on all four PeMS benchmarks (PEMS03, 04, 07, 08), outperforming 15 baselines including STAEformer, D2STGNN, FreTS, and [[pdformer|PDFormer]], with particularly strong advantages at longer forecasting horizons (9-step, 12-step)[^src-hyperd-hybrid-periodicity-decoupling].
 
 ## Key Innovation
 

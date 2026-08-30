@@ -1,0 +1,1663 @@
+PDFormer: Propagation Delay-Aware Dynamic Long-Range Transformer for
+Traffic Flow Prediction
+Jiawei Jiang,1 * Chengkai Han,1 * Wayne Xin Zhao,4 Jingyuan Wang1,2,3†
+1
+
+(b) Dynamic Spatial Dependencies
+
+Introduction
+In recent years, rapid urbanization has posed great challenges to modern urban traffic management. As an indispensable part of modern smart cities, intelligent transportation systems (ITS) (Yin et al. 2015) have been developed to
+analyze, manage, and improve traffic conditions (e.g., reducing traffic congestion). As a core technology of ITS, traffic
+flow prediction (Tedjopurnomo et al. 2022) has been widely
+studied, aiming to predict the future flow of traffic systems
+* These authors contributed equally.
+†
+
+Corresponding author: jywang@buaa.edu.cn
+
+Copyright © 2023, Association for the Advancement of Artificial
+Intelligence (www.aaai.org). All rights reserved.
+
+(a) Node Distribution
+Flow
+
+Strong
+
+(c) Long-range Spatial Dependencies
+600
+
+Weak
+
+500
+
+500
+
+400
+
+400
+
+300
+200
+100
+
+300
+200
+
+Node A
+Node B
+
+100
+
+Node A
+Node C
+
+00:00 03:00 06:00 09:00 12:00 15:00 18:00 21:00 24:00 00:00 03:00 06:00 09:00 12:00 15:00 18:00 21:00 24:00
+600
+
+(d) Propagation Delay of Neighborhoods
+
+400
+
+(e) Periodicity of Traffic Data
+
+500
+300
+400
+
+Flow
+
+As a core technology of Intelligent Transportation System,
+traffic flow prediction has a wide range of applications. The
+fundamental challenge in traffic flow prediction is to effectively model the complex spatial-temporal dependencies in
+traffic data. Spatial-temporal Graph Neural Network (GNN)
+models have emerged as one of the most promising methods to solve this problem. However, GNN-based models have
+three major limitations for traffic prediction: i) Most methods
+model spatial dependencies in a static manner, which limits
+the ability to learn dynamic urban traffic patterns; ii) Most
+methods only consider short-range spatial information and
+are unable to capture long-range spatial dependencies; iii)
+These methods ignore the fact that the propagation of traffic conditions between locations has a time delay in traffic
+systems. To this end, we propose a novel Propagation Delayaware dynamic long-range transFormer, namely PDFormer,
+for accurate traffic flow prediction. Specifically, we design a
+spatial self-attention module to capture the dynamic spatial
+dependencies. Then, two graph masking matrices are introduced to highlight spatial dependencies from short- and longrange views. Moreover, a traffic delay-aware feature transformation module is proposed to empower PDFormer with the
+capability of explicitly modeling the time delay of spatial information propagation. Extensive experimental results on six
+real-world public traffic datasets show that our method can
+not only achieve state-of-the-art performance but also exhibit
+competitive computational efficiency. Moreover, we visualize
+the learned spatial-temporal attention map to make our model
+highly interpretable.
+
+600
+
+Flow
+
+Abstract
+
+Flow
+
+arXiv:2301.07945v3 [cs.LG] 7 Mar 2024
+
+School of Computer Science and Engineering, Beihang University, Beijing, China
+2
+Pengcheng Laboratory, Shenzhen, China
+3
+School of Economics and Management, Beihang University, Beijing, China
+4
+Gaoling School of Artificial Intelligence, Renmin University of China, Beijing, China
+{jwjiang, ckhan, jywang}@buaa.edu.cn; batmanfly@gmail.com
+
+300
+200
+
+Node D
+Node E
+
+200
+
+Sudden Drop
+
+100
+:00 03:00 06:00 09:00 12:00 15:00 18:00 21:00 24:00
+
+100
+Mon Tues Wed Thu
+
+Fri
+
+Sat
+
+Sun
+
+Figure 1: The Findings about Traffic Prediction.
+
+based on historical observations. It has been shown that accurate traffic flow prediction can be useful for various trafficrelated applications (Wang et al. 2021), including route planning, vehicle dispatching, and congestion relief.
+For traffic flow prediction, the fundamental challenge is
+to effectively capture and model the complex and dynamic
+spatial-temporal dependencies of traffic data (Yin et al.
+2022). Many attempts have been made in the literature to develop various deep learning models for this task. As early solutions, convolutional neural networks (CNNs) were applied
+to grid-based traffic data to capture spatial dependencies,
+and recurrent neural networks (RNNs) were used to learn
+temporal dynamics (Zhang, Zheng, and Qi 2017; Yao et al.
+2018). Later, graph neural networks (GNNs) were shown to
+be more suited to model the underlying graph structure of
+traffic data (Li et al. 2018; Yu, Yin, and Zhu 2018), and thus
+GNN-based methods have been widely explored in traffic
+prediction (Wu et al. 2019; Song et al. 2020; Wu et al. 2020;
+Li and Zhu 2021; Fang et al. 2021; Choi et al. 2022).
+Despite the effectiveness, GNN-based models still have
+three major limitations for traffic prediction. Firstly, the spatial dependencies between locations in a traffic system are
+highly dynamic instead of being static, which are timevarying as they are affected by travel patterns and unexpected events. For example, as shown in Fig. 1(b), the correlation between nodes A and B becomes stronger during the
+morning peak and weaker during other periods. While, existing methods model spatial dependencies mainly in a static
+
+manner (either predefined or self-learned), which limits the
+ability to learn dynamic urban traffic patterns. Secondly, due
+to the functional division of the city, two distant locations,
+such as nodes A and C in Fig. 1(c), may reflect similar traffic
+patterns, implying that the spatial dependencies between locations are long-range. Existing methods are often designed
+locally and unable to capture long-range dependencies. For
+example, GNN-based models suffer from over-smoothing,
+making it difficult to capture long-range spatial dependencies. Thirdly, the effect of time delay might occur in the spatial information propagation between locations in a traffic
+system. For example, when a traffic accident occurs in one
+location, it will take several minutes (a delay) to affect the
+traffic condition in neighboring locations, such as nodes D
+and E in Fig. 1(d). However, such a feature has been ignored in the immediate message passing mechanism of typical GNN-based models (Wang et al. 2017).
+To address the above issues, in this paper, we propose a
+Propagation Delay-aware dynamic long-range transFormer
+model, namely PDFormer, for traffic flow prediction. As the
+core technical contribution, we design a novel spatial selfattention module to capture the dynamic spatial dependencies. This module incorporates local geographic neighborhood and global semantic neighborhood information into the
+self-attention interaction via different graph masking methods, which can simultaneously capture the short- and longrange spatial dependencies in traffic data. Based on this
+module, we further design a delay-aware feature transformation module to integrate historical traffic patterns into spatial self-attention and explicitly model the time delay of spatial information propagation. Finally, we adopt the temporal
+self-attention module to identify the dynamic temporal patterns in traffic data. In summary, the main contributions of
+this paper are summarized as follows:
+• We propose the PDFormer model based on the spatialtemporal self-attention mechanism for accurate traffic
+flow prediction. Our approach fully addresses the issues
+caused by the complex characteristics from traffic data,
+namely dynamic, long-range, and time-delay.
+• We design a spatial self-attention module that models
+both local geographic neighborhood and global semantic
+neighborhood via different graph masking methods and
+further design a traffic delay-aware feature transformation module that can explicitly model the time delay in
+spatial information propagation.
+• We conduct both multi-step and single-step traffic flow
+prediction experiments on six real-world public datasets.
+The results show that our model significantly outperforms the state-of-the-art models and exhibits competitive computational efficiency. Moreover, the visualization experiments show that our approach is highly interpretable via the learned spatial-temporal attention.
+
+PRELIMINARIES
+In this section, we introduce some notations and formalize
+the traffic flow prediction problem.
+
+Figure 2: The Overall Framework of PDFormer.
+
+Notations and Definitions
+Definition 1 (Road Network). We represent the Road Network as a graph G = (V, E, A), where V = {v1 , · · · , vN }
+is a set of N nodes (|V | = N ), E ⊆ V × V is a set of
+edges, and A is the adjacency matrix of network G. Here, N
+denotes the number of nodes in the graph.
+Definition 2 (Traffic Flow Tensor). We use Xt ∈ RN ×C
+to denote the traffic flow at time t of N nodes in the road
+network, where C is the dimension of the traffic flow. For
+example, C = 2 when the data includes inflow and outflow.
+We use X = (X1 , X2 , · · · , XT ) ∈ RT ×N ×C to denote the
+traffic flow tensor of all nodes at total T time slices.
+
+Problem Formalization
+Traffic flow prediction aims to predict the traffic flow of
+a traffic system in the future time given the historical observations. Formally, given the traffic flow tensor X observed
+on a traffic system, our goal is to learn a mapping function f
+from the previous T steps’ flow observation value to predict
+future T ′ steps’ traffic flow,
+f
+
+[X(t−T +1) , · · · , Xt ; G] −→ [X(t+1) , · · · , X(t+T ′ ) ]. (1)
+
+Methods
+Fig. 2 shows the framework of PDFormer, which consists
+of a data embedding layer, stacked L spatial-temporal encoder layers, and an output layer. We describe each module
+below in detail.
+
+Data Embedding Layer
+The data embedding layer converts the input into a highdimensional representation. First, the raw input X is transformed into X data ∈ RT ×N ×d through a fully connected
+layer, d is the embedding dimension. Then, we further design a spatial-temporal embedding mechanism to incorporate the necessary knowledge into the model, including
+
+the spatial graph Laplacian embedding to encode the road
+network structure and the temporal periodic embedding to
+model the periodicity of traffic flow.
+To represent the structure of the road network, we use
+the graph Laplacian eigenvectors (Belkin and Niyogi 2003),
+which better describe the distance between nodes on the
+graph. First, we obtain the normalized Laplacian matrix by
+∆ = I −D −1/2 AD −1/2 , where A is the adjacency matrix,
+D is the degree matrix, and I is the identity matrix. Then,
+we perform the eigenvalue decomposition ∆ = U ⊤ ΛU
+to obtain the eigenvalue matrix Λ and the eigenvector matrix U . We use a linear projection on the k smallest nontrivial eigenvectors to generate the spatial graph Laplacian
+embedding Xspe ∈ RN ×d . Laplacian eigenvectors embed
+the graph in Euclidean space and preserve the global graph
+structure information (Dwivedi et al. 2020).
+In addition, urban traffic flow, influenced by people’s
+travel patterns and lifestyle, has an obvious periodicity, such
+as morning and evening peak hours. Therefore, we introduce
+two embeddings to cover the weekly and daily periodicity,
+respectively, denoted as tw(t) , td(t) ∈ Rd . Here w(t) and
+d(t) are functions that transform time t into the week index
+(1 to 7) and minute index (1 to 1440), respectively. The temporal periodic embeddings Xw , Xd ∈ RT ×d are obtained
+by concatenating the embeddings of all T time slices.
+Following the original Transformer (Vaswani et al. 2017),
+we also employ a temporal position encoding Xtpe ∈ RT ×d
+to introduce position information of the input sequence.
+Finally, we get the output of the data embedding layer by
+simply summing the above embedding vectors as:
+X emb = X data + Xspe + Xw + Xd + Xtpe .
+
+(2)
+
+X emb will be fed into the following spatial-temporal encoders, and we use X to replace X emb for convenience.
+
+Spatial-Temporal Encoder Layer
+We design a spatial-temporal encoder layer based on the
+self-attention mechanism to model the complex and dynamic spatial-temporal dependencies. The core of the encoder layer includes three components. The first is a spatial self-attention module consisting of a geographic spatial
+self-attention module and a semantic spatial self-attention
+module to capture the short-range and long-range dynamic
+spatial dependencies simultaneously. The second is a delayaware feature transformation module that extends the geographic spatial self-attention module to explicitly model the
+time delay in spatial information propagation. Moreover, the
+third is a temporal self-attention module that captures the
+dynamic and long-range temporal patterns.
+To formulate self-attention operations, we use the following slice notation. For a tensor X ∈ RT ×N ×D , the t slice is
+the matrix Xt:: ∈ RN ×D and the n slice is X:n: ∈ RT ×D .
+Spatial Self-Attention (SSA). We design a Spatial SelfAttention module to capture dynamic spatial dependencies
+in traffic data. Formally, at time t, we first obtain the query,
+key, and value matrices of self-attention operations as:
+(S)
+
+Qt
+
+(S)
+
+= Xt:: WQS , Kt
+
+(S)
+
+S
+= Xt:: WK
+, Vt
+
+= Xt:: WVS ,
+(3)
+
+′
+
+S
+where WQS , WK
+, WVS ∈ Rd×d are learnable parameters
+′
+and d is the dimension of the query, key, and value matrix
+in this work. Then, we apply self-attention operations in the
+spatial dimension to model the interactions between nodes
+and obtain the spatial dependencies (attention scores) among
+all nodes at time t as:
+(S)
+
+(S)
+
+At
+
+=
+
+(S)
+
+(Qt )(Kt )⊤
+√
+.
+d′
+
+(4)
+(S)
+
+It can be seen that the spatial dependencies At ∈ RN ×N
+between nodes are different in different time slices, i.e., dynamic. Thus, the SSA module can be adapted to capture the
+dynamic spatial dependencies. Finally, we can obtain the
+output of the spatial self-attention module by multiplying
+the attention scores with the value matrix as:
+(S)
+
+(S)
+
+(S)
+
+SSA(Qt , Kt , Vt
+
+(S)
+
+(S)
+
+) = softmax(At )Vt
+
+.
+
+(5)
+
+For the simple spatial self-attention in Eq. (5), each node
+interacts with all nodes, equivalent to treating the spatial
+graph as a fully connected graph. However, only the interaction between a few node pairs is essential, including nearby
+node pairs and node pairs that are far away but have similar
+functions. Therefore, we introduce two graph masking matrices Mgeo and Msem to simultaneously capture the shortrange and long-range spatial dependencies in traffic data.
+From the short-range view, we define the binary geographic masking matrix Mgeo , and only if the distance (i.e.,
+hops in the graph) between two nodes is less than a threshold
+λ, the weight is 1, and 0 otherwise. In this way, we can mask
+the attention of node pairs far away from each other. From
+the long-range view, we compute the similarity of the historical traffic flow between nodes using the Dynamic Time
+Warping (DTW) (Berndt and Clifford 1994) algorithm. We
+select the K nodes with the highest similarity for each node
+as its semantic neighbors. Then, we construct the binary semantic masking matrix Msem by setting the weight between
+the current node and its semantic neighbors to 1 and 0 otherwise. In this way, we can find distant node pairs that exhibit
+similar traffic patterns due to similar urban functions.
+Based on the two graph masking matrices, we further design two spatial self-attention modules, namely, Geographic
+Spatial Self-Attention (GeoSSA) and Semantic Spatial SelfAttention (SemSSA), which can be defined as:
+(S)
+
+(S)
+
+(S)
+
+GeoSSA(Qt , Kt , Vt
+
+(S)
+
+) = softmax(At
+
+(S)
+
+⊙ Mgeo )Vt
+
+,
+
+(S)
+(S)
+(S)
+(S)
+(S)
+SemSSA(Qt , Kt , Vt ) = softmax(At ⊙ Msem )Vt ,
+
+(6)
+
+where ⊙ indicates the Hadamard product. In this way, the
+spatial self-attention module simultaneously incorporates
+short-range geographic neighborhood and long-range semantic neighborhood information.
+Delay-aware Feature Transformation (DFT). There exists a propagation delay in real-world traffic conditions. For
+example, when a traffic accident occurs in one region, it may
+take several minutes to affect traffic conditions in neighboring regions. Therefore, we propose a traffic delay-aware feature transformation module that captures the propagation delay from the short-term historical traffic flow of each node.
+
+where W c is a learnable parameter matrix. The integrated
+historical series representation rt,n contains the historical
+traffic flow information from time slice (t − S + 1) to t of
+node n. Finally, we use the integrated representation of N
+(S)
+nodes, denoted as Rt , to update Kt in Eq. (4) as:
+(S)
+
+K̃t
+
+(S)
+
+= Kt
+
++ Rt ,
+
+(11)
+
+N ×d′
+
+Figure 3: Delay-aware Feature Transformation.
+Then, this module incorporates delay information into the
+key matrix of the geographic spatial self-attention module to
+explicitly model the time delay in spatial information propagation. Since traffic data can have multiple dimensions, such
+as inflow and outflow, here we only present the calculation
+process of this module using one dimension as an example.
+First, we identify a group of representative short-term
+traffic patterns from historical traffic data. Specifically, we
+slice the historical traffic data with a sliding window of size
+S and obtain a set of traffic flow series. Then, we perform kShape clustering algorithm (Paparrizos and Gravano 2016)
+on these traffic flow series. The k-Shape algorithm is a time
+series clustering method that preserves the shape of the time
+series and is invariant to scaling and shifting. We use the
+centroid pi of each cluster to represent that cluster, where
+pi is also a time series of length S. Then, we use the set
+P = {pi |i ∈ [1, · · · , Np ]} to represent the clustering results, where Np is the total number of clusters. We can regard P as a set of short-term traffic patterns.
+Similar traffic patterns may have similar effects on neighborhood traffic conditions, especially abnormal traffic patterns such as congestion. Therefore, we compare the historical traffic flow series for each node with the extracted traffic pattern set P to fuse the information of similar patterns
+into the historical flow series representation of each node
+as shown in Fig. 3. Specifically, given the S-step historical
+traffic flow series of node n from time slice (t − S + 1) to t,
+denoted as x(t−S+1:t),n , we first use the embedding matrix
+W u to obtain a high-dimensional representation ut,n as:
+ut,n = x(t−S+1:t),n W u .
+(7)
+m
+Then, we use another embedding matrix W to convert
+each traffic flow series in the traffic pattern set P into a memory vector as:
+mi = pi W m .
+(8)
+We compare the historical traffic flow representation ut,n of
+node n with the traffic pattern memory vector mi and obtain
+the similarity vector as:
+wi = softmax(u⊤
+(9)
+t,n mi ).
+Then, we perform a weighted sum of the traffic pattern set P
+according to the similarity vector w to obtain the integrated
+historical series representation rt,n as:
+rt,n =
+
+Np
+X
+i=1
+
+wi (pi W c ),
+
+(10)
+
+where Rt ∈ R
+is obtained by concatenating all the integrated representation rt,n of N nodes and d′ is the dimension of the key matrix in this work.
+(S)
+In this way, the new key matrix K̃t at time slice t integrates the historical traffic flow information of all nodes
+from time slice (t − S + 1) to t. When computing the product of the query matrix and the new key matrix to obtain the
+(S)
+spatial dependencies At at time slice t in Eq. (4), the query
+matrix can take into account the historical traffic conditions
+of other nodes. This process explicitly models the time delay
+in spatial information propagation. We do not add this module to the semantic spatial self-attention module because the
+short-term traffic flow of a distant node has little impact on
+the current node.
+Temporal Self-Attention (TSA). There are dependencies
+(e.g., periodic, trending) between traffic conditions in different time slices, and the dependencies vary in different situations. Thus, we employ a Temporal Self-Attention module to
+discover the dynamic temporal patterns. Formally, for node
+n, we first obtain the query, key, and value matrices as:
+)
+T
+(T )
+T
+Q(T
+= X:n: WK
+, Vn(T ) = X:n: WVT ,
+n = X:n: WQ , Kn
+(12)
+′
+T
+where WQT , WK
+, WVT ∈ Rd×d are learnable parameters.
+Then, we apply self-attention operations in the temporal dimension and obtain the temporal dependencies between all
+time slices for node n as:
+(T )
+
+(T )
+
+(Qn )(Kn ))⊤
+√
+.
+(13)
+d′
+It can be seen that the temporal self-attention can discover
+the dynamic temporal patterns in traffic data that are different for different nodes. Moreover, the temporal self-attention
+has a global receptive to model the long-range temporal dependencies among all time slices. Finally, we can obtain the
+output of the temporal self-attention module as:
+)
+A(T
+n =
+
+)
+(T )
+(T )
+(T )
+(T )
+TSA(Q(T
+n , Kn , Vn ) = softmax(An )Vn . (14)
+
+Heterogeneous Attention Fusion. After defining the three
+types of attention mechanisms, we fuse heterogeneous attention into a multi-head self-attention block to reduce the computational complexity of the model. Specifically, the attention heads include three types, i.e., geographic (GeoSAH),
+semantic (SemSAH), and temporal (TAH) heads, corresponding to the three types of attention mechanisms, respectively. The results of these heads are concatenated and projected to obtain the outputs, allowing the model to integrate
+spatial and temporal information simultaneously. Formally,
+the spatial-temporal self-attention block is defined as:
+geo
+sem
+t
+STAttn = ⊕(Z1···h
+, Z1···h
+, Z1···h
+)W O ,
+sem
+t
+geo
+
+(15)
+
+Table 2: Performance on Graph-based Datasets.
+
+Table 1: Data Description.
+
+PeMS04
+
+Datasets
+
+#Nodes
+
+#Edges
+
+#Timesteps
+
+#Time Interval
+
+Time range
+
+PeMS04
+PeMS07
+PeMS08
+
+307
+883
+170
+
+340
+866
+295
+
+16992
+28224
+17856
+
+5min
+5min
+5min
+
+01/01/2018-02/28/2018
+05/01/2017-08/31/2017
+07/01/2016-08/31/2016
+
+NYCTaxi
+CHIBike
+T-Drive
+
+75 (15x5)
+270 (15x18)
+1024 (32x32)
+
+484
+1966
+7812
+
+17520
+4416
+3600
+
+30min
+30min
+60min
+
+01/01/2014-12/31/2014
+07/01/2020-09/30/2020
+02/01/2015-06/30/2015
+
+Model
+
+where ⊕ represents concatenation, Z geo , Z sem , Z t are output concatenations and hgeo , hsem , ht are the numbers of attention heads of GeoSSA, SemSSA and TSA, respectively,
+and W O ∈ Rd×d is a learnable projection matrix. In this
+work, we set the dimension d′ = d/(hgeo + hsem + ht ).
+In addition, we employ a position-wise fully connected
+feed-forward network on the output of the multi-head selfattention block to get the outputs X o ∈ RT ×N ×d . We also
+use layer normalization and residual connection here following the original Transformer (Vaswani et al. 2017).
+
+VAR
+SVR
+DCRNN
+STGCN
+GWNET
+MTGNN
+STSGCN
+STFGNN
+STGODE
+STGNCDE
+STTN
+GMAN
+TFormer
+ASTGNN
+PDFormer
+
+MAE
+23.750
+28.660
+22.737
+21.758
+19.358
+19.076
+21.185
+19.830
+20.849
+19.211
+19.478
+19.139
+18.916
+18.601
+18.321
+
+MAPE(%)
+18.090
+19.150
+14.751
+13.874
+13.301
+12.961
+13.882
+13.021
+13.781
+12.772
+13.631
+13.192
+12.711
+12.630
+12.103
+
+PeMS07
+RMSE
+36.660
+44.590
+36.575
+34.769
+31.719
+31.564
+33.649
+31.870
+32.825
+31.088
+31.910
+31.601
+31.349
+31.028
+29.965
+
+MAE
+101.200
+32.970
+23.634
+22.898
+21.221
+20.824
+24.264
+22.072
+22.976
+20.620
+21.344
+20.967
+20.754
+20.616
+19.832
+
+MAPE(%)
+39.690
+15.430
+12.281
+11.983
+9.075
+9.032
+10.204
+9.212
+10.142
+8.864
+9.932
+9.052
+8.972
+8.861
+8.529
+
+PeMS08
+RMSE
+155.140
+50.150
+36.514
+35.440
+34.117
+34.087
+39.034
+35.805
+36.190
+34.036
+34.588
+34.097
+34.062
+34.017
+32.870
+
+MAE
+22.320
+23.250
+18.185
+17.838
+15.063
+15.396
+17.133
+16.636
+16.819
+15.455
+15.482
+15.307
+15.192
+14.974
+13.583
+
+MAPE(%)
+14.470
+14.710
+11.235
+11.211
+9.514
+10.170
+10.961
+10.547
+10.623
+9.921
+10.341
+10.134
+9.925
+9.489
+9.046
+
+RMSE
+33.830
+36.150
+28.176
+27.122
+24.855
+24.934
+26.785
+26.206
+26.240
+24.813
+24.965
+24.915
+24.883
+24.710
+23.505
+
+2021), STGODE (Fang et al. 2021) and STGNCDE (Choi
+et al. 2022). (4) Self-attention-based Models: We choose
+STTN (Xu et al. 2020), GMAN (Zheng et al. 2020),
+TFormer (Yan and Ma 2021) and ASTGNN (Guo et al.
+2021).
+
+Experimental Settings
+Output Layer
+We use a skip connection, consisting of 1 × 1 convolutions, after each spatial-temporal encoder layer to convert
+the outputs X o into a skip dimension X sk ∈ RT ×N ×dsk .
+Here dsk is the skip dimension. Then, we obtain the final
+hidden state X hid ∈ RT ×N ×dsk by summing the outputs of
+each skip connection layer. To make a multi-step prediction,
+we directly use the output layer to transform the final hidden
+state X hid to the desired dimension as:
+
+Dataset Processing. To be consistent with most modern
+methods, we split the three graph-based datasets into training, validation, and test sets in a 6:2:2 ratio. In addition, we
+use the past hour (12 steps) data to predict the traffic flow
+for the next hour (12 steps), i.e., a multi-step prediction. For
+the grid-based datasets, the split ratio is 7:1:2, and we use
+the traffic inflow and outflow of the past six steps to predict
+the next single-step traffic inflow and outflow.
+
+X̂ = Conv2 (Conv1 (X hid )),
+
+Model Settings. All experiments are conducted on a machine with the NVIDIA GeForce 3090 GPU and 128GB
+memory. We implement PDFormer 1 with Ubuntu 18.04, PyTorch 1.10.1, and Python 3.9.7. The hidden dimension d is
+searched over {16, 32, 64, 128} and the depth of encoder
+layers L is searched over {2, 4, 6, 8}. The optimal model is
+determined based on the performance in the validation set.
+We train our model using AdamW optimizer (Loshchilov
+and Hutter 2017) with a learning rate of 0.001. The batch
+size is 16, and the training epoch is 200.
+
+(16)
+
+′
+
+where X̂ ∈ RT ×N ×C is T ′ steps’ prediction results, Conv1
+and Conv2 are 1 × 1 convolutions. Here we choose the direct way instead of the recursive manner for multi-step prediction considering cumulative errors and model efficiency.
+
+Experiments
+Datasets
+We verify the performance of PDFormer on six real-world
+public traffic datasets, including three graph-based highway
+traffic datasets, i.e., PeMS04, PeMS07, PeMS08 (Song et al.
+2020), and three grid-based citywide traffic datasets, i.e.,
+NYCTaxi (Liu et al. 2021a), CHIBike (Wang et al. 2021),
+T-Drive (Pan et al. 2019). The graph-based datasets contain
+only the traffic flow data, and the grid-based datasets contain
+inflow and outflow data. Details are given in Tab. 1.
+
+Baselines
+We compare PDFormer with the following 17 baselines belonging to four classes. (1) Models For Grid-based
+Datasets: We choose STResNet (Zhang, Zheng, and Qi
+2017), DMVSTNet (Yao et al. 2018) and DSAN (Lin et al.
+2020a), which are unsuitable for graph-based datasets. (2)
+Time Series Prediction Models: We choose VAR (?) and
+SVR (?). (3) Graph Neural Network-based Models: We
+choose DCRNN (Li et al. 2018), STGCN (Yu, Yin, and
+Zhu 2018), GWNET (Wu et al. 2019), MTGNN (Wu et al.
+2020), STSGCN (Song et al. 2020), STFGNN (Li and Zhu
+
+Evaluation Metrics. We use three metrics in the experiments: (1) Mean Absolute Error (MAE), (2) Mean Absolute Percentage Error (MAPE), and (3) Root Mean Squared
+Error (RMSE). Missing values are excluded when calculating these metrics. When we test the models on grid-based
+datasets, we filter the samples with flow values below 10,
+consistent with (Yao et al. 2018). Since the flow of CHIBike
+is lower than others, the filter threshold is 5. We repeated all
+experiments ten times and reported the average results.
+
+Performance Comparison
+The comparison results with baselines on graph-based and
+grid-based datasets are shown in Tab. 2 and Tab. 3, respectively. The bold results are the best, and the underlined results are the second best. Based on these two tables, we
+can make the following observations. (1) Spatial-temporal
+deep learning models perform better than traditional time
+1
+
+https://github.com/BUAABIGSCity/PDFormer
+
+Table 3: Performance on Grid-based Datasets.
+Datasets
+Metrics
+Models
+STResNet
+DMVSTNet
+DSAN
+DCRNN
+STGCN
+GWNET
+MTGNN
+STSGCN
+STFGNN
+STGODE
+STGNCDE
+STTN
+GMAN
+TFormer
+ASTGNN
+PDFormer
+
+NYCTaxi
+MAE
+14.492
+14.377
+14.287
+14.421
+14.377
+14.310
+14.194
+15.604
+15.336
+14.621
+14.281
+14.359
+14.267
+13.995
+13.844
+13.152
+
+inflow
+MAPE(%)
+14.543
+14.314
+14.208
+14.353
+14.217
+14.198
+13.984
+15.203
+14.869
+14.793
+14.171
+14.206
+14.114
+13.912
+13.692
+12.743
+
+RMSE
+24.050
+23.734
+23.585
+23.876
+23.860
+23.799
+23.663
+26.191
+26.112
+25.444
+23.742
+23.841
+23.728
+23.487
+23.177
+21.957
+
+MAE
+12.798
+12.566
+12.462
+12.828
+12.547
+12.282
+12.272
+13.233
+13.178
+12.834
+12.276
+12.373
+12.273
+12.211
+12.112
+11.575
+
+T-Drive
+outflow
+MAPE(%)
+14.368
+14.318
+14.272
+14.344
+14.095
+13.685
+13.652
+14.698
+14.584
+14.398
+13.681
+13.762
+13.672
+13.611
+13.602
+12.820
+
+RMSE
+20.633
+20.409
+20.294
+20.067
+19.962
+19.616
+19.563
+21.653
+21.627
+20.205
+19.608
+19.827
+19.594
+19.522
+19.201
+18.394
+
+MAE
+19.636
+19.599
+19.384
+22.121
+21.373
+19.556
+18.982
+23.825
+22.144
+21.515
+19.347
+20.583
+19.244
+18.823
+18.798
+17.832
+
+inflow
+MAPE(%)
+17.831
+17.683
+17.465
+17.750
+17.539
+17.187
+17.056
+18.547
+18.094
+17.579
+17.134
+17.327
+17.110
+16.910
+16.101
+14.711
+
+RMSE
+34.890
+34.478
+34.314
+38.654
+38.052
+36.159
+35.386
+41.188
+40.071
+38.215
+36.093
+37.220
+35.986
+34.470
+33.870
+31.606
+
+CHIBike
+
+MAE
+19.616
+19.531
+19.290
+21.755
+20.913
+19.550
+18.929
+24.287
+22.876
+22.703
+19.230
+20.443
+18.964
+18.883
+18.790
+17.743
+
+outflow
+MAPE(%)
+18.502
+17.621
+17.379
+17.382
+16.984
+15.933
+15.762
+19.041
+18.987
+18.509
+15.873
+15.992
+15.788
+15.674
+15.584
+14.649
+
+RMSE
+34.597
+34.303
+34.267
+38.168
+37.619
+36.198
+35.992
+42.255
+41.037
+40.282
+36.143
+37.067
+36.120
+35.219
+33.998
+31.501
+
+MAE
+4.767
+4.687
+4.612
+4.236
+4.212
+4.151
+4.112
+4.256
+4.234
+4.169
+4.123
+4.160
+4.115
+4.071
+4.068
+3.950
+
+w/ GCN
+w/o Mask
+
+inflow
+MAPE(%)
+31.382
+32.113
+31.621
+31.264
+31.224
+31.153
+31.148
+32.991
+32.222
+31.165
+31.151
+31.208
+31.150
+31.141
+31.131
+30.214
+
+RMSE
+6.703
+6.635
+6.695
+5.992
+5.954
+5.917
+5.807
+5.941
+5.933
+5.921
+5.913
+5.932
+5.910
+5.878
+5.818
+5.559
+
+MAE
+4.627
+4.594
+4.495
+4.211
+4.148
+4.101
+4.086
+4.265
+4.264
+4.125
+4.094
+4.118
+4.090
+4.037
+3.981
+3.837
+
+w/o GeoSAH
+w/o SemSAH
+
+outflow
+MAPE(%)
+30.571
+31.313
+31.256
+30.822
+30.782
+30.690
+30.561
+32.612
+32.321
+30.726
+30.595
+30.704
+30.662
+30.647
+30.617
+29.914
+
+RMSE
+6.559
+6.455
+6.367
+5.824
+5.779
+5.694
+5.669
+5.879
+5.875
+5.698
+5.678
+5.723
+5.675
+5.638
+5.609
+5.402
+
+w/o Delay
+PDFormer
+
+series prediction models such as VAR because the latter ignores the spatial dependencies in the traffic data. (2) Our
+PDFormer significantly outperforms all baselines in terms of
+all metrics over all datasets according to Student’s t-test at
+level 0.01. Compared to the second best method, PDFormer
+achieves an average improvement of 4.58%, 5.00%, 4.79%
+for MAE/MAPE/RMSE. (3) Among the GNN-based models, MTGNN and STGNCDE lead to competitive performance. Compared to these GNN-based models, whose message passing is immediate, PDFormer achieves better performance because it considers the time delay in spatial information propagation. (4) As for the self-attention-based models,
+ASTGNN is the best baseline, which combines GCN and
+the self-attention module to aggregate neighbor information. Compared with ASTGNN, PDFormer simultaneously
+captures short- and long-range spatial dependencies via two
+masking matrices and achieves good performance. (5) Although STResNet, DMVSTNet, and DSAN are designed for
+grid-based data, they need to extract features from different
+time periods, which are excluded here, resulting in relatively
+poor performance.
+
+addition, w/o SemSAH and w/o GeoSAH perform worse than
+PDFormer, indicating that both local and global spatial dependencies are significant for traffic prediction. (3) w/o Delay performs worse than PDFormer because this variant ignores the spatial propagation delay between nodes but considers the spatial message passing as immediate.
+
+Ablation Study
+
+Case Study
+
+To further investigate the effectiveness of different parts in
+PDFormer, we compare PDFormer with the following variants. (1) w/ GCN: this variant replaces spatial self-attention
+(SSA) with Graph Convolutional Network (GCN) (Kipf
+and Welling 2016), which cannot capture the dynamic and
+long-range spatial dependencies. (2) w/o Mask: this variant removes two masking matrices Mgeo and Msem , which
+means each node attends to all nodes. (3) w/o GeoSAH: this
+variant removes GeoSAH. (4) w/o SemSAH: this variant removes SemSAH. (5) w/o Delay: this variant removes the
+delay-aware feature transformation module, which accounts
+for the spatial information propagation delay.
+Fig. 4 shows the comparison of these variants on the
+PeMS04 and NYCTaxi datasets. For the NYCTaxi dataset,
+only the results for inflow are reported since the results for
+outflow are similar. Based on the results, we can conclude
+the following: (1) The results show the superiority of SSA
+over GCN in capturing dynamic and long-range spatial dependencies. (2) PDFormer leads to a large performance improvement over w/o Mask, highlighting the value of using
+the mask matrices to identify the significant node pairs. In
+
+In this section, we analyze the dynamic spatial-temporal
+attention weight map learned by the spatial-temporal encoder of PDFormer to improve its interpretability and
+demonstrate the effectiveness of focusing on short- and
+long-range spatial dependencies simultaneously.
+We compare and visualize the attention map in two cases,
+i.e., with or without the two spatial mask matrices Mgeo and
+Msem . Here, for simplicity, we merge the attention map of
+GeoSAH and SemSAH. As shown in Fig. 5(a),(d), without
+the mask matrices, the model focuses on the major urban
+ring roads (or highways) with high traffic volume, or the
+attention distribution is diffuse, and almost the entire city
+shares the model’s attention. However, low-traffic locations
+should focus on locations with similar patterns rather than
+hot locations. Moreover, locations that are too far away have
+little impact on the current location. The model performance
+will weaken if it focuses on all locations diffusely. Instead,
+when Mgeo and Msem are introduced, attention focuses on
+surrounding locations and distant similar-pattern locations
+as shown in Fig. 5(b),(e).
+Let us take Region 592 in Fig. 5(b) as an example. High-
+
+21.5
+21.0
+20.5
+20.0
+19.5
+19.0
+18.5
+18.0
+17.5
+14.4
+14.2
+14.0
+13.8
+13.6
+13.4
+13.2
+13.0
+
+14.5
+
+34
+
+14.0
+
+33
+
+13.5
+13.0
+
+32
+
+12.5
+
+31
+30
+
+12.0
+
+(a) MAE on PeMS04
+
+(d) MAE on NYCTaxi
+
+11.5
+14.5
+
+(b) MAPE on PeMS04
+
+29
+24.0
+
+14.0
+
+23.5
+
+13.5
+
+23.0
+
+13.0
+
+22.5
+
+12.5
+
+22.0
+
+12.0
+
+(e) MAPE on NYCTaxi
+
+21.5
+
+(c) RMSE on PeMS04
+
+(f) RMSE on NYCTaxi
+
+Figure 4: Ablation Study on PeMS04 and NYCTaxi inflow.
+
+(a) Before mask in Region 592 (b) After mask in Region 592
+
+1500
+
+(c) 24h Average Flow
+
+1000
+648
+753
+592
+
+500
+
+(d) Before mask in Region 252 (e) After mask in Region 252
+
+00:00
+
+06:00
+
+12:00
+
+18:00
+
+24:00
+
+(f) 24h Average Flow
+
+300
+370
+403
+453
+842
+252
+
+200
+100
+
+(g) Region 592
+
+(h) Region 648
+
+00:00
+
+06:00
+
+12:00
+
+18:00
+
+(i) Region 753
+
+Table 4: Training and inference time per epoch comparison
+between self-attention-based models. (Unit: seconds)
+Dataset
+Model
+GMAN
+ASTGNN
+PDFormer
+STTN
+TFormer
+
+PeMS04
+Training Inference
+501.578
+38.844
+208.724
+52.016
+133.871
+8.120
+100.398
+12.596
+71.099
+7.156
+
+NYCTaxi
+Training Inference
+130.672
+4.256
+119.092
+4.601
+85.305
+2.734
+68.036
+2.650
+76.169
+2.575
+
+24:00
+
+Figure 5: Case Study of Attention Map.
+
+way S12 passes through this region, so the traffic volume
+is always high. In addition to the regions located upstream
+and downstream of the highway, region 592 also focuses on
+regions 648 and 753. From Fig. 5(c), we can see that these
+two regions have similar historical traffic volumes as 592.
+Besides, from Fig. 5(h)(i), these two regions are located near
+the Guomao Interchange and Beijing Second Ring Road, respectively, which are similar to 592 in their cities function
+as major traffic hubs. In another case, region 252 has low
+traffic volume, but we can observe similar patterns from regions 370, 403, 453, and 842 that region 252 focused on,
+i.e., similar functional and historical traffic variations.
+This case study shows that after introducing the spatial
+mask matrices, PDFormer not only considers the short-range
+spatial dependencies but also identifies the global functional
+area to capture the long-range spatial dependencies. The
+above ablation experiments also quantitatively show that the
+model performance drops sharply after removing the mask
+matrices, which supports the idea presented here.
+
+Model Efficiency Study
+Due to the better performance of the attention-based
+models, we compare the computational cost of PDFormer
+with other self-attention-based baselines on the PeMS04
+and the NYCTaxi datasets. Tab. 4 reports the average training and inference time per epoch. We find that PDFormer
+achieves competitive computational efficiency in both shortand long-term traffic prediction. Compared to the best performing baseline ASTGNN on PeMS04, PDFormer reduces
+the training and inference time of over 35% and 80%, respectively. GMAN and ASTGNN retain a time-consuming
+encoder-decoder structure, which is replaced by a forward
+procedure in STTN and PDFormer. TFormer performs only
+spatial attention, resulting in less computation time.
+
+Related Work
+Deep Learning for Traffic Prediction
+In recent years, more and more researchers have employed deep learning models to solve traffic prediction problems. Early on, convolutional neural networks (CNNs) were
+
+applied to grid-based traffic data to capture spatial dependencies in the data (Zhang, Zheng, and Qi 2017; Lin et al.
+2020a). Later, thanks to the powerful ability to model graph
+data, graph neural networks (GNNs) were widely used for
+traffic prediction (Chen et al. 2020; Bai et al. 2020; Zhang
+et al. 2021; Oreshkin et al. 2021; Ye et al. 2021; Han et al.
+2021; Ji et al. 2022; Liu et al. 2022). Recently, the attention
+mechanism has become increasingly popular due to its effectiveness in modeling the dynamic dependencies in traffic
+data (Guo et al. 2019; Wang et al. 2020; Lin et al. 2020b;
+Guo et al. 2021; Ye et al. 2022). Unlike these work, our proposed PDFormer not only considers the dynamic and longrange spatial dependencies through a self-attention mechanism but also incorporates the time delay in spatial propagation through a delay-aware feature transformation layer.
+
+Transformer
+Transformer (Vaswani et al. 2017) is a network architecture based entirely on self-attention mechanisms. Transformer has been proven effective in multiple natural language processing (NLP) tasks. In addition, large-scale
+Transformer-based pre-trained models such as BERT (Devlin et al. 2018) have achieved great success in the NLP
+community. Recently, Vision Transformers have attracted
+the attention of researchers, and many variants have shown
+promising results on computer vision tasks (?Liu et al.
+2021b). In addition, the Transformer architecture performs
+well in representation learning, which has been demonstrated in recent studies (Dwivedi and Bresson 2020; Ren
+et al. 2021; Jiang et al. 2023).
+
+Conclusion
+In this work, we proposed a novel PDFormer model with
+spatial-temporal self-attention for traffic flow prediction.
+Specifically, we developed a spatial self-attention module
+that captures the dynamic and long-range spatial dependencies and a temporal self-attention module that discovers the
+dynamic temporal patterns in the traffic data. We further designed a delay-aware feature transformation module to explicitly model the time delay in spatial information propagation. We conducted extensive experiments on six realworld datasets to demonstrate the superiority of our proposed model and visualized the learned attention map to
+make the model interpretable. As future work, we will apply
+PDFormer to other spatial-temporal prediction tasks, such as
+wind power forecasting (Jiang, Han, and Wang 2023). In addition, we will explore the pre-training techniques in traffic
+prediction to solve the problem of insufficient data.
+
+Acknowledgments
+This work was supported by the National Key R&D Program of China (Grant No. 2019YFB2102100). Prof. Wang’s
+work was supported by the National Natural Science Foundation of China (No. 72171013, 82161148011, 72222022),
+the Fundamental Research Funds for the Central Universities (YWF-22-L-838) and the DiDi Gaia Collaborative Research Funds. Prof. Zhao’s work was supported by the National Natural Science Foundation of China (No. 62222215).
+
+References
+Bai, L.; Yao, L.; Li, C.; Wang, X.; and Wang, C. 2020.
+Adaptive Graph Convolutional Recurrent Network for Traffic Forecasting. In NeurIPS.
+Belkin, M.; and Niyogi, P. 2003. Laplacian Eigenmaps for
+Dimensionality Reduction and Data Representation. Neural
+Comput., 15(6): 1373–1396.
+Berndt, D. J.; and Clifford, J. 1994. Using Dynamic Time
+Warping to Find Patterns in Time Series. In KDD Workshop,
+359–370. AAAI Press.
+Chen, W.; Chen, L.; Xie, Y.; Cao, W.; Gao, Y.; and Feng, X.
+2020. Multi-Range Attentive Bicomponent Graph Convolutional Network for Traffic Forecasting. In AAAI, 3529–3536.
+AAAI Press.
+Choi, J.; Choi, H.; Hwang, J.; and Park, N. 2022. Graph
+Neural Controlled Differential Equations for Traffic Forecasting. In AAAI, 6367–6374. AAAI Press.
+Devlin, J.; Chang, M.; Lee, K.; and Toutanova, K. 2018.
+BERT: Pre-training of Deep Bidirectional Transformers for
+Language Understanding. CoRR, abs/1810.04805.
+Dwivedi, V. P.; and Bresson, X. 2020. A Generalization of
+Transformer Networks to Graphs. CoRR, abs/2012.09699.
+Dwivedi, V. P.; Joshi, C. K.; Laurent, T.; Bengio, Y.; and
+Bresson, X. 2020. Benchmarking Graph Neural Networks.
+CoRR, abs/2003.00982.
+Fang, Z.; Long, Q.; Song, G.; and Xie, K. 2021. SpatialTemporal Graph ODE Networks for Traffic Flow Forecasting. In KDD, 364–373. ACM.
+Guo, S.; Lin, Y.; Feng, N.; Song, C.; and Wan, H. 2019. Attention Based Spatial-Temporal Graph Convolutional Networks for Traffic Flow Forecasting. In AAAI, 922–929.
+AAAI Press.
+Guo, S.; Lin, Y.; Wan, H.; Li, X.; and Cong, G. 2021. Learning Dynamics and Heterogeneity of Spatial-Temporal Graph
+Data for Traffic Forecasting. IEEE Trans. Knowl. Data Eng.,
+1–1.
+Han, L.; Du, B.; Sun, L.; Fu, Y.; Lv, Y.; and Xiong, H. 2021.
+Dynamic and Multi-faceted Spatio-temporal Deep Learning
+for Traffic Speed Forecasting. In KDD, 547–555. ACM.
+Ji, J.; Wang, J.; Jiang, Z.; Jiang, J.; and Zhang, H. 2022.
+STDEN: Towards Physics-Guided Neural Networks for
+Traffic Flow Prediction. In AAAI, 4048–4056. AAAI Press.
+Ji, J.; Wang, J.; Jiang, Z.; Ma, J.; and Zhang, H. 2020. Interpretable Spatiotemporal Deep Learning Model for Traffic
+Flow Prediction based on Potential Energy Fields. In ICDM,
+1076–1081. IEEE.
+
+Jiang, J.; Han, C.; and Wang, J. 2023. BUAA BIGSCity:
+Spatial-Temporal Graph Neural Network for Wind Power
+Forecasting in Baidu KDD CUP 2022. arXiv preprint
+arXiv:2302.11159.
+Jiang, J.; Pan, D.; Ren, H.; Jiang, X.; Li, C.; and Wang,
+J. 2023. Self-supervised Trajectory Representation Learning with Temporal Regularities and Travel Semantics. In
+2023 IEEE 39th international conference on data engineering (ICDE). IEEE.
+Kipf, T. N.; and Welling, M. 2016. Semi-Supervised Classification with Graph Convolutional Networks. CoRR,
+abs/1609.02907.
+Li, M.; and Zhu, Z. 2021. Spatial-Temporal Fusion Graph
+Neural Networks for Traffic Flow Forecasting. In AAAI,
+4189–4196. AAAI Press.
+Li, Y.; Yu, R.; Shahabi, C.; and Liu, Y. 2018. Diffusion Convolutional Recurrent Neural Network: Data-Driven Traffic
+Forecasting. In ICLR (Poster). OpenReview.net.
+Lin, H.; Bai, R.; Jia, W.; Yang, X.; and You, Y. 2020a.
+Preserving Dynamic Attention for Long-Term SpatialTemporal Prediction. In KDD, 36–46. ACM.
+Lin, Z.; Li, M.; Zheng, Z.; Cheng, Y.; and Yuan, C. 2020b.
+Self-Attention ConvLSTM for Spatiotemporal Prediction.
+In AAAI, 11531–11538. AAAI Press.
+Liu, D.; Wang, J.; Shang, S.; and Han, P. 2022. MSDR:
+Multi-Step Dependency Relation Networks for Spatial Temporal Forecasting. In KDD, 1042–1050. ACM.
+Liu, L.; Zhen, J.; Li, G.; Zhan, G.; He, Z.; Du, B.; and Lin,
+L. 2021a. Dynamic Spatial-Temporal Representation Learning for Traffic Flow Prediction. IEEE Trans. Intell. Transp.
+Syst., 22(11): 7169–7183.
+Liu, Z.; Lin, Y.; Cao, Y.; Hu, H.; Wei, Y.; Zhang, Z.;
+Lin, S.; and Guo, B. 2021b. Swin Transformer: Hierarchical Vision Transformer using Shifted Windows. CoRR,
+abs/2103.14030.
+Loshchilov, I.; and Hutter, F. 2017. Fixing Weight Decay
+Regularization in Adam. CoRR, abs/1711.05101.
+Oreshkin, B. N.; Amini, A.; Coyle, L.; and Coates, M. 2021.
+FC-GAGA: Fully Connected Gated Graph Architecture for
+Spatio-Temporal Traffic Forecasting. In AAAI, 9233–9241.
+AAAI Press.
+Pan, Z.; Liang, Y.; Wang, W.; Yu, Y.; Zheng, Y.; and Zhang,
+J. 2019. Urban Traffic Prediction from Spatio-Temporal
+Data Using Deep Meta Learning. In KDD, 1720–1730.
+ACM.
+Paparrizos, J.; and Gravano, L. 2016. k-Shape: Efficient and
+Accurate Clustering of Time Series. SIGMOD Rec., 45(1):
+69–76.
+Ren, H.; Wang, J.; and Zhao, W. X. 2022. Generative Adversarial Networks Enhanced Pre-training for Insufficient
+Electronic Health Records Modeling. In KDD, 3810–3818.
+ACM.
+Ren, H.; Wang, J.; Zhao, W. X.; and Wu, N. 2021. RAPT:
+Pre-training of Time-Aware Transformer for Learning Robust Healthcare Representation. In KDD, 3503–3511. ACM.
+
+Song, C.; Lin, Y.; Guo, S.; and Wan, H. 2020. SpatialTemporal Synchronous Graph Convolutional Networks: A
+New Framework for Spatial-Temporal Network Data Forecasting. In AAAI, 914–921. AAAI Press.
+Tedjopurnomo, D. A.; Bao, Z.; Zheng, B.; Choudhury, F. M.;
+and Qin, A. K. 2022. A Survey on Modern Deep Neural
+Network for Traffic Prediction: Trends, Methods and Challenges. IEEE Trans. Knowl. Data Eng., 34(4): 1544–1561.
+Vaswani, A.; Shazeer, N.; Parmar, N.; Uszkoreit, J.; Jones,
+L.; Gomez, A. N.; Kaiser, L.; and Polosukhin, I. 2017. Attention is All you Need. In NIPS, 5998–6008.
+Wang, J.; Gu, Q.; Wu, J.; Liu, G.; and Xiong, Z. 2016. Traffic Speed Prediction and Congestion Source Exploration: A
+Deep Learning Method. In ICDM, 499–508. IEEE Computer Society.
+Wang, J.; Jiang, J.; Jiang, W.; Li, C.; and Zhao, W. X. 2021.
+LibCity: An Open Library for Traffic Prediction. In SIGSPATIAL/GIS, 145–148. ACM.
+Wang, X.; Cui, P.; Wang, J.; Pei, J.; Zhu, W.; and Yang, S.
+2017. Community preserving network embedding. In Proceedings of the AAAI conference on artificial intelligence,
+volume 31.
+Wang, X.; Ma, Y.; Wang, Y.; Jin, W.; Wang, X.; Tang, J.;
+Jia, C.; and Yu, J. 2020. Traffic Flow Prediction via Spatial
+Temporal Graph Neural Network. In WWW, 1082–1092.
+ACM / IW3C2.
+Wu, Z.; Pan, S.; Long, G.; Jiang, J.; Chang, X.; and Zhang,
+C. 2020. Connecting the Dots: Multivariate Time Series
+Forecasting with Graph Neural Networks. In KDD, 753–
+763. ACM.
+Wu, Z.; Pan, S.; Long, G.; Jiang, J.; and Zhang, C. 2019.
+Graph WaveNet for Deep Spatial-Temporal Graph Modeling. In IJCAI, 1907–1913. ijcai.org.
+Xu, M.; Dai, W.; Liu, C.; Gao, X.; Lin, W.; Qi, G.; and
+Xiong, H. 2020. Spatial-Temporal Transformer Networks
+for Traffic Flow Forecasting. CoRR, abs/2001.02908.
+Yan, H.; and Ma, X. 2021. Learning dynamic and hierarchical traffic spatiotemporal features with Transformer. CoRR,
+abs/2104.05163.
+Yao, H.; Wu, F.; Ke, J.; Tang, X.; Jia, Y.; Lu, S.; Gong, P.;
+Ye, J.; and Li, Z. 2018. Deep Multi-View Spatial-Temporal
+Network for Taxi Demand Prediction. In AAAI, 2588–2595.
+AAAI Press.
+Ye, J.; Sun, L.; Du, B.; Fu, Y.; and Xiong, H. 2021. Coupled
+Layer-wise Graph Convolution for Transportation Demand
+Prediction. In AAAI, 4617–4625. AAAI Press.
+Ye, X.; Fang, S.; Sun, F.; Zhang, C.; and Xiang, S. 2022.
+Meta Graph Transformer: A Novel Framework for SpatialTemporal Traffic Prediction. Neurocomputing, 491: 544–
+563.
+Yin, C.; Xiong, Z.; Chen, H.; Wang, J.; Cooper, D.; and
+David, B. 2015. A literature survey on smart cities. Sci.
+China Inf. Sci., 58(10): 1–18.
+Yin, X.; Wu, G.; Wei, J.; Shen, Y.; Qi, H.; and Yin, B. 2022.
+Deep Learning on Traffic Prediction: Methods, Analysis,
+
+and Future Directions. IEEE Trans. Intell. Transp. Syst.,
+23(6): 4927–4943.
+Yu, B.; Yin, H.; and Zhu, Z. 2018. Spatio-Temporal Graph
+Convolutional Networks: A Deep Learning Framework for
+Traffic Forecasting. In IJCAI, 3634–3640. ijcai.org.
+Zhang, J.; Zheng, Y.; and Qi, D. 2017. Deep SpatioTemporal Residual Networks for Citywide Crowd Flows
+Prediction. In AAAI, 1655–1661. AAAI Press.
+Zhang, X.; Huang, C.; Xu, Y.; Xia, L.; Dai, P.; Bo, L.;
+Zhang, J.; and Zheng, Y. 2021. Traffic Flow Forecasting
+with Spatial-Temporal Graph Diffusion Network. In AAAI,
+15008–15015. AAAI Press.
+Zheng, C.; Fan, X.; Wang, C.; and Qi, J. 2020. GMAN: A
+Graph Multi-Attention Network for Traffic Prediction. In
+AAAI, 1234–1241. AAAI Press.
+
+

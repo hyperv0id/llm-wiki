@@ -8,7 +8,7 @@ tags:
   - mixture-of-experts
   - iclr-2026
 created: 2026-06-08
-last_updated: 2026-06-08
+last_updated: 2026-08-30
 source_count: 1
 confidence: medium
 status: active
@@ -35,7 +35,7 @@ HEPHAESTUS is a unified spatio-temporal traffic forecasting framework integratin
 ## Key Results
 
 - SOTA across 6 benchmarks (METR-LA, PEMS-BAY, PEMS03/04/07/08) vs 15 baselines including STGCN, DCRNN, GWNet, ASTGCN, MTGNN, DGCRN, PatchTST, PathFormer, iTransformer[^src-hephestus].
-- 716K parameters; 5475MB GPU memory (lower than PDFormer's 8295MB, PathFormer's 6652MB)[^src-hephestus].
+- 716K parameters; 5475MB GPU memory (lower than [[pdformer|PDFormer]]'s 8295MB, PathFormer's 6652MB)[^src-hephestus].
 - Ablation: AMS-MoE removal causes largest degradation; PTA and HSA both independently critical[^src-hephestus].
 - Optimal config: M=4 experts, K=2 sparsity, r=8 pattern library rank[^src-hephestus].
 

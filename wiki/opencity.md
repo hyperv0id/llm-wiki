@@ -9,7 +9,7 @@ tags:
   - transformer
   - gnn
 created: 2026-05-03
-last_updated: 2026-06-01
+last_updated: 2026-08-30
 source_count: 1
 confidence: medium
 status: active
@@ -85,7 +85,7 @@ Features from $L$ stacked layers are flattened and projected via a linear layer 
 | Zero-shot | NYC-BIKE (bike)* | MAE 6.32 | ASTGNN 6.44 | ✅ |
 | Zero-shot | CAD5 (flow) | MAE 11.09 | GWN 10.69 | ~ (3.7% gap) |
 | Zero-shot | PEMS07M (speed) | MAE 4.50 | GWN 4.17 | ~ (7.9% gap) |
-| Supervised | CAD8-1 (flow) | MAE 17.95 | PDFormer 23.43 | ✅ (23.4%↓) |
+| Supervised | CAD8-1 (flow) | MAE 17.95 | [[pdformer|PDFormer]] 23.43 | ✅ (23.4%↓) |
 
 *NYC-BIKE was completely absent from pre-training data[^src-opencity].
 

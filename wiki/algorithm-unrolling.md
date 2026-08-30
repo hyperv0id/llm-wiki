@@ -8,7 +8,7 @@ tags:
   - algorithm-design
   - network-architecture
 created: 2026-04-29
-last_updated: 2026-07-16
+last_updated: 2026-08-30
 source_count: 2
 confidence: high
 status: active
@@ -138,7 +138,7 @@ Qi et al. (ICML 2026) 将 ADMM 优化算法展开为轻量级交通预测 Transf
 - [[graph-learning-as-self-attention|图学习模块]]数学等价于自注意力，但参数远少于 Q/K/V 矩阵
 - 每层可解释为参数化低通滤波器
 
-结果：38K 参数达到 PDFormer（1,404K）的可比性能。
+结果：38K 参数达到 [[pdformer|PDFormer]]（1,404K）的可比性能。
 
 ## 与 End-to-End 学习的对比
 

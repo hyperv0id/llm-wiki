@@ -7,7 +7,7 @@ tags:
   - transformer
   - interpretability
 created: 2026-07-16
-last_updated: 2026-07-16
+last_updated: 2026-08-30
 source_count: 1
 confidence: medium
 status: active
@@ -45,7 +45,7 @@ $$w_{i,j}^u = \frac{\exp(-d^u(i,j))}{\sqrt{\sum_{l \in \mathcal{N}_i} \exp(-d^u(
 - 较小的 PSD 度量矩阵 $\mathbf{M}, \mathbf{P} \in \mathbb{R}^{K\times K}$（K=6）
 - 无 V 矩阵
 
-这使整体模型参数量仅 38K，为 PDFormer（1,404K）的约 2.7%（论文声称 7.2%，但 38/1404≈2.7%；论文存在数值不一致）。
+这使整体模型参数量仅 38K，为 [[pdformer|PDFormer]]（1,404K）的约 2.7%（论文声称 7.2%，但 38/1404≈2.7%；论文存在数值不一致）。
 
 ## 多头扩展
 
