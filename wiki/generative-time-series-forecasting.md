@@ -8,7 +8,7 @@ tags:
   - flow-matching
   - diffusion-models
 created: 2026-05-03
-last_updated: 2026-08-05
+last_updated: 2026-08-30
 source_count: 19
 confidence: high
 status: active
@@ -83,7 +83,7 @@ status: active
 
 ### 自回归生成式方法（VAR）
 
-**[[climatear|ClimateAR]]** (ICML 2026) 是首个将视觉自回归（VAR）引入概率气候预测的模型。通过 VQ + 分段码本对齐 CMIP6-ERA5 跨域异构数据，以混合尺度条件控制（intra-scale mix token + hybrid-scale prompt）在自回归 token 预测中同时捕获尺度内与跨尺度气候交互。在 1–10 月 lead time 上平均 ACC 提升 37.56% vs Pangu/GraphCast/ClimaX，ENSO 概率预测校准优良[^src-climatear]。
+**[[climatear|ClimateAR]]** (ICML 2026) 是首个将视觉自回归（VAR）引入概率气候预测的模型。通过 VQ + 分段码本对齐 CMIP6-ERA5 跨域异构数据，以混合尺度条件控制（intra-scale mix token + hybrid-scale prompt）在自回归 token 预测中同时捕获尺度内与跨尺度气候交互。在 1–10 月 lead time 上平均 ACC 提升 37.56% vs Pangu/[[graphcast|GraphCast]]/ClimaX，ENSO 概率预测校准优良[^src-climatear]。
 
 ### 方法对比
 

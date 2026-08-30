@@ -9,7 +9,7 @@ tags:
   - memory-network
   - arxiv-2025
 created: 2026-05-03
-last_updated: 2026-05-03
+last_updated: 2026-08-30
 source_count: 1
 confidence: medium
 status: active
@@ -21,7 +21,7 @@ status: active
 
 ## 核心论点
 
-现有天气基础模型（GraphCast、PanguWeather 等）专注于一般天气条件，对极端天气事件的预测能力有限。此前极端天气方法仅处理单一事件类型（如极端降水、热浪），无法泛化到多样化的极端现象。UniExtreme 是首个同时利用多样化真实极端天气事件标注数据和一般气象数据训练的基础模型，可在统一模型下预测 18 种极端天气事件而无需额外微调[^src-uniextreme]。
+现有天气基础模型（[[graphcast|GraphCast]]、PanguWeather 等）专注于一般天气条件，对极端天气事件的预测能力有限。此前极端天气方法仅处理单一事件类型（如极端降水、热浪），无法泛化到多样化的极端现象。UniExtreme 是首个同时利用多样化真实极端天气事件标注数据和一般气象数据训练的基础模型，可在统一模型下预测 18 种极端天气事件而无需额外微调[^src-uniextreme]。
 
 ## 两个关键发现
 

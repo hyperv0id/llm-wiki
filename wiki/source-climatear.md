@@ -11,7 +11,7 @@ tags:
   - 2026
   - icml
 created: 2026-07-16
-last_updated: 2026-07-16
+last_updated: 2026-08-30
 source_count: 1
 confidence: medium
 status: active
@@ -37,7 +37,7 @@ Yu, Chen, Wu, Cui, Jiang, Shang, Wu, Sun & Chen (Zhejiang University, Alibaba DA
 
 ## 实验与性能
 
-在 ERA5 + ORAS5 再分析数据（34 变量，1958–2014）上评估 1–10 月 lead time。相比 Pangu/GraphCast/Oneforecast/ClimaX 及 DWD 物理系统，ClimateAR **平均 ACC 提升 37.56%**，在 t2m/t1000 等近地表变量上增益尤为显著[^src-climatear]。ENSO 指数预测展示强概率校准能力，集合预报能捕获观测不确定性[^src-climatear]。
+在 ERA5 + ORAS5 再分析数据（34 变量，1958–2014）上评估 1–10 月 lead time。相比 Pangu/[[graphcast|GraphCast]]/Oneforecast/ClimaX 及 DWD 物理系统，ClimateAR **平均 ACC 提升 37.56%**，在 t2m/t1000 等近地表变量上增益尤为显著[^src-climatear]。ENSO 指数预测展示强概率校准能力，集合预报能捕获观测不确定性[^src-climatear]。
 
 ## 局限
 

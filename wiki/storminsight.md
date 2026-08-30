@@ -10,7 +10,7 @@ tags:
   - multi-modal
   - icml-2026
 created: 2026-07-23
-last_updated: 2026-07-23
+last_updated: 2026-08-30
 source_count: 1
 confidence: medium
 status: active
@@ -38,7 +38,7 @@ StormInsight 是由 HKUST-GZ 和广州气象台提出的气象学启发的对流
 
 - **Convective State Encoder**：通过 SetConv 统一将卫星（高）、雷达（中）、站点（低）投影到共享经纬度网格，MSIM 多尺度特征提取，VAE 编码雷达潜变量，FiLM 融合卫星/站点条件。
 - **Vertical Interaction Encoder**：MoE 驱动 4 条定向跨层路径——$E_{M \to H}$（中层潜热→高层加速输送）、$E_{H \to M}$（云砧辐射冷却→调制中层上升）、$E_{M \to L}$（对流下沉→扰乱边界层）、$E_{L \to M}$（边界层加热→触发新单体）。每条专家用 Transformer 骨干 + Gate-of-Time 模块处理异步时序。
-- **Atmospheric Environment Encoder**：Multi-mesh Message Passing（GraphCast 风格）在多分辨率球面网格上编码 ERA5 的压力层 + 单层变量（65+ 变量），保留高阶垂直依赖和天气尺度动力结构。
+- **Atmospheric Environment Encoder**：Multi-mesh Message Passing（[[graphcast|GraphCast]] 风格）在 [[multi-mesh-representation|多分辨率球面网格]] 上编码 ERA5 的压力层 + 单层变量（65+ 变量），保留高阶垂直依赖和天气尺度动力结构。
 
 ### Convective System Decoder
 

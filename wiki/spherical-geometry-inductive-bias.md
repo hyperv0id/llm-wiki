@@ -7,8 +7,8 @@ tags:
   - inductive-bias
   - geometric-distortion
 created: 2026-07-14
-last_updated: 2026-07-15
-source_count: 1
+last_updated: 2026-08-30
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -34,7 +34,7 @@ status: active
 
 ## 其他编码球面偏置的尝试
 
-- **GraphCast**：用多分辨率 mesh 在球面上建模，通过消息传递聚合局部信息。不显式编码空间周期性[^src-cirt]。
+- **[[graphcast|GraphCast]]**：用多分辨率 icosahedron mesh（见 [[multi-mesh-representation|多分辨率 mesh 表征]]）在球面上建模，通过消息传递聚合局部信息[^src-graphcast]；不显式编码空间周期性[^src-cirt]。
 - **PanguWeather**：设计地球特定的位置偏置（earth-specific positional bias），将相对坐标编码为可学习参数注入注意力计算。但仍用 cube patching，隐式学习几何[^src-cirt]。
 - **CaFA**：在球面上使用分解注意力（factorized attention），直接在球面坐标下操作[^src-cirt]。
 - **SFNO**：基于傅里叶神经算子（FNO）框架的球面扩展，在球面谱域进行运算[^src-cirt]。
@@ -44,7 +44,10 @@ status: active
 - [[cirt]] — CirT 模型
 - [[circular-patching]] — 圆形分块技术
 - [[fourier-self-attention]] — 傅里叶域自注意力
+- [[graphcast]] — GraphCast，mesh 路线代表模型
+- [[multi-mesh-representation]] — 多分辨率 mesh 表征
 - [[subseasonal-to-seasonal-forecasting]] — S2S 预测
 - [[weather-foundation-model]] — 天气基础模型
 
 [^src-cirt]: [[source-cirt]]
+[^src-graphcast]: [[source-graphcast]]

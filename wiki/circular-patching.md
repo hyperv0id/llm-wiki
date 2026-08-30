@@ -7,7 +7,7 @@ tags:
   - weather-forecasting
   - transformer
 created: 2026-07-14
-last_updated: 2026-07-14
+last_updated: 2026-08-30
 source_count: 1
 confidence: medium
 status: active
@@ -42,7 +42,7 @@ status: active
 |:-----|:-----|:----------|:---------|
 | Grid Patching | 固定角度矩形分块 | 差（高纬失真） | ClimaX, FourCastNetV2 |
 | Cube Patching | 立方体面投影分块 | 中（边界不连续） | PanguWeather |
-| Mesh | 多分辨率球面网格 | 好（无投影） | GraphCast |
+| Mesh | [[multi-mesh-representation|多分辨率球面网格]] | 好（无投影） | [[graphcast|GraphCast]] |
 | **Circular Patching** | **按纬度线分块** | **好（等距+周期）** | **CirT** |
 
 ## 与傅里叶变换的协同
@@ -54,6 +54,8 @@ Circular patching 的 $2\pi$ 周期性天然适配 [[fourier-self-attention|傅�
 - [[cirt]] — CirT 模型
 - [[fourier-self-attention]] — 傅里叶域自注意力
 - [[spherical-geometry-inductive-bias]] — 球面几何归纳偏置
+- [[graphcast]] — mesh 路线代表模型
+- [[multi-mesh-representation]] — 多分辨率球面网格
 - [[source-cirt]] — CirT 论文
 
 [^src-cirt]: [[source-cirt]]

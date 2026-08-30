@@ -8,7 +8,7 @@ tags:
   - generalization
   - parameter-efficient-fine-tuning
 created: 2026-06-08
-last_updated: 2026-08-09
+last_updated: 2026-08-30
 source_count: 4
 confidence: medium
 status: active
@@ -41,6 +41,7 @@ status: active
 
 ## 相关页面
 
+- [[graphcast]] — GraphCast，ERA5 端到端训练的全球中期确定性 MLWP（multi-mesh GNN 路线）
 - [[weathergfm]] — WeatherGFM，论文定位的首个天气通用基础模型
 - [[uniextreme]] — UniExtreme，极端天气基础模型
 - [[swift]] — Swift，生成式概率天气预报

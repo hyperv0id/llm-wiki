@@ -1399,3 +1399,10 @@ All wiki pages, organized by type. Updated on every ingest.
 ## Techniques (continued)
 - [[performer]] — Performer，FAVOR+ 线性注意力 Transformer：核化注意力按 Q′((K′)ᵀV) 结合律计算，O(Lrd) 时间/O(Lr+Ld+rd) 空间，不依赖稀疏/低秩先验（ICLR 2021）
 - [[positive-random-features]] — PRF，softmax 核的正随机特征无偏估计：trig 特征在核值趋 0 时 MSE 发散、PRF 趋 0，ORF 正交化对任意维度 d 降方差（ICLR 2021）
+
+## Sources (continued)
+- [[source-graphcast]] — GraphCast: Learning skillful medium-range global weather forecasting（Lam、Sanchez-Gonzalez、Willson 等 7 人共同一作，Google DeepMind + Google Research，arXiv:2212.12794v2，Science 著录未在 PDF 内核实），encode-process-decode GNN（36.7M 参数）+ 多分辨率 icosahedron multi-mesh + 6h 步长自回归滚动，2018 年 1380 验证目标 90.3% RMSE 优于 HRES（显著检验 89.9%），10 天 0.25° 预报单 TPU v4 不足 60 秒，含极端事件与训练数据时效实验
+
+## Techniques (continued)
+- [[graphcast]] — GraphCast，ERA5 端到端训练的全球中期 MLWP：编码-处理-解码 GNN、multi-mesh 长短边混合消息传递、层加权 MSE 多步课程训练（AR 步数 1→12）、自回归滚动 10 天 0.25° 预报（arXiv 2022 v2）
+- [[multi-mesh-representation]] — Multi-mesh，icosahedron 6 次细分（M0 12 节点→M6 40,962 节点）+ M0–M6 全层级边叠加的球面均匀多分辨率图，低层级节点作长程通信 hub；消融显示多级边为位势短时效优势的必要结构（arXiv 2022 v2）

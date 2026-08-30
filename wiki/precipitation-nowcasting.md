@@ -8,8 +8,8 @@ tags:
   - radar
   - satellite
 created: 2026-07-16
-last_updated: 2026-08-08
-source_count: 4
+last_updated: 2026-08-30
+source_count: 5
 confidence: high
 status: active
 ---
@@ -20,7 +20,7 @@ status: active
 
 ## 为什么降水特别难
 
-尽管基于 ERA5 的数据驱动全球预报模型（FourCastNet、Pangu-Weather、GraphCast、ClimaX、FuXi、GenCast）已在中程超越 NWP，降水仍然是突出难点。根本原因在于**尺度不匹配**：全球模型运行在数十公里粗分辨率上，而降水关键特征（局部暴雨、对流单体）出现在亚网格尺度、间歇且局部地涌现[^src-qcgs]。此外，中期模型使用的 ERA5 再分析数据存在表面变量和降水的系统性偏差[^src-rainpro]。
+尽管基于 ERA5 的数据驱动全球预报模型（FourCastNet、Pangu-Weather、[[graphcast|GraphCast]]、ClimaX、FuXi、GenCast）已在中程超越 NWP[^src-graphcast]，降水仍然是突出难点。根本原因在于**尺度不匹配**：全球模型运行在数十公里粗分辨率上，而降水关键特征（局部暴雨、对流单体）出现在亚网格尺度、间歇且局部地涌现[^src-qcgs]。此外，中期模型使用的 ERA5 再分析数据存在表面变量和降水的系统性偏差[^src-rainpro]。
 
 ## 方法演进
 
@@ -67,6 +67,7 @@ status: active
 [^src-qcgs]: [[source-qcgs]]
 [^src-rainpro]: [[source-rainpro]]
 [^src-storminsight]: [[source-storminsight]]
+[^src-graphcast]: [[source-graphcast]]
 
 ## 热带气旋降水预测
 

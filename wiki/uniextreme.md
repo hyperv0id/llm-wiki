@@ -10,7 +10,7 @@ tags:
   - swin-transformer
   - arxiv-2025
 created: 2026-05-03
-last_updated: 2026-06-09
+last_updated: 2026-08-30
 source_count: 2
 confidence: medium
 status: active
@@ -22,7 +22,7 @@ status: active
 
 ## 核心问题
 
-现有天气基础模型（[[aurora|Aurora]] 领域不同；GraphCast、PanguWeather 等为一般天气优化）在极端天气预测上存在显著性能差距。此前极端天气方法仅处理单一事件类型（如 NowcastNet 仅处理极端降水，FuXiExtreme 仅处理极端降雨和风力），无法泛化[^src-uniextreme]。
+现有天气基础模型（[[aurora|Aurora]] 领域不同；[[graphcast|GraphCast]]、PanguWeather 等为一般天气优化）在极端天气预测上存在显著性能差距。此前极端天气方法仅处理单一事件类型（如 NowcastNet 仅处理极端降水，FuXiExtreme 仅处理极端降雨和风力），无法泛化[^src-uniextreme]。
 
 ## 架构
 
@@ -75,7 +75,7 @@ MSL 变量上正常-极端差距缩小约 37%（vs 最佳基线）[^src-uniextre
 
 ## 与相关模型的对比
 
-| 维度 | UniExtreme | GraphCast/Pangu | [[most|MoST]] | [[aurora|Aurora]] |
+| 维度 | UniExtreme | [[graphcast|GraphCast]]/Pangu | [[most|MoST]] | [[aurora|Aurora]] |
 |------|-----------|-----------------|---------------|-------------------|
 | 领域 | 极端天气 | 一般天气 | 交通 ST | 通用 TS |
 | 极端监督 | 18 种真实事件 | 无 | 无 | 无 |

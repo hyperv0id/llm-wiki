@@ -9,7 +9,7 @@ tags:
   - fourier-transform
   - iclr-2025
 created: 2026-07-14
-last_updated: 2026-07-15
+last_updated: 2026-08-30
 source_count: 1
 confidence: medium
 status: active
@@ -35,7 +35,7 @@ CirT 由三个关键组件构成[^src-cirt]：
 
 ## 关键指标
 
-| 指标 | CirT | GraphCast | PanguWeather |
+| 指标 | CirT | [[graphcast|GraphCast]] | PanguWeather |
 |:-----|:-----|:----------|:-------------|
 | 参数量 | 16M | 37M | 256M |
 | FLOPs | 2.2G | 110T | 168T |
@@ -43,7 +43,7 @@ CirT 由三个关键组件构成[^src-cirt]：
 
 ## 与其他模型的关系
 
-- vs **GraphCast**：GraphCast 用 mesh 建模球面但仅做局部消息传递，不显式编码空间周期性；CirT 通过傅里叶变换捕获全局周期性[^src-cirt]。
+- vs **[[graphcast|GraphCast]]**：GraphCast 用 mesh 建模球面但仅做局部消息传递，不显式编码空间周期性；CirT 通过傅里叶变换捕获全局周期性[^src-cirt]。
 - vs **PanguWeather / FourCastNetV2**：两者用标准 grid/cube patching 隐式学习几何偏置；CirT 用圆形分块显式编码[^src-cirt]。
 - vs **ClimaX**：ClimaX 同样将球面数据展平为平面图像，CirT 的几何偏置对此类方法有普遍改进意义[^src-cirt]。
 - vs **FEDformer**：两者均利用傅里叶变换处理周期性信号，但 FEDformer 在频域使用随机频率子集配合可学习核做 element-wise 处理，CirT 保留完整频率表示并执行标准多头注意力，以充分利用 circular patch 的 DFT 完备基函数表示[^src-cirt]。
@@ -56,5 +56,7 @@ CirT 由三个关键组件构成[^src-cirt]：
 - [[circular-patching]] — 圆形分块
 - [[fourier-self-attention]] — 傅里叶域自注意力
 - [[weather-foundation-model]] — 天气基础模型
+- [[graphcast]] — mesh 路线对照模型
+- [[multi-mesh-representation]] — 多分辨率 mesh 表征
 
 [^src-cirt]: [[source-cirt]]

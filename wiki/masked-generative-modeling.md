@@ -8,7 +8,7 @@ tags:
   - image-generation
   - video-generation
 created: 2026-07-21
-last_updated: 2026-08-08
+last_updated: 2026-08-30
 source_count: 1
 confidence: low
 status: active
@@ -46,7 +46,7 @@ status: active
 
 | 范式 | 解码方式 | 典型代表 | 天气预测适用性 |
 |:-----|:--------|:--------|:-------------|
-| 自回归 | 逐 token 串行 | PanguWeather, GraphCast | 中期可，S2S 累积误差严重 |
+| 自回归 | 逐 token 串行 | PanguWeather, [[graphcast|GraphCast]] | 中期可，S2S 累积误差严重 |
 | 完整扩散 | 从噪声迭代 | GenCast | 精度高，但推理慢（50 步完整前向）[^src-omnicast] |
 | **掩码生成** | **迭代并行解码** | **OmniCast** | **精度与速度兼得** |
 | 流匹配 | ODE 积分 | CoGenCast, Sundial | 一步采样快，天气应用待探索（无来源，课程对比） |

@@ -9,7 +9,7 @@ tags:
   - fourier-transform
   - iclr-2025
 created: 2026-07-14
-last_updated: 2026-07-14
+last_updated: 2026-08-30
 source_count: 1
 confidence: medium
 status: active
@@ -21,7 +21,7 @@ Liu, Zheng, Cheng, Tsung, Zhao, Rong & Li (HKUST Guangzhou + HKUST + DAMO Academ
 
 ## 核心问题
 
-S2S 预测（提前 2–6 周）被称为"可预测性荒漠"——时间跨度太长以致丢失大气初始条件记忆，又太短来不及让海洋等缓变组分主导。现有数据驱动模型（FourCastNetV2、PanguWeather、GraphCast、ClimaX）将球面经纬网格视为平面图像，产生严重的几何失真[^src-cirt]。
+S2S 预测（提前 2–6 周）被称为"可预测性荒漠"——时间跨度太长以致丢失大气初始条件记忆，又太短来不及让海洋等缓变组分主导。现有数据驱动模型（FourCastNetV2、PanguWeather、[[graphcast|GraphCast]]、ClimaX）将球面经纬网格视为平面图像，产生严重的几何失真[^src-cirt]。
 
 ## 两大几何归纳偏置设计
 
@@ -55,6 +55,8 @@ CirT 首次将球面几何归纳偏置系统性地引入 S2S Transformer 设计�
 - [[circular-patching]] — 圆形分块技术
 - [[fourier-self-attention]] — 傅里叶域自注意力
 - [[source-climax]] — ClimaX 基线模型
+- [[graphcast]] — GraphCast 基线模型
+- [[multi-mesh-representation]] — 多分辨率 mesh 表征
 - [[weather-foundation-model]] — 天气基础模型范式
 
 [^src-cirt]: [[source-cirt]]
