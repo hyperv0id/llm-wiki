@@ -9,7 +9,7 @@ tags:
   - graph-transformers
   - effective-resistance
 created: 2026-08-13
-last_updated: 2026-08-13
+last_updated: 2026-08-30
 source_count: 4
 confidence: medium
 status: active
@@ -63,7 +63,7 @@ $$\mathcal{O}_i = \frac{\phi(q_i)^\top \sum_j \phi(k_j) v_j^\top}{\phi(q_i)^\top
 ## 与位置编码读法的分界
 
 - **PE 读法**：旋转是 token 预处理，保留 $N^2$ softmax；拓扑以加性 logit（RPE 式）进入。WIRE 论文指出谱 RPE 必须实例化 $N\times N$ 注意力矩阵，无法与线性注意力兼容[^src-2509-22259]。
-- **注意力读法**：$\phi$ 是核的分解，拓扑以**乘性核**进入——乘性正是可分解、可 $O(N)$ 的原因。WIRE 已走到"旋转直接作用于 token，因此可与 Performer 结合，实现线性注意力下的拓扑掩码"[^src-2509-22259]；本页补上最后一步：兼容不是巧合，旋转本来就是该核的随机特征。
+- **注意力读法**：$\phi$ 是核的分解，拓扑以**乘性核**进入——乘性正是可分解、可 $O(N)$ 的原因。WIRE 已走到"旋转直接作用于 token，因此可与 [[performer|Performer]] 结合，实现线性注意力下的拓扑掩码"[^src-2509-22259]；本页补上最后一步：兼容不是巧合，旋转本来就是该核的随机特征。
 
 ## 读法买到的设计旋钮
 
@@ -85,6 +85,7 @@ $$\mathcal{O}_i = \frac{\phi(q_i)^\top \sum_j \phi(k_j) v_j^\top}{\phi(q_i)^\top
 - [[rope]] — 网格图上的特例（WIRE Theorem 2：网格图恢复标准 RoPE）
 - [[roformer]] — RoPE 的原始模型
 - [[linear-attention-unified-framework]] — 线性注意力核形式与归一化消融
+- [[performer]] / [[positive-random-features]] — 随机特征线性注意力的原始机制（softmax 核正特征无偏估计 + 正交化降方差）
 - [[fast-spectral-graph-convolution]] — 谱域滤波的 $O(KN)$ 形式
 - [[spectral-graph-wavelet-transform]] — 另一谱域图信号处理方法
 - [[graph-frequency-decomposition]] — 图频率分解（低频=平滑）

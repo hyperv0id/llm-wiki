@@ -63,7 +63,7 @@ $$\mathbb{E}[(\mathrm{RoPE}(\boldsymbol{r}_i)\boldsymbol{q}_i)^\top \mathrm{RoPE
 
 ### 线性注意力兼容
 
-旋转直接作用于 token（而非 query-key 对的 logits），因此 WIRE 可与 Performer 等线性注意力结合，实现论文所称的"线性注意力下的拓扑掩码"，这是高效 transformer 社区长期追求的目标[^src-2509-22259]。
+旋转直接作用于 token（而非 query-key 对的 logits），因此 WIRE 可与 [[performer|Performer]] 等线性注意力结合，实现论文所称的"线性注意力下的拓扑掩码"，这是高效 transformer 社区长期追求的目标[^src-2509-22259]。
 
 ### 节点置换等变（Lemma 1）
 
@@ -106,6 +106,7 @@ WIRE 可以区分在 1 维 Weisfeiler-Lehman 同构测试下不可区分的图�
 - [[rope]] — RoPE 技术详解；WIRE 在网格图上恢复标准 RoPE，是其特例
 - [[roformer]] — RoFormer 模型实体
 - [[spectral-kernel-linear-attention]] — WIRE 旋转读作核的随机特征后落地为线性注意力（本 wiki 分析）
+- [[performer]] / [[positive-random-features]] — 随机特征线性注意力的原始机制；WIRE 实验骨干即 GraphGPS + ReLU Performer
 - [[graphgps]] — WIRE 图基准实验所用的模块化图 Transformer 骨干
 - [[rwse]] — 同属图位置/结构编码家族的随机游走结构编码
 - [[source-2509-22259]] — WIRE 论文源摘要

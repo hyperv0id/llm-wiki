@@ -21,7 +21,7 @@ status: active
 
 ## 核心论点
 
-论文提出构建图 Transformer 的三要素配方（recipe，3 main ingredients）：PE/SE 嵌入模块、local message-passing（MPNN）模块、global attention 模块；单个 GPS 层内 MPNN 分支（接收边特征）与全局注意力分支（不接收边特征）并行，输出相加后过 2 层 MLP（Sec 3.3, Eq. 1–4）[^src-graphgps]。论文摘要自述这是首个节点与边复杂度 $O(N+E)$ 的图 Transformer 架构，做法是把 local 真实边聚合与全连接注意力解耦，使 Performer/BigBird 等线性注意力进入图域（Abstract, Sec 1, Sec 3.3）[^src-graphgps]。论文同时给出 PE/SE 的 local/global/relative 分类（Sec 3.1, Table 1），并以 CSL 图与 Decalin 分子论证 MPNN 受 1-WL 表达力限制、需要编码补充（Sec 3.2）[^src-graphgps]。
+论文提出构建图 Transformer 的三要素配方（recipe，3 main ingredients）：PE/SE 嵌入模块、local message-passing（MPNN）模块、global attention 模块；单个 GPS 层内 MPNN 分支（接收边特征）与全局注意力分支（不接收边特征）并行，输出相加后过 2 层 MLP（Sec 3.3, Eq. 1–4）[^src-graphgps]。论文摘要自述这是首个节点与边复杂度 $O(N+E)$ 的图 Transformer 架构，做法是把 local 真实边聚合与全连接注意力解耦，使 [[performer|Performer]]/BigBird 等线性注意力进入图域（Abstract, Sec 1, Sec 3.3）[^src-graphgps]。论文同时给出 PE/SE 的 local/global/relative 分类（Sec 3.1, Table 1），并以 CSL 图与 Decalin 分子论证 MPNN 受 1-WL 表达力限制、需要编码补充（Sec 3.2）[^src-graphgps]。
 
 ## 证据（作者报告）
 

@@ -7,7 +7,7 @@ tags:
   - intelligent-transportation
 created: 2026-04-27
 last_updated: 2026-08-30
-source_count: 52
+source_count: 54
 confidence: high
 status: active
 ---
@@ -244,6 +244,10 @@ As road networks grow to tens of thousands of nodes, the $O(N^2)$ adaptive-adjac
 
 [[stgformer|STGformer]] (arXiv:2410.00385, 2024) takes a complementary route: SGC-style multi-order graph propagation (retaining orders 0..k) feeds a unified spatiotemporal attention with shared Q/K/V — softmax($QK^\top$) across nodes, softmax($Q^\top K$) within nodes — linearized to decomposed inner products for $O(N+T)$ time/memory, all in a single attention layer instead of stacked separable attention. Its authors report 100× speedup and 99.8% GPU-memory reduction vs [[staeformer|STAEformer]] in batch inference on the 8,600-sensor California graph, with better accuracy than STAEformer across all reported metrics on LargeST (SD/BA/LA), PEMS03/04/07/08, and cross-year 2019→2020 tests[^src-stgformer].
 
+### Virtual Node Augmentation
+
+[[virtual-nodes-traffic|Virtual Nodes]] (Zhuang et al., arXiv 2025) attack the long-term prediction limit of ST-GNNs from the graph rewiring side: auxiliary nodes connected to all real nodes let information aggregate across the entire graph within a single GNN layer, targeting the over-squashing bottleneck instead of stacking layers or switching to global attention. A semi-adaptive adjacency matrix combines the distance-based graph with MTGNN-style anti-symmetric adaptive weights for the virtual-node connections. On LargeST SD (716 nodes, 5-min sampling), the authors report that 10 semi-adaptive virtual nodes on STGCN give the lowest RMSE/MAPE among all 12 tested adjacency configurations, with a 6.27% RMSE / 5.04% MAPE reduction over the distance baseline at the 75-100 min average horizon (Table 2)[^src-virtual-nodes].
+
 ## Benchmarks
 
 The standard benchmarks are the PeMS (Caltrans Performance Measurement System) datasets from California highways: PEMS03, PEMS04, PEMS07, PEMS08. Standard setup: 12 input steps (1 hour) → 12 output steps (1 hour)[^src-hyperd-hybrid-periodicity-decoupling].
@@ -303,3 +307,4 @@ The XTraffic benchmark provides incident-aligned traffic datasets for California
 [^src-team]: [[source-team]]
 [^src-lets-group]: [[source-lets-group]]
 [^src-stgformer]: [[source-stgformer]]
+[^src-virtual-nodes]: [[source-virtual-nodes]]

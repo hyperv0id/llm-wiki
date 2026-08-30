@@ -8,8 +8,8 @@ tags:
   - scalability
   - kernel-approximation
 created: 2026-06-09
-last_updated: 2026-06-09
-source_count: 1
+last_updated: 2026-08-30
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -22,7 +22,7 @@ status: active
 [[gwnet|GWNET]] 式自适应邻接 A=σ(E1E2ᵀ) 与逐跳特征传播 H⁽ᵏ⁾=AH⁽ᵏ⁻¹⁾W 需显式构造并存储 O(N²) 稠密邻接，对 N≈10 万的路网不可行（整体 O(TLN²)）[^src-bigst]。
 
 ## 方法：核分解 + 乘法重排
-LSC 把邻接写成 A=D⁻¹A′，A′=exp(E1E2ᵀ/τ)，再借 Performer 的**正随机特征 (PRF)** 映射 φ 近似指数核：A≈D⁻¹φ(E1)φ(E2)ᵀ[^src-bigst]。设 Ê1=φ(E1)/√τ、Ê2=φ(E2)/√τ，则特征传播
+LSC 把邻接写成 A=D⁻¹A′，A′=exp(E1E2ᵀ/τ)，再借 [[performer|Performer]] 的**正随机特征 ([[positive-random-features|PRF]])** 映射 φ 近似指数核：A≈D⁻¹φ(E1)φ(E2)ᵀ[^src-bigst]（PRF 为 Performer 论文提出的 softmax/指数核正特征无偏估计器[^src-performer]）。设 Ê1=φ(E1)/√τ、Ê2=φ(E2)/√τ，则特征传播
 
 H⁽ᵏ⁾ = D̂⁻¹ (Ê1 (Ê2ᵀ H⁽ᵏ⁻¹⁾)) W⁽ᵏ⁻¹⁾，  D̂ = diag(Ê1(Ê2ᵀ1_N))。
 
@@ -32,7 +32,9 @@ H⁽ᵏ⁾ = D̂⁻¹ (Ê1 (Ê2ᵀ H⁽ᵏ⁻¹⁾)) W⁽ᵏ⁻¹⁾，  D̂ = d
 - [[bigst]] — 提出 LSC 的模型
 - [[gwnet]] — LSC 所线性化的自适应邻接来源
 - [[long-sequence-feature-extractor]] — BigST 时间维的对偶机制（同用 PRF 核线性化）
+- [[performer]] / [[positive-random-features]] — PRF 的来源论文（Performer, ICLR 2021）与机制页
 - [[linear-attention-unified-framework]] — 同源的核线性化注意力思想（此处用于空间维）
 - [[large-scale-spatial-temporal-graph]] — LSC 解决的大规模可扩展性问题
 
 [^src-bigst]: [[source-bigst]]
+[^src-performer]: [[source-performer]]

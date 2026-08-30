@@ -8,7 +8,7 @@ tags:
   - linear-complexity
   - neurips-2025
 created: 2026-07-19
-last_updated: 2026-07-19
+last_updated: 2026-08-30
 source_count: 1
 confidence: medium
 status: active
@@ -53,7 +53,7 @@ L 层 MAGE Block（默认 3 层），每层 = MAGE(H) + FFN(H) with SwiGLU + spa
 ## 关联
 
 - [[source-gwnet|GWNet]] — ReLU 自适应图的来源，MAGE 揭示了其[[edge-noise-amplification|边噪声放大]]缺陷
-- [[bigst]] — 同为线性复杂度，用 PRF 近似；MAGE 用 kernel 近似 + MoE 全面超越
+- [[bigst]] — 同为线性复杂度，用 [[positive-random-features|PRF]] 近似；MAGE 用 kernel 近似 + MoE 全面超越
 - [[graphsparsenet|GSNet]] — 同为线性复杂度，用低秩矩阵分解；MAGE 走 MoE 路线克服低秩瓶颈
 - [[mixture-of-experts]] — MoE 通用框架，MAGE 是首个在图结构生成层面应用 sparse-balanced MoE 的工作
 - [[low-dimensional-graph-adjacency]] — 低秩瓶颈的理论背景

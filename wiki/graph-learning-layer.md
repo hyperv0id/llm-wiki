@@ -7,7 +7,7 @@ tags:
   - spatial-dependency
   - adaptive
 created: 2026-05-30
-last_updated: 2026-05-30
+last_updated: 2026-08-30
 source_count: 2
 confidence: medium
 status: active
@@ -72,6 +72,7 @@ MTGNN 的图学习服务于*预测*任务，学习到的邻接矩阵是稳定的
 - [[mix-hop-propagation-layer]] — 下游图卷积模块
 - [[cross-dimension-dependency]] — 图学习层建模的核心目标
 - [[gsli]] — 后续图结构学习方法（填补任务）
+- [[virtual-nodes-traffic]] — 将同族反对称公式用于虚拟节点接入权重学习的交通预测工作（arXiv 2025）
 
 [^src-mtgnn]: [[source-mtgnn]]
 [^src-yang-gsli-2025]: [[source-yang-gsli-2025]]

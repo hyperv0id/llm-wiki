@@ -9,8 +9,8 @@ tags:
   - forecasting
   - KDD-2020
 created: 2026-05-30
-last_updated: 2026-05-30
-source_count: 2
+last_updated: 2026-08-30
+source_count: 3
 confidence: high
 status: active
 ---
@@ -57,7 +57,7 @@ MTGNN 由四个核心模块交替堆叠构成 [^src-mtgnn]：
 
 ## 意义与局限
 
-MTGNN 是为数不多的不依赖预定义图结构即可建模多变量时间序列的 GNN 框架，与同团队 Graph WaveNet (IJCAI 2019) 共同开创了自适应图学习范式 [^src-mtgnn]。它是 [[cross-dimension-dependency|跨维度依赖]] GNN 路线的起点，后续被 [[crossformer|Crossformer]]（ICLR 2023）等作为基线对比 [^src-crossformer-2023]。
+MTGNN 是为数不多的不依赖预定义图结构即可建模多变量时间序列的 GNN 框架，与同团队 Graph WaveNet (IJCAI 2019) 共同开创了自适应图学习范式 [^src-mtgnn]。它是 [[cross-dimension-dependency|跨维度依赖]] GNN 路线的起点，后续被 [[crossformer|Crossformer]]（ICLR 2023）等作为基线对比 [^src-crossformer-2023]。虚拟节点长期预测工作（Zhuang et al., arXiv 2025）在学习虚拟节点接入权重时采用与本页图学习层同族的反对称单向构造（ReLU(E1E2ᵀ − E2E1ᵀ)，无 tanh(α·) 投影与 top-k 稀疏化），并引用本文（Wu et al., 2020）的单向关系结论作为该形式的依据，见 [[virtual-nodes-traffic]] [^src-virtual-nodes]。
 
 局限包括：在极小图（< 10 节点）上失效；学习的图是静态的（不随输入时序变化）；在大规模图上推理仍需 O(N²) 构建全图 [^src-mtgnn]。
 
@@ -71,6 +71,8 @@ MTGNN 是为数不多的不依赖预定义图结构即可建模多变量时间�
 - [[dilated-inception-layer]] — 扩张初始层技术
 - [[crossformer]] — 后续 Transformer 建模 CD（将 MTGNN 作为基线）
 - [[source-crossformer-2023]] — Crossformer 源文件
+- [[virtual-nodes-traffic]] — 采用同族反对称单向构造（引 MTGNN 单向性结论）学习虚拟节点接入权重的长期交通预测工作（arXiv 2025）
 
 [^src-mtgnn]: [[source-mtgnn]]
 [^src-crossformer-2023]: [[source-crossformer-2023]]
+[^src-virtual-nodes]: [[source-virtual-nodes]]

@@ -11,7 +11,7 @@ tags:
   - foundation-model
   - traffic-forecasting
 created: 2026-06-01
-last_updated: 2026-06-08
+last_updated: 2026-08-30
 source_count: 2
 confidence: high
 status: active
@@ -38,7 +38,7 @@ STCA 将自注意力复杂度从 O(N²) 降为 O(N·d²)，在 CA（8600 节点�
 
 $$H_{st} = \phi(Q) \cdot (\phi(K)^T V + \phi(P_t)^T V + \phi(P_s)^T V)$$
 
-三项分别对应自注意力（Ah）、时间交叉注意力（At）、空间交叉注意力（As），均在 d×d 空间计算。φ 是 Performers 的随机特征映射，将 softmax 核函数近似为正交随机投影 + sin/cos 编码[^src-urbanpg]。这在概念上属于 [[linear-attention-unified-framework|线性注意力]]的 Performers 分支，与 Mamba 的 SSM 形式不同——Mamba 通过遗忘门实现循环线性注意力，STCA 通过随机特征映射实现矩阵乘法顺序变换[^src-urbanpg]。
+三项分别对应自注意力（Ah）、时间交叉注意力（At）、空间交叉注意力（As），均在 d×d 空间计算。φ 是 [[performer|Performers]] 的随机特征映射，将 softmax 核函数近似为正交随机投影 + sin/cos 编码[^src-urbanpg]。这在概念上属于 [[linear-attention-unified-framework|线性注意力]]的 Performers 分支，与 Mamba 的 SSM 形式不同——Mamba 通过遗忘门实现循环线性注意力，STCA 通过随机特征映射实现矩阵乘法顺序变换[^src-urbanpg]。
 
 ### 2. 个性化上下文提示
 
@@ -92,6 +92,7 @@ UrbanPG 区别于 [[flashst|FlashST]] 的关键点是：FlashST 也做 prompt tu
 - [[uniflow]] — UniFlow, unified grid+graph ST foundation model with ST-MRA (arXiv 2024)
 - [[unist]] — UniST, first one-for-all grid-based ST foundation model (KDD 2024)
 - [[linear-attention-unified-framework]] — Mamba ↔ Linear Attention unified framework
+- [[performer]] / [[positive-random-features]] — STCA 随机特征映射 φ 的来源机制（Performer, ICLR 2021）
 - [[large-scale-spatial-temporal-graph]] — large-scale ST graph challenges
 - [[std-mae]] — STD-MAE, spatial-temporal-decoupled masked pre-training (IJCAI 2024)
 - [[gwnet]] — GWNet, traditional O(N²) STGNN baseline compared by UrbanPG

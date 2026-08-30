@@ -7,7 +7,7 @@ tags:
   - scalability
 created: 2026-04-29
 last_updated: 2026-08-30
-source_count: 7
+source_count: 8
 references:
   - [[source-fast-long-horizon-forecasting]]
 confidence: high
@@ -102,6 +102,8 @@ XTraffic 数据集（2024）：基于加州 2023 年交通数据，包含时间�
 | Contra Costa | 496 | 13,339 | 5,587 |
 | Orange | 990 | 29,142 | 18,700 |
 
+此外，[[virtual-nodes-traffic|虚拟节点]]长期预测工作（arXiv 2025）以 5 分钟采样使用其中最小的 SD 子集（716 节点、17,319 边、密度 0.0338，Table 1；数据集时间跨度为 2017-01-01 至 2021-12-31，实验训练/测试实际使用其中 2019-2020 年数据），作者报告在该设置下 semi-adaptive 虚拟节点将 STGCN 的 75-100 分钟平均 RMSE 从 45.15 降至 42.32[^src-virtual-nodes]。
+
 ## 相关页面
 
 - [[traffic-forecasting]] — 城市交通预测场景
@@ -117,6 +119,7 @@ XTraffic 数据集（2024）：基于加州 2023 年交通数据，包含时间�
 - [[lets-group]] — 记忆向量锚点的可学习子图划分，建模层面降内存 (IJCAI 2025)
 - [[stgformer]] — 单层图传播 × 统一时空线性注意力的高效交通 Transformer (arXiv 2024)
 - [[stg-attention]] — STG-Attention 机制页
+- [[virtual-nodes-traffic]] — 虚拟节点图改写：以消息传递路径缩短缓解 over-squashing 的长期预测 (arXiv 2025)
 
 [^src-incident-guided-st-forecasting]: [[source-incident-guided-st-forecasting]]
 [^src-most]: [[source-most]]
@@ -125,3 +128,4 @@ XTraffic 数据集（2024）：基于加州 2023 年交通数据，包含时间�
 [^src-bigst]: [[source-bigst]]
 [^src-lets-group]: [[source-lets-group]]
 [^src-stgformer]: [[source-stgformer]]
+[^src-virtual-nodes]: [[source-virtual-nodes]]

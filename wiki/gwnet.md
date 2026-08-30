@@ -9,8 +9,8 @@ tags:
   - dilated-convolution
   - wavenet
 created: 2026-05-31
-last_updated: 2026-06-09
-source_count: 2
+last_updated: 2026-08-30
+source_count: 4
 confidence: high
 status: active
 ---
@@ -153,6 +153,7 @@ GWNet established a durable design principle: **spatial dependencies should be l
 | [[specstg|SpecSTG]] | arXiv 2024 | Adapts WaveNet as Spectral Graph WaveNet for spectral-domain diffusion |
 | [[std-mae|STD-MAE]] | IJCAI 2024 | Uses GWNet as one of five predictor backbones in pre-training framework |
 | [[dpgnet|DPGNet]] | ICLR 2026 (u.r.) | AGL plug-and-play replaces GWNet's static $E_1E_2^\top$ with dynamic per-timestep graph + weak connection suppression |
+| [[virtual-nodes-traffic\|Virtual Nodes]] | arXiv 2025 | Keeps the distance graph and appends virtual nodes whose connection weights use the MTGNN-style anti-symmetric formula (semi-adaptive adjacency), targeting over-squashing in long-term prediction[^src-virtual-nodes] |
 
 ## Related Pages
 
@@ -174,7 +175,9 @@ GWNet established a durable design principle: **spatial dependencies should be l
 - [[dpgnet]] — DPGNet (ICLR 2026 u.r.), AGL plug-and-play replaces GWNet's graph generator
 - [[adaptive-graph-learner]] — AGL, dynamic graph learning with gated self-attention and weak connection suppression
 - [[bigst]] — BigST (PVLDB 2024), linearizes GWNet's adaptive adjacency to $O(N)$ for ~100K-node networks
+- [[virtual-nodes-traffic]] — Virtual Nodes (arXiv 2025), semi-adaptive adjacency extending the adaptive-graph paradigm with virtual nodes
 
 [^src-gwnet]: [[source-gwnet]]
 [^src-dpgnet]: [[source-dpgnet]]
 [^src-bigst]: [[source-bigst]]
+[^src-virtual-nodes]: [[source-virtual-nodes]]

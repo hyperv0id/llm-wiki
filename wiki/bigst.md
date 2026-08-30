@@ -9,7 +9,7 @@ tags:
   - scalability
   - large-scale
 created: 2026-06-09
-last_updated: 2026-07-19
+last_updated: 2026-08-30
 source_count: 2
 confidence: medium
 status: active
@@ -25,7 +25,7 @@ status: active
 ## 架构（两阶段）
 
 ### 阶段一：长序列特征提取器 [[long-sequence-feature-extractor|LSFE]]（预处理）
-- **上下文感知线性化 Transformer**：先用膨胀时间卷积补点级语义，再用 Performer 正随机特征 (PRF) 近似 softmax 核注意力，把时间自注意力从 O(T_l²) 降到 **O(T_l)**；以生成式预训练（由长历史预测未来）学习长程动态[^src-bigst]。
+- **上下文感知线性化 Transformer**：先用膨胀时间卷积补点级语义，再用 [[performer|Performer]] 正随机特征 ([[positive-random-features|PRF]]) 近似 softmax 核注意力，把时间自注意力从 O(T_l²) 降到 **O(T_l)**；以生成式预训练（由长历史预测未来）学习长程动态[^src-bigst]。
 - **周期特征采样**：免训练，取过去 D 天、W 周同期流量特征，显式建模日/周周期[^src-bigst]。
 - 输出 H_long、H_per 可**整库预计算缓存**，把重计算移出预测阶段[^src-bigst]。
 
@@ -47,6 +47,7 @@ status: active
 - [[patchstg]] — 同期大规模交通 Transformer（不规则空间分块）
 - [[large-scale-spatial-temporal-graph]] — BigST 是扩到 ~10 万节点的代表性工作
 - [[linearized-spatial-convolution]]、[[long-sequence-feature-extractor]] — 两大核心机制
+- [[performer]] / [[positive-random-features]] — PRF 机制的来源论文（Performer, ICLR 2021）与机制页
 - [[traffic-forecasting]] — 任务
 - [[mage|MAGE]] (NeurIPS 2025) — 同为线性复杂度自适应图学习，但用 kernel 近似 + MoE 替代 PRF，实验全面超越 BigST[^src-mage]
 

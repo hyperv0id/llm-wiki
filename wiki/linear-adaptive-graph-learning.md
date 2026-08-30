@@ -8,7 +8,7 @@ tags:
   - linear-complexity
   - scalability
 created: 2026-07-19
-last_updated: 2026-07-19
+last_updated: 2026-08-30
 source_count: 1
 confidence: medium
 status: active
@@ -20,7 +20,7 @@ status: active
 
 ## 动机
 
-传统自适应图卷积需要显式计算 N×N 相似度矩阵 S=E₁E₂ᵀ，复杂度 O(N²dG)，无法扩展到大路网[^src-mage]。BigST 使用正随机特征（PRF）近似，GSNet 使用低秩压缩，但都造成表达能力损失[^src-mage]。
+传统自适应图卷积需要显式计算 N×N 相似度矩阵 S=E₁E₂ᵀ，复杂度 O(N²dG)，无法扩展到大路网[^src-mage]。BigST 使用正随机特征（[[positive-random-features|PRF]]）近似，GSNet 使用低秩压缩，但都造成表达能力损失[^src-mage]。
 
 ## 方法
 

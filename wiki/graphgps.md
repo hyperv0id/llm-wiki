@@ -31,7 +31,7 @@ $$X^{l+1}, E^{l+1} = \mathrm{GPS}^l(X^l, E^l, A)$$
 $$X_M^{l+1}, E^{l+1} = \mathrm{MPNN}_e^l(X^l, E^l, A), \qquad X_T^{l+1} = \mathrm{GlobalAttn}^l(X^l)$$
 $$X^{l+1} = \mathrm{MLP}^l(X_M^{l+1} + X_T^{l+1})$$
 
-要点：MPNN 分支接收节点与边特征，全局注意力分支只接收节点特征，边特征不进入注意力分支；两支输出逐元素相加后经一个 2 层 MLP，residual 连接与 batch normalization 在公式中省略（Sec 3.3）[^src-graphgps]。MPNN 与 GlobalAttn 都是可替换模块——MPNN 可以是任何作用于局部邻域的函数（论文实例化 GINE、GatedGCN、PNA），GlobalAttn 可以是任何全连接层（论文实例化 Transformer、Performer、BigBird）（Sec 3.3, Fig 1）[^src-graphgps]。
+要点：MPNN 分支接收节点与边特征，全局注意力分支只接收节点特征，边特征不进入注意力分支；两支输出逐元素相加后经一个 2 层 MLP，residual 连接与 batch normalization 在公式中省略（Sec 3.3）[^src-graphgps]。MPNN 与 GlobalAttn 都是可替换模块——MPNN 可以是任何作用于局部邻域的函数（论文实例化 GINE、GatedGCN、PNA），GlobalAttn 可以是任何全连接层（论文实例化 Transformer、[[performer|Performer]]、BigBird）（Sec 3.3, Fig 1）[^src-graphgps]。
 
 为什么不在 Transformer 前面先堆 MPNN 层（如 GraphTrans 的两段式）？论文的论证是：MPNN 受 [[over-smoothing-in-gnns|over-smoothing]]、[[over-squashing]] 和 1-WL 表达力限制，前置的 MPNN 层可能在早期就不可逆地丢失信息；GraphTrans 被论文相关工作部分描述为首个 hybrid 架构，但 GPS 选择在每一层内并行交错两条分支，而非分两段（Sec 2, Sec 3.3）[^src-graphgps]。
 
@@ -71,6 +71,7 @@ $$X^{l+1} = \mathrm{MLP}^l(X_M^{l+1} + X_T^{l+1})$$
 - [[topology-aware-graph-transformer]] — 注意力矩阵层面的 local/global 混合（对照设计）
 - [[over-smoothing-in-gnns]] — GPS 引用其作为 MPNN 动机的核心问题
 - [[quest-attention]] — 被列为潜在应用场景的注意力变体
+- [[performer]] — 论文实例化的线性注意力 GlobalAttn 选项之一（消融中性能低于全秩 Transformer 但可扩展）
 - [[wire]] — 后续在 GraphGPS 骨干上评估的图位置编码
 
 [^src-graphgps]: [[source-graphgps]]

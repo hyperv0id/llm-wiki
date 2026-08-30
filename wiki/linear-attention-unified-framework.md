@@ -8,7 +8,7 @@ tags:
   - architecture-analysis
 created: 2026-05-08
 last_updated: 2026-08-30
-source_count: 2
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -78,6 +78,9 @@ $$y_i = C_i \sum_{j=1}^i (\prod_{k=j+1}^i \widetilde{A}_k) B_j (\Delta_j \odot x
 - [[linear-attention-bias|线性注意力偏置（ALiBi）]]
 - [[urbanpg|UrbanPG]] — STCA 模块直接使用 Performers 随机特征映射线性注意力，是该框架在 STGNN 领域的最新实例 (AAAI 2026)
 - [[stg-attention|STG-Attention]] — STGformer 的统一时空线性注意力模块：分解内积 + 图传播多阶输出 (arXiv 2024)
+- [[performer|Performer]] — 核随机特征路线的代表机制：softmax 核的正随机特征无偏估计 + 正交化降方差，线性注意力时间 O(Lrd)（ICLR 2021）[^src-performer]
+- [[positive-random-features|PRF]] — Performer 论文中 softmax 核估计的数学核心：trig 特征在小核值区 MSE 发散、正特征收敛
 
 [^src-demystify-mamba-linear-attention-2024]: [[source-demystify-mamba-linear-attention-2024]]
 [^src-stgformer]: [[source-stgformer]]
+[^src-performer]: [[source-performer]]

@@ -9,7 +9,7 @@ tags:
   - linear-attention
   - scalability
 created: 2026-06-09
-last_updated: 2026-06-09
+last_updated: 2026-08-30
 source_count: 1
 confidence: medium
 status: active
@@ -24,7 +24,7 @@ STGNN 是交通预测的主力，但多数需 O(N²) 建模空间依赖、O(T²)
 
 ## 方法
 BigST 把端到端 STGNN 拆成两阶段[^src-bigst]：
-- **预处理 — 长序列特征提取器 [[long-sequence-feature-extractor|LSFE]]**：(1) 上下文感知**线性化 Transformer**（借 Performer 正随机特征 PRF 近似 softmax 核 → O(T_l)），生成式预训练编码长程时间动态；(2) 免训练**周期特征采样**（取过去 D 天 / W 周同期特征）。LSFE 输出可**整库预计算缓存**，大幅降低预测阶段开销[^src-bigst]。
+- **预处理 — 长序列特征提取器 [[long-sequence-feature-extractor|LSFE]]**：(1) 上下文感知**线性化 Transformer**（借 [[performer|Performer]] 正随机特征 PRF 近似 softmax 核 → O(T_l)），生成式预训练编码长程时间动态；(2) 免训练**周期特征采样**（取过去 D 天 / W 周同期特征）。LSFE 输出可**整库预计算缓存**，大幅降低预测阶段开销[^src-bigst]。
 - **预测 — 线性化全局空间卷积网络 (LGSCN)**：(1) **Patch 级动态图学习 (PDGL)** 用静态+动态节点嵌入算注意力分数构造时变邻接（温度 τ）；(2) **[[linearized-spatial-convolution|线性化空间卷积 (LSC)]]** 用同一 PRF 核分解 A≈D⁻¹φ(E1)φ(E2)ᵀ，免显式计算稠密邻接，把图卷积降到 **O(N)**[^src-bigst]。末端 concat(LGSCN 输出 ‖ 预计算特征) → MLP **非自回归**出预测[^src-bigst]。
 
 ## 结果

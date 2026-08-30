@@ -8,8 +8,8 @@ tags:
   - convolutional-neural-network
   - spectral-methods
 created: 2026-05-31
-last_updated: 2026-06-08
-source_count: 2
+last_updated: 2026-08-30
+source_count: 3
 confidence: high
 status: active
 ---
@@ -139,6 +139,8 @@ PeMSD7(L) 上 STGCN 训练 1554s vs GCGRU 19511s（**12.5 倍加速**）。加�
 
 STGCN 与同年发表的 [[dcrnn|DCRNN]]（ICLR 2018）共同确立了时空图建模的两条技术路线：DCRNN 使用扩散卷积 + DCGRU（RNN 系），STGCN 使用谱图卷积 + 门控因果卷积（纯 CNN 系）[^src-stgcn]。STGCN 的"纯卷积 + 预定义图"范式历经 GWNet、ASTGCN、DiffSTG、SpecSTG 的持续扩展，最终汇入 UrbanDiT 的通用时空基础模型路线。
 
+STGCN 也是虚拟节点长期预测工作的基座模型：Zhuang 等（arXiv 2025）在 STGCN 的邻接矩阵上集成 semi-adaptive 虚拟节点以缓解 over-squashing，作者报告 10 个半自适应虚拟节点在 LargeST SD 的 12 种邻接配置中取得最优长期精度（75-100 分钟平均 RMSE 42.32，Table 2）[^src-virtual-nodes]，见 [[virtual-nodes-traffic]]。
+
 ## 关联页面
 
 - [[source-stgcn]] — 源文件摘要
@@ -160,6 +162,7 @@ STGCN 与同年发表的 [[dcrnn|DCRNN]]（ICLR 2018）共同确立了时空图�
 - [[metadg]] — MetaDG (AAAI 2026)，通过动态生成 meta-parameters 实现 ST-unification
 - [[st-unification]] — ST-unification：MetaDG 对 STGCN ST-分离设计的批判性框架
 - [[gamma-net|GAMMA-Net]] — arXiv 2026，交错式 GAT + 多轴 Mamba 交通预测，在 STGCN 等六个基准全面 SOTA
+- [[virtual-nodes-traffic]] — Virtual Nodes，以 STGCN 为基座、用半自适应虚拟节点缓解 over-squashing 的长期预测工作（arXiv 2025）
 
 ## STGCN 演进链：从纯卷积到交错式 Mamba
 
@@ -174,5 +177,7 @@ STGCN (2018)               GWNet (2019)                GAMMA-Net (2026)
 GAMMA-Net 在 STGCN 开创的 METR-LA/PEMS-BAY/PEMS 基准上取得全面 SOTA，其 GAT 组件直接回应了 STGCN"图结构时不变"的局限性——通过动态注意力重加权替代固定的谱域图卷积[^src-gamma]。
 
 [^src-gamma]: [[source-gamma-net]]
+
+[^src-virtual-nodes]: [[source-virtual-nodes]]
 
 [^src-stgcn]: [[source-stgcn]]
