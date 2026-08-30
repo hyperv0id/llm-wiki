@@ -8,8 +8,8 @@ tags:
   - decoding
   - foundation-model
 created: 2026-07-13
-last_updated: 2026-07-13
-source_count: 3
+last_updated: 2026-08-30
+source_count: 4
 confidence: medium
 status: active
 ---
@@ -34,6 +34,7 @@ status: active
 - **时间序列基础模型**同样分裂：Lag-Llama / [[timesfm|TimesFM]] / Timer / [[chronos|Chronos]] 偏 AR；MOIRAI / UniTS / ForecastPFN / TTM 偏 NAR[^src-probts]。
 
 - **[[manf|MANF]]（arXiv 2022）** 给出早期 **NAR + 精确似然流** 证据：相对 LSTM-MAF / Transformer-MAF，加倍预测长度与缺失噪声下 CRPS/MSE 衰减更小，并显著加速训练/测试，支持“one-shot 生成可抑制 AR 误差累积”的论断[^src-maf]。
+- **计算机视觉中的平行锚点**：[[detr|DETR]] 是非自回归并行解码在集合预测领域的代表例子——论文自述其与以往 recurrent（RNN 自回归）检测器的区别正在于二部匹配损失与 Transformer 并行解码的结合：N 个 learned object queries 在 decoder 各层并行解码整个目标集合（Sec 1, Sec 3.2）[^src-detr]。
 
 ## ProbTS 实证规律
 
@@ -61,7 +62,9 @@ status: active
 - [[generative-time-series-forecasting]]
 - [[manf]] — NAR + 条件 RealNVP
 - [[multi-scale-attention]] — MANF 编码器技术
+- [[detr]] / [[object-queries]] — 视觉集合预测的并行解码（NAR 跨领域锚点）
 
 [^src-probts]: [[source-probts]]
 [^src-maf]: [[source-maf]]
 [^src-deepar]: [[source-deepar]]
+[^src-detr]: [[source-detr]]

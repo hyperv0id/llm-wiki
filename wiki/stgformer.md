@@ -27,16 +27,16 @@ status: active
 
 ## 论文报告的数字
 
-- 效率：8600 节点 CA 图批量推理较 STAEformer 100× 加速、99.8% GPU 内存降幅（摘要）；FLOPs 比值约 0.00131、计算量降 99.869%（T=12、N=8600、d=32、K=3、|E|=201,363、L=3，Sec IV-D）；PEMS 设置计算成本约为 STAEformer 的 0.2%[^src-stgformer]。
+- 效率：论文摘要与引言贡献列表报告 8600 节点 CA 图批量推理较 STAEformer 100× 加速、99.8% GPU 内存降幅；正文实验章节（Sec V）未提供该测量的表/图与批量设置，效率相关的正文证据是 Sec IV-D 的 FLOPs 解析对比——比值约 0.00131、计算量降 99.869%（T=12、N=8600、d=32、K=3、|E|=201,363、L=3）；PEMS 实验一节另称计算成本约为 STAEformer 的 0.2%[^src-stgformer]。
 - 参数量：SD 256K、BA 491K、LA 705K（STAEformer 对应 1.7M / 3.3M / 4.7M，Table I）[^src-stgformer]。
-- 精度：LargeST SD/BA/LA（Table I）平均 MAE 均为对比模型最低，全部指标一致优于 STAEformer（论文自述 consistently outperforms STAEformer across all evaluated datasets）；SD 平均 MAE 17.36 vs 18.01（MAE −3.61%、RMSE −2.83%、MAPE −6.73%）；平均 RMSE/MAPE 个别格被 D2STGNN 微弱超过（SD 平均 RMSE 29.51 vs 29.52、BA 平均 MAPE 15.04% vs 15.22%）。PEMS03/04/07/08（Table III）4 数据集 × 3 指标的平均格全部最低；PEMS03 平均 RMSE 27.55→25.08（−8.97%），计算成本约为 STAEformer 的 0.2%[^src-stgformer]。
+- 精度：LargeST SD/BA/LA（Table I）平均 MAE 均为对比模型最低，全部指标一致优于 STAEformer（论文自述 consistently outperforms STAEformer across all evaluated datasets）；SD 平均 MAE 17.36 vs 18.01（MAE −3.61%、RMSE −2.83%、MAPE −6.73%）；逐格核对共 8 格被对手微弱超过——SD h3 MAE 14.97 vs 14.92、h3 RMSE 24.96 vs 24.95、h6 RMSE 29.26 vs 29.24、平均 RMSE 29.52 vs 29.51，BA h3 MAPE 12.72% vs 12.12%、h6 MAPE 15.12% vs 14.89%、平均 MAPE 15.22% vs 15.04%（以上 7 格对手为 D2STGNN）；BA 平均 RMSE 33.50 vs 33.41（GWNET）。PEMS03/04/07/08（Table III）4 数据集 × 3 指标的平均格全部最低；PEMS03 平均 RMSE 27.55→25.08（−8.97%），计算成本约为 STAEformer 的 0.2%[^src-stgformer]。
 - 跨年泛化（Table II，2019 训练→2020 测试）：较 STAEformer 三个子集全部指标一致改进，SD horizon-3 RMSE 31.55→27.09（−14.14%）、BA 32.66→28.20（−13.66%）、LA 33.97→29.52（−13.10%）；平均 MAE 为三子集对比模型最低，平均 RMSE/MAPE 在部分子集被 GWNET/STID 超过（LA 平均 RMSE 40.85 vs 41.76、MAPE 22.51% vs 27.04%；BA STID RMSE 39.30 vs 39.73、MAPE 21.68% vs 22.54%；SD STID MAPE 26.88% vs 27.54%）；论文将稳健性归因于 STG-attention 单块结构与更少参数[^src-stgformer]。
 - 消融（Fig 5，SD/BA）：去掉全部自注意力退化最重（模型退化为前馈模块），去掉图高阶交互次之；去掉空间或时间自注意力各自造成明显退化[^src-stgformer]。
 
 ## 范围注记
 
 - 精度实验的 LargeST 部分为 SD/BA/LA 三个子集（Table I 无 CA 全图行）；8600 节点 CA 图仅用于效率测量（批量推理）与 FLOPs 计算[^src-stgformer]。
-- 预测设置为 12 步输入 → 12 步输出（LargeST 15 分钟粒度、PEMS 5 分钟粒度），6:2:2 时序划分，masked RMSE/MAE/MAPE[^src-stgformer]。
+- LargeST 明确为 12 步输入 → 12 步输出（5 分钟读数聚合为 15 分钟窗口）；PEMS 为 5 分钟粒度（论文未逐条写明 PEMS 的输入/输出步长）。6:2:2 时序划分，masked RMSE/MAE/MAPE（零值剔除）[^src-stgformer]。
 - 数据嵌入的时空位置编码 Xste ∈ R^{N×T×d} 按节点索引（论文原文，沿用 STAEformer）[^src-stgformer]；若按 STAEformer 原设计为可学习自适应嵌入，则参数量含随 N 增长的成分（STAEformer 原文未 ingest、未在 raw/ 核实，此推断未在原文层验证）。论文的泛化证据为同图跨年（2019→2020），未评测跨网 zero-shot 迁移[^src-stgformer]。
 - PDF 为 IEEE 期刊模板排版，未见接收 venue 信息；本页按 arXiv 预印本著录[^src-stgformer]。
 

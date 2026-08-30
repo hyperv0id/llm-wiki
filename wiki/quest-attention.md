@@ -8,8 +8,8 @@ tags:
   - vision-transformer
   - iclr-2026
 created: 2026-04-28
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-08-30
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -93,7 +93,7 @@ $$A = \text{softmax}(Q\bar{K}^T)$$
 
 - **视觉 Transformer**：ViT、DeiT、DeiT-3、CrossViT
 - **语言模型**：GPT 风格模型
-- **图 Transformer**：GraphGPS
+- **图 Transformer**：[[graphgps|GraphGPS]]——local MPNN 与 global attention 并行求和的模块化图 Transformer 框架[^src-graphgps]
 - **点云模型**：PointTransformer
 - **时序模型**：时间序列预测[^src-quest]
 
@@ -106,3 +106,4 @@ $$A = \text{softmax}(Q\bar{K}^T)$$
 ## 引用
 
 [^src-quest]: [[source-quest]]
+[^src-graphgps]: [[source-graphgps]]

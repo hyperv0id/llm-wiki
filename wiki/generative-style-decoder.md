@@ -8,8 +8,8 @@ tags:
   - forecasting
   - inference-speed
 created: 2026-05-04
-last_updated: 2026-05-04
-source_count: 1
+last_updated: 2026-08-30
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -52,8 +52,11 @@ This design is conceptually similar to the decoder input format in later works l
 
 The generative style decoder aligns with the broader **non-autoregressive generation** trend in NLP (e.g., NAR translation). The key difference in time series is that the "tokens" are continuous real-valued numbers rather than discrete vocabulary indices, making length prediction trivial (the forecasting horizon is known) and the one-shot generation more natural than in discrete domains.
 
+A vision-domain counterpart is [[detr|DETR]]: with a bipartite matching loss enforcing permutation invariance, DETR decodes a fixed set of N objects **in parallel at each decoder layer** via learned object queries — the paper explicitly contrasts this with the autoregressive, one-element-at-a-time decoding of the original Transformer (Sec 3.2)[^src-detr]. Like Informer's generative decoder, DETR avoids the sequential feedback loop; unlike it, DETR needs no start token or placeholder, because the fixed-size set of slots (object queries) defines the output structure.
+
 ## Usage
 
 The generative decoder is used in [[informer|Informer]] but the concept — feeding a start token with placeholders and generating the full output in one pass — has influenced the decoder design of many subsequent forecasting Transformers, including [[autoformer|Autoformer]] and its descendants.
 
 [^src-zhou-informer-2021]: [[source-zhou-informer-2021]]
+[^src-detr]: [[source-detr]]

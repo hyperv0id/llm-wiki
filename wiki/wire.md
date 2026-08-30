@@ -10,8 +10,8 @@ tags:
   - linear-attention
   - icml-2026
 created: 2026-08-09
-last_updated: 2026-08-13
-source_count: 1
+last_updated: 2026-08-30
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -86,7 +86,7 @@ WIRE 可以区分在 1 维 Weisfeiler-Lehman 同构测试下不可区分的图�
 
 ### GNN benchmark
 
-论文在 GraphGPS + ReLU Performer 线性注意力设置下评估了 12 个数据集（MNIST、CIFAR10、PATTERN、CLUSTER、OGB 四项、LRGB 三项、MalNet-Tiny 等），报告加 WIRE 普遍提升多个百分点，且经常大幅缩小甚至弥合 Performer 与全秩 softmax transformer 之间的差距[^src-2509-22259]。例如 MalNet-Tiny 上 WIRE Performer 与全秩 transformer 效果相当，但可在单张 T4 12GB GPU 上训练[^src-2509-22259]。
+论文在 GraphGPS + ReLU Performer 线性注意力设置下评估了 12 个数据集（MNIST、CIFAR10、PATTERN、CLUSTER、OGB 四项、LRGB 三项、MalNet-Tiny 等），报告加 WIRE 普遍提升多个百分点，且经常大幅缩小甚至弥合 Performer 与全秩 softmax transformer 之间的差距[^src-2509-22259]。例如 MalNet-Tiny 上 WIRE Performer 与全秩 transformer 效果相当，但可在单张 T4 12GB GPU 上训练[^src-2509-22259]。评估骨干 [[graphgps|GraphGPS]] 是 local MPNN + global attention + PE/SE 组合的模块化图 Transformer 框架，其本身即以线性注意力为可替换组件之一[^src-graphgps]。
 
 ## 实现效率
 
@@ -106,6 +106,9 @@ WIRE 可以区分在 1 维 Weisfeiler-Lehman 同构测试下不可区分的图�
 - [[rope]] — RoPE 技术详解；WIRE 在网格图上恢复标准 RoPE，是其特例
 - [[roformer]] — RoFormer 模型实体
 - [[spectral-kernel-linear-attention]] — WIRE 旋转读作核的随机特征后落地为线性注意力（本 wiki 分析）
+- [[graphgps]] — WIRE 图基准实验所用的模块化图 Transformer 骨干
+- [[rwse]] — 同属图位置/结构编码家族的随机游走结构编码
 - [[source-2509-22259]] — WIRE 论文源摘要
 
 [^src-2509-22259]: [[source-2509-22259]]
+[^src-graphgps]: [[source-graphgps]]

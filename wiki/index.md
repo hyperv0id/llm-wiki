@@ -1363,3 +1363,32 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Techniques (continued)
 - [[stg-attention]] — STG-Attention，图传播 0..k 阶输出 × 共享 QKV 的线性化时空注意力 + 递归门控 1×1 卷积交互，单层完成高阶时空交互 (STGformer, arXiv 2024)
+
+## Sources (continued)
+- [[source-graphgps]] — GraphGPS: Recipe for a General, Powerful, Scalable Graph Transformer（Rampášek et al., NeurIPS 2022，会议标识 PDF 内核实），PE/SE + local MPNN + global attention 三要素模块化框架，论文自述首个 O(N+E) 图 Transformer，16 benchmark 消融与对比（arXiv v4）
+
+## Techniques (continued)
+- [[graphgps]] — GraphGPS，三要素（PE/SE + local MPNN + global attention）模块化图 Transformer 配方：local MPNN 分支（含边特征）与 global attention 分支逐层并行求和，线性注意力下 O(N+E)（NeurIPS 2022）
+- [[rwse]] — RWSE（Random-Walk Structural Encoding），m 步随机游走矩阵对角线作节点 local SE，机制归因 Dwivedi et al.（LSPE），GraphGPS 消融中增益一致且对分子数据尤佳（NeurIPS 2022）
+
+## Sources (continued)
+- [[source-detr]] — DETR: End-to-End Object Detection with Transformers（Carion et al., Facebook AI, arXiv:2005.12872v3，venue 未在 PDF 内核实），direct set prediction + Hungarian 二部匹配损失 + Transformer encoder-decoder + learned object queries 并行解码，COCO AP 42.0 与强化 Faster R-CNN 相当、APL 优 APS 弱，panoptic PQ 45.1（R101, COCO val）
+
+## Techniques (continued)
+- [[detr]] — DETR，目标检测建模为直接集合预测：二部匹配 Hungarian loss + CNN/Transformer encoder-decoder，免 anchors/NMS（arXiv 2020）
+- [[object-queries]] — DETR 的 N 个 learned positional embeddings 输入 decoder 逐 query 并行解码，slot 区域/尺寸特化且无强类别特化（arXiv 2020）
+
+## Sources (continued)
+- [[source-virtual-nodes]] — Virtual Nodes Improve Long-term Traffic Prediction（Zhuang et al., MIT/清华/UF，arXiv:2501.10048v1，venue 未在 PDF 内核实），将 Virtual Nodes 图改写引入 ST-GNN 长期交通预测：semi-adaptive 邻接矩阵（距离图 + MTGNN 式反对称自适应权重）缓解 over-squashing，LargeST SD 上作者报告 Semi-10 V.N. 在 12 种邻接配置中全部指标最低
+
+## Techniques (continued)
+- [[virtual-nodes-traffic]] — Virtual Nodes，连接全部真实节点的辅助节点在单层内完成全图聚合，以半自适应邻接矩阵学习接入权重、缓解 over-squashing 的长期交通预测机制 (arXiv 2025)
+
+## Sources (continued)
+- [[source-over-squashing]] — On the Bottleneck of Graph Neural Networks and its Practical Implications（Alon & Yahav, Technion, ICLR 2021，会议标识 PDF 内核实），提出 over-squashing 概念解释 GNN 长程传播受限，给出隐藏维度组合下界（计数论证口径），FA 层干预实验（作者报告 QM9 六种 GNN 误差平均相对降 42%）（arXiv:2006.05205v4）
+
+## Concepts (continued)
+- [[over-squashing]] — Over-Squashing，长程任务下指数增长的感受野信息被压进固定长度向量的消息传递瓶颈；与 over-smoothing 分立、不可混用（ICLR 2021）
+
+## Techniques (continued)
+- [[fully-adjacent-layer]] — 全邻接层：仅把最后一层邻接改为全连接以打破 over-squashing 瓶颈的演示性方案，零新增权重，附维度/层位/部分边消融（ICLR 2021）

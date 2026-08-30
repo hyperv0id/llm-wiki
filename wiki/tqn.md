@@ -8,8 +8,8 @@ tags:
   - icml-2025
   - multivariate
 created: 2026-04-28
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-08-30
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -63,11 +63,17 @@ TQNet 极其简洁：
 | PatchTST | 通道独立（无变量相关性） |
 | [[unica|UniCA]] | 统一的协变量适应框架，可为 TQNet 添加异构协变量支持 |
 
+## 与可学习 Query 设计家族的关系
+
+可学习向量作为 Query 的设计在计算机视觉中有一个更早的实例：[[detr|DETR]] 将 N 个 learned positional embeddings（[[object-queries|object queries]]）输入 Transformer decoder，逐 query 并行解码目标集合（Sec 3.2）[^src-detr]。TQ 技术与 object queries 同属「Query 不来自输入、而来自可学习参数」的设计家族，但用途不同：TQ 在时序注意力中注入全局变量相关性先验[^src-tqn]，object queries 用于集合预测的非自回归并行解码[^src-detr]。（此对照为 wiki 的组织口径，非 TQNet 论文自身的定位。）
+
 ## 相关页面
 
 - [[unified-covariate-adaptation]] — 统一协变量适应概念
 - [[instance-normalization|RevIN]] — TQNet 使用 RevIN 处理分布漂移
+- [[detr]] / [[object-queries]] — 可学习 Query 并行解码在目标检测中的出处实例
 
 ## 引用
 
 [^src-tqn]: [[source-tqn]]
+[^src-detr]: [[source-detr]]
