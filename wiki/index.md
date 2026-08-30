@@ -1354,3 +1354,12 @@ All wiki pages, organized by type. Updated on every ingest.
 ## Concepts (continued)
 - [[flow-matching-design-space]] — FM 指南的设计选择体系：路径设计（affine/Gaussian、conditional OT 的 kinetic energy 刻画、geodesic/premetric、mixture）× 数据耦合（independent/paired/multisample）× 速度参数化（velocity/x1/x0/score 转换表与 scheduler 等价）× 条件化（X1/X0/双侧）与引导，以 Marginalization Trick + Bregman 散度为数学主干 (arXiv 2024)
 - [[generator-matching]] — Generator Matching，FM 指南第 8-9 章的 CTMP 统一框架：generator 与 KFE、universal characterization（$\mathbb{R}^d$ 上 generator = flow + diffusion + jump 之和）、GM 损失（Bregman）、组合模型（Markov superposition / divergence-free / predictor-corrector）与多模态 (arXiv 2024)
+
+## Sources (continued)
+- [[source-stgformer]] — STGformer: Efficient Spatiotemporal Graph Transformer for Traffic Forecasting（Wang et al., arXiv:2410.00385v2，PDF 内核实；IEEE 期刊模板排版、未见接收 venue），SGC 式图传播保留 0..k 阶 + 空间/时间共享 QKV 转置复用 + 分解内积线性化（O(N+T)）+ 递归门控交互的单层架构，8600 节点 CA 图批量推理较 STAEformer 100× 加速 / 99.8% GPU 内存降，LargeST SD/BA/LA 与 PEMS03/04/07/08 及跨年 2019→2020 均报告优于 STAEformer
+
+## Entities (continued)
+- [[stgformer]] — STGformer，单层图传播 × 统一时空线性注意力的高效交通 Transformer，效率锚点与同图跨年泛化证据 (arXiv 2024)
+
+## Techniques (continued)
+- [[stg-attention]] — STG-Attention，图传播 0..k 阶输出 × 共享 QKV 的线性化时空注意力 + 递归门控 1×1 卷积交互，单层完成高阶时空交互 (STGformer, arXiv 2024)

@@ -1,0 +1,1044 @@
+                                         JOURNAL OF LATEX CLASS FILES, VOL. XX, NO. X, AUGUST 201X                                                                                             1
+
+
+
+
+                                                     STGformer: Efficient Spatiotemporal Graph
+                                                        Transformer for Traffic Forecasting
+                                                                                Hongjun Wang, Jiyuan Chen, Tong Pan, Zheng Dong,
+                                                                                   Lingyu Zhang, Renhe Jiang, and Xuan Song
+
+
+
+                                            Abstract—Traffic forecasting is a cornerstone of smart city
+                                         management, enabling efficient resource allocation and trans-                                                × 𝑳𝑳                    × 𝑳𝑳
+                                                                                                                                              Temporal                Spatial
+                                         portation planning. Deep learning, with its ability to capture                                                                                  MLP
+arXiv:2410.00385v2 [cs.LG] 15 Oct 2024
+
+
+
+
+                                         complex nonlinear patterns in spatiotemporal (ST) data, has                                       Attention Block        Attention Block
+                                         emerged as a powerful tool for traffic forecasting. While graph
+                                                                                                                                   Time
+                                         neural networks (GCNs) and transformer-based models have                                                  (a) STAEformer
+                                         shown promise, their computational demands often hinder their
+                                         application to real-world road networks, particularly those with
+                                         large-scale spatiotemporal interactions. To address these chal-                                               ST-Graph
+                                                                                                                                                                            MLP
+                                         lenges, we propose a novel spatiotemporal graph transformer                                                Attention Block
+                                         (STGformer) architecture. STGformer effectively balances the
+                                         strengths of GCNs and Transformers, enabling efficient modeling                                    Time
+                                         of both global and local traffic patterns while maintaining                                               (b) STGformer
+                                         a manageable computational footprint. Unlike traditional ap-
+                                         proaches that require multiple attention layers, STG attention              Fig. 1. Unlike STAEformer, which relies on stacked 2L layers, STGformer
+                                         block captures high-order spatiotemporal interactions in a single           integrates graph and spatiotemporal attention mechanisms, achieving superior
+                                         layer, significantly reducing computational cost. In particular,            performance with only a single layer.
+                                         STGformer achieves a 100x speedup and a 99.8% reduction
+                                         in GPU memory usage compared to STAEformer during batch
+                                         inference on a California road graph with 8,600 sensors. We eval-
+                                         uate STGformer on the LargeST benchmark and demonstrate its                 forecasting. However, recent work [8] have prove that most of
+                                         superiority over state-of-the-art Transformer-based methods such            ST-model, including Transformer, have failed when meeting
+                                         as PDFormer and STAEformer, which underline STGformer’s
+                                                                                                                     large scale graph because current traffic datasets used for
+                                         potential to revolutionize traffic forecasting by overcoming the
+                                         computational and memory limitations of existing approaches,                benchmarking are relatively small when compared to the
+                                         making it a promising foundation for future spatiotemporal                  complexity and scale of actual traffic networks. For instance,
+                                         modeling tasks. Codes are available at GitHub                               popular benchmark datasets like PEMS series [9], MeTR-
+                                            Index Terms—Traffic Forecasting, Urban Computing, Long-                  LA, PEMS-Bay [1] consist of only a few hundred nodes and
+                                         tailed Distribution                                                         edges. In contrast, real-world traffic systems, such as Caltrans
+                                                                                                                     Performance Measurement System in California, USA [10],
+                                                                                                                     incorporate nearly 20,000 active sensors. Consequently, as
+                                                                  I. I NTRODUCTION                                   traffic forecasting models are predominantly developed using
+                                             PATIOTEMPORAL graph neural networks [1]–[4] have
+                                         S   shown exceptional potential and have become a preferred
+                                         method for making precise traffic predictions by leveraging
+                                                                                                                     these limited datasets, They often do not consider the compu-
+                                                                                                                     tational overhead of the model fail to scale up to larger sensor
+                                                                                                                     networks, presenting a significant challenge in the field.
+                                         graph neural networks to capture spatial relationships be-                     As depicted in Figure 2, we conducted a comparative
+                                         tween sensors and utilize sequential models to learn tempo-                 analysis of leading methods on the San Diego dataset within
+                                         ral patterns. Recently, the emergence of Transformer-based                  the LargeST framework [8]. Our evaluation included perfor-
+                                         architectures [5]–[7] greatly challenges the dominance of                   mance, model parameters, and computational costs. While
+                                         GCNs and become state of the arts architecture in traffic                   Transformer-based models, such as STAEformer [5], demon-
+                                            Hongjun Wang, Jiyuan Chen, Tong Pan, Zheng Dong and Lingyu               strated superior performance, they exhibited significantly
+                                         Zhang are with (1) SUSTech-UTokyo Joint Research Center on Super            higher computational demands compared to GCN-based ap-
+                                         Smart City, Department of Computer Science and Engineering (2) Re-          proaches like STGCN [11]. Based on these findings, we posit
+                                         search Institute of Trustworthy Autonomous Systems, Southern Univer-
+                                         sity of Science and Technology (SUSTech), Shenzhen, China. E-mail:          that the success of GCN and Transformer methods can be at-
+                                         wanghj2020,11811810@mail.sustech.edu.cn, pant@sustech.edu.cn, zheng-        tributed to their respective strengths in capturing global spatial
+                                         dong00@outlook.com, and zhanglingyu@didiglobal.com.                         interactions and input-adaptive long-range dependencies [12].
+                                            Xuan Song is with (1) School of Artificial Intelligence, Jilin Univer-
+                                         sity (2) Research Institute of Trustworthy Autonomous Systems, Southern     Standard graph convolution operations [13] effectively aggre-
+                                         University of Science and Technology (SUSTech), Shenzhen, China. Email:     gate local neighbor features with high orders interaction [11].
+                                         songxuan@jlu.edu.cn.                                                        However, their reliance on local information limits their ability
+                                            R. Jiang is with Center for Spatial Information Science, University of
+                                         Tokyo, Tokyo, Japan. Email: jiangrh@csis.u-tokyo.ac.jp.                     to consider global context in traffic scenarios, potentially
+                                            Corresponding to Xuan Song;                                              hindering performance. In contrast, self-attention mechanisms,
+JOURNAL OF LATEX CLASS FILES, VOL. XX, NO. X, AUGUST 201X                                                                                            2
+
+
+
+                                                                 MAE vs. FLOPs for ST-Models
+                              16
+
+                                                          STGformer      GWNET
+                              18           STID                                             DGCRN STAEformer
+           MAE in San Diego
+
+
+                                   STGCN                                     STGODE
+                              20
+
+                              22                                                                                     DSTAGNN
+
+                                   Parameters (M)
+                                                                                                                           ASTGCN
+                              24           0.1
+                                           1.0
+                              26           2.0
+                                                                      LSTM
+                                           4.0
+
+                                                    108                     109                               1010
+                                                                       FLOPs in log scale
+
+Fig. 2. MAE vs. FLOPs on traffic flow prediction in San Diego dataset [8]. The bubble size indicate the model parameter number. We can observe that the
+standard graph convolution operation based method like ST-GCN achieve high computation efficiency but with inferior performance. And, the Transformer-
+based method achieve SOTA but bring large additional computation cost than GCN-basd method.
+
+
+
+while disregarding explicit graph structures [5], implicitly                  contrast, we introduce a more efficient attention module that
+capture global spatial interactions through successive matrix                 integrates both graph and spatiotemporal attention mecha-
+multiplications. This, however, introduces substantial compu-                 nisms. Specifically, we conceptualize the temporal and spatial
+tational overhead, making it challenging to scale to large-scale              dimensions as a unified entity, employing the same query, key,
+real-world traffic networks.                                                  and value in the attention mechanism to facilitate efficient
+   Previously, the overhead associated with global attention                  spatiotemporal attention computation, which markedly reduces
+mechanisms remained within an acceptable range due to the                     computational overhead compared to the separate treatment
+use of only small-scale datasets for validation. However, the                 of these dimensions. STGformer surpasses current state-of-
+recent introduction of LargeST has exacerbated this issue.                    the-art models by leveraging graph information, allowing for
+The global attention mechanism typically exhibits quadratic                   efficient computation using only a single layer of the attention
+time and space complexity as the number of nodes increases,                   module. Furthermore, we adopt linear attention [18]–[20],
+while the computational graph experiences exponential growth                  which replaces the softmax operation of the standard attention
+with an increasing number of layers. A potential compromise                   mechanism with decomposed inner products, thereby reduc-
+is to employ advanced techniques to partition interconnected                  ing the computational complexity from quadratic to linear.
+nodes into smaller mini-batches, thereby reducing computa-                    This significantly alleviates memory consumption and com-
+tional overhead [14]–[17]. Nonetheless, this strategy results in              putational burden when handling large-scale spatiotemporal
+longer training times due to the smaller mini-batches. In this                datasets. The main contributions of this paper are summarized
+paper, we propose a more efficient model, which demonstrates                  as follows:
+exceptional competitiveness across seven traffic benchmarks,
+ranging from small-scale PEMS [9] datasets to large-scale
+datasets like LargeST [8], utilizing only a single layer with
+linear spatiotemporal global attention. Despite the model’s                      • We propose a novel STG-attention that efficiently cap-
+simplicity, it retains the full expressive capability necessary                    tures high-order spatiotemporal interactions for both
+to capture all interactions among graph convolutions and                           global and local patterns in a single layer, unlike previous
+attention mechanisms. Furthermore, our findings indicate that                      methods requiring multiple stacked layers.
+using fewer parameters can enhance generalization capabil-                       • STGformer combines the advantages of GCNs and Trans-
+ities. Our research demonstrates that STGformer maintains                          formers while maintaining low computational and mem-
+strong performance even when tested on data from LargeST                           ory costs, significantly improving efficiency in processing
+one year later.                                                                    large-scale traffic graphs compared to existing methods.
+                                                                                 • STGformer outperforms state-of-the-art Transformer-
+   In Figure 1, we specifically examine the differences between                    based methods on the LargeST benchmark, demonstrating
+STGformer and STAEformer. Firstly, STAEformer predomi-                             remarkable efficiency by being 100× faster and using
+nantly relies on stacked 2L layers and utilizes a spatiotem-                       99.8% less GPU memory than STAEformer during batch
+poral separable attention mechanism to achieve higher-order                        inference on California’s traffic network.
+interactions by deepening the model. As previously noted,
+this approach incurs substantial computational overhead. In
+JOURNAL OF LATEX CLASS FILES, VOL. XX, NO. X, AUGUST 201X                                                                                                        3
+
+
+
+
+                                                   MatMul
+
+                                                                                                                             1× 𝟏𝟏 Cov
+                                                                                                                                            ST-Attention
+                                       Softmax                                                  1× 𝟏𝟏 Cov
+                                       MatMul                                                                 ST-Attention
+
+                                                                                   ST-Attention
+
+
+
+
+            (a)                                     (b)                                                                   (c)
+Fig. 3. Illustration the main idea of STGformer. We illustrate typical spatial modeling in graphs, highlighting various levels of interactions and receptive
+fields. (a) Conventional Graph Convolution [9], [11] explicitly handles arbitrary-order spatial interaction but within a limited receptive area. (b) Spatiotemporal
+Transformer [5], [6] performs interactions up to two orders through two consecutive matrix multiplications, covering a broad receptive area. (c) Our STGformer
+achieves high-order global spatial interactions with structure information by integrating graph convolutional networks with Transformer architecture.
+
+
+
+                          II. R ELATED W ORK                                       encodings, edge structural encodings, and attention bias. In
+A. Traffic Forecasting                                                             terms of graph attention mechanisms, Velickovic et al. [34]
+                                                                                   introduced graph attention networks (GAT) leveraging multi-
+   Deep neural networks have become the predominant ap-
+                                                                                   head attention for node classification, while subsequent works
+proach for traffic forecasting [21]–[25], typically combining
+                                                                                   like GATv2 [35] addressed limitations in GAT’s expressive-
+graph neural networks (GNNs) with either Recurrent Neu-
+                                                                                   ness. The literature has explored various types of graph
+ral Networks (RNNs) or Temporal Convolutional Networks
+                                                                                   Transformers, including shallow models like GAT and GTN
+(TCNs) to capture complex spatio-temporal patterns in traffic
+                                                                                   [36], deep architectures stacking multiple attention layers [37],
+data. RNN-based models, such as DCRNN [21], incorporate
+                                                                                   [38], scalable versions addressing efficiency challenges for
+diffusion convolution with GRU layers to model spatial and
+                                                                                   large graphs [33], [39], and pre-trained models leveraging self-
+temporal dependencies. Extensions of this approach include
+                                                                                   supervised learning on large graph datasets [40], [41]. Graph
+ST-MetaNet [26], which employs meta-learning with graph
+                                                                                   Transformers have demonstrated promising results across var-
+attention networks, and AGCRN [27], which introduces node-
+                                                                                   ious domains, including protein structure prediction in bioin-
+specific adaptive parameters in graph convolution. To improve
+                                                                                   formatics [42], [43], entity resolution in data management
+computational efficiency, TCN-based models like STGCN [11]
+                                                                                   [44], [45], and anomaly detection in temporal data [46],
+and GWNet [2] have adopted dilated causal convolutions
+                                                                                   [47]. Despite their success, recent surveys [33], [48] have
+for temporal modeling. These architectures demonstrate faster
+                                                                                   highlighted ongoing challenges in scalability, generalization,
+training times and competitive performance on various bench-
+                                                                                   interpretability, and handling dynamic graphs, indicating that
+marks. Attention mechanisms have been integrated into models
+                                                                                   addressing these issues remains an active area of research
+such as ASTGCN [9] and STAEformer [5] to better capture
+                                                                                   in the graph learning community. At the same time, the
+long-range dependencies and complex spatio-temporal inter-
+                                                                                   Transformer based on spatiotemporal graph correlation has not
+actions. These approaches have shown improved performance
+                                                                                   yet been explored in the field of traffic prediction.
+in handling diverse traffic patterns. Recent research directions
+include the integration of GNNs with neural ordinary differ-
+ential equations for continuous modeling of spatio-temporal                                                  III. P RELIMINARIES
+dependencies [28], [29], and the development of dynamic                            A. Problem Statement
+adjacency matrices to reflect changing relationships over time                       In this paper, we formalize the representation of a graph
+[30], [31]. These emerging approaches aim to address limi-                         as G = (V, E, A), where V denotes the set of nodes with
+tations of previous models and enhance the adaptability and                        cardinality N = |V|, E ⊆ V × V defines the set of edges, and
+interpretability of traffic forecasting systems.                                   A ∈ RN ×N represents the adjacency matrix. The dynamic
+                                                                                   nature of the graph is captured by a time-dependent feature
+B. Graph Transformer                                                               matrix Xt ∈ R|V|×C at each discrete time step t, where C
+   Graph Transformers have emerged as a powerful class of                          denotes the dimensionality of node features (e.g., traffic flow,
+models for learning on graph-structured data, with several                         vehicle speed, and road occupation). Traffic forecasting can
+surveys reviewing different aspects of these models. The                           be formally expressed as a function:
+incorporation of graph structure into Transformer architectures                                                  
+                                                                                                 f : X(t−T ):t , G 7→ X(t+1):(t+S) ,            (1)
+has been explored through various graph inductive biases, as
+discussed by Dwivedi et al. [32] and Rampášek et al. [33],                       where T and S represent the input and output sequence
+who provided comprehensive overviews of node positional                            lengths, respectively, which encapsulates the temporal depen-
+JOURNAL OF LATEX CLASS FILES, VOL. XX, NO. X, AUGUST 201X                                                                          4
+
+
+
+dency by considering a historical window of T time steps and       arises primarily from the polynomial approximation of the
+predicting future states for S time steps ahead.                   graph Laplacian. In contrast, the spatiotemporal self-attention
+                                                                   layer demonstrates a more intricate computational profile, with
+B. Spatiotemporal Graph Convolution                                a complexity of O(T N 2 C + N T 2 C), where T denotes the
+                                                                   number of frames. This increased complexity stems from
+   Graph neural networks (GNNs) have the advantage of
+                                                                   the dynamic weight generation in multi-head self-attention,
+aggregating node neighborhood contexts to generate spatial
+                                                                   encompassing operations such as query-key interactions, soft-
+representations, which is earliest method introduced to spa-
+                                                                   max computations, and attention-weighted aggregations across
+tiotemporal graph modeling [3], [11], [21]. Formally, let ∗G is
+                                                                   both spatial and temporal dimensions. The self-attention ap-
+graph convolution operator [13], which is reformulated as
+                                                                   proach, while more computationally intensive, offers enhanced
+                                    K−1
+                                    X                              flexibility in capturing complex spatiotemporal dependencies,
+              Θ ∗G h = Θ(L)x ≈            θk Tk (L̃)h,       (2)   particularly when dealing with lengthy sequences or high-
+                                    k=0
+                                                                   dimensional feature spaces. The choice between these methods
+where θ = [θ0 , . . . , θK−1 ] ∈ RK is a vector of polynomial      thus presents a trade-off between computational efficiency and
+coefficients K denotes the kernel size of the graph convolution    model expressiveness, contingent upon the specific require-
+Tk (L̃) ∈ RN ×N represents the k-th order Chebyshev polyno-        ments of the spatiotemporal modeling task at hand.
+mial evaluated at the rescaled Laplacian L̃ = 2L/λmax − IN
+L = D−1/2 (D − A)D−1/2 is the normalized graph Laplacian                                IV. M ETHODOLOGY
+D is the degree matrix of the graph λmax is the largest            A. Overview
+eigenvalue of L IN is the N ×N identity matrix. This approach         The overall architecture of our proposed STGformer is
+enables the efficient computation of K-localized convolutions      illustrated in Figure 4. The key feature of our model is its
+by leveraging polynomial approximation, effectively capturing      efficiency, as it achieves joint spatiotemporal graph attention
+the local structure of the graph within a K-hop neighborhood.      using only a single attention module. Our model is divided into
+                                                                   two branches: the graph propagation module and the attention
+C. Spatiotemporal Self-Attention Layer                             module, with specific details shown in Figure 3. First, the
+   Instead of GCNs [2], [9], [11], which aggregate neighboring     spatiotemporal data undergoes graph propagation and is then
+features using static convolution kernels, Transformers [5],       fed into the attention module separately. Subsequently, a 1x1
+[6] employ multi-head self-attention to dynamically generate       convolution is applied to interact with the outputs of different-
+weights that mix spatial and temporal signals. Formally, given     order attentions, which are finally aggregated.
+a hidden spatiotemporal representation h ∈ RT ×N ×C , where
+T is the number of time frames, N = |V| is the number              B. Data Embedding Layer
+of graph nodes, and C denotes the channel dimension, we               To transform the input data into a high-dimensional repre-
+can formulate the spatiotemporal self-attention mechanism as       sentation, we adopt a data embedding layer consistent with the
+follows: For spatial self-attention, the query, key, and value     STAEformer. Specifically, the raw input X is first projected
+matrices are derived as: Qs = hWQs , Ks = hWK            s
+                                                           , and   into Xdata ∈ RT ×N ×d through a fully connected layer,
+             s            s     s    s       C×C
+Vs = hWV , where WQ , WK , WV ∈ R                  are learnable   where d is the embedding dimension. Recognizing the inherent
+parameter matrices. The spatial self-attention
+                                            √ scores are then      periodicity of urban traffic flow influenced by human commut-
+computed as: As = Softmax(Qs KsT / C), where As ∈                  ing patterns and lifestyles, such as rush hours, we introduce
+RT ×N ×N captures spatial dependencies across nodes. Sim-          two embeddings to capture weekly and daily cycles, denoted
+ilarly, for temporal self-attention, we have: Qt = hWQt ,          as tw(t) , td(t) ∈ Rd , respectively. Here, w(t) and d(t) are
+           t
+Kt = hWK      , and Vt = hWVt , with WQt , WK
+                                            t
+                                              , WVt ∈ RC×C be-     functions that map time t to the corresponding week index (1
+ing distinct learnable parameters. The temporal self-attention
+                                                    √              to 7) and minute index (1 to 288, with a 5-minute interval). The
+scores are calculated as: At = Softmax(QTt Kt / C), where          temporal cycle embeddings Xw , Xd ∈ RT ×d are obtained by
+At ∈ RN ×T ×T captures temporal dependencies across differ-        concatenating the embeddings of all T time steps. Following
+ent time horizons. This formulation allows for the dynamic         [5], we also incorporate spatiotemporal positional encoding
+generation of attention weights that simultaneously consider       Xste ∈ RN ×T ×d to introduce positional information into the
+both spatial and temporal contexts, enabling the model to adapt    input sequence. Finally, the output of the data embedding
+to varying spatiotemporal patterns in the input data.              layer is obtained by simply concatenating the aforementioned
+                                                                   embedding vectors: Xemb = Xdata || Xw || Xd || Xste .
+D. Analysis of GCN and Transformer Flops
+   In analyzing the computational complexity of spatiotempo-       C. Spatiotemporal Graph Transformer
+ral graph modeling techniques, we observe distinct charac-            As previously elucidated, GCNs excel in modeling locally
+teristics between graph convolution and self-attention mecha-      high-interaction information, whereas Transformers are adept
+nisms. The spatiotemporal graph convolution, utilizing Cheby-      at capturing global, limited interaction information. Although
+shev polynomials, exhibits a computational complexity of           Transformer-based methodologies have achieved state-of-the-
+O(K|E|C), where K represents the kernel size, |E| the number       art performance in traffic forecasting, their quadratic compu-
+of edges, and C the number of channels. This complexity            tational complexity with respect to graph size significantly
+JOURNAL OF LATEX CLASS FILES, VOL. XX, NO. X, AUGUST 201X                                                                                                          5
+
+
+
+
+                                           Graph                                                 Propagation                   Propagation
+                                        Propagation
+
+                   Time
+                                       STG-Attention
+   Node-Embed
+                                        Add & Norm
+                                                                                         Query                  Spatial
+                                                                                                                                MatMul
+
+
+
+
+                                                                                                                                                  Spatiotemporal
+                                                                                                               Softmax
+
+
+
+
+                                                                                                                                                    Interaction
+                                                                                          Value
+        STG-                           Feed Forward                              N
+       Attention
+        Block                                                                        T                         Temporal
+                                                                            C            Key                                    MatMul
+                                        Add & Norm                                                             Softmax
+
+ MLP & Prediction                                             × 𝑘𝑘
+                                                        Interaction
+
+Fig. 4. The overall architecture of STGformer. STGformer differs from the traditional Transformer in that we replace the attention mechanism with a
+spatiotemporal graph attention module, while simplifying the interaction process to require only a single layer rather than stacking multiple layers. Specifically,
+node features are first propagated through the graph propagation module for k iterations. Then, the information from each propagation step is fed into the
+spatiotemporal attention module, where each module shares the same query, key, and values. Finally, the attention outputs are sequentially processed from
+lower to higher order for interaction.
+
+
+
+impedes their application, particularly on real-world road                           actions by stacking layers. In contrast, as shown in Figure 4,
+networks characterized by high sensor density [8], [10]. In                          we treat space and time as a unified entity, employing a
+this study, we propose a more efficient and effective approach                       single projection to generate the query, key, and value vectors,
+to spatiotemporal interaction modeling by synergistically com-                       and using a simple transposition to compute the attention
+bining graph propagation and Transformer architectures. We                           mechanism. Q = hwQ , K = hwK , V = hwV , where
+adopt a simplified variant of the GCN formulation presented                          wQ , wK , wV ∈ RC×C are trainable parameters. Subsequently,
+in Equation 2, focusing exclusively on graph propagation. For                        the spatial and temporal self-attention scores are defined as:
+traffic signals, denoted as Xemb , we omit the feature parameter
+                                                                                                         QK T
+                                                                                                                                    T 
+                                                                                                                                      Q K
+W , resulting in the following formulation:                                            As = Softmax √            , At = Softmax √              , (5)
+                                                                                                            C                            C
+[X0 | X1 |X2 | . . . | Xk ] = GraphPropagation(Xemb ),
+                                                                                     where As ∈ RT ×N ×N captures spatial relations across dif-
+where X0 = X and Xk = Lk X. The GraphPropagation                                     ferent nodes, and At ∈ RN ×T ×T captures temporal rela-
+operation is analogous to the simplification introduced by the                       tions within individual nodes. However, despite our integra-
+simplified graph convolution [49], which streamlines graph                           tion of spatiotemporal attention, which partially reduces the
+convolutional networks by eliminating nonlinearities and col-                        computational overhead, the inherent quadratic computational
+lapsing weight matrices across consecutive layers. However,                          complexity still results in considerable computational costs.
+in contrast to SGC, our approach retains the different orders                        Therefore, we will next introduce a linear attention mechanism
+of Xk to facilitate further interactions.                                            to further alleviate this issue.
+                                                                                     Spatiotemporal Linearized Attention. Recent work [8] have
+   We then propose a recursive attention module to introduce
+                                                                                     point out that a major part of existing both graph neural
+higher-order spatiotemporal interactions, further enhancing
+                                                                                     network (GCN) and Transformer-based method failed to adopt
+the model’s capability. The recursive attention module first
+                                                                                     to the real road graph since the high computation cost in
+takes graph-propagated information as input, then recursively
+                                                                                     capture global and local traffic pattern. We consider the major
+applies gated convolutions:
+                                                                                     issue is the high computation cost with graph size in real world
+                       pn+1 = an (qn ) ⊙ gn (pn ),                         (3)       increase dramatically. To address this challenge, the efficient
+                                                                                     attention mechanism [18]–[20] is adopt in this paper to address
+where k = 0, 1, . . . , n−1, with ak representing the spatiotem-                     the significant resource demands of traditional dot-product
+poral attention module and gk used for dimensional matching:                         attention, which has quadratic memory and computational
+              (
+                 Identity,               n=0                                         complexities. This makes dot-product attention impractical
+        gn =                                                  (4)                    for real world traffic graph due to its high computational
+                 Linear (Cn−1 , Cn ) , 1 ≤ n ≤ k − 1
+                                                                                     and memory costs. Efficient attention maintains mathematical
+As mentioned earlier in Sec. III-C, traditional spatiotemporal                       equivalence to dot-product attention but achieves substantial
+attention mechanisms mainly capture spatiotemporal patterns                          improvements in speed and memory efficiency, which is done
+through a separable approach and achieve higher-order inter-                         by interpreting the keys differently: instead of viewing them
+JOURNAL OF LATEX CLASS FILES, VOL. XX, NO. X, AUGUST 201X                                                                            6
+
+
+
+as N node feature vectors in Rd , they are treated as d single-   which STGformer significantly reduces 99.869% computa-
+channel feature maps. Each of these maps acts as a weighting      tional burden compared to STAEFormer.
+over all positions, aggregating value features through weighted
+summation to form a global context vector. The core equation                              V. E XPERIMENT
+for efficient attention is:
+                                                                  Datasets. We experimented with LargeST [8], which aggre-
+           E(Q, K, V ) = wq (X) wk (X)T wv (X) ,
+                                                    
+                                                                  gated traffic readings from 5-minute intervals into 15-minute
+where wq and wk are normalization functions.     For scaling,     windows, aiming to predict future 12-step outcomes based on
+                                         √                        historical 12-step data [50]. LargeST comprises three Califor-
+both wq and wk divide the matrices by n. We can easily
+prove the equivalence between dot-product and efficient atten-    nia sub-datasets constructed from three representative regions
+tion with scaling normalization demonstrates that:                within the state. The first is Los Angeles, encompassing 3,834
+                                                                  sensors installed across five counties in the Los Angeles
+                         Q KT
+                                  
+                                        1                         region: Los Angeles, Orange, Riverside, San Bernardino, and
+        E(Q, K, V ) = √       √ V = (QK T )V ,             (6)
+                          n     n       n                         Ventura. The second sub-dataset, the Bay Area, includes
+Therefore, we substitute Eq. (5) into Eq. (6) and get             2,352 sensors located in 11 counties: Alameda, Contra Costa,
+                                                                  Marin, Napa, San Benito, San Francisco, San Mateo, Santa
+                   1                      1 T
+            As =     (QK T )V ,    At =     (Q K)V ,        (7)   Clara, Santa Cruz, Solano, and Sonoma. The smallest sub-
+                   n                      n                       dataset, San Diego, contains 716 sensors. To further verify the
+D. Computational Cost Analysis.                                   performance of our method, we also conducted experiments
+                                                                  on the widely-used PEMS-series benchmarks i.e., PEMS03,
+   From Eq. (5), it is evident that the computational cost
+                                                                  PEMS04, PEMS07, PEMS08. [9]. PEMS-series, representing
+of the spatiotemporal softmax attention mechanism scales
+                                                                  the four major districts in California, are aggregated into 5-
+with O T N 2 + N T 2 . The memory requirements similarly
+                                                                  minute intervals, resulting in 12 data points per hour and 288
+increase, as the complete attention matrix must be stored to
+                                                                  data points per day.
+compute the gradients for the queries, keys, and values. In
+                                                                  Implementation Details. Our experiments ran on a GPU
+contrast, the linear transformer we adopt in Eq. (7) has both
+                                                                  server with eight GeForce GTX 3090 graphics cards, em-
+time and memory complexities of O(N + T ).
+                                                                  ploying the PyTorch 2.0.3 framework. Raw data have been
+   We will divide the computation of our into 3 parts, and
+                                                                  standardized using z-score normalization [51]. If validation
+calculate the FLOPs for each part.
+                                                                  error stabilized within 15-20 epochs or ceased after 200
+   • Graph Propagation. Graph propagation, employing
+                                                                  epochs, training halted prematurely, preserving the best model
+     Chebyshev polynomials, owns a computational complex-
+                                                                  based on validation data [52]. We maintained fidelity to the
+     ity of O(K|E|C), where K denotes the order, |E| repre-
+                                                                  original paper’s model parameters and settings, while also
+     sents the number of edges, and C signifies the number
+                                                                  conducting multiple parameter tuning iterations to enhance
+     of channels. This complexity is predominantly attributed
+                                                                  experimental outcomes. Data were partitioned chronologically
+     to the polynomial approximation of the graph Laplacian.
+                                                                  into training, validation, and test sets at a 6:2:2 ratio across all
+   • Spatiotemporal Linear Attention. As previously men-
+                                                                  sub-datasets. In our experiments, we assess model performance
+     tioned, the time complexity of Spatiotemporal Linear
+                                                                  using the Mask-Based Root Mean Square Error (RMSE),
+     Attention is O(N +T ), where N is the number of spatial
+                                                                  Mean Absolute Error (MAE), and Mean Absolute Percentage
+     nodes and T is the temporal length. Since the process
+                                                                  Error (MAPE) as metrics, wherein zero values (indicating
+     needs to be performed K times, the overall computational
+                                                                  noisy data) are disregarded.
+     complexity becomes O(K(N + T )).
+                                                                  Baselines. In this study, we conduct a comprehensive eval-
+   • Recursive Interaction. We consider the FLOPs of
+                                                                  uation of traffic forecasting methodologies, encompassing a
+     the element-wise multiplication with 1×1 convolution.
+                                                                  diverse array of baselines with publicly available implemen-
+     Therefore, the computational cost is KN T C 2 .
+                                                                  tations. These baselines span traditional approaches, contem-
+Therefore, the total FLOPs with spatiotemporal attention are:     porary deep learning techniques, and state-of-the-art models,
+    FLOPs(STGformer) = KC(|E| + N + T + N T C).                   providing a thorough representation of the field’s progression.
+                                                                     • HA (Historical Average): Conceptualizes traffic flows
+Because STAEFormer performs self-attention operations on
+                                                                        as periodic processes, utilizing weighted averages from
+spatial and temporal stacked with L layers respectively, we
+                                                                        antecedent periods for future predictions.
+can easily calculate its FLOPs as:
+                                                                     • LSTM [53]: Long Short-Term Memory, a type of recur-
+       FLOPs(STAEFormer) = L(T N 2 C + N T 2 C).                        rent neural network architecture that is particularly effec-
+                                                                        tive at learning and remembering long-term dependencies
+For instance, assuming input lengths of 12, California graph            in sequential data.
+with 8600 nodes, a hidden dimension of 32, an interaction            • DCRNN [21]: Diffusion Convolutional Recurrent Neural
+order K of 3, |E| = 201, 363 and L = 3, the ratio of FLOPs              Network, which models traffic flow as a diffusion process,
+between STGformer and STAEFormer can be calculated as                   innovatively replacing the fully connected layer in Gated
+follows:                                                                Recurrent Units (GRU) [54] with a diffusion convolu-
+               FLOPs(STGformer)
+                                   ≈ 0.00131,                           tional layer.
+              FLOPs(STAEFormer)
+JOURNAL OF LATEX CLASS FILES, VOL. XX, NO. X, AUGUST 201X                                                                                       7
+
+
+
+                                                          TABLE I
+ P ERFORMANCE COMPARISONS ARE PRESENTED , WITH THE BEST- PERFORMING BASELINE RESULTS HIGHLIGHTED IN BOLD . ”PARAM ” DENOTES
+          THE NUMBER OF LEARNABLE PARAMETERS , WHERE K REPRESENTS THOUSANDS (103 ) AND M REPRESENTS MILLIONS (106 ).
+
+
+                                               H ORIZON 3                H ORIZON 6                 H ORIZON 12                AVERAGE
+ DATA              M ETHOD     PARAM
+                                       MAE      RMSE      MAPE   MAE      RMSE      MAPE   MAE        RMSE      MAPE   MAE     RMSE    MAPE
+                      HA         –     33.61    50.97   20.77%   57.80    84.92   37.73%   101.74    140.14   76.84%   60.79   87.40   41.88%
+                     LSTM      98K     19.03    30.53   11.81%   25.84    40.87   16.44%    37.63     59.07   25.45%   26.44   41.73   17.20%
+                   DCRNN       373K    17.14    27.47   11.12%   20.99    33.29   13.95%    26.99     42.86   18.67%   21.03   33.37   14.13%
+                   AGCRN       761K    15.71    27.85   11.48%   18.06    31.51   13.06%    21.86     39.44   16.52%   18.09   32.01   13.28%
+                    STGCN      508K    17.45    29.99   12.42%   19.55    33.69   13.68%    23.21     41.23   16.32%   19.67   34.14   13.86%
+                   GWNET       311K    15.24    25.13    9.86%   17.74    29.51   11.70%    21.56     36.82   15.13%   17.74   29.62   11.88%
+  S AN D IEGO
+  (N = 716)        ASTGCN      2.2M    19.56    31.33   12.18%   24.13    37.95   15.38%    30.96     49.17   21.98%   23.70   37.63   15.65%
+                   STGODE      729K    16.75    28.04   11.00%   19.71    33.56   13.16%    23.67     42.12   16.58%   19.55   33.57   13.22%
+                  DSTAGNN      3.9M    18.13    28.96   11.38%   21.71    34.44   13.93%    27.51     43.95   19.34%   21.82   34.68   14.40%
+                   DGCRN       243K    15.34    25.35   10.01%   18.05    30.06   11.90%    22.06     37.51   15.27%   18.02   30.09   12.07%
+                  D2 STGNN     406K    14.92    24.95    9.56%   17.52    29.24   11.36%    22.62     37.14   14.86%   17.85   29.51   11.54%
+                     STID      258K    15.08    25.20    9.88%   17.79    30.15   11.97%    21.68     38.59   15.15%   17.82   30.98   11.96%
+                 STAE FORMER   1.7M    15.37    25.66   10.15%   18.03    30.46   12.11%    22.21     37.79   15.49%   18.01   30.38   12.03%
+                 STG FORMER    256K    14.97    24.96    9.41%   17.44    29.26   11.12%    20.94     35.93   14.08%   17.36   29.52   11.22%
+                      HA          –    32.57    48.42   22.78%   53.79    77.08   43.01%   92.64     126.22   92.85%   56.44   79.82   48.87%
+                     LSTM       98K    20.38    33.34   15.47%   27.56    43.57   23.52%   39.03      60.59   37.48%   27.96   44.21   24.48%
+                   DCRNN       373K    18.71    30.36   14.72%   23.06    36.16   20.45%   29.85      46.06   29.93%   23.13   36.35   20.84%
+                   AGCRN       777K    18.31    30.24   14.27%   21.27    34.72   16.89%   24.85      40.18   20.80%   21.01   34.25   16.90%
+                    STGCN       1.3M   21.05    34.51   16.42%   23.63    38.92   18.35%   26.87      44.45   21.92%   23.42   38.57   18.46%
+   BAY A REA
+  (N = 2, 352)     GWNET       344K    17.85    29.12   13.92%   21.11    33.69   17.79%   25.58      40.19   23.48%   20.91   33.41   17.66%
+                   ASTGCN      22.3M   21.46    33.86   17.24%   26.96    41.38   24.22%   34.29      52.44   32.53%   26.47   40.99   23.65%
+                     STTN      218K    18.25    29.64   14.05%   21.06    33.87   17.03%   25.29      40.58   21.20%   20.97   33.78   16.84%
+                   STGODE      788K    18.84    30.51   15.43%   22.04    35.61   18.42%   26.22      42.90   22.83%   21.79   35.37   18.26%
+                  DSTAGNN      26.9M   19.73    31.39   15.42%   24.21    37.70   20.99%   30.12      46.40   28.16%   23.82   37.29   20.16%
+                   DGCRN       374K    18.02    29.49   14.13%   21.08    34.03   16.94%   25.25      40.63   21.15%   20.91   33.83   16.88%
+                     STID      711K    17.25    29.18   13.42%   20.31    34.20   16.13%   24.29      41.29   20.16%   20.14   34.39   16.07%
+                  D2 STGNN     446K    17.54    28.94   12.12%   20.92    33.92   14.89%   25.48      40.99   19.83%   20.71   33.65   15.04%
+                 STAE FORMER    3.3M   17.55    29.25   13.00%   20.55    33.87   15.45%   24.75      41.00   19.75%   20.39   34.21   15.55%
+                 STG FORMER    491K    17.13    28.63   12.72%   20.11    33.20   15.12%   24.22      40.16   19.35%   19.98   33.50   15.22%
+                      HA          –    33.66    50.91   19.16%   56.88    83.54   34.85%   98.45     137.52   71.14%   59.58   86.19   38.76%
+                     LSTM       98K    20.02    32.41   11.36%   27.73    44.05   16.49%   39.55      61.65   25.68%   28.05   44.38   17.23%
+                   DCRNN       373K    18.41    29.23   10.94%   23.16    36.15   14.14%   30.26      46.85   19.68%   23.17   36.19   14.40%
+                   AGCRN       792K    17.27    29.70   10.78%   20.38    34.82   12.70%   24.59      42.59   16.03%   20.25   34.84   12.87%
+                    STGCN       2.1M   19.86    34.10   12.40%   22.75    38.91   14.11%   26.70      45.78   17.00%   22.64   38.81   14.17%
+ L OS A NGELES
+ (N = 3, 834)      GWNET       374K    17.28    27.68   10.18%   21.31    33.70   13.02%   26.99      42.51   17.64%   21.20   33.58   13.18%
+                   ASTGCN      59.1M   21.89    34.17   13.29%   29.54    45.01   19.36%   39.02      58.81   29.23%   28.99   44.33   19.62%
+                   STGODE      841K    18.10    30.02   11.18%   21.71    36.46   13.64%   26.45      45.09   17.60%   21.49   36.14   13.72%
+                  DSTAGNN      66.3M   19.49    31.08   11.50%   24.27    38.43   15.24%   30.92      48.52   20.45%   24.13   38.15   15.07%
+                     STID      901K    16.43    27.40    9.89%   19.77    33.43   12.26%   24.23      42.02   15.88%   19.66   33.99   12.31%
+                 STAE FORMER    4.7M   16.72    27.50   9.77%    20.10    33.05   11.89%   24.69      41.42   15.47%   19.97   33.53   12.01%
+                 STG FORMER    705K    16.39    26.95    9.58%   19.70    32.39   11.66%   24.19      40.59   15.16%   19.58   32.88   11.78%
+
+
+
+
+  • Graph WaveNet [2]: Strategically stacks Gated Temporal                  • DGCRN [30]: Dynamic Graph Convolutional Recurrent
+    Convolutional Networks (TCN) and Graph Convolutional                      Network, which uses hyper-networks to model dynamic
+    Networks (GCN) to concurrently capture spatial and                        spatial relationships and employs an efficient training
+    temporal dependencies.                                                    strategy for improved traffic prediction performance.
+  • ASTGCN [9]: Attention-based Spatial-Temporal Graph                      • GTS [56]: Graph Structure Learning for Time Series, a
+    Convolutional Network, which synergistically combines                     method that simultaneously learns the graph structure and
+    spatial-temporal attention mechanisms to simultaneously                   performs forecasting for multiple time series.
+    capture dynamic spatial-temporal characteristics of traffic             • STGCN [11]: Spatial-Temporal Graph Convolutional
+    data.                                                                     Networks, which utilizes graph convolutions to model
+  • MTGNN [55]: Multi-Task Graph Neural Network, which                        spatial dependencies and 1D convolutions for temporal
+    extends the Graph WaveNet through the integration of                      modeling in traffic forecasting.
+    mix-hop propagation layers in the spatial module, dilated               • STTN [7]: Spatial-Temporal Transformer Network,
+    inception layers in the temporal module, and a more                       which applies the Transformer architecture to capture
+    sophisticated graph learning layer.                                       both spatial and temporal dependencies in traffic data.
+JOURNAL OF LATEX CLASS FILES, VOL. XX, NO. X, AUGUST 201X                                                                                        8
+
+
+
+                                                            TABLE II
+        P ERFORMANCE COMPARISONS ON CROSS YEAR SCENARIO , WITH THE BEST- PERFORMING BASELINE RESULTS HIGHLIGHTED IN BOLD .
+
+                                         H ORIZON 3                  H ORIZON 6                    H ORIZON 12                AVERAGE
+ DATA              M ETHOD
+                                 MAE      RMSE        MAPE   MAE      RMSE        MAPE     MAE      RMSE     MAPE     MAE     RMSE      MAPE
+                   AGCRN        21.36     34.17   26.36%     27.37    42.02       32.45%   35.14     52.60   42.91%   27.18   41.90     32.95%
+                   ASTGCN       20.44     32.75   17.91%     31.33    51.44       28.05%   40.38     65.34   41.34%   30.08   48.98     27.10%
+                  D2STGNN       19.52     30.84   20.86%     25.32    38.85       27.68%   33.19     48.55   34.87%   25.33   38.40     27.81%
+                   DGCRN        18.17     27.89   18.20%     24.43    37.42       27.77%   39.34     58.15   35.98%   25.63   38.88     27.50%
+                  DSTAGNN       20.89     33.13   18.06%     30.26    46.25       28.82%   41.15     60.90   41.99%   29.65   45.17     28.17%
+  S AN D IEGO      GWNET        18.16     29.01   17.38%     24.52    38.55       27.75%   32.57     47.92   37.63%   24.58   37.61     27.89%
+     2019
+       ↓            STGCN       28.48     41.99   36.03%     33.44    48.43       39.78%   38.55     56.53   40.97%   32.90   48.11     38.78%
+     2020          STGODE       20.29     31.67   21.60%     27.14    41.31       29.82%   33.52     49.51   38.64%   26.29   39.69     29.28%
+                     STID       18.38     29.12   17.90%     25.00    38.13       27.75%   32.65     48.33   38.08%   24.52   38.29     26.88%
+                 STAE FORMER    21.33     31.55   29.07%     26.66    39.20       33.41%   32.98     47.53   38.65%   26.22   38.29     32.74%
+                  STG FORMER     17.91    27.09   17.20%     24.19    37.09       27.64%   31.94     47.26   37.53%   23.92   37.30     27.54%
+                   AGCRN        23.46     35.28   19.93%     31.44    46.63       25.30%   39.87     57.83   32.48%   30.71   45.33     25.12%
+                   ASTGCN       22.54     33.86   18.48%     33.43    49.05       26.90%   42.38     61.57   34.91%   32.18   47.41     26.23%
+                  D2STGNN       21.62     31.95   17.43%     27.42    41.46       23.53%   35.19     51.78   28.44%   27.43   40.83     22.84%
+                   DGCRN        20.27     30.00   16.77%     26.53    40.03       23.62%   41.34     55.38   29.98%   27.73   40.81     23.55%
+                  DSTAGNN       22.99     34.24   18.63%     32.36    48.86       24.67%   43.15     57.13   35.49%   31.75   46.60     26.22%
+   BAY A REA       GWNET        20.26     30.12   16.95%     26.62    41.16       23.60%   34.57     52.15   31.63%   26.58   40.04     23.89%
+     2019
+       ↓            STGCN       30.36     43.13   26.55%     35.47    50.06       29.31%   40.40     56.84   32.35%   34.80   49.18     29.07%
+     2020          STGODE       22.39     32.78   18.60%     29.24    43.92       25.67%   35.52     53.74   32.64%   28.29   42.12     25.30%
+                     STID       19.40     29.69   14.86%     27.09    40.15       22.17%   36.08     52.10   30.51%   26.55   39.30     21.68%
+                 STAE FORMER    23.43     32.66   23.07%     28.76    41.81       29.26%   34.98     51.76   32.65%   28.22   40.72     27.74%
+                  STG FORMER     19.01    28.20   14.20%     26.29    39.70       23.49%   33.94     51.49   31.53%   25.92   39.73     22.54%
+                   AGCRN        22.85     36.59   22.69%     31.66    48.33       30.95%   41.21     61.71   40.04%   31.13   47.80     30.38%
+                   ASTGCN       21.93     35.17   19.24%     33.65    50.75       29.55%   43.72     65.45   42.47%   32.60   49.88     29.49%
+                  D2STGNN       21.01     33.26   21.19%     27.64    43.16       28.18%   36.53     55.66   35.97%   27.85   43.30     28.31%
+                   DGCRN        19.66     31.31   18.53%     26.75    41.73       28.27%   42.68     59.26   37.08%   28.15   43.28     28.00%
+                  DSTAGNN       22.38     35.55   18.39%     32.58    49.56       29.32%   44.49     61.01   43.09%   32.17   47.97     28.67%
+ L OS A NGELES     GWNET        19.20     29.69   15.20%     26.94    40.31       22.14%   38.34     56.90   32.52%   27.20   40.85     22.51%
+      2019
+        ↓           STGCN       30.42     46.30   34.14%     36.51    54.42       38.00%   42.62     63.34   42.18%   35.85   53.74     37.58%
+      2020         STGODE       21.78     34.09   21.93%     29.46    45.62       30.32%   36.86     57.62   39.74%   28.71   45.05     29.78%
+                     STID       20.32     31.52   17.23%     29.07    43.62       27.97%   39.67     58.29   40.73%   28.71   43.10     27.69%
+                 STAE FORMER    22.82     33.97   29.40%     28.98    43.51       33.91%   36.32     55.64   39.75%   28.64   43.65     33.24%
+                  STG FORMER     19.40    29.52   17.53%     26.51    41.40       28.14%   35.28     55.37   38.63%   26.34   41.76     27.04%
+
+
+
+
+  • STGODE [28]: Spatial-Temporal Graph Ordinary Differ-                      • PDFormer [6]: Propagation Delay-aware Dynamic Long-
+    ential Equation, which uses neural ordinary differential                    Range Transformer for traffic flow prediction. It inno-
+    equations to model continuous changes in traffic signals                    vatively captures dynamic spatial dependencies, models
+    over time and space.                                                        both short- and long-range spatial information, and ex-
+  • DSTAGNN [57]: Dynamic Spatial-Temporal Attention                            plicitly accounts for the time delay in traffic condition
+    Graph Neural Network, which incorporates dynamic                            propagation between locations.
+    graph learning and attention mechanisms to capture                        • STAEformer [5]: Spatio-Temporal Adaptive Embedding
+    evolving spatial-temporal dependencies in traffic net-                      transformer, enhancing vanilla transformers with adaptive
+    works.                                                                      embeddings to capture complex spatio-temporal traffic
+  • D2STGNN [31]: Decoupled Dynamic Spatial-Temporal                            patterns effectively.
+    Graph Neural Network, which separates the modeling
+    of spatial and temporal dependencies while addressing                A. Performance Comparisons.
+    dynamic correlations among sensors in traffic networks.
+                                                                         Performance on LargeST. We further evaluated the perfor-
+  • STID [58]: Spatial-Temporal Identity, a model that com-
+                                                                         mance of STGformer on the LargeST datasets. Experimental
+    bines spatial and temporal embeddings to capture the
+                                                                         results in Table I demonstrate that STGformer consistently
+    unique characteristics of each node and time step in traffic
+                                                                         outperforms STAEformer across all evaluated datasets, ex-
+    forecasting.
+                                                                         hibiting significant performance improvements. Specifically,
+JOURNAL OF LATEX CLASS FILES, VOL. XX, NO. X, AUGUST 201X                                                                                   9
+
+
+
+                                                              TABLE III
+                    P ERFORMANCE ON PEMS03, PEMS04, PEMS07, AND PEMS08 BENCHMARKS W / O USING INCIDENT INFORMATION .
+
+          DATASET     M ETRIC      HA     STGCN    DCRNN      GWN ET    AGCRN      GTS      STID    PDF ORMER    STAE FORMER   STG FORMER
+                       MAE        32.62   15.83     15.54     14.59      15.24    15.41     15.33       14.94       15.35        14.47
+ PEMS03
+
+
+
+
+           AVERAGE     RMSE       49.89   27.51     27.18     25.24      26.65    26.15     27.40       25.39       27.55        25.08
+                       MAPE      30.60%   16.13%   15.62%     15.52%    15.89%    15.39%   16.40%       15.82%     15.18%        14.41%
+
+                       MAE        42.35   19.57     19.63     18.53      19.38    20.96     18.38       18.36       18.22        17.89
+ PEMS04
+
+
+
+
+           AVERAGE     RMSE       61.66   31.38     31.26     29.92      31.25    32.95     29.95       30.03       30.18        29.79
+                       MAPE      29.92%   13.44%   13.59%     12.89%    13.40%    14.66%   12.04%       12.00%     11.98%        11.83%
+
+                       MAE        49.03   21.74     21.16     20.47      20.57    22.15     19.61       19.97       19.14        19.04
+ PEMS07
+
+
+
+
+           AVERAGE     RMSE       71.18   35.27     34.14     33.47      34.40    35.10     32.79       32.95       32.60        32.50
+                       MAPE      22.75%   9.24%     9.02%     8.61%     8.74%     9.38%    8.30%        8.55%       8.01%        7.89%
+
+                       MAE        36.66   16.08     15.22     14.40      15.32    16.49     14.21       13.58       13.46        13.41
+ PEMS08
+
+
+
+
+           AVERAGE     RMSE       50.45   25.39     24.17     23.39      24.41    26.08     23.28       23.41       23.25        23.21
+                       MAPE      21.63%   10.60%   10.21%     9.21%     10.03%    10.54%   9.27%        9.05%       8.88%        8.77%
+
+
+                             STGformer             w.o. SA             w.o. SSA            w.o. Graph            w.o. TSA
+                                                      30.00
+                    17.6                                                                     11.4
+                                                      29.75
+                    17.4
+                                                      29.50
+                                                                                             11.2
+                    17.2                              29.25
+
+                                                      29.00
+                                                                                             11.0
+                                MAE on San Diego                 RMSE on San Diego                      MAPE on San Diego
+
+                                                       34.0
+                    20.2
+                                                                                             15.4
+                    20.0                               33.5
+                                                                                             15.2
+                    19.8
+                                                       33.0                                  15.0
+                    19.6
+                                MAE on Bay Area                  RMSE on Bay Area                       MAPE on Bay Area
+
+Fig. 5. Ablation study on San Diego and Bay Area.
+
+
+
+in the San Diego dataset, STGformer achieved the most                      Performance on Cross Year Scenario. Table II presents
+remarkable advancements in average metrics, with improve-                  a comparative analysis of STGformer against other spa-
+ments of 3.61%, 2.83%, and 6.73% in MAE, RMSE, and                         tiotemporal baseline models in cross-year scenarios, including
+MAPE, respectively. While the improvement margins were                     three major urban regions: San Diego, Bay Area, and Los
+relatively smaller for the Bay Area and Los Angeles datasets,              Angeles. We compared the performance of spatiotemporal
+STGformer maintained a consistent advantage, with average                  models trained on 2019 data when applied to 2020 data
+metric improvements ranging from 1.92% to 2.12%. Notably,                  to evaluate model generalization ability. In the San Diego
+STGformer not only excels in prediction accuracy but also                  dataset, STGformer achieved a significant 14.14% reduction
+demonstrates superior model efficiency. Taking the Los Ange-               in RMSE for 3-hour predictions, decreasing from 31.55 to
+les dataset as an example, STGformer achieved performance                  27.09. Similarly, on the Bay Area dataset, RMSE for the same
+superior to STAEformer, which has 4.7M parameters, while                   forecast horizon decreased from 32.66 to 28.20, representing
+utilizing only 705K parameters, highlighting its significant               a substantial 13.66% improvement. The Los Angeles dataset
+advantage in parameter efficiency. These results collectively              exhibited a similar trend, with a notable 13.10% reduction
+indicate that STGformer can effectively enhance the accuracy               in RMSE for 3-hour predictions, from 33.97 to 29.52. These
+of spatiotemporal sequence forecasting while maintaining a                 results demonstrate that employing the STG attention block,
+lower computational complexity, providing a valuable new                   as opposed to separate stacked attention mechanisms, offers
+direction for research in this field.                                      greater robustness and adaptability when handling diverse
+JOURNAL OF LATEX CLASS FILES, VOL. XX, NO. X, AUGUST 201X                                                                                                                                                     10
+
+
+
+                                                                                                                        250
+                350
+                                STGformer          STAEformer                                                                        STGformer          STAEformer
+                300                                                                                                     200
+                                AGCGN              D2STGNN                                                                           AGCGN              D2STGNN
+                250             ST-GCN             GroundTruth                                                                       ST-GCN             GroundTruth
+ Traffic Flow
+
+
+
+
+                                                                                                         Traffic Flow
+                                                                                                                        150
+                200
+                150                                                                                                     100
+                100
+                                                                                                                        50
+                 50
+                      0:00     3:00      6:00         9:00       12:00   15:00   18:00   21:00   24:00                        0:00     3:00      6:00         9:00    12:00   15:00   18:00   21:00   24:00
+                                                                 Time                                                                                                 Time
+                                            (a) Node 24 in San Diego                                                                               (b) Node 64 in San Diego
+                300
+                             STGformer          STAEformer                                                              100          STGformer          STAEformer
+                250
+                             AGCGN              D2STGNN                                                                              AGCGN              D2STGNN
+                                                                                                                        80
+                200          ST-GCN             GroundTruth                                                                          ST-GCN             GroundTruth
+ Traffic Flow
+
+
+
+
+                                                                                                         Traffic Flow
+                                                                                                                        60
+                150
+                                                                                                                        40
+                100
+                                                                                                                        20
+                 50
+                                                                                                                          0
+                      0:00     3:00      6:00         9:00       12:00   15:00   18:00   21:00   24:00                        0:00     3:00      6:00         9:00    12:00   15:00   18:00   21:00   24:00
+                                                                 Time                                                                                                 Time
+                                            (c) Node 93 in Los Angeles                                                                           (d) Node 208 in Los Angeles
+
+Fig. 6. Model prediction analysis in one day on San Diego and Los Angeles datasets.
+
+
+
+urban traffic patterns and cross-year data variations, providing                                                   order interactions (W/o Graph) also played a crucial role,
+strong support for enhancing the accuracy of urban traffic flow                                                    with their absence having a relatively larger impact compared
+forecasting.                                                                                                       to removing only spatial or temporal self-attention. Further-
+Performance on PEMS-series Benchmark. We validated the                                                             more, spatial self-attention (W/o SSA) and temporal self-
+effectiveness of STGformer on the conventional PEMS-series                                                         attention (W/o TSA) contributed significantly to performance,
+datasets. As demonstrated in Table III, the proposed STG-                                                          as their removal led to substantial performance drops. These
+former model consistently outperforms STAEformer across all                                                        results underscore the critical importance of each component,
+four PEMS datasets, showcasing its superior performance in                                                         particularly global spatiotemporal information and higher-
+traffic flow forecasting tasks. Notably, STGformer achieves the                                                    order interactions, for achieving optimal performance with the
+most significant improvement on the PEMS03 dataset, with a                                                         STGformer.
+remarkable 8.97% reduction in the RMSE metric (from 27.55
+to 25.08). This result not only highlights STGformer’s advan-                                                      C. Case Study
+tages in handling complex spatiotemporal data but also indi-
+cates its notable effectiveness in reducing prediction errors and                                                     Figure 6 illustrates the results of traffic flow prediction,
+enhancing model stability. Furthermore, STGformer achieves                                                         including STGformer, STAEformer, AGCRN, D2STGNN, and
+consistent performance improvements across all datasets while                                                      ST-GCN, comparing the performance of multiple models
+incurring only 0.2% of the computational cost of STAEformer,                                                       across different nodes. (a) Node 24 in San Diego: The
+further validating its adaptability and robustness in various                                                      STGformer model closely adheres to the ground truth traffic
+traffic network environments.                                                                                      flow, demonstrating superior accuracy particularly during tran-
+                                                                                                                   sitional periods between peak and off-peak hours. In contrast,
+                                                                                                                   other models exhibit deviations from the actual values at
+B. Ablation Study                                                                                                  certain intervals. (b) Node 64 in San Diego: STGformer’s
+   To comprehensively evaluate the significance of various                                                         predictive curve aligns closely with the ground truth, notably
+components within the STGformer, we conducted an ablation                                                          outperforming other models in the afternoon period. Alter-
+study using the LargeST dataset. Four scenarios were con-                                                          native models such as STAEformer and D2STGNN display
+sidered in Figure 5: without self-attention (W/o SA), without                                                      greater fluctuations or discrepancies. (c) Node 93 in Los
+temporal self-attention (W/o TSA), without spatiotemporal                                                          Angeles: STGformer’s performance is particularly noteworthy
+self-attention (W/o SSA), and without graph high-order inter-                                                      during morning and evening peak hours, with predictions
+action (W/o Graph). Our findings indicate that the absence of                                                      nearly coinciding with the ground truth. Other models show
+any component led to a substantial decline in performance.                                                         varying degrees of overestimation or underestimation during
+Notably, the removal of spatiotemporal self-attention (W/o                                                         these critical periods. (d) Node 208 in Los Angeles: Despite
+SA) resulted in the most significant performance degradation                                                       all models exhibiting some bias in predictions during the
+across all metrics (MAE, RMSE, and MAPE) and datasets,                                                             afternoon traffic peak, STGformer demonstrates the closest
+as it reduced the model to a feedforward module. Higher-                                                           approximation to actual flow trends. This is especially evident
+JOURNAL OF LATEX CLASS FILES, VOL. XX, NO. X, AUGUST 201X                                                                                                      11
+
+
+
+in the post-18:00 timeframe, where it significantly outperforms                   [13] D. K. Hammond, P. Vandergheynst, and R. Gribonval, “Wavelets on
+other models.                                                                          graphs via spectral graph theory,” Applied and Computational Harmonic
+                                                                                       Analysis, vol. 30, no. 2, pp. 129–150, 2011.
+                                                                                  [14] Q. Wu, W. Zhao, Z. Li, D. Wipf, and J. Yan, “Nodeformer: A scalable
+               VI. C ONCLUSION AND L IMITATION                                         graph structure learning transformer for node classification,” in Advances
+                                                                                       in Neural Information Processing Systems, 2022.
+   In conclusion, this study introduces STGformer, a novel spa-                   [15] Q. Wu, C. Yang, W. Zhao, Y. He, D. Wipf, and J. Yan, “DIFFormer:
+                                                                                       Scalable (graph) transformers induced by energy constrained diffusion,”
+tiotemporal graph Transformer model that addresses the com-                            in International Conference on Learning Representations, 2023.
+putational challenges faced by existing GCN and Transformer-                      [16] E. Min, R. Chen, Y. Bian, T. Xu, K. Zhao, W. Huang, P. Zhao, J. Huang,
+based methods in adapting to real-world road networks.                                 S. Ananiadou, and Y. Rong, “Transformer for graphs: An overview from
+STGformer demonstrates superior performance across various                             architecture perspective,” CoRR, vol. abs/2202.08455, 2022.
+                                                                                  [17] J. Chen, K. Gao, G. Li, and K. He, “NAGphormer: A tokenized
+traffic benchmarks, from small-scale PEMS datasets to the                              graph transformer for node classification in large graphs,” CoRR, vol.
+large-scale LargeST dataset, utilizing only a single layer                             abs/2206.04910, 2022.
+and linear spatiotemporal global attention. ST-Graph attention                    [18] A. Katharopoulos, A. Vyas, N. Pappas, and F. Fleuret, “Transformers
+                                                                                       are rnns: Fast autoregressive transformers with linear attention,” in
+block enables efficient high-order spatiotemporal interactions                         International conference on machine learning. PMLR, 2020, pp. 5156–
+for both global and local patterns, significantly reducing                             5165.
+computational costs and memory usage compared to state-of-                        [19] S. Wang, B. Z. Li, M. Khabsa, H. Fang, and H. Ma, “Linformer:
+                                                                                       Self-attention with linear complexity,” arXiv preprint arXiv:2006.04768,
+the-art methods like STAEformer. Furthermore, STGformer                                2020.
+exhibits remarkable generalization capabilities, maintaining                      [20] Q. Wu, W. Zhao, C. Yang, H. Zhang, F. Nie, H. Jiang, Y. Bian,
+robust performance even when tested on data from a year later.                         and J. Yan, “Simplifying and empowering transformers for large-graph
+These results position STGformer as a promising backbone                               representations,” Advances in Neural Information Processing Systems,
+                                                                                       vol. 36, 2024.
+for spatiotemporal models in large-scale traffic forecasting                      [21] Y. Li, R. Yu, C. Shahabi, and Y. Liu, “Diffusion convolutional recurrent
+applications.                                                                          neural network: Data-driven traffic forecasting,” in International Con-
+                                                                                       ference on Learning Representations, 2018.
+                                                                                  [22] D. Cao, Y. Wang, J. Duan, C. Zhang, X. Zhu, C. Huang, Y. Tong,
+                              R EFERENCES                                              B. Xu, J. Bai, J. Tong et al., “Spectral temporal graph neural network
+                                                                                       for multivariate time-series forecasting,” in Proceedings of Advances in
+ [1] Y. Li, R. Yu, C. Shahabi, and Y. Liu, “Diffusion convolutional re-                Neural Information Processing Systems, 2020, pp. 17 766–17 778.
+     current neural network: Data-driven traffic forecasting,” arXiv preprint     [23] X. Liu, Y. Liang, C. Huang, Y. Zheng, B. Hooi, and R. Zimmer-
+     arXiv:1707.01926, 2017.                                                           mann, “When do contrastive learning signals help spatio-temporal graph
+ [2] Z. Wu, S. Pan, G. Long, J. Jiang, and C. Zhang, “Graph wavenet for                forecasting?” in Proceedings of the 30th International Conference on
+     deep spatial-temporal graph modeling,” in Proceedings of International            Advances in Geographic Information Systems, 2022, pp. 1–12.
+     Joint Conference on Artificial Intelligence, 2019, pp. 1907–1913.            [24] X. Liu, Y. Liang, C. Huang, H. Hu, Y. Cao, B. Hooi, and R. Zimmer-
+ [3] S. Yan, Y. Xiong, and D. Lin, “Spatial temporal graph convolutional               mann, “Do we really need graph neural networks for traffic forecasting?”
+     networks for skeleton-based action recognition,” in Thirty-second AAAI            arXiv preprint arXiv:2301.12603, 2023.
+     conference on artificial intelligence, 2018.                                 [25] Y. Fang, Y. Qin, H. Luo, F. Zhao, B. Xu, L. Zeng, and C. Wang,
+ [4] A. Jain, A. R. Zamir, S. Savarese, and A. Saxena, “Structural-rnn:                “When spatio-temporal meet wavelets: Disentangled traffic forecasting
+     Deep learning on spatio-temporal graphs,” in Proceedings of the ieee              via efficient spectral graph attention networks,” in 2023 IEEE 39th
+     conference on computer vision and pattern recognition, 2016, pp. 5308–            International Conference on Data Engineering (ICDE), 2023, pp. 517–
+     5317.                                                                             529.
+ [5] H. Liu, Z. Dong, R. Jiang, J. Deng, J. Deng, Q. Chen, and X. Song,
+                                                                                  [26] Z. Pan, Y. Liang, W. Wang, Y. Yu, Y. Zheng, and J. Zhang, “Urban
+     “Spatio-temporal adaptive embedding makes vanilla transformer sota
+                                                                                       traffic prediction from spatio-temporal data using deep meta learning,”
+     for traffic forecasting,” in Proceedings of the 32nd ACM international
+                                                                                       in Proceedings of the 25th ACM SIGKDD Conference on Knowledge
+     conference on information and knowledge management, 2023, pp. 4125–
+                                                                                       Discovery and Data Mining, 2019, pp. 1720–1730.
+     4129.
+                                                                                  [27] L. Bai, L. Yao, C. Li, X. Wang, and C. Wang, “Adaptive graph con-
+ [6] J. Jiang, C. Han, W. X. Zhao, and J. Wang, “Pdformer: Propagation
+                                                                                       volutional recurrent network for traffic forecasting,” in Proceedings of
+     delay-aware dynamic long-range transformer for traffic flow prediction,”
+                                                                                       Advances in Neural Information Processing Systems, 2020, pp. 17 804–
+     in Proceedings of the AAAI conference on artificial intelligence, vol. 37,
+                                                                                       17 815.
+     no. 4, 2023, pp. 4365–4373.
+ [7] M. Xu, W. Dai, C. Liu, X. Gao, W. Lin, G.-J. Qi, and H. Xiong,               [28] Z. Fang, Q. Long, G. Song, and K. Xie, “Spatial-temporal graph ode
+     “Spatial-temporal transformer networks for traffic flow forecasting,”             networks for traffic flow forecasting,” in Proceedings of the 27th ACM
+     arXiv preprint arXiv:2001.02908, 2020.                                            SIGKDD Conference on Knowledge Discovery and Data Mining, 2021,
+ [8] X. Liu, Y. Xia, Y. Liang, J. Hu, Y. Wang, L. Bai, C. Huang, Z. Liu,               pp. 364–373.
+     B. Hooi, and R. Zimmermann, “Largest: A benchmark dataset for large-         [29] J. Choi, H. Choi, J. Hwang, and N. Park, “Graph neural controlled
+     scale traffic forecasting,” Advances in Neural Information Processing             differential equations for traffic forecasting,” in Proceedings of the AAAI
+     Systems, vol. 36, 2024.                                                           Conference on Artificial Intelligence, 2022, pp. 6367–6374.
+ [9] S. Guo, Y. Lin, N. Feng, C. Song, and H. Wan, “Attention based spatial-      [30] F. Li, J. Feng, H. Yan, G. Jin, F. Yang, F. Sun, D. Jin, and Y. Li,
+     temporal graph convolutional networks for traffic flow forecasting,” in           “Dynamic graph convolutional recurrent network for traffic prediction:
+     Proceedings of the AAAI Conference on Artificial Intelligence, vol. 33,           Benchmark and solution,” ACM Transactions on Knowledge Discovery
+     no. 01, 2019, pp. 922–929.                                                        from Data, pp. 1–21, 2021.
+[10] C. Chen, K. Petty, A. Skabardonis, P. Varaiya, and Z. Jia, “Freeway          [31] Z. Shao, Z. Zhang, W. Wei, F. Wang, Y. Xu, X. Cao, and C. S. Jensen,
+     performance measurement system: mining loop detector data,” Trans-                “Decoupled dynamic spatial-temporal graph neural network for traffic
+     portation research record, pp. 96–102, 2001.                                      forecasting,” in Proceedings of the VLDB Endowment, 2022, pp. 2733–
+[11] B. Yu, H. Yin, and Z. Zhu, “Spatio-temporal graph convolutional                   2746.
+     networks: A deep learning framework for traffic forecasting,” in Pro-        [32] V. P. Dwivedi and X. Bresson, “A generalization of transformer networks
+     ceedings of International Joint Conference on Artificial Intelligence,            to graphs,” AAAI Workshop on Deep Learning on Graphs: Methods and
+     2018, pp. 3634–3640.                                                              Applications, 2021.
+[12] J. Yang, C. Li, P. Zhang, X. Dai, B. Xiao, L. Yuan, and J. Gao, “Focal       [33] L. Rampášek, M. Galkin, V. P. Dwivedi, A. T. Luu, G. Wolf, and
+     attention for long-range interactions in vision transformers,” Advances           D. Beaini, “Recipe for a general, powerful, scalable graph transformer,”
+     in Neural Information Processing Systems, vol. 34, pp. 30 008–30 022,             Advances in Neural Information Processing Systems, vol. 35, pp.
+     2021.                                                                             14 501–14 515, 2022.
+JOURNAL OF LATEX CLASS FILES, VOL. XX, NO. X, AUGUST 201X                                                                                                    12
+
+
+
+[34] P. Veličković, G. Cucurull, A. Casanova, A. Romero, P. Lio, and                  networks,” in Proceedings of the 26th ACM SIGKDD International
+     Y. Bengio, “Graph attention networks,” in International Conference on              Conference on Knowledge Discovery & Data Mining, 2020, pp. 753–
+     Learning Representations, 2018.                                                    763.
+[35] S. Brody, U. Alon, and E. Yahav, “How attentive are graph attention net-      [56] C. Shang, J. Chen, and J. Bi, “Discrete graph structure learning for
+     works?” in The Tenth International Conference on Learning Represen-                forecasting multiple time series,” arXiv preprint arXiv:2101.06861,
+     tations, ICLR 2022, Virtual Event, April 25-29, 2022. OpenReview.net,              2021.
+     2022.                                                                         [57] S. Lan, Y. Ma, W. Huang, W. Wang, H. Yang, and P. Li, “Dstagnn:
+[36] S. Yun, M. Jeong, R. Kim, J. Kang, and H. J. Kim, “Graph transformer               Dynamic spatial-temporal aware graph neural network for traffic flow
+     networks,” Advances in Neural Information Processing Systems, vol. 32,             forecasting,” in International conference on machine learning. PMLR,
+     2019.                                                                              2022, pp. 11 906–11 917.
+[37] J. Gong, Z. Teng, Q. Teng, H. Zhang, L. Du, S. Chen, M. Z. A.                 [58] Z. Shao, Z. Zhang, F. Wang, W. Wei, and Y. Xu, “Spatial-temporal
+     Bhuiyan, J. Li, M. Liu, and H. Ma, “Hierarchical graph transformer-                identity: A simple yet effective baseline for multivariate time series
+     based deep learning model for large-scale multi-label text classification,”        forecasting,” in Proceedings of the 31st ACM International Conference
+     IEEE Access, vol. 8, pp. 30 885–30 896, 2020.                                      on Information & Knowledge Management, 2022, pp. 4454–4458.
+[38] Y. Yang and D. P. Wipf, “Transformers from an optimization perspec-
+     tive,” Advances in Neural Information Processing Systems, vol. 35, pp.
+     36 958–36 971, 2022.
+[39] Q. Wu, W. Zhao, Z. Li, D. P. Wipf, and J. Yan, “Nodeformer: A scalable
+     graph structure learning transformer for node classification,” Advances
+     in Neural Information Processing Systems, vol. 35, pp. 27 387–27 401,                                 Hongjun Wang is working toward the PhD degree
+     2022.                                                                                                 in the Department of Mechano-Informatics at The
+[40] J. Li, B. Hui, R. Cheng, B. Qin, C. Ma, N. Huo, F. Huang, W. Du,                                      University of Tokyo. He received his M.S. degree
+     L. Si, and Y. Li, “Graphix-t5: Mixing pre-trained transformers with                                   in computer science and technology from Southern
+     graph-aware layers for text-to-sql parsing,” in Proceedings of the AAAI                               University of Science and Technology, China. He
+     Conference on Artificial Intelligence, vol. 37, no. 11, 2023, pp. 13 076–                             received his B.E. degree from the Nanjing University
+     13 084.                                                                                               of Posts and Telecommunications, China, in 2019.
+[41] Y. Rong, Y. Bian, T. Xu, W. Xie, Y. Wei, W. Huang, and J. Huang, “Self-                               His research interests are broadly in machine learn-
+     supervised graph transformer on large-scale molecular data,” Advances                                 ing, with a focus on urban computing, explainable
+     in Neural Information Processing Systems, vol. 33, pp. 12 559–12 571,                                 AI, data mining, and data visualization.
+     2020.
+[42] Z. Gu, X. Luo, J. Chen, M. Deng, and L. Lai, “Hierarchical graph
+     transformer with contrastive learning for protein function prediction,”
+     Bioinformatics, vol. 39, no. 7, p. btad410, 2023.
+[43] A. Pepe, J. Lasenby, and P. Chacón, “Using a Graph Transformer
+     Network to Predict 3D Coordinates of Proteins via Geometric Algebra
+     Modelling,” in Empowering Novel Geometric Algebra for Graphics and                                    Jiyuan Chen is working towards his PhD degree
+     Engineering, E. Hitzer, G. Papagiannakis, and P. Vasik, Eds. Cham:                                    at The Hong Kong Polytechnic University. He re-
+     Springer Nature Switzerland, 2023, vol. 13862, pp. 83–95.                                             ceived his B.S. degree in Computer Science and
+[44] D. Yao, Y. Gu, G. Cong, H. Jin, and X. Lv, “Entity Resolution with                                    Technology from Southern University of Science
+     Hierarchical Graph Attention Networks,” in Proceedings of the 2022                                    and Technology, China. His major research fields
+     International Conference on Management of Data. Philadelphia PA                                       include artificial intelligence, deep learning, urban
+     USA: ACM, Jun. 2022, pp. 429–442.                                                                     computing, and data mining.
+[45] C. Ying, T. Cai, S. Luo, S. Zheng, G. Ke, D. He, Y. Shen, and T.-Y. Liu,
+     “Do transformers really perform badly for graph representation?” Ad-
+     vances in Neural Information Processing Systems, vol. 34, pp. 28 877–
+     28 888, 2021.
+[46] Y. Liu, S. Pan, Y. G. Wang, F. Xiong, L. Wang, Q. Chen, and V. C.
+     Lee, “Anomaly detection in dynamic graphs via transformer,” IEEE
+     Transactions on Knowledge and Data Engineering, 2021.
+[47] J. Xu, H. Wu, J. Wang, and M. Long, “Anomaly transformer: Time
+     series anomaly detection with association discrepancy,” in The Tenth                                  Tong Pan received a B.S. degree in Physics from
+     International Conference on Learning Representations, ICLR 2022,                                      East China Normal University, China, in 2019, and a
+     Virtual Event, April 25-29, 2022. OpenReview.net, 2022.                                               Ph.D. degree in Physics from the Chinese University
+[48] L. Müller, M. Galkin, C. Morris, and L. Rampášek, “Attending to graph                              of Hong Kong, China, in 2024. From 2024, she has
+     transformers,” Transactions on Machine Learning Research, 2024.                                       been a postdoctal researcher at Southern University
+[49] F. Wu, A. Souza, T. Zhang, C. Fifty, T. Yu, and K. Weinberger,                                        of Science and Technology, China. Her research
+     “Simplifying graph convolutional networks,” in International conference                               interests include data analysis, machine learning and
+     on machine learning. PMLR, 2019, pp. 6861–6871.                                                       AI for science.
+[50] R. Jiang, D. Yin, Z. Wang, Y. Wang, J. Deng, H. Liu, Z. Cai,
+     J. Deng, X. Song, and R. Shibasaki, “Dl-traff: Survey and benchmark
+     of deep learning models for urban traffic prediction,” in Proceedings
+     of the 30th ACM international conference on information & knowledge
+     management, 2021, pp. 4515–4525.
+[51] C. Cheadle, M. P. Vawter, W. J. Freed, and K. G. Becker, “Analysis of
+     microarray data using z score transformation,” The Journal of molecular
+     diagnostics, vol. 5, no. 2, pp. 73–81, 2003.
+[52] X. Luo, C. Zhu, D. Zhang, and Q. Li, “Dynamic graph convolution                                       Zheng Dong received his B.E. degree in computer
+     network with spatio-temporal attention fusion for traffic flow prediction,”                           science and technology from Southern University of
+     arXiv preprint arXiv:2302.12598, 2023.                                                                Science and Technology (SUSTech) in 2022. He is
+[53] S. Hochreiter, J. urgen Schmidhuber, and C. Elvezia, “Long short-term                                 currently persuing a M.S. degree in the Department
+     memory,” Neural Computation, vol. 9, no. 8, pp. 1735–1780, 1997.                                      of Computer Science and Engineering, SUSTech.
+[54] K. Cho, B. Van Merriënboer, C. Gulcehre, D. Bahdanau, F. Bougares,                                   His research interests include deep learning and
+     H. Schwenk, and Y. Bengio, “Learning phrase representations using                                     spatio-temporal data mining.
+     rnn encoder-decoder for statistical machine translation,” arXiv preprint
+     arXiv:1406.1078, 2014.
+[55] Z. Wu, S. Pan, G. Long, J. Jiang, X. Chang, and C. Zhang, “Con-
+     necting the dots: Multivariate time series forecasting with graph neural
+JOURNAL OF LATEX CLASS FILES, VOL. XX, NO. X, AUGUST 201X                              13
+
+
+
+                             Lingyu Zhang joined Baidu in 2012 as a search
+                             strategy algorithm research and development engi-
+                             neer. He joined Didi in 2013 and served as senior
+                             algorithm engineer, technical director of taxi strategy
+                             algorithm direction, and technical expert of strategy
+                             model department. Currently a researcher at Didi
+                             AI Labs, he used machine learning and big data
+                             technology to design and lead the implementation
+                             of multiple company-level intelligent system engines
+                             during his work at Didi, such as the order distribu-
+                             tion system based on combination optimization, and
+the capacity based on density clustering and global optimization. Scheduling
+engine, traffic guidance and personalized recommendation engine, ”Guess
+where you are going” personalized destination recommendation system, etc.
+Participated in the company’s dozens of international and domestic core
+technology innovation patent research and development, application, good at
+using mathematical modeling, business model abstraction, machine learning,
+etc. to solve practical business problems. He has won honorary titles such as
+Beijing Invention and Innovation Patent Gold Award and QCon Star Lecturer,
+and his research results have been included in top international conferences
+related to artificial intelligence and data mining such as KDD, SIGIR, AAAI,
+and CIKM.
+
+
+
+
+                           Renhe Jiang received a B.S. degree in software en-
+                           gineering from the Dalian University of Technology,
+                           China, in 2012, a M.S. degree in information science
+                           from Nagoya University, Japan, in 2015, and a Ph.D.
+                           degree in civil engineering from The University of
+                           Tokyo, Japan, in 2019. From 2019, he has been an
+                           Assistant Professor at the Information Technology
+                           Center, The University of Tokyo. His research in-
+                           terests include ubiquitous computing, deep learning,
+                           and spatio-temporal data analysis.
+
+
+
+
+                        Prof. Xuan Song received the Ph.D. degree in signal
+                        and information processing from Peking University
+                        in 2010. In 2017, he was selected as an Excellent
+                        Young Researcher of Japan MEXT. In the past ten
+                        years, he led and participated in many important
+                        projects as a principal investigator or primary actor
+                        in Japan, such as the DIAS/GRENE Grant of MEXT,
+                        Japan; Japan/US Big Data and Disaster Project of
+                        JST, Japan; Young Scientists Grant and Scientific
+                        Research Grant of MEXT, Japan; Research Grant of
+                        MLIT, Japan; CORE Project of Microsoft; Grant of
+JR EAST Company and Hitachi Company, Japan. He served as Associate
+Editor, Guest Editor, Area Chair, Program Committee Member or reviewer
+for many famous journals and top-tier conferences, such as IMWUT, IEEE
+Transactions on Multimedia, WWW Journal, Big Data Journal, ISTC, MIPR,
+ACM TIST, IEEE TKDE, UbiComp, ICCV, CVPR, ICRA and etc.
+

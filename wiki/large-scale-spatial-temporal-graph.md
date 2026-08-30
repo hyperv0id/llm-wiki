@@ -6,8 +6,8 @@ tags:
   - computational-complexity
   - scalability
 created: 2026-04-29
-last_updated: 2026-08-29
-source_count: 6
+last_updated: 2026-08-30
+source_count: 7
 references:
   - [[source-fast-long-horizon-forecasting]]
 confidence: high
@@ -70,6 +70,7 @@ FaST 提出两个核心技术：
 
 ### 无结构方法
 - **线性注意力** ([[bigst|BigST]]): 用正随机特征 (PRF) 核近似 + [[linearized-spatial-convolution|线性化空间卷积]]降到 O(N)，绕过成对节点计算[^src-bigst]
+- **图传播 + 统一时空线性注意力 ([[stgformer|STGformer]], arXiv 2024)**: SGC 式图传播保留 0..k 阶输出，空间/时间共享同一组 QKV 并线性化为分解内积（O(N+T)），单层替代堆叠注意力；论文报告 8600 节点 CA 图批量推理较 STAEformer 100× 加速、99.8% GPU 内存降，该设置下 FLOPs 比值约 0.00131（T=12、d=32、K=3、L=3，Sec IV-D）[^src-stgformer]
 - **随机投影** (RPMixer): MLPs 融合空间特征
 - **空间标识** (STID): 消除空间交互
 
@@ -114,6 +115,8 @@ XTraffic 数据集（2024）：基于加州 2023 年交通数据，包含时间�
 - [[efficient-cosine-operator|ECO]] — 余弦相似度线性复杂度图卷积
 - [[bigst]] — 线性注意力 (PRF 核) 的大规模 STGNN，可扩展到 ~10 万节点
 - [[lets-group]] — 记忆向量锚点的可学习子图划分，建模层面降内存 (IJCAI 2025)
+- [[stgformer]] — 单层图传播 × 统一时空线性注意力的高效交通 Transformer (arXiv 2024)
+- [[stg-attention]] — STG-Attention 机制页
 
 [^src-incident-guided-st-forecasting]: [[source-incident-guided-st-forecasting]]
 [^src-most]: [[source-most]]
@@ -121,3 +124,4 @@ XTraffic 数据集（2024）：基于加州 2023 年交通数据，包含时间�
 [^src-patchstg]: [[source-patchstg]]
 [^src-bigst]: [[source-bigst]]
 [^src-lets-group]: [[source-lets-group]]
+[^src-stgformer]: [[source-stgformer]]

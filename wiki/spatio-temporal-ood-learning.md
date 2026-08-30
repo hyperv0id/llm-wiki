@@ -8,8 +8,8 @@ tags:
   - generalization
   - distribution-shift
 created: 2026-07-23
-last_updated: 2026-07-27
-source_count: 4
+last_updated: 2026-08-30
+source_count: 5
 confidence: medium
 status: active
 ---
@@ -48,6 +48,8 @@ The field is moving toward unified frameworks that handle both temporal and stru
 
 [[st-ood|ST-OOD]] supplies a complementary empirical baseline for **calendar-aligned year-over-year T-OOD**: across bike/taxi/pedestrian/speed/flow/311 data, OUT RMSE rises ~40%–116%, simple STID/MLP often beat complex STGNNs on OUT, and specialized OOD methods frequently trade absolute accuracy for a smaller relative gap (underfitting rather than invariant learning); moderate dropout (0.2–0.3) is an inexpensive OUT regularizer[^src-st-ood]. The paper argues spatial and temporal shifts are intrinsically coupled in cities, so hard separation strategies struggle on natural multi-year data[^src-st-ood].
 
+A model-side data point for **same-graph year-shift (T-OOD)**: [[stgformer|STGformer]] (arXiv 2024) reports consistent gains over [[staeformer|STAEformer]] in a 2019-train → 2020-test setting on LargeST's three subsets (San Diego horizon-3 RMSE 31.55→27.09, Bay Area 32.66→28.20, Los Angeles 33.97→29.52, Table II), with the lowest average MAE among compared baselines on all three subsets; average RMSE/MAPE on some subsets are nonetheless exceeded by GWNET/STID (e.g., LA average RMSE 40.85 vs 41.76 and MAPE 22.51% vs 27.04%), so the paper's robustness claim is strongest for MAE[^src-stgformer]. The paper attributes this to the single-block STG-attention and fewer parameters; its generalization evidence is limited to within-graph year shift — cross-network transfer is not evaluated. The protocol differs from the [[st-ood|ST-OOD]] benchmark (six urban data types where simple models often win OUT), so the two sets of findings are recorded side by side under their own protocols[^src-stgformer].
+
 ## Related Pages
 
 - [[ood-generalization]] — general OOD concept beyond spatio-temporal domain
@@ -57,9 +59,11 @@ The field is moving toward unified frameworks that handle both temporal and stru
 - [[st-ood]] — multi-year urban ST-OOD benchmark (IN vs next-year OUT)
 - [[centralized-message-passing]] — STOP's core mechanism
 - [[continual-spatio-temporal-forecasting]] — alternative paradigm for evolving ST data
+- [[stgformer]] — same-graph year-shift T-OOD evidence (LargeST 2019→2020, arXiv 2024)
 
 [^src-stop]: [[source-stop]]
 [^src-cast]: [[source-cast]]
 [^src-stunet]: [[source-stunet]]
 [^src-st-ood]: [[source-st-ood]]
+[^src-stgformer]: [[source-stgformer]]
 

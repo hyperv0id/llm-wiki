@@ -7,8 +7,8 @@ tags:
   - unified-framework
   - architecture-analysis
 created: 2026-05-08
-last_updated: 2026-05-08
-source_count: 1
+last_updated: 2026-08-30
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -67,6 +67,8 @@ $$y_i = C_i \sum_{j=1}^i (\prod_{k=j+1}^i \widetilde{A}_k) B_j (\Delta_j \odot x
 2. **归一化至关重要**：移除归一化导致 -5.2% 的灾难性下降，说明 Mamba 通过其他机制（如遗忘门的衰减效应）间接补偿了归一化
 3. **块设计贡献最大**：修改的块设计（+1.8%）是 Mamba 在视觉任务中成功的最重要因素
 
+在交通预测中，[[stgformer|STGformer]]（arXiv:2410.00385，2024）将此类分解内积线性注意力与 SGC 式图传播的多阶输出组合为统一时空注意力模块，论文给出该模块 O(N+T) 的时间/内存复杂度，并以单层结构替代堆叠时空注意力，见 [[stg-attention|STG-Attention]][^src-stgformer]。
+
 ## 相关页面
 
 - [[mamba|Mamba]] — 选择性状态空间模型
@@ -75,5 +77,7 @@ $$y_i = C_i \sum_{j=1}^i (\prod_{k=j+1}^i \widetilde{A}_k) B_j (\Delta_j \odot x
 - [[mamba-block-design|Mamba 块设计]]
 - [[linear-attention-bias|线性注意力偏置（ALiBi）]]
 - [[urbanpg|UrbanPG]] — STCA 模块直接使用 Performers 随机特征映射线性注意力，是该框架在 STGNN 领域的最新实例 (AAAI 2026)
+- [[stg-attention|STG-Attention]] — STGformer 的统一时空线性注意力模块：分解内积 + 图传播多阶输出 (arXiv 2024)
 
 [^src-demystify-mamba-linear-attention-2024]: [[source-demystify-mamba-linear-attention-2024]]
+[^src-stgformer]: [[source-stgformer]]

@@ -242,6 +242,8 @@ While the above sections address **vehicle traffic** (road sensors), mobile traf
 
 As road networks grow to tens of thousands of nodes, the $O(N^2)$ adaptive-adjacency cost of [[gwnet|GWNet]]-style STGNNs becomes prohibitive. [[bigst|BigST]] (PVLDB 2024) decouples long-sequence modeling into a cached [[long-sequence-feature-extractor|feature extractor]] and replaces dense graph convolution with [[linearized-spatial-convolution|linearized spatial convolution]] (PRF-kernel factorization), achieving $O(N)$ complexity and scaling to ~100K nodes (Beijing, 99,716 segments) while beating GWNet/AGCRN/DCRNN by 6–9% MAE[^src-bigst]. Related scalable approaches include [[ragc|RAGC]] (cosine-similarity $O(N)$ graph conv) and [[patchstg|PatchSTG]] (KDTree spatial patching); see [[large-scale-spatial-temporal-graph]] for the full landscape[^src-bigst].
 
+[[stgformer|STGformer]] (arXiv:2410.00385, 2024) takes a complementary route: SGC-style multi-order graph propagation (retaining orders 0..k) feeds a unified spatiotemporal attention with shared Q/K/V — softmax($QK^\top$) across nodes, softmax($Q^\top K$) within nodes — linearized to decomposed inner products for $O(N+T)$ time/memory, all in a single attention layer instead of stacked separable attention. Its authors report 100× speedup and 99.8% GPU-memory reduction vs [[staeformer|STAEformer]] in batch inference on the 8,600-sensor California graph, with better accuracy than STAEformer across all reported metrics on LargeST (SD/BA/LA), PEMS03/04/07/08, and cross-year 2019→2020 tests[^src-stgformer].
+
 ## Benchmarks
 
 The standard benchmarks are the PeMS (Caltrans Performance Measurement System) datasets from California highways: PEMS03, PEMS04, PEMS07, PEMS08. Standard setup: 12 input steps (1 hour) → 12 output steps (1 hour)[^src-hyperd-hybrid-periodicity-decoupling].
@@ -300,3 +302,4 @@ The XTraffic benchmark provides incident-aligned traffic datasets for California
 [^src-st-ood]: [[source-st-ood]]
 [^src-team]: [[source-team]]
 [^src-lets-group]: [[source-lets-group]]
+[^src-stgformer]: [[source-stgformer]]
