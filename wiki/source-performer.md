@@ -16,7 +16,7 @@ status: active
 
 # Rethinking Attention with Performers
 
-**作者 / 发表**：Krzysztof Choromanski、Valerii Likhosherstov、David Dohan、Xingyou Song、Andreea Gane 等 13 人（Google / University of Cambridge / DeepMind / Alan Turing Institute，前五人共同一作）。PDF 每页页眉为 "Published as a conference paper at ICLR 2021"，会议标识在 PDF 内核实；首页水印 arXiv:2009.14794v4 [cs.LG] 19 Nov 2022。raw 文件：raw/performer-choromanski-2020.pdf[^src-performer]。
+**作者 / 发表**：Krzysztof Choromanski、Valerii Likhosherstov、David Dohan、Xingyou Song、Andreea Gane 等 13 人（Google / University of Cambridge / DeepMind / Alan Turing Institute，前八人共同一作，作者行以 ∗ 标注 Equal contribution）。PDF 每页页眉为 "Published as a conference paper at ICLR 2021"，会议标识在 PDF 内核实；首页水印 arXiv:2009.14794v4 [cs.LG] 19 Nov 2022。raw 文件：raw/performer-choromanski-2020.pdf[^src-performer]。
 
 ## 核心论点
 

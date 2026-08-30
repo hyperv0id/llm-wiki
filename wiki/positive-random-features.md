@@ -51,7 +51,7 @@ Lemma 1 的恒等式：对 z=x+y，SM(x,y)=E_ω[exp(ωᵀx−‖x‖²/2)·exp(�
 
 ## 与后续工作的关系
 
-随机特征线性注意力的共同形态是：核分解 φ(q)ᵀφ(k) + 结合律重排（先算 Σφ(k)v 与 Σφ(k)），复杂度 O(Lrd)（Performer 论文 Sec 2.2）[^src-performer]。下游实例：[[long-sequence-feature-extractor|BigST 的 LSFE]] 与 [[linearized-spatial-convolution|LSC]] 用 PRF 线性化注意力与自适应邻接；[[urbanpg|UrbanPG]] 的 STCA 用随机特征映射（该论文将其描述为 sin/cos 编码——对应论文中的 trig 无偏估计器，而 Performer 论文本身主张以正特征替代 sin/cos 以避免不稳定，两处转述按各自来源归因）[^src-urbanpg][^src-performer]。固定维随机特征的秩上限（≤ 特征维）是该路线的表达力约束，[[spectral-kernel-linear-attention]] 在图核语境下有讨论。
+随机特征线性注意力的共同形态是：核分解 φ(q)ᵀφ(k) + 结合律重排（先算 Σφ(k)v 与 Σφ(k)），复杂度 O(Lrd)（Performer 论文 Sec 2.2）[^src-performer]。下游实例：[[long-sequence-feature-extractor|BigST 的 LSFE]] 与 [[linearized-spatial-convolution|LSC]] 用 PRF 线性化注意力与自适应邻接；[[urbanpg|UrbanPG]] 的 STCA 用随机特征映射（该论文将其描述为 sin/cos 编码——对应论文中的 trig 无偏估计器，而 Performer 论文本身主张以正特征替代 sin/cos 以避免不稳定，两处转述按各自来源归因）[^src-urbanpg][^src-performer]。[[spectral-kernel-linear-attention]] 在图核语境下讨论了固定维随机特征的秩上限（≤ 特征维）作为该路线的表达力约束。
 
 ## 相关页面
 

@@ -39,7 +39,7 @@ FAVOR+ 作用于形如 A(i,j)=K(qᵢ,kⱼ) 的注意力矩阵，其中核 K(x,y)
 
 ## 命名细节：Performer 与 Performer-SOFTMAX
 
-附录 A 说明：除非特别标注（如 "Performer-SOFTMAX"），"Performer" 默认指 generalized attention 设置——即用 ReLU 核（kernel=ReLU，256 特征）替代 softmax 核的最优设置；softmax 近似设置单独标注（Appendix A.3/A.4）[^src-performer]。阅读引用 Performer 的实验文献时需要区分这两种设置：[[wire|WIRE]] 与 [[graphgps|GraphGPS]] 使用的 "ReLU Performer" 即 generalized 设置[^src-2509-22259][^src-graphgps]。
+附录 A 说明：除非特别标注（如 "Performer-SOFTMAX"），"Performer" 默认指 generalized attention 设置——即用 ReLU 核（kernel=ReLU，256 特征）替代 softmax 核的最优设置；softmax 近似设置单独标注（命名约定见附录 A 开头说明，两组默认超参见 A.3/A.4）[^src-performer]。阅读引用 Performer 的实验文献时需要区分这两种设置：[[wire|WIRE]] 与 [[graphgps|GraphGPS]] 使用的 "ReLU Performer" 即 generalized 设置[^src-2509-22259][^src-graphgps]。
 
 ## 实验（作者报告口径）
 
