@@ -293,6 +293,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-ts-memory-time-series-foundation-models-kdd26]] — TS-Memory: Plug-and-Play Memory for TSFMs, parametric memory distillation from offline kNN teacher → lightweight PlugMem, retrieval-free O(1) inference (KDD 2026)
 - [[source-triattention]] — TriAttention: Efficient Long Reasoning with Trigonometric KV Compression，pre-RoPE Q/K 集中 + 三角级数距离偏好做 KV cache 压缩，AIME25 同精度 2.5× 吞吐 / 10.7× KV 内存 (ICML 2026)
 - [[source-triattention-openreview]] — TriAttention 的 OpenReview 评审记录：ICML 2026 regular accept（4 评审 5/4/4/4），rebuttal 补 LongBench/RULER/LazyEviction/Ada-KV 对比
+- [[source-jitrl]] — JitRL: Just-In-Time Reinforcement Learning，免梯度测试时策略优化：非参数经验记忆检索估计优势、闭式加性规则改 logits，WebArena/Jericho 免训练方法 SOTA（NUS, ICML 2026）
 
 ## Entities
 - [[pdformer]] — PDFormer, propagation delay-aware dynamic long-range Transformer for traffic flow prediction (AAAI 2023)
@@ -495,8 +496,12 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[loft-llm]] — LoFT-LLM, 低频频域学习 + LLM 语义校准的三阶段时序预测流水线 (KDD 2026)
 - [[saraf]] — SARAF, stationarity-aware retrieval-augmented forecasting with time-aligned enhancement + diversity MMR + adaptive Gaussian aggregation (KDD 2026)
 - [[triattention]] — TriAttention，training-free KV cache 压缩：用 pre-RoPE Q/K 中心经三角级数距离偏好估计 key 重要性 (ICML 2026)
+- [[jitrl]] — JitRL，免训练 LLM agent 持续学习框架：非参数记忆 + 检索价值估计 + KL 约束闭式 logit 更新 (ICML 2026, NUS)
 
 ## Concepts
+- [[test-time-policy-optimization]] — 测试时策略优化：不更新参数、于部署阶段持续改进 LLM agent 策略的方法类（梯度 RL / ICL / logit 调制三路线）
+- [[non-parametric-policy-memory]] — 非参数策略记忆：把经验记忆当作策略分布本身，检索回报均值直接充当价值/优势估计 (JitRL, ICML 2026)
+- [[kl-regularized-policy-optimization]] — KL 约束策略优化：max E[A] − (1/β)KL 的闭式解 π* ∝ π_ref·exp(βA)，WebRL 与 JitRL 的共同目标形式
 - [[kv-cache-compression]] — KV cache 压缩：固定预算下的 KV 重要性估计问题与 post-RoPE 方法谱系（启发式/注意力/范数）
 - [[qk-concentration]] — Q/K 集中，pre-RoPE Q/K 向量集中于固定非零中心、跨位置/内容/域稳定 (TriAttention, ICML 2026)
 - [[attention-distance-preference]] — 注意力距离偏好：Q/K 集中时注意力 logit 近似为 Q-K 距离的三角级数，偏好可由中心预测
@@ -642,6 +647,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[graph-learning-as-self-attention]] — 图学习即自注意力，图学习模块数学等价于 Transformer 自注意力但参数远少于 Q/K/V
 
 ## Techniques
+- [[reflective-stepwise-reward]] — 反思式逐步奖励：LLM evaluator 回看完整轨迹逐步打分改善 credit assignment，折扣聚合后入记忆 (JitRL, ICML 2026)
 - [[predictive-contrastive-learning]] — PCL，正样本按预测区间 MSE 而非回溯窗口相似度选择的对比学习策略 (PFRP, AAAI 2026)
 - [[global-memory-bank]] — GMB，固定大小历史模式记忆库，PCL 编码 + K-medoids 聚类 + 特征余弦相似度检索 (PFRP, AAAI 2026)
 - [[k-medoids-clustering]] — K-medoids 聚类，以真实样本为簇中心的划分式聚类，用于构建可解释的历史模式记忆库 (PFRP, AAAI 2026)

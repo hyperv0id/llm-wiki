@@ -7,7 +7,7 @@ tags:
   - few-shot
   - prompting
 created: 2026-06-09
-last_updated: 2026-06-09
+last_updated: 2026-08-30
 source_count: 1
 confidence: medium
 status: active
@@ -27,5 +27,6 @@ status: active
 - [[mixed-modal-masked-image-modeling]] — 支撑视觉 ICL 的统一掩码重建目标
 - [[historical-in-context-learning]] — 检索历史范例作为 in-context 指导的具体技术变体
 - [[model-reprogramming]] — 另一类无需微调即复用冻结模型的范式（输入变换 + 输出投影）
+- [[test-time-policy-optimization]] — 同样免权重更新的另一条路线：以奖励信号直接调制输出分布，而非把经验放回 prompt（[[jitrl|JitRL]]）
 
 [^src-weathergfm]: [[source-weathergfm]]

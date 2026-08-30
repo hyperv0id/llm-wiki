@@ -9,8 +9,8 @@ tags:
   - plug-and-play
   - kdd-2026
 created: 2026-08-19
-last_updated: 2026-08-19
-source_count: 1
+last_updated: 2026-08-30
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -68,6 +68,7 @@ TS-Memory 提出第三条 TSFM 适配路线——区别于参数适配（微调/
 - **[[retrieval-augmented-spatio-temporal-forecasting|RAG-STF]]**：在线检索范式，推理时 kNN 搜索导致延迟随数据库线性增长；TS-Memory 将此成本移至训练阶段 [^src-ts-memory-time-series-foundation-models-kdd26]。
 - **[[zero-initialized-adaptation|零初始化适配]]**：TS-Memory 的 $\alpha$ 融合在 $\alpha=0$ 时等价于冻结 backbone，且 PlugMem 的 anchor loss 约束其在不确定时回归 backbone，共享"从冻结 backbone 起点渐进偏离"的设计哲学 [^src-ts-memory-time-series-foundation-models-kdd26]。
 - **[[tsfm-covariate-adaptation-comparison|TSFM 适配方法对比]]**：CoRA/UniCA/ChronosX 聚焦协变量注入，TS-Memory 聚焦分布知识蒸馏，两者正交可叠加 [^src-ts-memory-time-series-foundation-models-kdd26]。
+- **[[jitrl|JitRL]] / [[non-parametric-policy-memory|非参数策略记忆]]**（ICML 2026，LLM agent 侧）：走向与蒸馏相反的方向——完全不做参数化，保留在线检索，把记忆当作非参数策略分布直接调制输出 logits；与 TS-Memory 的"检索知识离线蒸馏、推理免检索"构成记忆利用的两个极端 [^src-jitrl]。
 
 ## 局限性
 
@@ -77,3 +78,4 @@ TS-Memory 提出第三条 TSFM 适配路线——区别于参数适配（微调/
 4. 融合权重 $\alpha$ 需逐 dataset–backbone 验证集调优 [^src-ts-memory-time-series-foundation-models-kdd26]
 
 [^src-ts-memory-time-series-foundation-models-kdd26]: [[source-ts-memory-time-series-foundation-models-kdd26]]
+[^src-jitrl]: [[source-jitrl]]
