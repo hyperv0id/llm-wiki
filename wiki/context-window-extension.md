@@ -6,7 +6,7 @@ tags:
   - context-length
   - extrapolation
 created: 2026-04-28
-last_updated: 2026-05-31
+last_updated: 2026-08-30
 source_count: 3
 confidence: high
 status: active
@@ -71,6 +71,10 @@ status: active
 - **Perplexity（滑动窗口）**：衡量长序列语言建模质量[^src-yarn]
 - **Passkey 检索准确率**：衡量模型是否真正关注了长上下文中的所有位置[^src-yarn]
 - **标准基准退化**：确保扩展后短上下文性能不显著下降[^src-yarn]
+
+## 相关页面
+
+- [[kv-cache-compression]] — 长上下文的另一条推理侧路线：压缩 KV cache 而非扩展位置编码，两者可叠加
 
 ## 引用
 

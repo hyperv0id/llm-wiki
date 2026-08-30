@@ -291,6 +291,8 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-trace-neurips2025]] — TRACE: Grounding Time Series in Context for Multimodal Embedding and Retrieval, cross-modal TS-text retriever with CIT + CbA + dual-level hard negative mining, NeurIPS 2025
 - [[source-stationarity-aware-retrieval-augmented-forecasting-kdd26]] — SARAF: 平稳性感知检索增强预测，时间对齐 + 多样性 MMR + 自适应 Gaussian 聚合，KDD 2026
 - [[source-ts-memory-time-series-foundation-models-kdd26]] — TS-Memory: Plug-and-Play Memory for TSFMs, parametric memory distillation from offline kNN teacher → lightweight PlugMem, retrieval-free O(1) inference (KDD 2026)
+- [[source-triattention]] — TriAttention: Efficient Long Reasoning with Trigonometric KV Compression，pre-RoPE Q/K 集中 + 三角级数距离偏好做 KV cache 压缩，AIME25 同精度 2.5× 吞吐 / 10.7× KV 内存 (ICML 2026)
+- [[source-triattention-openreview]] — TriAttention 的 OpenReview 评审记录：ICML 2026 regular accept（4 评审 5/4/4/4），rebuttal 补 LongBench/RULER/LazyEviction/Ada-KV 对比
 
 ## Entities
 - [[pdformer]] — PDFormer, propagation delay-aware dynamic long-range Transformer for traffic flow prediction (AAAI 2023)
@@ -492,8 +494,13 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[freqflow-ts]] — FrèqFlow/SpectFlow, lightweight frequency-domain flow matching for time series forecasting (NeurIPS 2025)
 - [[loft-llm]] — LoFT-LLM, 低频频域学习 + LLM 语义校准的三阶段时序预测流水线 (KDD 2026)
 - [[saraf]] — SARAF, stationarity-aware retrieval-augmented forecasting with time-aligned enhancement + diversity MMR + adaptive Gaussian aggregation (KDD 2026)
+- [[triattention]] — TriAttention，training-free KV cache 压缩：用 pre-RoPE Q/K 中心经三角级数距离偏好估计 key 重要性 (ICML 2026)
 
 ## Concepts
+- [[kv-cache-compression]] — KV cache 压缩：固定预算下的 KV 重要性估计问题与 post-RoPE 方法谱系（启发式/注意力/范数）
+- [[qk-concentration]] — Q/K 集中，pre-RoPE Q/K 向量集中于固定非零中心、跨位置/内容/域稳定 (TriAttention, ICML 2026)
+- [[attention-distance-preference]] — 注意力距离偏好：Q/K 集中时注意力 logit 近似为 Q-K 距离的三角级数，偏好可由中心预测
+- [[attention-sink]] — attention sink，初始 token 获得不成比例高注意力的现象（转引自 TriAttention related work）
 - [[dataset-stationarity-estimation]] — 基于矩统计量的数据集级平稳性估计，滑动窗口局部统计量跨窗口变异，O(NLC) 复杂度 (SARAF, KDD 2026)
 - [[stationarity-aware-retrieval]] — 平稳性感知检索，根据数据集平稳性自适应调节检索多样性和聚合锐度 (SARAF, KDD 2026)
 - [[combinatorial-optimization-augmented-machine-learning]] — COAML, hybrid ML-CO pipeline paradigm embedding combinatorial optimization as differentiable neural network layer

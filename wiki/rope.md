@@ -8,8 +8,8 @@ tags:
   - rotary-position-embedding
   - llm
 created: 2026-06-22
-last_updated: 2026-08-09
-source_count: 3
+last_updated: 2026-08-30
+source_count: 4
 confidence: high
 status: active
 ---
@@ -123,6 +123,7 @@ RoPE 引发了大量后续研究，包括但不限于：
 - **图结构扩展**：[[wire|WIRE]] 将 RoPE 的旋转机制推广到图数据，用图 Laplacian 谱特征作旋转坐标，在网格图上恢复标准 RoPE（ICML 2026）[^src-2509-22259]
 - **注意力温度**：[[attention-temperature-scaling]]（等价于缩放 RoPE 旋转嵌入）
 - **收敛性分析**：[[convergent-normalization]]
+- **预旋转空间几何**：[[qk-concentration]]（TriAttention 观察到 pre-RoPE Q/K 向量高度集中于固定中心，此时注意力 logit 近似为 Q-K 距离的 [[attention-distance-preference|三角级数]]，距离偏好可由中心预测，据此做 [[kv-cache-compression|KV cache 压缩]]）[^src-triattention]
 
 ## 相关页面
 
@@ -133,7 +134,10 @@ RoPE 引发了大量后续研究，包括但不限于：
 - [[scaling-factor-sqrt-dk]] — 注意力 $\frac{1}{\sqrt{d_k}}$ 缩放因子的数值稳定性
 - [[physics-informed-position-encoding]] — PIPE：RoPE 的物理知情扩展
 - [[pipe]] — PIPE 台风预测模型
+- [[qk-concentration]] / [[attention-distance-preference]] — RoPE 注意力在 pre-RoPE 空间的几何结构
+- [[triattention]] — 基于该几何结构的 KV cache 压缩
 
 [^src-roformer]: [[source-roformer]]
 [^src-pipe]: [[source-pipe]]
 [^src-2509-22259]: [[source-2509-22259]]
+[^src-triattention]: [[source-triattention]]
