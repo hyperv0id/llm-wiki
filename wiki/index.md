@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-08-30
+last_updated: 2026-08-31
 tags:
   - meta
 ---
@@ -1092,6 +1092,7 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Analysis (continued)
 - [[kite-manifold-guidance-chain]] — KITE 三件套串联：流形改起点、知识改条件、CFG 拧剂量
+- [[patchstg-mage-stop-shared-skeleton]] — PatchSTG/MAGE/STOP 同构分析：共享低维中介混合 + 个性化项 + 静态 support 的三种参数化（可分离满秩 / 静态图库标量路由 / K 秩瓶颈）；内容动态 support 为共同空白
 
 ## Sources (continued)
 - [[source-dag]] — DAG: A Dual Correlation Network for TS Forecasting with Exogenous Variables（时间+通道双相关发现—注入，IJCAI 2026）

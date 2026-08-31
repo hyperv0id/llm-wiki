@@ -9,7 +9,7 @@ tags:
   - inductive-learning
   - graph-neural-network
 created: 2026-06-08
-last_updated: 2026-07-27
+last_updated: 2026-08-31
 source_count: 2
 confidence: medium
 status: active
@@ -51,6 +51,8 @@ GenPU sampling (a multinomial mask) is non-differentiable, so STOP **alternates*
 STOP is the successor to **STONE** (KDD 2024, same group), which used a causal graph structure for ST-OOD learning; STOP reframes the problem at the message-passing level instead[^src-stop]. It is evaluated against STONE, CaST, and continual-learning baselines ([[continual-spatio-temporal-forecasting|TrafficStream, PECPM, TFMoE]]), arguing the latter only work under near-IID fine-tuning and fail under true OOD[^src-stop]. It shares an OOD-robustness goal with [[rstib|RSTIB-MLP]] (ICML 2025), which instead uses an information-bottleneck objective; both are MLP-centric and target spatio-temporal distribution shift[^src-stop].
 
 [[stunet|STUNet]] (KDD 2026) attacks a related **cross-network** generalization setting (train on one LargeST subnetwork, zero-shot on another) by *explicitly* tokenizing adjacency and freezing those spatial tokens—complementary to STOP’s “block node-to-node messaging” thesis[^src-stunet].
+
+同骨架视角（wiki 分析）：[[patchstg-mage-stop-shared-skeleton]] 将 STOP 的 ConAU 瓶颈、[[patchstg|PatchSTG]] 的 depth/breadth 双注意力与 [[mage|MAGE]] 的专家图库归为「共享低维中介 + 逐节点个性化项 + 静态 support」同一骨架的三种参数化；STOP 的独特点在空间分支秩 ≤ K 的瓶颈构造与无 N 绑定参数（归纳性）。
 
 For a survey of ST-OOD solution approaches, see [[spatio-temporal-ood-learning]].
 

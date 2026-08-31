@@ -3659,3 +3659,16 @@ ingest 报告：ingest-reports/2026-08-30-jitrl.md
 问题：[[patchstg]] 的 dual attention 是否本质为稀疏注意力、掩码能否显式表达。基于 arXiv:2412.09972v2（raw/ 已无原文，经 arXiv HTML 全文核对 Eq. 7–9、Sec 4.3/4.5、Table 1/4）形式化：depth = 块对角掩码 δ_{r,r'} 下的 R 个 P×P softmax，breadth = 位置对齐掩码 δ_{p,p'} 下的 P 个 R×R softmax，一层算子为二者的复合 A^B·A^D（不可并约为并集掩码单 softmax）；复杂度 M(P+R) logit vs 稠密 M²，与论文 O(max(P,R)Md) 一致。归类：static structured sparsity 路线，与线性化（STG-Attention）、token 化（STUNet/FaST）并列为避开 N² 配对交互的三条路线；「无损」按论文自述口径标注，静态划分的批评按 [[lets-group]] 作者自述标注。
 创建的页面：[[patchstg-sparse-attention-form]]
 更新的页面：[[patchstg]]（Context 补链接）, [[stg-attention]]（谱系位置补结构化稀疏路线）, [[irregular-spatial-patching]]（补掩码结构交叉引用）, [[index]], [[log]]
+
+## [2026-08-31] query | PatchSTG breadth 同位置对齐的必要性与一般化
+追问：breadth 的同 index 对齐换成「只看第一个 / 随机配对」效果损失多大、是方便处理还是建模必要。推导对齐方式一般化：位置轴划分 ψ:[P]→K 下的类分组注意力（logit $R^2\sum_k|C_k|^2$，K=P 退回 breadth、K=1 退回跨块稠密），及两条正交省算力轴（查询子采样 $|S|R^2$、anchor 池化 $MK_a$）。结论：同位置不是省算力妥协——同价替代在跨块值带宽或对应先验上严格更弱；论文唯一近邻证据是 w/o FGGC（更激进的 Q/K/V 一并融合，MAE +1.1–2.8%，Table 4），「只看第一个」的干净消融论文未做，按推理分层标注。为 [[patchstg-sparse-attention-form]] 新增「对齐方式的一般化」一节（本页推导与归类均标注）。
+更新的页面：[[patchstg-sparse-attention-form]], [[log]]
+
+## [2026-08-31] query | PatchSTG / MAGE / STOP「同一东西」判断的整理归档
+用户直觉判断三篇「做的是同一个东西」，经对抗裁决后整理为 analysis 页。成立层 = 空间混合算子骨架同构：O(c) 共享低维中介混合 + 逐节点个性化项 + support 静态 + 单复合层全图可达 + 各自消融支持「逐对交互非必需」（MAGE 16:0 纯线性 Pareto 最优 / STOP -graph 变体 OOD 更好 / PatchSTG 引 STID over-smoothing 洞察）。不成立层 = 参数化族（PatchSTG 可分离满秩 / MAGE 静态低秩图库+标量路由、秩 ≤ 2K_G d_G / STOP K 秩瓶颈）、N 绑定（MAGE transductive / STOP 归纳 / PatchSTG 混合）、证据包（效率共享锚 D²STGNN；in-domain SOTA 仅 MAGE，OOD/归纳仅 STOP）。关键推导：PatchSTG 复合矩阵元素精确分解 M_{(r,p),(r',p')}=B^{(p)}_{r,r'}·D^{(r')}_{p,p'}（稠密、以概率 1 满秩、自由度可分离），P+R−1 仅为计算图 key 预算而非 support。修正四条误读；识别共同空白 = 内容动态 support（对接 [[lets-group]] 静态划分批评；最小消融：固定地理 K 近邻候选集上静态排序 vs 动态重排序）。
+创建的页面：[[patchstg-mage-stop-shared-skeleton]]
+更新的页面：[[patchstg-sparse-attention-form]]（谱系定位补骨架页链接）, [[mage]]（关联补链接）, [[stop]]（Relationship 补链接）, [[stg-attention]]（谱系位置补骨架观察）, [[index]], [[log]]
+
+## [2026-08-31] maintenance | shared-skeleton 页重写
+重排为单线推导：三个等效算子 → 共同性质（预算/可达/reweight）→ 差异表 → 共同空白；删除「常见误读」节与谱系折返，归因改为随文标注。
+更新的页面：[[patchstg-mage-stop-shared-skeleton]]

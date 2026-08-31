@@ -8,7 +8,7 @@ tags:
   - linear-complexity
   - neurips-2025
 created: 2026-07-19
-last_updated: 2026-08-30
+last_updated: 2026-08-31
 source_count: 1
 confidence: medium
 status: active
@@ -57,6 +57,7 @@ L 层 MAGE Block（默认 3 层），每层 = MAGE(H) + FFN(H) with SwiGLU + spa
 - [[graphsparsenet|GSNet]] — 同为线性复杂度，用低秩矩阵分解；MAGE 走 MoE 路线克服低秩瓶颈
 - [[mixture-of-experts]] — MoE 通用框架，MAGE 是首个在图结构生成层面应用 sparse-balanced MoE 的工作
 - [[low-dimensional-graph-adjacency]] — 低秩瓶颈的理论背景
+- [[patchstg-mage-stop-shared-skeleton]] — 与 [[patchstg|PatchSTG]]、[[stop|STOP]] 的共享骨架分析：静态低秩图库 + 逐节点标量路由是「共享低维中介 + 静态 support」骨架的三种参数化之一；N 绑定嵌入使其 transductive
 
 参见子技术页：[[linear-adaptive-graph-learning]]、[[sparse-balanced-mixture-of-experts-st]]
 
