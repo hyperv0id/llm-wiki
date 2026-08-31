@@ -3654,3 +3654,8 @@ raw/jitrl.pdf（pdftotext 抽取全文阅读，27 页含附录 A–R）。版式
 创建的页面：[[source-jitrl]], [[jitrl]], [[test-time-policy-optimization]], [[non-parametric-policy-memory]], [[kl-regularized-policy-optimization]], [[reflective-stepwise-reward]]
 更新的页面：[[in-context-learning]]（相关范式补 [[test-time-policy-optimization]] 条目，纯结构性，source_count 不变）, [[exploration-vs-exploitation]]（新增测试时 optimism bonus 小节 + 引注，source_count 1→2）, [[ts-memory]]（相关方法补 JitRL/非参数策略记忆对照条目 + 引注，source_count 1→2）, [[index]], [[log]]
 ingest 报告：ingest-reports/2026-08-30-jitrl.md
+
+## [2026-08-31] query | PatchSTG 双注意力的稀疏注意力形式
+问题：[[patchstg]] 的 dual attention 是否本质为稀疏注意力、掩码能否显式表达。基于 arXiv:2412.09972v2（raw/ 已无原文，经 arXiv HTML 全文核对 Eq. 7–9、Sec 4.3/4.5、Table 1/4）形式化：depth = 块对角掩码 δ_{r,r'} 下的 R 个 P×P softmax，breadth = 位置对齐掩码 δ_{p,p'} 下的 P 个 R×R softmax，一层算子为二者的复合 A^B·A^D（不可并约为并集掩码单 softmax）；复杂度 M(P+R) logit vs 稠密 M²，与论文 O(max(P,R)Md) 一致。归类：static structured sparsity 路线，与线性化（STG-Attention）、token 化（STUNet/FaST）并列为避开 N² 配对交互的三条路线；「无损」按论文自述口径标注，静态划分的批评按 [[lets-group]] 作者自述标注。
+创建的页面：[[patchstg-sparse-attention-form]]
+更新的页面：[[patchstg]]（Context 补链接）, [[stg-attention]]（谱系位置补结构化稀疏路线）, [[irregular-spatial-patching]]（补掩码结构交叉引用）, [[index]], [[log]]

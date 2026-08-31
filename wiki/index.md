@@ -959,6 +959,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[diffusion-frequency-domain-theory]] — 扩散模型为什么先学低频——频域理论的统一视角：谱偏置→频率层级→频域噪声控制→EqualSNR→SNR-t Bias→范式转移
 - [[tsfm-covariate-adaptation-comparison]] — TSFM 协变量适配方法全景对比：CoRA vs UniCA vs DiTS vs ChronosX vs AdaPTS vs Gen-P-Tuning 六种路线的系统比较
 - [[spectral-kernel-linear-attention]] — WIRE 旋转读作核的随机特征后落地为线性注意力：内容×有效电阻核、O(N)、旋转/精确两条实现路线
+- [[patchstg-sparse-attention-form]] — PatchSTG dual attention 的显式稀疏注意力形式：块对角（depth）× 位置对齐（breadth）双固定掩码的 softmax 复合，O(max(P,R)Md)
 
 
 ## Sources (continued)

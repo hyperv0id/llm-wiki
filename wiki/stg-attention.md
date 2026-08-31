@@ -7,7 +7,7 @@ tags:
   - graph-transformer
   - traffic-forecasting
 created: 2026-08-30
-last_updated: 2026-08-30
+last_updated: 2026-08-31
 source_count: 1
 confidence: medium
 status: active
@@ -46,6 +46,6 @@ status: active
 ## 谱系位置
 
 - 本 wiki 归类：其线性化属于分解内积一族（论文引 Katharopoulos et al. 2020），与 [[linear-attention-unified-framework]] 记录的线性注意力循环形式同族；特点是把「空间×时间」作为统一实体共用一组 Q/K/V。
-- 本 wiki 归类：与 [[adaptive-graph-agent-attention]]（FaST，node→agent→node 两段 attention）、[[query-aggregate-attention]]（STUNet，两段 query-aggregate）同属「避开 N² 配对交互」的交通空间混合路线；差异在于 STG-Attention 保留完整 QKᵀ 形式、靠线性化降复杂度，agent/query 路线则改变交互拓扑。
+- 本 wiki 归类：与 [[adaptive-graph-agent-attention]]（FaST，node→agent→node 两段 attention）、[[query-aggregate-attention]]（STUNet，两段 query-aggregate）同属「避开 N² 配对交互」的交通空间混合路线；差异在于 STG-Attention 保留完整 QKᵀ 形式、靠线性化降复杂度，agent/query 路线则改变交互拓扑，[[patchstg|PatchSTG]] 则走固定掩码的结构化稀疏路线（见 [[patchstg-sparse-attention-form]]）。
 
 [^src-stgformer]: [[source-stgformer]]

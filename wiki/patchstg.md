@@ -7,7 +7,7 @@ tags:
   - transformer
   - kdtree
 created: 2026-06-08
-last_updated: 2026-08-29
+last_updated: 2026-08-31
 source_count: 3
 confidence: high
 status: active
@@ -60,6 +60,7 @@ PatchSTG is the only paradigm that simultaneously avoids information loss, maint
 - The patching paradigm parallels vision models: [[source-patchtst|PatchTST]] (temporal patching) and ViT (spatial patching).
 - [[stunet|STUNet]] (KDD 2026) also uses patching, but on the **adjacency matrix** (not geo-points) to build frozen spatial tokens for **cross-network zero-shot**; PatchSTG is the main in-domain large-scale baseline STUNet compares against on LargeST[^src-stunet].
 - [[lets-group|Let's Group]] (IJCAI 2025, whose reference cites this work's arXiv version [Fang et al., 2024, arXiv:2412.09972]) classifies PatchSTG's geographic-coordinate partitioning — together with FCGCN (Louvain) and LarSTL (METIS) — as **static subgraph partitioning** that fails to capture dynamic spatio-temporal dependencies, and proposes partitioning by feature similarity with learnable memory vectors instead (Sec. 1–2 of that paper, 作者自述)[^src-lets-group].
+- Dual attention 可显式写成固定掩码（块对角 × 位置对齐）下的结构化稀疏注意力，形式化见 [[patchstg-sparse-attention-form]]。
 
 [^src-patchstg]: [[source-patchstg]]
 [^src-stunet]: [[source-stunet]]

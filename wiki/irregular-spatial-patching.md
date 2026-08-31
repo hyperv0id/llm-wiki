@@ -6,7 +6,7 @@ tags:
   - kdtree
   - spatial-partitioning
 created: 2026-06-08
-last_updated: 2026-06-08
+last_updated: 2026-08-31
 source_count: 1
 confidence: high
 status: active
@@ -54,5 +54,7 @@ Leaf nodes from the same subtree maintain strong spatial correlations. PatchSTG 
 ## Applications
 
 Currently demonstrated in PatchSTG for traffic forecasting. The paper suggests extension to other irregular spatial tasks like **national air quality prediction**[^src-patchstg].
+
+Patch 划分产出的 $R\times P$ 网格直接决定后续 dual attention 的稀疏掩码结构（块对角 × 位置对齐），形式化见 [[patchstg-sparse-attention-form]]。
 
 [^src-patchstg]: [[source-patchstg]]
