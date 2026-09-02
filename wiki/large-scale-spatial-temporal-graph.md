@@ -120,6 +120,7 @@ XTraffic 数据集（2024）：基于加州 2023 年交通数据，包含时间�
 - [[stgformer]] — 单层图传播 × 统一时空线性注意力的高效交通 Transformer (arXiv 2024)
 - [[stg-attention]] — STG-Attention 机制页
 - [[virtual-nodes-traffic]] — 虚拟节点图改写：以消息传递路径缩短缓解 over-squashing 的长期预测 (arXiv 2025)
+- [[graph-node-clustering]] — 图节点聚类方案全景：拓扑/特征/可学习三类聚类与静态 vs 动态取舍 (analysis)
 
 [^src-incident-guided-st-forecasting]: [[source-incident-guided-st-forecasting]]
 [^src-most]: [[source-most]]

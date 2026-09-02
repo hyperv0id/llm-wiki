@@ -1,3 +1,17 @@
+## [2026-09-02] ingest | MultiSPANS: A Multi-range Spatial-Temporal Transformer Network for Traffic Forecast via Structural Entropy Optimization
+
+PDF 归档到 `raw/multispans-wsdm2024.pdf`（WSDM 2024，DOI 10.1145/3616855.3635820；Dongcheng Zou、Senzhang Wang、Xuefeng Li、Hao Peng、Yuandong Wang、Chunyang Liu、Kehua Sheng、Bo Zhang，北航/中南大学/清华/滴滴；代码 github.com/SELGroup/MultiSPANS）。MultiSPANS 用结构熵最小化（deDoc 贪心 combination/merge 树算子）把路网抽象为编码树：逐层社区划分生成多层注意力掩码（L 个掩码分给 L 个头，其余 H−L 头保持全局），相对结构熵沿编码树路径求和作层级相关分数加进空间注意力；MFCL 多滤波卷积（多尺寸时间滤波 + 多跳图滤波）生成 ST-token，时间卷积 stride 可压缩长历史窗口（12→48 步，332K 参数、269s/epoch vs STTN 931s/epoch）。论文报告 PEMSD4/8 上相对 SOTA 平均提升 MAE 2.57%/MAPE 2.16%/RMSE 3.78%；消融中结构熵掩码优于 Infomap 掩码（2.33% vs 1.83% 贡献）。论文自述首次将结构熵理论用于优化空间注意力机制。
+
+创建的页面：[[source-multispans]], [[multispans]], [[structural-entropy]]
+更新的页面：[[pdformer]], [[traffic-forecasting]], [[graph-node-clustering]], [[source-stg-mamba]], [[index]]
+
+## [2026-09-01] query | 图节点聚类方案
+
+用户提问「图节点聚类有什么聚类方案」。综合 wiki 12 个源文件（Let's Group/GAMMA-Net/UniFlow/PatchSTG/Moirai-MoE/PFRP/UrbanFM/GPT-ST/MiniTraffic/FENCE/STBP/ST-SSDL），归档为 analysis 页 [[graph-node-clustering]]：三分类法——拓扑结构驱动（Louvain/METIS/KD-Tree）、特征/相似度驱动（k-means/k-medoids/DTW+METIS/随机），可学习聚类（胶囊路由/对比聚类/记忆向量锚点/注意力分数 k-means/涌现聚类/原型），附用途选择表与静态 vs 动态取舍。经典算法（谱聚类/标签传播/Girvan-Newman）标注为课程层面通用知识、无 wiki 源文件。
+
+创建的页面：[[graph-node-clustering]]
+更新的页面：[[index]], [[large-scale-spatial-temporal-graph]], [[log]]
+
 ## [2026-08-26] maintenance | 交通预测架构趋势分析重写
 
 用户反馈原 analysis 页「先射箭后画靶子」——九时代叙事把时间先后说成因果、论文清单式罗列、ASCII 溯源地图事后编排。按 AGENTS.md 文案原则全篇重写为**问题驱动**结构：七个设计矛盾（图先验 vs 数据驱动、容量 vs 效率、生成式 vs 确定性、专用 vs 泛化、窗口 vs 记忆、静态 vs 漂移、数值 vs 语义）+ 两条贯穿主线（复杂度还债、外生信息加冕）+ 未解决问题。证据口径收紧为严格归因：论文自述（「论文提出」「论文报告」「论文自称」）、实证（数据集/指标/对照）、课程推断明确标注。删除 ASCII 图与「范式转折」「直接导火索」等伪因果措辞。68 个 `[^src-*]` 引用 1:1 保留，无孤儿无未用；source_count 68 不变。

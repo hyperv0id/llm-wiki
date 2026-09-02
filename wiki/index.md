@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-08-31
+last_updated: 2026-09-02
 tags:
   - meta
 ---
@@ -14,6 +14,7 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Sources
 - [[source-pdformer-jiang-2023]] — PDFormer: Propagation Delay-Aware Dynamic Long-Range Transformer for Traffic Flow Prediction（AAAI 2023），地理/语义双 mask 空间自注意力 + DFT 显式建模传播时延，6 数据集 17 基线
+- [[source-multispans]] — MultiSPANS: 多尺度时空 Transformer，结构熵最小化导出编码树做多层注意力掩码 + 层级相关分数，MFCL 多滤波卷积支持长窗口低成本注入，PEMSD4/8（WSDM 2024）
 - [[source-climax]] — ClimaX: 首个气象/气候基础模型，ViT + variable tokenization + cross-attention aggregation + CMIP6 预训练 + 随机预测目标，WeatherBench/ClimateBench SOTA，ICML 2023
 - [[source-climatear]] — ClimateAR: 首个 VAR 自回归概率气候预测模型，对齐 VQ 分词器 + 混合尺度条件控制，ERA5 ACC 提升 37.56%，ICML 2026
 - [[source-cast]] — CaST: Causal Spatio-Temporal Neural Network for STG Forecasting, SCM + back-door adjustment (temporal OoD) + front-door adjustment with Hodge-Laplacian (dynamic spatial causation), NeurIPS 2023
@@ -297,6 +298,7 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Entities
 - [[pdformer]] — PDFormer, propagation delay-aware dynamic long-range Transformer for traffic flow prediction (AAAI 2023)
+- [[multispans]] — MultiSPANS, multi-range ST Transformer with structural-entropy-optimized spatial attention (WSDM 2024)
 - [[jingyuan-wang]] — Jingyuan Wang, Beihang BIGSCITY 团队（鹏城实验室），PDFormer 通讯作者
 - [[std-plm]] — STD-PLM, unified PLM-based ST forecasting+imputation with spatial+time dual tokenizer (AAAI 2025)
 - [[st-ssdl]] — ST-SSDL, self-supervised deviation learning framework with historical anchors + learnable prototypes + GCRU backbone (NeurIPS 2025)
@@ -499,6 +501,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[jitrl]] — JitRL，免训练 LLM agent 持续学习框架：非参数记忆 + 检索价值估计 + KL 约束闭式 logit 更新 (ICML 2026, NUS)
 
 ## Concepts
+- [[structural-entropy]] — 结构熵与编码树，图的层次化社区抽象与最优编码（Li & Pan 2016 理论；MultiSPANS 自述首次用于优化空间注意力）
 - [[test-time-policy-optimization]] — 测试时策略优化：不更新参数、于部署阶段持续改进 LLM agent 策略的方法类（梯度 RL / ICL / logit 调制三路线）
 - [[non-parametric-policy-memory]] — 非参数策略记忆：把经验记忆当作策略分布本身，检索回报均值直接充当价值/优势估计 (JitRL, ICML 2026)
 - [[kl-regularized-policy-optimization]] — KL 约束策略优化：max E[A] − (1/β)KL 的闭式解 π* ∝ π_ref·exp(βA)，WebRL 与 JitRL 的共同目标形式
@@ -960,6 +963,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[tsfm-covariate-adaptation-comparison]] — TSFM 协变量适配方法全景对比：CoRA vs UniCA vs DiTS vs ChronosX vs AdaPTS vs Gen-P-Tuning 六种路线的系统比较
 - [[spectral-kernel-linear-attention]] — WIRE 旋转读作核的随机特征后落地为线性注意力：内容×有效电阻核、O(N)、旋转/精确两条实现路线
 - [[patchstg-sparse-attention-form]] — PatchSTG dual attention 的显式稀疏注意力形式：块对角（depth）× 位置对齐（breadth）双固定掩码的 softmax 复合，O(max(P,R)Md)
+- [[graph-node-clustering]] — 图节点聚类方案全景：拓扑驱动（Louvain/METIS/KD-Tree）× 特征驱动（k-means/k-medoids/DTW）× 可学习聚类（胶囊路由/对比聚类/记忆向量锚点/注意力分数），静态 vs 动态取舍
 
 
 ## Sources (continued)

@@ -8,7 +8,7 @@ tags:
   - graph
   - 2024
 created: 2026-07-07
-last_updated: 2026-08-30
+last_updated: 2026-09-02
 source_count: 1
 confidence: medium
 status: active
@@ -54,7 +54,7 @@ KFGN 是 STG-Mamba 的核心创新之一，将经典控制理论中的 **卡尔�
 - **HZMetro**（杭州地铁进出站流量，80 个站点）
 - **KnowAir**（中国空气质量监测站）
 
-STG-Mamba 在 RMSE/MAE/MAPE 三项指标上 **一致超越所有基线方法**（含 STGCN、STSGCN、STG-NCDE、DDGCRN、ASTGNN、[[pdformer|PDFormer]]、STAEformer、MultiSPANS）。除 PeMS04 的 MAPE 指标上 STAEformer 略优外，其余所有指标均达到 SOTA。可视化分析表明 STG-Mamba 的预测曲线最贴近真实值波形，峰值捕捉更精准。
+STG-Mamba 在 RMSE/MAE/MAPE 三项指标上 **一致超越所有基线方法**（含 STGCN、STSGCN、STG-NCDE、DDGCRN、ASTGNN、[[pdformer|PDFormer]]、STAEformer、[[multispans|MultiSPANS]]）。除 PeMS04 的 MAPE 指标上 STAEformer 略优外，其余所有指标均达到 SOTA。可视化分析表明 STG-Mamba 的预测曲线最贴近真实值波形，峰值捕捉更精准。
 
 ## 相关链接
 

@@ -6,8 +6,8 @@ tags:
   - spatial-temporal
   - intelligent-transportation
 created: 2026-04-27
-last_updated: 2026-08-30
-source_count: 54
+last_updated: 2026-09-02
+source_count: 55
 confidence: high
 status: active
 ---
@@ -33,6 +33,9 @@ The dominant paradigm since [[dcrnn|DCRNN]] (2018): Graph Neural Networks (GNNs)
 
 ### Transformer-Based
 STTN (2020), GMAN (2020), [[pdformer|PDFormer]] (2023)[^src-pdformer-jiang-2023], and [[staeformer|STAEformer]] (2024) use attention mechanisms to model global spatial-temporal dependencies[^src-hyperd-hybrid-periodicity-decoupling].
+
+### Structural-Entropy-Guided Attention
+[[multispans|MultiSPANS]] (WSDM 2024) 用结构熵最小化从路网导出编码树，把逐层社区划分变成多层注意力掩码（L 个掩码分给 L 个注意力头，其余头不掩码保持全局注意力），并以相对结构熵沿编码树路径求和作为层级相关分数加进空间注意力 logits。论文报告在 PEMSD4/8 上相对 SOTA 平均提升 MAE 2.57%、MAPE 2.16%、RMSE 3.78%；更长历史窗口（12→48 步）经时间卷积 stride 压缩后以约 332K 参数继续提升精度[^src-multispans]。见 [[structural-entropy]]。
 
 ### Frequency-Domain
 [[fedformer|FEDformer]] (ICML 2022) applies Fourier and Wavelet transforms in its [[frequency-enhanced-block|FEB]]/[[frequency-enhanced-attention|FEA]] blocks and [[moe-decomposition|MOEDecomp]] for adaptive seasonal-trend decomposition, but treats frequency components uniformly without separating periodic from residual signals. FreTS (NeurIPS 2023) and StemGNN (2020) follow similar uniform processing in the frequency domain[^src-hyperd-hybrid-periodicity-decoupling].
@@ -310,3 +313,4 @@ The XTraffic benchmark provides incident-aligned traffic datasets for California
 [^src-lets-group]: [[source-lets-group]]
 [^src-stgformer]: [[source-stgformer]]
 [^src-virtual-nodes]: [[source-virtual-nodes]]
+[^src-multispans]: [[source-multispans]]

@@ -7,8 +7,8 @@ tags:
   - spatio-temporal
   - attention
 created: 2026-08-30
-last_updated: 2026-08-30
-source_count: 6
+last_updated: 2026-09-02
+source_count: 7
 confidence: medium
 status: active
 ---
@@ -56,6 +56,7 @@ PDFormer（Propagation Delay-aware dynamic long-range transFormer）是论文提
 ## 在后续工作与 wiki 中的位置
 
 - PDFormer（2023）属于基于注意力的全局时空依赖建模路线[^src-pdformer-jiang-2023]；[[hyperd|HyperD]] 论文把它与 STTN、GMAN、[[staeformer|STAEformer]] 并列归入该路线，并在 PeMS03/04/07/08 上报告超越它，长时域优势更明显（[[traffic-forecasting]] 按此归类型整理路线）[^src-hyperd-hybrid-periodicity-decoupling]。
+- [[multispans|MultiSPANS]]（WSDM 2024）在 related work 中把 PDFormer 概括为"在注意力头上采用地理与语义空间掩码"的代表性工作[^src-multispans]；其多层掩码可视为这条掩码路线的推广——用结构熵最小化从路网无监督导出编码树，逐层社区划分生成多粒度掩码，并以相对结构熵作加性位置编码（见 [[structural-entropy]]）。
 - [[st-unification]] 与 [[metadg|MetaDG]] 的分类把它归入 dynamics-aware / dynamic topology 一档：动态性体现在空间注意力，但元参数等模型中间量仍是静态的[^src-metadg]。
 - 它是后续轻量化与效率对比的常用参照：后续论文报告其参数量约 1,404K、推理计算量约 1.771 GFLOPs[^src-lightweight-mixed-graph-unrolling]，训练显存约 8295MB[^src-hephestus]。注意这些数字来自后续论文的测量表格，PDFormer 原文只报告运行时间（表 4），未报告参数量与显存。
 
@@ -65,7 +66,7 @@ PDFormer（Propagation Delay-aware dynamic long-range transFormer）是论文提
 
 ## 相关页面
 
-[[traffic-forecasting]] · [[st-unification]] · [[metadg]] · [[hyperd]] · [[hephestus]] · [[staeformer]] · [[std-mae]] · [[opencity]] · [[stgcn]] · [[gwnet]] · [[mtgnn]] · [[dcrnn]] · [[graph-learning-as-self-attention]] · [[algorithm-unrolling]]
+[[traffic-forecasting]] · [[st-unification]] · [[metadg]] · [[hyperd]] · [[hephestus]] · [[staeformer]] · [[std-mae]] · [[opencity]] · [[stgcn]] · [[gwnet]] · [[mtgnn]] · [[dcrnn]] · [[graph-learning-as-self-attention]] · [[algorithm-unrolling]] · [[multispans]] · [[structural-entropy]]
 
 [^src-pdformer-jiang-2023]: [[source-pdformer-jiang-2023]]
 [^src-craft]: [[source-craft]]
@@ -73,3 +74,4 @@ PDFormer（Propagation Delay-aware dynamic long-range transFormer）是论文提
 [^src-metadg]: [[source-metadg]]
 [^src-lightweight-mixed-graph-unrolling]: [[source-lightweight-mixed-graph-unrolling]]
 [^src-hephestus]: [[source-hephestus]]
+[^src-multispans]: [[source-multispans]]
