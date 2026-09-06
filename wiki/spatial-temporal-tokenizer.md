@@ -7,7 +7,7 @@ tags:
   - plm
   - foundation-model
 created: 2026-06-15
-last_updated: 2026-06-15
+last_updated: 2026-09-05
 source_count: 1
 confidence: high
 status: active
@@ -57,6 +57,7 @@ Z_S = LayerNorm(Z_dynamic + Z_intrinsic + Z_mask)
 | STGLLM (arXiv 2024) | 图节点 + 时空序列 | 仅空间 | 邻接矩阵 |
 | [[nuwats|NuwaTS]] (arXiv 2024) | 统计+缺失+领域嵌入 patch | 仅时间（CI） | 无 |
 | **STD-PLM** (AAAI 2025) | **空间 + 时间双维度** | **空间+时间** | **拉普拉斯特征向量** |
+| [[lagllm|LagLLM]] (ICML 2026) | 节点 patch + 可学习分组 token（$N_g$ 组 × $N_p$ patch） | 空间+时间（经分组聚合） | 分配矩阵对齐空间结构 |
 
 ## Connections
 
@@ -65,5 +66,7 @@ Z_S = LayerNorm(Z_dynamic + Z_intrinsic + Z_mask)
 - 相关：[[sandglass-attention]] — token 送入 PLM 前的 SGA 处理
 - 概念：[[patch-based-tokenization]] — PatchTST 的 patch tokenization，为时间 token 设计提供参考
 - 对比：[[patch-reprogramming]] — Time-LLM 的跨模态对齐式 token
+- 后续：[[lagllm|LagLLM]] (ICML 2026) — 采用同思路的「patch + 分组」token 化：节点序列 patch 化后经可学习分配矩阵 $S$ 聚成 $N_g$ 组，组级 token 供 LLM 处理，输出再经 $S^\top$ 还原到节点[^src-lagllm]
 
 [^src-std-plm]: [[source-std-plm]]
+[^src-lagllm]: [[source-lagllm-icml2026]]

@@ -8,7 +8,7 @@ tags:
   - rope
   - transformer
 created: 2026-07-27
-last_updated: 2026-07-27
+last_updated: 2026-09-05
 source_count: 1
 confidence: medium
 status: active
@@ -34,5 +34,7 @@ status: active
 
 - [[stunet]] · [[source-stunet]] · [[spatial-tokenizer-adjacency-patches]]
 - [[patchstg]]（depth/breadth dual attention：地理 patch 内/间，目标是效率而非跨网结构基）
+- [[structural-token-sorting]]（[[lagllm|LagLLM]] 的对照路线：不改注意力，而是按 lead–lag 图重排 token 序列让自回归注意力先见 lead 后见 lag；本页则用两套 RoPE 在注意力偏置里编码结构位置[^src-lagllm]）
 
 [^src-stunet]: [[source-stunet]]
+[^src-lagllm]: [[source-lagllm-icml2026]]

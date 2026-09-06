@@ -10,7 +10,7 @@ tags:
   - zero-shot
   - aaai
 created: 2026-06-15
-last_updated: 2026-08-29
+last_updated: 2026-09-05
 source_count: 2
 confidence: medium
 status: active
@@ -64,6 +64,7 @@ ST Data (T×N×C) → Spatial-Temporal Embedding → ST Tokenizer → SGA → PL
 | STLLM (arXiv 2024) | 空间 token | 图聚合 | 预测 |
 | STGLLM (arXiv 2024) | 空间 token | 图聚合 | 预测 |
 | **STD-PLM** (AAAI 2025) | **空间+时间 token** | 图拉普拉斯特征向量 + SGA | **预测+插补** |
+| [[lagllm|LagLLM]] (ICML 2026) | patch + 分组 token | 可学习分组 + lead–lag 图排序 | 预测（论文报告 MAE 平均超 STD-PLM 1.76%）[^src-lagllm] |
 
 STD-PLM 是首个同时从空间和时间两个维度构造 token 并整合拓扑信息的 PLM-based 时空模型[^src-std-plm]。
 
@@ -81,8 +82,10 @@ Guo、Wei 等人的统一评测（11 模型 × 4 个交通数据集 × 20 个缺
 - 对比：[[nuwats]] — PLM-based 插补基础模型，CI 范式
 - 关系：[[traffic-forecasting]] — 交通预测是 STD-PLM 的主要评估场景
 - 关系：[[few-shot-traffic-forecasting]] — 时空 FSL 的核心挑战
+- 对比：[[lagllm|LagLLM]] (ICML 2026) — 以 STD-PLM 为最强基线统一评测 lead–lag 建模增益（8 数据集 27 例 22 例最优），frozen LLM 语义掩码 + token 排序为其区别点[^src-lagllm]
 - 关系：[[st-traffic-imputation-benchmark]] — Guo et al. 统一评测：STD-PLM 的评测口径排名与效率结论
 - 关系：[[traffic-missing-patterns]] — 评测所用缺失模式四分类（SRTR/SRTC/SCTR/SCTC）
 
 [^src-std-plm]: [[source-std-plm]]
+[^src-lagllm]: [[source-lagllm-icml2026]]
 [^src-guo-imputation-evaluation]: [[source-guo-imputation-evaluation]]

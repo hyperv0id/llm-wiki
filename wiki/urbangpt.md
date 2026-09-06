@@ -9,7 +9,7 @@ tags:
   - foundation-model
   - traffic-forecasting
 created: 2026-05-31
-last_updated: 2026-06-09
+last_updated: 2026-09-05
 source_count: 4
 confidence: high
 status: active
@@ -155,8 +155,10 @@ UrbanGPT's key limitation is computational cost: 7B parameters and per-sensor pr
 - [[muffin-mae]] — Muffin-MAE, multifaceted masked autoencoder for inter-correlated urban dynamics
 - [[fstllm]] — FSTLLM, LLM-augmented few-shot ST forecasting keeping a swappable STGNN backbone (ICML 2025)
 - [[st-vision-llm]] — ST-Vision-LLM, grid-rendered Vision-LLM approach contrasting UrbanGPT's node-based separate encoder (arXiv 2025)
+- [[lagllm|LagLLM]] (ICML 2026) — LagLLM 在 related work 中把 UrbanGPT 归入 prompt engineering 路线（任务描述 + POI 作 prompt）；区别在 LagLLM 让 frozen LLM 判 lead–lag 语义掩码参与图构建、再以 LoRA 微调骨干预测[^src-lagllm]
 
 [^src-urbangpt]: [[source-urbangpt]]
 [^src-urbanmind]: [[source-urbanmind]]
 [^src-fstllm]: [[source-fstllm]]
 [^src-st-vision-llm]: [[source-st-vision-llm]]
+[^src-lagllm]: [[source-lagllm-icml2026]]

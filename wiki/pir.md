@@ -28,7 +28,7 @@ status: active
 PIR 由失败识别与两路修订组成，各组件机制与公式见 [[post-hoc-forecast-revision]] 与 [[error-based-uncertainty-estimation]]：
 
 1. **失败识别（Failure Identification）**：用带非线性激活的两层全连接网络预测逐实例 MSE 作为误差代理（通道嵌入提供通道身份上下文），识别结果决定修订强度[^src-pir]。
-2. **局部修订（Local Revising）**：逐变量投影中间预测与外生信息（数值或文本），经带通道注意力的 Transformer 输出局部修订，针对协变量间领先-滞后依赖与外生先验；论文称该设计对 [[channel-independence|channel-independent]] 骨干尤其有益[^src-pir]。
+2. **局部修订（Local Revising）**：逐变量投影中间预测与外生信息（数值或文本），经带通道注意力的 Transformer 输出局部修订，针对协变量间[[lead-lag-dependency|领先-滞后依赖]]与外生先验；论文称该设计对 [[channel-independence|channel-independent]] 骨干尤其有益[^src-pir]。
 3. **全局修订（Global Revising）**：在仅由训练输入-目标对构成的检索库中，以实例归一化（[[instance-normalization|RevIN]]）+ 余弦相似度检索 top-K 相似实例并加权求和其目标，覆盖长尾罕见模式[^src-pir]。
 4. **融合**：以不确定性加权的残差方式修订——估计误差越大，局部与全局修订权重越大[^src-pir]。
 

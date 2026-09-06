@@ -35,7 +35,7 @@ X^{\mathrm{emb}}_{1:T,1} = \alpha \cdot X^{\mathrm{endo}*}_{1:T,1} + (1-\alpha)\
 \]
 
 - `Stack` concatenates variables into an \(N\times T\) matrix.
-- `Conv1D` uses fixed kernel size 3 and stride 1 in the paper’s default setting, which can absorb short lead–lag effects.
+- `Conv1D` uses fixed kernel size 3 and stride 1 in the paper’s default setting, which can absorb short [[lead-lag-dependency|lead–lag effects]].
 - \(\alpha\in[0,1]\) is learnable; initialization near 1 stabilizes early training by prioritizing the endogenous series.
 
 The embedded series keeps the **same length as the endogenous input**, so it drops into CI patch/linear pipelines without reshaping and remains usable under missing exogenous values (mask experiments).[^src-crosslinear]
@@ -63,7 +63,7 @@ Complexity \(O(T)\). As a drop-in front-end it improves SparseTSF, RLinear, Patc
 
 - Model: [[crosslinear]]
 - Source: [[source-crosslinear]]
-- Related concepts: [[channel-independence]], [[cross-dimension-dependency]], [[patch-based-tokenization]]
+- Related concepts: [[channel-independence]], [[cross-dimension-dependency]], [[patch-based-tokenization]], [[lead-lag-dependency]]
 
 ---
 

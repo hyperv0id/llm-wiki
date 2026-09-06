@@ -8,10 +8,9 @@ tags:
   - forecasting
   - iclr
 created: 2026-06-04
-last_updated: 2026-08-19
-source_count: 7
+source_count: 8
 confidence: high
-status: active
+last_updated: 2026-09-05
 ---
 
 # Time-LLM
@@ -95,6 +94,7 @@ Time-LLM 是 Jin et al. (ICLR 2024) 提出的框架，首次通过 **model repro
 - 对比：[[st-vision-llm|ST-Vision-LLM]] (arXiv 2025) uses Time-LLM as an LLM baseline and frames it as a representative 1D-sequence reprogramming approach that, despite strong temporal modeling, lacks mechanisms for the 2D topological/spatial structure of grid-based traffic; on the Telecom Italia mobile-traffic benchmark ST-Vision-LLM substantially outperforms Time-LLM (which uses a Qwen2.5-7B backbone)[^src-st-vision-llm]
 - 反方向：[[tess]] — TESS 把文本压成离散时序原语注入 PatchTST，而非把 TS reprogram 进 LLM 空间[^src-tess]
 - 演化：[[std-plm|STD-PLM]] (AAAI 2025) — 在 PLM-for-TS 思路上增加空间+时间双维度 tokenizer、拉普拉斯节点嵌入和 Sandglass Attention，统一预测+插补[^src-std-plm]
+- 演化：[[lagllm|LagLLM]] (ICML 2026) — 论文自称首个显式建模 lead–lag 依赖的 LLM 时空框架：frozen LLM 依 prompt 判组间 lead–lag 语义掩码参与构图，token 按图排序对齐自回归注意力，GPT-2 + LoRA 做骨干[^src-lagllm]
 
 [^src-time-llm]: [[source-time-llm]]
 [^src-nuwats]: [[source-nuwats]]
@@ -103,3 +103,4 @@ Time-LLM 是 Jin et al. (ICLR 2024) 提出的框架，首次通过 **model repro
 [^src-std-plm]: [[source-std-plm]]
 [^src-tess]: [[source-tess]]
 [^src-quizsf-zero-shot-forecasting-www26]: [[source-quizsf-zero-shot-forecasting-www26]]
+[^src-lagllm]: [[source-lagllm-icml2026]]

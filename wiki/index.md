@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-09-02
+last_updated: 2026-09-05
 tags:
   - meta
 ---
@@ -1426,3 +1426,16 @@ All wiki pages, organized by type. Updated on every ingest.
 ## Techniques (continued)
 - [[graphcast]] — GraphCast，ERA5 端到端训练的全球中期 MLWP：编码-处理-解码 GNN、multi-mesh 长短边混合消息传递、层加权 MSE 多步课程训练（AR 步数 1→12）、自回归滚动 10 天 0.25° 预报（arXiv 2022 v2）
 - [[multi-mesh-representation]] — Multi-mesh，icosahedron 6 次细分（M0 12 节点→M6 40,962 节点）+ M0–M6 全层级边叠加的球面均匀多分辨率图，低层级节点作长程通信 hub；消融显示多级边为位势短时效优势的必要结构（arXiv 2022 v2）
+
+## Sources (continued)
+- [[source-lagllm-icml2026]] — LagLLM: LLM-empowered lead–lag dependency learning for spatial-temporal time series forecasting，frozen LLM 判 lead–lag 语义掩码 + token 按图排序 + GPT-2 LoRA 骨干，8 数据集 27 例 22 例最优（ICML 2026, 浙大）
+
+## Entities (continued)
+- [[lagllm]] — LagLLM，论文自称首个显式建模 lead–lag 依赖的 LLM 时空预测框架：HLLG 图构建 + STS token 排序 + GPT-2 微调 (ICML 2026)
+
+## Concepts (continued)
+- [[lead-lag-dependency]] — lead–lag 依赖：跨空间-时间的延迟依赖 $\tau_{ij}=|t_1-t_2|$，空间/时间依赖为其一维退化形式；统计/领域/深度三类建模谱系
+
+## Techniques (continued)
+- [[hybrid-lead-lag-graph]] — HLLG，数据驱动图 $A_D$ × 空间掩码 $M_S$ × frozen LLM 语义掩码 $M_K$ 的 lead–lag 图构建 (LagLLM, ICML 2026)
+- [[structural-token-sorting]] — STS，lead–lag 图上消息传递求 patch 重要性并重排 token，把图结构转译为自回归序列顺序 (LagLLM, ICML 2026)
