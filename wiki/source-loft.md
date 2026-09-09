@@ -9,7 +9,7 @@ tags:
   - traffic
   - kdd-2026
 created: 2026-08-26
-last_updated: 2026-08-26
+last_updated: 2026-09-09
 source_count: 0
 confidence: low
 status: active
@@ -42,3 +42,4 @@ PEMS03/04/08，SR-TC 与 SC-TC 两种缺失模式、80% 缺失率，另测 PeMS0
 ## 相关页面
 
 [[loft]] · [[low-rank-prior-estimation]] · [[uncertainty-aware-rectification]]
+[[tg-msfm]] — TG-MSFM (ICLR 2026)，本文基线 MSFM 的原文页面（时间门控多尺度速度场 + Heun+DC）

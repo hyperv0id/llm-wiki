@@ -8,7 +8,7 @@ tags:
   - survey
   - classification-framework
 created: 2026-08-29
-last_updated: 2026-08-29
+last_updated: 2026-09-09
 source_count: 5
 confidence: medium
 status: active
@@ -61,7 +61,7 @@ Wang & Du 等人的 MTSI 综述（arXiv:2402.04059v3）提出一个双视角分�
 - [[nuwats|NuwaTS]]：大模型-PFM 类；综述将其概括为"复用预训练语言模型做时序插补，用专用嵌入与对比学习处理跨域缺失模式"。
 - [[timesnet|TimesNet]]：预测式-CNN 类；综述归因于其 FFT 将 1D 序列重组为 2D 格式以适配 CNN 处理。
 
-综述发表于 2024 年前后，未覆盖其后的流匹配插补路线（如 [[loft|LOFT]]、[[giflow|GiFlow]]）；按其不确定性视角，这些方法属于生成式一类，但这是 wiki 的分析性外推，非综述原文论断。后继论文引用情况：[[fence|FENCE]]（AAAI 2026）参考文献含该综述（arXiv:2402.04059，raw PDF 已核实）[^src-fence]；[[loft|LOFT]]（KDD 2026）是否引用该综述未在仓库内核实（raw/ 无 LOFT PDF）。
+综述发表于 2024 年前后，未覆盖其后的流匹配插补路线（如 [[loft|LOFT]]、[[giflow|GiFlow]]、[[tg-msfm|TG-MSFM]]）；按其不确定性视角，这些方法属于生成式一类，但这是 wiki 的分析性外推，非综述原文论断。后继论文引用情况：[[fence|FENCE]]（AAAI 2026）参考文献含该综述（arXiv:2402.04059，raw PDF 已核实）[^src-fence]；[[loft|LOFT]]（KDD 2026）是否引用该综述未在仓库内核实（raw/ 无 LOFT PDF）。
 
 非深度方法同样超出综述范围：[[lcr|LCR]]（circulant matrix nuclear norm 低秩 + Laplacian 核时域正则的凸优化插补，FFT 求解，不训练神经网络）[^src-lcr]未被该综述收录——截至 2026-08-29，本 wiki 对综述 raw PDF（`raw/wang-mts-imputation-survey-arxiv-2024.pdf`）的全文检索未见 LCR、Laplacian 或 circulant 相关条目。
 

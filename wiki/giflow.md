@@ -8,7 +8,7 @@ tags:
   - prior-distribution
   - icml-2026
 created: 2026-08-29
-last_updated: 2026-08-29
+last_updated: 2026-09-09
 source_count: 2
 confidence: medium
 status: active
@@ -90,6 +90,7 @@ status: active
 - [[cofill]] — CoFILL，GiFlow 相关工作中引用的扩散插补
 - [[message-passing-imputation]] — 消息传递插补范式（GiFlow 批评的迭代传播路线）
 - [[costi]] — CoSTI（KBS 2025），一致性训练插补，GiFlow 的基线之一（Table 7 推理时间对比）[^src-costi]
+- [[tg-msfm]] — TG-MSFM (ICLR 2026)，graph-agnostic 高斯源 CFM 插补（时间门控多尺度速度 + Heun+DC），与 GiFlow 的图信息先验构成源分布设计的两端对照
 - [[mts-imputation-taxonomy]] — MTSI 综述（arXiv:2402.04059）分类框架页，含流匹配插补路线相对该综述框架的定位讨论
 
 [^src-giflow]: [[source-giflow]]

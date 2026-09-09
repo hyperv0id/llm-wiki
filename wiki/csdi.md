@@ -9,8 +9,8 @@ tags:
   - probabilistic-modeling
   - neurips-2021
 created: 2026-05-31
-last_updated: 2026-08-29
-source_count: 16
+last_updated: 2026-09-09
+source_count: 17
 confidence: medium
 status: active
 ---
@@ -134,6 +134,7 @@ CSDI 的三个核心设计——(1) 观测值作为条件直接注入去噪网�
 - **[[rdpi|RDPI]]** (AAAI 2025 / arXiv 2024)：批评 CSDI 类条件扩散只在反向去噪训练中使用观测条件、前向与插补过程忽略条件，据此把观测值写入前向转移（见 [[forward-process-conditioning]]），并以确定性初值与真值间的残差为扩散目标（初始模型用 [[grin|GRIN]]、两阶段联合训练）；作者报告在其评测的 4 个时空数据集上 MAE/MSE 优于 CSDI（Table 3/4；其中 AQI 的 Out-of-sample 未报告 CSDI）[^src-rdpi]
 - **[[mtsci|MTSCI]]** (CIKM 2024)：在 CSDI 式条件扩散插补设定上加入插补一致性约束（见 [[imputation-consistency]]）——前向加噪用互补掩码生成双视图、以 intra contrastive loss 约束插补值与观测值互相重构，去噪阶段用 mixup 机制融合相邻窗口条件信息；作者报告在 ETT/Weather/METR-LA 的 point/block 缺失下数值低于 CSDI（Table 2/3），CRPS 一致性指标亦低于 CSDI（Table 5）；该论文对 CSDI/CSBI 的批评是仅靠自监督掩码策略生成插补目标、直接以插补目标归纳偏置引导去噪网络（Sec. 5.2，作者观点）[^src-mtsci]
 - **[[fgti|FGTI]]** (Yang et al., NeurIPS 2024)：保留条件扩散 + 自监督掩码训练，把条件从观测值扩展为"观测值 + 高频/主频两组频域条件"（经 cross-attention 融入去噪网络），并以条件熵命题（其 Prop 3.1）论证加条件降低反向过程不确定性；其 Table 1 报告在 KDD/Guangzhou/PhysioNet 的 MCAR 10-40% 下优于 CSDI（如 KDD 10% RMSE 0.406 vs 0.459），附录 Table 5 的 CRPS 对比同向[^src-fgti]
+- **[[tg-msfm|TG-MSFM]]** (ICLR 2026)：跳出随机采样的确定性路线——以 flow matching 学数据条件 ODE 的速度场做插补，推理期用 [[data-consistency-projection|每步 DC 投影]]硬保观测坐标；将 CSDI 列为主对比基线，报告确定性口径下 MAE 一致更低（其 Table 1）且种子方差小两个数量级（其 Table E3：Electricity MSE 0.112±0.003 vs 0.568±0.028）；论文自述与概率插补互补而非替代[^src-tgmsfm]
 
 ## 综述归类
 
@@ -171,6 +172,8 @@ Wang & Du 等人的 MTSI 综述将 CSDI 归为生成式-扩散类插补方法（
 - [[mtsci]] — MTSCI，条件扩散 + 插补一致性约束 (CIKM 2024)
 - [[fgti]] — FGTI (NeurIPS 2024)，频域条件化扩散插补，把 CSDI 的观测值条件扩展为观测值 + 高频/主频条件
 
+- [[tg-msfm]] — TG-MSFM (ICLR 2026)，以确定性 FM ODE 替代随机扩散插补，CSDI 为其主对比基线（Table 1/E3）
+- [[data-consistency-projection]] — TG-MSFM 的每步观测坐标钳制，与 CSDI 的训练期硬条件成对照
 [^src-csdi]: [[source-csdi]]
 [^src-timegrad]: [[source-timegrad]]
 [^src-lscd]: [[source-lscd]]
@@ -187,3 +190,4 @@ Wang & Du 等人的 MTSI 综述将 CSDI 归为生成式-扩散类插补方法（
 [^src-costi]: [[source-costi]]
 [^src-mtsci]: [[source-mtsci]]
 [^src-fgti]: [[source-fgti]]
+[^src-tgmsfm]: [[source-time-gated-multi-scale-flow-matching]]

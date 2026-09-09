@@ -1448,3 +1448,13 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[fm-ode-trajectory-stages]] — FM ODE 三阶段轨迹动力学：denoiser 是向量场唯一数据依赖成分，noise-to-signal 统一坐标下吸引/吸收框架给出均值吸引→局部簇吸收→终端收敛
 - [[fm-ode-terminal-convergence]] — FM ODE 终端收敛：正 reach + 密度下界下流映射 Ψ₁ 对 a.e. x 存在（首个覆盖低维子流形），medial axis 奇异性、denoiser→投影收敛与流映射等变性
 - [[diffusion-memorization-geometry]] — 记忆现象的几何理论：Voronoi 单元吸收强度 σ₀（重复样本抬权重）、渐近最优 denoiser 必然重现训练点、泛化要求终端 denoiser 逼近真实流形投影
+
+## Sources (continued)
+- [[source-time-gated-multi-scale-flow-matching]] — TG-MSFM: Time-Gated Multi-Scale Flow Matching for Time-Series Imputation, 数据条件 FM ODE + visibility-masked attention + 时间门控多尺度速度头 + Heun/每步 DC 确定性插补，MSE 十基准全列最低 (ICLR 2026)
+
+## Entities (continued)
+- [[tg-msfm]] — TG-MSFM, 确定性 flow matching 多元时间序列插补：结构化端点 + gap-only supervision + 时间门控多尺度速度 + Heun+DC (ICLR 2026)
+
+## Techniques (continued)
+- [[data-consistency-projection]] — 每步数据一致性投影：Heun 积分后把观测坐标钳回 linear bridge，正交投影非扩张 (TG-MSFM, ICLR 2026)
+- [[time-gated-multi-scale-velocity]] — 时间门控多尺度速度头：1D 金字塔尺度专用头 + softmax(MLP(t)) 门控凸组合，谱强调沿轨迹演化 (TG-MSFM, ICLR 2026)

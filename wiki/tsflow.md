@@ -8,7 +8,7 @@ tags:
   - probabilistic-model
   - iclr-2025
 created: 2026-06-08
-last_updated: 2026-08-29
+last_updated: 2026-09-09
 source_count: 3
 confidence: high
 status: active
@@ -78,6 +78,7 @@ TSFlow 使用 DiffWave 风格的残差架构，搭配 S4 层沿时间维度建�
 - [[history-conditional-manifold]] — 相对 GP 固定核的可学信息源
 - [[loft]] — LOFT，同为"信息先验替代高斯源分布"的流匹配插补（低秩先验 vs GP 先验，插补 vs 预测）(KDD 2026)
 - [[giflow]] — GiFlow，图信息先验（时空图滤波）+ CFM 时空插补，GP 先验路线在时空插补上的对应物 (ICML 2026)
+- [[tg-msfm]] — TG-MSFM，同为 linear bridge CFM 但面向确定性插补：高斯源 + 每步 DC 钳制 + 时间门控多尺度速度 (ICLR 2026)
 - [[kite-manifold-guidance-chain]] — HCM–KGC–CFG 串联
 [^src-tsflow]: [[source-tsflow]]
 [^src-prs]: [[source-prs]]

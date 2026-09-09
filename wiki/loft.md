@@ -9,7 +9,7 @@ tags:
   - traffic
   - kdd-2026
 created: 2026-08-26
-last_updated: 2026-08-29
+last_updated: 2026-09-09
 source_count: 7
 confidence: medium
 status: active
@@ -78,7 +78,7 @@ $$L_{CT}(\theta)=\mathbb{E}_{t,s,z_0,z_1}\|v_\theta(z_t,t)-\mathrm{sg}(v_\theta(
 | 方法族 | 代表 | 推理步数（本文设置） | 与 LOFT 的关系 |
 |--------|------|------|------|
 | 条件扩散插补 | [[csdi\|CSDI]]、[[pristi\|PriSTI]]、[[cofill\|CoFill]]、FENCE、FGTI、[[mtsci\|MTSCI]] | 50 | SDE 迭代去噪，实时应用受限（论文表述）；LOFT 以 2 NFE 对比并全面占优（Table 2） |
-| 流匹配插补 | MSFM（时间门控多尺度速度场） | 20 | 同为 ODE 流匹配，无一致性约束 → 轨迹弯曲；LOFT 在相同数据集上误差更低 |
+| 流匹配插补 | [[tg-msfm\|MSFM / TG-MSFM]]（时间门控多尺度速度场） | 20 | 同为 ODE 流匹配，无一致性约束 → 轨迹弯曲；LOFT 在相同数据集上误差更低。口径注：LOFT 复现的 MSFM 用 20 NFE，TG-MSFM 原文默认 300 步 Heun+DC（[[tg-msfm]]），两套设置不可直接混用 [^src-loft] |
 | 轨迹矫正基线 | [[consistency-fm\|Consistency-FM]]、[[alphaflow\|AlphaFlow]] | —（Table 1 中测 2/20 NFE） | 静态施加线性化约束；论文报告即使配低秩先验初始化，两者精度仍低于 LOFT，归因于稀疏目标下分布匹配与轨迹线性化的梯度冲突 |
 | 低秩判别式 | [[imputeformer\|ImputeFormer]] | —（非迭代） | 同样利用低秩归纳偏置，但作为 Transformer 结构约束做确定性映射；LOFT 把低秩用作生成式先验构造 |
 | 低秩判别式（非深度） | [[lcr\|LCR]] | —（无 NFE 口径；ADMM 迭代求解，每次迭代以 FFT 为主） | circulant matrix nuclear norm 低秩 + Laplacian 核时域正则的凸优化插补，FFT 频域求解；LOFT 以其为判别式基线（Table 2 数字为 LOFT 复现口径）[^src-lcr] |
@@ -115,6 +115,8 @@ $$L_{CT}(\theta)=\mathbb{E}_{t,s,z_0,z_1}\|v_\theta(z_t,t)-\mathrm{sg}(v_\theta(
 - [[fence]] — FENCE，同组前作的动态引导扩散插补基线
 - [[lcr]] — LCR（Chen et al., arXiv 2022/2024），非深度的低秩 + Laplacian 正则凸优化插补，LOFT 的判别式基线之一[^src-loft][^src-lcr]
 - [[giflow]] — GiFlow (ICML 2026)，同为流匹配插补，以时空图滤波的图信息先验替代高斯先验；LOFT 参考文献引用该工作[^src-loft]
+- [[tg-msfm]] — TG-MSFM (ICLR 2026)，Table 1 中 FM 插补基线 MSFM 的原文：时间门控多尺度速度头 + Heun+DC 确定性推理
+- [[data-consistency-projection]] — TG-MSFM 的每步观测坐标钳制机制
 - [[loft-llm]] — 同名缩写的另一篇 KDD 2026 论文（低频时序预测）
 - [[mts-imputation-taxonomy]] — Wang & Du 等人的 MTSI 综述分类框架：按其插补不确定性视角，LOFT 的流匹配生成路线属生成式插补一类；综述发表于 LOFT 之前、未覆盖流匹配插补路线[^src-mts-imputation-survey]。注："LOFT 论文引用了该综述"未在仓库内核实（raw/ 无 LOFT PDF，[[source-loft]] 未记录其参考文献），此定位是 wiki 依据框架的分析性归类
 - [[costi]] — CoSTI（KBS 2025），Consistency Training 直接用于 MTSI；与 LOFT 定位表述存在口径张力（见定位节的注记）[^src-costi]
