@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-09-05
+last_updated: 2026-09-09
 tags:
   - meta
 ---
@@ -1097,6 +1097,7 @@ All wiki pages, organized by type. Updated on every ingest.
 ## Analysis (continued)
 - [[kite-manifold-guidance-chain]] — KITE 三件套串联：流形改起点、知识改条件、CFG 拧剂量
 - [[patchstg-mage-stop-shared-skeleton]] — PatchSTG/MAGE/STOP 同构分析：共享低维中介混合 + 个性化项 + 静态 support 的三种参数化（可分离满秩 / 静态图库标量路由 / K 秩瓶颈）；内容动态 support 为共同空白
+- [[gwnet-longevity]] — GWNet 为何在 2026 年仍是主力基线：LargeST 精度证据（STGformer Table I/II）+ 2026 新方法仍以其为骨干（SCALE/USTD/IGSTGNN）+ 四条修补轴 + 机制分析与失效边界
 
 ## Sources (continued)
 - [[source-dag]] — DAG: A Dual Correlation Network for TS Forecasting with Exogenous Variables（时间+通道双相关发现—注入，IJCAI 2026）
@@ -1439,3 +1440,11 @@ All wiki pages, organized by type. Updated on every ingest.
 ## Techniques (continued)
 - [[hybrid-lead-lag-graph]] — HLLG，数据驱动图 $A_D$ × 空间掩码 $M_S$ × frozen LLM 语义掩码 $M_K$ 的 lead–lag 图构建 (LagLLM, ICML 2026)
 - [[structural-token-sorting]] — STS，lead–lag 图上消息传递求 patch 重要性并重排 token，把图结构转译为自回归序列顺序 (LagLLM, ICML 2026)
+
+## Sources (continued)
+- [[source-2412-18730]] — Elucidating Flow Matching ODE Dynamics via Data Geometry and Denoisers, denoiser 吸引/吸收元定理 + FM ODE 三阶段轨迹 + 终端收敛（首个覆盖低维子流形支撑）+ 记忆几何理论 (Wan, Wang, Mishne, Wang, ICML 2025 Poster, arXiv:2412.18730 v4)
+
+## Concepts (continued)
+- [[fm-ode-trajectory-stages]] — FM ODE 三阶段轨迹动力学：denoiser 是向量场唯一数据依赖成分，noise-to-signal 统一坐标下吸引/吸收框架给出均值吸引→局部簇吸收→终端收敛
+- [[fm-ode-terminal-convergence]] — FM ODE 终端收敛：正 reach + 密度下界下流映射 Ψ₁ 对 a.e. x 存在（首个覆盖低维子流形），medial axis 奇异性、denoiser→投影收敛与流映射等变性
+- [[diffusion-memorization-geometry]] — 记忆现象的几何理论：Voronoi 单元吸收强度 σ₀（重复样本抬权重）、渐近最优 denoiser 必然重现训练点、泛化要求终端 denoiser 逼近真实流形投影

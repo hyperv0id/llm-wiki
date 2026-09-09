@@ -7,8 +7,8 @@ tags:
   - one-step-generation
   - icml-2023
 created: 2026-04-28
-last_updated: 2026-08-29
-source_count: 6
+last_updated: 2026-09-09
+source_count: 7
 confidence: medium
 status: active
 ---
@@ -56,6 +56,10 @@ $$
 - **CIFAR-10**: 1 步 FID 3.55, 2 步 FID 2.93
 - **ImageNet 64×64**: 1 步 FID 6.20, 2 步 FID 4.70
 
+### 轨迹收敛：学习 $\Psi_1$ 的理论前提
+
+一致性函数 $f(\cdot,\epsilon)$ 把 PF ODE 轨迹上任意点映到同一终点，其良定义默认轨迹在数据侧有良好定义的极限。Wan et al.（ICML 2025）在温和假设（数据支撑正 reach + 局部密度下界）下证明 FM ODE 流映射 $\Psi_1$ 对几乎处处的初始点存在（首个覆盖低维子流形支撑的结果），为 CM 一类直接学习 $\Psi_1$ 的方法补上理论前提；其终端阶段轨迹位移为 $O(\sigma_t^{\zeta/2})$ 量级的小量，与少步采样的可行性一致[^src-2412-18730]。详见 [[fm-ode-terminal-convergence]]。
+
 ## MeanFlow 原文对 CM 系的定位
 
 [[meanflow|MeanFlow]]（arXiv 2025）作者将 Consistency Models 系刻画为：一致性约束施加在网络行为上而非底层 ground-truth 场的性质上、路径锚定数据侧（在 MeanFlow 记法下相当于固定 $r\equiv 0$），网络只条件化单一时间变量；并认为此类训练可能不稳定、需要"仔细设计的离散化课程"逐步约束时间域——这是 MeanFlow 作者的表述[^src-meanflow]。MeanFlow 自身则由平均速度定义导出恒等式，条件化 $(r,t)$ 两个时间变量，不依赖额外一致性启发式[^src-meanflow]。
@@ -90,6 +94,9 @@ $$
 - [[improved-meanflows]] — iMF，MeanFlow 后续改进，1-NFE 从头训练 FID 1.72（作者报告）(arXiv 2025)
 - [[trajectory-consistency-flow-matching]] — 轨迹一致性流匹配技术页
 - [[costi]] — CoSTI，Consistency Training 直接适配 MTSI 的插补工作 (KBS 2025)
+- [[fm-ode-trajectory-stages]] — FM ODE 三阶段轨迹动力学 (ICML 2025)
+- [[fm-ode-terminal-convergence]] — FM ODE 终端收敛定理，学习 $\Psi_1$ 的理论前提 (ICML 2025)
+- [[diffusion-memorization-geometry]] — 记忆现象的终端阶段几何理论 (ICML 2025)
 
 ## 引用
 
@@ -99,3 +106,4 @@ $$
 [^src-meanflow]: [[source-meanflow]]
 [^src-improved-meanflows]: [[source-improved-meanflows]]
 [^src-costi]: [[source-costi]]
+[^src-2412-18730]: [[source-2412-18730]]

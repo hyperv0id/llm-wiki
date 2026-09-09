@@ -7,8 +7,8 @@ tags:
   - likelihood
   - sde
 created: 2026-04-28
-last_updated: 2026-08-29
-source_count: 4
+last_updated: 2026-09-09
+source_count: 5
 confidence: medium
 status: active
 ---
@@ -101,9 +101,14 @@ $$\frac{d}{ds}\left(\frac{x(s)}{\bar{\alpha}(s)}\right) = \epsilon_\theta(x(s), 
 
 框架背景见 [[flow-matching]] 与 [[flow-matching-design-space]]。
 
+## 轨迹收敛与终端阶段（FM ODE 口径）
+
+分布级收敛（$p_t \to p$）不保证单条 ODE 轨迹收敛——轨迹可能绕数据流形打转而不落入支撑。Wan et al.（ICML 2025）证明：在支撑正 reach + 局部密度下界假设下，FM ODE 流映射 $\Psi_1$ 对几乎处处的初始点存在且把先验推前到数据分布（覆盖低维子流形支撑，此前结果排除该情形），终端阶段轨迹位移为 $O(\sigma_t^{\zeta/2})$ 量级（子流形 $O(\sqrt{\sigma_t})$、离散 $O(\sigma_t)$）——这为少步 ODE 采样提供了理论依据之一[^src-2412-18730]。详见 [[fm-ode-terminal-convergence]]。
+
 ## 引用
 
 [^src-sde]: [[source-sde]]
 [^src-flow-matching-guide]: [[source-flow-matching-guide]]
 [^src-swift]: [[source-swift]]
+[^src-2412-18730]: [[source-2412-18730]]
 [^src-ddim-ode-spaces-ac-cn]: [[source-ddim-ode-spaces-ac-cn]]

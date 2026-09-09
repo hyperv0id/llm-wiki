@@ -7,8 +7,8 @@ tags:
   - manifold
   - training
 created: 2026-05-13
-last_updated: 2026-08-29
-source_count: 2
+last_updated: 2026-09-09
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -59,6 +59,10 @@ x-prediction 是指扩散模型中让神经网络直接预测干净数据 $x$（
 - **奇点**：$x_1$-prediction 在 $t\to1$、$x_0$-prediction 在 $t\to0$ 处转换系数发散；理论上（条件期望存在时）为可去奇点、与系数奇点相消，但实践中连续的网络输出不能完美回归目标，转换时需用端点解析式 $u_0,u_1$ 处理[^src-flow-matching-guide]。这与本页流形论证互补：Li & He 论证的是输出空间性质（on-manifold），指南指出的是转换公式的数值性质。
 - **scheduler 等价与训练后变换**：对固定耦合，所有 scheduler 在 $t=1$ 理论上给出相同采样结果；affine 路径支持训练后 scheduler 变换（scale-time 变换），可把已训练速度场适配到另一 scheduler（指南引 Karras et al. 2022、Shaul et al. 2023、Pokle et al. 2023）[^src-flow-matching-guide]。
 
+## Denoiser 的动力学角色（ICML 2025）
+
+本页的 $x_1$-prediction 正是 FM 理论中的 **denoiser** $m_t(x)=\mathbb{E}[X\mid X_t=x]$。Wan et al.（ICML 2025）证明 denoiser 是 FM ODE 向量场唯一的数据依赖成分，其与数据几何的吸引/吸收交互决定轨迹全程动力学：初始阶段向数据均值、中间阶段被局部簇吸收、终端阶段收敛到数据支撑（论文证明轨迹对 a.e. $x$ 收敛，且流映射 $\Psi_1$ 在支撑正 reach 假设下存在——覆盖低维子流形）[^src-2412-18730]。该视角把"预测什么"（本页参数化问题）延伸到"预测项如何驱动采样轨迹"，展开见 [[fm-ode-trajectory-stages]] 与 [[fm-ode-terminal-convergence]]。
+
 ## 与其他概念的关系
 
 - [[diffusion-model]] — 扩散模型的整体框架，ε-prediction 是其标准参数化
@@ -68,6 +72,9 @@ x-prediction 是指扩散模型中让神经网络直接预测干净数据 $x$（
 - [[edm-preconditioning]] — EDM 网络预处理技术，与 x-prediction 存在内在矛盾
 - [[flow-matching]] — v-prediction 的数学框架，与 x-prediction 通过线性变换关联
 - [[flow-matching-design-space]] — FM 指南的设计选择体系（参数化转换表所在框架）
+- [[fm-ode-trajectory-stages]] — denoiser 吸引/吸收动力学决定 FM ODE 轨迹三阶段
+- [[fm-ode-terminal-convergence]] — denoiser 收敛到支撑投影与 FM ODE 终端收敛
 
 [^src-back-to-basics-let-denoising-generative-models-denoise]: [[source-back-to-basics-let-denoising-generative-models-denoise]]
 [^src-flow-matching-guide]: [[source-flow-matching-guide]]
+[^src-2412-18730]: [[source-2412-18730]]

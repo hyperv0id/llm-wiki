@@ -9,7 +9,7 @@ tags:
   - meta-ai
   - neurips-2023
 created: 2026-04-28
-last_updated: 2026-08-29
+last_updated: 2026-09-09
 source_count: 5
 confidence: medium
 status: active
@@ -424,6 +424,9 @@ Lipman 等人的 [[source-flow-matching-guide|Flow Matching Guide and Code]]（a
 - [[glow]] — Glow 流模型
 - [[optimal-transport]] — 最优传输理论
 - [[probability-flow-ode]] — 概率流 ODE
+- [[fm-ode-trajectory-stages]] — FM ODE 轨迹三阶段动力学：denoiser 吸引/吸收框架下的均值吸引→局部簇吸收→终端收敛 (ICML 2025)
+- [[fm-ode-terminal-convergence]] — FM ODE 终端收敛定理：正 reach + 密度下界下流映射 Ψ₁ 对 a.e. x 存在，首个覆盖低维子流形支撑 (ICML 2025)
+- [[diffusion-memorization-geometry]] — 记忆现象的终端阶段几何理论：Voronoi 吸收强度与渐近最优 denoiser 的记忆必然性 (ICML 2025)
 - [[freqflow]] — FreqFlow，频率感知流匹配，引入双分支架构和双域监督
 - [[frequency-aware-conditioning]] — 频率感知条件化，FreqFlow 的核心设计概念
 - [[aurora]] — Aurora 使用 Prototype-Guided Flow Matching 进行时间序列概率预测
