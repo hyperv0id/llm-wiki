@@ -9,7 +9,7 @@ tags:
   - dilated-convolution
   - wavenet
 created: 2026-05-31
-last_updated: 2026-08-30
+last_updated: 2026-09-04
 source_count: 4
 confidence: high
 status: active
@@ -155,6 +155,8 @@ GWNet established a durable design principle: **spatial dependencies should be l
 | [[dpgnet|DPGNet]] | ICLR 2026 (u.r.) | AGL plug-and-play replaces GWNet's static $E_1E_2^\top$ with dynamic per-timestep graph + weak connection suppression |
 | [[virtual-nodes-traffic\|Virtual Nodes]] | arXiv 2025 | Keeps the distance graph and appends virtual nodes whose connection weights use the MTGNN-style anti-symmetric formula (semi-adaptive adjacency), targeting over-squashing in long-term prediction[^src-virtual-nodes] |
 
+GWNet 的持续在场与失效边界（跨年 OOD、超大规模、精度上限）的逐条证据整理，见 [[gwnet-longevity]]。
+
 ## Related Pages
 
 - [[source-gwnet]] — Source summary with full experimental tables and ablation details
@@ -176,6 +178,7 @@ GWNet established a durable design principle: **spatial dependencies should be l
 - [[adaptive-graph-learner]] — AGL, dynamic graph learning with gated self-attention and weak connection suppression
 - [[bigst]] — BigST (PVLDB 2024), linearizes GWNet's adaptive adjacency to $O(N)$ for ~100K-node networks
 - [[virtual-nodes-traffic]] — Virtual Nodes (arXiv 2025), semi-adaptive adjacency extending the adaptive-graph paradigm with virtual nodes
+- [[gwnet-longevity]] — 长青分析：GWNet 在 2024–2026 年文献中的精度/使用/范式证据与边界
 
 [^src-gwnet]: [[source-gwnet]]
 [^src-dpgnet]: [[source-dpgnet]]

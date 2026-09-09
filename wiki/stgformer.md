@@ -7,8 +7,7 @@ tags:
   - linear-attention
   - large-scale
 created: 2026-08-30
-last_updated: 2026-08-30
-source_count: 1
+last_updated: 2026-09-04
 confidence: medium
 status: active
 ---
@@ -46,6 +45,7 @@ status: active
 - [[staeformer]] — 效率与精度对照基线，嵌入层来源
 - [[large-scale-spatial-temporal-graph]] — 大规模 ST 预测方法谱系
 - [[spatio-temporal-ood-learning]] — 跨年泛化证据的归类位置
+- [[gwnet-longevity]] — GWNet 在 2024–2026 年仍为主力基线的证据整理（引用本页 Table I/II 数字）
 - [[traffic-forecasting]]
 
 [^src-stgformer]: [[source-stgformer]]
