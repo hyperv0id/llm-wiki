@@ -1,0 +1,1324 @@
+                                        Trace as State: Reasoning Traces as Conditional States for Long-Context
+                                                                     Transformers
+
+
+                                                                                       Xu Zou1 Jie Tang2
+                                                                                 1
+                                                                                     Z.ai 2 Tsinghua University
+
+
+
+
+                                                              Abstract                               reasoning and answer generation, but it cannot af-
+                                                                                                     fect the representations formed at earlier positions
+                                            Transformers process information causally, but           within the same pass.
+
+
+
+
+arXiv:2609.02702v1 [cs.CL] 2 Sep 2026
+                                            long-context reasoning may depend on task                   One structural difficulty is a mismatch between
+                                            state discovered only later. We formalize
+                                                                                                     input order and reasoning order. Prior work shows
+                                            this mismatch through conditional state update
+                                            tasks. For causal state update processors, pro-          that reasoning performance can depend not only
+                                            viding the condition first can require exponen-          on where supporting information appears, but also
+                                            tially less memory in the worst case than pro-           on the relative order in which it is presented (Chen
+                                            viding it last.                                          et al., 2024; Yu et al., 2025). In many long context
+                                            Motivated by this principle, we introduce                tasks, a solver must maintain task-relevant state,
+                                            TRACE AS STATE .       We use collected reason-          such as an active target, a search frontier, or a set
+                                            ing traces as a textual proxy for task state and         of rejected hypotheses. Some of this state may be-
+                                            place it before the long-context block on a fresh        come available only after earlier parts of the context
+                                            pass, allowing information derived previously            have already been processed.
+                                            to guide rereading.                                         We analyze this asymmetry through conditional
+                                            We conduct extensive experiments on TRACE                state update tasks. Such a task begins from a state
+                                            AS STATE and TRACE APPEND, a matched con-                specified by a condition and applies an information
+                                            trol that uses the same task state proxy but put         sequence to it. If the condition is available before
+                                            it after the context. Across three models and            the sequence, a causal processor can update the
+                                            three long-context datasets, TRACE AS STATE
+                                                                                                     realized state as each item arrives. If the condition
+                                            outperforms TRACE APPEND in 26 of 27 re-
+                                            ported combinations of model, task, and met-             arrives after the sequence, the processor may in-
+                                            ric. On GraphWalks Parents, exact match lifts            stead need to retain how the sequence would act on
+                                            DeepSeek V4 Pro(Preview) from 29.2% on the               every possible condition. We show that these two
+                                            initial pass and 43.0% with TRACE APPEND to              input orders can have exponentially different mem-
+                                            81.8% with TRACE AS STATE, and from 66.4%                ory requirements in the worst case. The separation
+                                            and 83.2% to 100.0% for GLM-5.2. These                   motivates an ordering principle for causal trans-
+                                            results show that placing traces before the con-
+                                                                                                     former passes: task-relevant state discovered late
+                                            text can improve long-context reasoning while
+                                            retaining the causal transformer structure.              in one pass can be made available before the con-
+                                                                                                     text in the next pass. Figure 1A and 1B illustrate
+                                        1   Introduction                                             the causal processor and the two input orders.
+                                                                                                        Modern reasoning models provide an observable
+                                        Frontier language models can now accept inputs               interface through the reasoning traces they generate
+                                        extending to hundreds of thousands or even mil-              before producing visible answers (DeepSeek-AI,
+                                        lions of tokens. Advances in sparse, compressed,             2025a; Qwen Team, 2025b; Lee et al., 2025). Gen-
+                                        and hybrid sequence modeling architectures have              erated reasoning text can carry intermediate compu-
+                                        substantially enlarged their nominal context win-            tational information across steps (Nye et al., 2021;
+                                        dows (DeepSeek-AI, 2025b, 2026a; Qwen Team,                  Wei et al., 2022; Merrill and Sabharwal, 2024; Levy
+                                        2025a; Yang et al., 2025).                                   et al., 2025). Reasoning traces may be incomplete
+                                           Despite these architectural advances, autoregres-         or contain errors, and we treat them as an observ-
+                                        sive Transformers retain causal attention. Informa-          able textual proxy for task state, as shown in fig-
+                                        tion appearing later remains available to subsequent         ure 1C. We therefore introduce TRACE AS STATE,
+
+                                                                                                 1
+a general inference scaling method that follows                   27 reported combinations of model, task, and
+a read, compute, feedback, and reread procedure.                  metric.
+The model first processes the task and generates
+one or more reasoning traces. We serialize the               2   Related Work
+collected traces as T and place it before the long-          Long-context architectures and effective use.
+context block in a fresh pass.                               Sparse, compressed, and hybrid sequence models
+   We compare TRACE AS STATE with TRACE AP -                 have extended the nominal context windows of lan-
+PEND , a placement control that gives the second             guage models (DeepSeek-AI, 2025b, 2026a; Qwen
+pass serialized trace text after the long context. Un-       Team, 2025a; Yang et al., 2025). Long-context
+der TRACE AS STATE, the trace is available while             evaluations nevertheless show continued sensitivity
+the context is processed again. Under TRACE AP -             to evidence position, distractors, and the operations
+PEND , the trace can still guide later reasoning and         required to combine information across an input
+answer generation, but it cannot influence the repre-        (Liu et al., 2024; Kuratov et al., 2024; Hsieh et al.,
+sentations already formed for the preceding context.         2024).
+Figure 1D summarizes the strict placement design.
+                                                             Causal order in reasoning. Under causal atten-
+   We evaluate this placement intervention on                tion, a representation at one position can use only
+GraphWalks 256K, MRCRv2 8-needle, and NUB-                   information from that position and its prefix. Ok
+1M using three frontier models from different                and Lee attribute a large multi-choice prompt-order
+providers: DeepSeek V4 Pro Preview, GLM-5.2,                 gap to this constraint and show that repeating the
+and Qwen 3.7 Max. Across the 27 reported com-                options after the context partially closes the gap
+binations of model, task, and metric, TRACE AS               (Ok and Lee, 2026). CoRe reduces sensitivity to
+STATE outperforms TRACE APPEND in 26. The                    the order of supporting documents by repeating the
+result shows that the benefit of using reasoning             full context, whereas Racing Thoughts traces con-
+traces as a task state proxy and placing it before the       textualization errors to layerwise race conditions
+context is general in long context reasoning, and            (Yu et al., 2025; Lepori et al., 2025). Collectively,
+is consistent with our conditional state update task         these studies show that input order, repetition, and
+memory analysis.                                             contextualization can affect model behavior.
+   We further test alternative explanations through          Architectural recurrence. Iterative language
+ablations on GraphWalks 256K using DeepSeek V4               models can revisit hidden representations or par-
+Pro Preview. These controls weaken explanations              tially specified text. Geiping et al. train a language
+based solely on generic trace scaffolding or access          model with recurrent depth that repeatedly applies
+to first-pass answers and further support the TRACE          a shared block at test time (Geiping et al., 2025).
+AS STATE interpretation.
+                                                             Saunshi et al. study Transformer blocks with
+   Our contributions are as follows:                         shared weights, and LoopFormer trains variable
+   • We use a conditional state update abstraction           loop trajectories for different inference budgets
+     to characterize a worst-case exponential order          (Saunshi et al., 2025; Jeddi et al., 2026). Masked
+     separation for deterministic processors that            text-diffusion models such as LLaDA reconstruct
+     read the input once, and apply it as a quali-           masked positions over multiple steps using visible
+     tative principle for causal processing of long          context on both sides (Sahoo et al., 2024; Nie et al.,
+     contexts.                                               2025). These approaches expand the design space
+                                                             for iterative computation. However, they can re-
+   • We introduce TRACE AS STATE, a general                  quire substantial changes to existing training and
+     inference scaling method for reasoning over             inference infrastructure.
+     long contexts that feeds reasoning traces back
+     as textual state proxies. The method adds feed-         Rereading and textual feedback. Several meth-
+     back between passes while retaining causal              ods revisit task information or carry textual state
+     processing within each pass.                            forward during inference. Re2 repeats the question
+                                                             within one prompt and provides a direct rereading
+   • Across three models and three benchmarks                baseline without prior reasoning text (Xu et al.,
+     for reasoning over long contexts, TRACE AS              2024). The Markovian Thinker carries a bounded
+     STATE scores above TRACE APPEND in 26 of                text history across reset reasoning chunks, while
+
+                                                         2
+ A Causal state updates                                 B Order-dependent memory                                        C Trace as State
+                                                        Condition first: z, C
+            c1                          cn
+                                                           z         C = (c1 , …, cn )                        sn            trace T
+                                                                                                                                                          task state
+   s0       U            s1   ⋯         U          sn
+                                                                  one state path
+                                                                                                                                                            proxy
+                                                        Condition last: C, z
+                                                                                                        z
+                 si = U(si − 1 , ci )
+                                                           C                                                   sn
+
+                                                           many residual maps
+                                                               Worst case: exponential gap
+
+
+
+        D              Feedback across causal passes
+                       same x, same T, same model                                                          CAUSAL PASS 2
+                 Causal pass 1                                      Trace Append                                                Trace as State
+                                                                               [x, T]                                                     [T, x]
+                              x
+                                                                        x                       T                           T                      x
+                              
+                                                                                                                                          
+                  r1 : ntr              a1 : ntr
+
+                       π                                             r ′ Tap                  a ′ Tap                           r ′ Tas                a ′ Tas
+                              T
+                                                                               same T
+                      reasoning only
+
+
+
+
+Figure 1: Overview for TRACE AS STATE (A) A causal processor carries one running state. (B) In a worst-
+case conditional state update task, condition-first processing tracks only the realized state, whereas condition-last
+processing can require exponentially more working memory. (C) Reasoning trace T provides a textual proxy for
+task state. (D) TRACE AS STATE places T before the context in a fresh causal pass.
+
+
+ReContext recursively builds and replays an evi-                                        3       Methodology
+dence pool for the current query (Aghajohari et al.,
+2026; Zhao et al., 2026). These methods show                                            Textual reasoning typically follows a causal order,
+that feeding task-relevant text back to a model can                                     which is well matched by causal transformers. Yet
+improve reasoning.                                                                      some reasoning depends on task states whose val-
+                                                                                        ues become known only later, creating a mismatch
+                                                                                        especially consequential in long contexts. We for-
+                                                                                        malize this mismatch using causal state update sys-
+                                                                                        tems and conditional state update tasks and intro-
+                                                                                        duce TRACE AS STATE.
+Reasoning traces as state. Reasoning traces can
+                                                                                           Table 1 summarizes the vital notation used in
+serve not only as explanations, but also as textual
+                                                                                        this section.
+records of an evolving computational state. Hao
+et al. show that synthetic hints inserted into a rea-
+                                                                                        3.1         Causal State Updates and
+soning trace can affect later outputs even when
+                                                                                                    Order-Dependent Memory
+follow-up explanations do not acknowledge their
+influence (Hao et al., 2026). The State over Tokens                                     Causal state updates. We define a causal state
+preprint describes the growing reasoning prefix as                                      update processor as a processor that reads each
+externalized computational state, whereas causal                                        input unit once in its presented order and updates its
+mediation evidence suggests that models do not                                          persistent working memory using only its current
+reliably use their stated intermediate steps (Levy                                      memory and the newly received unit.
+et al., 2025; Paul et al., 2024). Taken together,                                         Let C = (c1 , . . . , cn ) be an ordered sequence
+the evidence shows that reasoning traces can carry                                      of n information units, with ci denoting the ith
+task-relevant information and affect later outputs.                                     unit. As shown in Figure 1A, a causal state update
+
+                                                                                 3
+                   Table 1: Vital Notations.                                    There are |S||S| possible functions from S to
+                                                                             itself. In the worst case, [C, z] requires at least
+Symbol           Meaning                                                            l            m
+ci , C           The ith information unit and the ordered se-                         log2 |S||S| = ⌈|S| log2 |S|⌉ = ⌈b2b ⌉ (2)
+                 quence C = (c1 , . . . , cn ).
+si , S, b        The task state after ci , its finite state space, and       bits, whereas [z, C] requires only ⌈b⌉ bits. In the
+                 the log size of the state space
+U                The causal state update rule.                               worst-case scenario, the memory requirement is
+z                The condition used as the initial task state s0 .           exponentially larger in the condition last setting
+x, M             The long context and the causal reasoning                   than in the condition first setting.
+                 model.
+rj , aj , ntr    The reasoning trace, visible answer, and num-
+                                                                                We could derive an ordering principle: a task
+                 ber of source model runs.                                   condition could be much easier to use when it is
+π, T             The trace serializer and the resulting serialized           available before the information whose processing
+                 trace.
+                                                                             it guides.
+
+                                                                             3.2 Reasoning Traces as a Textual State Proxy
+processor carries a task state si in a finite state
+                                                                             Although transformers may retain per-token kv
+space S. After reading ci , it applies a fixed update
+                                                                             caches, causal transformers with finite context
+rule U :
+                                                                             length and finite precision are causal state update
+            si = U (si−1 , ci ),         i = 1, . . . , n.        (1)        models as the their max memory are bounded. Con-
+                                                                             ditional state update tasks are not literal models of
+The state si is the task state the processor reached                         real world long context tasks. Instead, the results in
+after processing c1 , . . . , ci . When the initial state                    section 3.1 motivate us to test placing task relevant
+s0 is fixed, the processor follows one realized state                        state before the context on a later pass.
+path through the sequence.                                                      The formal condition z represents task state that
+                                                                             is already available to the processor. In a long
+Conditional state update tasks and order-
+                                                                             context reasoning problem, however, useful task
+dependent memory. Consider a variant of the
+                                                                             state may be discovered only while the model is
+causal state update process in which the initial state
+                                                                             reasoning after reading the context. A reasoning
+is supplied by a task condition rather than being
+                                                                             trace may record useful task states like an active
+fixed. Let z ∈ S denote this condition. We call the
+                                                                             target, a resolved reference or a search frontier.
+resulting problem a conditional state update task:
+                                                                                We view reasoning traces as an observable tex-
+the processor sets s0 = z, applies Equation 1 to C,
+                                                                             tual proxy for task state, as illustrated in figure 1C.
+and returns sn .
+                                                                             The proxy may be incomplete, lossy, or incorrect.
+   Figure 1B compares two orders for the same
+                                                                             We therefore do not identify a trace with the for-
+condition and information sequence. In the con-
+                                                                             mal condition z or with a privileged internal model
+dition first order [z, C], the processor receives z
+                                                                             state. The connection is functional: if the trace con-
+before c1 , . . . , cn (n is the length of the information
+                                                                             tains useful state information, placing it before the
+sequence) and therefore knows which state path to
+                                                                             context can make that information available while
+update. In the condition last order [C, z], it reads
+                                                                             the context is processed again.
+the complete sequence before learning which initial
+                                                                                Let M be a causal state update model and let x
+state should be propagated through it.
+                                                                             denote the long context. We run M ntr times on
+   To compare their working memory, consider a
+                                                                             the same problem. Each run j produces a reasoning
+causal state update processor that knows exactly
+                                                                             trace rj and a separate visible answer aj :
+the state update rule U . With [z, C], the processor
+only needs to store the current si , so ⌈b⌉ bits suffice,                       (rj , aj ) ∼ M(· | x),      j = 1, . . . , ntr .   (3)
+where b = log2 |S|.
+   With [C, z], the processor has not selected a state                          For each task, a serializer π held fixed across
+path when it finishes reading C. Each possible se-                           the placement conditions constructs the serialized
+quence determines a complete response profile: for                           trace
+every z ∈ S, the profile specifies the resulting sn .                                      T = π(r1 , . . . , rntr ).        (4)
+The processor must retain a different configuration                          The serializer preserves the included reasoning text
+for every distinct response profile induced by the                           in source order and adds fixed labels and delimiters.
+valid sequences.                                                             We use T as the textual state proxy to be tested.
+
+                                                                         4
+3.3    Trace as state.                                      proxy that may carry task-state information. They
+Figure 1D shows the complete procedure. Based on            also represent different providers and disclosed
+theoretical analysis from section 3.1, we introduce         long-context designs: DeepSeek V4 Pro Preview
+TRACE AS STATE, a method that places the textual            uses a hybrid attention stack with Compressed
+state proxy T before the long context x. Therefore,         Sparse Attention(CSA), Heavily Compressed At-
+in TRACE AS STATE, a fresh causal pass receives             tention(HCA), and Manifold-Constrained Hyper-
+[T, x] to generate the answer again. We compare             Connections(mHC) (DeepSeek-AI, 2026a); Qwen
+TRACE AS STATE with TRACE APPEND, the method                3.7 Max is formed with Gated Deltanet(GDN) and
+that maintains the original order of x and T and            Gated Attention(GA) (Yang et al., 2025; Qiu et al.,
+sends the model [x, T ] on a second pass.                   2025); and GLM-5.2 is a 1M-token MoE model
+   Let r′ and a′ denote the reasoning trace and visi-       with DeepSeek Sparse Attention (DSA) optimized
+ble answer produced in this pass:                           by IndexCache (IC), which reuses sparse-attention
+                                                            indices across layers (DeepSeek-AI, 2025b; Bai
+             ′
+           (rTap , a′Tap ) ∼ M(· | [x, T ]),                et al., 2026; GLM-5 Team, 2026; Z.ai, 2026b,a).
+              ′
+                                                 (5)        We choose the highest available reasoning effort
+            (rTas , a′Tas ) ∼ M(· | [T, x]).
+                                                            in our experiments: max for DeepSeek V4 Pro
+TRACE AS STATE and TRACE APPEND use the same                and GLM-5.2. For Qwen 3.7 Max, we use the
+long context x and the same textual task state proxy        official xhigh system prompt. All three support
+T , with order as the only difference. With TRACE           approximately one-million-token inputs in the eval-
+AS STATE, T is available while the model processes          uated interfaces and expose the reasoning traces
+x again. With TRACE APPEND, T arrives after x               required by the frozen textual realization evaluated
+and cannot change representations already formed            here (Alibaba Cloud, 2026; DeepSeek-AI, 2026b;
+for the preceding context tokens, although it can           Z.ai, 2026a).
+still influence subsequent reasoning and the visible           Details of the models are described in Table 1-1.
+answer. The comparison therefore tests whether
+the same T is more useful during rereading than             Datasets. We use GraphWalks (OpenAI, 2025a),
+after the long context has already been processed.          MRCRv2 8-needle (OpenAI, 2025b; Vodrahalli
+                                                            et al., 2024), and 1M-Novel Understanding Bench
+4     Experiments                                           (NUB-1M) (xz-keg, 2026) for our evaluation.
+4.1    Setup                                                GraphWalks requires the model to maintain graph
+                                                            state over a long edge list; MRCRv2 asks the model
+In this section, we evaluate TRACE AS STATE and             to bind a final request to the correct earlier request-
+its matched placement control TRACE APPEND on               response instance. Both provide multiple prompt-
+long context tasks from different domains. The              length bins. As different models use different to-
+models come from different providers and have dif-          kenizers, many problems in the 1M bin cannot be
+ferent disclosed architectural designs. A fixed seri-       fairly tested due to overlength. We therefore choose
+alizer preserves the reasoning traces while adding          the longest bins under 1M: The 256K bin for Graph-
+only necessary delimiters such as "<trace_start>"           Walks and the 256K and 512K bins for MRCRv2.
+and "<trace_end>" and brief introductory text to            This choice also leaves room for additional TRACE
+construct T . Some traces are so long that we trun-         AS STATE and TRACE APPEND texts.
+cate them to the first 50,000 characters to keep
+                                                               NUB-1M is a long novel reading comprehension
+the second-pass prompt within the model’s context
+                                                            benchmark with complex questions about a new
+capacity. These choices define the realization evalu-
+                                                            novel containing 400–700K tokens. The dataset
+ated here; the general TRACE AS STATE framework
+                                                            is updated by season to reduce leakage risk. For
+also permits adapted models, serializers, or state
+                                                            each season, the problems and answers are man-
+interfaces while retaining causal processing within
+                                                            ually maintained. We use the season 2 novel for
+each pass.
+                                                            evaluation and report average accuracy of the 20
+Models. We evaluate Qwen 3.7 Max, DeepSeek                  problems over 5 repeats.
+V4 Pro Preview, and GLM-5.2. All three are                     Models may not behave as intended unless the
+frontier long-context reasoning models that ex-             question appears at the end of the prompt. We
+pose reasoning traces that can be logged and sup-           therefore separate the question from the long con-
+plied back to the model as an imperfect textual             text and place it at the end of every input to ensure
+
+                                                        5
+Table 1-1: Model configuration and token budgets used                   judged accuracy for NUB-1M. Blocked, over-
+in the experiments.                                                     long, malformed, missing, nonterminal, or content-
+                                                                        filtered cases are scored as failures.
+                     Qwen           DeepSeek V4
+ Model               3.7 Max        Pro Preview GLM-5.2                     Some first pass reasoning traces are very long,
+                                                                        we therefore truncate each reused trace to its first
+                                    CSA+HCA                             50,000 characters to avoid input overlength.
+ Arch.a    GDN+GA                   + mHC     DSA+IC
+ Input     983,616                  1,048,576 1,048,576                 4.2   Main Results
+ Budget
+ Output    65,536                   131,072         65,536              Table 2 displays the main experimental results.
+ Budget                                                                 Across all 27 reported combinations of model, task,
+ Reasoning xhighb                   max             max                 and metric, TRACE AS STATE scores higher than
+ a                     b
+                                                                        TRACE APPEND in 26. DeepSeek V4 Pro and
+     Architecture.         Via xhigh prompt.
+                                                                        Qwen 3.7 Max favor TRACE AS STATE on every
+Table 1-2: Datasets and scoring used in the experiments.                reported dataset, task and metric. GLM-5.2 follows
+                                                                        the same pattern except on GraphWalks BFS F1,
+ Task           GraphWalks MRCRv2                   NUB-1M              where TRACE APPEND is 0.8 points higher while
+                                    256K,512K                           TRACE AS STATE has higher exact match. TRACE
+ Subsets 256K                       8-needle  Season 2                  AS STATE also scores above the first pass in all
+ Problems 200                       200       20                        reported evaluations.
+ Repeats 5                          5         5                            TRACE APPEND improves over the first pass in
+ Scoring EMa, set F1                EM, Seq.b Acc.c                     many settings, showing that the trace text can carry
+ a                     b                            c
+                                                                        useful information in these settings. The additional
+     Exact Match.          SequenceMatcher ratio.       Accuracy.
+                                                                        advantage of TRACE AS STATE is consistent with
+                                                                        the hypothesis that placing reasoning traces as an
+models behave well focused on the given tasks.                          imperfect textual task state proxy before the context
+The literal orders are therefore TRACE AS STATE                         is beneficial when the model processes the context
+[T, x, q] and TRACE APPEND [x, T, q], where x is                        again.
+the long context and q is the question.                                    The strongest gains occur on GraphWalks Par-
+   Details of the datasets are listed in Table 1-2.                     ents, where success requires the model to main-
+   For each model and task, we compare a single-                        tain predecessor state while interpreting the graph.
+pass baseline M([x, q]) with two trace-backed con-                      DeepSeek V4 Pro improves from 46.5 to 91.3 F1,
+ditions TRACE AS STATE, M([T, x, q]) and TRACE                          or 29.2 to 81.8 EM, and Qwen 3.7 Max improves
+APPEND M([x, T, q]) that reuse the model’s own                          from 87.2 to 99.1 F1, or 60.8 to 96.4 EM. GLM-
+first-pass reasoning traces. Appendix C gives the                       5.2 reaches 100.0 EM and F1 on Parents under
+trace serialization and dataset-specific insertion                      TRACE AS STATE . MRCRv2 retrieval and binding
+boundaries.                                                             comparisons show the same ordering advantage.
+   We evaluate each problem with 5 repeats and                          NUB-1M runs provide supporting evidence in the
+include all 5 reasoning traces in the second-pass                       same direction for detailed long-novel reading com-
+TRACE AS STATE and TRACE APPEND prompts.                                prehension.
+We use the official provider for these models,
+Aliyun Bailian for Qwen 3.7 Max (Alibaba Cloud,                         4.3   Context Order Ablations
+2026), DeepSeek for DeepSeek V4 Pro (DeepSeek-                          We next compare TRACE AS STATE with controls
+AI, 2026b), and Bigmodel for GLM-5.2 (Z.ai,                             that vary how different context are placed and first-
+2026a). We do not explicitly pass a custom                              pass outputs are reused on DeepSeek V4 Pro Graph-
+maximum-output value. The run records therefore                         Walks 256K in table 3. We test several ablations to
+establish that no client-side cap was requested, but                    examine how models behave under different trace
+not the effective provider default, which may also                      placements and feedback controls. For each abla-
+change over time.                                                       tion, the table labels the prompt format and reports
+   Our evaluations use EM and set F1 for Graph-                         the exact match(EM) and F1 score. We also include
+Walks, EM and SequenceMatcher ratio for MR-                             Majority@5 and Oracle@5 for the first pass in the
+CRv2 8-needle, and DeepSeek V4 Pro model-                               table. Majority@5 evaluates the major choices of
+
+                                                                    6
+Table 2: Long-context results for first pass, TRACE AS STATE and TRACE APPEND. Scores are percentages averaged
+over 5 repeats; higher is better. The best score within each model-metric column is bolded.
+
+                                              GraphWalks 256K              MRCRv2 8-needle        NUB-1M
+      Model            Condition
+                                              BFS             Parents       256K        512K      Season 2
+                                           EM     F1      EM        F1    EM Seq. EM Seq.           Acc.
+                  First Pass          31.6 36.4 29.2                46.5 53.8 78.5 45.4 63.6         60.0
+      DeepSeek V4
+      Pro Preview TRACE APPEND        41.8 48.3 43.0                65.3 66.6 79.6 49.4 66.9         71.0
+                       TRACE AS STATE 58.8 65.9 81.8                91.3 76.8 88.7 52.6 73.3         73.0
+                       First Pass     60.0 68.1 60.8                87.2 79.8 83.1 36.2 43.7         37.0
+      Qwen 3.7
+                       TRACE APPEND 60.4 70.4 71.0                  91.7 84.0 87.1 40.4 47.4         49.0
+      Max
+                       TRACE AS STATE 63.8 71.7 96.4                99.1 88.4 91.3 46.8 52.5         51.0
+                       First Pass     55.8 70.7 66.4 88.5 40.2 48.2 42.6 52.0                        43.0
+      GLM-5.2          TRACE APPEND   60.0 75.8 83.2 92.7 40.0 58.3 44.6 59.9                        65.0
+                       TRACE AS STATE 63.4 75.0 100.0 100.0 61.2 71.9 55.4 70.1                      66.0
+
+
+the 5 first pass answers, while Oracle@5 evaluates            AS STATE , signifying that textual recency alone
+the best answer among the 5 answers.                          does not explain the observed TRACE AS STATE
+   Question First puts the question q before the task.        gains.
+It substantially improves performance on Parents                 Trace Only sends the first-pass reasoning traces
+but remains similar to the first pass baseline on             without the original long context prompt. Its perfor-
+BFS, implying that the question itself may be a               mance is similar to TRACE APPEND, showing that
+vital task state for some tasks.                              the traces contain useful answer-relevant informa-
+   Re2 (Xu et al., 2024) improves substantially over          tion. Nevertheless, it remains well below TRACE
+the first pass, showing that rereading is useful on           AS STATE , showing that the original input is still
+these long context tasks. However, it remains below           useful when placed after the first pass traces. Trace
+TRACE AS STATE , especially on Parents. In this               as State also outperforms Oracle@5, showing that
+evaluated setting, the comparison is consistent with          the feedback pass improves on what can be ob-
+T carrying task-relevant information beyond that              tained by retrospectively selecting the best of the
+supplied by prompt repetition alone.                          five first pass outputs.
+   Answer Feedback places the first pass answers
+a = [a1 , . . . , antr ] before the original prompt. It       4.4   Trace Count Ablation
+improves over the first pass but remains far below            Finally, we rerun DeepSeek V4 Pro Preview on
+TRACE AS STATE . This supports the interpreta-                the GraphWalks 256K while varying the number
+tion that serialized reasoning text can serve as a            of reused first-pass traces from ntr = 1 to ntr = 5.
+more useful task state proxy than the answers or              The block for each count contains the first ntr
+the questions alone.                                          eligible traces in repeat order, so successive set-
+   Random Trace replaces the prefix with traces               tings are nested. For every ntr ≥ 1, TRACE AS
+sampled from other problems in the same Graph-                STATE and TRACE APPEND receive the same re-
+Walks subtask. It performs worse than the no-trace            alized T , and each condition averages five fresh
+first pass, much worse than TRACE AS STATE. So                second-pass repeats per problem. The ntr = 0
+the gain of TRACE AS STATE is not due to a generic            point is the common five-repeat first-pass mean.
+formatting effect, and a reasoning-trace-like scaf-           Figure 2 shows that performance generally rises
+fold alone is insufficient without problem-specific,          as additional traces are included, and TRACE AS
+task-relevant information from reasoning traces of            STATE remains above TRACE APPEND for every
+the same problem.                                             ntr ≥ 1. Within this frozen-model realization, the
+   All above controls above place a copy of the long          result supports trace count as an inference-scaling
+context late in the prompt but remain below TRACE             parameter and shows that the measured TRACE
+
+                                                          7
+Table 3: DeepSeek V4 Pro Preview performance on GraphWalks 256K under different prompt conditions. Scores
+are percentages averaged over 5 repeats. The best scores for each subtask/metric are bolded.
+
+                                                                    BFS                               Parents
+           Condition                    Prompt
+                                                    Exact Match(%) F1 Score(%) Exact Match(%) F1 Score(%)
+           First pass               [x, q]                  31.6              36.4             29.2             46.5
+           Majority@5                                       35.0              39.6             31.0             47.8
+           Oracle@5                                         50.0              55.5             50.0             75.0
+           Question First          [q, x, q]                33.4              36.8             53.0             64.6
+           Re2 (Xu et al., 2024) [x, q, x, q]               49.0              52.9             50.0             68.9
+           Answer Feedback         [a, x, q]                35.4              39.4             45.4             58.0
+           Random Trace          [Trand , x, q]             22.4              35.9             14.2             31.3
+           Trace Only               [T, q]                  46.2              52.7             43.8             67.3
+           TRACE APPEND                 [x, T, q]           41.8              48.3             43.0             65.3
+           TRACE AS STATE               [T, x, q]           58.8              65.9             81.8             91.3
+
+
+                A. BFS F1                                               in reasoning traces as a textual proxy on a fresh
+           70
+                                                                        pass over a long context task. Its motivation comes
+                                                                        from theoretical analysis of conditional state up-
+           60
+                                                                        date tasks: for causal state update processors, a
+  F1 (%)   50                                                           condition available before an information sequence
+           40                                                           can guide a single evolving state, while a late con-
+                                                                        dition can require retaining much more memory
+           30
+                                                                        about potential conditions of the sequence.
+                      0     1       2         3       4         5           TRACE AS STATE applies this ordering princi-
+
+                B. Parents F1                                           ple by making prior reasoning available before the
+         100                                                            long context block is processed again. Together,
+           90                                                           the formal analysis and experiments support a sim-
+           80                                                           ple view: reasoning traces can carry forward task
+
+F1 (%)
+           70                                                           state information, and the point at which that infor-
+           60                                                           mation becomes available can shape how useful it
+           50                                                           is.
+           40                                                               This view suggests several direct extensions: se-
+                      0     1       2         3       4         5       lecting or compressing traces, learning better tex-
+                           First-pass traces (ntr)                      tual state interfaces, and optimizing where feed-
+                                                                        back is placed. A broader training framework could
+                No trace   Trace Append        Trace as State
+                                                                        jointly learn the model and the feedback interface
+                                                                        while retaining causal processing within each pass.
+Figure 2: Trace-count ablation on DeepSeek V4 Pro
+GraphWalks 256K. Panel A reports BFS F1 and Panel
+B reports Parents F1. Shading shows 95% percentile
+confidence intervals.
+
+
+AS STATE – TRACE APPEND ordering persists from
+ntr = 1 through ntr = 5.
+
+5          Conclusion
+We introduced TRACE AS STATE, an inference ap-
+proach that reuses task state information carried
+
+                                                                    8
+Limitations
+Our experiments realize cross-pass state feedback
+through model-generated text. This evaluated real-
+ization requires access to raw reasoning traces or
+another exposed state interface. The requirement
+comes from the interface used in our experiments.
+The general cross-pass design can instead use any
+accessible state interface. Models or APIs that ex-
+pose only final answers may therefore require a
+different interface.
+   TRACE AS STATE uses one or more source runs
+followed by a fresh pass over the task. These addi-
+tional passes increase inference latency and token
+cost. Placing state before the original context can
+also reduce key–value cache reuse in multi-round
+settings.
+   Our evaluation covers three causal transformer
+models from different providers and three long
+context task families: GraphWalks, MRCR, and
+NUB-1M. We do not evaluate multi-round agent
+tasks. Testing additional models, domains, context
+lengths, and interactive settings is needed to estab-
+lish how broadly the observed placement advantage
+generalizes.
+   Finally, because the method reuses only model
+generated traces, it does not introduce additional
+ethical concerns or misuse risks beyond those asso-
+ciated with the underlying models and tasks.
+
+
+
+
+                                                        9
+References                                                     Cheng-Ping Hsieh, Simeng Sun, Samuel Kriman, Shan-
+                                                                 tanu Acharya, Dima Rekesh, Fei Jia, Yang Zhang,
+Milad Aghajohari, Kamran Chitsaz, Amirhossein                    and Boris Ginsburg. 2024. RULER: What’s the real
+  Kazemnejad, Sarath Chandar, Alessandro Sordoni,                context size of your long-context language models?
+  Aaron Courville, and Siva Reddy. 2026. The marko-              In First Conference on Language Modeling.
+  vian thinker: Architecture-agnostic linear scaling of
+  reasoning. In The Fourteenth International Confer-           Ahmadreza Jeddi, Marco Ciccone, and Babak Taati.
+  ence on Learning Representations. Poster.                      2026. LoopFormer: Elastic-depth looped transform-
+                                                                 ers for latent reasoning via shortcut modulation. In
+Alibaba Cloud. 2026.    qwen3.7-max model in-                    The Fourteenth International Conference on Learn-
+  formation.    https://help.aliyun.com/                         ing Representations.
+  zh/model-studio/qwen3-7-max. Official
+  Model Studio documentation. Accessed August 3,               Yuri Kuratov, Aydar Bulatov, Petr Anokhin, Ivan Rod-
+  2026.                                                          kin, Dmitry Sorokin, Artyom Sorokin, and Mikhail
+                                                                 Burtsev. 2024. BABILong: Testing the limits of
+                                                                 LLMs with long context reasoning-in-a-haystack. In
+Yushi Bai, Qian Dong, Ting Jiang, Xin Lv, Zhengx-
+                                                                 Advances in Neural Information Processing Systems,
+  iao Du, Aohan Zeng, Jie Tang, and Juanzi Li. 2026.
+                                                                 volume 37. Datasets and Benchmarks Track.
+  IndexCache: Accelerating sparse attention via cross-
+  layer index reuse. In Third Conference on Language           Celine Lee, Alexander M. Rush, and Keyon Vafa. 2025.
+  Modeling.                                                      Critical thinking: Which kinds of complexity govern
+                                                                 optimal reasoning length? In Proceedings of the 14th
+Xinyun Chen, Ryan Andrew Chi, Xuezhi Wang, and                   International Joint Conference on Natural Language
+  Denny Zhou. 2024. Premise order matters in reason-             Processing and the 4th Conference of the Asia-Pacific
+  ing with large language models. In Proceedings of              Chapter of the Association for Computational Lin-
+  the 41st International Conference on Machine Learn-            guistics.
+  ing, volume 235 of Proceedings of Machine Learning
+  Research, pages 6596–6620. PMLR.                             Michael A. Lepori, Michael Curtis Mozer, and Asma
+                                                                 Ghandeharioun. 2025. Racing thoughts: Explain-
+DeepSeek-AI. 2025a. DeepSeek-R1: Incentivizing rea-              ing contextualization errors in large language models.
+  soning capability in LLMs via reinforcement learning.          In Proceedings of the 2025 Conference of the Na-
+  Nature, 645:633–638.                                           tions of the Americas Chapter of the Association for
+                                                                 Computational Linguistics: Human Language Tech-
+DeepSeek-AI. 2025b. DeepSeek-V3.2: Pushing the                   nologies (Volume 1: Long Papers), pages 3020–3036,
+  frontier of open large language models. Technical              Albuquerque, New Mexico. Association for Compu-
+  report arXiv:2512.02556, DeepSeek-AI.                          tational Linguistics.
+                                                               Mosh Levy, Zohar Elyoseph, Shauli Ravfogel, and
+DeepSeek-AI. 2026a. DeepSeek-V4: Towards highly                 Yoav Goldberg. 2025. State over tokens: Char-
+  efficient million-token context intelligence. Techni-         acterizing the role of reasoning tokens. Preprint,
+  cal report arXiv:2606.19348, DeepSeek-AI.                     arXiv:2512.12777.
+DeepSeek-AI. 2026b.         Models & pricing.                  Nelson F. Liu, Kevin Lin, John Hewitt, Ashwin Paran-
+  https://api-docs.deepseek.com/                                 jape, Michele Bevilacqua, Fabio Petroni, and Percy
+  quick_start/pricing/.              Official API                Liang. 2024. Lost in the middle: How language mod-
+  documentation. Accessed August 3, 2026.                        els use long contexts. Transactions of the Association
+                                                                 for Computational Linguistics, 12:157–173.
+Jonas Geiping, Sean Michael McLeish, Neel Jain, John
+  Kirchenbauer, Siddharth Singh, Brian R. Bartold-             William Merrill and Ashish Sabharwal. 2024. The ex-
+  son, Bhavya Kailkhura, Abhinav Bhatele, and Tom                pressive power of transformers with chain of thought.
+  Goldstein. 2025. Scaling up test-time compute with             In The Twelfth International Conference on Learning
+  latent reasoning: A recurrent depth approach. In The          Representations.
+  Thirty-ninth Annual Conference on Neural Informa-            Shen Nie, Fengqi Zhu, Zebin You, Xiaolu Zhang,
+  tion Processing Systems.                                       Jingyang Ou, Jun Hu, Jun Zhou, Yankai Lin, Ji-Rong
+                                                                 Wen, and Chongxuan Li. 2025. Large language dif-
+GLM-5 Team. 2026.        GLM-5: From vibe cod-                   fusion models. In Advances in Neural Information
+  ing to agentic engineering.     Technical report               Processing Systems, volume 38, pages 50608–50646.
+  arXiv:2602.15763, Z.ai and Tsinghua University.                Curran Associates, Inc.
+Yijie Hao, Lingjie Chen, Ali Emami, and Joyce C.               Maxwell Nye, Anders Johan Andreassen, Guy Gur-
+  Ho. 2026. Reasoning traces shape outputs but mod-             Ari, Henryk Michalewski, Jacob Austin, David
+  els won’t say so. In Proceedings of the 64th An-              Bieber, David Dohan, Aitor Lewkowycz, Maarten
+  nual Meeting of the Association for Computational             Bosma, David Luan, Charles Sutton, and Augus-
+  Linguistics (Volume 1: Long Papers), pages 42852–             tus Odena. 2021. Show your work: Scratchpads
+  42878, San Diego, California, United States. Associ-          for intermediate computation with language models.
+  ation for Computational Linguistics.                          ArXiv:2112.00114.
+
+
+                                                          10
+Hyunjong Ok and Jaeho Lee. 2026. Lost in the prompt               and Denny Zhou. 2022. Chain-of-thought prompt-
+  order: Revealing the limitations of causal attention            ing elicits reasoning in large language models. In
+  in language models. In Findings of the Association              Advances in Neural Information Processing Systems,
+  for Computational Linguistics: ACL 2026, pages                  volume 35, pages 24824–24837.
+  38566–38587, San Diego, California, United States.
+  Association for Computational Linguistics.                    Xiaohan Xu, Chongyang Tao, Tao Shen, Can Xu,
+                                                                  Hongbo Xu, Guodong Long, Jian-Guang Lou, and
+OpenAI. 2025a.    GraphWalks:      A multi                        Shuai Ma. 2024. Re-reading improves reasoning
+  hop reasoning long context benchmark.                           in large language models. In Proceedings of the
+  https://huggingface.co/datasets/                                2024 Conference on Empirical Methods in Natural
+  openai/graphwalks. Dataset card. Accessed                       Language Processing, pages 15549–15575, Miami,
+  August 3, 2026.                                                 Florida, USA. Association for Computational Lin-
+                                                                  guistics.
+OpenAI. 2025b.      OpenAI MRCR: Long con-
+  text multiple needle in a haystack benchmark.                 xz-keg. 2026.          1M Novel Understanding
+  https://huggingface.co/datasets/                                Bench.       https://github.com/xz-keg/
+  openai/mrcr. Dataset card. Accessed August 3,                   Novel-Understanding-Bench.           Project
+  2026.                                                           repository. Accessed August 3, 2026.
+Debjit Paul, Robert West, Antoine Bosselut, and Boi             Songlin Yang, Jan Kautz, and Ali Hatamizadeh. 2025.
+  Faltings. 2024. Making reasoning matter: Measur-                Gated delta networks: Improving Mamba2 with delta
+  ing and improving faithfulness of chain-of-thought              rule. In The Thirteenth International Conference on
+  reasoning. In Findings of the Association for Com-              Learning Representations.
+  putational Linguistics: EMNLP 2024, pages 15012–
+  15032, Miami, Florida, USA. Association for Com-              Sangwon Yu, Ik hwan Kim, Jongyoon Song, Saehyung
+  putational Linguistics.                                         Lee, Junsung Park, and Sungroh Yoon. 2025. Un-
+                                                                  leashing multi-hop reasoning potential in large lan-
+Zihan Qiu, Zekun Wang, Bo Zheng, Zeyu Huang,                      guage models through repetition of misordered con-
+  Kaiyue Wen, Songlin Yang, Rui Men, Le Yu, Fei                   text. In Findings of the Association for Computa-
+  Huang, Suozhi Huang, Dayiheng Liu, Jingren Zhou,                tional Linguistics: NAACL 2025, pages 6450–6470,
+  and Junyang Lin. 2025. Gated attention for large lan-           Albuquerque, New Mexico. Association for Compu-
+  guage models: Non-linearity, sparsity, and attention-           tational Linguistics.
+  sink-free. In Advances in Neural Information Pro-
+  cessing Systems, volume 38, pages 110931–110957.              Z.ai. 2026a.      GLM-5.2.     https://docs.
+                                                                  bigmodel.cn/cn/guide/models/text/
+Qwen Team. 2025a. Qwen3-Next-80B-A3B-Instruct                     glm-5.2. Official model documentation. Accessed
+ model card. Model card, Alibaba Cloud. Official                  August 3, 2026.
+ model card.
+                                                                Z.ai. 2026b. GLM-5.2 & GLM-5.1 & GLM-5. https:
+Qwen Team. 2025b. Qwen3 technical report. Technical               //github.com/zai-org/GLM-5.               Official
+  report arXiv:2505.09388, Alibaba Cloud.                          GLM-5 series repository. Accessed August 3, 2026.
+Subham Sekhar Sahoo, Marianne Arriola, Yair Schiff,             Yanjun Zhao, Ruizhong Qiu, Tianxin Wei, Yuanchen
+  Aaron Gokaslan, Edgar Marroquin, Justin T. Chiu,                Bei, Zhining Liu, Lingjie Chen, Ismini Lourentzou,
+  Alexander Rush, and Volodymyr Kuleshov. 2024.                   Hanghang Tong, and Jingrui He. 2026. ReContext:
+  Simple and effective masked diffusion language mod-             Recursive evidence replay as LLM harness for long-
+  els. In Advances in Neural Information Processing               context reasoning. Preprint, arXiv:2607.02509.
+  Systems, volume 37.
+Nikunj Saunshi, Nishanth Dikkala, Zhiyuan Li, Sanjiv
+  Kumar, and Sashank J. Reddi. 2025. Reasoning with
+  latent thoughts: On the power of looped transform-
+  ers. In The Thirteenth International Conference on
+  Learning Representations.
+Kiran Vodrahalli, Santiago Ontanon, Nilesh Tripuraneni,
+  Kelvin Xu, Sanil Jain, Rakesh Shivanna, Jeffrey Hui,
+  Nishanth Dikkala, Mehran Kazemi, Bahare Fatemi,
+  Rohan Anil, Ethan Dyer, Siamak Shakeri, Roopali
+  Vij, Harsh Mehta, Vinay Ramasesh, Quoc Le, Ed Chi,
+  Yifeng Lu, and 5 others. 2024. Michelangelo: Long
+  context evaluations beyond haystacks via latent struc-
+  ture queries. Preprint, arXiv:2409.12640.
+Jason Wei, Xuezhi Wang, Dale Schuurmans, Maarten
+   Bosma, Brian Ichter, Fei Xia, Ed Chi, Quoc V. Le,
+
+
+                                                           11
+A     Attaining the Worst-Case                               Late-order cut. Consider the processor config-
+      Residual-Map Count                                     uration after Cf and immediately before z is read.
+                                                             If two distinct functions f ̸= g produced the
+Let S be a finite nonempty state set, C an input
+                                                             same configuration, some z ∈ S would satisfy
+alphabet, n the sequence length, and t : C n ×
+                                                             f (z) ̸= g(z). Starting from the shared configura-
+S → S a conditional state-update task. For an
+                                                             tion, the processor would produce the same output
+information sequence C ∈ C n , define the residual
+                                                             after reading the identical suffix z, contradicting
+map and the number of distinct residual maps by
+                                                             exactness. Thus the cut admits at least mm distinct
+            ϕC = (t(C, z))z∈S ∈ S S ,                        configurations. At this cut, a processor attains the
+                                                             bound by storing the identity of f in one of mm
+              K = |{ϕC | C ∈ C n }| .
+                                                             states and applying the fixed lookup rule when z
+Equivalently, ϕC (z) = t(C, z). For every finite             arrives. Under the accounting convention above,
+nonempty state set S, this appendix constructs a             the exact cut-state requirement for this family is
+task for which K = |S||S| . The corresponding                ⌈log2 (mm )⌉ bits.
+late-order working-memory requirement is                     Condition-first comparison. For the order
+                                                             (z, cf ), a single S-valued register suffices: initial-
+          ⌈log2 K⌉ = ⌈|S| log2 |S|⌉ bits.
+                                                             ize it with z and replace its value by f (z) when
+Fix an arbitrary finite nonempty state set S. For            cf arrives. At the cut after z and immediately be-
+this S, the construction below chooses C, n, and             fore cf , this implementation has m possible input-
+t and evaluates K under the definition above. Set            dependent configurations. This is optimal. Let
+m = |S| and write b = log2 m. Since every ϕC                 ι = idS , so cι ∈ C. If two distinct values z, z ′ ∈ S
+belongs to S S , K ≤ mm .                                    produced the same configuration at this cut, then
+                                                             reading the identical suffix cι would force the same
+Proposition. For every finite nonempty state set             output from both configurations. Exactness in-
+S, there exist a finite input alphabet C and a con-          stead requires the respective outputs ι(z) = z and
+ditional state-update task such that, with n = 1,            ι(z ′ ) = z ′ . Hence the cut admits at least m con-
+K = mm . Every deterministic one-pass processor              figurations, and its exact cut-state requirement is
+that is exact on all inputs and reads C before z must        ⌈log2 m⌉ = ⌈b⌉ bits. When m = 1, each cut has
+therefore retain at least                                    one configuration and therefore requires zero bits.
+                                       l m                   As a concrete check, m = 4 gives K = 44 = 256:
+          ⌈log2 K⌉ = ⌈m log2 m⌉ = b 2b
+                                                             the late-order cut requires eight bits, whereas the
+                                                             condition-first cut requires two bits.
+bits of persistent input-dependent state immediately
+before reading z.                                            Scope. This finite-state existence construction ap-
+Construction. Set n = 1 and choose the input                 plies to the stated task family and to deterministic,
+alphabet                                                     exact, one-pass computation. It is an adversarial
+             C = {cf | f ∈ S S }.                            worst-case construction whose alphabet and fixed
+                                                             transition table realize all self-maps of S. The
+Thus |C| = mm . Define one fixed update rule                 processor cannot reread C, and every auxiliary
+U : S × C → S by U (s, cf ) = f (s), equivalently            writable store is included in the counted configura-
+Ucf = f . For every f ∈ S S , the sequence Cf =              tion. Restricted update families may realize fewer
+(cf ) belongs to C n , and its residual map satisfies        residual maps, yielding a smaller lower bound from
+                                                             this residual-map argument.
+       ϕCf (z) = t(Cf , z) = Ucf (z) = f (z).
+                                                             Causal Transformers are Causal State Update
+Consequently,                                                Processors. Transformers use kv caches that may
+                                                             expand as context length grows. Modern transform-
+              {ϕC | C ∈ C n } = S S ,
+                                                             ers may include more complex memory structures
+and                                                          like latent kv, shared kv or linear kv. Despite these,
+                                                             causal transformers with a finite maximal context
+              K = |{ϕC | C ∈ C n }|                          length and finite precisions are indeed causal state
+                 = |S S | = mm .                             update processors defined in section 3.1.
+
+
+                                                        12
+   Define the "working state" as to contain the               pare the extracted solver answer with that refer-
+current position, all layerwise key–value entries,            ence. Solver identity and feedback order are ex-
+and any other persistent input-dependent inference            cluded from the judge prompt. The judge returns a
+buffers. Causal inference computes the new to-                Boolean correctness decision and a short rationale;
+ken representation layer by layer and appends the             we use the Boolean as the binary score.
+corresponding key–value entries. Thus the next                   We also manually reviewed the judged outputs
+configuration is a fixed function of the preceding            and found no errors.
+configuration and the new token. The maximum
+context length and finite precision make the con-             C     Prompt and State Templates
+figuration space finite. Per-token or other forms             This appendix shows the fixed serializer used to
+of caches therefore do not violate the causal state           construct T and records the dataset-specific prompt
+update abstraction.                                           details for experiments. We retain the compact
+B     Scoring and Run Qualifications                          condition notation [T, x] for TRACE AS STATE and
+                                                              [x, T ] for TRACE APPEND; the paragraphs below
+Section 4.1 gives the common model, dataset, con-             give the exact insertion boundaries and fixed inter-
+dition, and scoring setup. This appendix specifies            face text suppressed by that notation.
+scorer edge cases, qualifications of the reported
+runs, and the record-selection rules used to com-             C.1    Reusable Trace Block
+pute the reported cells.                                      Let r = (r1 , . . . , rntr ) denote the selected first-
+                                                              pass reasoning traces in source order, and let PD
+B.1    Scorer Edge Cases
+                                                              denote the dataset-specific trace-block preamble
+GraphWalks. The evaluator extracts the terminal               containing its description and warning. Table 4
+line Final Answer: [...] and compares                         shows their fixed text form.
+the parsed node set with the gold set. A valid empty             Here PD is part of T , rather than part of the origi-
+prediction is scored normally: two empty sets have            nal task prompt x; its exact value for each dataset is
+EM and F1 equal to one, whereas one empty and                 given verbatim below. Separately returned visible
+one nonempty set have EM and F1 equal to zero.                answers remain outside T . The five source reason-
+An absent response or a missing, malformed, or                ing fields are taken in repeat-index order. When
+nonterminal answer receives zero. For Question                applying the 50,000-character cap, any reasoning
+First, we conservatively treat a null or unknown              field longer than 50,000 characters is replaced by
+termination marker as length-limited. In the eval-            its first 50,000 characters followed by ...; block
+uated records, 121 have a null marker, none have              formatting then strips leading and trailing whites-
+an unknown marker, and 60 are natively marked                 pace.
+as length-limited, for 181 length-limited outputs
+in total (160 BFS and 21 Parents). One additional             C.2    Model-Specific Details
+stopped BFS output lacks the required terminal                Qwen 3.7 Max reasoning instruction. For ev-
+answer syntax. All 182 outputs receive zero.                  ery evaluated Qwen 3.7 Max condition, we use the
+MRCRv2 8-needle. Each example supplies                        following fixed xhigh instruction recommended
+a random prefix that must begin both the                      for reasoning scenarios in the official Qwen 3.7
+prediction and reference.         The scorer vali-            Max evaluation guidance available when the exper-
+dates and removes this prefix before comput-                  iments were run:
+ing EM and the ratio returned by Python’s                           Reasoning effort is set to
+difflib.SequenceMatcher. EM is one                                  xhigh. Please think carefully
+                                                                    through the task, validate key
+when the remaining strings match exactly and zero                   assumptions, consider plausible
+otherwise. The paper labels the ratio Seq.; it is dis-              alternatives, and prioritize
+tinct from GraphWalks set F1. A missing or invalid                  correctness, consistency, and
+                                                                    clarity in the final answer.
+prefix gives zero for both metrics. Some prompts
+trigger provider content filters; filtered outputs re-          Here xhigh names the recommended
+main in the denominator and receive zero.                     prompt text rather than a provider-side
+NUB-1M. We maintain a reference answer for                    reasoning_effort value. For MRCRv2, the
+each problem and use DeepSeek V4 Pro to com-                  runner prepends the instruction to the system
+
+                                                         13
+                           Table 4: The fixed serialization used to construct the reusable trace block.
+
+ Reasoning traces r                                      T = π(r)
+ r = (r1 , r2 , . . . , rntr )                           PD (dataset-specific prompt)
+                                                         <first_run_reasoning_traces>
+                                                         [Trace 1]
+                                                         r1
+                                                         [Trace 2]
+                                                         r2
+                                                         ..
+                                                          .
+                                                          [Trace ntr ]
+                                                          rntr
+                                                         </first_run_reasoning_traces>
+
+
+
+message. The GraphWalks and NUB-1M runners                          For [x, T ], the runner splits the released prompt
+prepend it to their single user message. Within                     immediately before its last Operation: block:
+each dataset, the delivery format is fixed across                   the graph instructions and edge list come first, then
+the evaluated conditions and does not change the                    the identical trace block, then the final operation
+relative placement of T and the long context.                       and answer-format instruction.
+                                                                       This formatting instruction guides the model to
+Version of Deepseek V4 Pro. There are two
+                                                                    output its answer in a parse-able way.
+models both called Deepseek V4 Pro released on
+2026-4-24 and 2026-8-13 respectively. We use the                    MRCRv2. For MRCRv2, PD is the following
+2026-4-24 version for our experiments.                              exact text:
+
+C.3     Dataset-Specific Details                                         Below are reasoning traces from
+                                                                         independent first attempts on
+GraphWalks. For GraphWalks, PD is the follow-                            the same MRCR problem. They
+ing exact text:                                                          may contain mistakes. Use them
+                                                                         only as scratchpad hints; verify
+      Below are selected reasoning                                       against the conversation and
+      traces or trace tail windows                                       final request. Do not copy any
+      from independent first attempts                                    trace text into the visible
+      on the same graph problem. They                                    answer.
+      may contain mistakes. Use them
+      only as scratchpad hints, and                                 D    GraphWalks Difficulty Profiles
+      verify against the graph.
+                                                                    As an exploratory diagnostic, we examine whether
+  We also use a system prompt:                                      the descriptive timing gap varies with two observ-
+      You solve directed-graph
+                                                                    able GraphWalks properties. BFS specifies a re-
+      algorithm problems. Use only                                  quested traversal depth d, and Parents has a gold
+      the graph and operation in the                                parent-set size k. These variables summarize as-
+      user message. Return exactly
+      one visible line in this format:                              pects of traversal and aggregation demand, but re-
+      Final Answer: [node1, node2].                                 alized difficulty can also depend on frontier size,
+      Use [] for the empty set. Do                                  early termination, and graph structure. The analy-
+      not include any text before or
+      after that line.                                              sis and highlighted ranges were developed after in-
+                                                                    specting outcomes; they are hypothesis-generating
+   The runner also appends this exact answer-                       rather than confirmatory tests of an interaction,
+format instruction to the user message:                             threshold, capacity limit, or mechanism.
+                                                                       We pool adjacent low-support values into BFS
+      Return exactly one line in this
+      format: Final Answer: [node1,                                 bins 1–2, 3–4, 5–6, 7–8, and 9–10, and Parents
+      node2]. Use [] for the empty                                  bins 0, 1, 2, 3, 4–5, and ≥ 6. Their problem counts
+      set.
+                                                                    are (17, 25, 21, 15, 22) and (13, 17, 25, 20, 13, 12),
+  For [T, x], the complete trace block precedes                     respectively. For feedback timing p ∈ {pre, post}
+the complete released GraphWalks prompt, and                        and bin b, we report the gain over the common
+the answer-format instruction follows that prompt.
+
+                                                               14
+first-pass baseline,
+
+       ∆p (b) = Scorep (b) − Scorefirst (b).     (6)
+
+Each point averages five stored repeats within each
+problem and then the problems in its bin. The yel-
+low regions are descriptive and outcome-informed;
+their boundaries are specific to each model, subtask,
+and metric. They were not selected independently
+of the displayed scores and do not support confir-
+matory inference.
+   The prefix-minus-postfix exact-match gap in Fig-
+ure 3 is concentrated in particular bins. DeepSeek
+V4 Pro has its largest BFS timing gaps at d = 3–
+6, and Qwen 3.7 Max has a smaller concentration
+in the same range. GLM-5.2 has positive gaps
+through d = 8 and a reversal in the final pooled
+bin. The Parents profiles differ. TRACE AS STATE
+is never below TRACE APPEND in the plotted exact-
+match bins, with a tie for Qwen 3.7 Max at k = 0.
+Qwen’s separation grows with k; DeepSeek V4
+Pro and GLM-5.2 are nonmonotonic but have large
+gaps in selected middle or high-k bins.
+
+
+
+
+                                                        15
+                                                                                             Δpre           Δpost
+
+                                                           A DeepSeek V4 Pro                              B DeepSeek V4 Pro
+                                                      60           +48.8                                                    +61.0     +70.0
+                                                                                                                       +64.0     +58.5      80
+
+                                                      40                   +30.5                                                              60
+                                                                                                              +32.9
+                                                           +16.5                           +18.2         +21.5                                40
+                                                      20                           +12.0
+                                                                                                                                              20
+                                                                                                                              +21.5
+                                                       0 +11.8                             +12.7         +15.4                     +15.0 0
+                                                                                                                    +8.8
+                                                                   +11.2 +6.7 +8.0                            +12.9      +14.0
+                                                                                                                                              −20
+
+
+
+
+          Exact-match gain over first pass (points)
+                                                           C Qwen 3.7 Max                                 D Qwen 3.7 Max
+                                                      60                                                                              +71.7
+                                                                                                                                 +56.9
+                                                                                                                                            80
+                                                                                                                            +47.0           60
+                                                      40                                                               +32.0
+                                                                   +8.0
+                                                                                                                                              40
+                                                      20                            +2.7                        +11.8
+                                                                           +4.8                          +1.5                                 20
+                                                           +1.2                            +0.9
+                                                                                                                                  +20.0      0
+                                                       0                                                                +7.2 +17.0     +16.7
+                                                                                                         +1.5                                 −20
+                                                           -1.2            +0.0            +0.9                 +1.2
+                                                                   +0.8             +1.3
+
+
+
+                                                           E GLM-5.2                                      F GLM-5.2
+                                                                                                                                      +76.7
+                                                      60                                                                                      80
+                                                                                                                              +50.8
+                                                      40                                                                                 60
+                                                                                                                         +36.0
+                                                                                   +12.0                            +28.0                40
+                                                                   +9.6                                        +10.6
+                                                                                                         +13.8                     +43.3
+                                                      20 +7.1              +6.7                                                          20
+                                                                                           +3.6                          +31.0
+                                                                                                                    +22.4
+                                                                                                                              +12.3      0
+                                                       0                                   +8.2
+                                                           +1.2                                                +0.0                      −20
+                                                                   +4.8 +0.0 +6.7                        -13.8
+                                                           1–2 3–4 5–6 7–8 9–10                            0     1       2    3   4–5 ≥ 6
+                                                                    BFS depth d                                Gold-parent count k
+                                                                                      BFS n: 17, 25, 21, 15, 22
+                                                                                   Parents n: 13, 17, 25, 20, 13, 12
+
+
+Figure 3: GraphWalks exact-match gains over the first pass by BFS depth d (left) and gold-parent count k (right).
+The blue and orange curves report ∆pre and ∆post . Bin supports appear below the panels. Yellow shading marks
+descriptive, outcome-informed ranges of larger separation, with boundaries chosen separately for each model and
+subtask.
+
+
+
+
+                                                                                               16
+                                                                                                                    Δpre                 Δpost
+
+
+                                                   A DeepSeek V4 Pro                                       B Qwen 3.7 Max                                         C GLM-5.2
+                                          60
+
+
+
+
+   Set F1 gain over first pass (points)
+                                                           +45.1
+                                          50                         +43.9
+
+                                          40
+
+                                          30                                       +23.0
+
+                                                                                                 +18.2
+                                          20                                                                                    +14.3
+                                                   +9.2                                                                                                                                +7.7         +7.4
+                                          10                                                                                                                                                                 +4.9
+                                                           +14.6                                 +12.7                +1.0                      +0.7              +1.6     +0.9                              +12.8
+                                                                     +11.5         +12.5                    +0.2                                          +0.9
+                                                                                                                                  +8.7
+                                           0       +6.8                                                                                                                                +6.5
+                                                                                                                                                          +0.9                                      +4.3
+                                                                                                            -0.2      +0.7                      +0.9              +0.4     +0.9
+                                                   1–2      3–4         5–6           7–8        9–10       1–2       3–4         5–6           7–8       9–10    1–2      3–4         5–6          7–8      9–10
+
+
+
+
+                                                                                                            Requested BFS depth d
+                                                                                            Problems at d = 1--2, 3--4, 5--6, 7--8, 9--10: 17, 25, 21, 15, 22
+
+
+
+                                                                                                                    Δpre                 Δpost
+
+
+                                                   A DeepSeek V4 Pro                                        B Qwen 3.7 Max                                        C GLM-5.2
+                                           80
+
+
+
+
+   Set F1 gain over first pass (points)
+                                                                   +55.5      +54.0               +51.9
+                                           60
+
+                                                                                       +42.4
+                                                           +32.9
+                                           40
+
+                                                   +21.5                                                                                                  +19.2                                              +19.5
+                                                                                                                                     +16.8
+                                           20                                                                       +11.0                         +11.7           +13.8   +9.4               +9.8
+                                                                   +25.3                                                     +10.8                                                +10.1              +10.0
+                                                                              +23.5
+                                                   +15.4                                                    +1.5
+                                                                                       +13.6      +15.0
+                                                           +12.9                                                                                                                                             +11.9
+                                               0                                                                                                  +5.6
+                                                                                                                                                                                  +8.1       +8.8
+                                                                                                                                         +7.8              +7.0                                       +5.0
+                                                                                                            +1.5     +3.5    +2.4
+                                                                                                                                                                          +0.8
+
+                                          −20                                                                                                                     -13.8
+                                                     0      1       2          3        4–5        ≥6         0       1       2           3       4–5      ≥6       0      1       2          3       4–5     ≥6
+
+
+
+
+                                                                                                            Number of gold parents k
+                                                                                              Problems at k = 0, 1, 2, 3, 4--5, ≥ 6: 13, 17, 25, 20, 13, 12
+
+
+
+Figure 4: Set F1 gains for the same BFS (top) and Parents (bottom) stratifications. Set F1 records partial overlap
+between predicted and gold node sets. Yellow shading again marks descriptive, outcome-informed ranges selected
+separately for each model, subtask, and metric.
+
+
+
+
+                                                                                                                             17
+   The binned set F1 means preserve the strong              Table 5: Paired problem-cluster uncertainty for the strict
+DeepSeek V4 Pro BFS pattern, while Qwen 3.7                 same-T timing contrast. ∆ is Trace as State minus Trace
+                                                            Append in percentage points; brackets give unadjusted
+Max and GLM-5.2 show smaller or more local-
+                                                            95% percentile intervals over problems after five-repeat
+ized separation. Parents generally favors TRACE             averaging (n = 100 per cell; 20,000 resamples; seed 0).
+AS STATE , with substantial variation in the size of        GW is GraphWalks 256K and MR is MRCRv2 8-needle.
+the gap. These profiles document heterogeneity              Intervals wholly above zero are bold.
+but do not establish why it occurs or that depth
+or parent-set size mediates trace reuse. A confir-          Model      Cell                              ∆ [95% CI]
+matory follow-up would define bins or continuous                     GW BFS EM         +17.00 [+11.00, +23.40]
+contrasts before observing timing outcomes and                       GW BFS F1         +17.63 [+11.65, +23.97]
+                                                                     GW Par. EM        +38.80 [+31.60, +46.20]
+evaluate them on held-out problems.                         DeepSeek GW Par. F1        +26.02 [+20.52, +31.84]
+                                                            V4 Pro
+E   Confidence Intervals                                             MR 256K EM         +10.20 [+4.80, +15.80]
+                                                                     MR 256K Seq.        +9.11 [+4.77, +13.93]
+                                                                     MR 512K EM           +3.20 [−2.60, +9.40]
+This appendix reports paired uncertainty for the                     MR 512K Seq.        +6.35 [+1.69, +11.36]
+principal same-T timing contrast and cell-wise un-
+                                                                     GW BFS EM       +3.40 [+1.00, +6.40]
+certainty for the broader results and ablations. Ta-                 GW BFS F1        +1.29 [−0.56, +3.90]
+ble 5 reports the mean paired TRACE AS STATE-                        GW Par. EM   +25.40 [+17.60, +33.60]
+                                                            Qwen 3.7 GW Par. F1     +7.43 [+4.63, +10.58]
+minus-TRACE APPEND difference and an unad-                  Max
+justed 95% percentile interval after averaging the                   MR 256K EM      +4.40 [+1.40, +8.00]
+                                                                     MR 256K Seq.    +4.19 [+1.41, +7.53]
+five repeats within each problem. The intervals lie                  MR 512K EM     +6.40 [+1.80, +11.40]
+fully above zero for 20 of 24 cells. The four inter-                 MR 512K Seq.    +5.11 [+0.67, +9.84]
+vals that cross zero are DeepSeek V4 Pro MRCRv2                     GW BFS EM        +3.40 [−1.00, +7.80]
+512K EM, Qwen 3.7 Max GraphWalks BFS F1,                            GW BFS F1        −0.83 [−3.94, +1.62]
+                                                                    GW Par. EM   +16.80 [+10.40, +23.80]
+and GLM-5.2 GraphWalks BFS EM and F1.                                              +7.32 [+3.93, +11.30]
+                                                            GLM-5.2 GW Par. F1
+   Figures 5 and 6 report cell means with 95% per-
+                                                                    MR 256K EM +21.20 [+14.40, +28.20]
+centile intervals from the same problem-cluster                     MR 256K Seq. +13.56 [+8.33, +19.34]
+bootstrap. Repeats are averaged within each prob-                   MR 512K EM    +10.80 [+3.40, +18.20]
+lem.                                                                MR 512K Seq. +10.20 [+4.65, +16.08]
+   Figure 5 covers the strict same-T GraphWalks
+and MRCRv2 comparisons in Table 2, together
+with the supporting NUB-1M results. The NUB-
+1M intervals are wider, consistent with its 20 eval-
+uated questions. Figure 6 covers the GraphWalks
+control ablation. The same bootstrap procedure
+produces the shaded trace-count intervals in Fig-
+ure 2.
+
+
+
+
+                                                       18
+                                                            GraphWalks 256K - Exact match
+
+                                                          First Pass        Trace Append       Trace as State
+
+                                             BFS                                                                Parents
+                           100
+
+
+                            75
+
+
+
+               Score (%)
+                            50
+
+
+                            25
+
+
+                             0
+                                 DeepSeek   Qwen 3.7                   GLM-5.2                DeepSeek          Qwen 3.7   GLM-5.2
+                                  V4 Pro      Max                                              V4 Pro             Max
+
+                                                                 GraphWalks 256K - Set F1
+
+                                                          First Pass        Trace Append       Trace as State
+
+                                             BFS                                                                Parents
+                           100
+
+
+                            75
+
+
+
+               Score (%)
+                            50
+
+
+                            25
+
+
+                             0
+                                 DeepSeek   Qwen 3.7                   GLM-5.2                DeepSeek          Qwen 3.7   GLM-5.2
+                                  V4 Pro      Max                                              V4 Pro             Max
+
+                                                            MRCRv2 8-needle - Exact match
+
+                                                          First Pass        Trace Append       Trace as State
+
+                                             256K                                                                512K
+                           100
+
+
+                            75
+
+
+
+               Score (%)
+                            50
+
+
+                            25
+
+
+                             0
+                                 DeepSeek   Qwen 3.7                   GLM-5.2                DeepSeek          Qwen 3.7   GLM-5.2
+                                  V4 Pro      Max                                              V4 Pro             Max
+
+                                              MRCRv2 8-needle - SequenceMatcher ratio
+
+                                                          First Pass        Trace Append       Trace as State
+
+                                             256K                                                                512K
+                           100
+
+
+                            75
+
+
+
+               Score (%)
+                            50
+
+
+                            25
+
+
+                             0
+                                 DeepSeek   Qwen 3.7                   GLM-5.2                DeepSeek          Qwen 3.7   GLM-5.2
+                                  V4 Pro      Max                                              V4 Pro             Max
+
+                                                             First Pass      Trace Append    Trace as State
+
+                                                                          NUB-1M Accuracy
+                                                          100
+                                                           75
+
+                                              Score (%)
+                                                           50
+                                                           25
+                                                            0
+                                                                DeepSeek          Qwen 3.7          GLM-5.2
+                                                                 V4 Pro             Max
+
+Figure 5: Uncertainty for the strict same-T comparisons. The top two rows show GraphWalks 256K exact match
+and set F1, split into BFS and Parents; the bottom two wide rows show MRCRv2 8-needle exact match and
+SequenceMatcher ratio, split into 256K and 512K bins. The final panel shows NUB-1M accuracy. Points are means;
+bars are 95% percentile intervals after averaging 5 repeats within each problem.
+
+
+
+
+                                                                                 19
+                                 GraphWalks 256K control ablations - Exact Match
+                                             Mean with 95% problem-cluster bootstrap CI
+                                             BFS                                          Parents
+                First Pass
+              Majority@5
+                Oracle@5
+           Question First
+                       Re2
+        Answer Feedback
+           Random Trace
+               Trace Only
+            Trace Append
+           Trace as State
+                             0        25     50        75         100     0         25      50        75   100
+                                           Score (%)                                      Score (%)
+                                   GraphWalks 256K control ablations - Set F1
+                                             Mean with 95% problem-cluster bootstrap CI
+                                             BFS                                          Parents
+                First Pass
+              Majority@5
+                Oracle@5
+           Question First
+                       Re2
+        Answer Feedback
+           Random Trace
+               Trace Only
+            Trace Append
+           Trace as State
+                             0        25     50        75         100     0         25      50        75   100
+                                           Score (%)                                      Score (%)
+Figure 6: Uncertainty for DeepSeek V4 Pro GraphWalks 256K control comparisons in exact match and set F1.
+Points are means; bars are 95% percentile intervals from 20,000 problem-cluster bootstrap resamples (seed 0).
+Majority@5 retains answer elements occurring in at least three repeat-level prediction sets, and Oracle@5 reports
+the retrospective maximum evaluator score among the five outputs. Other conditions average five planned repeats
+within each problem and assign zero to missing or invalid outputs.
+
+
+F   Token Usage
+Table 6 reports token counts returned by provider
+APIs for the solver calls underlying the main re-
+sults.
+   For each retained response with provider-
+reported usage, we report cached input, missed
+input, and output tokens. Missed input is total
+input minus cached input. Reasoning tokens are
+included in the output.
+   First Pass is the shared source pass used to con-
+struct T . For TRACE AS STATE and TRACE AP -
+PEND, we also report the Total tokens columns that
+add the corresponding First Pass counts component-
+wise.
+
+
+
+
+                                                             20
+Table 6: Provider-reported token usage for main-result inference, in millions. Tokens reports the pass named in each
+row. For TRACE APPEND and TRACE AS STATE, Total tokens adds First Pass component-wise; those columns are
+blank for First Pass itself. Missed input is total input minus cached input.
+
+                       Benchmark         Condition                  Tokens                  Total tokens
+                                                          Cached    Missed            Cached    Missed
+                                                            input    input Output       input    input Output
+                       DeepSeek V4 Pro
+                       GraphWalks 256K   First Pass       206.766    51.092 62.507
+                                         TRACE APPEND     271.017    68.554 35.231 477.783 119.646 97.738
+                                         TRACE AS STATE   277.074    62.501 27.975 483.840 113.593 90.482
+                       MRCRv2 256K       First Pass        50.817    46.961   1.149
+                                         TRACE APPEND      79.982    20.820   0.690 130.799     67.782     1.839
+                                         TRACE AS STATE    51.875    50.051   1.355 102.692     97.012     2.504
+                       MRCRv2 512K       First Pass       155.283    38.195   0.989
+                                         TRACE APPEND     178.675    18.526   0.702 333.958     56.721     1.691
+                                         TRACE AS STATE   157.261    39.940   1.241 312.544     78.135     2.230
+                       NUB-1M Season 2 First Pass          31.651     8.418   0.817
+                                         TRACE APPEND      39.589     4.460   0.184   71.240    12.878     1.001
+                                         TRACE AS STATE    27.418    16.637   0.398   59.069    25.055     1.215
+                       Qwen 3.7 Max
+                       GraphWalks 256K   First Pass       260.213 97.483      5.402
+                                         TRACE APPEND     264.906 117.866     2.865 525.119 215.350        8.267
+                                         TRACE AS STATE   271.742 111.030     3.615 531.955 208.514        9.017
+                       MRCRv2 256K       First Pass        38.337    63.495   2.111
+                                         TRACE APPEND      60.227    51.195   0.989 98.564 114.690         3.100
+                                         TRACE AS STATE    62.213    49.209   1.397 100.550 112.704        3.508
+
+                       MRCRv2 512K†      First Pass       134.607    63.738   2.263
+                                         TRACE APPEND     154.827    53.489   1.211 289.434 117.226        3.474
+                                         TRACE AS STATE   153.971    54.345   1.724 288.577 118.083        3.988
+                       NUB-1M Season 2 First Pass          34.253     7.547   0.489
+                                         TRACE APPEND      38.184     5.773   0.253   72.437    13.320     0.742
+                                         TRACE AS STATE    32.414    11.549   0.419   66.667    19.096     0.908
+                       GLM-5.2
+                       GraphWalks 256K   First Pass       134.748 150.760 19.463
+                                         TRACE APPEND      55.612 265.396 9.127 190.361 416.156 28.591
+                                         TRACE AS STATE    64.390 256.618 16.491 199.138 407.377 35.954
+                       MRCRv2 256K       First Pass        73.782    24.718   1.891
+                                         TRACE APPEND      82.413    20.940   2.518 156.195     45.658     4.409
+                                         TRACE AS STATE    82.464    20.888   1.516 156.246     45.606     3.407
+                       MRCRv2 512K       First Pass       151.247    42.262   1.441
+                                         TRACE APPEND     157.740    40.508   2.002 308.987     82.770     3.443
+                                         TRACE AS STATE   157.458    40.790   1.648 308.705     83.052     3.089
+                       NUB-1M Season 2 First Pass           1.272    41.123   0.995
+                                         TRACE APPEND       3.840    43.087   0.484    5.111    84.209     1.478
+                                         TRACE AS STATE     0.457    46.475   0.856    1.728    87.598     1.850
+
+
+
+
+                                                               21
+

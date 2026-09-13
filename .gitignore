@@ -23,4 +23,8 @@ mcp-server/__pycache__/
 .claude/
 /raw/assets/
 
+# Local search index state
+.zvec-grep/
+.omp/
+
 *.pdf

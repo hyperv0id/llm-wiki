@@ -7,8 +7,8 @@ tags:
   - prompting
   - reprogramming
 created: 2026-06-04
-last_updated: 2026-06-04
-source_count: 1
+last_updated: 2026-09-13
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -45,10 +45,18 @@ PaP 通过让 LLM 输出 hidden representations 而非直接数值来避免这�
 - 三个子组件重要性排序：Input Statistics > Dataset Context (9.6%) > Task Instruction (7.7%) [^src-time-llm]
 - PaP + Patch Reprogramming 联合作用显著优于各自单独 [^src-time-llm]
 
+## 与推理轨迹前置的区别
+
+[[trace-as-state|Trace as State]] 也把文本放在待处理内容之前，但文本来源不是预先组织的数据集说明、任务指令与输入统计，而是模型读过**同一道题**后生成的推理轨迹；下一遍仍读完整原文，并与使用同一轨迹的后置条件比较（§3.2–3.3）。[^src-trace-as-state]
+
+[INFERENCE] PaP 与 Trace as State 可按“前置信息从哪里来”作设计对照：前者组织已有的任务/统计信息，后者回收前一遍新发现的任务信息。二者没有在同一时序预测设置下直接比较；不能仅因都使用 prefix 就推断性能等价或可直接替换。[^src-time-llm][^src-trace-as-state]
+
 ## Connections
 
 - 属于：[[time-llm]] — Time-LLM 框架的核心组件
 - 对比：[[patch-reprogramming]] — Time-LLM 的另一核心组件
 - 关系：[[timecap]] — 同样利用 LLM 的提示能力处理时序，但目的不同（事件预测 vs 数值预测）
+- [[trace-as-state]] — 同题 reasoning text 作为 prefix 的跨遍方法
 
 [^src-time-llm]: [[source-time-llm]]
+[^src-trace-as-state]: [[source-trace-as-state]]

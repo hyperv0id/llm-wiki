@@ -7,8 +7,8 @@ tags:
   - memory
   - retrieval
 created: 2026-08-30
-last_updated: 2026-08-30
-source_count: 1
+last_updated: 2026-09-13
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -40,6 +40,12 @@ Non-parametric policy memory 是 JitRL 论文提出的关键概念定位：把 a
 
 [[ts-memory]] / [[parametric-memory-distillation]]（KDD 2026，时序基础模型）代表相反的取舍：把在线检索知识**离线蒸馏进轻量参数模块**，换取推理时 O(1)、免外部数据库；非参数策略记忆则保留在线检索，换取经验持续累积与可解释的奖励归因，代价是每次决策都有检索开销（JitRL 报告约 15–47ms，相对 LLM 推理可忽略）[^src-jitrl]。
 
+## 与同题推理轨迹反馈的分界
+
+[[trace-as-state|Trace as State]] 把同题首轮 reasoning text 作为可能不完整或错误的状态代理，在新一遍中放到原文前面；已评估实现不从环境奖励估计优势，也不以外部优势项直接修改 logits（§3、§4.1）。[^src-trace-as-state]
+
+[INFERENCE] 与本页 JitRL 的机制相比，区别是“经验的来源与作用位置”：JitRL 用奖励标注的交互记忆估计输出分布修正，Trace as State 用同题推理文本条件化下一遍原文处理。Trace as State 明确未评估多轮 agent 任务，因此不能将其结果用作两种 agent 记忆路线的性能排名。[^src-jitrl][^src-trace-as-state]
+
 ## 相关页面
 
 - [[jitrl]] — 提出并实例化该概念的方法
@@ -49,5 +55,7 @@ Non-parametric policy memory 是 JitRL 论文提出的关键概念定位：把 a
 - [[ts-memory]] / [[parametric-memory-distillation]] — 参数化记忆的对照路线
 - [[in-context-learning]] — 文本记忆所属的 ICL 范式
 - [[source-jitrl]] — 源摘要
+- [[trace-as-state]] / [[trace-as-state-positioning]] — 文本状态反馈及其适用范围
 
 [^src-jitrl]: [[source-jitrl]]
+[^src-trace-as-state]: [[source-trace-as-state]]

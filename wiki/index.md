@@ -2,9 +2,12 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-09-09
+last_updated: 2026-09-13
 tags:
   - meta
+source_count: 0
+confidence: medium
+status: active
 ---
 
 All wiki pages, organized by type. Updated on every ingest.
@@ -1458,3 +1461,24 @@ All wiki pages, organized by type. Updated on every ingest.
 ## Techniques (continued)
 - [[data-consistency-projection]] — 每步数据一致性投影：Heun 积分后把观测坐标钳回 linear bridge，正交投影非扩张 (TG-MSFM, ICLR 2026)
 - [[time-gated-multi-scale-velocity]] — 时间门控多尺度速度头：1D 金字塔尺度专用头 + softmax(MLP(t)) 门控凸组合，谱强调沿轨迹演化 (TG-MSFM, ICLR 2026)
+
+## Sources (continued)
+- [[source-core-context-repetition]] — CoRe：重复上下文以包含所需文档顺序的有序子序列；与 Trace as State 的位置干预区别（Findings NAACL 2025）
+- [[source-graphwalks-dataset]] — OpenAI GraphWalks 数据集卡：BFS/Parents 定义、公开评分示例与版本修复范围
+- [[source-mrcr-dataset]] — OpenAI MRCR 数据集卡：多实例绑定、随机前缀与 SequenceMatcher；与论文 MRCRv2 命名的对应缺口
+- [[source-nub-1m-benchmark]] — NUB-1M 一手仓库：小说理解、Season 2 二十题、单次排行榜与当季答案公开策略
+- [[source-re-reading-improves-reasoning]] — Re2：在单条 prompt 中重复任务输入，与思维激发提示组合（EMNLP 2024）
+- [[source-recontext]] — ReContext：内部相关性选择原文证据，递归回放后生成；白盒接口与完整上下文保留（arXiv 2026）
+- [[source-state-over-tokens]] — State over Tokens：把 reasoning prefix 理解为外化计算状态的概念框架，不等同忠实解释（arXiv 2025）
+- [[source-trace-as-state]] — Trace as State：Xu Zou、Jie Tang；同题推理轨迹前置后重读，21 页正文与附录 A–F（arXiv:2609.02702v1）
+
+## Concepts (continued)
+- [[conditional-state-update]] — 条件状态更新：残差映射计数与条件先后顺序的最坏情况内存差；完整构造、证明及 KV cache 适用范围
+
+## Techniques (continued)
+- [[trace-as-state]] — Trace as State 主入口：问题例子、同轨迹前后置机制、主要实证与不能外推的结论
+
+## Analysis (continued)
+- [[trace-as-state-evidence]] — 全部主结果、对照消融、24 格配对区间、轨迹数与难度分箱；区分均值优势、统计支持与机制解释
+- [[trace-as-state-positioning]] — Trace as State 与 Re2、CoRe、State over Tokens、ReContext 的原始论文对照；避免跨设置排名
+- [[trace-as-state-reproduction]] — 模型版本、完整已公开提示、评分、36 行 token 统计、增量成本核算与公开材料缺口

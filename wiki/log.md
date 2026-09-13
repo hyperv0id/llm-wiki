@@ -3715,3 +3715,23 @@ raw/time-gated-multi-scale-flow-matching.pdf（用户提供：~/Desktop/20132_Ti
 创建的页面：[[source-time-gated-multi-scale-flow-matching]], [[tg-msfm]], [[data-consistency-projection]], [[time-gated-multi-scale-velocity]]
 更新的页面：[[loft]]（MSFM 基线行补链接 + 20 NFE 复现口径注记 + 相关页）, [[source-loft]]（相关页补链接）, [[csdi]]（后续影响补 TG-MSFM 条目 + 引注，source_count 16→17）, [[tsflow]]（相关页补 TG-MSFM 对照）, [[giflow]]（相关页补源分布两端对照）, [[mts-imputation-taxonomy]]（未覆盖的 FM 插补路线名单补 TG-MSFM）, [[heun-sampler]]（新增时序插补应用节 + 引注，source_count 1→2）, [[index]], [[log]]
 ingest 报告：ingest-reports/2026-09-09-tg-msfm.md
+
+## [2026-09-13] ingest | Trace as State: Reasoning Traces as Conditional States for Long-Context Transformers
+
+用户请求深入整理 https://arxiv.org/html/2609.02702。核实作者为 Xu Zou（Z.ai）与 Jie Tang（Tsinghua University），版本 arXiv:2609.02702v1（2026-09-02，preprint）；完整阅读 21 页 PDF、HTML 正文与附录 A–F，并核对 TeX 表格和原图。原文保存为 `downloads/trace-as-state.pdf`，TeX 包为 `downloads/trace-as-state.tar.gz`；遵守 `raw/` 只读约束，没有向其中新增、修改或删除文件。[^src-trace-as-state]
+
+方法主线：以同题首轮 reasoning traces 构成文本状态代理 `T`，在新一遍中比较 `[T,x,q]` 与 `[x,T,q]`；主实验收集 5 条首轮轨迹，每条最多前 50,000 字符，问题保持末尾。理论只证明确定性、精确、单遍有限状态任务族的最坏情况 cut-state 内存差，不推出现实 LLM 的指数显存节省。实验核对：26/27 个均值高于后置，唯一反例为 GLM-5.2 BFS F1；Table 5 的 24 个配对区间中 20 个完全大于零，均为未校正区间；NUB-1M 只有 20 题。原文缺少的 NUB 提示、judge 全文、solver 解码参数与逐题 records 均明确记录，没有补造配置。[^src-trace-as-state]
+
+补充材料：四篇关键相关论文 Re2、CoRe、State over Tokens、ReContext，及 GraphWalks、MRCR、NUB-1M 三套基准的一手资料；各自建立 source-summary 与原始链接。主入口负责机制，三个 analysis 页分别承担证据、定位、复现与成本，避免将短摘要写成全篇复述。
+
+创建的页面（13）：[[conditional-state-update]], [[source-core-context-repetition]], [[source-graphwalks-dataset]], [[source-mrcr-dataset]], [[source-nub-1m-benchmark]], [[source-re-reading-improves-reasoning]], [[source-recontext]], [[source-state-over-tokens]], [[source-trace-as-state]], [[trace-as-state]], [[trace-as-state-evidence]], [[trace-as-state-positioning]], [[trace-as-state-reproduction]]。
+
+更新的页面：[[context-window-extension]], [[in-context-learning]], [[kv-cache-compression]], [[long-context-scaling-gap]], [[non-parametric-policy-memory]], [[prompt-as-prefix]], [[structural-token-sorting]], [[index]], [[log]]。
+
+矛盾检查：未发现需要替换既有来源的直接冲突；与 Attention Dilution、KV 压缩、PaP、STS 和 JitRL 的联系标为不同问题维度或 wiki 分析，不将新论文写成对旧结果的否定。论文自身的简写/真实 prompt、示例分隔符/附录标签、tail windows/截前字符、输出预算/未显式设置上限，以及数据集卡与论文评分的差异均分开记录。
+
+交付证据：Table 2 的 81 个数、Table 3 的 40 个数、Table 5 的 72 个差值/区间端点、Table 6 的 180 个数全部与 TeX 转录一致；Figure 3/4 的 132 个带符号标签与 PDF 抽取一致，12 个分箱剖面按题数回算与 Table 2 增益最大差 0.05 个百分点。运行四状态构造的完整枚举（256 个自映射、32,640 对不同映射），确认 2/8 比特示例及退化边界；这不是被测模型基准的独立复现。保留 12 个原图 PNG 面板，来源与 CC BY 4.0 许可见 [[source-trace-as-state]]。
+
+ingest 报告：[[ingest-reports/2026-09-13-trace-as-state|创建、修改、交叉链接与验证 WHY 报告]]。
+
+[^src-trace-as-state]: [[source-trace-as-state]]

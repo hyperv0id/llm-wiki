@@ -7,8 +7,8 @@ tags:
   - attention
   - lead-lag-dependency
 created: 2026-09-05
-last_updated: 2026-09-05
-source_count: 1
+last_updated: 2026-09-13
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -37,4 +37,11 @@ status: active
 
 - **Prefix tokens**：可学习前缀 $P\in\mathbb{R}^{M\times d_p}$（编码时间戳与原始值的状态/趋势），拼接在排序后 token 之前，作为全局聚合槽稳定表示——排序是动态的，前缀提供不变锚点[^src-lagllm]。
 
+## 与长上下文轨迹前置的对照
+
+[[trace-as-state|Trace as State]] 不重排图节点或时序 patch，而是把首轮推理轨迹整体放在长上下文之前，再启动一次新的 causal pass；论文用 [[conditional-state-update|条件状态更新]]说明“条件先到”和“条件后到”在某些确定性、精确、单遍任务上可有不同的内存要求（§3、Appendix A）。[^src-trace-as-state]
+
+[INFERENCE] STS 与 Trace as State 的共同设计视角是调整前缀中已可用的信息，但排序对象与信息来源不同：STS 依据 lead–lag 图重排输入 token，Trace as State 依据同题前一遍的推理文本改变跨遍输入布局。物理 lead–lag 依赖与“推理后才发现的任务状态”不能混作同一个因果关系；本文也没有提供二者的共同基准或组合实验。[^src-lagllm][^src-trace-as-state]
+
 [^src-lagllm]: [[source-lagllm-icml2026]]
+[^src-trace-as-state]: [[source-trace-as-state]]

@@ -6,8 +6,8 @@ tags:
   - context-length
   - extrapolation
 created: 2026-04-28
-last_updated: 2026-08-30
-source_count: 3
+last_updated: 2026-09-13
+source_count: 4
 confidence: high
 status: active
 ---
@@ -72,12 +72,21 @@ status: active
 - **Passkey 检索准确率**：衡量模型是否真正关注了长上下文中的所有位置[^src-yarn]
 - **标准基准退化**：确保扩展后短上下文性能不显著下降[^src-yarn]
 
+## 与窗口内的条件化重读区分
+
+[[trace-as-state|Trace as State]] 在已有上下文窗口内，把同一道题的首轮推理轨迹置于长文本之前，再启动一次新的因果处理；其对照固定模型、长文本和轨迹内容，只交换轨迹与长文本的位置。论文没有修改位置编码或扩大模型可接受的最大输入长度，而且第二遍需要为轨迹额外预留输入空间（§3.3、§4.1）。[^src-trace-as-state]
+
+[INFERENCE] 因此，窗口扩展回答“能输入多长”，[[conditional-state-update|条件状态更新]]与轨迹前置回答“读到材料时，哪些任务信息已经可用”。这两类问题不能用同一个最大 token 数指标替代；本论文也没有验证它与本页各扩窗方法组合后的效果。[^src-trace-as-state]
+
 ## 相关页面
 
 - [[kv-cache-compression]] — 长上下文的另一条推理侧路线：压缩 KV cache 而非扩展位置编码，两者可叠加
+- [[trace-as-state]] — 已有窗口内的跨遍状态反馈
+- [[trace-as-state-reproduction]] — 重读带来的输入、输出与缓存开销
 
 ## 引用
 
 [^src-yarn]: [[source-yarn]]
 [^src-alibi]: [[source-alibi]]
 [^src-vetcha-2026-towards-infinite-length-extrapolation]: [[source-vetcha-2026-towards-infinite-length-extrapolation]]
+[^src-trace-as-state]: [[source-trace-as-state]]

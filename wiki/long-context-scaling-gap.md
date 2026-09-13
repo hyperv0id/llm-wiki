@@ -7,8 +7,8 @@ tags:
   - scaling
   - limitation
 created: 2026-04-28
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-09-13
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -100,6 +100,15 @@ $$f(q, h(q, C_n)) - f(q, h(q, C_n')) \xrightarrow{p} 0$$
 2. **表示改进**：增强稀疏信息的表征能力
 3. **新架构**：超越 soft attention 的新机制
 
+## 与任务状态可用时机的区别
+
+[[trace-as-state|Trace as State]] 研究在固定长上下文上交换推理轨迹的位置：三模型的 GraphWalks、MRCRv2 与 NUB-1M 实验中，轨迹前置的均值在 27 个模型—任务—指标组合中的 26 个高于后置；这不是随上下文长度增长的缩放曲线，也没有评估本页的个性化或隐私任务（§4、Appendix E）。[^src-trace-as-state]
+
+[INFERENCE] 两篇论文的实验变量不同：本页所述 Attention Dilution 讨论长度与稀疏信息利用，[[conditional-state-update|条件状态更新]]讨论信息顺序与所需保留的响应映射。因此，新结果不能写成“长上下文缩放 gap 已解决”，也不构成对 PAPerBench 结果的直接反驳；二者的联系是有待单独实验检验的解释框架。[^src-paperbench][^src-trace-as-state]
+
+对照数字、反例与区间见 [[trace-as-state-evidence]]。
+
 ## 引用
 
 [^src-paperbench]: [[source-paperbench]]
+[^src-trace-as-state]: [[source-trace-as-state]]
