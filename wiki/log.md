@@ -3771,3 +3771,43 @@ ingest 报告：[[ingest-reports/2026-09-15-fm-st-data-science|WHY 报告]]
 ingest 报告：[[ingest-reports/2026-09-15-large-models-ts-st-survey|WHY 报告]]
 
 [^src-large-models-ts-st-survey]: [[source-large-models-ts-st-survey]]
+
+## [2026-09-15] ingest | A Survey on Diffusion Models for Time Series and Spatio-Temporal Data (Yang et al., arXiv 2024)
+首篇同时覆盖 TS+ST 的 diffusion 综述（arXiv:2404.18886，投 ACM CSUR）。四维分类：模型类别（unconditional/conditional，五型 DDPM/score-based/conditional/LDM/DDIM）、任务（forecasting/generation/imputation/anomaly detection）、数据模态（univariate/multivariate/ST graph/trajectory）、应用领域（8 个）。Table 1 汇总 60 个方法（2020 WaveGrad 起）。与 [[source-deep-time-series-survey]]（预测架构视角）、[[source-mts-imputation-survey]]（插补视角）互补。
+创建的页面：[[source-diffusion-ts-st-survey]]
+更新的页面：[[index]], [[log]]
+ingest 报告：[[ingest-reports/2026-09-15-diffusion-ts-st-survey|WHY 报告]]
+
+[^src-diffusion-ts-st-survey]: [[source-diffusion-ts-st-survey]]
+
+## [2026-09-15] ingest | ST-LLM: Spatial-Temporal Large Language Model for Traffic Prediction (Liu et al., MDM 2024)
+把每个站点每时间步当 token（N 站点→N token），attention 序列维度从时间轴反转为空间轴；GPT2 6 层 + PFA（前 F 层全冻结、后 U 层仅解冻 MHA，消融 U 0→6 误差单调降）。NYCTaxi（35M 行程/266 站）+ CHBike，全量 MAE 5.29，比 OFA 平均低 22.5%、比 LLAMA2 低 20.8%。与 [[source-opencity]]（跨城市基础模型）、[[source-urbangpt]]（指令微调）路线不同：单数据集全量微调，zero-shot 仅指 NYC 域内迁移。
+创建的页面：[[source-st-llm]]
+更新的页面：[[index]], [[log]]
+ingest 报告：[[ingest-reports/2026-09-15-st-llm|WHY 报告]]
+
+[^src-st-llm]: [[source-st-llm]]
+
+## [2026-09-15] ingest | TPLLM: A Traffic Prediction Framework Based on Pretrained Large Language Models (Ren et al., arXiv 2024)
+无自然语言 prompt，交通时序重塑为数值 token 输入冻结 GPT-2（D=768）；graph embedding（GCN $GEF(X)=\mathrm{ReLU}(\tilde{D}^{-1/2}\tilde{A}\tilde{D}^{-1/2}XW+b)$）+ sequence embedding（1-D CNN）融合；LoRA 仅注入 attention Q/K（0.95% 可训练参数，α=32，最优 r=48）。PeMS04/08，全样本 PeMS08 MAE 15.45 vs ASTGCN 18.33；few-shot 退化幅度最小（+2.64 vs ASTGCN +4.14）；去掉 sequence embedding 退化最重（PeMS08 few-shot 27.86 vs 完整 18.09）。
+创建的页面：[[source-tpllm]]
+更新的页面：[[index]], [[log]]
+ingest 报告：[[ingest-reports/2026-09-15-tpllm|WHY 报告]]
+
+[^src-tpllm]: [[source-tpllm]]
+
+## [2026-09-15] ingest | REPST: Language Model Empowered Spatio-Temporal Forecasting via Physics-Aware Reprogramming (Wang et al., arXiv 2024)
+探索实验：reprogrammed GPT-2 仅加 Fourier 分解即可降 METR-LA MAE 2.68→2.34 (-12.69%)、PEMS-BAY 6.33→5.82 (-8.06%)。方法：Koopman/DMD 演化矩阵 $X_{2:t}=AX_{1:t-1}$ 经 SVD 得可解释模态（红绿灯周期、风向驱动污染），按能量贡献取 top-k 重构降噪；selective discrete reprogramming 用 Gumbel-Softmax top-K 采样 1000 词扩展词汇表，patch embedding 作 query 做 cross-attention，冻结 GPT-2。6 数据集：METR-LA MAE 3.63/RMSE 7.43、PEMS-BAY 1.92/4.33；zero-shot NYC→CHI 2.03 vs TimesFM 9.07。
+创建的页面：[[source-physics-aware-reprogramming]]
+更新的页面：[[index]], [[log]]
+ingest 报告：[[ingest-reports/2026-09-15-physics-aware-reprogramming|WHY 报告]]
+
+[^src-physics-aware-reprogramming]: [[source-physics-aware-reprogramming]]
+
+## [2026-09-15] ingest | STG-LLM: How Can Large Language Models Understand Spatial-Temporal Data? (Liu et al., arXiv 2024)
+STG-Tokenizer 把每个节点编码为一个 token（token 内承载完整 L×F 历史序列，token 间注意力捕获空间语义），N 节点仅 N token；STG-Adapter 一层线性编码 + 一层带残差解码；prompt 经 Text-Tokenizer 注入事故/天气/日期。冻结 GPT2 3 层，可训练参数 1.70%（1,033,704/60,885,480）。PEMS07 MAE 19.82 全指标超 PDFormer (20.62)；Electricity MAE 214.11 优于 GraphWaveNet 233.72（无显式图数据同样成立）；few-shot 50 样本接近传统方法全量性能；tokenizer 是最关键组件（去掉 MAE 恶化至 26.91）。
+创建的页面：[[source-how-llm-understand-st]]
+更新的页面：[[index]], [[log]]
+ingest 报告：[[ingest-reports/2026-09-15-how-llm-understand-st|WHY 报告]]
+
+[^src-how-llm-understand-st]: [[source-how-llm-understand-st]]
