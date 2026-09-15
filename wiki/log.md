@@ -3763,3 +3763,11 @@ ingest 报告：[[ingest-reports/2026-09-15-stgcl|创建、修改、交叉链接
 ingest 报告：[[ingest-reports/2026-09-15-fm-st-data-science|WHY 报告]]
 
 [^src-fm-st-data-science]: [[source-fm-st-data-science]]
+
+## [2026-09-15] ingest | Large Models for Time Series and Spatio-Temporal Data: A Survey and Outlook (Jin et al., arXiv 2023, v3 2026)
+最早系统梳理 TS+ST 大模型的综述。四维分类（数据类别/架构 LLM-vs-PFM/范围/任务），LM4STD 按模态三分（STG/TKG/视频），Table 2 收 43 个 TS 方法。LLM4TS 四路线（prompting/tokenization/decomposition/reprogramming），三大共性挑战。6 个未来方向中 3 个已被后续工作验证。
+创建的页面：[[source-large-models-ts-st-survey]]
+更新的页面：[[index]], [[log]]
+ingest 报告：[[ingest-reports/2026-09-15-large-models-ts-st-survey|WHY 报告]]
+
+[^src-large-models-ts-st-survey]: [[source-large-models-ts-st-survey]]
