@@ -275,7 +275,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-st-mae]] — STMAE: Revealing the Power of Masked Autoencoders in Traffic Forecasting (CIKM 2024), 即插即用双掩码（biased random walk 路径级空间 + patch 级时间），PEMS03/04/07/08 三 backbone 全面提升
 - [[source-step]] — STEP: Pre-training Enhanced STGNN (KDD 2022), TSFormer 掩码自编码（r=75% patch 级）+ GTS 式图结构学习增强 Graph WaveNet, METR-LA H3 MAE 2.61 vs GWNet 2.69
 - [[source-flashst]] — FlashST: A Simple and Universal Prompt-Tuning Framework for Traffic Prediction (ICML 2024), model-agnostic 时空 prompt-tuning + InfoNCE 均匀性损失，4 目标数据集全胜 13 基线，训练时间降 20%-80%
-- [[source-stwave]] — STWave: Multi-Scale Efficient Spectral Graph Attention Network (ICDE 2023 / TKDE 2023 扩展版), Disentangling Flow Layer 小波解耦 + ESGAT（Query Sampling + 图小波位置编码）, PeMSD4 MAE 18.50
+- [[source-stwave]] — STWave: Disentangled Traffic Flow Forecasting via Efficient Spectral Graph Attention Network (arXiv:2112.02740v2；会议/期刊版本信息未在文本中提供), Disentangling Flow Layer 小波解耦 + ESGAT（Query Sampling + 图小波位置编码）, PeMSD4 MAE 18.50
 - [[source-diffusion-traffic-flow-inference]] — DP-TFI: Diffusion Probabilistic Modeling for Fine-Grained Urban Traffic Flow Inference (ICASSP 2023), DPA 扩散增强 + RDU relaxed structural constraint, TaxiBJ 四时段 RMSE/MAE/MAPE 全最优
 - [[source-ustd]] — USTD: Unified Spatio-Temporal Diffusion for probabilistic forecasting and kriging (SIGSPATIAL 2024)
 - [[source-factost]] — FactoST: factorized ST foundation model, universal temporal pretraining + lightweight spatial adaptation (NeurIPS 2025 / arXiv 2026)
