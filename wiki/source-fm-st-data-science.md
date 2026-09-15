@@ -17,31 +17,34 @@ status: active
 
 # Foundation Models for Spatio-Temporal Data Science: A Tutorial and Survey
 
-**Authors**: Yuxuan Liang, Haomin Wen, Yutong Xia, Ming Jin, Bin Yang, Flora Salim, Qingsong Wen, Shirui Pan, Gao Cong（HKUST-GZ、CMU、NUS、Griffith、ECNU、UNSW、NTU 等）
-**Venue**: KDD 2025（arXiv:2503.13502，2025-03-12）
+**Authors**: Yuxuan Liang, Haomin Wen, Yutong Xia, Ming Jin, Bin Yang, Flora Salim, Qingsong Wen, Shirui Pan, Gao Cong（HKUST-GZ、CMU、NUS、Griffith、ECNU、UNSW、Squirrel Ai Learning、NTU）
+**Venue**: arXiv:2503.13502v1（cs.DB，2025-03-12）。正文用 ACM 会议模板但 venue 字段是占位符（"Conference'17"），具体收录会议在该文本中无法验证。
 
 ## 论文定位
 
-首个覆盖 ST 数据科学全流程的 STFM 综述：此前综述（Jin et al. IJCAI 2023、Jiang & Liang et al. KDD 2024、Zhang et al. 2024、Goodge et al. 2025）只聚焦 data mining 且几乎只讨论 numerical 问题，本文把 data sensing 与 data management 纳入，并补充 inferential 问题[^src-fm-st-data-science]。
+论文自述"提供首个覆盖 ST 数据科学全流程的综述"（sensing/management/mining 三阶段），并将差距归为两点：此前综述 [32,54,81,169] 主要把 LLM 当 data mining 工具、较少涉及 sensing 与 management；且偏数值问题（预测、填补）而忽略推断型问题如决策系统。Table 1 对比了 Jin et al.（2023）、Jiang et al.（IJCAI-24，注意其正文表格误标 KDD，以参考文献 [48] 为准）、Liang et al.（KDD-24）、Zhang et al.（2024）、Goodge et al.（2025）。
 
 ## 分类体系
 
-- **模型二分**：STFM = LLM（语言数据上预训练）+ PFM（跨域 ST 数据从头训练）[^src-fm-st-data-science]
-- **应用维度**：按 ST 数据科学生命周期三阶段组织——data sensing（citizen reporting 主动感知、Trajectory-LLM 合成轨迹数据）、data management（缺失填补、知识图谱构建、查询检索）、data mining[^src-fm-st-data-science]
-- **能力三轴**：perception（时空模式建模，如 UniFlow、UrbanDiT）、optimization（任务适配）、reasoning（对标 DeepSeek-R1，作者指出当前 ST 模型推理能力欠发达）[^src-fm-st-data-science]
-- **LLM 用法**：zero-shot 下三种角色——LLM-as-Augmenter（冻结参数注入外部知识）、LLM-as-Predictor（patch & tokenization 弥合模态差）、LLM-as-Agent（领域模型即插即用作工具，可扩展 multi-agent）[^src-fm-st-data-science]
-- **PFM 方法论三维**：架构（Transformer / Diffusion / GNN / SSM 如 Mamba4Cast / CNN）；预训练目标（generative / contrastive / hybrid）；数据模态（location、trajectory & event、ST raster、ST graph 四类）[^src-fm-st-data-science]
+- **STFM 二分**：LLM（语言数据上预训练，zero/few-shot 使用）与 PFM（跨域 ST 数据从零训练）。
+- **生命周期三阶段**：sensing（处理 citizen report、优化 participatory sensing、规模化合成数据）、management（清洗、知识图谱构建、跨模态检索）、mining。
+- **能力三轴**：Perception、Optimization、Reasoning（分 common-sense/numerical/causal 三类；作者指现有 ST 模型推理能力相对 DeepSeek-R1 欠发达）。
+- **PFM 三维**：架构（Transformer/Diffusion/GNN/SSM/CNN）；预训练目标（generative/contrastive/hybrid）；数据模态五类（location、trajectory、event、ST raster、ST graph）。
+- **LLM 零样本三角色**：Augmenter（参数冻结，注入外部知识）、Predictor（prompt engineering 或 patch & tokenization 弥合模态差）、Agent（领域模型即插即用作工具，可扩展 multi-agent）。
 
 ## 覆盖的模型
 
-按模态：ST raster——Pangu-Weather 2023（39 年 ERA5 数据，3D Earth-Specific Transformer，Nature）、ClimaX 2023（多变量多尺度气候预训练）、UniST 2024（masked pretraining + learnable ST prompt）、FengWu 2023、W-MAE 2023；ST graph——OpenCity 2024（Transformer+GNN 交通预测）；trajectory——TrajFM（轨迹掩码+自回归恢复）、UniTraj 2024（billion-scale 全球轨迹数据集）；event——MOTOR 2024（医疗时序事件）；location——SpaBERT、GeoVectors（OpenStreetMap）、UrbanCLIP 2024（卫星影像城市画像）[^src-fm-st-data-science]。另有 time series 侧 Chronos、Time-MoE、MOIRAI。
+ST raster：Pangu（Nature 2023，39 年全球气候数据，超越主流数值天气预报）、ClimaX（ICML 2023，多变量多尺度气候预训练）、UniST（KDD 2024，masked pretraining + learnable ST prompt）、FengWu（2023 arXiv，中期预报超 10 天 lead）、W-MAE（masked autoencoder 做 ST grid 预测）。ST graph：OpenCity（2024，Transformer+GNN 交通预测）。Trajectory/event：TrajFM（2024，轨迹掩码+自回归恢复，支持 region/task transferability）、UniTraj（2024，billion-scale 轨迹数据集）、MOTOR（2023，医疗结构化记录 time-to-event FM）。Location：SpaBERT（2022）、GeoVectors（2021，基于 OpenStreetMap 学 location embedding）、UrbanCLIP（WebConf 2024，卫星影像城市 region profiling）。时间序列侧：Chronos（2024）、Time-MoE（ICLR 2025，billion-scale MoE）、MOIRAI（2024）、SSM 系 Mamba4Cast（2024，零样本预测）。
 
-## 与 [[source-st-foundation-models-survey]] 的差异
+## 与其他综述的差异
 
-Goodge et al.（A*STAR，2025）提出 4 类泛化能力（domain/spatial/temporal/scale）愿景并实测 6 个模型，但范围限于 mining + numerical 任务；本文按生命周期组织，新增 sensing/management 阶段、inferential 问题，并把数据结构细分到 5 类（location/trajectory/event/raster/graph）。与 [[source-stfm-pipeline-review]]（pipeline 视角讲模型设计与训练）互补：本篇是任务/工作流视角[^src-fm-st-data-science]。
+按 Table 1，被对比的 5 篇综述均只标 mining、应用仅 N（数值）；本文标 N+I，覆盖三阶段与五类数据结构（L,T,E,R,G）。Goodge et al. 在本篇中仅以 mining 类综述出现，本文未展开其细节。与 [[source-st-foundation-models-survey]] 是不同范围、不同组织方式的综述，可对照阅读。
 
-## 未来方向
+## 未来方向（附录 A，四条）
 
-四条：accuracy vs interpretability 权衡（数值任务上微调 LLM 并不 trivial）；"大模型万能吗"——time series 与 urban planning 中小专家模型在数据充足时胜过 FM，需 hybrid 方案；one-fit-all 全流程 FM（LLM agent 充当 full-stack engineer）；multimodal integration（对齐融合 text/image/video/sensor 的异构源）[^src-fm-st-data-science]。
+1. accuracy 与 interpretability 之咒：直接用 LLM 做数值任务 non-trivial。
+2. "Large foundation models are all we need?"：time series 与 urban planning 中，领域数据充足时小专家模型常胜过 FM，作者建议 hybrid 方案。
+3. one-fit-all 全流程 FM：需 LLM agent 充当 full-stack engineer。
+4. 多模态整合：对齐融合 text/image/video/sensor 异构源。
 
 [^src-fm-st-data-science]: [[source-fm-st-data-science]]
