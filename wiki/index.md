@@ -267,7 +267,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-fm-st-data-science]] — Foundation Models for ST Data Science: A Tutorial and Survey (KDD 2025), 首个覆盖 ST 数据科学全流程的 STFM 综述，LLM+PFM 二分 × 生命周期三阶段 × 能力三轴，覆盖 Pangu-Weather/ClimaX/UniST/OpenCity/TrajFM 等 15+ 模型
 - [[source-large-models-ts-st-survey]] — Large Models for Time Series and Spatio-Temporal Data: A Survey and Outlook (arXiv 2023, v3 2026), 最早系统梳理 TS+ST 大模型的综述，四维分类，LLM4TS 四路线+PFM4TS，Table 2 收 43 个方法
 - [[source-diffusion-ts-st-survey]] — A Survey on Diffusion Models for Time Series and Spatio-Temporal Data (arXiv 2024), 首篇 TS+ST diffusion 综述，四维分类（模型类别/任务/模态/领域），Table 1 汇总 60 个方法
-- [[source-st-llm]] — ST-LLM: Spatial-Temporal Large Language Model for Traffic Prediction (MDM 2024), LLM attention 从时间轴反转为空间轴，PFA 部分冻结 GPT2 微调，NYCTaxi/CHBike MAE 降 22.5% vs OFA
+- [[source-st-llm]] — ST-LLM: Spatial-Temporal Large Language Model for Traffic Prediction (MDM 2024), LLM attention 从时间轴反转为空间轴，PFA 前 F 层冻结/后 U 层仅解冻 MHA(最优 U=2)，NYCTaxi/CHBike 四场景 MAE 均最低
 - [[source-tpllm]] — TPLLM: A Traffic Prediction Framework Based on Pretrained Large Language Models (arXiv 2024), 冻结 GPT-2 + LoRA Q/K (0.95% 参数), PeMS04/08 few-shot 退化幅度最小
 - [[source-physics-aware-reprogramming]] — REPST: Language Model Empowered ST Forecasting via Physics-Aware Reprogramming (arXiv 2024), Koopman 分解 + Gumbel-Softmax selective discrete reprogramming, METR-LA MAE 3.63
 - [[source-how-llm-understand-st]] — STG-LLM: How Can Large Language Models Understand Spatial-Temporal Data (arXiv 2024), STG-Tokenizer 节点即 token + STG-Adapter 冻结 GPT2 1.70% 参数, PEMS07 MAE 19.82

@@ -37,7 +37,7 @@ STTN (2020), GMAN (2020), [[pdformer|PDFormer]] (2023)[^src-pdformer-jiang-2023]
 ### LLM-Based Traffic Forecasting
 2024 年出现一批直接把 LLM 用于交通预测的工作，按 token 化方式和微调策略分成几条不同路线。
 
-[[source-st-llm|ST-LLM]]（MDM 2024）把每个站点每个时间步当一个 token（$N$ 个站点 → $N$ 个 token），把 attention 的序列维度从时间轴**反转**到空间轴，用 GPT2 做站点间 self-attention；三嵌入（pointwise conv token / day+week 位置编码 / 不依赖邻接矩阵的 adaptive spatial）融合后接 PFA——前 $F$ 层全冻结、后 $U$ 层只解冻 MHA（作者判断预训练知识主要在 FFN）。NYCTaxi/CHBike 上平均 MAE 比 OFA 低 22.5%、比 LLAMA2 低 20.8%，但只在 2 个 2016 年 NYC 数据集验证，"zero-shot" 仅指 NYC 域内迁移[^src-st-llm]。
+[[source-st-llm|ST-LLM]]（MDM 2024）把每个站点每个时间步当一个 token（$N$ 个站点 → $N$ 个 token），把 attention 的序列维度从时间轴**反转**到空间轴，用 GPT2 做站点间 self-attention；三嵌入（pointwise conv token / day+week 位置编码 / 不依赖邻接矩阵的 adaptive spatial）融合后接 PFA——前 $F$ 层全冻结、后 $U$ 层只解冻 MHA（作者判断预训练知识主要在 FFN）。论文正文自述平均 MAE 比 OFA 低 22.5%、比 LLAMA2 低 20.8%（按 Table II 四场景 MAE 均值核算实际约 8% 与 6%，正文与表格不自洽），且只在 2 个 2016 年 NYC 数据集验证，"zero-shot" 仅指 NYC 域内迁移[^src-st-llm]。
 
 [[source-tpllm|TPLLM]]（arXiv 2024）不含自然语言 prompt，完全冻结 GPT-2 只训 LoRA 注入的 attention Q/K（约 0.95% 参数）；PeMS08 全样本 MAE 15.45 vs ASTGCN 18.33，few-shot 退化幅度最小（+2.64 vs +4.14）[^src-tpllm]。
 
@@ -69,7 +69,7 @@ Extending beyond accidents, [[igstgnn|IGSTGNN]] (KDD 2026) explicitly models the
 ### Contrastive Auxiliary Regularization
 [[stgcl|STGCL]]（SIGSPATIAL 2022）把对比损失当作辅助正则项与预测任务联合训练，不动网络结构、推理零开销。PEMS-04 上两阶段「对比预训练 + 微调」反而劣于基线（GWN 的 MAE 由 19.33 变成 20.22/20.67），因为对比学习优化的 uniformity 利于分类而非连续回归；端到端联合学习并把对比放在图级，则在 GWN、MTGNN、DCRNN 与 AGCRN 上一致改善，并用 time-of-day 阈值剔除时间邻近的假硬负样本[^src-stgcl]。
 
-[[source-st-ssl|ST-SSL]]（AAAI 2023）同样把自监督信号与预测任务联合训练，但方向不同：它显式建模被共享参数空间抹平的**空间/时间异质性**——空间侧用自适应图增强（按区域聚合嵌入余弦相似度 $q_{m,n}$ 决定掩码流量与增删边，扰动比例 0.1）生成软聚类伪标签做 cross-entropy，并用单纯形约束 + 最大熵正则防塌缩；时间侧把同一时间步的区域级与城市级嵌入当正对做对比判别（$g=\sigma(v_{t,n}^\top W_3 s_t)$）。NYCBike1/2、NYCTaxi、BJTaxi 四数据集 8 基线 MAE 全面最优（BJTaxi In 11.31 vs AGCRN 12.30），但只做 $t+1$ 单步预测、无预训练可迁移性[^src-st-ssl]。
+[[source-st-ssl|ST-SSL]]（AAAI 2023）同样把自监督信号与预测任务联合训练，但方向不同：它显式建模被共享参数空间抹平的**空间/时间异质性**——空间侧用自适应图增强（按区域聚合嵌入余弦相似度 $q_{m,n}$ 决定掩码流量与增删边，扰动比例 0.1）生成软聚类伪标签做 cross-entropy，并用单纯形约束 + 最大熵正则防塌缩；时间侧把同一时间步的区域级与城市级嵌入当正对做对比判别（$g=\sigma(v_{t,n}^\top W_3 s_t)$）。NYCBike1/2、NYCTaxi、BJTaxi 四数据集 8 基线 MAE 全面最优（BJTaxi In 11.31 vs 该列最优基线 ST-ResNet 12.12），但只做 $t+1$ 单步预测、无预训练可迁移性[^src-st-ssl]。
 
 ### Large-Scale Long-Horizon
 FaST (KDD 2026) addresses computational bottlenecks in large-scale graphs (8,600+ nodes) with long-horizon predictions (672 steps = 1 week) using [[adaptive-graph-agent-attention|AGA-Att]] for O(N·a) spatial complexity and [[mixture-of-experts|Dense MoE]] for efficient feature extraction. Achieves 4.4%-18.4% MAE improvement over SOTA with 1.3x-2.2x faster inference[^src-fast-long-horizon-forecasting].
@@ -84,7 +84,7 @@ Before STD-MAE, [[gpt-st|GPT-ST]] (NeurIPS 2023) pioneered the MAE pre-training 
 
 这条路线可追溯到 [[source-step|STEP]]（KDD 2022）：TSFormer 把历史序列按 patch size 12 切成互不重叠 patch（METR-LA/PEMS-BAY 取 168 个 patch 即一周），随机掩码 75% 后只对被掩 patch 算 MAE 重建损失，非对称 encoder 4 层 + decoder 1 层，可学习位置编码是关键（换 sinusoidal 学不到有效表征）；图结构学习沿用 GTS 框架但改用 TSFormer 表征算 kNN 图做交叉熵正则，$\lambda=1/\lceil epoch/6\rceil$ 逐步衰减跳出 kNN 约束。下游冻结 encoder，patch 表征经 semantic projector 与 Graph WaveNet 隐层相加。METR-LA H3 MAE 2.61 vs GWNet 2.69（$p<0.05$）、PEMS04 H3 17.34 vs 18.15[^src-step]。
 
-[[source-st-mae|STMAE]]（CIKM 2024）把掩码策略细化并做成**即插即用**框架（与 [[std-mae|STD-MAE]] 是不同论文）：空间掩码用 biased random walk（融合 BFS/DFS）掩**路径**而非节点，时间掩码因交通数据信息密度低改用 patch 级 Bernoulli 采样 + 共享 mask token；微调时丢弃两个 decoder，encoder 接回原 backbone。以 AGCRN 为骨干，PEMS04 MAE 19.39→19.05、PEMS08 15.65→15.01，全面优于对比式 SSL 的 [[stgcl|STGCL]]（19.27），且不需要数据增强[^src-st-mae]。
+[[source-st-mae|STMAE]]（CIKM 2024）把掩码策略细化并做成**即插即用**框架（与 [[std-mae|STD-MAE]] 是不同论文）：空间掩码用 biased random walk（融合 BFS/DFS）掩**路径**而非节点，时间掩码因交通数据信息密度低改用 patch 级 Bernoulli 采样 + 共享 mask token；微调时丢弃两个 decoder，encoder 接回原 backbone。以 AGCRN 为骨干，PEMS04 MAE 19.39→19.05、PEMS08 15.65→15.01，对比式 SSL 的 [[stgcl|STGCL]] 在 PEMS04 为 19.23；不过论文正文"always outperforms STGCL"与自身表格冲突——Table 1 的 DCRNN/PEMS03 上 STGCL 15.64 优于 STMAE 15.74。STMAE 不需要手工数据增强[^src-st-mae]。
 
 ### Regularized Adaptive Graph Convolution
 [[ragc|RAGC]] (arXiv 2026) tackles two limitations of adaptive graph learning for large-scale networks: O(N²) graph convolution complexity and lack of node embedding regularization. It proposes [[efficient-cosine-operator|ECO]] for O(N) graph convolution via cosine similarity decomposition, and integrates [[stochastic-shared-embedding|SSE]] with adaptive graph convolution through a [[residual-difference-mechanism|residual difference mechanism]] that suppresses SSE-induced noise while retaining regularization benefits. On four LargeST datasets (716–8,600 nodes), RAGC consistently achieves the best prediction accuracy with competitive training/inference speed[^src-ragc-efficient-traffic-forecasting].
