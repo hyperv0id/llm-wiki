@@ -17,34 +17,34 @@ status: active
 
 # Large Models for Time Series and Spatio-Temporal Data: A Survey and Outlook
 
-**Authors**: Ming Jin (Griffith), Yaxuan Kong (Oxford), Yuxuan Liang (HKUST-GZ), Chaoli Zhang, Siqiao Xue (Ant), Xue Wang (Alibaba) 等
-**Venue**: arXiv:2310.10196（首版 2023-10；v3 于 2026-06 修订，ACM 投稿稿，Table 1 定位标注 2025）
+**Authors**: Ming Jin（Griffith）、Yaxuan Kong（Oxford）、Yuxuan Liang（HKUST-GZ）等 16 人；通讯 Shirui Pan（Griffith）、Qingsong Wen（Squirrel Ai Learning）
+**Venue**: arXiv:2310.10196（v1 推断为 2023-10，据 arXiv 编号 2310；v3 [cs.LG] 8 Jun 2026，ACM 投稿稿）
 
-## 历史地位
+## 问题与定位
 
-首版于 2023 年 10 月，与 PromptCast、LLMTime、Time-LLM 的第一波 LLM4TS 探索同期，早于 TimesFM/Chronos/MOIRAI（2024）等 time series foundation model 落地潮，是该领域最早系统综述之一；其 LM4TS/LM4STD、LLM4TS/PFM4TS 命名成为后续文献通用术语[^src-large-models-ts-st-survey]。综述自述对比十余篇相关综述（Madan et al. 2023、Capone et al. 2023、Wang et al. 2024、Kottapalli et al. 2024、Shi et al. 2025、Liang et al. 2025），并声称是唯一同时覆盖 time series 与 spatio-temporal 两条线的[^src-large-models-ts-st-survey]。
+时序与时空数据上的大模型工作激增，但论文指出既有综述 "typically focus on a single modality or model family and rarely provide an integrated view"（L240-242）。Table 1 中 11 篇对比综述（Madan 2024、Capone 2025、Wang 2025、Kottapalli 2025、Shi 2025、Liang 2025 等）无一在四模态列全勾；本综述为表中唯一全勾行（按表格勾选计，非论文自述，原文措辞为 "an integrated temporal-data perspective"，L243-244）。原文无 first/pioneer 表述，仅可据 v1 首发（2023-10）推断其属早期系统综述。
 
 ## 分类体系
 
-按四维组织：数据类别（time series vs spatio-temporal）、模型架构（LLM vs PFM）、模型范围（general-purpose vs domain-specific：交通/金融/医疗）、应用任务[^src-large-models-ts-st-survey]。顶层二分 LM4TS / LM4STD；LM4STD 按模态再分三类：spatio-temporal graphs、temporal knowledge graphs（三元组 (s,p,o) 扩展为带时间戳四元组 (s,p,o,t)）、视频[^src-large-models-ts-st-survey]。Table 2 收录 43 个 TS 方法（24 LLM4TS + 19 PFM4TS）。作者明确说明 LLM/PFM 之分是 practical 而非 ontological——前者复用语言中心基础模型，后者为时序模态自建 backbone[^src-large-models-ts-st-survey]。
+沿四个维度组织：data categories、model architectures、model scopes、application domains/tasks（L750-751）。顶层二分 LM4TS/LM4STD；LM4TS 再分 LLM4TS（复用语言中心大模型，冻结或微调均可）与 PFM4TS（为时序模态自建 backbone），作者说明该区分 "practical rather than ontological"（L757-759）。LM4STD 聚焦三个模态：spatio-temporal graphs、temporal knowledge graphs、videos（L862-863）；TKG 把三元组 (s,p,o) 扩展为带时间戳四元组 (s,p,o,t)（L1663）。
 
-## 机制与代表模型
+## 证据与代表工作
 
-LLM4TS 四条技术路线：prompting（PromptCast 提出 prompt-based forecasting 任务并发布 PISA 指令数据集）、tokenization（LLMTime 零样本）、decomposition + soft prompts（TEMPO）、reprogramming（Time-LLM，ICLR 2024）[^src-large-models-ts-st-survey]。多任务扩展有 Time-MQA、ChatTS、Time-MMD；PFM4TS 代表：PatchTST（2023）、TimesFM（2024）、MOIRAI、Chronos、Lag-llama、Timer、MOMENT、Time-MoE、Chronos-2[^src-large-models-ts-st-survey]。LM4STD 中 STG 线有 STG-LLM（STG-Tokenizer + STG-Adapter）、UrbanGPT（2024）、RePST；TKG 线有 Chain-of-History、LLM-DA、LATE、G2S、TeRDy；视频线有 Video-ChatGPT、Video-LLaMA、MovieChat、Video-XL；气候 PFM 有 Pangu-Weather、ClimaX、FourCastNet-3[^src-large-models-ts-st-survey]。第 5.4 节提炼两大阵营三大共性挑战：tokenization 为模型可读单元、有限 context 预算下的长程依赖、外部知识与模态对齐[^src-large-models-ts-st-survey]。
+Table 2 收录 42 个 TS 方法（25 LLM4TS + 17 PFM4TS）与 45 个 ST 方法，合计 87。论文提出 LLM4TS 四条路线：prompting、tokenization、decomposition、reprogramming（L897-898）——PromptCast 提出 prompt-based forecasting 并发布 PISA 数据集（L899-902），LLMTime 证明 LLM 是 zero-shot 时序学习器（L903-904），TEMPO 引入分解与 soft prompts（L904-905），Time-LLM 做 reprogramming（ICLR 2024，L906-907）。PFM4TS 代表：PatchTST（ICLR 2023）、TimesFM、MOIRAI、Chronos、Timer（ICML 2024）、Lag-llama、MOMENT、Time-MoE、Chronos-2；STG 线有 STG-LLM、UrbanGPT（KDD 2024）；气候 PFM 有 Pangu-Weather、ClimaX。第 5.4 节提炼三大共性挑战：tokenization 为模型可读单元、有限 context 预算下的长程依赖、外部知识与模态对齐（L1799-1808）。
 
-## 未来方向（6 个）与后续验证
+## 未来方向（Sec 7，原文明言 top six）
 
-1) 大模型迁移到时序的理论分析；2) 多模态与多分辨率对齐——后续 [[source-multimodal-ts-survey]]（2025）、TaTS（ICLR 2026）沿此展开；3) 持续学习与无遗忘适配——EAC（ICLR 2025）prompt pool 可视为回应；4) 可解释性（反事实/因果推理）；5) 隐私与对抗攻击（差分隐私、联邦学习）；6) LLM agents 时序决策（OOD 检测、弃权、safe exploration）——TimeCAP（AAAI 2025）已初步验证[^src-large-models-ts-st-survey]。
+1) 迁移的理论分析——原文承认 tokenization/注意力何时有效或因分布偏移、数值精度损失失效无理论答案（L2155-2158）；2) 多模态与多分辨率对齐（L2164-2169）；3) 持续学习与无遗忘适配（L2175-2178）；4) 可解释性，含反事实与因果推理（L2184-2198）；5) 隐私与对抗攻击（差分隐私、联邦学习，L2201-2205）；6) LLM agents 时序决策（OOD 检测与弃权、safe exploration，L2208-2217）。
 
 ## 局限
 
-作者自认 PFM4TS 方向 nascent，收录模型未必满足其自定义的通用 PFM 标准[^src-large-models-ts-st-survey]；第 7.1 节承认语言 tokenization 与注意力机制何时有效、何时因分布偏移/数值精度损失失效仍无理论答案；TKG 部分受制于事实不全、时间戳稀疏；对 LLM4TS 后续负结果（如 "Are Transformers Effective for Time Series Forecasting?" 一类质疑）未作重点处理[^src-large-models-ts-st-survey]。
+论文自认 PFM4TS 方向 "relatively nascent"，收录模型未必满足 Sec 2.2 定义的通用 PFM 标准（L760-762）；LM4TS 简单可扩展但可能丢失细粒度数值信息，TKG 方法受事实不完备与稀疏制约，视频模型 token 与内存开销高（L1808-1811）。Zeng et al. "Are Transformers Effective for Time Series Forecasting?"（AAAI 2023，[272] L2864）质疑的是 Transformer 架构本身，不应外推为 LLM4TS 负结果。
 
 ## 与 wiki 其他综述比较
 
-- [[source-st-foundation-models-survey]]（A*STAR, 2025）：只聚焦 STFM，4 泛化能力维度 + 6 模型实证；本综述覆盖 TS+ST 双线且含 LLM 复用路线，是它的先声。
-- [[source-stfm-pipeline-review]]（2025）：按 pipeline（数据 harmonization→模型设计→适配）视角重审 ST 基础模型；本综述按分类学视角。
-- [[source-deep-time-series-survey]]（TSLib）：只覆盖 TS 架构模型与基准，无 LLM/ST 维度。
-- [[source-multimodal-ts-survey]]（2025）：专注多模态 TS 的融合/对齐/迁移三分法，是本综述未来方向 2 的垂直化。
+- [[source-st-foundation-models-survey]]：专注 ST 基础模型实证，本综述更早覆盖双线。
+- [[source-stfm-pipeline-review]]：pipeline 视角 vs 分类学视角。
+- [[source-deep-time-series-survey]]：仅覆盖 TS 架构模型与基准。
+- [[source-multimodal-ts-survey]]：多模态 TS 专述，垂直化未来方向 2。
 
 [^src-large-models-ts-st-survey]: [[source-large-models-ts-st-survey]]
