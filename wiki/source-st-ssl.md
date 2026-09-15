@@ -17,40 +17,46 @@ status: active
 
 # ST-SSL: Spatio-Temporal Self-Supervised Learning for Traffic Flow Prediction
 
-**作者**: Jiahao Ji, Jingyuan Wang 等（北航、京东城市研究院、HKU）
+**作者**: Jiahao Ji, Jingyuan Wang 等（北航、鹏城实验室、HKU）
 **发表**: AAAI 2023（arXiv:2212.04475）
 **代码**: https://github.com/Echo-Ji/ST-SSL
 
-## 核心论点
+## 核心问题
 
-论文针对交通流预测中两类被共享参数空间忽略的异质性：空间异质性（不同区域流量分布偏斜，模型偏向高流量区域）与时间异质性（不同时段模式不同，但传统方法对所有时段共享参数）[^src-st-ssl]。解法是将两个辅助自监督任务加入主预测任务联合训练——注意这是单阶段联合训练范式，不是 [[std-mae]]（IJCAI 2024）那种"掩码预训练+微调"两阶段设计。
+共享参数空间抹平两类异质性：空间上，区域流量分布偏斜，模型偏向高流量区域（L86-88）；时间上，所有时段共享一套参数，分参数策略又假设时段模式静态（L100-108）。论文自称首次以自监督框架建模交通流预测的时空异质性（L119-120）。
 
 ## 方法机制
 
-1. **ST Encoder**: gated 1D 因果时间卷积 (TC) + 图卷积 (SC)，按 TC→SC→TC "sandwich" 块堆叠（继承 STGCN 结构），嵌入维度 D=64，卷积核 3。
-2. **自适应图增强**: 用区域聚合嵌入的余弦相似度 $q_{m,n}$ 度量区域间异质性。流量级增强按 $\mathrm{Bern}(1-p_{\tau,n})$ 掩码与区域整体规律相关性低的时间步流量；拓扑级增强按 $\mathrm{Bern}(1-q_{m,n})$ 删低相关邻接边、按 $\mathrm{Bern}(q_{m,n})$ 加非邻接长程边。扰动比例均 0.1。
-3. **空间 SSL**: 软聚类任务——增广图生成 K 个聚类嵌入作为伪标签，原始图嵌入做 cross-entropy 预测（温度 $\gamma$）；用单纯形约束 + 最大熵正则（Eq.7-8）避免所有区域塌缩到同一聚类。
-4. **时间 SSL**: 对比任务——同一时间步的区域级与城市级嵌入为正对，不同时间步为负对，判别函数 $g=\sigma(v_{t,n}^\top W_3 s_t)$。
-5. 联合损失 $L_{joint}=L_p+L_s+L_t$，$L_p$ 用 $\lambda$ 平衡 inflow/outflow。
+1. **ST encoder**：门控 1D 因果时间卷积沿用 STGCN（L167-168）+ 图消息传递 SC，TC→SC→TC sandwich 块（L187-188）；D=64，核均为 3（L664-665）。
+2. **自适应图增强**：区域聚合嵌入余弦相似度 $q_{m,n}$ 度量异质性（Eq.4）。流量级按 $\mathrm{Bern}(1-p_{\tau,n})$ 掩掉低相关时间步流量（L315-321）；拓扑级按 $\mathrm{Bern}(1-q_{m,n})$ 删相邻低相关边、按 $\mathrm{Bern}(q_{m,n})$ 加非邻接边（L327-334）。扰动比例均 0.1（L665）。
+3. **空间 SSL**：增广图嵌入生成 K 个软聚类伪标签，原图嵌入经温度 γ softmax 交叉熵预测聚类分配（Eq.5-6）；单纯形约束 + 最大熵正则防聚类塌缩（Eq.7-8）。
+4. **时间 SSL**：同一时间步的区域级与城市级嵌入为正对、跨时间步为负对，判别函数 $g=\sigma(v_{t,n}^\top W_3 s_t)$（Eq.11）。
+5. 联合损失 $L_{joint}=L_p+L_s+L_t$（L552），$L_p$ 用 λ 平衡 inflow/outflow。
 
 ## 实验结果
 
-4 个数据集（7:1:2 划分，输入前 2 小时 + 前 3 天流量，预测下一时间步）：NYCBike1（2014.04-09，30min，16×8 网格）、NYCBike2（2016，30min，10×20）、NYCTaxi（2015.01-03，30min）、BJTaxi（2015.03-06，1h，32×32）。对比 8 个基线（ARIMA、SVR、ST-ResNet、STGCN、GMAN、AGCRN、STSGCN、STFGNN），LibCity 平台，5 seeds，t-test p<0.01 [^src-st-ssl]。
+前 2 小时 + 前 3 天流量预测下一时间步，7:1:2 划分（L580-584）。NYCBike1（16×8，6.8k+）、NYCBike2（10×20，2.6m+）、NYCTaxi（10×20，22m+）均 30 min，BJTaxi（32×32，34k+）1h（L573-579；Table 1 的 interval 行与之矛盾，以正文为准）。8 基线三类（ARIMA/SVR；ST-ResNet/STGCN/GMAN；AGCRN/STSGCN/STFGNN），LibCity、5 seeds、t-test 0.01 显著（L673-676）。
+
+Table 2 核算（列序 ARIMA|SVR|ST-ResNet|STGCN|GMAN|AGCRN|STSGCN|STFGNN|ST-SSL，已逐列扫描）：
 
 | 数据集 | ST-SSL MAE (In/Out) | 最优基线 |
 |---|---|---|
 | NYCBike1 | 4.94 / 5.26 | AGCRN 5.17 / 5.47 |
-| NYCBike2 | 5.04 / 4.71 | AGCRN 5.18 / STGCN 4.79 |
+| NYCBike2 | 5.04 / 4.71 | AGCRN 5.18 / 4.79（STGCN Out 4.92 次优） |
 | NYCTaxi | 11.99 / 9.78 | AGCRN 12.13 / 9.87 |
-| BJTaxi | 11.31 / 11.40 | AGCRN 12.30 / 12.38 |
+| BJTaxi | 11.31 / 11.40 | ST-ResNet 12.12 / 12.16（AGCRN 12.30 / 12.38 次优） |
 
-MAPE 同样全面占优（BJTaxi In 15.03% vs AGCRN 15.61%）。消融（随机增强替换自适应增强、去掉空间/时间 SSL 共 4 个变体）均劣于完整模型；误差可视化显示郊区区域提升显著，验证空间异质性建模在全局相似区域间迁移信息。
+MAPE-In 最优基线：NYCBike1=SVR 25.39、NYCBike2=AGCRN 27.14、NYCTaxi=AGCRN 18.78、BJTaxi=ST-ResNet 15.50（AGCRN 15.61 非最优，L775）。
+
+消融：散文写 "five variants"（L847）但仅枚举 4 个（-sa 随机删加边、-ta 随机流量掩码、-sh/-th 去空间/时间异质性，L848-856），系论文笔误；四变体均劣于完整模型。误差可视化显示郊区提升显著（L682-684）；RQ4 展示删边/加边实例（L985-988）。
+
+## 范式对照（页面评述）
+
+与 [[source-2312-00516-std-mae]] 对照：ST-SSL 单阶段联合训练，SSL 损失全程在线约束表示空间；STD-MAE（IJCAI 2024）两阶段掩码预训练+微调，可迁移。切入点不同：前者显式建模区域/时段聚类与对比结构，后者重建被掩码流量。
 
 ## 局限性
 
-- 只预测下一时间步 $t+1$，无长时程预测实验[^src-st-ssl]
-- 城市为固定 $I\times J$ 网格划分，依赖邻接矩阵，未在路网图数据集上验证
-- 自监督任务作为辅助损失联合训练，无法像 STD-MAE 那样预训练后迁移到少样本/跨数据集场景
-- 自适应增强引入超参（扰动比例 0.1）且未分析对超参敏感性
+- **论文自认**：无独立局限小节；未来工作仅提框架 model-agnostic 化（L1021），暗示绑定该 ST encoder。
+- **页面评述**：仅预测下一时间步（L149-150）；固定 I×J 网格 + 邻接矩阵，未在路网图验证（L134-148）；超参敏感性未报告；联合训练无法跨数据集迁移。
 
 [^src-st-ssl]: [[source-st-ssl]]
