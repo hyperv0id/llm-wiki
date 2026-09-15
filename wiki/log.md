@@ -3811,3 +3811,56 @@ STG-Tokenizer 把每个节点编码为一个 token（token 内承载完整 L×F 
 ingest 报告：[[ingest-reports/2026-09-15-how-llm-understand-st|WHY 报告]]
 
 [^src-how-llm-understand-st]: [[source-how-llm-understand-st]]
+
+## [2026-09-15] ingest | ST-SSL: Spatio-Temporal Self-Supervised Learning for Traffic Flow Prediction (Ji et al., AAAI 2023)
+针对交通流预测中空间/时间异质性被共享参数空间忽略的问题，把两个辅助 SSL 任务（空间软聚类伪标签 + 时间步区域-城市嵌入对比判别 $g=\sigma(v_{t,n}^\top W_3 s_t)$）与主预测任务**单阶段联合训练**（$L_{joint}=L_p+L_s+L_t$），与 [[source-2312-00516-std-mae]] 的两阶段掩码预训练+微调形成范式对照。自适应图增强按区域聚合嵌入余弦相似度 $q_{m,n}$ 度量异质性，扰动比例 0.1。NYCBike1/2、NYCTaxi、BJTaxi 四数据集 8 基线 MAE 全面最优（BJTaxi In 11.31 vs AGCRN 12.30），LibCity 5 seeds。
+创建的页面：[[source-st-ssl]]
+更新的页面：[[index]], [[log]]
+ingest 报告：[[ingest-reports/2026-09-15-st-ssl|WHY 报告]]
+
+[^src-st-ssl]: [[source-st-ssl]]
+
+## [2026-09-15] ingest | STMAE: Revealing the Power of Masked Autoencoders in Traffic Forecasting (Sun et al., CIKM 2024)
+即插即用生成式 SSL 框架：空间掩码用 biased random walk（融合 BFS/DFS，掩码单元是**路径**而非节点）作用于邻接矩阵边集；时间掩码用 patch 级 Bernoulli 采样（交通数据信息密度低，稀疏单点掩码易被插值恢复，改用共享可学习 mask token）。两个轻量 decoder 分别重建数据与结构，$L_{pretrain}=\lambda L_A+L_X$ 仅在被掩区域计算；微调丢弃 decoder，encoder 接回原 backbone。AGCRN backbone PEMS04 MAE 19.39→19.05（STGCL 19.27）、PEMS08 15.65→15.01；MTGNN/DCRNN 一致提升。**与 [[source-2312-00516-std-mae]] 是不同论文**，页面已显式标注区分。
+创建的页面：[[source-st-mae]]
+更新的页面：[[index]], [[log]]
+ingest 报告：[[ingest-reports/2026-09-15-st-mae|WHY 报告]]
+
+[^src-st-mae]: [[source-st-mae]]
+
+## [2026-09-15] ingest | STEP: Pre-training Enhanced Spatial-temporal Graph Neural Network (Shao et al., KDD 2022)
+TSFormer 掩码自编码预训练：历史序列按 patch size L=12 切 P 个 patch（METR-LA/PEMS-BAY P=168 即一周），随机掩码 r=75%，仅对被掩 patch 计算 MAE 重建损失；非对称 encoder 4 层 Transformer（d=96，4 头）+ decoder 1 层，可学习位置编码是关键（换 sinusoidal 学不到有效表征）；r=75% 训练 279.3 s/epoch vs r=20% 的 738.6 s/epoch。图结构学习沿用 GTS 框架但改用 TSFormer 表征，Gumbel-Softmax 采样得可微软化离散邻接矩阵，$\lambda=1/\lceil epoch/6\rceil$ 衰减跳出 kNN 约束。下游冻结 encoder，patch 表征经 semantic projector（MLP）与 Graph WaveNet 隐层相加。METR-LA H3 MAE 2.61 vs GWNet 2.69（t-test p<0.05）、PEMS-BAY H3 1.26 vs 1.30、PEMS04 H3 17.34 vs 18.15。
+创建的页面：[[source-step]]
+更新的页面：[[index]], [[log]]
+ingest 报告：[[ingest-reports/2026-09-15-step|WHY 报告]]
+
+[^src-step]: [[source-step]]
+
+## [2026-09-15] ingest | FlashST: A Simple and Universal Prompt-Tuning Framework for Traffic Prediction (Li et al., ICML 2024)
+model-agnostic 时空 prompt-tuning 框架：在 PEMS03/04/07/08 预训练 300 epochs，冻结下游模型仅训 prompt 网络 20 epochs。Prompt 网络 = 时空上下文蒸馏（time-of-day/day-of-week 嵌入 + Laplacian 最小非平凡特征向量作区域属性）+ 时空依赖编码（门控时间编码器 + GCN 消息传递含残差防过平滑）；InfoNCE 均匀性损失（τ=0.3、λ=1.0）对齐预训练与下游嵌入分布。4 个目标数据集（PEMS07(M)/CA-D5/ChengDu-DIDI/NYC Citi Bike）全胜 13 基线（PEMS07(M) MAE 2.59 vs MTGNN 2.70），未微调直接迁移崩溃（STGCN 8.07）→ 全参微调 3.18 → FlashST 2.68；训练时间降低 20%-80%（GWN 1042s→222s，PDFormer 7524s→1220s）。与 [[source-opencity]] 同一一作（Zhonghang Li/HKUDS）：prompt-tuning → 基础模型的演进。
+创建的页面：[[source-flashst]]
+更新的页面：[[index]], [[log]]
+ingest 报告：[[ingest-reports/2026-09-15-flashst|WHY 报告]]
+
+[^src-flashst]: [[source-flashst]]
+
+## [2026-09-15] ingest | STWave: Multi-Scale Efficient Spectral Graph Attention Network (Fang et al., ICDE 2023)
+Disentangling Flow Layer 用一级 DWT（低通 g/高通 h，↓2 下采样减半时间步，$g^T/h^T$ 逆滤波复原）把流量解耦为高低频；ESGAT（Efficient Spectral Graph Attention Network）含 Query Sampling（topk-pooling 采 $\lceil\log N\rceil$ 个活跃节点，复杂度 $O(N^2T)\to O(TN\log N)$）与图小波基位置编码（$\rho=\Phi\cdot G_s^{1/2}$，s 可学习）。4 个 Caltrans PeMS 数据集对 15 基线：PeMSD3 MAE 14.93（AGCRN 15.98）、PeMSD4 18.50（AGCRN 19.83）、PeMSD7 19.94（AGCRN 22.37）、PeMSD8 13.42（AGCRN 15.95）。long-term 指低频分量的长期趋势依赖，**非长时程预测**（仍 12→12 步）。TKDE 2023 扩展版 STWave+ 补 multi-level DWT 与 multi-scale 图小波位置编码。
+创建的页面：[[source-stwave]]
+更新的页面：[[index]], [[log]]
+ingest 报告：[[ingest-reports/2026-09-15-stwave|WHY 报告]]
+
+[^src-stwave]: [[source-stwave]]
+
+## [2026-09-15] ingest | DP-TFI: Diffusion Probabilistic Modeling for Fine-Grained Urban Traffic Flow Inference (Xu et al., ICASSP 2023)
+解决 FUFI（fine-grained urban traffic flow inference）——从粗粒度流量图推断细粒度图（北京出租车 32×32 上采样到 128×128，N=4，30 分钟间隔），是推断而非时序预测。DPA（Diffusion Probabilistic Augmentor）基于 DDPM forward/reverse process 生成带不确定性的流量图实例，仅用作训练增强；RDU（Relaxed Distributional Upsampling）即标题中的 relaxed structural constraint，用 relax matrix $R_f=2\mu\cdot\mathrm{Sigmoid}(\mathrm{Conv2d}(H_{ef}))-(\mu+1)J$ 放宽 superregion 流量必须等于 subregion 之和的硬约束，$\mu\approx0.02\text{-}0.03$ 最优（μ=0 严格约束和 μ 过大都更差）。TaxiBJ P1-P4 四时段 RMSE/MAE/MAPE 全部最优（P4 RMSE 3.429 vs 次优 UrbanPy 3.470）。
+创建的页面：[[source-diffusion-traffic-flow-inference]]
+更新的页面：[[index]], [[log]]
+ingest 报告：[[ingest-reports/2026-09-15-diffusion-traffic-flow-inference|WHY 报告]]
+
+[^src-diffusion-traffic-flow-inference]: [[source-diffusion-traffic-flow-inference]]
+
+## [2026-09-15] maintenance | Efficient Large-Scale Traffic Forecasting 已覆盖，不重复建页
+核查用户清单中的 "Efficient Large-Scale Traffic Forecasting with Transformers: A Spatial Data Management Perspective"：该论文即 [[source-patchstg|PatchSTG]]（Fang et al., KDD 2025, arXiv:2412.09972, github.com/LMissher/PatchSTG），wiki 已有完整 source-summary（2026-06-08 ingest，含 Irregular Spatial Patching / leaf KDTree / Dual Attention / LargeST 实验）。按 [[AGENTS|链接规则]] 不建立重复页面，仅登记本次核查。
+创建的页面：无
+更新的页面：[[index]], [[log]]
