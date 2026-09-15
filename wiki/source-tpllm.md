@@ -45,7 +45,7 @@ status: active
 
 - 仅在两个加州 PeMS 流量数据集上验证单一任务（流量），未测速度/需求/缺失填补等下游任务
 - 骨干为 GPT-2（1.24 亿参数），未对比 OpenCity 等时空基础模型或 Time-LLM 等同类时序-LLM 方法
-- 论文自述未来需设计纳入更多交通影响因素的 embedding，并探索更适配时空任务的 PEFT 技术[^src-tpllm]
+- 后续工作方向是纳入更多交通影响因素的 embedding，以及更适配时空任务的 PEFT 技术[^src-tpllm]
 
 与 [[source-st-llm]] 同属 2024 年"时序重塑为 token 输入 LLM"路线：ST-LLM 采用 partial frozen 策略解冻 LLM 的部分层微调，TPLLM 则完全冻结 GPT-2 骨干，只训 Q/K 上的 LoRA 低秩增量（0.95% 可训练参数），且不构造文本 prompt。
 

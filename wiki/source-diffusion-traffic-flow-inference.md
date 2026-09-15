@@ -34,7 +34,7 @@ DP-TFI 三个模块：(1) **Disentangled Flow Feature Learning**——流量与�
 ## 局限性
 
 - relax matrix 分析显示模型对多数 subregion 都倾向打破结构约束，重流量区域获得更多分配，但缺乏对约束违反量的理论界[^src-diffusion-traffic-flow-inference]
-- DPA 生成的流量图仅用作训练增强，推理时未将外部因子与粗粒度图作为 diffusion 的条件输入（论文自述为 future work）[^src-diffusion-traffic-flow-inference]
+- DPA 生成的流量图仅用作训练增强，推理时未将外部因子与粗粒度图作为 diffusion 的条件输入（论文将其列为 future work）[^src-diffusion-traffic-flow-inference]
 - 仅在单一城市（北京）单一数据模态（出租车流量）上验证
 
 ## 与 [[diffusion-model]] 的关联
