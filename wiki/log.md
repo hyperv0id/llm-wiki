@@ -3755,3 +3755,11 @@ ingest 报告：[[ingest-reports/2026-09-13-trace-as-state|创建、修改、交
 ingest 报告：[[ingest-reports/2026-09-15-stgcl|创建、修改、交叉链接与验证 WHY 报告]]。
 
 [^src-stgcl]: [[source-stgcl]]
+
+## [2026-09-15] ingest | Foundation Models for Spatio-Temporal Data Science: A Tutorial and Survey (Liang et al., KDD 2025)
+首个覆盖 ST 数据科学全流程的 STFM 综述。STFM 分 LLM + PFM 两类，应用按生命周期三阶段（data sensing / data management / data mining）组织，PFM 方法论三维（架构/预训练目标/数据模态）。覆盖 Pangu-Weather、ClimaX、UniST、OpenCity、TrajFM、UniTraj 等 15+ 模型。与 [[source-st-foundation-models-survey]]（A*STAR 2025）互补：本篇新增 sensing/management 阶段和 inferential 问题。
+创建的页面：[[source-fm-st-data-science]]
+更新的页面：[[index]], [[log]]
+ingest 报告：[[ingest-reports/2026-09-15-fm-st-data-science|WHY 报告]]
+
+[^src-fm-st-data-science]: [[source-fm-st-data-science]]

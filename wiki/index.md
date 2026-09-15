@@ -264,6 +264,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-std-plm]] — STD-PLM: PLM-based unified ST forecasting+imputation with spatial-temporal tokenizer + sandglass attention (AAAI 2025)
 - [[source-stfm-pipeline-review]] — Unraveling ST Foundation Models via the Pipeline Lens: comprehensive review of data harmonization, model design (primitive/transferred), training objectives, and adaptation techniques, covers UniST/UrbanDiT/ClimaX/Moirai/Chronos, arXiv 2025
 - [[source-st-foundation-models-survey]] — Spatio-Temporal Foundation Models: Vision, Challenges, and Opportunities, systematic vision for STFMs, 4 generalization capabilities (domain/spatial/temporal/scale), evaluates 6 models (UniST/ClimaX/Pangu etc.), multimodal training & causal reasoning opportunities, A*STAR 2025
+- [[source-fm-st-data-science]] — Foundation Models for ST Data Science: A Tutorial and Survey (KDD 2025), 首个覆盖 ST 数据科学全流程的 STFM 综述，LLM+PFM 二分 × 生命周期三阶段 × 能力三轴，覆盖 Pangu-Weather/ClimaX/UniST/OpenCity/TrajFM 等 15+ 模型
 - [[source-ustd]] — USTD: Unified Spatio-Temporal Diffusion for probabilistic forecasting and kriging (SIGSPATIAL 2024)
 - [[source-factost]] — FactoST: factorized ST foundation model, universal temporal pretraining + lightweight spatial adaptation (NeurIPS 2025 / arXiv 2026)
 - [[source-urbanfm]] — UrbanFM: Scaling Urban Spatio-Temporal Foundation Models, WorldST+MiniST+minimalist Transformer (arXiv 2026)
