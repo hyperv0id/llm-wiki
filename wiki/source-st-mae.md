@@ -18,40 +18,38 @@ status: active
 # STMAE: Revealing the Power of Masked Autoencoders in Traffic Forecasting
 
 **作者**：Jiarui Sun, Yujie Fan, Chin-Chia Michael Yeh, Wei Zhang, Girish Chowdhary（UIUC + Visa Research）
-**发表**：CIKM 2024（DOI 10.1145/3627673.3679989），arXiv:2309.15169
+**发表**：CIKM 2024（DOI 10.1145/3627673.3679989），arXiv:2309.15169v2
 **代码**：github.com/jsun57/STMAE；本地全文：`downloads/st-mae.txt`
 
-## 核心论点
+## 问题与核心论点
 
-交通数据集只覆盖数月、单一城市，时空模型易 overfitting 且对传感器缺失不稳定。论文提出 STMAE——即插即用的生成式 SSL 框架：继承 [[source-mae|原始 MAE]]（CVPR 2022）"掩码-重建"原则并迁移到时空交通数据，复用现有 backbone（DCRNN/AGCRN/MTGNN）的 encoder 与 predictor，无需数据增强[^src-st-mae]。
+交通基准数据仅覆盖数月、限于特定地点，时空模型易 overfitting、对数据缺失不稳。论文提出 STMAE——即插即用的生成式 SSL 框架：继承 MAE（CVPR 2022）的"掩码-重建"原则并迁移到时空交通数据，复用现有 backbone（DCRNN/AGCRN/MTGNN）的 encoder 与 predictor，无需 STGCL 那类手工数据增强。
 
-## 方法机制：双掩码策略
+## 方法机制：双掩码
 
-预训练阶段对图 $G$ 和数据 $X$ 施加双掩码（dual-masking）[^src-st-mae]：
-- **Spatial masking（biased random walk-based）**：掩码单元是路径——biased random walker（融合 BFS/DFS，超参 $p,q$）从根节点集生成路径，按比例选出待掩边集 $E_{mask}$ 并在邻接矩阵置零，迫使 encoder 推断被隐藏的图结构。
-- **Temporal masking（patch-based）**：交通数据信息密度低，稀疏单点掩码易被插值恢复；故将 $X$ 分成 $P$ 个长 $L$ 的不重叠 patch，按 Bernoulli($p_t$) 掩码，被掩 patch 换为共享可学习 mask token。
-- 两个轻量 decoder 分别重建数据 $\hat{X}$ 与结构 $\hat{A}$；损失 $L_{pretrain} = \lambda L_A + L_X$：$L_A$ 为被掩边交叉熵，$L_X$ 为被掩 patch 的 MAE 回归，仅在被掩部分计算。
-- 微调时丢弃两个 decoder，encoder 接回原 backbone predictor，用完整数据优化 $L_{pred}$；encoder 层数 $L\in\{2,3\}$，$\lambda\in\{0.5,1,2,4\}$，掩码比例 20%–80% 网格搜索。
+- **Spatial masking**：掩码单元是路径而非单条边：biased random walk（受 node2vec 启发，融合 BFS/DFS，超参 $p,q$ 控制动态）生成路径，按掩码率 $p_s$ 选出 $|E|\cdot p_s$ 条待掩边并置零邻接矩阵。
+- **Temporal masking**：交通数据信息密度低，稀疏单点掩码易被插值恢复；故将 $X$ 分成 $P$ 个长 $L$ 的不重叠 patch，按 Bernoulli($p_t$) 掩码，被掩 patch 换为共享可学习 mask token。
+- 两个轻量 decoder 分别重建数据（线性层）与结构（线性+Sigmoid）；损失 $L_{pretrain}=\lambda L_A+L_X$，仅在被掩部分计算。微调丢弃 decoder，encoder 接回 backbone predictor，用完整数据优化 $L_{pred}$。
+- 超参网格搜索：patch 长度 $L\in\{2,3\}$、$p,q,\lambda\in\{0.5,1,2,4\}$、掩码率 20%–80%。encoder/predictor 直接取自 backbone，不调深度；预训练 100 epochs + 微调 100 epochs。
 
 ## 实验证据
 
-PEMS03/04/07/08（时间序 6:2:2，12 步预测 12 步），指标 MAE/MAPE/RMSE，对照对比式 SSL 的 STGCL（[[source-stgcl]]）[^src-st-mae]：
-- AGCRN backbone：PEMS04 MAE 19.39→19.05（STGCL 仅 19.27）；PEMS08 15.65→15.01，MAPE 10.33→9.79；PEMS03 15.47→15.09；PEMS07 20.64→20.13。
-- MTGNN backbone：PEMS03 MAE 14.94→14.84，MAPE 16.02→14.15，RMSE 25.29→24.95；PEMS04 19.02→18.87；PEMS08 15.44→15.03，MAPE 10.35→9.82。
-- DCRNN backbone：PEMS04 21.48→21.20；PEMS08 16.63→16.36。
-- 消融（PEMS04，AGCRN）：去时间掩码 19.27、去空间掩码 19.27、均匀时空掩码 19.11、完整双掩码 19.05——联合双掩码最优。
-- 掩码比例敏感性：时间掩码 20%–30% 在四个数据集最优；空间掩码在 PEMS08 最优 70%，其余 20%–30%（路网结构更致密）。
+PEMS03/04/07/08（6:2:2，12 步预测 12 步），对照对比式 SSL 的 STGCL（[[source-stgcl]]），MAE/MAPE/RMSE（Table 1）：
+- AGCRN：PEMS04 MAE 19.39→19.23（STGCL_A）→19.05（STMAE_A）；PEMS03/07/08 MAE 15.47→15.09 / 20.64→20.13 / 15.65→15.01。
+- MTGNN：PEMS03 MAE 14.94→14.84、MAPE 16.02→14.15；PEMS08 MAE 15.44→15.03。
+- DCRNN：PEMS08 MAE 16.63→16.36；PEMS04 MAE 21.48→21.20。
+- **正文与表格冲突**：正文断言 STMAE "always outperforms STGCL"，但 Table 1 DCRNN 块 PEMS03 MAE 15.76（base）/15.64（STGCL_D）/15.74（STMAE_D）——该场景 STGCL 更优。
+- Table 2 消融（STMAE_A，PEMS04/PEMS08，消融表非基线对照）：Base 19.39/15.65，去时间掩码 19.27/15.41，去空间掩码 19.27/15.26，均匀时空掩码 19.11/15.09，完整双掩码 19.05/15.01——联合双掩码最优。
+- 掩码率敏感性（AGCRN，仅 PEMS04/08）：时间掩码两数据集均最优 30%；空间掩码 PEMS08 最优 70%、PEMS04 最优 30%，归因于 PEMS08 路网更致密（0.01 vs 0.004）；过高过低均变差。
 
-## 局限性
+## 范围与局限
 
-- 仅在 PEMS 四个基准、三个 backbone 上验证，未覆盖跨城市泛化[^src-st-mae]。
-- 预训练+微调共 200 epochs，训练开销高于直接训练 backbone[^src-st-mae]。
+实验仅覆盖 PEMS 四基准、三个 backbone（页面评述）。预训练+微调共 200 epochs 为论文设置；原文未讨论相对直接训练的额外开销。
 
 ## 与相关页面
 
-- [[source-mae]]：STMAE 继承其 encoder-decoder 掩码重建范式，把 mask token 从图像 patch 迁移到时间 patch。
-- [[source-2312-00516-std-mae]]（IJCAI 2024）：**不同论文**。STD-MAE 是独立模型（两个解耦的 S-MAE/T-MAE Transformer 沿空间/时间预训练）；STMAE 是包裹任意 backbone 的框架，空间掩码用 biased random walk 作用于邻接矩阵。
-- [[source-stgcl]]：对比式 SSL 基线，STMAE 在所有场景 MAE 均优于 STGCL 且无需手工数据增强。
-- STEP（Jiang et al., 2023）：同用掩码自编码，但依赖专用 Transformer 编码长期时序；STMAE 对任意 backbone 通用。
+- [[source-mae]]：STMAE 继承其掩码重建范式，把 mask token 从图像 patch 迁移到时间 patch（页面评述）。
+- [[source-2312-00516-std-mae]]（IJCAI 2024）：**不同论文**。STD-MAE 是独立模型（S-MAE/T-MAE 双 Transformer 分别沿空间/时间预训练）；STMAE 是包裹任意 backbone 的框架（页面评述）。
+- STEP（Shao et al., KDD 2022）：同用掩码机制，但依赖专用 Transformer 编码长期时序；STMAE 定位为对任意 backbone 通用的 enhancer（论文 Related Work 转述）。
 
 [^src-st-mae]: [[source-st-mae]]
