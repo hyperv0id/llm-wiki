@@ -6,8 +6,8 @@ tags:
   - self-supervised
   - multimodal-alignment
 created: 2026-05-03
-last_updated: 2026-08-29
-source_count: 8
+last_updated: 2026-09-15
+source_count: 9
 confidence: medium
 status: active
 ---
@@ -40,6 +40,10 @@ $$\mathcal{L} = -\log \frac{\exp(\text{sim}(z_i, z_j^+) / \tau)}{\sum_k \exp(\te
 
 [[trace|TRACE]]（NeurIPS 2025）在跨模态对齐中提出 [[dual-level-hard-negative-mining|双级硬负采样]]——在 sample-level（[CLS] 嵌入 vs 样本文本）和 channel-level（[[channel-identity-token|CIT]] 嵌入 vs 通道文本）两个粒度上动态挖掘硬负样本。channel-level 引入 intra-instance（同实例其他通道）和 inter-instance（跨实例同通道）两类 distractor，使模型区分"看起来相似但语义不同"的通道模式[^src-trace-neurips2025]。这与传统 CLIP 式仅做 sample-level 随机负采样不同，因为文本常引用具体变量（如温度峰值、风速），单全局嵌入无法精确对齐[^src-trace-neurips2025]。
 
+## In Spatio-Temporal Graph Forecasting
+
+在时空图（STG）连续数值回归里，对比学习不能照搬预训练套路。[[stgcl|STGCL]]（SIGSPATIAL 2022）的对照实验显示：两阶段对比预训练会把 PEMS-04 上 GWN 的 MAE 从 19.33 拉到 20.22/20.67，因为优化 uniformity 利于分类而非回归；改成端到端联合学习、把对比放在图级当正则项，四个骨干一致改善，再用 time-of-day 差值阈值 $r_f$（30~60 分钟最佳）剔掉时间邻近的假硬负样本[^src-stgcl]。
+
 ## Applications
 
 - [[fine-grained-time-text-semantic-alignment]] — MindTS's patch-level time-text contrastive alignment
@@ -50,6 +54,7 @@ $$\mathcal{L} = -\log \frac{\exp(\text{sim}(z_i, z_j^+) / \tau)}{\sum_k \exp(\te
 - [[ts-vl-alignment]] — limits of post-hoc contrastive alignment across time series, vision, and language
 - [[cross-modal-misalignment]] — selection/perturbation bias; what MMCL retains under misaligned pairs
 - [[trace]] — TRACE dual-level hard negative mining for cross-modal TS-text retrieval
+- [[stgcl]] — STGCL 时空图对比学习系统实证基准（联合学习与时空负样本过滤）
 
 ## Related
 
@@ -67,4 +72,5 @@ $$\mathcal{L} = -\log \frac{\exp(\text{sim}(z_i, z_j^+) / \tau)}{\sum_k \exp(\te
 [^src-ts-vl-alignment]: [[source-ts-vl-alignment]]
 [^src-cross-modal-misalignment]: [[source-cross-modal-misalignment]]
 [^src-trace-neurips2025]: [[source-trace-neurips2025]]
+[^src-stgcl]: [[source-stgcl]]
 [^src-mtsci]: [[source-mtsci]]

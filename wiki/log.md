@@ -3735,3 +3735,23 @@ ingest 报告：ingest-reports/2026-09-09-tg-msfm.md
 ingest 报告：[[ingest-reports/2026-09-13-trace-as-state|创建、修改、交叉链接与验证 WHY 报告]]。
 
 [^src-trace-as-state]: [[source-trace-as-state]]
+
+## [2026-09-15] ingest | When Do Contrastive Learning Signals Help Spatio-Temporal Graph Forecasting? (STGCL, SIGSPATIAL 2022 / arXiv:2108.11873v2)
+
+源文件：arXiv HTML 与 PDF（v2，2022-11-03 定稿），落盘 `downloads/stgcl.pdf`（SHA256 `5f6a27a9…b85cf`）与 `downloads/stgcl.txt`（SHA256 `84f51b70…daa5`）。作者 Xu Liu、Yuxuan Liang、Chao Huang、Yu Zheng、Bryan Hooi、Roger Zimmermann；发表信息为 The 30th ACM SIGSPATIAL 2022（DOI 10.1145/3557915.3560939），代码 https://github.com/liuxu77/STGCL。
+
+方法主线：论文针对交通传感器时空图样本量有限（PEMS-04/08 各约 1.7 万个时空切片）造成的过拟合，围绕四个问题做对照实验。Q1 训练范式：预训练-对比-微调在 PEMS-04 上令 GWN 的 MAE 从 19.33 变差到 20.22（node）/20.67（graph），AGCRN 同样全面变差；端到端联合学习（预测损失加 lambda 倍对比损失，原始输入兼作第一视图）在全部模型与数据集上改善。Q2 对比层级：节点级完整时空对比为 O(M^2 N^2)，按空间/时间维度因子化后降至 O(M^2 + N^2)；联合学习下图级对比优于节点级（t 检验显著比例 54% 对 83%）。Q3 增强：边掩码、输入掩码、时域平移插值与频域 DCT 平滑，四者调优后最优值差距很小，论文据此写「对增强语义不敏感」，其中输入掩码对扰动幅度最敏感，1% 掩码率被推荐为默认。Q4 负样本过滤：无类别标签，改用输入自带的 time-of-day 差阈值 r_f 剔除假硬负样本，30~60 分钟最佳，120 分钟因剔除过多负样本反而变差。
+
+口径与边界：论文自称"首个系统化探索"，此为作者归属表述；"不敏感"结论严格限于本文提出的四种增强在 PEMS-04 与 PEMS-08 上的调参结果（BAY 只参与 Table 5 的骨干对比）。本文是 2021–2022 年的早期实证基准，不含掩码建模、时空大模型或多模态自监督；论文自身在 4.5 节把掩码建模、自适应增强与动态硬负样本加权列为未来方向。
+
+创建的页面（2）：[[stgcl]], [[source-stgcl]]。
+
+更新的页面：[[contrastive-learning]]（新增时空图预测小节 + Applications 条目，source_count 8→9）、[[traffic-forecasting]]（新增 Contrastive Auxiliary Regularization 小节，source_count 55→56）、[[index]]、[[log]]。
+
+矛盾检查：未发现需要替换既有来源的直接冲突。与 [[st-ssdl]] 的关系记为不同问题维度（ST-SSDL 建模偏差与原型离散化，STGCL 用对比信号作编码器正则），不写成互相否定。
+
+交付证据：Table 2 的 20 个 MAE（两数据集 × 十种配置）、Table 3 的 horizon 表（4 个骨干 × 两对比层级 × 15/30/60 分钟 × 两数据集）、Table 6 的 48 个超参取值（8 个配置 × 3 个数据集的 lambda 与 r_f）均自 `downloads/stgcl.txt` 抽取核对；首页摘要、四个问题与四条回答（A1–A4）逐条对照原文，Figure 9/10 的调参趋势表述按正文文字记录。未做独立复现，也未复现其 PEMS 训练。
+
+ingest 报告：[[ingest-reports/2026-09-15-stgcl|创建、修改、交叉链接与验证 WHY 报告]]。
+
+[^src-stgcl]: [[source-stgcl]]

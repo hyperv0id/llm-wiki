@@ -22,6 +22,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-climatear]] — ClimateAR: 首个 VAR 自回归概率气候预测模型，对齐 VQ 分词器 + 混合尺度条件控制，ERA5 ACC 提升 37.56%，ICML 2026
 - [[source-cast]] — CaST: Causal Spatio-Temporal Neural Network for STG Forecasting, SCM + back-door adjustment (temporal OoD) + front-door adjustment with Hodge-Laplacian (dynamic spatial causation), NeurIPS 2023
 - [[source-causalx]] — CausalX: causally-interpretable plug-and-play multi-modal ST forecasting, multi-source causal constraints (Granger/do-calculus/TDMI/VAE) + diffusion graph refinement, ICML 2026
+- [[source-stgcl]] — When Do Contrastive Learning Signals Help STG Forecasting? (Liu et al., SIGSPATIAL 2022 / arXiv:2108.11873v2, PDF 内核实)：Q1–Q4 四问、PEMS-04/08/BAY 三基准、四骨干模型插拔验证与预训练-微调掉点的负结果
 - [[source-gpt4mts]] — DP-GPT4MTS: Dual-Prompt LLM 多模态时序预测框架，explicit prompt（任务指令）+ textual prompt（BERT 文本上下文嵌入）+ frozen GPT-2 骨干，GDELT/Time-MMD SOTA，arXiv 2025
 - [[source-benamou-brenier-blog]] — Benamou-Brenier 算法（博客笔记），最优传输的动态公式化与增广拉格朗日求解
 - [[source-beyond-imitation-mobility]] — Beyond Imitation: Generating Human Mobility from Context-aware Reasoning with LLMs (MobiGeaR)
@@ -1482,3 +1483,6 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[trace-as-state-evidence]] — 全部主结果、对照消融、24 格配对区间、轨迹数与难度分箱；区分均值优势、统计支持与机制解释
 - [[trace-as-state-positioning]] — Trace as State 与 Re2、CoRe、State over Tokens、ReContext 的原始论文对照；避免跨设置排名
 - [[trace-as-state-reproduction]] — 模型版本、完整已公开提示、评分、36 行 token 统计、增量成本核算与公开材料缺口
+
+## Techniques (continued)
+- [[stgcl]] — STGCL：时空图对比学习系统实证框架，联合学习 + 图级对比 + 时空多域增强 + 时域负样本过滤（SIGSPATIAL 2022）

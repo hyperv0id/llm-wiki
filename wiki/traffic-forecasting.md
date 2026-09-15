@@ -6,8 +6,8 @@ tags:
   - spatial-temporal
   - intelligent-transportation
 created: 2026-04-27
-last_updated: 2026-09-02
-source_count: 55
+last_updated: 2026-09-15
+source_count: 56
 confidence: high
 status: active
 ---
@@ -52,6 +52,10 @@ Extending beyond accidents, [[igstgnn|IGSTGNN]] (KDD 2026) explicitly models the
 
 ### Self-Supervised Deviation Learning
 [[st-ssdl|ST-SSDL]] (NeurIPS 2025) introduces self-supervised deviation learning to explicitly model dynamic deviations between current observations and historical patterns. Using weekly historical anchors + learnable prototypes + contrastive/deviation losses on a GCRU backbone, it achieves SOTA on 6 benchmarks (METRLA, PEMSBAY, PEMSD7(M), PEMS04/07/08) with only 100K params on PEMS08[^src-st-ssdl]. Its [[ssdl|SSDL]] method quantifies continuous deviation without external labels, complementing the binary-threshold anomaly detection paradigm.
+
+### Contrastive Auxiliary Regularization
+[[stgcl|STGCL]]（SIGSPATIAL 2022）把对比损失当作辅助正则项与预测任务联合训练，不动网络结构、推理零开销。PEMS-04 上两阶段「对比预训练 + 微调」反而劣于基线（GWN 的 MAE 由 19.33 变成 20.22/20.67），因为对比学习优化的 uniformity 利于分类而非连续回归；端到端联合学习并把对比放在图级，则在 GWN、MTGNN、DCRNN 与 AGCRN 上一致改善，并用 time-of-day 阈值剔除时间邻近的假硬负样本[^src-stgcl]。
+
 ### Large-Scale Long-Horizon
 FaST (KDD 2026) addresses computational bottlenecks in large-scale graphs (8,600+ nodes) with long-horizon predictions (672 steps = 1 week) using [[adaptive-graph-agent-attention|AGA-Att]] for O(N·a) spatial complexity and [[mixture-of-experts|Dense MoE]] for efficient feature extraction. Achieves 4.4%-18.4% MAE improvement over SOTA with 1.3x-2.2x faster inference[^src-fast-long-horizon-forecasting].
 
@@ -304,6 +308,7 @@ The XTraffic benchmark provides incident-aligned traffic datasets for California
 [^src-graphsparsenet]: [[source-graphsparsenet]]
 [^src-bigst]: [[source-bigst]]
 [^src-lightweight-mixed-graph-unrolling]: [[source-lightweight-mixed-graph-unrolling]]
+[^src-stgcl]: [[source-stgcl]]
 [^src-minitraffic]: [[source-minitraffic]]
 [^src-pn-train]: [[source-pn-train]]
 [^src-st-ssdl]: [[source-st-ssdl]]
