@@ -1,0 +1,2329 @@
+arXiv:2412.09972v2 [cs.LG] 31 Dec 2024
+
+Efficient Large-Scale Traffic Forecasting with Transformers: A
+Spatial Data Management Perspective
+Yuchen Fang
+
+Yuxuan Liang
+
+Bo Hui
+
+University of Electronic Science and
+Technology of China
+fangyuchen@std.uestc.edu.cn
+
+The Hong Kong University of Science
+and Technology (Guangzhou)
+yuxliang@outlook.com
+
+Auburn University
+bzh0055@auburn.edu
+
+Zezhi Shao
+
+Liwei Deng
+
+Xu Liu
+
+Institute of Computing Technology,
+Chinese Academy of Sciences
+shaozezhi@ict.ac.cn
+
+University of Electronic Science and
+Technology of China
+deng_liwei@std.uestc.edu.cn
+
+National University of Singapore
+liuxu@comp.nus.edu.sg
+
+Xinke Jiang
+
+Kai Zheng∗
+
+Peking University
+thinkerjiang@foxmail.com
+
+University of Electronic Science and
+Technology of China
+zhengkai@uestc.edu.cn
+
+ABSTRACT
+
+CCS CONCEPTS
+
+Road traffic forecasting is crucial in real-world intelligent transportation scenarios like traffic dispatching and path planning in
+city management and personal traveling. Spatio-temporal graph
+neural networks (STGNNs) stand out as the mainstream solution in
+this task. Nevertheless, the quadratic complexity of remarkable dynamic spatial modeling-based STGNNs has become the bottleneck
+over large-scale traffic data. From the spatial data management
+perspective, we present a novel Transformer framework called
+PatchSTG to efficiently and dynamically model spatial dependencies for large-scale traffic forecasting with interpretability and fidelity. Specifically, we design a novel irregular spatial patching
+to reduce the number of points involved in the dynamic calculation of Transformer. The irregular spatial patching first utilizes the
+leaf K-dimensional tree (KDTree) to recursively partition irregularly distributed traffic points into leaf nodes with a small capacity,
+and then merges leaf nodes belonging to the same subtree into
+occupancy-equaled and non-overlapped patches through padding
+and backtracking. Based on the patched data, depth and breadth
+attention are used interchangeably in the encoder to dynamically
+learn local and global spatial knowledge from points in a patch
+and points with the same index of patches. Experimental results
+on four real world large-scale traffic datasets show that our PatchSTG achieves train speed and memory utilization improvements
+up to 10× and 4× with the state-of-the-art performance.
+
+• Computing methodologies → Neural networks; • Information systems → Spatial-temporal systems.
+
+∗ Corresponding author: Kai Zheng. He is with Yangtze Delta Region Institute (Quzhou),
+
+and School of Computer Science and Engineering, University of Electronic Science and
+Technology of China. The code is available at: https://github.com/LMissher/PatchSTG
+Permission to make digital or hard copies of all or part of this work for personal or
+classroom use is granted without fee provided that copies are not made or distributed
+for profit or commercial advantage and that copies bear this notice and the full citation
+on the first page. Copyrights for components of this work owned by others than the
+author(s) must be honored. Abstracting with credit is permitted. To copy otherwise, or
+republish, to post on servers or to redistribute to lists, requires prior specific permission
+and/or a fee. Request permissions from permissions@acm.org.
+KDD ’25, August 3–7, 2025, Toronto, ON, Canada
+© 2025 Copyright held by the owner/author(s). Publication rights licensed to ACM.
+ACM ISBN 978-1-4503-XXXX-X/18/06. . . $15.00
+https://doi.org/10.1145/xxxxxx.xxxx
+
+KEYWORDS
+traffic forecasting, Transformer, spatial data management
+ACM Reference Format:
+Yuchen Fang, Yuxuan Liang, Bo Hui, Zezhi Shao, Liwei Deng, Xu Liu, Xinke
+Jiang, and Kai Zheng. 2025. Efficient Large-Scale Traffic Forecasting with
+Transformers: A Spatial Data Management Perspective . In Proceedings of
+the 31st ACM SIGKDD Conference on Knowledge Discovery and Data Mining
+V.1 (KDD ’25), August 3–7, 2025, Toronto, ON, Canada. ACM, New York, NY,
+USA, 11 pages. https://doi.org/10.1145/xxxxxx.xxxx
+
+1
+
+INTRODUCTION
+
+Road traffic data comprises multiple traffic time series collected
+from points where road sensors are deployed. Thus traffic time
+series are correlated in not only the temporal aspect but also spatial
+domain. Forecasting future road traffic through past data plays an
+essential role in many real world intelligent transportation applications. For instance, users on Map platforms can select the least time
+path in advance according to the predicted traffic [7, 33, 40, 41].
+Likewise, on city management platforms [6], users can control the
+signal light to avoid congestion based on future traffic [10, 29, 53].
+To accurately forecast future road traffic, countless algorithms
+have been proposed in past decades, ranging from statistical models [2] to data-driven methods [27]. In the beginning, temporal
+modeling methods like the recurrent neural network (RNN) and
+autoregressive integrated moving average (ARIMA) are used to
+learn the temporal evolution of the single traffic time series in
+traffic data [28, 46], yet ignore the spatial transmission between
+multiple traffic time series. Subsequently, spatio-temporal graph
+neural networks [26, 45, 55] are at the forefront of collaboratively
+capturing spatio-temporal dependencies.
+However, the spatial correlation of traffic points is evolved over
+time and the fixed static graph in conventional spatio-temporal
+
+KDD ’25, August 3–7, 2025, Toronto, ON, Canada
+
+Fang et al.
+
+Query Point
+
+…
+
+Depth
+
+…
+
+Breadth
+
+Concat
+Query
+…
+
+(a) Partition
+
+(b) Patching
+
+Keys
+…
+
+(c) Attention
+
+Figure 1: Sketch of our PatchSTG. We first partition the
+equilibrium number of points into small regions. Then we
+merge small regions into patches after padding points into
+regions where the maximum number of points has not been
+reached. Finally, we perform the depth and breadth attention
+on points in the same patch and points in other patches with
+the same index to capture local and global spatial knowledge.
+
+graph neural networks can not reflect various correlations in different time stages. Therefore, dynamic spatial modeling technology
+has been focused as the mainstream research line in traffic forecasting [17], which aims to reveal spatial correlations of each time
+slice respectively and dynamically propagate spatial information.
+Considering the quadratic complexity in most dynamic spatial modeling methods, traffic forecasting is only performed at zone scale,
+which is opposite to the realistic traffic forecasting needs in a city
+with thousands of traffic points [43].
+As shown in Table 1, three widely used dynamic spatial modeling paradigms (dot-product, linear, and low-rank) are illustrated
+in the attention form, i.e., using query and key to dynamically
+calculate spatial correlations first and then propagating spatial
+information to the original value according to computed spatial correlations. Spatial correlations in dot-product-based methods such as
+D2STGNN [51] and STAEformer [39] should be calculated on each
+pair of points thus leading to unacceptable quadratic complexity
+in large-scale traffic forecasting. Despite linear-based BigST [20]
+and low-rank-based Airformer [37] being proposed to mitigate
+the high computation needs of dynamic spatial modeling in largescale spatio-temporal forecasting, they still have some limitations.
+The drawback of linear-based [13, 20] is the lack of interpretability because spatial correlations can not be explicitly shown. For
+low-rank-based [12, 36], the blemish is a lack of fidelity, i.e., crucial information cannot be guaranteed to remain in the reduced
+low-rank representations and thus results in a performance drop.
+This work aims to reduce the computation needs of dynamic
+spatial modeling with high interpretability and without information loss in large-scale traffic forecasting by proposing an efficient
+Transformer framework called PatchSTG. The sketch of PatchSTG is
+illustrated in Figure 1 and the core goal of PatchSTG is to reduce the
+number of points involved in dynamic calculations like vision Transformers [44]. However, traffic points are irregularly distributed on
+roads, and thus simply splitting the same number of points into
+patches with equal size to reduce complexity in regular spatial databased vision tasks is unsatisfactory in traffic forecasting. Inspired
+
+Table 1: Four dynamic spatial modeling paradigms in traffic
+forecasting including previous dot-product, linear, low-rank,
+and our proposed patching. 𝑁 , 𝑅, and 𝑑 denote the number of
+traffic points, the number of points after cluster or sampling,
+and the number of model dimensions. In general, 𝑅 ≪ 𝑁
+𝐾, and 𝑉¯ are query, key, value, reduced
+and 𝑑 ≪ 𝑁 . 𝑄, 𝐾, 𝑉 , ¯
+low-rank key, and reduced low-rank value in dynamic spatial
+modeling via attention form.
+Paradigm
+Complexity
+
+Dot-Product
+𝑂 (𝑁 2𝑑)
+
+Linear
+𝑂 (𝑁𝑑 2 )
+
+Low-Rank
+𝑂 (𝑁 𝑅𝑑)
+
+Patching
+𝑂 (𝑁 𝑅𝑑)
+
+Formulation
+
+(𝑄𝐾𝑇 )𝑉
+
+𝑄 (𝐾𝑇 𝑉 )
+
+(𝑄 𝐾¯𝑇 )𝑉¯ 𝑇
+
+✘
+
+✘
+
+✔
+
+✘
+
+✔
+
+✘
+
+✔
+
+✔
+
+✔
+
+✘
+
+✘
+
+✔
+
+𝑅
+
+|| (𝑄 (𝑖 ) 𝐾𝑇(𝑖 ) )𝑉 (𝑖 )
+1
+
+Information
+Loss
+Interpretability
+Domain
+Knowledge
+
+by the spatial data management algorithm KDTree (short for Kdimensional tree), we propose an irregular spatial patching method
+to split the same number of traffic points into patches with unequal
+size, which first uses the novel leaf KDTree to recursively partition
+all the traffic points into leaf nodes with the small capacity, and then
+merges leaf nodes belonging to the same subtree into occupancyequaled and non-overlapped patches through padding unfull leaf
+nodes and backtracking to the root node of subtrees. Finally, based
+on the patched data, PatchSTG first performs depth attention on
+points in a patch to learn local spatial knowledge and then conducts
+breadth attention on points in different patches but with the same
+index to efficiently aggregate multiple global knowledge. Notably,
+PatchSTG is interpretable and fidelity due to domain knowledge
+informed irregular spatial patching and non-compression dynamic
+spatial modeling.
+In summary, we have made the following contributions:
+• We present PatchSTG, a generic Transformer framework tailored
+for efficiently and effectively predicting large-scale traffic from
+the spatial data management perspective.
+• To the best of our knowledge, we are the first to bridge the gap
+between KDTree and patching technique to evenly partition
+irregularly distributed traffic points with interpretability.
+• PatchSTG performs the depth and breadth attention on points
+in a patch and points with the same index to efficiently learn
+dynamic local and global spatial knowledge with fidelity.
+• Comprehensive experimental results on large-scale traffic datasets
+demonstrate that our PatchSTG achieves state-of-the-art performance and enjoys 4× memory reduction and 10× training
+speedup compared to dynamic spatial modeling baselines.
+
+2 RELATED WORKS
+2.1 Traffic Forecasting
+Traffic forecasting has been a concern of research and industrial
+communities in past decades. Originally, the statistical-based vector
+autoregression (VAR) [2] and autoregressive integrated moving average (ARIMA) [28] are used to capture temporal dependencies. As
+
+Efficient Large-Scale Traffic Forecasting with Transformers: A Spatial Data Management Perspective
+
+deep learning is splendid in many tasks, recurrent neural networkbased methods [46] and temporal convolution network-based methods [16, 23] are proposed to improve traffic forecasting performance. To simultaneously extract spatio-temporal information,
+DCRNN [34] and STGCN [61] constructed a fixed adjacency matrix
+in graph neural networks [25, 62, 63] based on real-world distances
+to capture static spatial information for traffic forecasting. Subsequent techniques such as GWNET [59], AGCRN [1], MTGNN [58],
+METRO [4], STG-NCDE [3], and Localised AGCRN [9] have further improved forecasting accuracy through the data-driven fixed
+adjacency matrix. Nevertheless, most of them ignored the evolved
+spatial correlations of traffic. For calculating dynamic point-topoint spatial correlations, most approaches such as ASTGCN [17],
+GMAN [65], ST-GRAT [49], DMSTGCN [21], GMSDR [38], and
+etc. [24, 35, 39, 56, 64] applied the dot-product operation introduced by the attention mechanism on hidden representations with
+different periods. However, point-to-point dynamic models have
+brought the efficiency bottleneck into large-scale traffic forecasting.
+Despite efficient dynamic spatial modeling methods such as linearbased Lastjomer [13], BigST [20] and low-rank-based HIEST [47],
+SSTBAN [18] have been proposed to reduce the complexity, explicit
+spatial correlations are failed to report in linear-based methods and
+performance is restricted in low-rank-based methods compared
+with perceptron-based STID [50] and SimST [42] due to spatial
+reduction caused information loss. Therefore, we propose a novel
+efficient dynamic spatial modeling method PatchSTG, which is
+intepretable and fidelity.
+
+2.2
+
+3
+
+Forecasted
+Output Traffic
+
+Projection Decoder
+Neural
+Networks
+Dual Attention Encoder
+
+Data
+Management
+
+Irregular Spatial Patching
+
+Data
+Processing
+
+Spatio-Temporal Embedding
+
+Historical
+Input Traffic
+
+Figure 2: The workflow of our PatchSTG.
+the preceding 𝐻 time slices and the location of points.
+𝑌ˆ = 𝑓𝜃 (𝑋, 𝐿𝑎𝑡, 𝐿𝑛𝑔)
+
+Efficient Spatial Transformers
+
+The quadratic complexity of dot-product attention has become the
+bottleneck in applying Transformers to learn spatial knowledge,
+thus efficient spatial Transformers have been researched in recent
+years. For regular spatial data such as images and videos, the same
+number of neighbored pixels can be simply merged into the same
+size patches such as ViT [8] and SwinTransformer [44] to decrease
+complexity by reducing points in the calculation. Different from
+regular spatial data, GraphTrans-ViT [22] and PatchGT [15] can
+only derive the overlapped and unbalanced patches through clustering algorithms. Luckily, STRN [36], FPT [48] and OctFormer [54]
+segmented images into patches with different sizes based on the semantic and distribution, which gave us the inspiration to use spatial
+data management algorithms for patching time-ordered irregular
+spatial data into balanced and non-overlapped patches.
+
+PRELIMINARIES
+
+Traffic Data. Traffic data is made up of multiple correlated time
+series collected from points where road sensors are deployed. The
+recorded time series of the specific traffic point 𝑛 can be formulated
+as 𝑥𝑛 ∈ R𝐻 , which contains traffic volume within 𝐻 time slices.
+Therefore, traffic data that comprises time series on 𝑁 points can
+be formed as a matrix 𝑋 ∈ R𝐻 ×𝑁 , where 𝑥𝑛ℎ denotes the traffic flow
+of point 𝑛 at time ℎ.
+Traffic Forecasting. In the traffic forecasting task, the common
+setting involves predicting future traffic features through historical
+values. Specifically, the goal of our paper is to forecast the future
+traffic flow for the next 𝐹 time slices according to information from
+
+KDD ’25, August 3–7, 2025, Toronto, ON, Canada
+
+(1)
+
+where 𝑌ˆ ∈ R𝐹 ×𝑁 is the predicted traffic in the future, which will be
+used to compare with the ground truth 𝑌 ∈ R𝐹 ×𝑁 . 𝐿𝑎𝑡 ∈ R𝑁 and
+𝐿𝑛𝑔 ∈ R𝑁 denote the real-world latitude and longitude of points.
+Moreover, the function 𝑓𝜃 (·) indicates a data-driven forecasting
+model parameterized by 𝜃 .
+
+4
+
+METHODOLOGY
+
+In this section, we present our PatchSTG framework, an effective
+and efficient solution designed for large-scale traffic forecasting.
+Figure 2 illustrates the overview of PatchSTG, which comprises
+four primary components: a spatio-temporal embedding module to
+preprocess traffic data into high-dimensional embeddings, an irregular spatial patching to split the same number of traffic points into
+patches, a dual attention encoder for extracting spatial information,
+and a projection decoder for predicting future values. We offer a
+detailed description of each component in the following.
+
+4.1
+
+Spatio-Temporal Embedding
+
+Following previous works [30, 50], we adopt a fully-connected layer
+for each input traffic time series to transform their numerical traffic
+flow into high-dimensional embeddings. The detailed process of
+input traffic data 𝑋 ∈ R𝐻 ×𝑁 can be formulated as follows:
+𝐸 = 𝑊 (𝐼 ) 𝑋 + 𝑏 (𝐼 )
+
+(2)
+
+where 𝑊 (𝐼 ) ∈ R𝑑𝑒 ×𝐻 and 𝑏 (𝐼 ) ∈ R𝑑𝑒 are learnable parameters
+of fully-connected layer. 𝐸 ∈ R𝑁 ×𝑑𝑒 is the projected embedding
+that contains the temporal evolution of traffic. Moreover, we take
+
+KDD ’25, August 3–7, 2025, Toronto, ON, Canada
+
+Fang et al.
+
+LKDT new indices
+
+Padded new indices
+
+Patched new indices
+
+(a) KDTree
+
+(b) Leaf KDTree
+
+(c) New indices
+
+Figure 3: (a)-(b): left part draws the spatial partition using the original and leaf KDTree, and the right part is the corresponding
+tree. (c): KDT and LKDT are abbreviations of KDTree and leaf KDTree.
+temporal daily patterns, temporal weekly patterns, and spatial
+heterogeneous patterns into consideration to improve the distinguishability of points followed by previous methods [39, 50]. For
+temporal aspect, day-of-week and timeslice-of-day patterns can be
+stored in the data-driven dictionary 𝑊 ∈ R𝑁 𝑤 ×𝑑 𝑤 , 𝐷 ∈ R𝑁𝑑 ×𝑑𝑑 ,
+where 𝑁 𝑤 and 𝑁𝑑 indicate the number of days in a week and
+the number of timeslices in a day. Therefore, we can use the last
+timeslice of all points as the index to extract corresponding day-ofweek embedding 𝐸 (𝑤 ) ∈ R𝑁 ×𝑑 𝑤 and timeslice-of-day embedding
+𝐸 (𝑑 ) ∈ R𝑁 ×𝑑𝑑 from dictionaries. Similar to the temporal aspect,
+we utilize the learnable embedding 𝐸 (𝑠 ) ∈ R𝑁 ×𝑑𝑠 as identities to
+distinguish points in the dataset. Finally, we concatenate the above
+embeddings to derive the spatio-temporal embedding:
+𝑋˜ = 𝐸||𝐸 (𝑤 ) ||𝐸 (𝑑 ) ||𝐸 (𝑠 )
+
+(3)
+
+where 𝑋˜ ∈ R𝑁 ×𝑑 and 𝑑 = 𝑑𝑒 + 𝑑 𝑤 + 𝑑𝑑 + 𝑑𝑠 .
+
+4.2
+
+Irregular Spatial Patching
+
+Motivation. Spatial propagation is indispensable in improving traffic forecasting performance evaluated by some methods [39, 57] in
+addition to spatial distinguishability. This is because vehicles moving on the road will bring real-time traffic changes in the source and
+destination areas. However, the quadratic complexity of remarkable
+dynamic spatial modeling methods is unacceptable under current
+computation resources. Fortunately, we find that spatial information in vision Transformers [44, 54] can be efficiently propagated
+on the patched input by reducing the number of points involved
+in attention. The difference between traffic and vision data is that
+pixels are regularly located in images but traffic points are irregularly distributed on roads, i.e., the same number of pixels can be
+segmented into patches of the same size, but traffic points can not.
+Therefore, the main goal of our PatchSTG is to design a balanced
+and non-overlapped patching algorithm to reduce computation
+requirements of performing attention on irregular spatial data.
+Leaf KDTree. As irregular spatial data management is essential for
+database, geoscience, etc., numerous spatial partitioning algorithms
+such as KDTree [52] and RTree [19] have been proposed. Considering the balance, non-overlapping, and efficiency requirements of
+partition, we take the simple yet effective KDTree into account to
+find a solution for evenly dividing irregular traffic data. As shown
+in Figure 3a, KDTree is a binary spatial tree that uses each internal
+node as a partitioning hyperplane to split points contained in the
+node between its two children excluding the hyperplane and is
+built by recursing on each child node after partitioning, until leaf
+
+nodes are reached. Besides, the splitting hyperplane is determined
+by alternately chosen coordinate axes and the median point of the
+selected axis. In this paper, locations of latitude and longitude of
+traffic data are considered as axes to construct the tree. Unfortunately, as illustrated in Figure 3a, we find that hyperplane points
+in internal nodes of the conventional KDTree are not divided into
+leaf nodes and may result in irrelevant points being adjacent in
+the searching order. Therefore, we design a novel leaf KDTree as
+drawn in Figure 3b to enforce all points stored in leaf nodes, which
+utilizes the median value as the partitioning hyperplane for internal
+nodes with an even number of points, and the value between the
+median point and its left point as the partitioning hyperplane for
+internal nodes with an odd number of points. Moreover, from the
+illustration of our leaf KDTree in Figure 3b, we can observe that
+leaf nodes belonging to the same subtree maintain stronger spatial
+correlations based on their real-world closer distance, which provides the explainable backtracking for subsequent patching. After
+constructing leaf KDTree, we conduct the breath first searching on
+the tree to derive new indices of traffic points according to their
+searching order, which ensures that leaf nodes belonging to the
+same subtree are adjacent in the latest index. The entire process
+based on the latitude 𝐿𝑎𝑡 ∈ R𝑁 , longitude 𝐿𝑛𝑔 ∈ R𝑁 , and the
+capacity 𝐶 of leaf nodes (leaf nodes in KDTree contain at most 𝐶
+points for a predetermined constant and 𝐶 = 2 in Figure 3) can be
+formulated as follows:
+˜ = 𝐵𝐹𝑆 (𝐿𝐾𝐷𝑇 (𝐿𝑎𝑡, 𝐿𝑛𝑔, 𝐶))
+𝑖𝑑𝑥
+(4)
+˜ ∈ R𝑁 . 𝐿𝐾𝐷𝑇 (·) and 𝐵𝐹𝑆 (·) denote the leaf KDTree
+where 𝑖𝑑𝑥
+construction and breath first search operation.
+Padding. Despite leaf KDTree can provide an equilibrium partition,
+the number of traffic points 𝑁 is not necessarily divisible by the
+capacity 𝐶, which leads to unfull leaf nodes as shown in Figure 3c.
+The inconsistent number destroys the application of patch-based
+efficient methods. Padding zeros or irrelevant points can mitigate
+the non-divisible issue yet decrease prediction performance. To
+make leaf nodes have equaled occupancy and non-self-repeating,
+we pad the points that are most similar to the unfull leaf nodes
+from other leaf nodes to reach the maximum capacity, which can
+confirm the non-overlap patches by the similar time series:
+¯ = 𝑄𝑢𝑒𝑟𝑦 (𝐿𝐾𝐷𝑇 (𝐿𝑎𝑡, 𝐿𝑛𝑔, 𝐶), 𝐶𝑜𝑠𝑆𝑖𝑚(𝑋, 𝑋 𝑇 ))
+𝑖𝑑𝑥, 𝑖𝑑𝑥
+
+(5)
+
+where 𝑄𝑢𝑒𝑟𝑦 (·) denotes querying most similar points of each un¯
+full leaf node through the Cosine similarity 𝐶𝑜𝑠𝑆𝑖𝑚(·). 𝑖𝑑𝑥 and 𝑖𝑑𝑥
+indicate locations should be padded in the new index and the corresponding original indices of queried points. Therefore, the padding
+
+Efficient Large-Scale Traffic Forecasting with Transformers: A Spatial Data Management Perspective
+Depth Attention
+
+process can be formulated as follows:
+𝑋¯ = 𝑃𝑎𝑑 (𝑖𝑑𝑥, ¯
+𝑖𝑑𝑥, 𝑋˜𝑖𝑑𝑥
+˜ )
+
+KDD ’25, August 3–7, 2025, Toronto, ON, Canada
+
+…
+
+(6)
+
+where 𝑃𝑎𝑑 (·) denotes padding queried neighbors into corresponding locations of new indices. Therefore, padded embedding 𝑋¯ ∈
+R𝑀 ×𝑑 have 𝑀 points and 𝑀 = 𝐶 × 2 ⌊𝑙𝑜𝑔 (𝑁 ) ⌋ −𝑙𝑜𝑔 (𝐶 ) ≥ 𝑁 .
+Patching. Despite padded leaf nodes have the same number of
+points, directly using leaf nodes with a large capacity as patches
+will result in an unbalanced padding issue, i.e., unfull leaf nodes
+may be padded by points similar to the same point. Recognizing
+that leaf nodes under the same subtree are strongly correlated and
+adjacent in new indices, we can first partition points into leaf nodes
+with a small capacity and then backtrack the tree from leaf nodes to
+root nodes of subtrees until meet the requirements that the number
+of the subtree is equal to the number of the pre-defined patch,
+which mitigates the unbalanced padding issue because unfull leaf
+nodes are mostly padded by points similar with different points.
+Concretely, let 𝑃 = 𝐶 × 𝑁𝑝 indicate the number of points in a
+patch and 𝑅 denotes the number of patches, where 𝑁𝑝 is a hyperparameter that determines how many leaf nodes in a subtree and
+𝑀 = 𝑅 × 𝑃. Notably, 𝑁𝑝 can only be a power of 2 because only leaf
+nodes that belong to the same subtree have strong spatial locality
+and our leaf KDTree is a binary tree.
+After our balanced and non-overlapped spatial patching, the
+padded embedding 𝑋¯ is transformed into a new representation
+X ∈ R𝑅×𝑃 ×𝑑 as the input of the following neural networks.
+
+Breadth Attention
+…
+
+…
+
+Concat
+
+Concat
+
+ScaledDot-Product
+Dot-ProductAttention
+Attention
+Scaled
+Dot-Product
+Attention
+Scaled
+
+ScaledDot-Product
+Dot-ProductAttention
+Attention
+Scaled
+Dot-Product
+Attention
+Scaled
+
+Linear
+Linear
+Linear
+
+Linear
+Linear
+Linear
+
+Linear
+Linear
+Linear
+
+Linear
+Linear
+Linear
+
+Linear
+Linear
+Linear
+
+…
+…
+…
+…
+
+…
+
+Linear
+Linear
+Linear
+
+…
+…
+…
+
+…
+
+…
+
+Figure 4: Structure of depth and breadth attention.
+(𝑙 )
+
+(𝑙 )
+
+(𝑙 )
+
+𝑑
+
+layer, and 𝑊 (𝑄 ) ,𝑊 (𝐾 ) ,𝑊 (𝑉 ) ∈ R𝑑 × 𝑜 are learnable parameters.
+𝑖
+
+𝑖
+
+𝑖
+
+Notably X (0) = X for the encoder. Then we utilize the query and
+key to dynamically compute point correlations (shape is R𝑅×𝑃 ×𝑃 )
+of each patch, and leverage it to attend spatial information:
+(𝑙 )
+
+(𝑙 )
+𝐴 (𝑃 ) = 𝑆𝑜 𝑓 𝑡𝑚𝑎𝑥 (
+𝑖
+
+(𝑙 )𝑇
+
+𝑄 (𝑃 ) 𝐾 (𝑃 )
+(𝑙 )
+𝑖
+𝑖
+)𝑉 (𝑃 )
+√︁
+𝑖
+𝑑/𝑜
+
+(8)
+
+where 𝑆𝑜 𝑓 𝑡𝑚𝑎𝑥 (·) normalizes correlations. Finally, multi-head results of the 𝑙-th layer are concatenated:
+(𝑙 )
+
+4.3
+
+…
+
+(𝑙 )
+
+(𝑙 )
+
+X̃ (𝑙 ) = (𝐴 (𝑃 ) ||...||𝐴 (𝑃 ) )𝑊 (𝑂 )
+
+Dual Attention Encoder
+
+1
+
+(9)
+
+𝑜
+
+(𝑙 )
+
+In this section, we present the dual attention encoder to dynamically
+capture spatial dependencies. For the patched input X ∈ R𝑅×𝑃 ×𝑑 ,
+𝑅 points in the first dimension can be seen as the root nodes of
+subtrees and 𝑃 points in the second dimension can be seen points in
+the subtree. Therefore, PatchSTG first uses the depth attention on
+each patch to dynamically extract local spatial information because
+points in a subtree have stronger correlations. Moreover, as global
+dependencies are equally essential to the local information in traffic
+prediction [13], breadth attention is then adopted on the patch level
+to learn lossless global knowledge because each point in a root
+node of the subtree can receive information from points with the
+same index in other root nodes and these points are mixed with
+local information after previous depth attention. The dual attention
+can be interchangeably stacked 𝐿 layers in the encoder, thus we
+describe the process of 𝑙-th layer in the following for simplicity.
+Depth Attention. Depth attention is the multi-head scaled dotproduct attention, which is used to capture local spatial information
+in patches. As shown in Figure 4, the query, key, and value are first
+derived by using learnable linear transformations on the input,
+which can be formulated as follows:
+
+where 𝑊 (𝑂 ) ∈ R𝑑 ×𝑑 denotes the learnable parameter.
+Breadth Attention. Breadth attention is also the multi-head scaled
+dot-product attention, which is used to learn global spatial knowl(𝑙 )
+edge at the patch level. Similarity, the query, key, and value 𝑄 (𝑅) ,
+
+(𝑙 )
+(𝑙 )
+𝑄 (𝑃 ) = 𝑊 (𝑄 ) X (𝑙 −1)
+𝑖
+𝑖
+(𝑙 )
+(𝑙 )
+𝐾 (𝑃 ) = 𝑊 (𝐾 ) X (𝑙 −1)
+𝑖
+𝑖
+(𝑙 )
+(𝑙 )
+𝑉 (𝑃 ) = 𝑊 (𝑉 ) X (𝑙 −1)
+𝑖
+𝑖
+
+where 𝑈 𝑛𝑃𝑎𝑑 (·) denotes removing points on the unpadded locations and 𝑌˜ ∈ R𝑁 ×𝑑 is the representation with original index.
+Finally, a fully connected layer is adopted to project the historical
+representation into the future:
+
+(7)
+
+(𝑙 )
+(𝑙 )
+(𝑙 )
+where 1 ≤ 𝑖 ≤ 𝑜 in our multi-head setting. 𝑄 (𝑃 ) , 𝐾 (𝑃 ) , 𝑉 (𝑃 ) ∈
+𝑖
+𝑖
+𝑖
+𝑑
+R𝑅×𝑃 × 𝑜 indicate the query, key, and value of each head in 𝑙-th
+
+𝑖
+
+(𝑙 )
+
+(𝑙 )
+
+𝑑
+
+𝐾 (𝑅) , 𝑉 (𝑅) ∈ R𝑃 ×𝑅× 𝑜 are first derived by using learnable linear
+𝑖
+𝑖
+transformations on the output of depth attention. Then query and
+key are used to dynamically compute patch correlations (shape is
+R𝑃 ×𝑅×𝑅 ) of each index in patches. Finally, the output of the 𝑙-th
+layer X (𝑙 ) ∈ R𝑅×𝑃 ×𝑑 is derived by using the calculated correlations
+to attend global information.
+
+4.4
+
+Projection Decoder
+
+In this section, we aim to predict the future traffic through the
+spatial information interacted output X (𝐿) ∈ R𝑅×𝑃 ×𝑑 of the dual
+attention encoder. We first unpatch the output to 𝑋¯ (𝐿) ∈ R𝑀 ×𝑑
+through performing depth first search operation on each root node,
+and unpad leaf nodes to consist with the input shape and index:
+¯ (𝐿) )
+𝑌˜𝑖𝑑𝑥
+˜ = 𝑈 𝑛𝑃𝑎𝑑 (𝑖𝑑𝑥, 𝑋
+
+𝑌ˆ = 𝑊 (𝐷 ) 𝑌˜ + 𝑏 (𝐷 )
+∈ R𝐹 ×𝑑 , 𝑏
+
+(10)
+
+(11)
+
+∈ R𝐹 are learnable parameters and
+
+where 𝑊 (𝐷 )
+(𝐷 )
+𝑌ˆ ∈ R𝐹 ×𝑁 indicates predicted traffic. During the training stage, we
+
+KDD ’25, August 3–7, 2025, Toronto, ON, Canada
+
+Fang et al.
+
+use 𝑌ˆ and 𝑌 to compute L1 loss as the objective function to guide
+the learning of PatchSTG.
+
+4.5
+
+Complexity Analysis
+
+The leaf KDTree takes 𝑂 (𝑁𝑙𝑜𝑔(𝑁 )) complexity to construct the
+balanced binary tree based on the median hyperplane [5], which
+can be quickly done in the pre-processing stage. In the dual attention encoder, the cost of depth and breadth attention is respectively 𝑂 (𝑅𝑃 2𝑑) and 𝑂 (𝑃𝑅 2𝑑). Therefore, the dominant complexity
+of PatchSTG is 𝑂 (𝑚𝑎𝑥 (𝑃, 𝑅)𝑀𝑑), which requires less time than quadratic dynamic spatial modeling methods because 𝑃 ≪ 𝑁 , 𝑅 ≪ 𝑁 ,
+and 𝑀 ≈ 𝑁 in PatchSTG.
+Table 2: Dataset statistics.
+Datasets
+
+#Points
+
+#Samples
+
+#TimeSlices
+
+Timespan
+
+SD
+GBA
+GLA
+CA
+
+716
+2352
+3834
+8600
+
+25M
+82M
+134M
+301M
+
+35040
+35040
+35040
+35040
+
+01/01/2019-12/31/2019
+01/01/2019-12/31/2019
+01/01/2019-12/31/2019
+01/01/2019-12/31/2019
+
+5
+
+EXPERIMENTS
+
+The goal of this section is to address the following five pivotal
+research questions by conducting comprehensive experiments on
+four large-scale traffic datasets.
+• RQ1: How does PatchSTG perform when compared to current
+approaches in large-scale traffic forecasting?
+• RQ2: What contributions do the main components of PatchSTG?
+• RQ3: How efficient is PatchSTG in large-scale datasets?
+• RQ4: Does PatchSTG output reasonable correlations?
+• RQ5: How do the essential hyper-parameters impact PatchSTG?
+
+5.1
+
+Experimental Setup
+
+5.1.1 Datasets. We conduct experiments on four large-scale datasets
+SD, GBA, GLA, and CA as introduced in LargeST [43]. Following
+previous settings, we not only chronologically split each dataset
+into train, validation, and test sets with a ratio of 6:2:2 but also
+utilize continuous 24 time slices as samples to perform traffic forecasting with the historical 12 time slices as the input and the future
+12 time slices as the output. Detailed statistics of these datasets are
+shown in Table 2.
+5.1.2 Baselines. We compare 10 advanced baselines in this paper
+with our PatchSTG . (i) The non-spatial modeling-based STID [50],
+which uses identity spatio-temporal embeddings in fully-connected
+layers to forecast traffic. (ii) In the category of static spatial-based
+methods, we select GWNET [59], AGCRN [1], STGODE [14], and
+RPMixer [60]. They combine various static GNNs with temporal networks for traffic forecasting. (iii) Baselines in the dynamic
+spatial-based category include, DSTAGNN [31], D2STGNN [51],
+DGCRN [32], low-rank STWave [11], and linear BigST [20]. They
+dynamically reveal spatial correlations at different time periods for
+traffic forecasting.
+5.1.3 Evaluation Metrics. We utilize diverse evaluation criteria
+from performance and efficiency aspects for a comprehensive comparison. For the performance aspect: we utilize three commonly
+
+adopted numerical metrics to assess the performance of predicted
+traffic time series, i.e., mean absolute error (MAE), root mean squared
+error (RMSE), and mean absolute percentage error (MAPE). For the
+efficiency aspect: the measurement of the model’s efficiency is
+based on the wall-clock time, and the memory needs of models are
+revealed by the batch size in the training phase.
+5.1.4 Implementation Details. During training, PatchSTG is optimized by the AdamW optimizer with a learning rate of 0.002
+and weight decay of 0.0001, and the training epoch is set to 50
+for all datasets. Moreover, the learning rate is halved at 2, 35, and
+40 epochs. To better reproduce our model, we summarize all the
+default hyper-parameters as follows. The dimension of input projection in SD, GBA, GLA, and CA datasets is set to 128, 128, 64,
+and 64. The dimension of day-of-week embedding, timeslice-of-day
+embedding, and spatial embedding is all set to 32. The number of
+segmented patches of CA, GLA, GBA, and SD is set to 512, 64, 16,
+and 16. The number of points in a leaf node is set as 3, 2, 2, and 2 for
+CA, GLA, GBA, and SD. The number of attention layers is set to 5.
+Besides, all the experiments are implemented in PyTorch with the
+NVIDIA RTX A6000 48GB GPU. The source code of PatchSTG is
+available at: https://github.com/LMissher/PatchSTG.
+
+5.2
+
+Performance Comparisons (RQ1)
+
+Table 3 showcases the MAE, RMSE, and MAPE of traffic forecasting
+across all methods on four large-scale datasets except for failure
+to run with the smallest batch size of 1. The performance on the
+horizon 3, horizon 6, horizon 12, and the average of the whole
+12 horizons are reported. To ensure a fair comparison, we follow
+official configurations of baselines, with the only adjustment of
+fixes input length to 12. Therefore baselines in our paper may show
+slight variations compared to the original results.
+Advantages of Distinguishability. Among the baselines concerned, identity embedding-based non-spatial STID, shows a significant lead over spatial modeling methods on larger datasets such as
+the CA dataset. This phenomenon underscores the advantages of
+learning heterogeneous representations of different points to avoid
+over-smoothing in spatial message passing.
+Advantages of Dynamic Spatial Modeling. As shown in Table 3, D2STGNN exhibits remarkable superiority, especially on the
+SD dataset when compared to non-spatial and static spatial-based
+methods. This appearance is owing to the dynamic spatial modeling.
+Despite point-to-point D2STGNN achieving great performance in
+small-scale datasets, it is still limited by the quadratic complexity
+in large-scale GLA and CA datasets.
+Advantages of Explicit Spatial Aggregation. In large-scale
+datasets, in contrast to linear-based efficient dynamic spatial modeling method BigST, low rank-based STWave demonstrates clear advantages on all datasets under spatial reduction caused information
+loss, attributed to the implicit spatial correlations in linear-based
+methods are failed to correctly normalize.
+Consistent Performance Superiority. Drawing on the aforementioned components and our irregular spatial patching, we introduce PatchSTG, an efficient Transformer framework that achieves
+state-of-the-art performance on all datasets as evidenced in Table 3.
+
+Efficient Large-Scale Traffic Forecasting with Transformers: A Spatial Data Management Perspective
+
+KDD ’25, August 3–7, 2025, Toronto, ON, Canada
+
+Table 3: Large-scale traffic forecasting performance comparison of our PatchSTG and baselines. Redfont indicates the best
+performance and bluefont denotes the second best performance.
+
+MAE
+
+Horizon 3
+RMSE MAPE (%)
+
+MAE
+
+Horizon 6
+RMSE MAPE (%)
+
+MAE
+
+Horizon 12
+RMSE MAPE (%)
+
+MAE
+
+Average
+RMSE MAPE (%)
+
+SD
+
+STID
+GWNET
+AGCRN
+STGODE
+RPMixer
+DSTAGNN
+D2STGNN
+DGCRN
+STWave
+BigST
+PatchSTG
+
+15.15
+15.24
+15.71
+16.75
+18.54
+18.13
+14.92
+15.34
+15.80
+16.42
+14.53
+
+25.29
+25.13
+27.85
+28.04
+30.33
+28.96
+24.95
+25.35
+25.89
+26.99
+24.34
+
+9.82
+9.86
+11.48
+11.00
+11.81
+11.38
+9.56
+10.01
+10.34
+10.86
+9.22
+
+17.95
+17.74
+18.06
+19.71
+24.55
+21.71
+17.52
+18.05
+18.18
+18.88
+16.86
+
+30.39
+29.51
+31.51
+33.56
+40.04
+34.44
+29.24
+30.06
+30.03
+31.60
+28.63
+
+11.93
+11.70
+13.06
+13.16
+16.51
+13.93
+11.36
+11.90
+11.96
+13.24
+11.11
+
+21.82
+21.56
+21.86
+23.67
+35.90
+27.51
+22.62
+22.06
+21.98
+23.00
+20.66
+
+38.63
+36.82
+39.44
+42.12
+58.31
+43.95
+37.14
+37.51
+36.99
+38.59
+36.27
+
+15.09
+15.13
+16.52
+16.58
+27.67
+19.34
+14.86
+15.27
+15.30
+15.92
+14.72
+
+17.86
+17.74
+18.09
+19.55
+25.25
+21.82
+17.85
+18.02
+18.22
+18.80
+16.90
+
+31.00
+29.62
+32.01
+33.57
+42.56
+34.68
+29.51
+30.09
+30.12
+31.73
+29.27
+
+11.94
+11.88
+13.28
+13.22
+17.64
+14.40
+11.54
+12.07
+12.20
+12.91
+11.23
+
+GBA
+
+STID
+GWNET
+AGCRN
+STGODE
+RPMixer
+DSTAGNN
+D2STGNN
+DGCRN
+STWave
+BigST
+PatchSTG
+
+17.36
+17.85
+18.31
+18.84
+20.31
+19.73
+17.54
+18.02
+17.95
+18.70
+16.81
+
+29.39
+29.12
+30.24
+30.51
+33.34
+31.39
+28.94
+29.49
+29.42
+30.27
+28.71
+
+13.28
+13.92
+14.27
+15.43
+15.64
+15.42
+12.12
+14.13
+13.01
+15.55
+12.25
+
+20.45
+21.11
+21.27
+22.04
+26.95
+24.21
+20.92
+21.08
+20.99
+22.21
+19.68
+
+34.51
+33.69
+34.72
+35.61
+44.02
+37.70
+33.92
+34.03
+34.01
+35.33
+33.09
+
+16.03
+17.79
+16.89
+18.42
+22.75
+20.99
+14.89
+16.94
+15.62
+18.54
+14.51
+
+24.38
+25.58
+24.85
+26.22
+39.66
+30.12
+25.48
+25.25
+24.96
+26.98
+23.49
+
+41.33
+40.19
+40.18
+42.90
+66.44
+46.40
+40.99
+40.63
+40.31
+42.73
+39.23
+
+19.90
+23.48
+20.80
+22.83
+37.35
+28.16
+19.83
+21.15
+20.08
+23.68
+18.93
+
+20.22
+20.91
+21.01
+21.79
+27.77
+23.82
+20.71
+20.91
+20.81
+21.95
+19.50
+
+34.61
+33.41
+34.25
+35.37
+47.72
+37.29
+33.65
+33.83
+33.77
+35.54
+33.16
+
+15.91
+17.66
+16.90
+18.26
+23.87
+20.16
+15.04
+16.88
+15.76
+18.50
+14.64
+
+GLA
+
+STID
+GWNET
+AGCRN
+STGODE
+RPMixer
+DSTAGNN
+STWave
+BigST
+PatchSTG
+
+16.54
+17.28
+17.27
+18.10
+19.94
+19.49
+17.48
+18.38
+15.84
+
+27.73
+27.68
+29.70
+30.02
+32.54
+31.08
+28.05
+29.40
+26.34
+
+10.00
+10.18
+10.78
+11.18
+11.53
+11.50
+10.06
+11.68
+9.27
+
+19.98
+21.31
+20.38
+21.71
+27.10
+24.27
+21.08
+22.22
+19.06
+
+34.23
+33.70
+34.82
+36.46
+44.87
+38.43
+33.58
+35.53
+31.85
+
+12.38
+13.02
+12.70
+13.64
+16.58
+15.24
+12.56
+14.48
+11.30
+
+24.29
+26.99
+24.59
+26.45
+40.13
+30.92
+25.82
+27.98
+23.32
+
+42.50
+42.51
+42.59
+45.09
+69.11
+48.52
+41.28
+44.74
+39.64
+
+16.02
+17.64
+16.03
+17.60
+27.93
+20.45
+16.51
+19.65
+14.60
+
+19.76
+21.20
+20.25
+21.49
+27.87
+24.13
+20.96
+22.08
+18.96
+
+34.56
+33.58
+34.84
+36.14
+48.96
+38.15
+33.48
+36.00
+32.33
+
+12.41
+13.18
+12.87
+13.72
+17.66
+15.07
+12.70
+14.57
+11.44
+
+CA
+
+STID
+GWNET
+STGODE
+RPMixer
+STWave
+BigST
+PatchSTG
+
+15.51
+17.14
+17.57
+18.18
+16.77
+17.15
+14.69
+
+26.23
+27.81
+29.91
+30.49
+26.98
+27.92
+24.82
+
+11.26
+12.62
+13.91
+12.86
+12.20
+13.03
+10.51
+
+18.53
+21.68
+20.98
+24.33
+18.97
+20.44
+17.41
+
+31.56
+34.16
+36.62
+41.38
+30.69
+33.16
+29.43
+
+13.82
+17.14
+16.88
+18.34
+14.40
+15.87
+12.83
+
+22.63
+28.58
+25.46
+35.74
+25.36
+25.49
+21.20
+
+39.37
+44.13
+45.99
+62.12
+38.77
+41.09
+36.13
+
+17.59
+24.24
+21.00
+30.38
+19.01
+20.97
+16.00
+
+18.41
+21.72
+20.77
+25.07
+19.69
+20.32
+17.35
+
+32.00
+34.20
+36.60
+44.75
+31.58
+33.45
+29.79
+
+13.82
+17.40
+16.80
+19.47
+14.58
+15.91
+12.79
+
+Datasets
+
+Methods
+
+5.3
+
+Ablation Study (RQ2)
+
+In this section, ablation experiments are conducted on four datasets
+using four variants of PatchSTG to address RQ2. These four variants
+are listed below:
+• "w/o FGGC": PatchSTG fuse all points in the same patch into a
+single patch point during the breadth attention.
+• "w/o Depth": PatchSTG removes the depth attention and only
+global spatial correlations are modeled.
+• "w/o Breadth": PatchSTG removes the breadth attention and only
+local spatial correlations are modeled.
+• "w/ PadDis": PatchSTG pads points with closest distance into
+unfull patches.
+
+• "w/o PadSim": This variant only pads zero constants but not other
+points into unfull leaf nodes.
+• "w/ METIS": This variant uses the balanced graph partition algorithm METIS to replace our Leaf KDTree.
+• "w/ KMeans": This variant utilizes the unbalanced clustering
+algorithm KMeans to substitute our Leaf KDTree.
+• "w/o LKDT": PatchSTG no longer equips the leaf KDTree, i.e.,
+dual attention is conducted on the original input.
+According to the results illustrated in Table 4, the following observations can be found.
+Benefits Brought by KDTree. Experimental results of "w/o
+LKDT" on all datasets show a huge drop in prediction performance,
+
+KDD ’25, August 3–7, 2025, Toronto, ON, Canada
+
+Fang et al.
+
+Table 4: Ablation study of PatchSTG on average results of large-scale traffic datasets. Bold: best performance.
+Dataset
+Metric
+w/o FGGC
+w/o Depth
+w/o Breadth
+w/ PadDis
+w/o PadSim
+w/ METIS
+w/ KMeans
+w/o LKDT
+PatchSTG
+
+MAE
+17.37
+17.18
+17.70
+17.02
+17.00
+18.00
+18.07
+17.58
+16.90
+
+SD
+RMSE MAPE (%)
+29.44
+11.45
+29.91
+11.28
+30.55
+11.46
+29.42
+11.34
+29.43
+11.25
+30.69
+11.72
+30.76
+11.87
+29.38
+11.45
+29.27
+11.23
+
+MAE
+19.72
+19.63
+19.90
+19.60
+19.57
+19.91
+20.16
+20.14
+19.50
+
+GBA
+RMSE MAPE (%)
+33.28
+15.51
+33.33
+15.11
+33.44
+15.28
+33.32
+15.03
+33.34
+15.32
+33.38
+15.16
+33.93
+15.87
+34.18
+15.91
+33.16
+14.64
+
+MAE
+19.49
+19.38
+19.65
+19.17
+19.57
+19.63
+19.85
+19.88
+18.96
+
+GLA
+RMSE MAPE (%)
+32.95
+11.69
+33.05
+11.73
+33.66
+12.18
+32.80
+11.63
+33.18
+11.80
+33.57
+11.86
+34.07
+11.90
+34.47
+12.31
+32.33
+11.44
+
+MAE
+17.63
+17.68
+18.04
+17.50
+17.87
+18.02
+18.26
+18.27
+17.35
+
+CA
+RMSE MAPE (%)
+30.04
+13.05
+30.32
+13.09
+30.74
+13.17
+30.14
+13.00
+30.52
+13.11
+30.53
+13.02
+31.08
+13.05
+30.97
+13.00
+29.79
+12.79
+
+Table 5: Efficiency comparisons on large-scale traffic datasets. BS: batch size. Train: training time (in seconds) per epoch. Infer:
+inference time (in seconds). Total: total training time (in hours). Note that 𝑇𝑜𝑡𝑎𝑙 = 𝑇𝑟𝑎𝑖𝑛 × 𝐸𝑝𝑜𝑐ℎ𝑒𝑠 and - indicates out of memory.
+
+Methods
+DSTAGNN
+D2STGNN
+DGCRN
+STWave
+PatchSTG
+Improvements
+
+BS
+64
+45
+64
+64
+64
+0×
+
+Train
+240
+563
+430
+259
+64
+3.8×
+
+SD
+Infer
+23
+69
+76
+33
+6
+3.8×
+
+Total
+7
+14
+14
+7
+1
+7×
+
+BS
+27
+4
+12
+36
+64
+1.8×
+
+GBA
+Train Infer
+1959
+171
+5885
+796
+4461
+605
+926
+120
+262
+30
+1.8×
+4×
+
+recommending that the most important in PatchSTG is not dynamically modeling spatial dependencies on irrelevant points in the
+patch but passing spatial messages on adjacent points in the patch.
+Moreover, the performance of STID and "w/o LKDT" on the GLA
+dataset further verifies that our leaf KDTree is the key component
+to model local spatial information. Besides, we test some methods
+that can also segment the traffic data into multiple patches. The conventional graph cluster methods such as KMeans not only achieve
+poor performance as "w/ KMeans" but also fail to derive balanced
+patching (the maximum and minimum patch size of KMeans on the
+SD dataset is 96 and 6). Though the graph partition method METIS
+can approximately segment traffic data into balanced patches, it
+cannot derive balance padded non-overlap patches because the
+recursive merge operation in our leaf KDTree is not supported, and
+thus performs badly as "w/ METIS".
+Effectiveness of Non-Overlap Padding. The experiments of
+"w/ PadDis" and "w/o PadSim" reflect that, in all datasets, replacing
+similar points with zeros or neighbored points to pad unfull leaf
+nodes results in a drop in performance. This finding underscores
+the effectiveness of our non-overlap padding from the temporal
+view and backtracking merging for balanced padding.
+Effectiveness of Dual Attention. As observed by the decreased
+performance in "w/o Depth," depth attention is essential in PatchSTG to capture local spatial dependencies. Similar to the local information, global spatial interactions are also indispensable in spatial modeling as the performance drop of "w/o Breadth". Besides,
+compared with the "w/o FGGC" performance, our non-fused finegrained global modeling achieves better results because it preserves
+diverse global information and thus our PatchSTG is fidelity.
+
+GLA
+Train Infer
+5241
+467
+1483
+179
+295
+27
+5×
+6.6×
+
+Total
+53
+148
+138
+26
+4
+6.5×
+
+BS
+10
+22
+64
+2.9×
+
+Total
+120
+41
+4
+10×
+
+BS
+8
+32
+4×
+
+Train
+3641
+981
+3.7×
+
+5.4
+
+Efficiency Comparisons (RQ3)
+
+CA
+Infer
+437
+93
+4.7×
+
+Total
+101
+14
+7.2×
+
+To evaluate the efficiency of our PatchSTG, we present the training speed, inference speed, and batch size comparisons among
+our PatchSTG and previous dynamic spatial modeling methods
+with explicit spatial correlations, including DSTAGNN, D2STGNN,
+DGCRN, and STWave. As depicted in Table 5, PatchSTG attains
+the fastest speed and boasts the most efficient GPU memory utilization across all datasets, especially achieving up to 10× and 4×
+improvements in speed and memory on large-scale GLA and CA
+datasets. While low-rank-based STWave also excels other methods in speed on large-scale datasets, the worse performance of
+STWave on small datasets compared to quadratic complexity-based
+DSTAGNN suggests that low-rank-based methods are less general
+than our PatchSTG under different settings.
+
+5.5
+
+Visualization (RQ4)
+
+Interpretability. To verify the interpretability of our PatchSTG, we
+visualize the evenly segmented GLA dataset using our leaf KDTree
+in Figure 5. We can observe that the real-world adjacent points
+are obviously divided into the same leaf node to maintain spatial
+locality, which can give explainable spatial partition compared with
+low-rank-based dynamic spatial modeling methods. Moreover, our
+PatchSTG can explicitly show the learned local and global spatial
+correlations corresponding to their real-world locations on the
+segmented map, which is interpretable compared with linear-based
+dynamic spatial modeling methods.
+Fidelity. To show our framework of learning global spatial knowledge without information loss, we conduct a case study on the
+GLA dataset, i.e., we visualize the learned patch correlations of
+
+Efficient Large-Scale Traffic Forecasting with Transformers: A Spatial Data Management Perspective
+
+KDD ’25, August 3–7, 2025, Toronto, ON, Canada
+
++
+−
+
+19.8
+19.4
+
+15.2
+1
+
+3
+
+5
+
+7
+
+14.5
+
+13.2
+
+17.7
+17.2
+
+1
+
+3
+
+5
+
+7
+
+64
+
+128
+
+14.5
+256
+
+18.8
+
+16.7
+MAE
+MAPE
+
+MAE
+
+13.7
+
+MAPE
+
+MAE
+
+Figure 5: Leaf KDTree on the GLA dataset.
+
+18.2
+
+15.5
+
+(b) Dimensions on GBA
+
+14.2
+MAE
+MAPE
+
+16.5
+
+19.8
+19.4
+32
+
+(a) Layers on GBA
+18.7
+
+20.2
+
+MAPE
+
+15.9
+
+17.5
+MAE
+MAPE
+
+12.7
+
+14.7
+
+18.0
+
+17.2
+32
+
+(c) Layers on CA
+
+MAPE
+
+20.2
+
+20.6
+
+MAE
+
+16.6
+MAE
+MAPE
+
+MAPE
+
+MAE
+
+20.6
+
+64
+
+128
+
+12.7
+256
+
+(d) Dimensions on CA
+
+Figure 7: Hyper-parameter study.
+
+15.6
+
+8
+
+11.3
+16 32 64 128
+
+19.5
+19.2
+
+(b) Patches on GBA
+12.2
+
+MAE
+MAPE
+
+15.1
+
+MAE
+MAPE
+
+14.6
+19.4
+16 32 64 128 256
+
+11.9
+11.6
+
+18.2
+
+MAE
+
+MAE
+
+19.8
+
+19.7
+
+MAPE
+
+20.0
+
+MAE
+
+13.1
+
+(a) Patches on SD
+
+Figure 6: Learned patch-level correlations.
+points with indices 23 and 56 in the patch. As shown in Figure 6,
+the global correlations learned by the breadth attention are diverse
+for different indices in the patch, which follows the heterogeneity
+of traffic points. Therefore, our PatchSTG is fidelity compared with
+low-rank-based methods because they can only reflect same patch
+correlations for all points in the patch.
+
+16.1
+
+12.2
+
+17.3
+16.8
+
+20.3
+
+17.9
+
+13.6
+MAE
+MAPE
+
+MAPE
+
+(b) Correlations on 56𝑡ℎ
+
+17.8
+
+14.0
+
+MAPE
+
+(a) Correlations on 23𝑡ℎ
+
+MAE
+MAPE
+
+MAPE
+
+MAE
+
+18.3
+
+13.2
+17.6
+
+18.9
+11.3
+16 32 64 128 256
+
+17.3
+12.8
+32 64 128 256 512
+
+(c) Patches on GLA
+
+(d) Patches on CA
+Leaflet | © OpenStreetMap contributors © CARTO
+
+5.6
+
+Hyper-parameter Study (RQ5)
+
+Figure 7 draws the impact of hyper-parameters on the representative GBA and CA datasets. We search the number of attention layers
+and the number of input fully-connected dimensions from a search
+space of [1, 3, 5, 7] and [32, 64, 128, 256]. First, the performance of
+PatchSTG improves as the layers of the encoder increase and tends
+to be best when there are 5 layers. Second, when the number of
+input dimensions is 64 and 128 on GBA and CA datasets, PatchSTG achieves the best performance. We can observe that the small
+model is enough to learn spatio-temporal knowledge in large-scale
+datasets due to rich patterns in big data.
+Moreover, we search the number of patches from a search space
+of [8, 16, 32, 64, 128, 256, 512] as shown in Figure 8. PatchSTG with
+16, 16, 64, and 512 patches can achieve the best performance on SD,
+GBA, GLA, and CA datasets, which points out that the number of
+patches is positively correlated with the size of the dataset.
+
+6
+
+CONCLUSIONS
+
+In this paper, we introduce a novel efficient Transformer framework
+PatchSTG from the spatial data management perspective for largescale traffic forecasting. PatchSTG first utilizes the leaf KDTree to
+recursively partition the equilibrium number of irregular traffic
+points into leaf nodes with interpretability. Then PatchSTG patches
+
+Figure 8: The influence of changing the number of patches.
+
+leaf nodes with close distance together through backtracking after
+padding. Finally, PatchSTG stacks the depth and breadth attention in
+the encoder interchangeably to efficiently and dynamically capture
+spatial information from the patched data with fidelity. Experimental results on four large-scale benchmark datasets demonstrate the
+superior performance of PatchSTG against 10 baselines. We will
+extend PatchSTG to other spatio-temporal tasks in the future, such
+as national air quality prediction.
+
+ACKNOWLEDGMENTS
+This work is partially supported by NSFC (No. 62472068), Shenzhen
+Municipal Science and Technology R&D Funding Basic Research
+Program (JCYJ20210324133607021), and Municipal Government
+of Quzhou under Grant (2023D044), and Key Laboratory of Data
+Intelligence and Cognitive Computing, Longhua District, Shenzhen.
+This work is also supported by the National Natural Science Foundation of China (No. 62402414), the Guangzhou Industrial Information and Intelligent Key Laboratory Project (No. 2024A03J0628),
+and Guangdong Provincial Key Lab of Integrated Communication,
+Sensing and Computation for Ubiquitous Internet of Things (No.
+2023B1212010007).
+
+KDD ’25, August 3–7, 2025, Toronto, ON, Canada
+
+REFERENCES
+[1] Lei Bai, Lina Yao, Can Li, Xianzhi Wang, and Can Wang. 2020. Adaptive graph
+convolutional recurrent network for traffic forecasting. In Proceedings of NeurIPS.
+17804–17815.
+[2] Srinivasa Ravi Chandra and Haitham Al-Deek. 2009. Predictions of freeway traffic
+speeds and volumes using vector autoregressive models. Journal of Intelligent
+Transportation Systems (2009), 53–72.
+[3] Jeongwhan Choi, Hwangyong Choi, Jeehyun Hwang, and Noseong Park. 2022.
+Graph neural controlled differential equations for traffic forecasting. In Proceedings of AAAI. 6367–6374.
+[4] Yue Cui, Kai Zheng, Dingshan Cui, Jiandong Xie, Liwei Deng, Feiteng Huang,
+and Xiaofang Zhou. 2021. METRO: a generic graph neural network framework
+for multivariate time series forecasting. In Proceedings of VLDB. 224–236.
+[5] Mark De Berg, Otfried Cheong, Marc Van Kreveld, and Mark Overmars. 2008.
+Orthogonal range searching: Querying a database. Computational Geometry:
+Algorithms and Applications (2008), 95–120.
+[6] Liwei Deng, Tianfu Wang, Yan Zhao, and Kai Zheng. 2024. MILLION: A General
+Multi-Objective Framework with Controllable Risk for Portfolio Management.
+arXiv preprint arXiv:2412.03038 (2024).
+[7] Liwei Deng, Yan Zhao, Yue Cui, Yuyang Xia, Jin Chen, and Kai Zheng. 2024. Task
+Recommendation in Spatial Crowdsourcing: A Trade-Off Between Diversity and
+Coverage. In Proceedings of ICDE. 276–288.
+[8] Alexey Dosovitskiy, Lucas Beyer, Alexander Kolesnikov, Dirk Weissenborn, Xiaohua Zhai, Thomas Unterthiner, Mostafa Dehghani, Matthias Minderer, Georg
+Heigold, Sylvain Gelly, et al. 2020. An Image is Worth 16x16 Words: Transformers
+for Image Recognition at Scale. In Proceedings of ICLR. 1–22.
+[9] Wenying Duan, Xiaoxi He, Zimu Zhou, Lothar Thiele, and Hong Rao. 2023.
+Localised adaptive spatial-temporal graph neural network. In Proceedings of
+SIGKDD. 448–458.
+[10] Yuchen Fang, Haiyong Luo, Fang Zhao, Poly ZH Sun, Yanjun Qin, Liang Zeng,
+Bo Hui, and Chenxing Wang. 2024. CDGNet: A Cross-Time Dynamic GraphBased Deep Learning Model for Vehicle-Based Traffic Speed Forecasting. IEEE
+Transactions on Intelligent Vehicles (2024).
+[11] Yuchen Fang, Yanjun Qin, Haiyong Luo, Fang Zhao, Bingbing Xu, Liang Zeng,
+and Chenxing Wang. 2023. When spatio-temporal meet wavelets: Disentangled
+traffic forecasting via efficient spectral graph attention networks. In Proceedings
+of ICDE. 517–529.
+[12] Yuchen Fang, Yanjun Qin, Haiyong Luo, Fang Zhao, and Kai Zheng. 2023.
+STWave+: A Multi-Scale Efficient Spectral Graph Attention Network With LongTerm Trends for Disentangled Traffic Flow Forecasting. IEEE Transactions on
+Knowledge and Data Engineering (2023), 2671–2685.
+[13] Yuchen Fang, Fang Zhao, Yanjun Qin, Haiyong Luo, and Chenxing Wang. 2022.
+Learning all dynamics: Traffic forecasting via locality-aware spatio-temporal
+joint transformer. IEEE Transactions on Intelligent Transportation Systems (2022),
+23433–23446.
+[14] Zheng Fang, Qingqing Long, Guojie Song, and Kunqing Xie. 2021. Spatialtemporal graph ode networks for traffic flow forecasting. In Proceedings of
+SIGKDD. 364–373.
+[15] Han Gao, Xu Han, Jiaoyang Huang, Jian-Xun Wang, and Liping Liu. 2022. Patchgt:
+Transformer over non-trainable clusters for learning graph representations. In
+Proceedings of LoG. 1–27.
+[16] Ge Guo, Wei Yuan, Jinyuan Liu, Yisheng Lv, and Wei Liu. 2021. Traffic forecasting via dilated temporal convolution with peak-sensitive loss. IEEE Intelligent
+Transportation Systems Magazine (2021), 48–57.
+[17] Shengnan Guo, Youfang Lin, Ning Feng, Chao Song, and Huaiyu Wan. 2019.
+Attention based spatial-temporal graph convolutional networks for traffic flow
+forecasting. In Proceedings of AAAI. 922–929.
+[18] Shengnan Guo, Youfang Lin, Letian Gong, Chenyu Wang, Zeyu Zhou, Zekai Shen,
+Yiheng Huang, and Huaiyu Wan. 2023. Self-supervised spatial-temporal bottleneck attentive network for efficient long-term traffic forecasting. In Proceedings
+of ICDE. 1585–1596.
+[19] Antonin Guttman. 1984. R-trees: A dynamic index structure for spatial searching.
+In Proceedings of SIGMOD. 47–57.
+[20] Jindong Han, Weijia Zhang, Hao Liu, Tao Tao, Naiqiang Tan, and Hui Xiong. 2024.
+BigST: Linear Complexity Spatio-Temporal Graph Neural Network for Traffic
+Forecasting on Large-Scale Road Networks. In Proceedings of VLDB. 1081–1090.
+[21] Liangzhe Han, Bowen Du, Leilei Sun, Yanjie Fu, Yisheng Lv, and Hui Xiong.
+2021. Dynamic and multi-faceted spatio-temporal deep learning for traffic speed
+forecasting. In Proceedings of SIGKDD. 547–555.
+[22] Xiaoxin He, Bryan Hooi, Thomas Laurent, Adam Perold, Yann LeCun, and Xavier
+Bresson. 2023. A generalization of vit/mlp-mixer to graphs. In Proceedings of
+ICML. 12724–12745.
+[23] Bo Hui, Da Yan, Haiquan Chen, and Wei-Shinn Ku. 2021. Trajectory waveNet: A
+trajectory-based model for traffic forecasting. In Proceedings of ICDM. 1114–1119.
+[24] Jiawei Jiang, Chengkai Han, Wayne Xin Zhao, and Jingyuan Wang. 2023.
+Pdformer: Propagation delay-aware dynamic long-range transformer for traffic
+flow prediction. In Proceedings of AAAI. 4365–4373.
+
+Fang et al.
+
+[25] Xinke Jiang, Rihong Qiu, Yongxin Xu, Wentao Zhang, Yichen Zhu, Ruizhe
+Zhang, Yuchen Fang, Xu Chu, Junfeng Zhao, and Yasha Wang. 2024. RAGraph:
+A General Retrieval-Augmented Graph Learning Framework. arXiv preprint
+arXiv:2410.23855 (2024).
+[26] Xinke Jiang, Dingyi Zhuang, Xianghui Zhang, Hao Chen, Jiayuan Luo, and
+Xiaowei Gao. 2023. Uncertainty quantification via spatial-temporal tweedie
+model for zero-inflated and long-tail travel demand prediction. In Proceedings of
+CIKM. 3983–3987.
+[27] Guangyin Jin, Yuxuan Liang, Yuchen Fang, Zezhi Shao, Jincai Huang, Junbo
+Zhang, and Yu Zheng. 2023. Spatio-temporal graph neural networks for predictive
+learning in urban computing: A survey. IEEE Transactions on Knowledge and
+Data Engineering (2023).
+[28] S Vasantha Kumar and Lelitha Vanajakshi. 2015. Short-term traffic flow prediction using seasonal ARIMA model with limited input data. European Transport
+Research Review (2015), 1–9.
+[29] Siqi Lai, Zhao Xu, Weijia Zhang, Hao Liu, and Hui Xiong. 2023. Large language
+models as traffic signal control agents: Capacity and opportunity. arXiv preprint
+arXiv:2312.16044 (2023).
+[30] Zhichen Lai, Dalin Zhang, Huan Li, Christian S Jensen, Hua Lu, and Yan Zhao.
+2023. Lightcts: A lightweight framework for correlated time series forecasting.
+In Proceedings of SIGMOD. 1–26.
+[31] Shiyong Lan, Yitong Ma, Weikang Huang, Wenwu Wang, Hongyu Yang, and
+Pyang Li. 2022. Dstagnn: Dynamic spatial-temporal aware graph neural network
+for traffic flow forecasting. In Proceedings of ICML. 11906–11917.
+[32] Fuxian Li, Jie Feng, Huan Yan, Guangyin Jin, Fan Yang, Funing Sun, Depeng Jin,
+and Yong Li. 2023. Dynamic graph convolutional recurrent network for traffic
+prediction: Benchmark and solution. ACM Transactions on Knowledge Discovery
+from Data (2023), 1–21.
+[33] Rongfan Li, Ting Zhong, Xinke Jiang, Goce Trajcevski, Jin Wu, and Fan Zhou.
+2022. Mining spatio-temporal relations via self-paced graph contrastive learning.
+In Proceedings of SIGKDD. 936–944.
+[34] Yaguang Li, Rose Yu, Cyrus Shahabi, and Yan Liu. 2018. Diffusion Convolutional
+Recurrent Neural Network: Data-Driven Traffic Forecasting. In Proceedings of
+ICLR.
+[35] Zhonghang Li, Lianghao Xia, Jiabin Tang, Yong Xu, Lei Shi, Long Xia, Dawei Yin,
+and Chao Huang. 2024. Urbangpt: Spatio-temporal large language models. In
+Proceedings of SIGKDD. 1–11.
+[36] Yuxuan Liang, Kun Ouyang, Junkai Sun, Yiwei Wang, Junbo Zhang, Yu Zheng,
+David Rosenblum, and Roger Zimmermann. 2021. Fine-grained urban flow
+prediction. In Proceedings of WWW. 1833–1845.
+[37] Yuxuan Liang, Yutong Xia, Songyu Ke, Yiwei Wang, Qingsong Wen, Junbo Zhang,
+Yu Zheng, and Roger Zimmermann. 2023. Airformer: Predicting nationwide air
+quality in china with transformers. In Proceedings of AAAI. 14329–14337.
+[38] Dachuan Liu, Jin Wang, Shuo Shang, and Peng Han. 2022. Msdr: Multi-step
+dependency relation networks for spatial temporal forecasting. In Proceedings of
+SIGKDD. 1042–1050.
+[39] Hangchen Liu, Zheng Dong, Renhe Jiang, Jiewen Deng, Jinliang Deng, Quanjun
+Chen, and Xuan Song. 2023. Spatio-temporal adaptive embedding makes vanilla
+transformer sota for traffic forecasting. In Proceedings of CIKM. 4125–4129.
+[40] Shuncheng Liu, Xu Chen, Ziniu Wu, Liwei Deng, Han Su, and Kai Zheng. 2022.
+HeGA: heterogeneous graph aggregation network for trajectory prediction in
+high-density traffic. In Proceedings of CIKM. 1319–1328.
+[41] Shuncheng Liu, Yuyang Xia, Xu Chen, Jiandong Xie, Han Su, and Kai Zheng. 2023.
+Impact-aware maneuver decision with enhanced perception for autonomous
+vehicle. In Proceedings of ICDE. 3255–3268.
+[42] Xu Liu, Yuxuan Liang, Chao Huang, Hengchang Hu, Yushi Cao, Bryan Hooi,
+and Roger Zimmermann. 2024. Reinventing Node-centric Traffic Forecasting for
+Improved Accuracy and Efficiency. In Proceedings of ECML-PKDD. 21–38.
+[43] Xu Liu, Yutong Xia, Yuxuan Liang, Junfeng Hu, Yiwei Wang, Lei Bai, Chao
+Huang, Zhenguang Liu, Bryan Hooi, and Roger Zimmermann. 2024. Largest: A
+benchmark dataset for large-scale traffic forecasting. In Proceedings of NeurIPS.
+[44] Ze Liu, Yutong Lin, Yue Cao, Han Hu, Yixuan Wei, Zheng Zhang, Stephen Lin,
+and Baining Guo. 2021. Swin transformer: Hierarchical vision transformer using
+shifted windows. In Proceedings of ICCV. 10012–10022.
+[45] Jiayuan Luo, Wentao Zhang, Yuchen Fang, Xiaowei Gao, Dingyi Zhuang, Hao
+Chen, and Xinke Jiang. 2024. Timeseries suppliers allocation risk optimization
+via deep black litterman model. arXiv preprint arXiv:2401.17350 (2024).
+[46] Zhongjian Lv, Jiajie Xu, Kai Zheng, Hongzhi Yin, Pengpeng Zhao, and Xiaofang
+Zhou. 2018. Lc-rnn: A deep learning model for traffic speed prediction.. In
+Proceedings of IJCAI. 27.
+[47] Qian Ma, Zijian Zhang, Xiangyu Zhao, Haoliang Li, Hongwei Zhao, Yiqi Wang,
+Zitao Liu, and Wanyu Wang. 2023. Rethinking sensors modeling: Hierarchical
+information enhanced traffic forecasting. In Proceedings of CIKM. 1756–1765.
+[48] Chunghyun Park, Yoonwoo Jeong, Minsu Cho, and Jaesik Park. 2022. Fast point
+transformer. In Proceedings of CVPR. 16949–16958.
+[49] Cheonbok Park, Chunggi Lee, Hyojin Bahng, Yunwon Tae, Seungmin Jin, Kihwan
+Kim, Sungahn Ko, and Jaegul Choo. 2020. ST-GRAT: A novel spatio-temporal
+graph attention networks for accurately forecasting dynamically changing road
+speed. In Proceedings of CIKM. 1215–1224.
+
+Efficient Large-Scale Traffic Forecasting with Transformers: A Spatial Data Management Perspective
+
+[50] Zezhi Shao, Zhao Zhang, Fei Wang, Wei Wei, and Yongjun Xu. 2022. Spatialtemporal identity: A simple yet effective baseline for multivariate time series
+forecasting. In Proceedings of CIKM. 4454–4458.
+[51] Zezhi Shao, Zhao Zhang, Wei Wei, Fei Wang, Yongjun Xu, Xin Cao, and Christian S Jensen. 2022. Decoupled dynamic spatial-temporal graph neural network
+for traffic forecasting. In Proceedings of VLDB. 2733–2746.
+[52] Robert F Sproull. 1991. Refinements to nearest-neighbor searching in kdimensional trees. Algorithmica (1991), 579–589.
+[53] Qian Sun, Rui Zha, Le Zhang, Jingbo Zhou, Yu Mei, Zhiling Li, and Hui Xiong.
+2024. CrossLight: Offline-to-Online Reinforcement Learning for Cross-City
+Traffic Signal Control. In Proceedings of SIGKDD. 2765–2774.
+[54] Peng-Shuai Wang. 2023. Octformer: Octree-based transformers for 3d point
+clouds. ACM Transactions on Graphics (TOG) (2023), 1–11.
+[55] Tianfu Wang, Liwei Deng, Chao Wang, Jianxun Lian, Yue Yan, Nicholas Jing
+Yuan, Qi Zhang, and Hui Xiong. 2024. COMET: NFT Price Prediction with Wallet
+Profiling. In Proceedings of SIGKDD. 5893–5904.
+[56] Xu Wang, Lianliang Chen, Hongbo Zhang, Pengkun Wang, Zhengyang Zhou,
+and Yang Wang. 2023. A Multi-graph Fusion Based Spatiotemporal Dynamic
+Learning Framework. In Proceedings of WSDM. 294–302.
+[57] Haomin Wen, Youfang Lin, Yutong Xia, Huaiyu Wan, Qingsong Wen, Roger
+Zimmermann, and Yuxuan Liang. 2023. Diffstg: Probabilistic spatio-temporal
+graph forecasting with denoising diffusion models. In Proceedings of SIGSPATIAL.
+1–12.
+[58] Zonghan Wu, Shirui Pan, Guodong Long, Jing Jiang, Xiaojun Chang, and Chengqi
+Zhang. 2020. Connecting the dots: Multivariate time series forecasting with graph
+
+KDD ’25, August 3–7, 2025, Toronto, ON, Canada
+
+neural networks. In Proceedings of SIGKDD. 753–763.
+[59] Zonghan Wu, Shirui Pan, Guodong Long, Jing Jiang, and Chengqi Zhang. 2019.
+Graph wavenet for deep spatial-temporal graph modeling. In Proceedings of IJCAI.
+1907–1913.
+[60] Chin-Chia Michael Yeh, Yujie Fan, Xin Dai, Uday Singh Saini, Vivian Lai,
+Prince Osei Aboagye, Junpeng Wang, Huiyuan Chen, Yan Zheng, Zhongfang
+Zhuang, et al. 2024. RPMixer: Shaking Up Time Series Forecasting with Random
+Projections for Large Spatial-Temporal Data. In Proceedings of SIGKDD.
+[61] Bing Yu, Haoteng Yin, and Zhanxing Zhu. 2018. Spatio-Temporal Graph Convolutional Networks: A Deep Learning Framework for Traffic Forecasting. In
+Proceedings of IJCAI. 3634–3640.
+[62] Xingtong Yu, Yuan Fang, Zemin Liu, Yuxia Wu, Zhihao Wen, Jianyuan Bo, Xinming Zhang, and Steven CH Hoi. 2024. Few-shot learning on graphs: from
+meta-learning to pre-training and prompting. arXiv preprint arXiv:2402.01440
+(2024).
+[63] Xingtong Yu, Zemin Liu, Yuan Fang, and Xinming Zhang. 2023. Learning to count
+isomorphisms with graph neural networks. In Proceedings of AAAI. 4845–4853.
+[64] Xingtong Yu, Zhenghao Liu, Yuan Fang, and Xinming Zhang. 2024. DyGPrompt: Learning Feature and Time Prompts on Dynamic Graphs. arXiv preprint
+arXiv:2405.13937 (2024).
+[65] Chuanpan Zheng, Xiaoliang Fan, Cheng Wang, and Jianzhong Qi. 2020. Gman:
+A graph multi-attention network for traffic prediction. In Proceedings of AAAI.
+1234–1241.
+
+

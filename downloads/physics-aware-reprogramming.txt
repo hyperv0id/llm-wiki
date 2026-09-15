@@ -1,0 +1,2540 @@
+R E PST: Language Model Empowered Spatio-Temporal Forecasting via
+Semantic-Oriented Reprogramming
+Hao Wang1 , Jindong Han3 , Wei Fan4 , Leilei Sun5 , Hao Liu1,2†
+1
+The Hong Kong University of Science and Technology (Guangzhou)
+2
+The Hong Kong University of Science and Technology
+3
+Shandong University 4 Oxford University, 5 Beihang University
+{figerhaowang, hanjindong01, weifan.oxford}@gmail.com, leileisun@buaa.edu.cn, liuh@ust.hk
+Abstract
+Spatio-temporal forecasting is pivotal in numerous real-world applications, including transportation
+planning, energy management, and climate monitoring. In this work, we aim to harness the reasoning and generalization abilities of Pre-trained
+Language Models (PLMs) for more effective spatiotemporal forecasting, particularly in data-scarce scenarios. However, recent studies uncover that PLMs,
+which are primarily trained on textual data, often
+falter when tasked with modeling the intricate correlations in numerical time series, thereby limiting their effectiveness in comprehending spatiotemporal data. To bridge the gap, we propose
+R E PST, a semantic-oriented PLM reprogramming
+framework tailored for spatio-temporal forecasting. Specifically, we first propose a semanticoriented decomposer that adaptively disentangles
+spatially correlated time series into interpretable
+sub-components, which facilitates PLM to understand sophisticated spatio-temporal dynamics via
+a divide-and-conquer strategy. Moreover, we propose a selective discrete reprogramming scheme,
+which introduces an expanded spatio-temporal vocabulary space to project spatio-temporal series into
+discrete representations. This scheme minimizes
+the information loss during reprogramming and enriches the representations derived by PLMs. Extensive experiments on real-world datasets show that
+the proposed R E PST outperforms twelve state-ofthe-art baseline methods, particularly in data-scarce
+scenarios, highlighting the effectiveness and superior generalization capabilities of PLMs for spatiotemporal forecasting. Our codes can be found at
+https://github.com/usail-hkust/REPST.
+
+1
+
+Introduction
+
+Spatio-temporal forecasting aims to predict future states of
+real-world complex systems by simultaneously learning spatial
+and temporal dependencies of historical observations, which
+plays a pivotal role in diverse real-world applications, such as
+†
+
+Corresponding author
+
+traffic management Li et al. [2018]; Wu et al. [2019], environmental monitoring Han et al. [2023], and resource optimization Geng et al. [2019]. In the past decade, deep learning has
+demonstrated great predictive power and led to a surge in deep
+spatio-temporal forecasting models Jin et al. [2023a]. For example, Recurrent Neural Networks (RNNs) and Graph Neural
+Networks (GNNs) are frequently combined to capture complex patterns for spatio-temporal forecasting Jin et al. [2023a];
+Li et al. [2018]; Han et al. [2020]. Despite fruitful progress
+made so far, such approaches are typically confined to the onetask-one-model setting, which lacks general-purpose utility
+and inevitably falls short in handling widespread data-scarcity
+issue in real-world scenarios, e.g., newly deployed monitoring
+services.
+In recent years, Pre-trained Language Models (PLMs) like
+GPT-3 Brown [2020] and the LLaMA family Touvron et al.
+[2023] have achieved groundbreaking success in the Natural
+Language Processing (NLP) domain. PLMs exhibit exceptional contextual understanding, reasoning, and few-shot generalization capabilities across a wide range of tasks due to their
+pre-training on extensive text corpora. Although originally designed for textual data, the versatility and power of PLMs have
+inspired their application to numerically correlated data Zhou
+et al. [2024]; Jin et al. [2023b, 2024]. For example, Zhou et
+al. [2024] pioneers research in this direction and showcases
+the promise of fine-tuning PLMs as generic time series feature
+extractors. Besides, model reprogramming Jin et al. [2023b]
+has considered the modality differences between time series
+and natural language, solving time series forecasting tasks
+by learning an input transformation function that maps time
+series to a compressed vocabulary.
+However, two significant challenges remain in directly
+applying the aforementioned reprogramming techniques to
+spatio-temporal forecasting. The foremost issue lies in the underutilization of PLMs’ full potential. Recent work Tan et al.
+[2024] suggests that existing PLM-based approaches for time
+series forecasting fail to leverage the generative and reasoning
+abilities of PLMs. This limitation becomes even more apparent when handling more complex spatially correlated time
+series data. To this end, a crucial question arises: how can
+we better explain this shortcoming and unlock the potential
+of PLMs for spatio-temporal forecasting? Another challenge
+is PLMs’ limited capacity to model the intricate correlations
+present in spatio-temporal data. While PLMs excel at cap-
+
+MAE
+
+7
+6
+5
+4
+3
+2
+1
+0
+
+w Decompositoin
+
+w/o Decomposition
+8.06%
+
+6.33
+
+5.82
+
+12.69%
+
+2.34
+
+2.68
+
+PEMS-BAY
+
+METR-LA
+
+Figure 1: Simple Fourier-based decomposition Liu et al. [2024c] can
+improve PLM’s understanding of spatio-temporal data. We conduct
+experiments by applying reprogrammed GPT-2 Jin et al. [2023b] on
+widely used PEMS-BAY and METR-LA Li et al. [2018] datasets.
+
+turing dependencies within one-dimensional sequential data,
+they fall short in comprehending spatio-temporal data, which
+often has more complex structures like grids or graphs Li et
+al. [2024b]. This gap poses a significant obstacle to PLMs’
+effective use in this domain.
+To address these challenges, we argue that the primary limitation of existing approaches lies in their oversimplified treatment of spatio-temporal data, which prevents PLMs from fully
+understanding the underlying semantics. Instead of merely
+serving as a one-dimensional encoder, PLMs need a more
+sophisticated understanding to handle spatio-temporal data effectively. As depicted in Figure 1, our explorative experiments
+uncover that even applying simple decomposition techniques
+can significantly facilitate PLMs to better understand spatiotemporal data and lead to improved performance.
+Building on this insight, we propose R E PST, a reprogramming framework specifically designed for spatio-temporal
+forecasting using PLMs. Specifically, we first propose
+a semantic-oriented spatio-temporal decomposer, which
+adaptively disentangles spatio-temporal dynamics into components that represent interpretable sub-processes within the
+system. This is achieved through a Koopman theory-based
+evolutionary matrix, which results in decomposed components
+rich in spatio-temporal semantics that PLMs can more easily comprehend. This decomposition-based approach enables
+PLMs to capture both spatial and temporal dynamics more effectively. Moreover, we introduce a selective reprogramming
+strategy to tackle the complexity of spatio-temporal structures, which differ fundamentally from the one-dimensional
+sequence-like structure of textual data. Our strategy constructs
+an expanded spatio-temporal vocabulary by selecting the most
+relevant spatio-temporal word tokens from the PLM’s vocabulary through a differentiable reparameterization process. Unlike previous works that use compressed vocabularies, which
+can lead to ambiguous semantics, our approach reconstructs
+the reprogramming space with a rich, semantically distinct
+spatio-temporal vocabulary. By leveraging pretrained spatiotemporal correlations, this strategy enables PLMs to focus
+on relationships among tokens in a 3D spatio-temporal space,
+significantly enhancing their ability to model complex spatiotemporal dynamics. We evaluate R E PST on a variety of spatiotemporal forecasting tasks, including energy management, air
+quality prediction, and traffic forecasting. Extensive experimental results highlight the framework’s superior performance
+compared to state-of-the-art models, particularly in few-shot
+
+and zero-shot learning contexts. Our main contributions are
+summarized as:
+• We identify the underlying reason for the underperformance
+of existing PLM-based approaches for spatio-temporal forecasting, highlighting the need to decompose spatio-temporal
+dynamics into interpretable components to fully leverage
+PLMs’ potential.
+• We propose R E PST, a spatio-temporal forecasting framework that enables PLMs to grasp complex spatio-temporal
+patterns via semantic-oriented decomposition-based reprogramming. The reprogramming module reconstructs an
+expanded spatio-temporal vocabulary using a selective strategy, allowing PLMs to model spatio-temporal dynamics
+without altering their pre-trained parameters.
+• We show that R E PST consistently achieves superior performance across real-world datasets, particularly in data-scarce
+settings, demonstrating strong generalization capabilities in
+few-shot and zero-shot learning scenarios.
+
+2
+
+Preliminaries
+
+Spatio-temporal data can be considered as observations of the
+state of a dynamical system. It is typically represented as a
+two-dimensional matrix X ∈ RN ×T , which captures the states
+of a set of N nodes V, where each node in V corresponds to an
+entity (e.g., grids, regions, and sensors) in space. Specifically,
+we denote xit−T +1:t = [xit−T +1 , xit−T , ..., xit ]⊤ ∈ RT ×1 as
+the observations of node i from time step t − T + 1 to t,
+where T represents the look-back window length. The goal of
+spatio-temporal forecasting problem is to predict future states
+for all nodes i ∈ V over the next τ time steps based on a
+sequence of historical observations. This involves uncovering
+the complex spatial and temporal patterns inherent in spatiotemporal data to reveal the hidden principles governing the
+system’s dynamics:
+Ŷt+1:t+τ = fθ (Xt−T +1:t ),
+
+(1)
+
+−1
+⊤
+where Xt−T +1:t = [x0t−T +1:t , x1t−T +1:t , ..., xN
+∈
+t−T +1:t ]
+N ×T
+R
+denotes the historical observations in previous T
+time steps, and fθ (·) is the spatio-temporal forecasting
+model parameterized by θ. Ŷt+1:t+τ = {ŷit+1:t+τ }N
+i=0
+and Yt+1:t+τ = {yit+1:t+τ }N
+i=0 denote the estimated future
+states and the ground truth in the next τ time steps, where
+Ŷt+1:t+τ , Yt+1:t+τ ∈ RN ×τ . For convenience, we omit the
+lower corner mark and represent Xt−T +1:t , Yt+1:t+τ as X, Y
+and xit−T +1:t , yit+1:t+τ as xi , yi .
+
+3
+
+Methodology
+
+As illustrated in Figure 2, R E PST consists of three components: a semantic-oriented spatio-temporal decomposer, a
+selective reprogrammed language model, and a learnable mapping function. To be specific, in semantic-oriented spatiotemporal decomposer, we first decompose the input signals
+into a series of distinct interpretable components. Then, we
+utilize an adaptive reprogramming strategy to reprogram these
+components into textual embeddings via an expanded spatiotemporal vocabulary constructing through a selective manner. After that, we employ a frozen PLM to construct spatio-
+
+(1) Overall Framework
+
+(2) Spatio-Temporal Decomposer
+Evolutionary Decomposition
+
+𝑌 !"# ,…, 𝑌 !"$
+Add & Layer Norm
+
+X!"#$ ∈ 𝑅%×'
+
+X()! ∈ 𝑅%×'×*
+
+𝑋+,- ∈ 𝑅 '×(
+
+𝑋,&- ∈ 𝑅 '×.×/
+
+(3) Selective Reprogrammed Language Model
+Semantic-oriented
+Context Encoder
+
+𝑋,&- ∈ 𝑅 '×.×/
+
+Learnable Mask
+
+Q
+
+Pretrained Word Embeddings
+
+Evolutionary
+Decomposition
+
+𝑆𝑜𝑓𝑡𝑚𝑎𝑥
+
+K
+
+Sampling
+
+Instance Normalization
+
+𝐸 ∈ 𝑅 !×#
+
+Addition
+
+Concatenate
+
+𝑔! ~𝐺𝑢𝑚𝑏𝑒𝑙(0,1)
+
+𝐸’ ∈ 𝑅 $×#
+Expanded Vocabulary
+
+Representation
+
+Trainable
+
+V
+
+PLM
+Backbone
+
+𝑚 ∈ 𝑅 !×*
+
+Cross Attention
+
+Spatio-Temporal
+Decomposer
+
+Selective Discrete
+Reprogramming
+
+mode
+reconstruction
+
+Multi-Head Attention
+
+Selective
+Reprogrammed
+Language Model
+
+𝑋#%& ∈ 𝑅 '×(×)
+
+Context Encoder
+
+×𝑵
+Add & Layer Norm
+
+Patch Partition
+
+Evolutional
+Reconstruction
+
+Feed Forward
+
+Output Projection
+
+Semantic-oriented Context Encoder
+
+Evolutionary Signals
+
+Normalized Inputs
+
+Multi-Head Cross-Attention
+
+Frozen
+
+Figure 2: The model framework of R E PST. (1) Given a raw input spatio-temporal data, we first perform normalization and then decouple
+the spatio-temporal data into a set of evolutionary signals. (2) After that, the signals are concatenated and divided into patches and further
+transformed into embeddings by a semantic-oriented context encoder. (3) Then, the patch embeddings are aligned with natural language by
+reprogramming with expanded spatio-temporal vocabulary and further processed by the frozen GPT-2 backbone. The output patches of the
+pre-trained language model are reprocessed by a learnable mapping function to generate the forecasts.
+
+temporal correlations based on these textual embeddings. Finally, a learnable mapping function generates future predictions based on the output of PLM.
+
+3.1
+
+Semantic-Oriented Evolutional
+Spatio-Temporal Decomposition
+
+Recent studies have revealed that PLMs possess rich spatiotemporal knowledge and reasoning capabilities Gurnee and
+Tegmark [2023]; Jin et al. [2024]. However, existing methods failed to fully leverage the capabilities of PLMs, which
+raises challenges for spatio-temporal data forecasting as well.
+As aforementioned, reasons for this shortcoming lies in their
+over simplistic encoding to time series. PLMs requires further
+process of spatio-temporal data to enhance their comprehensibility to such complex structure. In this section, we address this shortcoming through a carefully designed semanticoriented spatio-temporal decomposer. Previous works Liu et
+al. [2024c]; Yi et al. [2024]; Shao et al. [2022b] decouple the
+time series in Fourier space and handle the decoupled signals
+separately for better use of the hidden information of time
+series. Simply decomposing time series solely based on frequency intensity is not interpretable and cannot effectively
+capture the highly coupled spatio-temporal dynamics. Furthermore, this cannot be easily realized by language models as
+well due to their limited semantics information.
+To fully unlock the spatio-temporal knowledge, inspired
+by dynamic mode decomposition Schmid [2010], we propose
+to capture the underlying dynamic signals in an interpretable
+manner by leveraging the dynamic system’s evolution matrix
+A. To be specific, considering two state observations X1:t−1
+
+and X2:t , it satisfies X2:t = AX1:t−1 . This evolution matrix A
+is sought in a low-rank setting to capture the modes governing
+the system’s dynamics. By applying a series of mathematical
+process such as singular value decomposition (SVD) to X1:t−1
+and X2:t , we obtain the eigenvectors Ω = [ω1 , ω2 , ..., ωC ] and
+corresponding eigenvalues V = [v1 , v2 , . . . , vC ] , which can
+be leveraged to decompose spatio-temporal dynamic systems
+into different components. Each ωi , referred to as a mode
+of the dynamical system, reflects certain evolution dynamics
+of the system. We provide a detailed calculation process in
+Appendix A.5.
+Specifically, we first obtain Xnorm by normalizing the input
+X for each node to have zero mean and unit standard deviation
+using reversible instance normalization (RevIN) Kim et al.
+[2021]. Then, we disentangle a set of interpretable dynamic
+components Xdyn ∈ RN ×T ×C from intricate spatio-temporal
+data through reconstructing the system dynamics via modes
+ωi from the system’s evolution matrix’s eigenvectors Ω and
+the corresponding eigenvalues vi . By explicitly decoupling
+the interpretable nature of the spatio-temporal system, our approach is well-suited to capture the various dynamic behaviors
+of the system, providing PLMs with a series of components
+enriched with spatio-temporal semantic information that is
+significantly easier to comprehend compared to the originally
+densely coupled dynamic signals.
+Xdyn = ε0 eω0 t v0 ∥ ε1 eω1 t v1 ∥ · · · ∥ εC eωC t vC ,
+
+(2)
+
+where Xdyn is a set of spatio-temporal dynamics calculating
+based on the modes ωi and eigenvalues vi . εi is based on the
+input observation (see Appendix A.5 in supplementary material). Since the dynamics of the system is disentangled, we
+can distinguish the noise from the dominant dynamic signals
+
+in the original data. If only the most significant information
+is retained during reconstruction, the reconstruction results
+can remove noise, thus obtaining a smoother state evolutionary information. Therefore, we further reconstruct the whole
+system Xrec ∈ RN ×T with most dominant modes to enhance
+prediction:
+∑︂
+εi eωi t vi , i ∈ α,
+
+Xrec =
+
+(3)
+
+i
+
+where α represents a set of indices stands for top-k most dominant modes, constructed based on each mode’s contribution to
+the overall system Schmid [2010], which is calculated through
+the analysis of ωi and vi (see Appendix A.5 in supplementary
+material). Compared to existing Fourier-based methods, the
+system’s evolution matrix Ω is derived from data representing the true dynamics of the system. It can separate modes
+corresponding to specific intepretable processes, enabling us
+to capture various aspects of the system’s evolution, such as
+periodic oscillations in traffic flows caused by traffic signals or
+slow changes in air pollution driven by wind direction Brunton
+et al. [2016]; Chen et al. [2012].
+Additionally, to enhance the information density of decoupled signals, we employ patching strategy Nie et al. [2022]
+to construct patches as the input tokens for PLMs. Given
+the decoupled signals Xdec = Xrec ∥ Xdyn ∈ RN ×T ×(C+1) ,
+we divide the observations of each node as a series of nonN ×P ×TP ×(C+1)
+overlapped patches XP
+, where P =
+dec ∈ R
+[T /TP ] + 1 represents the number of the resulting patches,
+and TP denotes the patch length. Next, we encode the patched
+signals as patched embeddings : Xenc = Conv(XP
+dec , θp ) ∈
+RN ×P ×D , where N stands for the number of nodes, and D
+is the embedding dimension. Conv(·) denotes the patch-wise
+convolution operator and θp represents the learnable parameters of the patch-wise convolution. Unlike previous works Liu
+et al. [2024a,b] that simply regard each node as a token, our
+model treats each patch as one token, allowing to construct
+fine-grained relationships among both spatial and temporal
+patterns. By doing so, our model can preserve representations
+rich in semantic information, allowing PLM’s comprehension
+in both spatial and temporal dynamics more effectively.
+
+3.2
+
+Selective Reprogrammed Language Models
+
+Based on the decoupled signal patches Xenc , how to tackle
+the complexity of spatio-temporal structures raises another
+question. Compared to directly handling the spatio-temporal
+embeddings, representations in natural language space are
+inherently suitable for PLMs. To enrich spatio-temporal semantics and enable more comprehensive modeling of hidden
+spatio-temporal relationships, as well as unlocking the reasoning capabilities of PLMs, we further reprogram the components into the textual embedding place via an expanded
+spatio-temporal vocabulary. When handling textual-based
+components, the rich semantic information can boost the pretrained knowledge of PLMs, resulting in an adequate modeling
+of the hidden interactions between disentangled components.
+Specifically, we introduce our selective reprogramming
+strategy, which further constructs an expanded spatio-temporal
+vocabulary in a differentiable reparameterization process. We
+begin with E ∈ RV ×d , the pretrained vocabulary of the PLMs,
+where V is the vocabulary size and d is the dimension of
+
+the embedding. We introduce a learnable word mask vector m ∈ RV ×1 to adaptively select the most relevant words,
+where m[i] ∈ {0, 1}. In specific, we first obtain m through
+a linear layer followed by a Softmax activation, denoted as
+m = Softmax(EW), where W is a learnable matrix. Afterward, we sample Top-K word embeddings from E based on
+probability m[i] associated with word i for reprogramming.
+Since the sampling process is non-differentiable, we employ
+Gumbel-Softmax trick Jang et al. [2016] to enable gradient
+calculation with back-propagation, defined as:
+exp((log m[i] + gi )/τ )
+,
+m′ [i] = ∑︁V
+j=1 exp((log m[i] + gj )/τ )
+
+(4)
+
+where m′ is a continuous relaxation of binary mask vector m for word selection, τ is temperature coefficient, gi
+and gj are i.i.d random variables sampled from distribution
+Gumbel(0, 1). Concretely, the Gumbel distribution can be
+derived by first sampling u ∼ Uniform(0, 1) and then computing gi = − log(− log(u)). By doing so, we can expand
+vocabulary space while preserving the semantic meaning of
+each word.
+After obtaining the sampled word embeddings E′ ∈ RK×d ,
+we perform modality alignment by using cross-attention. In
+particular, we define the query matrix Xq = Xenc Wq , key
+matrix Xk = E′ Wk and value matrix Xv = E′ Wv , where Wq ,
+Wk , and Wv . After that, we calculate the reprogrammed
+patch embedding as follows: Z = Attn(Xq , Xk , Xv ) =
+X X⊤
+
+q k
+)Xv , where Z ∈ RN ×P ×d denotes the aligned
+Softmax( √
+d
+textual representations for the input spatio-temporal data.
+Based on the aligned representation, we utilize the frozen
+PLMs as the backbone for further processing. Roughly, PLMs
+consist of three components: self-attention, Feedforward Neural Networks, and layer normalization layer, which contain
+most of the learned semantic knowledge from pre-training.
+The reprogrammed patch embedding Z is encoded by this
+frozen language model to further process the semantic information and generates hidden textual representations Ztext .
+A learnable mapping function Projection(·) is then used to
+generate the desired target outputs, which map the textual representations into feature prediction: Ŷ = Projection(Ztext ).
+We further discuss the model optimization and scalability
+in Appendix D.1 in supplementary material.
+
+4
+
+Experiments
+
+We thoroughly validate the effectiveness of R E PST on various real-world datasets, including generative performance,
+overall forecasting performance and ablation study. We first
+introduce the experimental settings, including datasets and
+baselines. Then we conduct experiments to compare the fewshot, zero-shot and overall performance of our R E PST with
+other previous works. Furthermore, we design comprehensive ablation studies to evaluate the impact of the essential
+components.
+
+4.1
+
+Experimental Settings
+
+Datasets. We conducted experiments on six commonly used
+real-world datasets Song et al. [2020]; Lai et al. [2018]* ,
+* https://github.com/LibCity/Bigscity-LibCity
+
+varying in the fields of traffic Zhang et al. [2017]; Li et al.
+[2018], solar energy, and air quality† . The traffic datasets, Beijing Taxi Zhang et al. [2017], NYC Bike ‡ , PEMS-BAY and
+METR-LA Li et al. [2018], are collected from hundreds of individual detectors spanning the traffic systems across all major
+metropolitan areas of Beijing, NYC and California. The Air
+Quality§ dataset includes six indicators (PM2. 5, PM10, NO2 ,
+CO, O3 , SO2 ) to measure air quality, collected hourly from
+35 stations across Beijing. Lastly, the Solar Energy dataset
+records variations every 10 minutes from 137 PV plants across
+Alabama, capturing the dynamic changes in solar energy production. Each dataset comprises tens of thousands of time
+steps and hundreds of nodes, offering a robust foundation
+for evaluating spatio-temporal forecasting models. The detailed statistics of the datasets are summarized in Appendix in
+supplementary material.
+Baselines. We extensively compare our proposed R E PST
+with the state-of-the-art (sota) forecasting approaches, including (1) the GNN-based methods: Wu et al. [2019]; Shao et
+al. [2022b]; Wu et al. [2020] (2) non-GNN-based sota models: Shao et al. [2022a]; Liu et al. [2023a]; Deng et al. [2021]
+which emphasizes the integration of spatial and temporal identities; (3) sota time series models: Zhou et al. [2021]; Liu
+et al. [2023b]; Nie et al. [2022] (4) PLM-based time series
+forecasting models: Zhou et al. [2024]; (5) methods with no
+trainable parameters: Cui et al. [2021]. We reproduce all of
+the baselines based on the original paper or official code.
+
+4.2
+
+R E PST Generalization Performance
+
+Few-shot performance. PLMs are trained using large
+amounts of data that cover various fields, equipping them
+with cross-domain knowledge. Therefore, PLMs can utilize
+specific spatio-temporal related textual representations to unlock their capabilities for spatio-temporal reasoning, which
+can handle the difficulties caused by data sparsity. To verify
+this, we further conduct experiments on each field to evaluate
+the predictive performance of our proposed R E PST in datasparse scenarios. Our evaluation results are listed in Table 1.
+Concretely, all models are trained on 1-day data from the train
+datasets and tested on the whole test dataset. R E PST consistently outperforms other deep models and PLM-based time
+series forecasters in various datasets. This illustrates that our
+R E PST can perform well on a new downstream dataset and is
+suitable for spatio-temporal forecasting tasks with the problem
+of data sparsity.
+Specifically, our R E PST show competitive performance
+over other baselines in few-shot experiments, demonstrating
+that PLMs contain a wealth of spatio-temporal related knowledge from pre-training. Moreover, the capabilities of spatiotemporal reasoning can be enhanced by limited data. This
+shows a reliable performance of R E PST when transferred to
+data-sparse scenarios.
+Zero-shot performance. In this part, we focus on evaluating the zero-shot generalization capabilities of our R E PST
+within cross-domain and cross-region scenarios following the
+†
+
+https://www.biendata.xyz/competition/kdd_2018/data/
+https://github.com/LibCity/Bigscity-LibCity
+§
+https://www.biendata.xyz/competition/kdd_2018/data/
+‡
+
+5.53
+NYC->Solar
+
+11.90
+CHI->NYC
+
+35.86
+Solar->Air
+
+2.03
+NYC->CHI
+9.07
+6.39
+
+5.57
+CHI->Solar
+
+Models
+
+RePST
+TimesFM
+OpenCity-plus
+OpenCity-base
+OpenCity-mini
+
+3.61
+Solar->CHI
+
+Figure 3: Zero-Shot Performance. We evaluate the zero-shot capability of our R E PST in the same setting as few-shot experiments.
+
+experiment setting of Jin et al. [2023b]. Specifically, we test
+the performance of a model on dataset A after training under
+a supervised learning framework on another dataset B, where
+dataset A and dataset B have no overlapped data samples. We
+use the similar experiment settings to full training experiments
+and evaluate on various cross-domain and region datasets. The
+datasets includes NYC Bike, CHI Bike Jiang et al. [2023],
+Solar Energy and Air Quality (NYC, CHI, Solar and Air). We
+compare our performance with recent works in time series or
+spatio-temporal data with open-sourced model weights Das et
+al. [2023]; Li et al. [2024b]; Ekambaram et al. [2024].
+Our results in Figure 3 show that R E PST consistently secure
+top positions on all settings. This outstanding zero-shot prediction performance indicates R E PST’s versatility and adaptability in handling diverse scenarios. It does obtain transferable
+knowledge for dynamic systems by unlocking the reasoning
+capabilities of PLMs. Its excellent adaptation to brand new
+scenarios significantly reduces the time and computational
+resources typically required by traditional approaches. Although our R E PST falls a little short to OpenCity-base in
+Solar Energy → CHI_Bike, it is because of the large amount
+of traffic related datasets included by OpenCity’s pretrain
+datasets. Compared to it, our R E PST is trained on Solar Energy dataset which has almost no connection with such traffic
+datasets. This relatively comparable performance demonstrate
+R E PST’s excellent generative capability in cross-domain settings. The numerical results are shown in Appendix B.3 in
+supplementary material.
+Increasing predicted length. In this part, we analyze
+the model performance across varying prediction horizons
+τ ∈ {6, 12, 24, 36, 48}, with a fixed input length T = 48. Figure 4 showcases the MAE across two datasets: Air Quality and
+NYC Bike, for four models. The R E PST model demonstrates
+the most stable performance across both MAE and RMSE metrics, particularly in longer prediction horizons (τ = 36, 48). In
+contrast, previous state-of-the-art models exhibit notable performance degradation as the prediction horizon increases. The
+performance of R E PST, on the other hand, remains relatively
+stable and robust, demonstrating its efficacy in leveraging
+PLM to improve performance over longer-term predictions,
+which can also be attributed to its ability to capture both spatial
+and temporal correlations effectively, making it highly suited
+for few-shot learning tasks in spatio-temporal forecasting.
+
+Table 1: Few-Shot performance comparison on six real-world datasets in terms of MAE and RMSE. We utilize data in one day (less than
+1%)for training and the same data as full training settings for validation and test. The input history time steps T and prediction steps τ are
+both set to 24. We use the average prediction errors over all prediction steps. Bold denotes the best performance and underline denotes the
+second-best performance.
+Dataset
+Metric
+Informer
+iTransformer
+PatchTST
+MTGNN
+GWNet
+STNorm
+D2STGNN
+STID
+STAEFormer
+FPT
+R E PST
+
+METR-LA
+
+PEMS-BAY
+
+MAE
+8.19
+7.72
+7.20
+9.62
+7.04
+7.93
+6.41
+7.26
+6.35
+6.80
+5.63
+
+MAE
+5.30
+5.20
+4.52
+5.67
+5.84
+5.15
+5.31
+6.83
+5.37
+4.55
+3.61
+
+RMSE
+14.35
+15.85
+15.56
+17.60
+12.58
+13.67
+11.57
+12.70
+11.38
+11.36
+9.67
+
+Air Quality (MAE)
+
+70
+
+8.0
+
+50
+
+7.0
+
+40
+
+6.0
+
+30
+
+5.0
+
+6
+
+12
+24
+36
+Prediction Horizons
+STID
+
+RMSE MAE
+10.43 8.95
+10.94 4.74
+8.85 4.65
+8.91 4.73
+9.42 9.10
+8.92 5.36
+9.39 8.80
+12.88 4.89
+9.35 4.66
+9.71 10.59
+7.15 3.65
+
+48
+
+STAEformer
+
+RMSE
+11.92
+8.27
+7.82
+8.68
+11.87
+9.59
+11.26
+9.41
+12.57
+13.92
+6.74
+
+Air Quality
+MAE
+38.02
+35.59
+35.76
+36.51
+36.26
+36.38
+40.77
+43.21
+37.68
+36.62
+33.57
+
+NYC Bike (MAE)
+
+9.0
+
+60
+
+Solar Energy
+
+4.4
+
+NYC Bike
+Inflow
+Outflow
+MAE RMSE MAE RMSE
+6.99 16.44 6.33 15.62
+8.23 16.21 7.46 15.68
+7.03 15.32 6.88 14.84
+6.51 14.85 6.56 14.90
+12.55 21.97 12.68 22.27
+11.69 20.17 12.53 21.84
+10.64 18.96 10.33 18.43
+8.94 16.34 8.88 15.77
+12.50 20.77 11.84 20.88
+12.97 20.06 12.72 20.11
+5.29 12.11 5.66 12.85
+
+Ablation Study
+
+To figure out the effectiveness of each component in R E PST,
+we further conduct detailed ablation studies on Air Quality
+and Solar Energy datasets with three variants as follows:
+
+6
+
+12
+24
+36
+Prediction Horizons
+GWNET
+
+48
+
+RePST
+
+Figure 4: Few-Shot performance with multiple prediction horizons
+τ ∈ {6, 12, 24, 36, 48} and fixed input length T = 48. While the
+performance of previous state-of-the-art models keeps declining with
+the increasing of prediction length, the R E PST framework empowers
+the pretrain knowledge of the reprogrammed spatial language model
+and obtains a relatively stable performance.
+
+4.3
+
+RMSE
+56.45
+52.95
+53.80
+53.14
+54.88
+57.66
+55.07
+61.07
+53.39
+51.33
+47.30
+
+Beijing Taxi
+Inflow
+Outflow
+MAE RMSE MAE RMSE
+29.20 53.52 28.76 52.53
+31.56 58.11 32.22 59.93
+32.66 61.17 32.58 60.95
+28.98 48.72 28.80 46.87
+29.24 51.68 29.47 50.52
+28.92 50.59 28.86 49.39
+36.73 58.70 36.06 66.01
+32.73 51.77 32.91 51.94
+28.88 49.86 28.06 48.13
+41.66 74.87 43.28 77.84
+26.85 45.88 26.30 43.76
+
+Full Training Performance of R E PST
+
+Table 2 reports the overall performance of our proposed
+R E PST as well as baselines in 6 real-world datasets with
+the best in bold and the second underlined. As can be seen,
+R E PST consistently achieves either the best or second-best
+results in terms of MAE and RMSE.
+Notably, R E PST surpasses the state-of-the-art PLM-based
+time series forecaster FPT Zhou et al. [2024] by a large margin
+in spatio-temporal forecasting tasks, which can demonstrate
+that simply leveraging the PLMs cannot handle problems with
+complex spatial dependencies. Additionally, the performance
+of our R E PST reaches either the best or second-best results in
+METR-LA and PEMS-BAY datasets. Previous state-of-the-art
+models, STAEformer and STID, learn global shared embeddings both in spatial structure and temporal patterns tailored
+for certain datasets, which is harmful to their generalization
+abilities but benefits their capabilities to handle single datasets.
+Our spatio-temporal reprogramming block leverages a wide
+range of vocabulary and sample words that can adequately capture the spatio-temporal patterns, which do make an impact
+on unlocking the capabilities of PLMs to capture fine-grained
+spatio-temporal dynamics.
+
+• r/p PLM: it replaces the PLM backbone with transformer
+layers, following the setting of Tan et al. [2024].
+• r/p Decomposition: it replaces the semantic-oriented spatiotemporal decomposer with a transformer encoder.
+• w/o expanded vocabulary: it removes our selective spatiotemporal vocabulary and utilizes the dense mapping function
+to enhance reprogramming.
+Figure 5 shows the comparative performance of the variants above on Air Quality, Solar Energy and Beijing Taxi.
+Based on the results, we can make the conclusions as follows: (1) Our R E PST actually leverage the pretrain knowledge
+and generative capabilities of PLMs. When we replace the
+PLM backbone with transformer layers, the performance of
+all the datasets decline obviously, indicating that the pretrain
+knowledge makes an effect to handle spatio-temporal dynamics. (2) The semantic-oriented spatio-temporal decomposer
+which adaptively disentangles input spatio-temporal data into
+interpretable components can actually enable PLMs to better understand spatio-temporal dynamics. When constructing
+spatio-temporal dependencies by a transformer encoder layer,
+it is still unclear for PLMs to comprehend. (3) The impressive
+performance in w/o expanded vocabulary demonstrates that
+the selectively reconstructed vocabulary achieves accurate reprogramming which enables PLMs to focus on relationships
+among tokens in 3D spatio-temporal space.
+
+5
+
+Related Works
+
+5.1
+
+Spatio-Temporal Forecasting
+
+Spatio-temporal forecasting has been playing a critical role in
+various smart city services, such as traffic flow prediction Liu
+et al. [2023a]; Shao et al. [2022a], air quality monitoring Han
+et al. [2023, 2021], and energy management Geng et al. [2019].
+
+Table 2: Performance comparison of full training on six real-world datasets in terms of MAE and RMSE. The input history time steps T and
+prediction steps τ are both set to 24. We use the average prediction errors over all prediction steps. Bold denotes the best performance and
+underline denotes the second-best performance.
+Dataset
+Metric
+HI
+Informer
+iTransformer
+PatchTST
+MTGNN
+GWNet
+STNorm
+D2STGNN
+STID
+STAEFormer
+FPT
+R E PST
+35
+
+METR-LA
+
+Air Quality
+
+50 4.5
+45
+
+25
+
+40
+
+MAE
+r/p PLM
+
+Solar Energy
+
+Air Quality
+
+MAE RMSE MAE RMSE MAE RMSE MAE RMSE
+9.88 16.98 5.51 10.50 9.42 12.53 53.18 67.42
+4.68 8.92 2.54 5.30 3.92 5.91 29.38 42.58
+4.16 9.06 2.51 5.90 3.33 5.41 28.37 44.33
+4.15 9.07 2.06 4.85 3.49 5.89 28.05 44.81
+3.76 7.45 1.94 4.40 3.60 5.61 27.07 40.17
+3.93 8.19 2.28 5.06 3.55 5.39 31.57 44.82
+3.98 8.44 2.20 5.02 4.17 5.99 30.73 44.82
+3.94 7.68 2.11 4.83 4.36 5.85 27.77 41.87
+3.68 7.46 1.93 4.31 3.70 5.57 26.94 41.01
+3.60 7.44 1.97 4.33 3.44 5.21 28.12 41.83
+6.03 10.85 2.56 5.01 6.02 8.31 32.79 47.55
+3.63 7.43 1.92 4.33 3.27 5.12 26.20 39.37
+
+30
+
+20
+
+PEMS-BAY
+
+RMSE
+
+Solar Energy
+
+8
+
+30
+
+4.0
+
+7
+
+25
+
+3.5
+
+6
+
+20
+
+3.0
+
+5
+
+15
+
+4
+
+10
+
+35 2.5
+
+MAE
+
+r/p Decomposition
+
+RMSE
+
+Beijing Taxi
+
+50
+40
+30
+
+MAE
+
+w/o Expanded Vocabulary
+
+RMSE
+
+20
+
+RePST
+
+Figure 5: Ablation study. We conduct multiple detailed ablation
+studies on Air Quality, Solar Energy and Beijing Taxi datasets to
+figure out the effects of R E PST’s main components.
+
+Unlike traditional time series forecasting, the forecasting challenges associated with spatio-temporal data are often characterized by the unique properties of strong correlation and
+heterogeneity along the spatial dimension, which are inherently more complex.
+Early studies usually capture spatial dependencies through
+a predefined graph structure Li et al. [2018]; Han et al. [2020];
+Shao et al. [2022b]; Wu et al. [2020], which decribes the
+explicit relationships among different spatial locations. In
+recent years, there is a growing trend toward the utilization
+of adaptive spatio-temporal graph neural networks, which can
+automatically capture dynamic spatial graph structures from
+data. For instance, Wu et al. [2019] eliminate the need for
+predefined graphs by learning an adaptive adjacency matrix
+using two embedding matrices. Besides, attention mechanism is also widely employed in existing models, as seen
+in examples like Guo et al. [2021]; Liu et al. [2023a]. In
+contrast, Shao et al. [2022a], a model based on Multi-Layer
+Perceptrons, achieves state-of-the-art results by utilizing multiple embedding techniques to memorize stable spatial and
+temporal patterns.
+More recently, inspired by the huge success of PLMs in
+NLP field, there is increasing interest in building pre-trained
+models for spatio-temporal forecasting tasks. Several studies Liu et al. [2024a,b]; Yan et al. [2023] explore the application of PLMs for handling spatio-temporal data. Among
+these, UrbanGPT Li et al. [2024a] offers a promising solution
+by integrating spatio-temporal data with textual information,
+
+Beijing Taxi
+NYC Bike
+Inflow
+Outflow
+Inflow
+Outflow
+MAE RMSE MAE RMSE MAE RMSE MAE RMSE
+105.55 142.98 105.63 143.08 11.98 19.23 12.18 19.50
+16.41 29.03 16.01 26.90 3.49 8.36 3.92 9.52
+21.72 36.80 22.15 38.63 3.15 7.55 3.28 7.82
+23.64 43.63 22.71 41.52 3.58 8.83 3.66 8.99
+15.92 26.15 15.79 26.08 3.31 7.91 3.38 8.24
+15.69 26.82 15.76 26.84 3.13 7.58 3.33 7.64
+15.37 27.50 15.45 27.52 3.14 7.46 3.24 7.63
+24.33 45.65 26.86 45.57 3.10 7.43 3.25 7.75
+15.60 27.96 15.81 28.28 3.36 7.91 3.38 8.24
+15.47 26.45 16.08 26.83 3.03 7.39 3.27 7.56
+32.41 55.28 32.77 55.77 7.21 12.76 7.75 13.85
+15.13 25.44 15.75 25.24 3.01 7.33 3.16 7.43
+
+enabling accurate predictions of urban dynamics. Furthermore,
+the strong power of Transformer offers an opportunity to build
+spatio-temporal foundation models, such as OpenCity Li et al.
+[2024b] and UniST Yuan et al. [2024]. Trained on numerous
+spatio-temporal data, these models demonstrate strong capabilities across diverse forecasting scenarios. However, due
+to the problems of data-sparsity in multiple spatio-temporal
+scenarios, it is difficult for these models to gather large amount
+of data to perform pretraining comprehensively. In addition,
+the PLM-based spatio-temporal forecasting approaches do not
+fully leverage PLM’s potential. To address these gaps, this
+paper introduces a new reprogramming framework to leverage PLM’s generative and reasoning capabilities for spatiotemporal forecasting, particularly in data-sparse scenarios.
+
+5.2
+
+Pretrained Language Models for Time Series
+
+In recent years, PLMs have demonstrated remarkable performance across various time series analysis tasks Zhou et al.
+[2024]; Gruver et al. [2024]; Sun et al. [2023]. A significant
+body of research has focused on leveraging PLMs to address
+these challenges Cao et al. [2023]; Gruver et al. [2023]. However, a persistent issue in these efforts is the modality gap
+between time series data and natural language. To address this
+challenge, Jin et al. [2023b] develops a time series reprogramming approach, which can effectively bridges the modality
+gap between time series and text data. The objective of reprogramming is to learn a trainable transformation function that
+can be applied to the patched time series data, enabling it to
+be mapped into the textual embedding space of the PLM. For
+instance, this approach has been applied to reprogram acoustic
+models for time series data processing Yang et al. [2021].
+Nevertheless, Tan et al. [2024] conducted numerous experiments showing that existing PLM-based approaches Zhou et al.
+[2024]; Jin et al. [2023b] do not fully unlock the reasoning or
+generative capabilities of PLMs. The reason these approaches
+achieve high performance lies in the similar sequential formulation shared by time series and natural language Liu et
+al. [2024d]. Although PLMs can handle one-dimensional
+sequential data like text and time series, they fall short in capturing dependencies among complex spatio-temporal structure,
+
+leading to suboptimal performance for spatio-temporal forecasting tasks. In this work, we propose R E PST, which enables
+PLMs to comprehend complex spatio-temporal dynamics via a
+semantic-oriented decomposition-based reprogramming strategy.
+
+6
+
+Conclusion
+
+In this paper, we highlight the underlying reason for the poor
+performance of previous PLM-based approaches in spatiotemporal forecasting, emphasizing the need for the interpretability to fully leverage PLM’s potential. To address this
+problem, we developed R E PST, a tailored spatio-temporal
+forecasting framework that enables PLMs to comprehend
+the complex spatio-temporal patterns via a semantic-oriented
+decomposition-based reprogramming strategy. We design a
+physics-aware spatio-temporal decomposer which adaptively
+disentangles complex spatio-temporal dynamics into components with rich physical semantics for PLM’s better comprehension. Moreover, we construct an expanded spatio-temporal
+vocabulary by a selective approach, which enables PLMs to
+focus on relationships among 3D geometric space. As a result,
+PLM’s potential is full unlocked to handle spatio-temporal
+forecasting tasks. Extensive experiments demonstrate that
+our proposed framework, R E PST, achieves state-of-the-art
+performance on real-world datasets and exhibits exceptional
+capabilities in few-shot and zero-shot scenarios.
+
+7
+
+Acknowledgment
+
+This work was supported by the National Key R&D Program of China (Grant No.2023YFF0725004), National Natural Science Foundation of China (Grant No.92370204), the
+Guangzhou Basic and Applied Basic Research Program under
+Grant No. 2024A04J3279, Education Bureau of Guangzhou
+Municipality.
+
+References
+Tom B Brown. Language models are few-shot learners. arXiv
+preprint arXiv:2005.14165, 2020.
+Bingni W Brunton, Lise A Johnson, Jeffrey G Ojemann, and
+J Nathan Kutz. Extracting spatial–temporal coherent patterns in large-scale neural recordings using dynamic mode
+decomposition. Journal of neuroscience methods, 258:1–15,
+2016.
+Defu Cao, Furong Jia, Sercan O Arik, Tomas Pfister, Yixiang
+Zheng, Wen Ye, and Yan Liu. Tempo: Prompt-based generative pre-trained transformer for time series forecasting.
+arXiv preprint arXiv:2310.04948, 2023.
+Kevin K Chen, Jonathan H Tu, and Clarence W Rowley. Variants of dynamic mode decomposition: boundary condition,
+koopman, and fourier analyses. Journal of nonlinear science, 22:887–915, 2012.
+Yue Cui, Jiandong Xie, and Kai Zheng. Historical inertia:
+A neglected but powerful baseline for long sequence timeseries forecasting. In Proceedings of the 30th ACM international conference on information & knowledge management,
+pages 2965–2969, 2021.
+
+Abhimanyu Das, Weihao Kong, Rajat Sen, and Yichen Zhou.
+A decoder-only foundation model for time-series forecasting. arXiv preprint arXiv:2310.10688, 2023.
+Jinliang Deng, Xiusi Chen, Renhe Jiang, Xuan Song, and
+Ivor W Tsang. St-norm: Spatial and temporal normalization
+for multi-variate time series forecasting. In Proceedings of
+the 27th ACM SIGKDD conference on knowledge discovery
+& data mining, pages 269–278, 2021.
+Vijay Ekambaram, Arindam Jati, Nam H Nguyen, Pankaj
+Dayama, Chandra Reddy, Wesley M Gifford, and Jayant
+Kalagnanam. Ttms: Fast multi-level tiny time mixers for
+improved zero-shot and few-shot forecasting of multivariate
+time series. arXiv preprint arXiv:2401.03955, 2024.
+Xu Geng, Yaguang Li, Leye Wang, Lingyu Zhang, Qiang
+Yang, Jieping Ye, and Yan Liu. Spatiotemporal multi-graph
+convolution network for ride-hailing demand forecasting.
+In Proceedings of the AAAI conference on artificial intelligence, volume 33, pages 3656–3663, 2019.
+Nate Gruver, Marc Finzi, Shikai Qiu, and Andrew G Wilson.
+Large language models are zero-shot time series forecasters.
+In A. Oh, T. Naumann, A. Globerson, K. Saenko, M. Hardt,
+and S. Levine, editors, Advances in Neural Information Processing Systems, volume 36, pages 19622–19635. Curran
+Associates, Inc., 2023.
+Nate Gruver, Marc Finzi, Shikai Qiu, and Andrew G Wilson.
+Large language models are zero-shot time series forecasters.
+Advances in Neural Information Processing Systems, 36,
+2024.
+Shengnan Guo, Youfang Lin, Huaiyu Wan, Xiucheng Li, and
+Gao Cong. Learning dynamics and heterogeneity of spatialtemporal graph data for traffic forecasting. IEEE Transactions on Knowledge and Data Engineering, 34(11):5415–
+5428, 2021.
+Wes Gurnee and Max Tegmark. Language models represent
+space and time. In The Twelfth International Conference on
+Learning Representations, 2023.
+Haoyu Han, Mengdi Zhang, Min Hou, Fuzheng Zhang,
+Zhongyuan Wang, Enhong Chen, Hongwei Wang, Jianhui Ma, and Qi Liu. Stgcn: a spatial-temporal aware graph
+learning method for poi recommendation. In 2020 IEEE
+International Conference on Data Mining (ICDM), pages
+1052–1057. IEEE, 2020.
+Jindong Han, Hao Liu, Hengshu Zhu, Hui Xiong, and Dejing
+Dou. Joint air quality and weather prediction based on multiadversarial spatiotemporal networks. In Proceedings of
+the AAAI Conference on Artificial Intelligence, volume 35,
+pages 4081–4089, 2021.
+Jindong Han, Weijia Zhang, Hao Liu, and Hui Xiong. Machine
+learning for urban air quality analytics: A survey. arXiv
+preprint arXiv:2310.09620, 2023.
+Kethmi Hirushini Hettige, Jiahao Ji, Shili Xiang, Cheng Long,
+Gao Cong, and Jingyuan Wang. Airphynet: Harnessing
+physics-guided neural networks for air quality prediction.
+arXiv preprint arXiv:2402.03784, 2024.
+
+Eric Jang, Shixiang Gu, and Ben Poole. Categorical
+reparameterization with gumbel-softmax. arXiv preprint
+arXiv:1611.01144, 2016.
+Jiahao Ji, Jingyuan Wang, Zhe Jiang, Jiawei Jiang, and
+Hu Zhang. Stden: Towards physics-guided neural networks
+for traffic flow prediction. In Proceedings of the AAAI Conference on Artificial Intelligence, pages 4048–4056, 2022.
+Jiawei Jiang, Chengkai Han, Wenjun Jiang, Wayne Xin Zhao,
+and Jingyuan Wang. Libcity: A unified library towards efficient and comprehensive urban spatial-temporal prediction.
+arXiv preprint arXiv:2304.14343, 2023.
+Guangyin Jin, Yuxuan Liang, Yuchen Fang, Zezhi Shao, Jincai
+Huang, Junbo Zhang, and Yu Zheng. Spatio-temporal graph
+neural networks for predictive learning in urban computing:
+A survey. IEEE Transactions on Knowledge and Data
+Engineering, 2023.
+Ming Jin, Shiyu Wang, Lintao Ma, Zhixuan Chu, James Y
+Zhang, Xiaoming Shi, Pin-Yu Chen, Yuxuan Liang, YuanFang Li, Shirui Pan, et al. Time-llm: Time series forecasting
+by reprogramming large language models. arXiv preprint
+arXiv:2310.01728, 2023.
+Ming Jin, Yifan Zhang, Wei Chen, Kexin Zhang, Yuxuan
+Liang, Bin Yang, Jindong Wang, Shirui Pan, and Qingsong
+Wen. Position paper: What can large language models tell us
+about time series analysis. arXiv preprint arXiv:2402.02713,
+2024.
+Taesung Kim, Jinhee Kim, Yunwon Tae, Cheonbok Park, JangHo Choi, and Jaegul Choo. Reversible instance normalization for accurate time-series forecasting against distribution
+shift. In International Conference on Learning Representations, 2021.
+Bernard O Koopman. Hamiltonian systems and transformation
+in hilbert space. Proceedings of the National Academy of
+Sciences, 17(5):315–318, 1931.
+Guokun Lai, Wei-Cheng Chang, Yiming Yang, and Hanxiao
+Liu. Modeling long-and short-term temporal patterns with
+deep neural networks. In The 41st international ACM SIGIR conference on research & development in information
+retrieval, pages 95–104, 2018.
+Yaguang Li, Rose Yu, Cyrus Shahabi, and Yan Liu. Diffusion
+convolutional recurrent neural network: Data-driven traffic forecasting. In International Conference on Learning
+Representations, 2018.
+Zhonghang Li, Lianghao Xia, Jiabin Tang, Yong Xu, Lei
+Shi, Long Xia, Dawei Yin, and Chao Huang. Urbangpt:
+Spatio-temporal large language models. arXiv preprint
+arXiv:2403.00813, 2024.
+Zhonghang Li, Long Xia, Lei Shi, Yong Xu, Dawei Yin,
+and Chao Huang. Opencity: Open spatio-temporal foundation models for traffic prediction. arXiv preprint
+arXiv:2408.10269, 2024.
+Hangchen Liu, Zheng Dong, Renhe Jiang, Jiewen Deng,
+Jinliang Deng, Quanjun Chen, and Xuan Song. Spatiotemporal adaptive embedding makes vanilla transformer
+sota for traffic forecasting. In Proceedings of the 32nd ACM
+
+international conference on information and knowledge
+management, pages 4125–4129, 2023.
+Yong Liu, Tengge Hu, Haoran Zhang, Haixu Wu, Shiyu Wang,
+Lintao Ma, and Mingsheng Long. itransformer: Inverted
+transformers are effective for time series forecasting. arXiv
+preprint arXiv:2310.06625, 2023.
+Chenxi Liu, Sun Yang, Qianxiong Xu, Zhishuai Li, Cheng
+Long, Ziyue Li, and Rui Zhao. Spatial-temporal large
+language model for traffic prediction. arXiv preprint
+arXiv:2401.10134, 2024.
+Lei Liu, Shuo Yu, Runze Wang, Zhenxun Ma, and Yanming
+Shen. How can large language models understand spatialtemporal data? arXiv preprint arXiv:2401.14192, 2024.
+Yong Liu, Chenyu Li, Jianmin Wang, and Mingsheng Long.
+Koopa: Learning non-stationary time series dynamics with
+koopman predictors. Advances in Neural Information Processing Systems, 36, 2024.
+Yong Liu, Guo Qin, Xiangdong Huang, Jianmin Wang, and
+Mingsheng Long. Autotimes: Autoregressive time series forecasters via large language models. arXiv preprint
+arXiv:2402.02370, 2024.
+Yuqi Nie, Nam H Nguyen, Phanwadee Sinthong, and
+Jayant Kalagnanam. A time series is worth 64 words:
+Long-term forecasting with transformers. arXiv preprint
+arXiv:2211.14730, 2022.
+Peter J Schmid. Dynamic mode decomposition of numerical
+and experimental data. Journal of fluid mechanics, 656:5–
+28, 2010.
+Zezhi Shao, Zhao Zhang, Fei Wang, Wei Wei, and Yongjun Xu.
+Spatial-temporal identity: A simple yet effective baseline
+for multivariate time series forecasting. In Proceedings of
+the 31st ACM International Conference on Information &
+Knowledge Management, pages 4454–4458, 2022.
+Zezhi Shao, Zhao Zhang, Wei Wei, Fei Wang, Yongjun Xu,
+Xin Cao, and Christian S Jensen. Decoupled dynamic
+spatial-temporal graph neural network for traffic forecasting.
+arXiv preprint arXiv:2206.09112, 2022.
+Zezhi Shao, Fei Wang, Yongjun Xu, Wei Wei, Chengqing Yu,
+Zhao Zhang, Di Yao, Guangyin Jin, Xin Cao, Gao Cong,
+et al. Exploring progress in multivariate time series forecasting: Comprehensive benchmarking and heterogeneity
+analysis. arXiv preprint arXiv:2310.06119, 2023.
+Chao Song, Youfang Lin, Shengnan Guo, and Huaiyu Wan.
+Spatial-temporal synchronous graph convolutional networks: A new framework for spatial-temporal network data
+forecasting. In Proceedings of the AAAI conference on
+artificial intelligence, volume 34, pages 914–921, 2020.
+Chenxi Sun, Yaliang Li, Hongyan Li, and Shenda Hong. Test:
+Text prototype aligned embedding to activate llm’s ability
+for time series. arXiv preprint arXiv:2308.08241, 2023.
+Mingtian Tan, Mike A Merrill, Vinayak Gupta, Tim Althoff, and Thomas Hartvigsen. Are language models actually useful for time series forecasting? arXiv preprint
+arXiv:2406.16964, 2024.
+
+Hugo Touvron, Thibaut Lavril, Gautier Izacard, Xavier Martinet, Marie-Anne Lachaux, Timothée Lacroix, Baptiste
+Rozière, Naman Goyal, Eric Hambro, Faisal Azhar, et al.
+Llama: Open and efficient foundation language models.
+corr, abs/2302.13971, 2023. doi: 10.48550. arXiv preprint
+arXiv.2302.13971, 2023.
+Zonghan Wu, Shirui Pan, Guodong Long, Jing Jiang, and
+Chengqi Zhang. Graph wavenet for deep spatial-temporal
+graph modeling. arXiv preprint arXiv:1906.00121, 2019.
+Zonghan Wu, Shirui Pan, Guodong Long, Jing Jiang, Xiaojun
+Chang, and Chengqi Zhang. Connecting the dots: Multivariate time series forecasting with graph neural networks.
+In Proceedings of the 26th ACM SIGKDD international
+conference on knowledge discovery & data mining, pages
+753–763, 2020.
+Yibo Yan, Haomin Wen, Siru Zhong, Wei Chen, Haodong
+Chen, Qingsong Wen, Roger Zimmermann, and Yuxuan
+Liang. When urban region profiling meets large language
+models. arXiv preprint arXiv:2310.18340, 2023.
+Chao-Han Huck Yang, Yun-Yun Tsai, and Pin-Yu Chen.
+Voice2series: Reprogramming acoustic models for time
+series classification. In International conference on machine learning, pages 11808–11819. PMLR, 2021.
+Kun Yi, Qi Zhang, Wei Fan, Hui He, Liang Hu, Pengyang
+Wang, Ning An, Longbing Cao, and Zhendong Niu. Fouriergnn: Rethinking multivariate time series forecasting from
+a pure graph perspective. Advances in Neural Information
+Processing Systems, 36, 2024.
+Yuhan Yu, Dantong Liu, Bin Wang, and Feng Zhang. Analysis
+of global and key pm2. 5 dynamic mode decomposition
+based on the koopman method. Atmosphere, 15(9):1091,
+2024.
+Yuan Yuan, Jingtao Ding, Jie Feng, Depeng Jin, and Yong
+Li. Unist: a prompt-empowered universal model for urban
+spatio-temporal prediction. In Proceedings of the 30th ACM
+SIGKDD Conference on Knowledge Discovery and Data
+Mining, pages 4095–4106, 2024.
+Junbo Zhang, Yu Zheng, and Dekang Qi. Deep spatiotemporal residual networks for citywide crowd flows prediction. In Proceedings of the AAAI conference on artificial
+intelligence, 2017.
+Haoyi Zhou, Shanghang Zhang, Jieqi Peng, Shuai Zhang,
+Jianxin Li, Hui Xiong, and Wancai Zhang. Informer: Beyond efficient transformer for long sequence time-series
+forecasting. In Proceedings of the AAAI conference on
+artificial intelligence, pages 11106–11115, 2021.
+Tian Zhou, Peisong Niu, Liang Sun, Rong Jin, et al. One
+fits all: Power general time series analysis by pretrained
+lm. Advances in neural information processing systems, 36,
+2024.
+
+A
+
+Implementation Details
+
+A.1
+
+Baseline Models
+
+• D2STGNN: D2STGNN Shao et al. [2022b] is an advanced model designed to improve the accuracy and effi-
+
+ciency of traffic prediction by addressing the complexities
+inherent in spatial-temporal data. By decoupling spatial
+and temporal components, the model reduces complexity,
+making it more computationally efficient without sacrificing accuracy.
+• STAEformer: STAEformer [Liu et al., 2023a] is a
+cutting-edge model that elevates the standard Transformer architecture for traffic forecasting by incorporating Spatio-Temporal Adaptive Embeddings. These
+embeddings dynamically encode both spatial and temporal dependencies, allowing the model to capture the
+complex, evolving patterns typical in traffic data. The
+spatial embeddings represent geographical relationships
+between traffic nodes, while the temporal embeddings
+account for time-related patterns like rush hours or seasonal variations. Unlike traditional static embeddings, it
+adaptively adjusts to the changing traffic conditions, enhancing the model’s ability to predict future traffic flows
+with greater accuracy
+• Graph WaveNet: Graph WaveNet [Wu et al., 2019] is a
+neural network model designed for spatio-temporal forecasting, particularly in graph-structured data like traffic
+networks. It combines graph convolutions to capture
+spatial dependencies between nodes (such as road intersections) and dilated temporal convolutions to model
+long-term and short-term trends over time. A key feature of Graph WaveNet is its learnable adjacency matrix, which dynamically adapts the relationships between
+nodes. It also uses diffusion convolutions to model the
+flow of information across the graph.
+• MTGNN: MTGNN [Wu et al., 2020] is a model designed for forecasting tasks involving multivariate time
+series data with underlying graph structures, such as traffic or climate data. It combines graph neural networks to
+capture spatial dependencies between variables with temporal convolution layers to model time-based patterns.
+MTGNN uses an adaptive graph learning mechanism,
+where the graph structure representing relationships between variables is learned dynamically from the data,
+rather than being predefined. This allows the model to
+capture both static and dynamic dependencies in multivariate time series.
+• Informer: Informer [Zhou et al., 2021] is a Transformerbased model specifically designed for long-range timeseries forecasting, addressing the computational challenges of handling large sequences. It introduces the
+ProbSparse self-attention mechanism, which selectively
+focuses on the most important queries, reducing the computational load while maintaining accuracy. Additionally,
+Informer incorporates a distilling mechanism, which progressively reduces the length of the time series, retaining
+only essential features and improving efficiency. These
+innovations allow Informer to handle large-scale time
+series data efficiently, making it particularly effective for
+long-range forecasting tasks such as weather prediction,
+traffic flow analysis, and energy consumption forecasting.
+• iTransformer: iTransformer [Liu et al., 2023b] is an
+
+advanced model designed for multivariate time series
+data forecasting, leveraging the strengths of the Transformer architecture to effectively capture spatial dependencies between variables. Unlike traditional Transformers, iTransformer employs a novel invert mechanism that
+adapts to the unique characteristics of spatio-temporal
+data, enabling it to focus on relevant spatial features
+while modeling long-range temporal patterns. By effectively integrating cross-variables information, iTransformer achieves high accuracy and efficiency in forecasting tasks that involve complex, interrelated data.
+• PatchTST: PatchTST [Nie et al., 2022] is a novel framework tailored for time series forecasting that utilizes a
+patch-based approach to capture temporal dynamics efficiently. By dividing the input data into patches and
+employing a transformer architecture, it enhances the
+model’s ability to learn local and global patterns simultaneously. This design not only improves predictive performance but also reduces computational complexity, making it suitable for large-scale time series applications
+across various domains, including finance, healthcare,
+and IoT.
+• STNorm: STNorm Deng et al. [2021] normalizes data
+to better capture underlying patterns in both spatial and
+temporal dimensions. By addressing the variability in
+data across different time steps and locations, STNorm
+improves the accuracy of predictions, offering a robust
+approach to handling complex, dynamic datasets.
+• STID: STID Shao et al. [2022a] emphasizes the integration of spatial and temporal identities to enhance predictive performance. It employs unique identifiers for
+spatial and temporal components to effectively capture
+and utilize the inherent structure and patterns in the data.
+• FPT: FPT Zhou et al. [2024] demonstrate that partly
+frozen pre-trained models on natural language or images
+can handle all main time series analysis tasks.
+• HI: HI Cui et al. [2021] is a baseline model designed to
+leverage the natural continuity of historical data without
+relying on trainable parameters. HI directly uses the historical data point closest to the prediction target within
+the input time series as the forecasted value. HI capitalizes on the inherent persistence of historical patterns,
+making it a simple yet effective benchmark for time series
+forecasting tasks.
+
+A.2
+
+Dataset Descriptions
+
+We follow the same data processing and train-validation-test
+set split protocol used in the baseline models, where the train,
+validation, and test datasets are strictly divided according to
+chronological order to make sure there are no data leakage
+issues. As for the forecasting settings, we fix the length of the
+lookback series as 24 , and the prediction length is 24. Six commonly used real-world datasets vary in fields of traffic (PEMSBAY, METR-LA, Beijing Taxi, NYC Bike), energy (Solar
+Energy) and air quality (Air Quality), each of which holds tens
+of thousands of time steps and hundreds of nodes. Beijing Taxi
+and NYC Bike datasets are collected in every 30 minutes from
+
+tens of individual detectors spanning the traffic system across
+all major metropolitan areas of NYC and Beijing, which are
+widely used in previous spatio-temporal forecasting studies.
+PEMS-BAY and METR-LA datasets are collected in every
+5 minutes from nearly 40,000 individual detectors spanning
+the highway system across all major metropolitan areas of
+California. Air Quality dataset holds 6 indicators (P M 2.5,
+P M 10, N O2 , CO, O3 , SO2 ) to measure air quality. They
+are collected from 35 stations in every 1 hour. And Solar
+Energy dataset collect the every 10 minutes variations of 137
+PV plants across Alabama. Notably, we construct the graph
+for 35 stations by leveraging series similarity between nodes.
+The details of datasets are provided in Table 3
+
+A.3
+
+Evaluation Metrics
+
+Three metrics are used for evaluating the models: mean absolute error (MAE) and root mean squared error (RMSE). Lower
+values of metrics stand for better performance. RMSE and
+MAE measure absolute errors, while MAPE measures relative
+errors.
+N
+⃓
+1 ∑︂ ⃓⃓ i
+⃓
+MAE =
+⃓ŷ − yi ⃓ ,
+N i=1
+⌜
+⃓
+N
+⃓ 1 ∑︂
+RMSE = ⎷
+(ŷi − yi )2 ,
+N i=1
+where ŷi , yi represents a sample from Ŷ and Y, and N represent the total number of samples.
+
+A.4
+
+Koopman Theory
+
+Koopman Theory [Koopman, 1931] shows that any nonlinear dynamic system, including spatio-temporal series, can be
+modeled by an infinite-dimensional linear Koopman operator
+acting on a space of measurement functions.
+Koopman operator theory provides a powerful framework
+for analyzing nonlinear dynamical systems by lifting them
+into a linear infinite-dimensional space. The Koopman framework has shown particular utility in analyzing spatio-temporal
+dynamic systems, where complex, nonlinear behaviors can
+be represented using linear superpositions of Koopman eigenfunctions. The Koopman operator, denoted as K, is a linear
+operator that acts on observable functions of the system state,
+rather than directly on the state space itself. In a nonlinear
+dynamical system described by xt+1 = f (xt ), where x ∈ Rn
+is the state and f is a nonlinear map, the Koopman operator is
+defined as:
+Kg(xt ) = g(f (xt )),
+
+(5)
+
+where g is an observable, a scalar-valued function that maps
+the system’s state to a measurable quantity. The key insight is
+that while the system dynamics may be nonlinear, the evolution of observables under the action of the Koopman operator
+is linear. This allows for the application of spectral analysis techniques to extract meaningful modes of the system’s
+dynamics. Central to Koopman analysis are the Koopman
+eigenfunctions, ϕ(x), which satisfy:
+Kϕ(x) = λϕ(x),
+
+(6)
+
+Table 3: Detailed dataset descriptions. Dim denotes the variate number of each dataset. Dataset Participation denotes the total number of time
+points in (Train, Validation, Test) split respectively. Frequency denotes the sampling interval of time points.
+Dataset
+
+Dim
+
+Dataset Participation
+
+Frequency
+
+Information
+
+Air Quality
+
+35
+
+(6075, 867, 1736)
+
+1 hour
+
+Air Quality
+
+PEMS-BAY
+
+325
+
+(35488, 5207, 10414)
+
+5 min
+
+Traffic Speed
+
+METR-LA
+
+207
+
+(23958, 3422, 6845)
+
+5 min
+
+Traffic Speed
+
+Beijing Taxi(Inflow)
+
+1024
+
+(3831, 547, 1095)
+
+30 min
+
+Taxi Service
+
+Beijing Taxi(Outflow)
+
+1024
+
+(3831, 547, 1095)
+
+30 min
+
+Taxi Service
+
+NYC Bike(Inflow)
+
+128
+
+(3058, 437, 874)
+
+30 min
+
+Bike Service
+
+NYC Bike(Outflow)
+
+128
+
+(3058, 437, 874)
+
+30 min
+
+Bike Service
+
+CHI Bike
+
+270
+
+(6183, 883,1766)
+
+30 min
+
+Bike Service
+
+Solar Energy
+
+137
+
+(36776, 5254, 10507)
+
+10 min
+
+Energy
+
+where λ is the associated Koopman eigenvalue. The eigenfunctions provide a coordinate system in which the dynamics
+of the system are fully described by linear evolution:
+ϕ(xt+1 ) = eλt ϕ(xt ).
+
+(7)
+
+we organize the data into two matrices:
+X1:t−1 = [x1 , x2 , . . . , xt−1 ] ∈ Rn×(t−1)
+X2:t = [x2 , x3 , . . . , xt ] ∈ R
+
+n×(t−1)
+
+,
+
+(10)
+(11)
+
+n
+
+In practice, the Koopman spectrum, which consists of the
+eigenvalues λ, determines the growth, decay, or oscillatory
+behavior of different dynamic modes within the system. This
+makes it an invaluable tool for decomposing complex, highdimensional spatio-temporal dynamics into simpler, interpretable components.
+
+A.5
+
+Here, xi ∈ R represents the state of the system at the
+i-th time step, while t denotes the number of snapshots. The
+evolutionary matrix At maps the two data matrices such that:
+X2:t ≈ AX1:t−1 ,
+
+Then, we get the mathematical expression of A, formulated
+as:
+
+evolutionary decomposition
+
+A ≈ X2:t X+
+1:t−1 ,
+
+Decomposition methods based on the eigenvectors of a dynamic system’s evolution matrix, such as Dynamic Mode Decomposition [Schmid, 2010], often have more explicit physical
+interpretations compared to Fourier-based methods. It captures
+both transient (non-periodic) and periodic dynamics, as the
+eigenvalues can describe exponentially growing or decaying
+modes. In is derived from data representing the true dynamics
+of the system, which can separate modes that correspond to
+specific physical processes, such as fluid flow patterns, mechanical oscillations, or heat transfer [Brunton et al., 2016;
+Chen et al., 2012]. A dynamic system can be represented in a
+state-space form as:
+dx(t)
+= Ax(t)
+dt
+
+(8)
+
+where x(t) is the state vector at time t, A is the evolutionary
+matrix that describes the dynamics of the system. The solution
+to this differential equation can be expressed using the matrix
+exponential:
+x(t) = eAt x(0),
+
+(9)
+
+where eAt is the matrix exponential of A and represents the
+evolution of the state over time.
+Specifically, we can approximate the evolutionary matrix
+At in the following steps. Given an observation X1:m representing the dynamic system’s state at discrete time intervals,
+
+(12)
+
+(13)
+
++
+where X1:t−1
+is the pseudoinverse of X1:t−1 . Assuming A
+is diagonalizable, we can express the evolution of the system
+using the matrix exponential. The eigenvalue decomposition
+of A is given by:
+
+A = V DV −1 ,
+
+(14)
+
+where D = diag(ω1 , ω2 , . . . , ωn ) is a diagonal matrix of
+eigenvalues ωi , V = [v1 , v2 , . . . , vn ] is the matrix of corresponding eigenvectors. We can further write:
+Avi = ωi vi ,
+
+(15)
+
+The matrix exponential can be computed using the Jordan
+canonical form or the spectral decomposition:
+eAt = V eDt V −1 ,
+
+(16)
+
+and the matrix exponential of D is computed as:
+eDt = diag(eω1 t , eω2 t , . . . , eωn t ),
+
+(17)
+
+So we get the mathematical expression of the state vector at
+any time t:
+xt ≈ V diag(eω1 t , eω2 t , . . . , eωn t )V −1 x0 ,
+xt ≈
+
+C
+∑︂
+i=1
+
+εi eωi t vi ,
+
+(18)
+(19)
+
+where C represents the number of eigenvalues and εi is calcu∑︁C
+lated from x0 = i=1 εi vi . Specifically, we get the physicsaware dynamic components Xdyn :
+ωi t
+Xdyn =∥C
+vi ,
+i=0 εi e
+
+Xrec =
+
+C
+∑︂
+
+εi eωi t vi
+
+(20)
+(21)
+
+i=0
+
+We further introduce the evolutionary reconstruction of
+dynamic system based on analysis of eigenvalues ωi , V =
+[v1 , v2 , . . . , vn ]. To further determine whether a mode is dominant, we can analyze its energy contribution [Schmid, 2010]
+to the overall system. The energy contribution of a mode is
+typically calculated using the following formula:
+2
+
+Ei = |ωi | · e
+
+2Re(vi )t
+
+(22)
+
+This formula combines the initial amplitude of the mode ωi
+with the real part of the eigenvalue Re(vi ), providing an estimate of the mode’s energy contribution at time t . If the energy
+contribution of a particular mode is significantly higher than
+that of other modes, it can be considered a dominant mode.
+Then we sort the values of Ei for each mode ωi , and formulate
+the top-k mode ωi as our selected most dominant modes α.
+
+B
+
+Experimental Details
+
+B.1
+
+Hyper Parameter Settings
+
+For our prediction tasks, we aim to predict the next 24 steps
+of data based on the previous 24 steps. Both the historical
+length (T ) and prediction length (τ ) are set to 24. Moreover,
+the parameters for the convolution kernel in patch embedding
+layers are set to 3 and the number of the multi-head attention
+larers of reprogramming layer is set to 1. Additionally, we
+obtain the embedding of patches with the dimension of 64.
+
+B.2
+
+proposed model gpt_layers ∈ (3, 6, 9, 12). The dimension
+of patched representations D is set from {64, 128, 256}. All
+the compared baseline models that we reproduced are implemented based on the benchmark of BasicTS Shao et al. [2023],
+which is developed based on EasyTorch, an easy-to-use and
+powerful open-source neural network training framework.
+
+Further Experimental Setup Descriptions
+
+During the reprogramming phrase, we sample 1000 most relevant words to capture the complex dynamic spatio-temporal
+dependencies. It is important to note that the missing data of
+the training dataset are filled by the former time step of the
+same node. By doing so, it helps to improve the performance
+of pre-trained language models to handle spatio-temporal time
+series tasks. Because the value 0 could disturb the capabilities
+of pre-trained language models for understanding the consistent textual series. Similar to traditional experimental settings,
+each time series is split into three parts: training data, validation data, and test data. For the few-shot forecasting task, only
+a certain percentage timesteps of training data are used, and
+the other two parts remain unchanged. The evaluation metrics remain the same as for classic spatio-temporal time series
+forecasting. We repeat this experiment 3 times and report the
+average metrics in the following experiments. Additionally, before the training procedure, the Fourier representations of each
+node are pre-calculated to save reduce the computation cost, as
+a result of which to reduce the training time cost. All the experiments are implemented in PyTorch and conducted on a single
+NVIDIA RTX 3090 24GB GPU. We utilize ADAM with an
+initial learning rate of 0.002 and MAE loss for the model optimization. We set the number of frozen GPT-2 blocks in our
+
+Category
+R E PST TimesFM OC-plus OC-base OC-mini FPT Time-LLM
+NYC → CHI
+2.03
+9.07
+6.39
+3.61
+6.38 12.56
+10.32
+CHI → NYC
+11.9
+19.23
+13.26
+13.48
+13.4 30.24
+25.44
+9.81
+10.37
+10.3
+10.38 22.36
+18.04
+NYC → Solar 5.53
+Solar → Air
+31.86
+38.62
+37.34
+45.44
+48.71 68.44
+OOT
+CHI → Solar
+5.57
+9.81
+10.17
+10.3
+10.38 26.32
+16.28
+Solar → CHI
+3.96
+9.07
+6.39
+3.61
+6.38 15.44
+OOT
+
+Table 4: Zero-Shot performance comparison of different models
+across various dataset transfers. OOT indicates Out-Of-Time errors
+for specific tasks.
+
+B.3
+
+Detailed comparison of zero shot performance
+
+We provide the complete numerical results corresponding to
+Figure 3 in Table 4.
+Regarding the limited number of models compared for
+zero-shot performance, this is primarily due to the current
+scarcity of open-source spatio-temporal forecasting models
+explicitly designed for zero-shot capabilities. To the best
+of our knowledge, the baselines we included represent the
+available state-of-the-art in this area. However, we acknowledge the importance of broader comparisons, so we conducted
+more zero-shot experiments on time series models (FPT, TimeLLM). While these models may not be specifically designed
+for spatio-temporal zero-shot forecasting tasks, their inclusion
+will provide a more comprehensive context for evaluation.
+As can be seen in the table, both FPT and Time-LLM fall
+short in such spatio-temporal prediction tasks, primarily due
+to the lack of abilities for spatial modeling. Moreover, because
+of the huge computational cost of Time-LLM caused by large
+amount of spatial variables, we could only complete experiments on relatively small datasets (OOT for out of time). This
+further demonstrates the superiority of our model in handling
+spatio-temporal tasks compared to the time series models.
+
+B.4
+
+Further Experiments for Increasing predicted
+length
+
+In this part, we analyze the model performance across varying prediction horizons τ ∈ {6, 12, 24, 36, 48}, with a fixed
+input length T = 48. Figure 6 showcases the MAE and RMSE
+across two datasets: Air Quality and NYC Bike, for four
+models. The R E PST model demonstrates the most stable performance across both MAE and RMSE metrics, particularly in
+longer prediction horizons (τ = 36, 48). In contrast, previous
+state-of-the-art models exhibit notable performance degradation as the prediction horizon increases. The performance of
+R E PST, on the other hand, remains relatively stable and robust, demonstrating its efficacy in leveraging PLM to improve
+performance over longer-term predictions, which can also be
+attributed to its ability to capture both spatial and temporal
+correlations effectively, making it highly suited for few-shot
+learning tasks in spatio-temporal forecasting.
+
+Air Quality (MAE)
+
+70
+
+NYC Bike (MAE)
+
+9.0
+
+Air Quality (RMSE)
+
+80
+
+60
+
+8.0
+
+70
+
+18
+
+50
+
+7.0
+
+60
+
+16
+
+40
+
+6.0
+
+50
+
+14
+
+30 6
+
+12
+24
+36
+Prediction Horizons
+
+48 5.0 6
+
+12
+24
+36
+Prediction Horizons
+STID
+
+48 40 6
+
+48 12 6
+
+12
+24
+36
+Prediction Horizons
+
+STAEformer
+
+GWNET
+
+NYC Bike (RMSE)
+
+20
+
+12
+24
+36
+Prediction Horizons
+
+48
+
+RePST
+
+Figure 6: Few-Shot performance with multiple prediction horizons τ ∈ {6, 12, 24, 36, 48} and fixed input length T = 48. While the
+performance of previous state-of-the-art models keeps declining with the increasing of prediction length, the R E PST framework empowers the
+pretrain knowledge of the reprogrammed spatial language model and obtains a relatively stable performance.
+
+C
+
+Show Cases
+
+To provide the visualization of the prediction effect, we list
+the prediction showcases of certain nodes contained in dataset
+PEMS-BAY. Concretely, we visualize the input observation
+and prediction in 24 steps of four nodes from the node set
+(Figure 7).
+
+Prediction Showcase of Node 80 in NYC Bike
+
+Prediction Showcase of Node 50 in NYC Bike
+Ground Truth
+Prediction
+
+140
+
+80
+
+100
+80
+
+Prediction Showcase of Node 1 in PEMS-BAY
+
+Prediction Showcase of Node 20 in PEMS-BAY
+
+Ground Truth
+Prediction
+
+65.0
+
+60
+
+50
+
+40
+
+40
+
+62.5
+
+20
+
+60.0
+
+0
+
+20
+0
+0
+
+57.5
+
+40
+
+60
+
+60
+
+Ground Truth
+Prediction
+
+Ground Truth
+Prediction
+
+100
+
+120
+
+50
+
+100
+
+150
+
+200
+
+0
+
+250
+
+50
+
+55.0
+
+100
+
+150
+
+200
+
+250
+
+200
+
+250
+
+Prediction Showcase of Node 100 in NYC Bike
+
+Prediction Showcase of Node 60 in NYC Bike
+Ground Truth
+Prediction
+
+100
+
+Ground Truth
+Prediction
+
+12
+
+52.5
+
+30
+
+47.5
+
+0
+
+10
+
+20
+
+30
+
+0
+
+40
+
+10
+
+20
+
+30
+
+40
+
+Prediction Showcase of Node 60 in PEMS-BAY
+
+Prediction Showcase of Node 40 in PEMS-BAY
+60
+
+8
+
+60
+
+6
+40
+
+Ground Truth
+Prediction
+
+70
+
+Ground Truth
+Prediction
+
+10
+
+80
+
+50.0
+
+20
+
+4
+
+20
+
+60
+
+2
+0
+
+0
+
+50
+
+50
+
+40
+
+0
+
+50
+
+100
+
+150
+
+200
+
+250
+
+0
+
+50
+
+100
+
+150
+
+40
+
+30
+
+30
+
+20
+
+20
+0
+
+10
+
+20
+
+30
+
+40
+
+0
+
+10
+
+20
+
+30
+
+40
+
+Figure 8: Case Study for NYC Bike. We show the ground truth
+and predictions for 240 time steps in one figure to grasp a global
+perception.
+
+Figure 7: Case Study for PEMS-BAY. We show the input observation
+in 24 time steps and prediction horizon as 24.By showing input,
+ground truth and prediction together, we can get a clear understanding
+to the model performance.
+
+We also conduct cases from NYC Bike, which show the
+predictions in 240 time steps from certain nodes to grasp a
+global perception.
+We further show cases of our expanded spatio-temporal
+vocabulary by visualizing the selective words (see Figure 9).
+Noted that these selective word embeddings are encodings
+for word or word morphemes, which can be regarded as the
+smallest unit that makes up a word. To intuitive display, we artificially combine these small units into words. In our RePST,
+this part is completed by cross attention module, which can automatically match the spatio-temporal data with most relevant
+words. Specifically, in order to minimize the subjective impact,
+we decrease the number of our expanded spatio-temporal vocabulary as 100. Finally, we present a case study on real-world
+spatio-temporal datasets. We sample the lookback window of
+one single node in Air Quality and visualize the selected vocabulary learned by differentiable discrete reprogramming blocks.
+
+Selected Vocabulary
+Annual, Begin, rival, Bloom, refreshed, Gained, Wide, Split, incre,
+imitation, extremely, rising, few, inserted, core, air, ight, slowdown,
+cause, dawn, soon, erie, rapid, recalls, Develop, wer, St, Less,
+industry, move, icted, bad, regained, rain, atmosp, wind,
+unchanged, dusty, , itialized, intervals, Benefit, crease, spread,
+holding, ...
+
+Figure 9: Visualization of selected spatio-temporal vocabulary.
+
+As shown in tables below, it can be clearly observed that words
+from the selected vocabulary can jointly describe the temporal
+trend along with the spatio-temporal pattern vividly, indicating
+the effectiveness of reprogramming spatio-temporal data into
+textual representations.
+We also observed the insightful interpretability of our framework. For temporal components, series trends are reflected
+with words like "increase" Words like "Annual", "rapid", and
+"unchanged" also show temporal patterns. For spatial components, we get words for relative relations such as "move" and
+"spread". Furthermore, some words describe the pattern in
+certain scenarios vividly. "dusty", "rain" and "wind" represent
+a kind of phenomena which have strong relationship with air
+quality. The above results demonstrate that RePST effectively
+captures the characteristics of different scenarios and can be
+used for various downstream tasks.
+
+D
+
+Discussion
+
+D.1
+
+Discussions on Model Optimization and
+Scalability
+
+Model optimization. Following the previous GNN-based
+works Wu et al. [2019]; Shao et al. [2022a], our R E PST aims
+to minimize the mean absolute error (MAE) between the predicted future states Ŷ and ground truth Y. This provides us effective capability to generate predictions among various
+spatio⃓
+∑︁N ⃓⃓ i
+⃓
+1
+temporal scenarios, formulated as: L = N i=1 ⃓ŷ − yi ⃓ .
+Here, ŷi , yi represents a sample from Ŷ and Y, and N represent
+the total number of samples.
+Scalability. Technically, the proposed R E PST can be
+viewed as utilizing GPT-2 after performing cross-attention
+over N × P patches and V ′ word embeddings, which has
+the time and memory complexities that scale with O(N · P ·
+V ′ + (N · P )2 ). Notably, the frozen GPT-2 blocks account
+for O((N · P )2 ), which do not participate in back propagation. To reduce such computational burden that undermines
+the application of the proposed method to large N , we train
+the model by partitioning the pre-defined spatial graph into
+multiple sub-graphs. In practice, we train R E PST by sampling
+a sub-graph each time. By doing so, we can effectively reduce
+the computational costs and enable the model to scale to large
+N.
+
+D.2
+
+Discussions on Physical Knowledge from
+decomposer
+
+There are maybe questions that “Is the information extracted
+from spatio-temporal decomposer truly physical knowledge
+or fine-grained feature?". To answer this question, we claim
+as follow:
+Physics-Aware Justification. Although DMD is designed
+to extract dynamic modes directly from observational data,
+numerous studies have demonstrated its capability to identify
+propagating waves, oscillatory behaviors, and decay patterns,
+which are strongly associated with dominant physical phenomena [Yu et al., 2024]. For example, research has shown that
+DMD can reveal vortex shedding patterns and periodic oscillations in fluid dynamics. These patterns are closely aligned
+
+with the Navier-Stokes equations, reflecting the intrinsic physical dynamics of fluid motion [Yu et al., 2024]. For this reason,
+DMD is particularly suitable for capturing physics-aware patterns from spatio-temporal data, such as traffic flow and air
+pollution, which exhibit similar regularities with those governing fluid dynamics. For instance, STDEN [Ji et al., 2022] and
+AirPhyNet [Hettige et al., 2024] model the dynamics of traffic
+flow and air pollution as a continuous diffusion process via
+differential equations inspired by fluid dynamics modeling.
+Why DMD Over PCA or Eigenvectors? Unlike DMD,
+PCA or eigenvector-based methods are purely statistical tools
+that do not inherently account for the underlying physical behavior of a system. By analyzing the dominant modes, DMD
+can uncover patterns that are both interpretable and consistent
+with the underlying physical mechanisms, providing valuable
+insights for PLM that can improve predictive accuracy.
+To validate our choice, we first conducted experiments by
+replacing the physical decomposer with PCA (see Table 5).
+This results in a noticeable decline in model performance,
+suggesting that PCA’s inability to benefit PLM in our context.
+Furthermore, when we randomly initialized the pretrained
+weights of the PLM, the impact on performance was minor,
+further indicating that PCA could not effectively leverage the
+pretrained knowledge. These findings underscore the superiority of DMD in generating physically consistent interpretations
+and unlocking pretrained model knowledge.
+Furthermore, to verify the effectiveness of the knowledge extracted by the physical decomposer, we conducted experiments
+that apply the decomposed data to two state-of-the-art spatiotemporal forecasting models, i.e., STID and GWNet (see Table
+5). The results showed only marginal improvement, indicating that even advanced spatio-temporal forecasting models
+struggle to effectively utilize the physical knowledge. This
+demonstrates that the knowledge extracted by the physical
+decomposer is not simply a set of fine-grained features but
+represents a unique form of information that cannot be easily
+leveraged by all models.
+In summary, DMD demonstrates a clear advantage over simpler methods such as PCA or eigenvector decomposition by integrating spatial and temporal dynamics through interpretable
+modes aligned with physical phenomena. Our additional experimental results further emphasize its ability to enhance
+PLM’s performance by capturing meaningful, physics-aware
+patterns rather than merely extracting fine-grained statistical
+features.
+
+D.3
+
+Discussions on reasoning ability of PLMs
+
+First, in our work, reasoning refers to the ability to make predictions by comprehending both spatial and temporal contexts.
+While zero-shot performance improvements demonstrate generalization, we argue that they also reflect enhanced reasoning
+capabilities. In zero-shot setting, the model encounters spatial regions or domains it has not seen during training. The
+model’s predictive performance solely relies on its inherent
+reasoning capabilities and its capacity to infer patterns from
+prior spatio-temporal knowledge.
+Second, our DMD-based decomposer inherently captures
+spatial correlations within spatio-temporal data by leveraging
+the co-evolving nature of spatial nodes. Specifically, the input
+
+Table 5: Performance comparison of few shot on real-world datasets
+in terms of MAE. PCA_R E PST: R E PST with PCA as decomposer; PCA_random_R E PST: R E PST with PCA as decomposer and
+randomly initialize the weights of the PLM; GWNet_decomposer:
+GWNet using decomposed features; STID_decomposer: STID with
+decomposed features; R E PST_random: randomly initialize the
+weights of the PLM in R E PST.
+
+As can be seen in Table 6, R E PST consistently outperformed powerful baseline models even in long-term predictions, undersoring the robustness of our approach across varying prediction lengths.
+
+NYC Bike
+Air Quality Solar Energy
+Inflow
+Outflow
+Metric
+MAE RMSE MAE RMSE MAE RMSE MAE RMSE
+PCA_R E PST
+37.49 51.66 4.61 9.74 7.51 15.33 7.81 15.16
+PCA_random_R E PST 38.04 54.32 4.67 10.84 7.55 15.78 7.82 15.23
+GWNet_decomposer 35.81 51.94 8.94 11.02 11.84 20.67 10.96 19.48
+GWNet
+36.26 54.88 9.10 11.87 12.55 21.97 12.68 22.27
+STID_decomposer 42.44 59.68 4.34 8.75 8.07 16.04 8.04 16.55
+STID
+43.21 61.07 4.89 9.41 8.94 16.34 8.88 15.77
+R E PST_random
+40.12 56.27 5.21 9.32 7.83 16.41 6.81 15.82
+R E PST
+33.57 47.30 3.65 6.74 5.29 12.11 5.66 12.85
+
+Reconstruction plays a pivotal role in DMD-related techniques,
+ensuring that the extracted modes faithfully capture the system’s underlying dynamics while eliminating redundant noise.
+In our approach, we enhance this process by prioritizing the
+most dominant modes, enabling a more precise representation
+of key spatio-temporal patterns. We conducted experiments
+(Figure 10) to systematically evaluate its role and assess its
+influence on the overall results, following the setting of the
+ablation study in the paper.
+
+Dataset
+
+matrix X, where rows represent spatial nodes and columns
+represent time steps, implicitly embeds spatial relationships
+through the correlated dynamics of the nodes. During decomposition, spatial nodes exhibiting similar temporal behaviors
+(e.g., traffic flow on adjacent roads) are naturally grouped into
+the same dynamic mode, i.e., dominant global patterns that
+summarize the behavior of correlated spatial nodes. These
+patterns reflect how the spatio-temporal system as a whole
+evolves over time. Furthermore, DMD does not require prior
+spatial knowledge (e.g., spatial adjacency matrices), making it
+a flexible approach for datasets with implicit spatial relationships.
+Third, we further conducted empirical studies to validate
+the contribution of DMD to spatial reasoning. In specific,
+we decomposed each node in the dataset independently and
+then concatenated them together, rather than decomposing the
+entire spatio-temporal system. By doing so, we can eliminate
+the impact of DMD on spatial dimension. We observe an
+obvious decrease in the model performance, indicating that
+the decomposer extract spatio-temporal knowledge from the
+system rather than simple temporal embeddings.
+Table 6: Performance comparison of few shot on real-world datasets
+in terms of MAE and RMSE. The input history time steps T and
+prediction steps τ are both set to 96.
+NYC Bike
+Air Quality Solar Energy
+Inflow
+Outflow
+Metric
+MAE RMSE MAE RMSE MAE RMSE MAE RMSE
+iTransformer 50.92 72.95 4.58 9.91 4.45 10.34 4.45 10.33
+PatchTST 44.22 66.67 4.24 8.56 4.47 10.88 4.48 10.88
+STID
+38.92 58.91 4.61 8.93 4.46 10.38 4.43 10.32
+GWNet
+40.47 60.44 OOM OOM 7.59 16.43 7.53 16.28
+R E PST
+34.34 54.38 4.02 8.05 4.40 9.95 4.39 9.87
+Dataset
+
+D.4
+
+Discussions on longer prediction horizons
+
+As is common in spatio-temporal forecasting research, our
+experiments focused on relatively short prediction lengths to
+align with standard evaluation protocols in the field. However,
+we acknowledge the importance of exploring longer prediction horizons to provide a more comprehensive assessment
+of model performance. We conducted additional experiments
+with a prediction length of 96 across four datasets (OOM:
+Out-Of-Memory).
+
+D.5
+
+Discussions on the effectiveness of
+Reconstruction
+
+Air Quality
+
+35
+
+30
+
+45
+
+25
+
+20
+
+40
+
+MAE
+
+Solar Energy
+
+50 4.5
+
+RMSE
+
+8
+
+30
+
+4.0
+
+7
+
+25
+
+3.5
+
+6
+
+20
+
+3.0
+
+5
+
+15
+
+4
+
+10
+
+35 2.5
+
+MAE
+
+r/p PLM
+r/p Decomposition
+
+RMSE
+w/o Expanded Vocabulary
+w/o Reconstruction
+
+Beijing Taxi
+
+50
+
+40
+
+30
+
+MAE
+
+RMSE
+
+20
+
+w/o Dynamics
+RePST
+
+Figure 10: Ablation study. We conduct multiple detailed ablation
+studies on Air Quality, Solar Energy and Beijing Taxi datasets to
+figure out the effects of R E PST’s main components.
+
+As can be seen in the Table 10, the model performance declines obviously when we remove either dynamic components
+(Xdyn ) or reconstruction data (Xrec ). The ablation studies
+confirm that the reconstruction matrix is essential for maintaining high performance, alongside the dynamics component.
+The results also demonstrate the necessity of integrating both
+components to fully realize the advantages of the R E PST
+framework.
+
+E
+
+Broader Impact
+
+E.1
+
+Impact on Real-world Applications
+
+Our work copes with real-world spatio-temporal forecasting,
+which is faced with problems of data sparsity and intrinsic
+non-stationarity that poses challenges for deep models to train
+a domain foundation model. Since previous works thoroughly
+explore the solutions to deal with various spatio-temporal
+dependencies, we propose a novel approach which leverage
+the power of pre-trained language models to handle spatiotemporal forecasting tasks, which fundamentally considers the
+natural connection between spatio-temporal information and
+natural language and achieves modality alignment by leveraging reprogramming. Without additional effort on prompts
+engineering[Li et al., 2024a; Yan et al., 2023] which is a timecost but essential part in enhancing the capabilities of pretrained language models, our R E PST automatically learns the
+spatio-temporal related vocabulary which can unlock the domain knowledge of pre-trained language models to do spatiotemporal reasoning and predictive generation. Our model
+reaches state-of-the-art performance on the four real-world
+
+datasets , covering energy, air quality and transportation, and
+demonstrates remarkable capability to handle problem of data
+sparsity. Therefore, the proposed model makes it promising
+to tackle real-world forecasting applications, which can help
+our society to prevent multiple risks in advance with limited
+computational cost and small amount of data.
+
+E.2
+
+Impact on Future Research
+
+In this paper, we find that models trained on natural languages
+can handle spatio-temporal forecasting tasks, which is totally
+a different data modality from natural language. This demonstrates that aligning different data modality properly can unlock the domain knowledge obtained by the pre-trained model
+during the training process. Therefore, there is a possibility
+that models that pre-trained on data from various domains hold
+the capability to handle problems in different fields even if in
+different modalities. The underlying reasons why pre-trained
+models can handle cross-modality tasks still remains to be
+explain.
+
+

@@ -1,0 +1,2768 @@
+1
+
+TPLLM: A Traffic Prediction Framework Based on
+Pretrained Large Language Models
+
+arXiv:2403.02221v2 [cs.LG] 18 Mar 2024
+
+Yilong Ren, Yue Chen, Shuai Liu, Boyue Wang, Haiyang Yu, and Zhiyong Cui
+
+Abstract—Traffic prediction constitutes a pivotal facet within
+the purview of Intelligent Transportation Systems (ITS), and
+the attainment of highly precise predictions holds profound
+significance for efficacious traffic management. The precision of
+prevailing deep learning-driven traffic prediction models typically
+sees an upward trend with a rise in the volume of training
+data. However, the procurement of comprehensive spatiotemporal
+datasets for traffic is often fraught with challenges, primarily
+stemming from the substantial costs associated with data collection and retention. Consequently, developing a model that can
+achieve accurate predictions and good generalization ability in
+areas with limited historical traffic data is a challenging problem.
+It is noteworthy that the rapidly advancing pretrained Large
+Language Models (LLMs) of recent years have demonstrated
+exceptional proficiency in cross-modality knowledge transfer and
+few-shot learning. Recognizing the sequential nature of traffic
+data, similar to language, we introduce TPLLM, a novel traffic
+prediction framework leveraging LLMs. In this framework, we
+construct a sequence embedding layer based on Convolutional
+Neural Networks (CNNs) and a graph embedding layer based
+on Graph Convolutional Networks (GCNs) to extract sequence
+features and spatial features, respectively. These are subsequently
+integrated to form inputs that are suitable for LLMs. A LowRank Adaptation (LoRA) fine-tuning approach is applied to
+TPLLM, thereby facilitating efficient learning and minimizing
+computational demands. Experiments on two real-world datasets
+demonstrate that TPLLM exhibits commendable performance in
+both full-sample and few-shot prediction scenarios, effectively
+supporting the development of ITS in regions with scarce
+historical traffic data.
+Index Terms—Traffic prediction, pretrained large language
+models, few-shot learning, fine-tuning, deep learning.
+
+I. I NTRODUCTION
+
+T
+
+O mitigate the mounting strain of traffic congestion and
+curb the economic losses and environmental pollution it
+spawns, numerous countries have embarked on fostering the
+development and implementation of Intelligent Transportation
+Systems (ITS). Traffic prediction is a core functionality of
+ITS [1], and the attainment of precise predictive outcomes
+is critically important for both traffic status analysis and
+This work was supported by the NSFC (52202378); in part by the Open
+Research Project Program of the State Key Laboratory of Internet of Things
+for Smart City (SKL-IoTSC(UM)-2021-2023/ORP/GA08/2022), the Youth
+Talent Support Program of Beihang University under Grant (YWF-22-L1239), and the Ministry of Transport of PRC Key Laboratory of Transport
+Industry of Comprehensive Transportation Theory (MTF2023002). (Corresponding author: Zhiyong Cui.)
+Yilong Ren, Yue Chen, Shuai Liu, Haiyang Yu and Zhiyong Cui
+are with the State Key Laboratory of Intelligent Transportation Systems,
+School of Transportation Science and Engineering, Beihang University, Beijing 100191, China (e-mail: yilongren@buaa.edu.cn; cyu6369@buaa.edu.cn;
+shuailiu@buaa.edu.cn; hyyu@buaa.edu.cn; zhiyongc@buaa.edu.cn).
+Boyue Wang is with the Faculty of Information Technology, Beijing
+University of Technology, Beijing 100124, China (e-mail: wby@bjut.edu.cn).
+
+Sensor 1
+
+Sensor 2
+
+Fig. 1. Correlation between time-series traffic data.
+
+effective traffic management. For example, accurate traffic
+flow prediction empowers traffic management authorities to
+issue timely congestion alerts, thereby enabling drivers to
+circumvent congested routes, which directly contributes to a
+reduction in average vehicle travel time and, consequently, a
+decrease in greenhouse gas emissions [2].
+With the technological advances in recent years, emerging
+technologies spearheaded by deep learning have furnished
+increasingly efficient and accurate support to a multitude of
+ITS functionalities. Spatio-temporal data of traffic presents
+a robust foundation for deep learning-driven traffic prediction methodologies. This category of data embodies intricate
+spatio-temporal characteristics and is mainly constituted by
+time-series data collected by multiple sensors, coupled with
+the corresponding spatial information of the underlying road
+network. According to the spatial structure of the road network, there is a correlation between each time-series traffic
+data [3], [4], as shown in Fig. 1.
+Existing deep learning-based traffic prediction models usually extract spatio-temporal features from traffic data through
+multiple extractors, the performance of these models usually
+increases with the amount of training data [5]. To ensure
+good accuracy, most traffic prediction models require datasets
+containing longer history data for training. However, due to
+the high cost of long-term data collection and storage, there
+are difficulties in constructing a comprehensive traffic spatiotemporal dataset in most regions. This constraint thereby limits
+the widespread application of certain data-driven traffic prediction models. Furthermore, these models are often trained only
+for specific tasks, which may lead to overfitting and thereby
+degrade the generalization ability of the model. In summary,
+it is still challenging to develop models that are resilient to
+overfitting and capable of delivering accurate predictions in
+areas with limited historical traffic data.
+
+2
+
+Pretrain
+
+LLM
+
+Web Pages/Books/News
+Traffic Description
+
+Fine-tune
+
+This
+
+Sensor 1
+
+Few-shot Sequences
+
+is
+
+Sensor 2
+
+a
+
+Sensor 3
+
+sentence
+
+Sensor 4
+
+Graph Data
+
+···
+
+…
+
+Downstream Tasks
+Traffic
+Flow
+Prediction
+
+Traffic
+Missing Data
+Imputation
+
+Time-series Traffic Data
+
+Full-sample Sequences
+
+Map Characteristics
+Time Series Features
+
+Textual Language Data
+
+…
+
+<EOS>
+Traffic
+Incident
+Identification
+
+…
+
+…
+Sensor N
+
+Token Embedding ∈ ℝN×D
+
+Historical Sequence ∈ ℝN×T
+
+Fig. 3. Similarity between time-series traffic data and natural language.
+Fig. 2. Pretrained LLM for traffic tasks.
+
+Pretrained Large Language Models (LLMs), which have
+rapidly emerged in recent years, offer a promising solution
+to the aforementioned challenge. Pretrained LLMs are deep
+learning models trained on large-scale high-quality generalized
+datasets to capture universal patterns and information. LLMs
+are widely recognized for generative tasks due to their capabilities of powerful few-shot learning [6] and cross-modality
+knowledge transfer [7]. Endowed with an extensive array of
+parameters and a wealth of pre-existing knowledge, LLMs
+have found applications across a diverse range of domains,
+notably including transportation. These models exhibit remarkable potential for swift adaptation to a variety of downstream
+tasks, such as traffic prediction, data imputation, and incident
+identification. This adaptability is facilitated through the process of fine-tuning, which requires only minimal data [8] to
+significantly extend the models’ capabilities, as depicted in
+Fig. 2. The fine-tuning mechanism leverages a considerable
+number of pretrained parameters, which are kept frozen to
+prevent overfitting, thereby enhancing the models’ ability to
+generalize across different tasks and datasets.
+Although LLMs are extensively utilized across various
+fields, they were initially devised for processing natural language [9] through a token embedding mechanism, which
+seems unsuitable for the time-series data typically encountered
+in transportation applications. Nevertheless, Fig. 3 illuminates
+a significant structural similarity between multivariate timeseries traffic data and textual data, with both being representable as collections of vectors of consistent dimensionality.
+This congruence effectively narrows the divide between these
+distinct types of data, unveiling a promising path for applying
+LLMs to the analysis of traffic data. Inspired by this insight,
+we are motivated to pursue innovative modifications of LLMs,
+aiming to harness their potential for analyzing traffic data and
+deciphering complex spatiotemporal patterns.
+In order to introduce pretrained LLMs to the traffic prediction task and overcome the few-shot challenge caused by data
+cost, we propose TPLLM, a framework for traffic prediction
+based on pretrained LLMs. The central idea of the TPLLM is
+to shape the multivariate time-series traffic data into a form
+that is understandable by LLMs in a token embedding-like
+manner, thus exploiting the prior knowledge in the LLMs.
+
+To further enhance the model’s understanding of the spatial
+features of the traffic data, we also append graph-structured
+spatial information of the road network to the input. The final
+output from the LLMs is used in order to generate traffic
+prediction results. To optimize training efficiency and finetuning effectiveness, we employ a Parameter-Efficient FineTuning (PEFT) approach, specifically Low-Rank Adaptation
+(LoRA) [10], significantly reducing training costs without
+compromising performance. Our experiments show that with
+the powerful prior knowledge and inference capabilities of
+LLMs, the TPLLM can efficiently complete the regular traffic
+prediction task and perform equally well on the few-shot
+prediction task.
+In summary, our contributions can be listed as follows:
+• We propose TPLLM, a framework for traffic prediction
+based on pretrained LLMs, to cope with full-sample and
+few-shot traffic prediction tasks.
+• An embedding module is designed based on convolutional neural networks and graph convolutional networks.
+This module aims to enable LLMs to understand timeseries data and to fuse spatiotemporal features implied
+within the traffic data.
+• To reduce training costs and maintain high fine-tuning
+quality, we applied a cost-effective fine-tuning method,
+LoRA, to TPLLM. This approach preserves TPLLM’s existing knowledge, also improving its efficiency in making
+accurate traffic predictions with limited data.
+• We conducted experiments in scenarios with sufficient
+and limited training data, respectively, to make the proposed method highly relevant to the realistic situations.
+The results validate that the prior knowledge in pretrained
+LLMs can be effectively applied to traffic prediction.
+The paper is structured as follows: Section 2 gives an
+overview of related studies. Section 3 explains the traffic
+prediction issue and the structure of our proposed framework.
+Section 4 covers the experimental results on real-world data.
+Section 5 concludes the paper and suggests areas for future
+research.
+II. R ELATED W ORK
+In this section, the related work of this paper is reviewed,
+including research on traffic prediction and LLMs for time
+series prediction.
+
+3
+
+A. Traffic Prediction
+Traffic data exhibit strong dynamic correlations in both
+spatial and temporal dimensions, making traffic prediction a
+challenging task. Early work on traffic prediction generally
+relied on statistical methods or conventional machine learning
+methods such as Autoregressive Integrated Moving Average
+(ARIMA) [11], Support Vector Machine (SVM) [12], and KNearest Neighbor (KNN) [13]. These methods view traffic data
+as a simple time series, which makes it difficult to capture the
+nonlinear spatio-temporal features in the data, and therefore
+have limitations and low prediction accuracy.
+In recent years, with the rapid development of computer
+technology, deep learning methods, especially graph-based
+methods, have been widely used in traffic prediction. In
+this field, Recurrent Neural Networks (RNNs) [14] and its
+variants Long Short-Term Memory (LSTM) [15] and Gate
+Recurrent Unit (GRU) [16] are often used to extract the
+temporal dependence of traffic data. Meanwhile, Graph Convolutional Networks (GCNs) [17] are often used to extract
+the spatial dependence of traffic data. Convolutional Neural
+Networks (CNNs) [18] and attention mechanisms [19] can
+also be integrated to identify salient information. Several traffic
+prediction methods have achieved commendable outcomes by
+integrating multiple deep learning strategies. For instance,
+STGCN [20] consists of ST-Conv blocks that capture spatiotemporal correlations through GCNs and CNNs in each block.
+ASTGCN [21] employs a spatio-temporal attention mechanism that combines GCNs and CNNs, respectively, allowing
+the model to dynamically learn the correlation between space
+and time. STSGCN [22] connects graph-structured data at
+different time steps into a single graph, which can directly
+and simultaneously capture local spatial-temporal correlations.
+Despite these achievements, these methods usually focus on
+tasks with standard-sized training data, which means they
+require a large amount of historical data for training to achieve
+good accuracy. This reliance on extensive datasets presents
+a challenge when dealing with limited historical traffic data
+scenarios.
+B. Pretrained LLMs
+In recent years, propelled by the evolution of computational
+devices and the emergence of vast text corpora, a multitude
+of Transformer-based pretrained LLMs have demonstrated
+remarkable capabilities in tackling diverse natural language
+processing tasks [9]. Researchers found that model performance could be improved by stacking modules, so they further
+investigated the scaling effect by increasing the parameter
+scales to larger size. When the parameter size exceeds a certain
+level, these language models not only achieve significant
+performance improvements, but also exhibit some unique
+capabilities that are not available in small-scale models, such
+as the few-shot learning capability [6].
+OpenAI proposed Generative Pre-Trained Transformer
+(GPT) [23] based on the Transformer decoder, which shows
+a strong capability by training on a large amount of corpus
+data. The basic principle of GPT is to compress various types
+of knowledge into a decoder-only Transformer model through
+
+linguistic modeling so that the knowledge can be memorized
+and act as a general-purpose task solver. Based on this idea,
+GPT-2 [24], GPT-3 [6], and GPT-4 [25] with increasing
+number of parameters have been gradually released, and they
+not only perform well in a variety of NLP tasks, but also show
+very good performance on some specialized tasks that require
+domain adaptability. General Language Model (GLM) [26]
+is the first open-source LLM optimized for Chinese-English
+bilingual training. The main architecture of GLM consists of
+a stack of Transformer decoders which apply an autoregressive
+blank infilling technique for self-supervised training for a wide
+range of tasks. Large Language Model Meta AI (LLaMA)
+[27] is an open and efficient base LLM released by Meta
+AI. LLaMA normalizes the inputs of each Transformer layer
+instead of the outputs, and removes the absolute position
+embedding, replacing it with the rotational position embedding
+at each layer. Bidirectional Encoder Representations from
+Transformers (BERT) [28] is a language model based on
+Transformer encoders. It cannot perform exact generation but
+can reconstruct the original data using bi-directional contextual information and is therefore commonly used for content
+understanding tasks.
+We believe that the nature of the time series prediction task
+is a generative task on the predicted sequences. Therefore,
+generative LLMs based on Transformer decoders may be more
+applicable to our study, such as GPT.
+C. LLMs for Time-series Prediction
+Due to the exceptional few-shot learning capability [6] and
+cross-modality knowledge transfer proficiency [7] of LLMs,
+their applications can be expanded into numerous scenarios
+across different domains through the PEFT technology without
+necessitating complete retraining.
+However, there are relatively few studies applying pretrained
+LLMs to traffic prediction, and the main research focuses on
+the field of general time series prediction. Zhou et al. [29]
+proposed a generalized time-series analysis framework based
+on cross-modality knowledge migration of pretrained LLMs.
+This is the first time that a pretrained LLM is used for time
+series analysis tasks including prediction, classification, interpolation, and anomaly detection. The framework makes input
+embedding and positional embedding of the input time series
+and applies the PEFT method to the LLM. Following this,
+a variety of generalized time-series processing frameworks
+based on pretrained LLMs have emerged. For example, Chang
+et al. [30] proposed a framework based on a two-stage finetuning LLM. Firstly, the model is aligned with the time-series
+characteristics through supervised fine-tuning, followed by
+further fine-tuning guided by the downstream task. As another
+example, Rasul et al. [31] first applied LLaMA as a timeseries prediction base model and demonstrated its good fewshot learning ability through experiments with 20% to 80%
+of the training data. In addition, some studies have focused
+on tokenization of time series to generate embeddings that
+are more manageable by LLM. For instance, Sun et al. [32]
+designed a time-series encoder based on comparative learning
+to obtain applicable embeddings; Liu et al. [33] aligned time
+
+4
+
+Fig. 4. Structure of the TPLLM.
+
+series segments with language tokens to projects each segment
+into the embedding space of LLMs.
+In the field of traffic time-series processing with application
+of pretrained LLMs, there are only a few preliminary studies.
+Chen et al. [34] first used pretrained LLMs for a traffic spatiotemporal task, where they discerned spatial dependencies for
+data imputation through the graph attention mechanism. Liu
+et al. [35] first used pretrained LLMs for traffic prediction by
+learning spatial location and global temporal representations
+of tokens through a spatio-temporal embedding module. However, this method did not take into account the graph-structured
+spatial features of traffic road networks.
+Inspired by the above studies and considering the complex
+spatio-temporal characteristics of traffic data, we construct
+a novel framework dedicated to traffic prediction based on
+pretrained LLMs.
+III. M ETHODOLOGY
+In this section, the traffic prediction task is first described.
+Subsequently the components of the TPLLM are described in
+detail.
+A. Task description
+The data used in traffic prediction tasks can be described as
+features of a graph, and traffic data detected by a single sensor
+can be considered as graph node features. Therefore, we use
+the graph G = (V, E, A) to define the road network in our
+study, where V is a finite set consisting of N traffic sensor
+nodes; E is a finite set consisting of edges between connected
+nodes; and A ∈ RN ×N is the adjacency matrix of the graph
+G, which denotes the connectivity between nodes. In graph
+G, each sensor node samples the traffic data with the same
+frequency. We use xt = {x1 , ..., xn , ..., xN } ∈ RN to denote
+the temporal characteristics of the graph G at time t, where
+xn denotes the characteristic data, such as flow and average
+velocity, collected by a single sensor n at time t.
+The aim of traffic prediction tasks is to find a model
+f (.). The input of the model is a historical sequence of the
+last T time steps X = {xt−T +1 , ..., xt } ∈ RN ×T and the
+adjacency matrix A of the graph G. The output of the model
+
+is a prediction sequence of the next T ′ time steps Y =
+′
+{yt+1 , . . . , yt+i , ..., yt+T ′ } ∈ RN ×T , where yt+i ∈ RN is
+the prediction value of the feature of the graph G at the i-th
+time step in the future. The prediction process of the model
+is as follows:
+Y = f (X, A).
+
+(1)
+
+Based on the deep learning theory, we can approximate
+f (.) using the approximator fθ (.) based on a deep learning
+model, where θ is learnable parameters. In this study, we aim
+to construct fθ (.) based on a pretrained LLM to utilize the
+few-shot learning capability of the LLM to make the model
+suitable for regular and small-sample traffic prediction tasks.
+B. Overview of the TPLLM
+The structure of the TPLLM is shown in Fig. 4. We
+use a pretrained Transformer-based LLM as a backbone for
+analyzing and predicting traffic spatio-temporal data. In order
+to enable the pretrained LLM to process the time-series data
+while taking into account the spatial features in the data, we
+designed an input embedding module that consists of two
+components:
+• Sequence Embedding Layer: This layer uses a CNN to
+process the sequential traffic data, extracting the temporal
+dependencies and patterns.
+• Graph Embedding Layer: This layer uses a GCN to process the adjacency matrix of the road network, extracting
+the spatial dependencies and patterns.
+Subsequently, in the pretrained LLM, we use LoRA [10] in
+each transformer block to fine-tune the model to achieve good
+performance at a small training cost. Finally, the prediction
+results are output through a linear layer.
+C. Input Embedding
+In order to make the pretrained LLM adaptable to the
+traffic prediction task, the spatio-temporal data needs to be
+input in a form that can be understood by the LLM. Based
+on the similarity between time-series traffic data and natural
+language, we consider the historical data sequence of a single
+
+5
+
+sensor during a period T as a word, and the data X of all
+sensors in the road network during this period as a sentence.
+Sensor nodes in a road network do not have sequential
+relationships among them like words in a sentence, but
+rather positional relationships with a graph structure. GCNs
+are feature extractors for graph-structured data that extract
+features from the aggregation of node adjacency information
+through the input data and adjacency matrix. Therefore, we
+designed a graph embedding layer based on GCNs to extract
+spatial information from road networks. The graph embedding
+GEF (X) ∈ RN ×F ×T with F channels is computed as
+follows:
+Ã = A + I,
+GEF (X) = ReLU (D̃
+
+− 12
+
+Transformer Block
+Wq
+
+Training
+
+Q
+
+Frozen
+
+LoRA
+
+Bq
+
+h
+
+Cq
+
+K
+
+Wk
+
+Attention
+
+Layer
+Norm
+
+Feed
+Forward
+
+Layer
+Norm
+
+LoRA
+
+Bk
+
+Ck
+
+Wv
+
+V
+
+Fig. 5. Structure of the Transformer blocks.
+
+(2)
+− 21
+
+ÃD̃
+
+XW + b),
+
+(3)
+
+where I denotes the unit matrix, D̃ denotes the degree matrix
+of Ã, W denotes the learnable parameter matrix, b denotes
+the learnable bias vector, and ReLU (.) is the ReLU activation
+function.
+In addition, we design a sequence embedding layer based on
+1-D CNNs to extract features from the time series themselves.
+The sequence embedding SEF (X) ∈ RN ×F ×T with F
+channels is computed as follows:
+SEF (X) = Conv1dF (X),
+
+(4)
+
+where Conv1dF (.) denotes a 1-D convolution operation with
+F filters.
+Finally, the input needs to be compatible with the selected
+pretrained LLM. The graph embedding is fused with the
+sequence embedding, followed by a linear layer that maps the
+temporal dimension of the fused information to the LLM’s
+embedding size D to obtain M ∈ RN ×F ×D . Finally, the state
+of the last feature channel of M is taken to get the input of the
+LLM. The input embedding Emb(X) ∈ RN ×D is computed
+as follows:
+M = LinearD (LN (ReLU (GEF (X) + SEF (X)))),
+
+(5)
+
+Emb(X) = {miF j |0 ≤ i < N, 0 ≤ j < D},
+
+(6)
+
+where LN (.) denotes a layer normalization, LinearD (.) denotes a linear layer that maps the input to dimension D,
+miF j ∈ M denotes the elements in M.
+
+It is demonstrated that pretrained LLMs that freeze most of
+the parameters can, applying the PEFT method, be comparable
+to models that are fully trained on downstream tasks [7]. The
+PEFT of pretrained LLMs aims to improve the performance
+of pretrained LLMs on new tasks by adjusting or introducing
+trainable parameters to minimize the number of trainable
+parameters and computational complexity.
+We use LoRA [10], a PEFT method that injects trainable
+rank decomposition matrix B and C into each Transformer
+block in the LLM to significantly reduce the size of trainable
+parameters. The structure of the Transformer blocks in the
+LLM is shown in Fig. 5.
+To avoid introducing additional noise to the model, B is
+zero initialized and C is Gaussian initialized. LoRA is applied
+to the Query and Key of the attention layers in the LLM.
+We denote the rank of the LoRA module by r, which is
+a hyperparameter reflecting the amount of information the
+module can contain. Assuming that the input of Query and
+Key in an attention layer is h0 with size d and the output is h
+with size k, then B ∈ Rd×r , C ∈ Rr×k , and r ≪ min(d, k).
+This process can be expressed as:
+h = W0 h0 +
+
+α
+BCh0 ,
+r
+
+where W0 denotes the pretrained weight matrix, which contains the model’s built-in knowledge, α is a hyperparameter
+that acts similarly to the learning rate.
+We input Emb(X) into the LLM with LoRA and get the
+output Emb(H) ∈ RN ×D . This process can be represented
+as:
+H = LLM (Emb(X)),
+
+D. Pretrained LLM and PEFT
+Despite the similarity between traffic data and textual data,
+as generic pretrained LLMs are still dedicated to textual data,
+we should not make them directly handle the embedding
+of traffic spatio-temporal data without adjustment. Although
+retraining the entire LLM may solve this problem, the required
+computational resources are too large to be acceptable.Based
+on the above, we need to apply the PEFT method to adjust the
+pretrained LLM with lower computational resources to make
+it suitable for downstream traffic prediction tasks.
+
+(7)
+
+(8)
+
+where LLM (.) denotes the pretrained LLM with LoRA.
+Finally, to ensure that the final output matches the desired
+shape, the predictions are output through a linear layer. This
+process can be represented as:
+Y = ReLU (LinearT ′ (H)),
+
+(9)
+
+where LinearT ′ (.) denotes a linear layer that maps the input
+to dimension T ′ .
+
+6
+
+E. Loss Function
+Considering that there are usually outliers caused by sensor
+failures and other reasons in traffic datasets, we choose the
+robust L1 loss, i.e. Mean Absolute Error (MAE), as the loss
+function of the TPLLM:
+Loss(yi , ŷi ) = |yi − ŷi | .
+
+(10)
+
+IV. E XPERIMENTS
+In this section, we conduct experiments on two traffic
+spatio-temporal datasets. The experiments include full-sample
+prediction, few-shot prediction, sensitivity analysis to the rank
+of LoRA, and ablation experiments, which can verify the
+effectiveness of the cross-modal knowledge transfer capability
+and few-shot learning capability of pretrained LLMs for traffic
+prediction tasks.
+A. Datasets
+To validate the performance of the proposed framework,
+we conducted experiments on two real-world traffic datasets
+PeMS04 and PeMS08. The PeMS datasets [36] contain traffic
+data collected by multiple sensors on major roads in California
+at a frequency of 5 minutes. The datasets contain three features: traffic flow, occupancy, and velocity. Since the cyclical
+variation of traffic flow over time is the most obvious, we take
+it as the object of the study. In order to improve the stability
+of the training process, we first normalize all the data and
+finally renormalize the predictions of the model output. The
+description of the two datasets used are shown in Table I.
+
+TABLE II
+H YPERPARAMETERS OF THE TPLLM
+
+Hyperparameter
+
+Value
+
+batch size
+epochs
+initial learning rate
+learning rate decay rate
+F
+r
+α
+dropout of LoRA
+
+16
+500
+0.001
+0.5/100 epochs
+64
+4/8/16/32/48/64
+32
+0.1
+
+C. Evaluation Metrics
+We evaluate the performance of the proposed framework using three common metrics: Mean Absolute Error (MAE), Root
+Mean Square Error (RMSE), and Mean Absolute Percentage
+Error (MAPE). For a single prediction of the framework, the
+process of calculating the evaluation metrics is as follows:
+N
+
+M AE(yi , ŷi ) =
+
+1 X
+|yi − ŷi | ,
+N i=1
+
+v
+u
+N
+u1 X
+RM SE(yi , ŷi ) = t
+(yi − ŷi )2 ,
+N i=1
+
+(11)
+
+(12)
+
+N
+
+TABLE I
+DATASETS D ESCRIPTION
+Dataset
+
+Nodes
+
+Time Steps
+
+Time Range
+
+PeMS04
+PeMS08
+
+307
+170
+
+16992
+17856
+
+1/1/2018-2/28/2018
+7/1/2016-8/31/2016
+
+M AP E(yi , ŷi ) =
+
+1 X |yi − ŷi |
+,
+N i=1
+yi
+
+(13)
+
+where ŷi is the predicted value of traffic flow for the i-th
+sensor, yi is the true value of traffic flow for the i-th sensor.
+D. Baselines
+
+In all experiments, we use 1-hour historical traffic flow data
+as input, i.e., the input sequence length T is 12, to predict the
+future traffic flow for 15 minutes, 30 minutes and 1 hour, i.e.,
+the output sequence lengths T ′ is 3, 6 and 12, respectively.
+B. Settings
+We use the GPT-2 [24] as the base LLM for the TPLLM,
+corresponding to D = 768. By applying LoRA, only about
+0.95% of the parameters in the framework are trainable, which
+significantly reduces the computational cost. In addition, since
+cross-modal knowledge transfer capability is prevalent in
+various types of pretrained LLMs, other models can be used
+in place of GPT-2 as needed.
+The optimizer of the TPLLM is set as Adam, and the
+hyperparameters are shown in Table II.
+We constructed the TPLLM based on Python 3.10 and
+PyTorch 2.0.1. All experiments are conducted on a server
+computer with 4 Intel Xeon Platinum 8375C CPUs, 6 NVIDIA
+GeForce RTX 4090 GPUs, and 256 GB of RAM.
+
+The TPLLM is compared with several baselines. The baselines are described in detail below:
+• LSTM [15]: Long Short-Term Memory neural networks,
+a model designed to solve the long-term dependency
+problem of general RNNs, contains multiple gated units.
+We constructed an LSTM model with two hidden layers
+and one fully connected layer.
+• STGCN [20]: Spatio-Temporal Graph Convolutional Networks, a model consisting of multiple spatio-temporal
+convolutional modules, each containing two temporal
+gated convolutional layers and one spatial graph convolutional layer.
+• ASTGCN [21]: Attention based Spatial-Temporal Graph
+Convolutional Networks, a spatio-temporal attentionbased model, uses graph convolution and temporal convolution to extract features by combining attention mechanisms.
+• STSGCN [22]: Spatial-Temporal Synchronous Graph
+Convolutional Networks, a model that applies graph
+
+7
+
+TABLE III
+R ESULTS OF F ULL - SAMPLE P REDICTION
+
+Dataset
+
+PeMS04
+
+PeMS08
+
+Model
+LSTM
+STGCN
+ASTGCN
+STSGCN
+TPLLM
+LSTM
+STGCN
+ASTGCN
+STSGCN
+TPLLM
+
+MAE
+29.10
+23.56
+19.68
+20.09
+18.39
+24.16
+20.12
+16.19
+16.26
+14.29
+
+15 min (T’=3)
+RMSE
+MAPE
+45.45
+21.07%
+38.16
+16.07%
+31.10
+12.85%
+32.09
+14.70%
+30.06
+12.04%
+37.70
+18.52%
+30.58
+13.06%
+25.01
+10.37%
+25.07
+10.61%
+22.96
+9.15%
+
+MAE
+27.25
+25.31
+21.52
+21.60
+19.43
+22.60
+21.24
+18.13
+17.44
+15.43
+
+30 min (T’=6)
+RMSE
+MAPE
+43.66
+19.26%
+40.39
+17.14%
+33.89
+13.99%
+34.18
+15.52%
+31.76
+12.67%
+36.16
+17.18%
+32.28
+13.72%
+27.93
+11.51%
+27.09
+12.17%
+25.34
+9.83%
+
+MAE
+32.28
+30.29
+25.78
+24.83
+21.49
+26.94
+24.78
+22.16
+19.59
+17.22
+
+60 min (T’=12)
+RMSE
+MAPE
+49.57
+22.45%
+46.70
+20.74%
+39.99
+16.94%
+38.51
+18.35%
+34.81
+14.20%
+41.05
+20.07%
+37.10
+15.86%
+33.53
+13.82%
+30.41
+12.69%
+28.43
+11.05%
+
+MAE
+29.23
+25.92
+21.83
+21.78
+19.53
+24.29
+21.69
+18.33
+17.56
+15.45
+
+Average
+RMSE
+45.84
+41.28
+34.48
+34.45
+31.93
+37.99
+32.92
+28.30
+27.18
+25.35
+
+MAPE
+20.76%
+17.66%
+14.25%
+15.68%
+12.81%
+18.42%
+14.01%
+11.64%
+12.08%
+9.88%
+
+The best results are marked in bold.
+
+convolution for synchronized feature extraction by connecting the same nodes at adjacent times to construct a
+local spatio-temporal graph.
+E. Full-sample Prediction
+In full-sample prediction experiments, we explore the effectiveness of pretrained LLMs for a standard traffic prediction
+task. We divided the datasets into training, validation, and
+testing sets in chronological order, with the proportions of
+60%, 20%, and 20%, respectively. We conducted experiments
+with different hyperparameter r and took the best results for
+comparison. A discussion of the hyperparameter r is given in
+Section H.
+Table III shows the performance of the TPLLM and other
+baselines on both datasets, including the evaluation metrics for
+the next 15-minute, 30-minute, and 1-hour predictions and the
+average of the evaluation metrics for the predictions of all the
+time steps within 1 hour.
+Based on the experimental results, the TPLLM achieves
+accurate prediction of future traffic flow for 15 minutes, 30
+minutes, and 1 hour on both datasets and performs better
+than baselines on all metrics. This demonstrates that the prior
+knowledge of the pretrained LLM can be used to analyze the
+complex spatio-temporal dependencies in traffic data, and its
+cross-modal knowledge transfer capability is effective for the
+traffic prediction task.
+In all baselines, LSTM can only capture the temporal dependencies of traffic flow, thus its prediction accuracy is poor. The
+remaining baselines are methods that consider spatio-temporal
+dependencies and have better prediction accuracy. The TPLLM
+not only takes into account the spatio-temporal dependencies
+of traffic flow but also utilizes the prior knowledge of pretrained LLMs to achieve excellent prediction accuracy.
+F. Few-shot Prediction
+Due to the high cost of data collection and preservation,
+few-shot traffic prediction tasks represent common real-world
+situations. In order to evaluate the advantages that the fewshot learning capability of pretrained LLMs brings to traffic
+
+prediction tasks, we conducted experiments in a few-shot
+setting.
+Similar to the full-sample experiments, we divide the
+datasets into training, validation, and testing sets in chronological order. However, the size of the training set in this
+experiment is only 10% of the full-sample experiment, and
+the validation and test sets are the same as the full-sample
+experiment, so they account for 6%, 20%, and 20% of the
+dataset, respectively. We conducted experiments with different
+hyperparameter r and took the best results for comparison. A
+discussion of the hyperparameter r is given in Section H.
+Table IV shows the few-shot performance of the TPLLM
+and other baselines on both datasets, including the evaluation metrics for the next 15-minute, 30-minute, and 1-hour
+predictions and the average of the evaluation metrics for the
+predictions of all the time steps within 1 hour. In addition,
+Table IV contains the changes of evaluation metrics for the
+few-shot prediction relative to the full-sample prediction.
+Based on the experimental results, the TPLLM outperforms
+the baselines for all metrics on both datasets, and even some
+of the metrics outperform the baselines in the full-sample
+experiment. Further, most of the metrics of the TPLLM are
+the least changed relative to the full-sample experiment. This
+demonstrates that the TPLLM is able to make predictions with
+high accuracy in the lack of training data and that the few-shot
+learning capability of pretrained LLMs is effective for traffic
+prediction tasks.
+G. Visualization of Full-sample and Few-shot Prediction
+For each of the two datasets, we randomly selected a single
+node and two random days in the test set (one day taken from
+weekdays and one from weekends). Accordingly, visualization
+charts of full-sample prediction and few-shot prediction are
+drawn to observe the results more intuitively, as shown in
+Fig. 6.
+It can be seen that the TPLLM has good accuracy in fullsample prediction, whether it is the high traffic flow caused by
+the morning and evening peaks on weekdays or the traffic flow
+that is smooth all day long on rest days. As for the few-shot
+prediction, although the accuracy is a little bit worse, it can
+
+8
+
+TABLE IV
+R ESULTS OF F EW- SHOT P REDICTION
+Dataset
+
+Model
+LSTM
+STGCN
+
+PeMS04
+(Few-shot)
+
+ASTGCN
+STSGCN
+TPLLM
+LSTM
+STGCN
+
+PeMS08
+(Few-shot)
+
+ASTGCN
+STSGCN
+TPLLM
+
+MAE
+36.21
+(7.11↑)
+28.20
+(4.64↑)
+24.12
+(4.44↑)
+24.37
+(4.28↑)
+20.51
+(2.12↑)
+34.46
+(10.30↑)
+25.71
+(5.59↑)
+19.04
+(2.85↑)
+21.98
+(5.72↑)
+15.85
+(1.56↑)
+
+15 min (T’=3)
+RMSE
+MAPE
+62.26
+23.85%
+(16.81↑) (0.0278↑)
+44.57
+19.16%
+(6.41↑)
+(0.0309↑)
+37.39
+15.55%
+(6.29↑)
+(0.0270↑)
+37.97
+16.86%
+(5.88↑)
+(0.0216↑)
+32.62
+13.55%
+(2.56↑)
+(0.0151↑)
+60.15
+27.49%
+(22.45↑) (0.0897↑)
+41.28
+15.70%
+(10.70↑) (0.0264↑)
+29.03
+11.86%
+(4.02↑)
+(0.0149↑)
+36.16
+13.71%
+(11.09↑) (0.0310↑)
+24.75
+10.13%
+(1.79↑)
+(0.0098↑)
+
+MAE
+34.63
+(7.38↑)
+30.05
+(4.74↑)
+26.65
+(5.13↑)
+26.59
+(4.99↑)
+23.27
+(3.84↑)
+33.25
+(10.65↑)
+26.86
+(5.62↑)
+22.03
+(3.90↑)
+23.56
+(6.12↑)
+17.76
+(2.33↑)
+
+30 min (T’=6)
+RMSE
+MAPE
+61.21
+21.95%
+(17.55↑)
+(0.0269↑)
+46.95
+20.35%
+(6.56↑)
+(0.0321↑)
+40.93
+17.14%
+(7.04↑)
+(0.0315↑)
+40.90
+19.14%
+(6.72↑)
+(0.0362↑)
+36.55
+15.23%
+(4.79↑)
+(0.0256↑)
+59.50
+26.24%
+(23.34↑)
+(0.0906↑)
+42.81
+16.33%
+(10.53↑)
+(0.0261↑)
+33.60
+13.15%
+(5.67↑)
+(0.0164↑)
+38.32
+14.35%
+(11.23↑) (0.0218↑)
+27.90
+11.42%
+(2.56↑)
+(0.0159↑)
+
+60 min (T’=12)
+RMSE
+MAPE
+65.28
+25.50%
+(15.71↑) (0.0305↑)
+53.50
+24.07%
+(6.80↑)
+(0.0333↑)
+48.36
+20.81%
+(8.37↑)
+(0.0387↑)
+47.45
+21.40%
+(8.94↑)
+(0.0305↑)
+44.41
+19.00%
+(9.60↑)
+(0.0480↑)
+62.65
+28.42%
+(21.60↑)
+(0.0835↑)
+46.93
+18.47%
+(9.83↑)
+(0.0261↑)
+42.82
+16.74%
+(9.29↑)
+(0.0292↑)
+43.12
+16.30%
+(12.71↑) (0.0361↑)
+33.95
+14.09%
+(5.52↑)
+(0.0304↑)
+
+MAE
+39.33
+(7.05↑)
+35.19
+(4.90↑)
+32.10
+(6.32↑)
+31.49
+(6.66↑)
+28.87
+(7.38↑)
+36.88
+(9.94↑)
+30.23
+(5.45↑)
+28.17
+(6.01↑)
+27.04
+(7.45↑)
+21.82
+(4.60↑)
+
+MAE
+36.42
+(7.19↑)
+30.67
+(4.75↑)
+27.12
+(5.29↑)
+27.04
+(5.26↑)
+23.68
+(4.15↑)
+34.62
+(10.33↑)
+27.27
+(5.58↑)
+22.47
+(4.14↑)
+23.88
+(6.32↑)
+18.09
+(2.64↑)
+
+Average
+RMSE
+62.62
+(16.78↑)
+47.85
+(6.57↑)
+41.76
+(7.28↑)
+41.52
+(7.07↑)
+37.38
+(5.45↑)
+60.54
+(22.55↑)
+43.32
+(10.40↑)
+34.66
+(6.36↑)
+38.73
+(11.55↑)
+28.51
+(3.16↑)
+
+MAPE
+23.59%
+(0.0283↑)
+20.85%
+(0.0319↑)
+17.52%
+(0.0327↑)
+19.18%
+(0.0350↑)
+15.57%
+(0.0276↑)
+27.28%
+(0.0886↑)
+16.65%
+(0.0264↑)
+13.56%
+(0.0192↑)
+14.87%
+(0.0279↑)
+11.63%
+(0.0175↑)
+
+The best results are marked in bold.
+↑ denotes the extent to which the evaluation metrics have risen relative to the full-sample prediction.
+
+also make a good prediction of the changing trend of traffic
+flow, which can meet the needs of urban traffic management.
+
+TABLE V
+R ESULTS OF A BLATION E XPERIMENT
+
+Dataset
+
+H. Ablation Study
+In order to validate the effectiveness of each module in
+the TPLLM, we remove the graph embedding layer, sequence
+embedding layer, and LoRA from the framework, respectively.
+Subsequently, we conducted experiments on both datasets
+while keeping other hyperparameters unchanged.
+Table V shows the full-sample prediction and few-shot
+prediction performance (average of the evaluation metrics for
+the predictions of all the time steps within 1 hour) of the
+TPLLM and its degradation models on the two datasets.
+The experimental results show that the original framework
+outperforms the 3 degenerate models. Therefore, the sequence
+embedding layer, graph embedding layer, and LoRA all positively affect the prediction performance of the framework.
+The framework without the sequence embedding layer
+performs the worst in all predictions except the full-sample
+PeMS04, which indicates that the sequence embedding layer
+has the greatest impact on prediction accuracy. We believe
+that since the essence of traffic data is still time-series data,
+the features of the sequence itself are the most important.
+The sequence embedding layer consisting of 1-D CNNs can
+effectively extract the features of the sequence itself, so this
+module is indispensable.
+The framework without the graph embedding layer shows
+decreased accuracy in all the experiments, indicating that the
+application of GCNs helps to effectively extract spatial features
+of traffic data, and the spatial features help to improve the
+accuracy of traffic prediction in complex road networks.
+The framework without LoRA shows decreased accuracy
+in all experiments, indicating that LoRA does enable the
+pretrained LLM to learn new knowledge from the features
+
+PeMS04
+
+PeMS04
+(Few-shot)
+
+PeMS08
+
+PeMS08
+(Few-shot)
+
+Model
+No SE
+No GE
+No LoRA
+TPLLM
+No SE
+No GE
+No LoRA
+TPLLM
+No SE
+No GE
+No LoRA
+TPLLM
+No SE
+No GE
+No LoRA
+TPLLM
+
+MAE
+21.22
+20.20
+23.76
+19.53
+30.44
+23.98
+24.64
+23.68
+19.45
+15.98
+19.16
+15.45
+27.86
+18.58
+20.43
+18.09
+
+RMSE
+35.49
+32.54
+37.51
+31.93
+48.89
+37.86
+38.43
+37.38
+31.54
+25.75
+30.33
+25.35
+48.39
+29.24
+31.88
+28.51
+
+MAPE
+13.86%
+13.82%
+16.15%
+12.81%
+20.52%
+15.73%
+17.69%
+15.57%
+12.43%
+10.26%
+12.00%
+9.88%
+18.16%
+12.45%
+14.57%
+11.63%
+
+The best results are marked in bold.
+
+extracted from the embedding layer that is beneficial for traffic
+prediction tasks. In addition, in the framework with LoRA
+removed, the parameters of the pretrained LLM are completely
+frozen and the LLM cannot learn any new knowledge. In
+this case, the output prediction does not have a great loss
+of accuracy, which reflects some extent the zero-shot learning
+capability [6] of the pretrained LLM, and its prior knowledge
+is effective for traffic prediction tasks.
+I. Sensitivity to rank of LoRA
+The rank r is an important hyperparameter in LoRA that
+reflects the amount of information that the decomposition
+
+9
+
+0
+
+/ h
+
+u
+
+F
+
+e w
+
+e
+
+l l - s a m
+
+p
+
+- s h o t
+
+l e
+
+P
+
+P
+
+4
+
+0
+
+0
+
+3
+
+0
+
+0
+
+l o
+F
+
+1
+
+0
+
+0
+
+0
+
+2
+
+8
+
+2
+
+6
+
+2
+
+4
+
+2
+
+2
+
+2
+
+0
+
+1
+
+8
+
+1
+
+6
+
+1
+
+5
+
+m
+
+i n
+
+( T
+
+'=
+
+3
+
+)
+
+6
+
+3
+
+0
+
+m
+
+i n
+
+( T
+
+'=
+
+6
+
+)
+
+A
+
+0
+
+m
+
+i n
+
+v e r a g
+
+( T
+
+'=
+
+1
+
+2
+
+)
+
+2
+
+)
+
+2
+
+)
+
+2
+
+)
+
+e
+
+0
+
+0
+
+T
+
+r a f f i c
+
+2
+
+3
+r e d i c t i o n
+
+r e d i c t i o n
+
+0
+
+M A E
+
+e h
+
+0
+
+r u
+
+F
+
+w
+
+( v
+
+5
+
+T
+
+0
+
+)
+
+6
+
+0
+
+0
+
+T im e
+
+0
+
+:0
+
+0
+
+0
+
+4
+
+8
+
+1
+
+6
+
+3
+
+2
+
+4
+
+8
+
+6
+
+4
+
+0
+
+2
+
+2
+
+:0
+
+0
+2
+
+0
+
+:0
+
+0
+1
+
+8
+
+:0
+
+0
+1
+
+6
+
+:0
+
+0
+1
+
+4
+
+:0
+
+0
+1
+
+2
+
+:0
+
+0
+1
+
+0
+
+:0
+
+0
+0
+
+8
+
+:0
+
+0
+0
+
+6
+
+:0
+
+0
+
+:0
+0
+
+4
+
+:0
+2
+0
+
+0
+
+0
+
+:0
+
+0
+
+0
+
+r
+
+(a)
+
+0
+
+/ h
+e h
+
+0
+
+r u
+
+F
+
+u
+
+F
+
+e w
+
+e
+
+l l - s a m
+
+p
+
+- s h o t
+
+l e
+
+P
+
+P
+
+r e d i c t i o n
+
+4
+
+0
+
+0
+
+3
+
+0
+
+0
+
+M A E
+
+l o
+F
+
+1
+
+0
+
+0
+
+0
+
+6
+
+3
+
+3
+
+1
+
+5
+
+m
+
+i n
+
+( T
+
+'=
+
+3
+
+)
+
+6
+
+3
+
+0
+
+m
+
+i n
+
+( T
+
+'=
+
+6
+
+)
+
+A
+
+0
+
+m
+
+i n
+
+3
+
+0
+
+2
+
+7
+
+2
+
+4
+
+2
+
+1
+
+1
+
+8
+
+v e r a g
+
+( T
+
+'=
+
+1
+
+e
+
+0
+
+T
+
+r a f f i c
+
+2
+
+3
+
+r e d i c t i o n
+
+0
+
+w
+
+( v
+
+5
+
+T
+
+0
+
+)
+
+6
+
+(a)
+
+0
+0
+
+:0
+
+0
+
+T im e
+
+0
+
+2
+
+2
+
+:0
+
+0
+
+0
+
+:0
+0
+2
+
+1
+
+8
+
+:0
+
+0
+
+0
+
+:0
+6
+1
+
+1
+
+4
+
+:0
+
+0
+
+0
+
+:0
+2
+1
+
+1
+
+0
+
+:0
+
+0
+
+0
+
+:0
+8
+0
+
+0
+
+6
+
+:0
+
+0
+
+0
+
+:0
+0
+
+4
+
+:0
+2
+0
+
+0
+
+0
+
+:0
+
+0
+
+0
+
+0
+
+4
+
+8
+
+1
+
+6
+
+3
+
+2
+
+4
+
+8
+
+6
+
+4
+
+r
+
+(b)
+(b)
+0
+
+0
+
+5
+
+0
+
+0
+
+4
+
+0
+
+0
+
+r u
+
+F
+
+u
+
+F
+
+e w
+
+e
+
+l l - s a m
+
+p
+
+- s h o t
+
+l e
+
+P
+
+P
+
+r e d i c t i o n
+
+2
+
+4
+
+2
+
+2
+
+2
+
+0
+
+1
+
+8
+
+1
+
+6
+
+1
+
+4
+
+1
+
+2
+
+r e d i c t i o n
+
+1
+
+5
+
+m
+
+i n
+
+( T
+
+'=
+
+3
+
+)
+
+6
+
+3
+
+0
+
+m
+
+i n
+
+( T
+
+'=
+
+6
+
+)
+
+A
+
+0
+
+m
+
+i n
+
+v e r a g
+
+( T
+
+'=
+
+1
+
+e
+
+0
+
+0
+
+2
+
+0
+
+0
+
+1
+
+0
+
+0
+
+M A E
+
+3
+
+T
+
+r a f f i c
+
+F
+
+l o
+
+w
+
+( v
+
+e h
+
+/ h
+
+)
+
+6
+
+T
+
+0
+0
+
+:0
+
+0
+
+T im e
+
+0
+
+2
+
+2
+
+:0
+
+0
+
+0
+
+:0
+0
+2
+
+1
+
+8
+
+:0
+
+0
+
+0
+
+:0
+6
+1
+
+1
+
+4
+
+:0
+
+0
+
+0
+
+:0
+2
+1
+
+1
+
+0
+
+:0
+
+0
+
+0
+
+:0
+8
+0
+
+0
+
+6
+
+:0
+
+0
+
+0
+
+:0
+0
+
+4
+
+:0
+2
+0
+
+0
+
+0
+
+:0
+
+0
+
+0
+
+0
+
+(c)
+
+4
+
+8
+
+1
+
+6
+
+3
+
+2
+
+4
+
+8
+
+6
+
+4
+
+r
+
+(c)
+0
+
+/ h
+e h
+
+r u
+
+F
+
+u
+
+F
+
+e w
+
+e
+
+5
+
+0
+
+0
+
+4
+
+0
+
+0
+
+3
+
+0
+
+0
+
+2
+
+0
+
+0
+
+1
+
+0
+
+0
+
+l l - s a m
+
+p
+
+- s h o t
+
+l e
+
+P
+
+P
+
+r e d i c t i o n
+
+r e d i c t i o n
+
+2
+
+8
+
+2
+
+6
+
+2
+
+4
+
+2
+
+2
+
+2
+
+0
+
+1
+
+8
+
+1
+
+6
+
+1
+
+4
+
+M A E
+
+1
+
+5
+
+m
+
+i n
+
+( T
+
+'=
+
+3
+
+)
+
+6
+
+3
+
+0
+
+m
+
+i n
+
+( T
+
+'=
+
+6
+
+)
+
+A
+
+0
+
+m
+
+i n
+
+v e r a g
+
+( T
+
+'=
+
+1
+
+e
+
+T
+
+r a f f i c
+
+F
+
+l o
+
+w
+
+( v
+
+T
+
+0
+
+)
+
+6
+
+0
+
+0
+
+:0
+0
+
+T im e
+
+0
+
+2
+
+2
+
+:0
+
+0
+
+0
+
+:0
+0
+2
+
+1
+
+8
+
+:0
+
+0
+
+0
+
+:0
+6
+1
+
+1
+
+4
+
+:0
+
+0
+
+0
+
+:0
+2
+1
+
+1
+
+0
+
+:0
+
+0
+
+0
+
+:0
+8
+0
+
+0
+
+6
+
+:0
+
+0
+
+0
+
+:0
+0
+
+4
+
+:0
+2
+0
+
+0
+
+0
+
+:0
+
+0
+
+0
+
+(d)
+
+0
+
+4
+
+8
+
+1
+
+6
+
+3
+
+2
+
+4
+
+8
+
+6
+
+4
+
+r
+
+Fig. 6. Visualization charts of experimental results. (a) Predictions of a
+working day in PeMS04. (b) Predictions of a weekend day in PeMS04. (c)
+Predictions of a working day in PeMS08. (d) Predictions of a weekend day
+in PeMS08.
+
+matrix B and C can contain. A small r may make the size of
+the decomposition matrix insufficient to fully accommodate
+the new knowledge, and a large r may introduce too much
+redundant information and create noise.
+In order to figure out the effect of r, we applied different
+r for full-sample and few-shot prediction, and the results are
+shown in Fig. 7.
+For both predictions of PeMS04 and the full-sample prediction of PeMS08, the optimal r is 48; while for the smallsample prediction of PeMS08, the optimal r is 32. This may
+be due to the fact that the amount of knowledge learned by
+the pretrained LLM in the few-shot prediction of PeMS08
+is smaller than in other prediction experiments, and thus a
+smaller r is more appropriate.
+However, in summary, the MAE curves of all the prediction
+results are relatively flat, which indicates that r has little
+
+(d)
+Fig. 7. Mean absolute error for experiments with different r. (a) Full-sample
+prediction of PeMS04. (b) Few-shot prediction of PeMS04. (c) Full-sample
+prediction of PeMS08. (d) Few-shot prediction of PeMS08.
+
+effect on the accuracy. Therefore, a smaller r can be chosen
+to reduce the size of the learnable matrices B and C in
+practical applications, thus saving computational resources and
+obtaining sufficiently effective predictions.
+V. C ONCLUSIONS
+Achieving accurate traffic predictions in areas with limited
+historical traffic data is a challenging task. The aim of this
+study is to introduce pretrained LLMs for traffic prediction
+tasks and to utilize the few-shot learning capability of LLMs to
+overcome the challenges caused by the lack of data. Therefore,
+we propose TPLLM, a framework for traffic prediction based
+on pretrained LLMs. The main conclusions are summarized
+as follows:
+
+10
+
+The TPLLM outperforms the other baselines in fullsample prediction, indicating that the embedding layer
+and the pretrained LLM have advantages in analyzing
+spatio-temporal dependencies in traffic data.
+• The TPLLM outperforms the other baselines in fewshot prediction (10% training set) with less degradation
+of metrics, which indicates that the few-shot learning
+capability of pretrained LLM is beneficial for smallsample traffic prediction tasks that are close to realistic
+scenarios.
+• The rank of LoRA has less effect on the accuracy of the
+prediction results, therefore, a smaller rank can be chosen
+in practical applications to obtain sufficiently accurate
+predictions while saving computational resources.
+• The experimental results of the ablation study show
+that the sequence embedding layer, the graph embedding
+layer, and LoRA in the TPLLM all have a positive effect
+on the prediction accuracy.
+In summary, the TPLLM is a novel traffic prediction
+framework that can effectively capture the spatio-temporal
+features of graph-structured traffic data and provide accurate
+predictions based on pretrained LLMs.
+For future works, we expect to design embeddings to
+improve prediction accuracy by considering more factors that
+affect traffic. In addition, we will further explore PEFT techniques that are more applicable to spatio-temporal prediction
+tasks and try to find an interpretable knowledge learning
+pattern of LLMs.
+•
+
+R EFERENCES
+[1] X. Yin, G. Wu, J. Wei, Y. Shen, H. Qi, and B. Yin, “Deep learning
+on traffic prediction: Methods, analysis, and future directions,” IEEE
+Transactions on Intelligent Transportation Systems, vol. 23, no. 6, pp.
+4927–4943, 2021.
+[2] C. Zhao, K. Wang, X. Dong, and K. Dong, “Is smart transportation
+associated with reduced carbon emissions? the case of china,” Energy
+Economics, vol. 105, p. 105715, 2022.
+[3] P. Cao, F. Dai, G. Liu, J. Yang, and B. Huang, “A survey of traffic
+prediction based on deep neural network: Data, methods and challenges,”
+in International Conference on Cloud Computing. Springer, 2021, pp.
+17–29.
+[4] H. Yuan and G. Li, “A survey of traffic prediction: from spatio-temporal
+data to intelligent transportation,” Data Science and Engineering, vol. 6,
+pp. 63–85, 2021.
+[5] F. Emmert-Streib, Z. Yang, H. Feng, S. Tripathi, and M. Dehmer, “An
+introductory review of deep learning for prediction models with big
+data,” Frontiers in Artificial Intelligence, vol. 3, p. 4, 2020.
+[6] T. Brown, B. Mann, N. Ryder, M. Subbiah, J. D. Kaplan, P. Dhariwal,
+A. Neelakantan, P. Shyam, G. Sastry, A. Askell et al., “Language models are few-shot learners,” Advances in neural information processing
+systems, vol. 33, pp. 1877–1901, 2020.
+[7] K. Lu, A. Grover, P. Abbeel, and I. Mordatch, “Pretrained transformers
+as universal computation engines,” arXiv preprint arXiv:2103.05247,
+vol. 1, 2021.
+[8] N. Houlsby, A. Giurgiu, S. Jastrzebski, B. Morrone, Q. De Laroussilhe,
+A. Gesmundo, M. Attariyan, and S. Gelly, “Parameter-efficient transfer
+learning for nlp,” in International Conference on Machine Learning.
+PMLR, 2019, pp. 2790–2799.
+[9] W. X. Zhao, K. Zhou, J. Li, T. Tang, X. Wang, Y. Hou, Y. Min, B. Zhang,
+J. Zhang, Z. Dong et al., “A survey of large language models,” arXiv
+preprint arXiv:2303.18223, 2023.
+[10] E. Hu, Y. Shen, P. Wallis, Z. Allen-Zhu, Y. Li, S. Wang, L. Wang, and
+W. Chen, “Low-rank adaptation of large language models,” arXiv, 2021.
+[11] M. M. Hamed, H. R. Al-Masaeid, and Z. M. B. Said, “Short-term
+prediction of traffic volume in urban arterials,” Journal of Transportation
+Engineering, vol. 121, no. 3, pp. 249–254, 1995.
+
+[12] A. Ding, X. Zhao, and L. Jiao, “Traffic flow time series prediction based
+on statistics learning theory,” in Proceedings. The IEEE 5th International
+Conference on Intelligent Transportation Systems. IEEE, 2002, pp.
+727–730.
+[13] Z. Zheng and D. Su, “Short-term traffic volume forecasting: A k-nearest
+neighbor approach enhanced by constrained linearly sewing principle
+component algorithm,” Transportation Research Part C: Emerging Technologies, vol. 43, pp. 143–157, 2014.
+[14] J. L. Elman, “Distributed representations, simple recurrent networks, and
+grammatical structure,” Machine learning, vol. 7, pp. 195–225, 1991.
+[15] S. Hochreiter and J. Schmidhuber, “Long short-term memory,” Neural
+computation, vol. 9, no. 8, pp. 1735–1780, 1997.
+[16] K. Cho, B. Van Merriënboer, C. Gulcehre, D. Bahdanau, F. Bougares,
+H. Schwenk, and Y. Bengio, “Learning phrase representations using
+rnn encoder-decoder for statistical machine translation,” arXiv preprint
+arXiv:1406.1078, 2014.
+[17] J. Bruna, W. Zaremba, A. Szlam, and Y. LeCun, “Spectral networks and
+locally connected networks on graphs,” arXiv preprint arXiv:1312.6203,
+2013.
+[18] Y. LeCun, B. Boser, J. S. Denker, D. Henderson, R. E. Howard,
+W. Hubbard, and L. D. Jackel, “Backpropagation applied to handwritten
+zip code recognition,” Neural computation, vol. 1, no. 4, pp. 541–551,
+1989.
+[19] A. Vaswani, N. Shazeer, N. Parmar, J. Uszkoreit, L. Jones, A. N. Gomez,
+Ł. Kaiser, and I. Polosukhin, “Attention is all you need,” Advances in
+neural information processing systems, vol. 30, 2017.
+[20] B. Yu, H. Yin, and Z. Zhu, “Spatio-temporal graph convolutional
+networks: A deep learning framework for traffic forecasting,” arXiv
+preprint arXiv:1709.04875, 2017.
+[21] S. Guo, Y. Lin, N. Feng, C. Song, and H. Wan, “Attention based spatialtemporal graph convolutional networks for traffic flow forecasting,” in
+Proceedings of the AAAI conference on artificial intelligence, vol. 33,
+no. 01, 2019, pp. 922–929.
+[22] C. Song, Y. Lin, S. Guo, and H. Wan, “Spatial-temporal synchronous
+graph convolutional networks: A new framework for spatial-temporal
+network data forecasting,” in Proceedings of the AAAI conference on
+artificial intelligence, vol. 34, no. 01, 2020, pp. 914–921.
+[23] A. Radford, K. Narasimhan, T. Salimans, I. Sutskever et al., “Improving
+language understanding by generative pre-training,” 2018.
+[24] A. Radford, J. Wu, R. Child, D. Luan, D. Amodei, I. Sutskever et al.,
+“Language models are unsupervised multitask learners,” OpenAI blog,
+vol. 1, no. 8, p. 9, 2019.
+[25] J. Achiam, S. Adler, S. Agarwal, L. Ahmad, I. Akkaya, F. L. Aleman,
+D. Almeida, J. Altenschmidt, S. Altman, S. Anadkat et al., “Gpt-4
+technical report,” arXiv preprint arXiv:2303.08774, 2023.
+[26] Z. Du, Y. Qian, X. Liu, M. Ding, J. Qiu, Z. Yang, and J. Tang, “Glm:
+General language model pretraining with autoregressive blank infilling,”
+arXiv preprint arXiv:2103.10360, 2021.
+[27] H. Touvron, T. Lavril, G. Izacard, X. Martinet, M.-A. Lachaux,
+T. Lacroix, B. Rozière, N. Goyal, E. Hambro, F. Azhar et al.,
+“Llama: Open and efficient foundation language models,” arXiv preprint
+arXiv:2302.13971, 2023.
+[28] J. Devlin, M.-W. Chang, K. Lee, and K. Toutanova, “Bert: Pre-training
+of deep bidirectional transformers for language understanding,” arXiv
+preprint arXiv:1810.04805, 2018.
+[29] T. Zhou, P. Niu, L. Sun, R. Jin et al., “One fits all: Power general
+time series analysis by pretrained lm,” Advances in neural information
+processing systems, vol. 36, 2024.
+[30] C. Chang, W.-C. Peng, and T.-F. Chen, “Llm4ts: Two-stage finetuning for time-series forecasting with pre-trained llms,” arXiv preprint
+arXiv:2308.08469, 2023.
+[31] K. Rasul, A. Ashok, A. R. Williams, A. Khorasani, G. Adamopoulos,
+R. Bhagwatkar, M. Biloš, H. Ghonia, N. V. Hassen, A. Schneider et al.,
+“Lag-llama: Towards foundation models for time series forecasting,”
+arXiv preprint arXiv:2310.08278, 2023.
+[32] C. Sun, Y. Li, H. Li, and S. Hong, “Test: Text prototype aligned
+embedding to activate llm’s ability for time series,” arXiv preprint
+arXiv:2308.08241, 2023.
+[33] Y. Liu, G. Qin, X. Huang, J. Wang, and M. Long, “Autotimes: Autoregressive time series forecasters via large language models,” arXiv
+preprint arXiv:2402.02370, 2024.
+[34] Y. Chen, X. Wang, and G. Xu, “Gatgpt: A pre-trained large language
+model with graph attention network for spatiotemporal imputation,”
+arXiv preprint arXiv:2311.14332, 2023.
+[35] C. Liu, S. Yang, Q. Xu, Z. Li, C. Long, Z. Li, and R. Zhao, “Spatialtemporal large language model for traffic prediction,” arXiv preprint
+arXiv:2401.10134, 2024.
+
+11
+
+[36] C. Chen, K. Petty, A. Skabardonis, P. Varaiya, and Z. Jia, “Freeway
+performance measurement system: mining loop detector data,” Transportation Research Record, vol. 1748, no. 1, pp. 96–102, 2001.
+
+

@@ -1,0 +1,721 @@
+DIFFUSION PROBABILISTIC MODELING FOR FINE-GRAINED URBAN TRAFFIC FLOW
+INFERENCE WITH RELAXED STRUCTURAL CONSTRAINT
+Xovee Xu, Yutao Wei, Pengyu Wang, Xucheng Luo, Fan Zhou, Goce Trajcevski⋆
+University of Electronic Science and Technology of China, Chengdu, Sichuan 610054, China
+⋆
+Iowa State University, Ames, IA 50011, USA
+ABSTRACT
+Inferring the citywide urban traffic flows is critical for numerous smart city applications such as urban planning, traffic
+control, and transportation management. Urban traffic flow
+inference problem aims to generate fine-grained flow maps
+from the coarse-grained ones. It is still challenging due to the
+lack of handling uncertainties of flow distributions and complex external factors that affect the inference performance. In
+this work, we propose a diffusion probabilistic augmentationbased network for considering the uncertainties of urban
+flows with a relaxed structural constraint and a disentangled
+scheme for flow map and external factor learning. Experiments are conducted on four large-scale urban flow datasets,
+and the results show that our method achieves significant
+performance improvements over strong baselines.
+Index Terms— Fine-grained urban flow inference, urban
+computing, diffusion probabilistic modeling, mobile sensing
+1. INTRODUCTION
+Inferring and predicting fine-grained citywide urban traffic
+flows benefit numerous transportation fields such as city traffic monitoring, urban planning, and intelligent traffic management. For example, spatial-temporal traffic flow patterns are
+studied in [1] to forecast future traffic flows accurately, and
+geo-contextual multi-task embedding learners are utilized in
+[2] for transportation scenario planning.
+Typical transportation systems often require a large number of monitoring sensors to obtain a fine-grained view of the
+traffic conditions (e.g., taxi, bike, and crowd flows), which
+needs expensive maintenance, deployment, and electricity
+costs every year [3, 4, 5, 6, 7, 8]. As an important task in
+urban computing, fine-grained urban traffic flow inference
+(FUFI) aims to infer the fine-grained urban flows from the
+coarse-grained ones. FUFI can effectively reduce the number
+This work was supported in part by the NSFC under Grant Nos.
+62062077 and 62176043, NSF of Sichuan Province, China, under Grant No.
+2022NSFSC0505, Sichuan Science and Technology Program under Grant
+No. 2020YFG0053, and NSF under Grant SWIFT No. 2030249.
+Corresponding author: Xucheng Luo, xucheng@uestc.edu.cn.
+This is the author version of the paper presented at ICASSP ’23.
+doi: 10.1109/ICASSP49357.2023.10096169
+
+of deployed devices while keeping the original data granularity unchanged and the inference accuracy satisfactory.
+Existing FUFI methods generally followed the learning
+scheme of single image super-resolution (SISR) and additionally considered the rich external factors (e.g., date, weather,
+and holidays that may greatly influence the volumes of urban
+flows) and the structural constraint imposed by FUFI. For
+example, UrbanFM [9] – which first formulates the FUFI
+problem – devised a convolutional network-based feature
+extractor to handle the spatial flow correlations and an N 2 Normalization layer to distribute inferred urban flows. FODE
+[10] proposes an ordinary differential equation-based model
+to overcome the unstable gradient computation problem in
+FUFI and balances inference accuracy and computational
+efficiency. UrbanPy [11] extends UrbanFM by employing
+a pyramid architecture with geographic embeddings, nonshared convolution, and distributional loss.
+Limitation. Notwithstanding the improvements achieved
+on FUFI, prior methods confront several key limitations: (i)
+The urban traffic flows are inherently dynamic under significant uncertainty, they are influenced by many factors, such
+as emergency events, weather conditions, and traffic jams.
+Although certain factors are considered by existing methods,
+many other factors, whether endogenous or exogenous, explicit or implicit, greatly affect the flow distribution. Thus,
+there is a need for deterministic methods for handling of flow
+uncertainties. (ii) Existing models usually adopt the distributional upsampling [9] to obey the structural constraint of
+FUFI and speed the model’s convergence process. However,
+given that information loss will inevitably lead to inference
+errors when upsampling the coarse-grained flow map, the
+too strict structural constraint will force the model to allocate more (or less) flow volumes to certain regions and, as a
+result, lowers the inference performance. (iii) The learning
+of flow map features and the learning of external factors are
+often performed jointly in existing methods. Although this
+scheme is efficient, the learned tangled feature maps sacrifice
+interpretability and may further lead to overfitting.
+Present work. To address the limitations mentioned above,
+we propose a Diffusion Probabilistic modeling-based network
+for fine-grained Traffic Flow Inference (DP-TFI) – a novel
+framework integrating urban flow uncertainties and relaxed
+
+Conv2d
+
+Conv2d
+
+Inferred Fine-Grained Map
+Relax N2-Norm
+
+Inference
+PixelShuﬄe
+
+Conv2d
+
+PixelShuﬄe
+
+Conv2d
+
+Upsampling
+
+Conv2d
+
+Conv2d
+
+Feature Learning
+
+Conv2d
+
+Coarse-Grained Map
+
+MSE
+Loss
+
+Conv2d
+
+PixelShuﬄe
+
+Conv2d
+
+PixelShuﬄe
+
+Conv2d
+
+Dense Layer
+
+Reshape
+
+Embed Layer
+
+External Factors
+
+Reverse process
+XfT
+<latexit sha1_base64="M+HQoSCQDCugeKIcrYQ3CpB5lUI=">AAAB9XicbVDLSgMxFL1TX7W+qi7dBIvgqsyIqMuiG5cV+oJ2WjJppg3NJEOSUcrQ/3DjQhG3/os7/8ZMOwttPRA4nHMv9+QEMWfauO63U1hb39jcKm6Xdnb39g/Kh0ctLRNFaJNILlUnwJpyJmjTMMNpJ1YURwGn7WByl/ntR6o0k6JhpjH1IzwSLGQEGyv1exE24yBMO7N+OGgMyhW36s6BVomXkwrkqA/KX72hJElEhSEca9313Nj4KVaGEU5npV6iaYzJBI9o11KBI6r9dJ56hs6sMkShVPYJg+bq740UR1pPo8BOZin1speJ/3ndxIQ3fspEnBgqyOJQmHBkJMoqQEOmKDF8agkmitmsiIyxwsTYokq2BG/5y6ukdVH1rqqXD5eV2m1eRxFO4BTOwYNrqME91KEJBBQ8wyu8OU/Oi/PufCxGC06+cwx/4Hz+AK6xkqQ=</latexit>
+
+External Factor Learning
+
+...
+<latexit sha1_base64="5P0p4ChMmP1YTGVnC1G6+iNJpsM=">AAAB+HicbVDLSsNAFL2pr1ofjbp0M1gEVyWRoi6LblxWsA9oQ5lMJu3QySTOTIQa+iVuXCji1k9x5984TbPQ1gMDh3Pu4d45fsKZ0o7zbZXW1jc2t8rblZ3dvf2qfXDYUXEqCW2TmMey52NFORO0rZnmtJdIiiOf064/uZn73UcqFYvFvZ4m1IvwSLCQEayNNLSrg4cUB4Mg1ipnQ7vm1J0caJW4BalBgdbQ/jJhkkZUaMKxUn3XSbSXYakZ4XRWGaSKJphM8Ij2DRU4osrL8sNn6NQoAQpjaZ7QKFd/JzIcKTWNfDMZYT1Wy95c/M/rpzq88jImklRTQRaLwpQjHaN5CyhgkhLNp4ZgIpm5FZExlpho01XFlOAuf3mVdM7r7kW9cdeoNa+LOspwDCdwBi5cQhNuoQVtIJDCM7zCm/VkvVjv1sditGQVmSP4A+vzByosk24=</latexit>
+
+Ground Truth & Generated Maps
+
+<latexit sha1_base64="cHozK2mfSf9D+hWkURdgAcWvb70=">AAACFHicbVDLSsNAFJ3UV62vqEs3wSJUxJJIUZdFNy4r2Ac0MUymk3bo5MHMjVBiPsKNv+LGhSJuXbjzb5y0XdjWAxcO59zLvfd4MWcSTPNHKywtr6yuFddLG5tb2zv67l5LRokgtEkiHomOhyXlLKRNYMBpJxYUBx6nbW94nfvtByoki8I7GMXUCXA/ZD4jGJTk6iexa8OAAq7YAYaB56ed7N53Uzi1sscZCY5dvWxWzTGMRWJNSRlN0XD1b7sXkSSgIRCOpexaZgxOigUwwmlWshNJY0yGuE+7ioY4oNJJx09lxpFSeoYfCVUhGGP170SKAylHgac68zPlvJeL/3ndBPxLJ2VhnAANyWSRn3ADIiNPyOgxQQnwkSKYCKZuNcgAC0xA5VhSIVjzLy+S1lnVOq/Wbmvl+tU0jiI6QIeogix0geroBjVQExH0hF7QG3rXnrVX7UP7nLQWtOnMPpqB9vULn1ifMA==</latexit>
+
+Xft
+<latexit sha1_base64="dRES372Z/SB8zCU2kixwDlsomkA=">AAAB9XicbVDLSgNBEOyNrxhfUY9eBoPgKexKUI9BLx4jmAckmzA7mU2GzD6Y6VXCkv/w4kERr/6LN//G2WQPmlgwUFR10zXlxVJotO1vq7C2vrG5Vdwu7ezu7R+UD49aOkoU400WyUh1PKq5FCFvokDJO7HiNPAkb3uT28xvP3KlRRQ+4DTmbkBHofAFo2ikfi+gOPb8tDPr+wMclCt21Z6DrBInJxXI0RiUv3rDiCUBD5FJqnXXsWN0U6pQMMlnpV6ieUzZhI5419CQBly76Tz1jJwZZUj8SJkXIpmrvzdSGmg9DTwzmaXUy14m/ud1E/Sv3VSEcYI8ZItDfiIJRiSrgAyF4gzl1BDKlDBZCRtTRRmaokqmBGf5y6ukdVF1Lqu1+1qlfpPXUYQTOIVzcOAK6nAHDWgCAwXP8Apv1pP1Yr1bH4vRgpXvHMMfWJ8/3zGSxA==</latexit>
+
+p✓ (Xft 1 |Xft )
+
+Xft 1
+<latexit sha1_base64="F02qh8aITlbbzVei8nOCBM4LnxQ=">AAAB+3icbVDLSsNAFL3xWesr1qWbwSK4sSRS1GXRjcsK9gFtLJPppB06mYSZiVhCfsWNC0Xc+iPu/BsnbRbaemDgcM693DPHjzlT2nG+rZXVtfWNzdJWeXtnd2/fPqi0VZRIQlsk4pHs+lhRzgRtaaY57caS4tDntONPbnK/80ilYpG419OYeiEeCRYwgrWRBnalH2I99oO0mz0Eg1SfudnArjo1Zwa0TNyCVKFAc2B/9YcRSUIqNOFYqZ7rxNpLsdSMcJqV+4miMSYTPKI9QwUOqfLSWfYMnRhliIJImic0mqm/N1IcKjUNfTOZJ1WLXi7+5/USHVx5KRNxoqkg80NBwpGOUF4EGjJJieZTQzCRzGRFZIwlJtrUVTYluItfXibt85p7Uavf1auN66KOEhzBMZyCC5fQgFtoQgsIPMEzvMKblVkv1rv1MR9dsYqdQ/gD6/MHCrKUcw==</latexit>
+
+...
+<latexit sha1_base64="5P0p4ChMmP1YTGVnC1G6+iNJpsM=">AAAB+HicbVDLSsNAFL2pr1ofjbp0M1gEVyWRoi6LblxWsA9oQ5lMJu3QySTOTIQa+iVuXCji1k9x5984TbPQ1gMDh3Pu4d45fsKZ0o7zbZXW1jc2t8rblZ3dvf2qfXDYUXEqCW2TmMey52NFORO0rZnmtJdIiiOf064/uZn73UcqFYvFvZ4m1IvwSLCQEayNNLSrg4cUB4Mg1ipnQ7vm1J0caJW4BalBgdbQ/jJhkkZUaMKxUn3XSbSXYakZ4XRWGaSKJphM8Ij2DRU4osrL8sNn6NQoAQpjaZ7QKFd/JzIcKTWNfDMZYT1Wy95c/M/rpzq88jImklRTQRaLwpQjHaN5CyhgkhLNp4ZgIpm5FZExlpho01XFlOAuf3mVdM7r7kW9cdeoNa+LOspwDCdwBi5cQhNuoQVtIJDCM7zCm/VkvVjv1sditGQVmSP4A+vzByosk24=</latexit>
+
+Xf0
+<latexit sha1_base64="iMPgInwLB7YmWcV1Qmx9J27ly2U=">AAAB9XicbVDLSgMxFL1TX7W+qi7dBIvgqsxIUZdFNy4r2Ae005JJM21oJhmSjFKG/ocbF4q49V/c+Tdm2llo64HA4Zx7uScniDnTxnW/ncLa+sbmVnG7tLO7t39QPjxqaZkoQptEcqk6AdaUM0GbhhlOO7GiOAo4bQeT28xvP1KlmRQPZhpTP8IjwUJGsLFSvxdhMw7CtDPrhwN3UK64VXcOtEq8nFQgR2NQ/uoNJUkiKgzhWOuu58bGT7EyjHA6K/USTWNMJnhEu5YKHFHtp/PUM3RmlSEKpbJPGDRXf2+kONJ6GgV2Mkupl71M/M/rJia89lMm4sRQQRaHwoQjI1FWARoyRYnhU0swUcxmRWSMFSbGFlWyJXjLX14lrYuqd1mt3dcq9Zu8jiKcwCmcgwdXUIc7aEATCCh4hld4c56cF+fd+ViMFpx85xj+wPn8AXghkoA=</latexit>
+
+q(Xft |Xft 1 )
+<latexit sha1_base64="4hQmFFWU+OeE5taEhZcjOKUg7KE=">AAACDXicbVC7TsNAEDzzDOFloKSxCEihILJRBJQRNJRBIg8pMdb5ck5OOT+4WyNFxj9Aw6/QUIAQLT0df8M5cUESRjppbmZXuztuxJkE0/zRFhaXlldWC2vF9Y3NrW19Z7cpw1gQ2iAhD0XbxZJyFtAGMOC0HQmKfZfTlju8yvzWAxWShcEtjCJq+7gfMI8RDEpy9MP7ctfHMHC9pJ3eeQ48Tn0TOLHSY0cvmRVzDGOeWDkpoRx1R//u9kIS+zQAwrGUHcuMwE6wAEY4TYvdWNIIkyHu046iAfaptJPxNalxpJSe4YVCvQCMsfq3I8G+lCPfVZXZqnLWy8T/vE4M3oWdsCCKgQZkMsiLuQGhkUVj9JigBPhIEUwEU7saZIAFJqACLKoQrNmT50nztGKdVao31VLtMo+jgPbRASojC52jGrpGddRABD2hF/SG3rVn7VX70D4npQta3rOHpqB9/QLtg5wa</latexit>
+
+Forward process
+Diffusion Probabilistic Augmentor
+
+Fig. 1. The framework of DP-TFI. It takes the coarse-grained flow map and external factors as two streams of inputs and uses
+diffusion probabilistic augmentations and relaxed distributional upsampling to infer the fine-grained traffic flow maps.
+structural constraint in a disentangled manner. Specifically,
+(i) we design a probabilistic urban flow augmentor that progressively generates new fine-grained flow maps from a simple distribution (e.g., an isotropic Gaussian) into a data distribution. The generated flow maps can be seen as different
+instances with uncertainty linked back to the same coarsegrained flow map. (ii) we relax FUFI’s structural constraint
+by a new distributional upsampling layer that is both flexible
+and effective. (iii) we employ a disentangled learning scheme
+for urban flow dynamics and external factors. Extensive experiments conducted on four large-scale citywide urban flow
+datasets demonstrate the effectiveness of our proposed DPTFI model over state-of-the-art FUFI baselines.
+2. PROBLEM DEFINITION
+In this section, we first give the necessary background information, and then formally define the problem of FUFI.
+Definition 1 (Grid Flow Map). Given a city flow map X ∈
+RI×J
+partitioned into I × J grid, each entry xij of the map
++
+denotes the traffic flow volume during a period of time.
+Definition 2 (Superregion and Subregion). The map cells in
+the coarse-grained flow map are superregions and the map
+cells in the fine-grained flow map are subregions. Each of the
+superregions in the coarse-grained flow map corresponds to
+N × N subregions in the fine-grained flow map. Here N is
+the scaling factor.
+Definition 3 (Structural Constraint). Given a superregion and
+its corresponding N 2 subregions, the flow volume xcij in the
+superregion is equal to the sum of volumes in the subregions:
+X f
+j′
+i′
+(1)
+xcij =
+xi′ j ′ , s.t.⌊ ⌋ = i, ⌊ ⌋ = j,
+N
+N
+′ ′
+i ,j
+
+where i = 1, 2, . . . , I and j = 1, 2, . . . , J.
+
+FUFI problem: given a coarse-grained flow map Xc ∈ RI×J
++
+and its corresponding external factors f ∈ Rdf , we aim to
+infer the fine-grained flow map Xf ∈ RN I×N J .
+3. METHOD
+The overview of the proposed DP-TFI is depicted in Fig. 1.
+Disentangled Flow Feature Learning. For a coarse-grained
+flow map Xc and its corresponding external factors f , we use
+two streams of convolutional neural networks to learn their
+representations in different latent spaces. Specifically, we use
+three convolutional layers – each has 3x3 filter size, F filters,
+and followed by a ReLU activation function – to learn lowlevel hidden feature maps Hc ∈ RI×J×F . Then we upscale
+the coarse-grained feature map to fine-grained feature maps
+Hf ∈ RN ×J×F via stacked PixelShuffle and convolutional
+layers. For external factor learning, we first transform f into
+representation via multiple embedding layers and dense layers, then we transform the representation to an external factor
+feature map Hef ∈ RN I×N J×1 via stacked PixelShuffle and
+convolutional layers. In doing so, the learning of external factor feature maps Hf are decoupled with the learning of flow
+feature maps Hef , which encourages the inference network to
+learn urban flow dynamics solely based on the internal characteristics of the flows, e.g., regional differences and spatial
+dependencies.
+Relaxed Structural Constraint. Traditional FUFI methods
+often impose a too strict structural constraint during urban
+flow map inference. For example, the N 2 -Normalization
+layer ensures that the sum of inferred flow volumes in the
+subregions equals the corresponding flow volume in the superregion. We propose a Relaxed Distributional Upsampling
+(RDU) module that allows the model to allocate additional
+or reduced flow volumes to subregions. Given the fact that
+information loss and inference errors are inevitable, RDU
+
+can help the model to infer more accurate flow maps for
+certain important regions without worrying too much about
+the flow budget. Specifically, given the last flow feature map
+Hf l = Hf ⊕Hef , we infer the final fine-grained flow map by
+a relaxed N 2 -Normalization layer. We generate fine-grained
+flow distribution by:
+
+H̃fi′lj ′ = Hfi′lj ′
+
+i′ =(⌊i/N ⌋)N
+j ′ =(⌊j/N ⌋)N
+
+X
+
+/
+
+Hfi′lj ′ ,
+
+(2)
+
+i′ =(⌊i/N ⌋−1)N +1
+j ′ =(⌊j/N ⌋−1)N +1
+
+where H̃fi′lj ′ ∈ [0, 1]. Then we use nearest neighbor upsampling with a relax coefficient µ and the scaling factor N to
+I×N J
+:
+obtain the upscaled flow map Xcrelax ∈ RN
++
+f
+
+Xcrelax = Upsampling(Xcup ) ⊗ Rf ,
+f
+
+R = 2µSigmoid(Conv2d(H )) − (µ + 1)J,
+
+(3)
+
+Lloss = ||X̂f − Xf ||2 .
+Diffusion Probabilistic Augmentor. To handle the uncertainties of the urban traffic flow inference process, we introduce a diffusion probabilistic augmentor (DPA) [12, 13, 14]
+to progressively generate new fine-grained urban flow maps
+from a simple distribution into a more complex data distribution. As shown in Figure 1, DPA takes a source fine-grained
+urban flow map Xf as input, then it uses a forward Markovian diffusion process q to add Gaussian noise to Xf0 = Xf
+through T iterations gradually:
+T
+Y
+t=1
+
+q(Xft |Xft−1 ),
+
+
+
+√
+q(Xft |Xft−1 ) = N Xft | αt Xft−1 , (1 − αt )I ,
+
+(5)
+(6)
+
+where α1:T are hyper-parameters. We then define a reverse
+Markovian diffusion process pθ which is the opposite of the
+forward process:
+pθ (Xf0:T |Xf ) = p(XfT )
+
+T
+Y
+t=1
+
+pθ (Xft−1 |Xft , Xf ),
+
+TaxiBJ
+
+time span
+
+P1: Jul 1, 2013 - Dec 31, 2013
+P2: Feb 1, 2014 - Jun 30, 2014
+P3: Mar 1, 2015 - Jun 30, 2015
+P4: Nov 1, 2015 - Mar 31, 2016
+
+time interval
+coarse-grained map size
+fine-grained map size
+upscaling factor N
+latitude range
+longitude range
+
+30 minutes
+32x32
+128x128
+4
+39◦ 49’12N - 39◦ 59’24N
+116◦ 15’36E - 116◦ 29’24E
+
+temperature (◦ C)
+wind speed (mph)
+weather condition
+
+[-24.6, 41.0]
+[0, 48.6]
+16 types
+
+(4)
+
+where J is the all-ones matrix and Rf ∈ RN I×N J is the
+relaxed flow matrix. At last, we have inferred fine-grained
+flow map as: X̂f = Xcrelax ⊗ H̃f l . The optimization of the
+model is guided by mean squared error (MSE) between the
+inferred map and the ground truth:
+
+q(Xf1:T |Xf0 ) =
+
+Table 1. Data Statistics of TaxiBJ
+Data
+
+(7)
+
+
+
+p(XfT ) = N XfT |0, I ,
+(8)
+
+
+pθ (Xft−1 |Xft , Xf ) = N Xft−1 |σθ (Xf , Xft , γt ), σt2 I (9)
+We then pass the generated new traffic flow map Xf0 through
+the N 2 -Normalization layer to obey the structural constraint
+and ensure Xf0 is not too different from the original map. We
+use the DPA to help the inference model learn better flow map
+features with uncertainty and make the model more robust.
+
+4. EXPERIMENTS
+Data. The traffic flow data are collected from the citywide
+taxi flows in Beijing city from 2013 to 2015 [9] and are divided into four time spans (P1-P4). Detailed statistics of the
+data as well as external factors are shown in Table 1.
+Baselines. To verify the effectiveness of our proposed DPTFI method, we compare it with ten baselines including six
+SISR methods and four FUFI methods. (1) SRCNN [15]: is
+a convolutional SISR neural network. (2) ESPCN [16]: is
+a real time SISR model that proposes an efficient sub-pixel
+layer for feature map aggregation. (3) VDSR [17]: uses a deep
+learning-based residual architecture. (4) DeepSD [18]: is a
+statistical upscaling method for meteorological data which
+stacks multiple SRCNNs for SISR. (5) SRResNet [19]: stacks
+many residual blocks and employs perceptual loss for SISR.
+(6) LapSRN [20]: does not require bicubic interpolation
+and progressively reconstructs sub-brand residuals of fineresolution images. (7) UrbanFM [9]: is the first work studies
+FUFI problem, which designs a residual-based inference
+network and an N 2 -Normalization layer. (8) FODE [10]:
+introduces ordinary differential equations (ODEs) to balance
+the flow inference accuracy and computational efficiency. (9)
+UrbanODE [7]: incorporates two neural ODE blocks with
+attention mechanism. (10) UrbanPy [11]: extends UrbanFM
+by a cascading model for progressive urban flow inference
+and is the state-of-the-art for FUFI.
+Experimental Settings. We use Adam optimizer with an
+initial learning rate of 1e−3 . For a fair comparison, for all
+baselines and our model, the number of base channels F and
+batch size are set to 128 and 16, respectively. We implement
+our model with Torch library on GeForce RTX 3090 GPU.
+To evaluate the model performance from multiple facets, following previous FUFI methods [9, 10], we use three common
+metrics: root mean square error (RMSE), mean absolute error
+(MAE), and mean absolute percentage error (MAPE).
+
+Table 2. Performance comparison between proposed DP-TFI and baselines.
+Data
+
+TaxiBJ P1
+
+TaxiBJ P2
+
+TaxiBJ P3
+
+TaxiBJ P4
+
+Metrics
+
+RMSE
+
+MAE
+
+MAPE
+
+RMSE
+
+MAE
+
+MAPE
+
+RMSE
+
+MAE
+
+MAPE
+
+RMSE
+
+MAE
+
+MAPE
+
+SRCNN [15]
+ESPCN [16]
+VDSR [17]
+DeepSD [18]
+SRResNet [19]
+LapSRN [20]
+
+4.297
+4.206
+4.159
+4.156
+4.164
+3.997
+
+2.491
+2.497
+2.213
+2.368
+2.457
+2.040
+
+0.714
+0.732
+0.467
+0.614
+0.713
+0.339
+
+4.612
+4.569
+4.586
+4.554
+4.524
+4.353
+
+2.681
+2.727
+2.498
+2.612
+2.660
+2.235
+
+0.689
+0.732
+0.486
+0.621
+0.688
+0.324
+
+4.815
+4.744
+4.730
+4.692
+4.690
+4.539
+
+2.829
+2.862
+2.548
+2.739
+2.775
+2.343
+
+0.727
+0.773
+0.461
+0.682
+0.717
+0.330
+
+3.838
+3.728
+3.654
+3.877
+3.667
+0.351
+
+2.289
+2.228
+1.978
+2.297
+2.189
+1.841
+
+0.665
+0.711
+0.411
+0.652
+0.637
+0.315
+
+UrbanFM [9]
+FODE [10]
+UrbanODE [7]
+UrbanPy [11]
+
+3.949
+4.058
+4.042
+3.944
+
+1.997
+2.142
+2.135
+1.998
+
+0.330
+0.403
+0.406
+0.333
+
+4.359
+4.432
+4.432
+4.315
+
+2.227
+2.377
+2.357
+2.210
+
+0.323
+0.395
+0.394
+0.323
+
+4.519
+4.628
+4.601
+4.436
+
+2.319
+2.490
+2.460
+2.272
+
+0.326
+0.417
+0.408
+0.318
+
+3.514
+3.583
+3.559
+3.470
+
+1.821
+1.947
+1.929
+1.801
+
+0.314
+0.396
+0.391
+0.313
+
+DP-TFI
+
+3.853
+
+1.926
+
+0.298
+
+4.240
+
+2.144
+
+0.292
+
+4.404
+
+2.227
+
+0.287
+
+3.429
+
+1.759
+
+0.292
+
+(a)
+
+(b)
+
+(c)
+
+(d)
+
+Relax Matrix
+
+Generated Flow Map
+
+Fig. 2. Experimental analysis on TaxiBJ P1 dataset. (a): Case study of generated flow map; (b) the relax matrix entry value
+distribution and the relax matrix (inset); (c) parameter sensitivity of relax coefficient; (d) ablation study on three variants.
+Experimental Results. The FUFI inference performance between our proposed DP-TFI and baselines on TaxiBJ P1-P4
+datasets are shown in Table 2. We can see that DP-TFI has the
+best performance on all four datasets in terms of both RMSE,
+MAE, and MAPE. SISR-based methods generally perform
+worse than FUFI-based methods, which is because they do
+not take external factors into account and neglect the structural constraint imposed by FUFI. FIFU-based methods such
+as UrbanODE and UrbanPy achieve better performance due
+to their capability to fuse external factors and more powerful
+feature learning architecture. However, they cannot handle
+urban traffic flow uncertainties, and the external factor fusion
+is tangled with flow maps which may reduce the inference errors. Moreover, the too strict structural constraint limits the
+model on allocating accurate flows to subregions.
+
+mines how flexible we allow the model to allocate flows. We
+varied the coefficient from 0 to 0.1, the result showed that µ
+around 0.02 leads to better performance. At last, we ablated
+the three proposed modules by removing any one of them in
+DP-TFI. The three variants are denoted as w/o EF (without
+external factor), w/o DPA (without diffusion probabilistic
+augmentor), and w/o RDU (without relaxed distributional
+upsampling). We can obverse that external factor fusion contributes the most to the improvement, which suggests external
+factors are essential for inferring an accurate traffic flow map.
+Not surprisingly, combining all modules achieves the best
+performance, which again verifies our motivation that modeling the uncertainties and (slightly) relaxing the structural
+constraints are beneficial for FUFI.
+
+Analysis. In Fig. 2, we conducted several analyses of DPTFI’s model behaviors. First, we showed a case flow map
+generated by the diffusion probabilistic augmentor, which
+largely preserves the flow characteristics of the source flow
+map but also introduces uncertainty. The relax matrix value
+distribution indicates that the model prefers to break the structural constraint for most of the subregions (relax coefficient
+is set to 3%). Specifically, those regions with heavy traffic
+flows will have more allocated flows and vice versa. We also
+analyzed the influence of relax coefficient µ, which deter-
+
+5. CONCLUSION
+In this paper, a novel probabilistic model DP-TFI has been
+proposed to tackle the task of fine-grained urban traffic flow
+inference problem. It uses a diffusion probabilistic augmentor
+to handle the urban flow uncertainties and relax the structural
+constraint in a disentangled manner. Future work can further take the external factors and coarse-grained flow maps as
+conditions for probabilistic flow map generation and use loss
+regularization techniques to optimize the inference process.
+
+6. REFERENCES
+[1] Xiyue Zhang, Chao Huang, Yong Xu, Lianghao Xia,
+Peng Dai, Liefeng Bo, Junbo Zhang, and Yu Zheng,
+“Traffic flow forecasting with spatial-temporal graph
+diffusion network,” in AAAI, 2021, pp. 15008–15015.
+[2] Ana Alice Peregrino, Soham Pradhan, Zhicheng Liu,
+Nivan Ferreira, and Fabio Miranda,
+“Transportation scenario planning with graph neural networks,”
+arXiv:2110.13202, 2021.
+[3] Sang Keon Lee, Heeseo Rain Kwon, HeeAh Cho, Jongbok Kim, and Donju Lee, “International case studies of
+smart cities: Anyang, Republic of Korea,” IADB: InterAmerican Development Bank, 2016.
+[4] Yuxuan Liang, Kun Ouyang, Yiwei Wang, Ye Liu,
+Junbo Zhang, Yu Zheng, and David S. Rosenblum,
+“Revisiting convolutional neural networks for citywide
+crowd flow analytics,” in ECML-PKDD, 2020.
+[5] Zhangtao Cheng, Joojo Walker, Ting Zhong, and Fan
+Zhou, “Modeling multi-view interactions with contrastive graph learning for collaborative filtering,” in
+IJCNN, 2022.
+[6] Fan Zhou, Xovee Xu, Goce Trajcevski, and Kunpeng
+Zhang, “A survey of information cascade analysis:
+Models, predictions, and recent advances,” ACM Computing Surveys, vol. 54, no. 2, 2021.
+[7] Fan Zhou, Xin Jing, Liang Li, and Ting Zhong, “Inferring high-resolutional urban flow with Internet of mobile
+things,” in ICASSP, 2021, pp. 7948–7952.
+[8] Haoyang Yu, Xovee Xu, Ting Zhong, and Fan Zhou,
+“Overcoming forgetting in fine-grained urban flow inference via adaptive knowledge replay,” in AAAI, 2023.
+[9] Yuxuan Liang, Kun Ouyang, Lin Jing, Sijie Ruan,
+Ye Liu, Junbo Zhang, David S Rosenblum, and
+Yu Zheng, “UrbanFM: Inferring fine-grained urban
+flows,” in SIGKDD, 2019, pp. 3132–3142.
+[10] Fan Zhou, Liang Li, Ting Zhong, Goce Trajcevski, Kunpeng Zhang, and Jiahao Wang, “Enhancing urban flow
+maps via neural ODEs,” in IJCAI, 2020.
+[11] Kun Ouyang, Yuxuan Liang, Ye Liu, Zekun Tong, Sijie Ruan, Yu Zheng, and David S. Rosenblum, “Finegrained urban flow inference,” IEEE TKDE, vol. 34, no.
+6, pp. 2755–2770, 2022.
+[12] Jonathan Ho, Ajay Jain, and Pieter Abbeel, “Denoising
+diffusion probabilistic models,” NeurIPS, vol. 33, pp.
+6840–6851, 2020.
+
+[13] Jascha Sohl-Dickstein, Eric Weiss, Niru Maheswaranathan, and Surya Ganguli, “Deep unsupervised
+learning using nonequilibrium thermodynamics,” in
+ICML, 2015, pp. 2256–2265.
+[14] Haomin Wen, Youfang Lin, Yutong Xia, Huaiyu Wan,
+Roger Zimmermann, and Yuxuan Liang, “DiffSTG:
+Probabilistic spatio-temporal graph forecasting with denoising diffusion models,” arXiv:2301.13629, 2023.
+[15] Chao Dong, Chen Change Loy, Kaiming He, and Xiaoou Tang, “Image super-resolution using deep convolutional networks,” IEEE TPAMI, vol. 38, no. 2, pp.
+295–307, 2015.
+[16] Wenzhe Shi, Jose Caballero, Ferenc Huszár, Johannes
+Totz, Andrew P Aitken, Rob Bishop, Daniel Rueckert,
+and Zehan Wang, “Real-time single image and video
+super-resolution using an efficient sub-pixel convolutional neural network,” in CVPR, 2016, pp. 1874–1883.
+[17] Jiwon Kim, Jung Kwon Lee, and Kyoung Mu Lee, “Accurate image super-resolution using very deep convolutional networks,” in CVPR, 2016, pp. 1646–1654.
+[18] Thomas Vandal, Evan Kodra, Sangram Ganguly, Andrew Michaelis, Ramakrishna Nemani, and Auroop R
+Ganguly, “DeepSD: Generating high resolution climate change projections through single image superresolution,” in SIGKDD, 2017, pp. 1663–1672.
+[19] Christian Ledig, Lucas Theis, Ferenc Huszár, Jose Caballero, Andrew Cunningham, Alejandro Acosta, Andrew Aitken, Alykhan Tejani, Johannes Totz, Zehan
+Wang, et al., “Photo-realistic single image superresolution using a generative adversarial network,” in
+CVPR, 2017, pp. 4681–4690.
+[20] Wei-Sheng Lai, Jia-Bin Huang, Narendra Ahuja, and
+Ming-Hsuan Yang, “Deep laplacian pyramid networks
+for fast and accurate super-resolution,” in CVPR, 2017.
+
+

@@ -1,0 +1,2138 @@
+Foundation Models for Spatio-Temporal Data Science:
+A Tutorial and Survey
+Yuxuan Liang1 , Haomin Wen2,1 , Yutong Xia3 , Ming Jin4 , Bin Yang5 ,
+Flora Salim6 , Qingsong Wen7 , Shirui Pan4 , Gao Cong8
+1 The Hong Kong University of Science and Technology (Guangzhou) 2 Carnegie Mellon University
+3 National University of Singapore 4 Griffith University 5 East China Normal University
+
+arXiv:2503.13502v1 [cs.DB] 12 Mar 2025
+
+6 University of New South Wales 7 Squirrel Ai Learning, USA 8 Nanyang Technology University
+
+{yuxliang,yutong.x}@outlook.com,{wenhaomin.whm,mingjinedu,qingsongedu}@gmail.com
+flora.salim@unsw.edu.au,byang@dase.ecnu.edu.cn,s.pan@griffith.edu.au,gaocong@ntu.edu.sg
+
+Abstract
+Spatio-Temporal (ST) data science, which includes sensing, managing, and mining large-scale data across space and time, is fundamental to understanding complex systems in domains such as
+urban computing, climate science, and intelligent transportation.
+Traditional deep learning approaches have significantly advanced
+this field, particularly in the stage of ST data mining. However,
+these models remain task-specific and often require extensive labeled data. Inspired by the success of Foundation Models (FM),
+especially large language models, researchers have begun exploring the concept of Spatio-Temporal Foundation Models (STFMs)
+to enhance adaptability and generalization across diverse ST tasks.
+Unlike prior architectures, STFMs empower the entire workflow of
+ST data science, ranging from data sensing, management, to mining, thereby offering a more holistic and scalable approach. Despite
+rapid progress, a systematic study of STFMs for ST data science remains lacking. This survey aims to provide a comprehensive review
+of STFMs, categorizing existing methodologies and identifying key
+research directions to advance ST general intelligence.
+
+1
+
+Introduction
+
+Humans live in a world shaped by the dynamic interplay of countless elements across space and time. Spatio-Temporal (ST) Data,
+which refer to data that encapsulate ST phenomena, track the evolution of objects or events across locations and time [5], such as
+meteorological records, traffic patterns, and human traces. These
+data are frequently sourced from a wide array of platforms, ranging
+from IoT devices, GPS sensors, social media, to remote sensing.
+Within this context, Spatio-Temporal Data Science focuses on
+sensing, managing, and mining these datasets to uncover patterns,
+understand complex systems, and predict future dynamics. Motivated by its transformative potential, this field addresses critical
+challenges across urban environments and even the entire planet,
+enabling decision-making and fostering innovations that contribute
+to building smarter, more sustainable, and resilient systems [178].
+Permission to make digital or hard copies of all or part of this work for personal or
+classroom use is granted without fee provided that copies are not made or distributed
+for profit or commercial advantage and that copies bear this notice and the full citation
+on the first page. Copyrights for components of this work owned by others than the
+author(s) must be honored. Abstracting with credit is permitted. To copy otherwise, or
+republish, to post on servers or to redistribute to lists, requires prior specific permission
+and/or a fee. Request permissions from permissions@acm.org.
+Conference’17, July 2017, Washington, DC, USA
+© 2025 Copyright held by the owner/author(s). Publication rights licensed to ACM.
+ACM ISBN 978-x-xxxx-xxxx-x/YY/MM
+https://doi.org/10.1145/nnnnnnn.nnnnnnn
+
+ST Data
+Capabilities
+Applications
+
+Perception Reasoning
+Optimization
+
+Data Mining
+LLM
+
+Data Management
+Data Sensing
+
+PFM
+
+Adapt
+
+ST Data Science
+Lifecycle
+
+How to apply STFMs for
+enhancing each stage?
+
+Train
+
+Diverse ST Data
+How to obtain STFMs
+based on ST data?
+
+ST Foundation Models
+
+Figure 1: ST Foundation Models (STFM), which include LLM
+and PFM, are pretrained with or applied to diverse ST data,
+with the abilities of perception, optimization, and reasoning.
+STFMs can, in turn, enhance each stage of ST data science.
+In the era of deep learning, the community has primarily concentrated on spatio-temporal representation learning, as a fundamental
+step of ST data mining [129]. Key advancements include the development of Spatio-Temporal Graph Neural Networks (STGNN) [51]
+and transformer-based architectures, which have shown remarkable success in tasks such as traffic forecasting [80, 146], air quality
+prediction [82], and human mobility analytics [132]. STGNNs integrate Graph Neural Networks (GNN) with temporal learning
+modules (e.g., GRU [6, 70], TCN [140, 141]) to model ST correlations, while transformer models leverage self-attention mechanisms
+[37, 78, 177] to process complex dependencies across space and time.
+Additionally, there has been significant research on self-supervised
+learning [46, 74, 92], where models are trained to extract powerful
+representations with minimal reliance on large annotated datasets.
+Driven by the success of Foundation Models (FM), especially
+Large Language Models (LLM), researchers have recently begun
+exploring the concept of Spatio-Temporal Foundation Models
+(STFM) [32, 81, 169]. By harnessing LLMs, it becomes possible to develop more generalized, adaptable solutions that can be fine-tuned
+for specific tasks with minimal data. Another prominent approach
+involves pretraining FMs (denoted as PFM) on cross-domain ST data
+and adapting them for particular domains. In contrast to previous
+architectures (e.g., STGNNs), STFMs integrates the capabilities of
+perception, reasoning and optimization, which not only promises
+to revolutionize ST data mining, but also empowers other stages
+of ST data science, such as ST data sensing and management (See
+Figure 1). This shift has the potential to enhance the scalability and
+efficiency of ST applications, offering a more holistic approach to
+addressing challenges in urban computing, climate science, etc.
+
+Conference’17, July 2017, Washington, DC, USA
+
+Yuxuan Liang et al.
+
+Survey
+Jin et al. [54]
+Jiang et al.[48]
+Liang et al. [81]
+Zhang et al. [169]
+Goodge et al. [32]
+
+Year
+2023
+2024
+2024
+2024
+2025
+
+Venue
+IJCAI
+KDD
+KDD
+-
+
+Sensing
+
+Ours
+
+2025
+
+-
+
+✔
+
+Manage.
+
+Mining
+✔
+✔
+✔
+✔
+✔
+
+App.
+N
+N
+N
+N,I
+N
+
+Data
+R,G
+R,G
+T,E,R,G
+L,T,E,R,G
+T,E,R,G
+
+✔
+
+N,I
+
+L,T,E,R,G
+
+✔
+
+2
+
+Background
+
+Foundation models. FMs are deep neural networks trained on vast
+datasets, enabling them to acquire broad, cross-domain knowledge
+and exceptional adaptability [45]. Unlike earlier task-specific models, FMs can be efficiently fine-tuned with relatively small amounts
+of task-specific data, offering remarkable flexibility, effectiveness,
+and cost efficiency. Pioneering attempts like BERT [58] and GPT3 [11] have reshaped natural language processing. More recent
+models, e.g., GPT-4o [45] and DeepSeek-R1 [36], further push the
+frontiers of generative capabilities, enabling more nuanced reasoning, robust domain adaptation, and improved context-awareness
+in diverse tasks. In ST domains, recent FMs like Time-MoE [119],
+Chronos [4], and UniST [158] have made remarkable strides in time
+series analysis and universal ST forecasting, while UniTraj [189]
+serves as a versatile foundation for various trajectory-related tasks.
+Inspired by these successes, this survey delves into the utilization
+of FMs in the entire workflow of ST data science, covering data
+sensing, management, and mining.
+Formulation of Spatio-Temporal Data. ST data refer to datasets
+that integrate spatial (location-based) and temporal (time-based)
+information, capturing dynamic patterns and relationships over
+space and time. Figure 2 depicts the basic ST data structures discussed in this survey, including locations, trajectories, events, ST
+rasters, and ST graphs. Their definitions are delineated as follows.
+Definition 1 (Location). A location refers to a fixed spatial point or
+object in a geographical space, represented by the geospatial coordinates 𝑙 ∈ R2 , i.e., latitude and longitude. It is often profiled by the
+corresponding satellite image, street-view image, and descriptions.
+Definition 2 (Trajectory). A trajectory is a sequence of time-ordered
+locations that describe the movements of an object in the geographical space. It can be formulated as T = 𝑝 1 → 𝑝 2 → · · · → 𝑝𝑇 ,
+where 𝑝𝑖 = (𝑙𝑖 , 𝑡𝑖 ), and 𝑙𝑖 denotes the object’s location at time 𝑡𝑖 .
+Definition 3 (Event). An event sequence is a series of timestamped
+events, denoted as E = 𝑣 1 → 𝑣 2 → · · · → 𝑣𝑇 , describing the
+progress of actions or occurrences, where 𝑣𝑖 = (𝑒𝑖 , 𝑡𝑖 ) and 𝑒𝑖 ∈ R𝑑
+is an event and 𝑡𝑖 denotes the time when 𝑒𝑖 occurs.
+𝑙𝑎𝑡
+
+𝑙 = (𝑙𝑎𝑡, 𝑙𝑛𝑔)
+
+…
+
+Despite their rapid advancements, a systematic analysis of STFMs
+across the entire workflow of ST data science remains lacking.
+First, prior surveys have primarily focused on utilizing LLMs as
+the key tool for ST data mining [32, 54, 81, 169], leaving a significant gap in understanding how these models can be integrated
+throughout the entire process, i.e., with less focus placed on their
+role in the earlier stages of sensing and management. Second, they
+predominantly examine the applications of STFMs to numerical
+problems (e.g., forecasting, imputation) while overlooking their role
+in inferential problem-solving such as decision-making systems.
+To bridge these gaps, this paper aims to provide a more comprehensive survey of STFMs across all stages of ST data science,
+spanning data sensing, management, and mining (see Figure 1). For
+example, LLMs can enhance ST data sensing by actively processing
+citizen reports, optimizing participatory sensing strategies, and generating synthetic data at scale. In terms of data management, they
+can automate data cleaning tasks, construct meaningful knowledge
+graphs for data integration, and facilitate more efficient retrieval of
+cross-modal datasets. Beyond these stages, our survey also explores
+how STFMs support a broader range of downstream applications,
+including numerical and inferential problems. Through this endeavor, we seek to illuminate an overall vision of STFMs, thereby
+enhancing comprehension regarding their potential to optimize ST
+data science, fostering more integrated and adaptable solutions.
+Meanwhile, we systematically investigate the key methodologies
+of STFMs for modeling a variety of ST data. We begin by categorizing existing STFMs into two main classes: LLMs and Pretrained
+Foundation Models (PFMs). For LLMs, which are pretrained on linguistic data, we focus on their usage as a zero-shot [33] or few-shot
+learner [53, 73], where various prompting and fine-tuning strategies have been explored, respectively. For PFMs, which are trained
+from scratch based on cross-domain ST data [40, 158, 189], we examine their neural architectures, pretraining methods, and their
+adaptability to different types of ST data, including𝑙𝑎𝑡location data,
+trajectory data, events, ST raster data, and ST graph data.
+In summary, our
+major
+𝑙 = (𝑙𝑎𝑡,
+𝑙𝑛𝑔) contributions lie in three aspects:
+• Comprehensive and up-to-date survey: We provide the first𝑙𝑛𝑔
+Location
+comprehensive and (a)
+modern
+survey of FMs across 𝑒the entire work𝐗'
+𝑡𝑖𝑚
+𝑙𝑎𝑡
+flow of ST (𝑙
+data
+science,
+covering
+data sensing, management,
+and
+,
+𝑡
+)
+" "
+(d) Spatio-Temporal Raster
+(𝑙% ,
+𝑡% ) of downstream tasks
+mining. We also explore a (𝑙broader
+range
+$ , 𝑡$ )
+(𝑙# , 𝑡# )
+(𝑙! , 𝑡! )
+and data types
+compared
+to most existing surveys𝑙𝑎𝑡(See Table 1).
+𝑙𝑛𝑔 a vision for STFMs,
+Methodologies:
+• Vision and
+(b)
+Trajectory We propose
+identifying key capabilities essential for their success, and discuss
+…
+current methodologies for implementing
+these abilities in detail.𝑙𝑛𝑔
+𝑡𝑖𝑚𝑒
+𝐗 ' , 𝒢'
+• Future(𝑒directions:
+We
+highlight
+promising
+directions for ad…
+(𝑒& , 𝑡& )
+! , 𝑡! )(𝑒" , 𝑡" )(𝑒# , 𝑡# )(𝑒$ , 𝑡$ )(𝑒% , 𝑡% )
+vancing ST data science
+with foundation (e)
+models,
+encouragingGraph
+Spatio-Temporal
+(c) Event
+further research and exploration in this emerging field.
+
+Paper Organization. The remainder of this paper is organized as
+follows: Sec. 2 provides essential background on FMs and ST data.
+Sec. 3 and 4 present a taxonomy of STFMs regarding the workflow
+and methodologies, respectively. Sec. 5 offers concluding remarks,
+and Appendix A highlights promising avenues for future research.
+
+…
+
+Table 1: Our survey vs. related surveys on FMs for learning
+ST data, such as locations (L), trajectories (T), events (E), ST
+rasters (R), and ST graphs (G). The applications (App.) include
+numerical (N) and inferential (I) problems.
+
+𝑙𝑛𝑔
+
+(a) Location
+𝑙𝑎𝑡
+
+𝑡𝑖𝑚
+
+(𝑙" , 𝑡" )
+(𝑙! , 𝑡! )
+
+(𝑙# , 𝑡# )
+
+(𝑙% , 𝑡% )
+
+(𝑙$ , 𝑡$ )
+
+𝑒
+
+𝐗'
+
+(d) Spatio-Temporal Raster
+𝑙𝑎𝑡
+
+𝑙𝑛𝑔
+
+…
+(𝑒! , 𝑡! ) (𝑒" , 𝑡" ) (𝑒# , 𝑡# ) (𝑒$ , 𝑡$ )
+
+… (𝑒& , 𝑡& )
+
+𝑡𝑖𝑚𝑒
+
+…
+
+(c) Event
+
+𝑙𝑛𝑔
+𝑒
+
+𝑡𝑖𝑚𝑒
+(𝑒! , 𝑡! )(𝑒" , 𝑡" )(𝑒# , 𝑡# )(𝑒$ , 𝑡$ )(𝑒% , 𝑡% ) … (𝑒& , 𝑡& )
+
+𝑡𝑖
+𝑚
+
+𝑡𝑖
+𝑚
+
+𝑒
+
+…
+
+…
+
+(b) Trajectory
+
+𝐗 ' , 𝒢'
+
+(e) Spatio-Temporal Graph
+
+Figure 2: Illustration of various types of ST data.
+
+Foundation Models for Spatio-Temporal Data Science: A Tutorial and Survey
+
+Definition 4 (Spatio-Temporal Raster). An ST raster can be denoted
+as X =< X1, X2, . . . , X𝑇 >∈ R𝐻 ×𝑊 ×𝑇 ×𝐷 , where X𝑡 ∈ R𝐻 ×𝑊 ×𝐷
+denotes the signals collected from 𝑁 = 𝐻𝑊 evenly distributed
+locations at time 𝑡, each characterized by 𝐷 feature attributes.
+Definition 5 (Spatio-Temporal Graph). An ST graph extends the
+ST raster to be X =< X1, X2, . . . , X𝑇 >∈ R𝑁 ×𝑇 ×𝐷 by explicitly
+incorporating spatial correlations with a graph G𝑡 = (𝑉 , 𝐸𝑡 , A𝑡 )
+when 𝑁 locations are not uniformly distributed. Here 𝑉 is the set
+of nodes, 𝐸𝑡 is the set of edges, and A𝑡 ∈ R𝑁 ×𝑁 is the adjacency
+matrix at time 𝑡. The size of 𝑉 is usually static.
+
+3
+
+The Workflow Perspective
+
+As shown in Figure 3, we examine STFMs from a holistic, bottom-up
+perspective, emphasizing their composition across four key aspects:
+• ST Data Sensing refers to the acquisition of data that varies
+over both space and time from diverse resources (e.g., sensors,
+satellites, social media), to capture dynamic environmental, geographic, or social phenomena. We also consider synthetic data
+generation for enhancing data diversity and quantity.
+• ST Data Management focuses on storing, indexing, and organizing these large-scale, heterogeneous ST datasets, incorporating
+strategies like distributed architectures for efficient retrieval and
+integration. FMs can enhance this process by facilitating data
+cleaning, query & retrieval, and data integration.
+• ST Data Mining involves learning and analyzing ST data that
+varies across both space and time to uncover patterns, trends, and
+relationships, using data mining (DM), deep learning (DL) techniques, or the newly-proposed STFMs with strong capabilities in
+perception, optimization, and reasoning.
+• Downstream Applications: This stage harnesses the above
+insights from ST data to drive real-world applications, ranging
+from numerical problems to inferential problems, where informed
+actions and policies are formulated.
+By examining these four aspects, we can better understand how
+STFMs advance from raw data acquisition to high-level service
+providing, ultimately enabling more intelligent, adaptable, and impactful solutions. We will detail each stage in the following sections.
+Numerical Problems
+
+Inferential Problems
+
+Forecasting
+
+Imputation
+
+Event Analysis
+
+Physical Grounding
+
+Anomaly
+
+Others
+
+Decision Making
+
+Scenario Simulation
+
+ST Data Mining
+Perception
+
+Optimization
+
+Common-Sense Reasoning
+Numerical Reasoning
+
+Causal Reasoning
+
+ST Data Management
+Data Cleaning
+
+ST Data Sensing
+
+Query & Retrieval
+
+Data Integration
+
+Cross-domain ST Data
+
+Real-World Data Sensing
+
+Location
+
+Trajectory
+
+Event
+
+Synthetic Data Generation
+
+ST Raster
+
+ST Graph
+
+Others
+
+Figure 3: The framework of STFMs for ST data science.
+
+Conference’17, July 2017, Washington, DC, USA
+
+3.1
+
+Spatio-Temporal Data Sensing
+
+FMs revolutionize ST data sensing from two complementary aspects: real-world data sensing, which involves collecting data from
+physical sources, and synthetic data generation, which creates synthetic ST data through foundation models.
+3.1.1 Real-World Data Sensing. Advances in sensing and data acquisition technologies have led to the generation of vast amounts
+of ST data. FMs are increasingly applied in human-centric active
+sensing, particularly in the context of citizen reporting for urban
+and environmental monitoring [41]. These models act as powerful
+agents for collecting and processing real-time data from citizens,
+enabling the efficient handling of ST data [19, 27, 101]. For example,
+citizens might constantly report incidents, environmental changes,
+or social events through text or voice [178]. By understanding these
+reports, LLMs can categorize, prioritize, and trigger appropriate
+responses for various urban issues, from traffic congestion to environmental hazards. This enhances the decision-making process by
+continuously updating their models with new data streams. Thus,
+LLMs are not just passive analytical tools but active participants
+that help make urban environments more responsive and adaptive
+to citizen inputs, transforming traditional citizen feedback into actionable knowledge, enabling more sustainable and resilient cities.
+FMs can also function as intelligent schedulers or simulate multiagent systems to optimize the recruitment and coordination of participants for crowdsensing, particularly under budget constraints
+[41, 139, 191]. By analyzing ST data and understanding context,
+LLMs can identify regions and times where crowdsensing efforts
+will yield the most valuable information. They dynamically recruit
+participants based on proximity, availability, and past contributions,
+reducing redundant data collection. Additionally, LLMs simulate
+multiple agents interacting in real time, ensuring the efficient distribution of sensing tasks across a network of citizens or devices
+[190]. This strategic scheduling and agent-based coordination maximize coverage while minimizing costs, ensuring that crowdsensing
+delivers valuable, real-time insights under budgetary constraints.
+3.1.2 Synthetic Data Generation. FMs can also facilitate data generation, which enhances ST data by increasing its diversity, improving
+model robustness, and compensating for missing or sparse information [95]. This is crucial for ST tasks like mobility analytics,
+where collecting real-world data is often costly or raises privacy
+concerns. For instance, Trajectory-LLM [154] generates vehicle
+trajectories from brief textual descriptions of vehicle interactions,
+whereas Traj-LLM [56] generates human trajectories by leveraging personas, memory modules, and routine profiles. LLMob [126]
+advances mobility data generation, offering flexibility in modeling
+diverse urban activities and personal mobility patterns, thus improving transportation system modeling and analysis. LLMs have also
+been employed to construct synthetic environments that replicate
+real-world conditions across diverse domains, including intelligent
+transportation [1] and disaster management [31].
+
+3.2
+
+Spatio-Temporal Data Management
+
+Upon the acquisition of ST data, the challenge of effective management emerges, particularly in addressing data quality issues (e.g.,
+missing values/views) and facilitating data retrieval and integration.
+Within this context, FMs can be harnessed in the following ways.
+
+Conference’17, July 2017, Washington, DC, USA
+
+3.2.1 Data Cleaning. Data cleaning is the process of improving
+data quality by addressing issues such as missing values, low sampling rates, and noise. For example, ST data often exhibit missing
+values due to various factors like sensor malfunctions and transmission disruptions [178]. Filling in these missing values[113] is
+crucial for ensuring the integrity of predictive models, optimizing
+strategies, and facilitating informed decision-making. Recent literature reveals that LLMs can serve as powerful zero-shot [164] or
+few-shot [17, 172] learners to data imputation by leveraging their
+ability to identify and learn complex ST patterns. PLMTrajRec [135],
+utilizing a pretrained language model to recover sparse trajectory
+data by unifying intervals and inferring road conditions, showing
+effective generalization across varied sampling intervals in tests.
+Moreover, scholars have investigated the potential of leveraging
+LLMs to augment missing views or information, such as urban
+region profiling [40, 150, 163] and traffic video captioning [25].
+3.2.2 Query & Retrieval. Meanwhile, LLM can be applied to querying and retrieval to enhance information retrieval accuracy under
+the ST context. By leveraging their advanced natural language understanding capabilities, LLMs can process user queries in a more
+contextual and semantically rich manner, enabling precise retrieval
+of relevant information from structured and unstructured data
+sources. For instance, UrbanLLM [47] finetunes LLMs for urban activity planning and management, which serves as a problem solver
+that decodes urban-related queries into several sub-tasks, with each
+one solved by suitable spatio-temporal AI models. Alamsyah et al.
+[2] propose an automated smart city planning system that utilizes
+a personalized LLM with Retrieval Augmented Generation (RAG)
+[30] to generate tailored urban planning recommendations while
+ensuring data privacy, where RAG is used to retrieve relevant urban
+planning documents for context-aware responses. Another line of
+work [67, 75, 170, 179] utilizes Multimodal LLM for cross-modal
+information retrieval to enhance urban computing tasks.
+3.2.3 Data Integration. Data integration seeks to combine information from disparate sources, often necessitating the understanding
+and mapping of relationships between entities in heterogeneous
+datasets. LLMs are increasingly being employed in this domain,
+particularly for knowledge graph construction [24], where they
+automate and enhance the extraction, integration, and reasoning
+of related data. In the context of ST data, LLMs facilitate data integration by leveraging heterogeneous urban data sources, performing relational triplet extraction, and completing knowledge
+graphs through geospatial reasoning [94, 106]. A pioneering study
+UrbanKGent [105] proposes an LLM-based Agent framework to
+automate the process of urban knowledge graph construction.
+
+3.3
+
+Spatio-Temporal Data Mining
+
+Unlike traditional data mining, which primarily focuses on structured datasets, ST data mining captures intricate spatial and temporal dependencies within ST data using machine learning or deep
+learning techniques [51, 129, 167]. With the emergence of FMs
+and LLMs, Spatio-Temporal Foundation Models (STFMs) offer new
+possibilities by integrating perception, optimization, and reasoning
+capabilities to enhance ST data mining. In this section, we explore
+these key capabilities, while their specific applications across different domains are detailed in Sec. 3.4.
+
+Yuxuan Liang et al.
+
+3.3.1 Perception. In STFMs, perception encompasses the ability
+to effectively model, interpret, and generalize complex spatial and
+temporal patterns, enabling a deeper understanding of dynamic
+environments. This capability can be categorized into two key
+perspectives. The first view pertains to an agent’s ability to perceive
+and understand its surrounding environment, capturing visual or
+contextual interactions within real-world scenarios such as smart
+cities [151], indoor activities [152, 153], and mobile Apps [127].
+The second aspect involves interpreting and extracting ST patterns from sensor data, ensuring accurate predictions across diverse
+domains. Domain-agnostic approaches, such as STEP [117] and
+GPT-ST [74], have employed pretraining strategies that leverage
+historical observations to enhance forecasting performance. In urban computing, models like TFM [130] and OpenCity [72] utilize
+graph-based FMs to analyze behaviors and interactions within transportation systems, yielding promising results in traffic prediction.
+In climate science, Pangu [9], trained on 39 years of global climate
+data, delivers superior deterministic forecasting outcomes across all
+evaluated variables when compared to leading numerical weather
+prediction systems. Additional notable examples in this area include
+the works [60, 76, 104, 108]. Despite these advances, achieving robust generalization remains a critical challenge, as most existing
+research has been confined to in-domain applications. While models like UniST [158] are designed as one-for-all solutions for diverse
+ST scenarios, their training datasets and evaluation testbeds are
+predominantly limited to transportation. Nevertheless, their underlying technique stacks show promise for broader cross-domain and
+cross-modality generalization. Other significant contributions in
+this realm include UniFlow [159] and UrbanDiT [160].
+3.3.2 Optimization. Building upon the perceptual foundations, the
+optimization ability focuses on refining and adapting models to
+achieve specific, task-oriented objectives. In other words, models
+are not only expected to capture rich ST patterns but also to drive
+actionable decision-making in dynamic, real-world scenarios. This
+involves integrating advanced optimization strategies that tailor
+model behavior to the unique demands of applications.
+A prominent approach involves agent-based frameworks. For example, in traffic signal control, traditional methods (e.g., RL) are
+now augmented by frameworks that use LLMs as decision-making
+agents [61]. These systems leverage real-time traffic data and expert
+prompts to enable human-like planning, resulting in more adaptive
+and interpretable control strategies. Similarly, CityGPT [35] decomposes ST analysis into specialized sub-tasks, handled by temporal,
+spatial, and fusion agents, to efficiently process IoT data and generate insightful visualizations. AgentMove [28] addresses human
+mobility prediction by breaking down the task into modules for
+individual pattern mining, urban structure analysis, and collective
+behavior extraction. In geo-science, systems like Geode [38] integrate explicit optimization modules with ST data retrieval and
+machine learning inference to tackle zero-shot geospatial QA with
+enhanced precision. In urban planning, an innovative work [185]
+simulates planners and residents by LLM agents and enables their
+interactions to optimize inclusive land-use plans efficiently. Despite
+these promising developments, significant challenges remain. Seamlessly integrating perceptual capabilities with targeted optimization
+strategies is crucial for next-generation ST models that are both
+versatile and effective across diverse operational contexts.
+
+Foundation Models for Spatio-Temporal Data Science: A Tutorial and Survey
+
+Conference’17, July 2017, Washington, DC, USA
+
+Table 2: Summary of representative FMs tailored for ST data science.
+
+Application
+
+Mining
+
+Management
+
+Sensing
+
+Stage Task & Capability
+Real-World Data Sensing
+Real-World Data Sensing
+Synthetic Data Generation
+Synthetic Data Generation
+Data Cleaning
+Data Cleaning
+Data Cleaning
+Query & Retrieval
+Data Integration
+Perception
+Perception
+Optimization
+Optimization
+Reasoning
+Reasoning
+Reasoning
+Forecasting
+Imputation
+Anomaly Detection
+Event Analysis
+Physical Grounding
+Decision Making
+Scenario Simulation
+
+Example
+Identifying Citizen-Related Issues from Social Media
+Intelligent Crowdsensing Coordination
+Trajectories Generation
+Human Activity Data Generation
+Few-Shot Learner for Filling Missing Values
+Trajectory Recovery
+Augment Additional Views of Data
+Autonomous Query Processor for Urban Management
+Urban Knowledge Graph Construction
+Understand the Environment
+Interpret and Extract ST Patterns
+Drive Actionable Decision-Making in Dynamic Scenarios
+Optimize Land-Use Plans by LLM Agents
+Common-sense Reasoning
+Numerical Reasoning
+Causal Reasoning
+Global Weather Forecasting
+Generative Adversarial Network for Traffic Data Imputation
+Transformer-based Anomaly Detector
+Detecting and Interpreting Events
+Geo-localization
+Transportation Analytics and Control
+Simulation of Human Behavior
+
+3.3.3 Reasoning. While current ST models have demonstrated notable success in recognition and agent-based tasks, their reasoning
+and cognitive capabilities remain underdeveloped compared to
+advanced systems like DeepSeek-R1 [36]. To progress toward ST
+general intelligence, we identify three key aspects of reasoning:
+• Common-sense Reasoning harnesses everyday knowledge and
+contextual cues to draw implicit inferences from complex data.
+For instance, Causal-VidQA [66]enables models to infer explanations, predict future states, and generate counterfactual scenarios
+in video question-answering, while SituatedGen [173] integrates
+geographical and temporal contexts to generate coherent and
+contextually plausible statements.
+• Numerical Reasoning involves interpreting and manipulating
+quantitative information to perform arithmetic operations, assess uncertainties, and discern relationships within ST data; for
+instance, STBench [69] evaluates these abilities in LLMs, while
+UrbanGPT [73] enhances ST forecasting with instruction tuning.
+• Causal Reasoning seeks to uncover cause-effect relations within
+ST data, crucial for robust and interpretable predictions. For example, NuwaDynamics [128] identifies causal regions and applies
+interventions to improve generalization, and GCIM [176] learns
+latent causal structures to disentangle spurious correlations.
+Collectively, these dimensions offer a promising yet underexplored
+pathway toward achieving ST general intelligence, bridging the
+gap between pattern recognition and true cognitive understanding.
+
+3.4
+
+Downstream Applications
+
+3.4.1 STFMs for Numerical Problems. ST data is predominately
+numeric in many real-world scenarios. Addressing these numeric
+challenges is critical for tasks like forecasting, imputation, and
+anomaly detection [52], which demand an accurate understanding
+of the physical world. STFMs excel in these areas by uncovering intricate patterns and dependencies, ultimately enabling more reliable
+data-driven decision-making.
+- Forecasting. Early forecasting approaches often relied on taskspecific neural networks like STGNNs [51, 52, 110, 116], whereas
+recent developments have shifted toward universal forecasting [91,
+
+Method
+dos Santos et al. [27]
+AutoWebCrowds [190]
+Trajectory-LLM [154]
+LLMob [126]
+NuwaTS [17]
+PLMTrajRec [135]
+UrbanCLIP [150]
+UrbanLLM [47]
+UrbanKGent [105]
+Magma [152]
+STEP [117]
+AgentMove [28]
+Zhou et al. [185]
+Causal-VidQA [66]
+UrbanGPT [73]
+NuwaDynamics [128]
+Pangu [9]
+STGAN [162]
+Xu et al. [145]
+LAMP [120]
+GeoGPT [174]
+TrafficGPT [168]
+Park et al. [107]
+
+Category
+LLM
+LLM
+LLM
+LLM
+PFM
+LLM
+LLM
+LLM
+LLM
+PFM
+PFM
+LLM
+LLM
+PFM
+LLM
+PFM
+PFM
+PFM
+PFM
+LLM
+LLM
+LLM
+LLM
+
+Venue
+CAiSE
+ICWE
+ICLR
+NeurIPS
+Preprint
+Preprint
+WWW
+EMNLP
+NeurIPS
+CVPR
+KDD
+Preprint
+Preprint
+CVPR
+KDD
+ICLR
+Nature
+IEEE TBD
+ICLR
+NeurIPS
+JAG
+Transport Policy
+UIST
+
+Year
+2024
+2024
+2025
+2024
+2024
+2024
+2024
+2024
+2024
+2025
+2022
+2024
+2024
+2022
+2024
+2024
+2023
+2022
+2022
+2023
+2023
+2024
+2023
+
+137, 167]. For instance, GPT-ST [74] leverages pretraining on historical observations to boost predictive performance, while UniST [158]
+unifies multiple traffic prediction tasks within a single model by
+coupling sequence modeling with attention-based mechanisms.
+Building on this progress, ST-LLM [86] and STG-LLM [90] enhance
+traffic predictions by combining ST inputs with partially frozen
+large language models, and UrbanGPT [73] extends this paradigm
+further by employing ST instruction tuning to better align textual
+and ST data. Similar approaches have also been widely used in other
+domains, such as ClimaX [104], Geo-Bench [60], and Orca [76].
+- Imputation. This has likewise benefited from techniques that
+capture ST dependencies to accurately restore missing or corrupted
+data. For instance, NuwaTS [17] repurposes pretrained language
+models with contrastive learning and specialized patch embeddings
+(capturing missing patterns/statistics) to enable cross-domain time
+series imputation through a unified framework. STD-LLM [44]
+employs LLMs with spatial-temporal tokenizers and hypergraph
+learning modules to handle missing values in spatio-temporal data
+while capturing non-pairwise correlations through topology-aware
+node embeddings. DrIM [83] combines LLM-derived text representations (from masked tabular data conversions) with contrastive
+learning to measure similarities for nearest-neighbor imputation in
+heterogeneous datasets.
+- Anomaly Detection. Anomaly detection in ST data has advanced by leveraging models that learn the normal dynamics of
+ST systems to identify deviations indicative of abnormal events.
+Whereas prior methods relied on statistical thresholding and clustering to flag outliers, recent FMs learn robust ST representations to detect even subtle anomalies. For example, early attempts [26, 89, 186]
+investigate the feasibility of using LLMs for anomaly detection in
+time series data. SigLLM [3] employs GPT-series with signal-to-text
+conversion techniques, offering dual pipelines (anomaly prompting
+and deviation detection) for time series analysis through textual or
+visual representations of numerical data. AD-LLM [156] introduces
+a benchmark framework combining GPT-4’s zero-shot reasoning
+with contrastive learning for anomaly context enrichment and automated model selection through chain-of-thought prompting.
+
+Conference’17, July 2017, Washington, DC, USA
+
+re
+W
+
+ha
+ti
+f?
+
+it?
+is
+
+ha W
+pp ha
+en t
+ed
+?
+
+Physical Grounding
+
+he
+
+Traffic Signal Control
+Traffic Managemnt
+Autonomous Vehicles
+Diasater Response System
+
+?
+do
+
+“Where is it?”- Physical Grounding. Grounding ST models
+in real-world geographical contexts is essential for various applications such as geo-localization, map reconstruction, intelligent
+routing and navigation. Geo-localization aims to determine an object’s location based on multimodal inputs, including images, text,
+and sensor data. By processing these cues in conjunction with map
+data, LLMs such as GPT-4o, DeepSeek [36], and GeoGPT [174]
+can infer geographic coordinates or identify specific locations described in natural language. Map reconstruction, on the other hand,
+involves creating or updating digital maps by synthesizing information from satellite imagery, sensor readings, and textual reports.
+LLMs contribute by interpreting and generating map content, correcting inaccuracies, and filling in missing details. For instance,
+MapGPT [14] employs language-guided updates, incorporating textual descriptions of environmental changes into existing map structures. In personalized routing, ItiNera [123] combines LLMs with
+spatial optimization to generate personalized “Citywalk” itineraries,
+providing user-specific and spatially coherent urban exploration;
+ChinaTravel [115] provides a benchmark for real-world Chinese
+travel planning, enabling scalable evaluation of constraint satisfaction and preference optimization while highlighting the strengths
+of neuro-symbolic agents. Navigation systems further benefit from
+LLMs’ ability to understand contextual instructions, interpret user
+queries, and reason about dynamic environments. For example,
+NavGPT [182] and NavGPT-v2 [181] integrate natural language
+with real-time traffic and indoor video data to generate personalized
+and optimized routing solutions. By incorporating STFMs across
+these domains, physical grounding models facilitate more precise
+localization, efficient navigation, and adaptive urban mobility solutions, ultimately bridging the gap between digital intelligence and
+real-world spatial reasoning.
+
+Decision-Making
+•
+•
+•
+•
+
+o
+tt
+ha
+
+“What happened?” - Event Analysis. Detecting events aims
+to recognize and explain significant events in time and space. Traditional models struggle with scalability, interpretability, and incorporating external knowledge. To this end, LAMP [120] integrates
+LLMs with event models, using abductive reasoning to suggest plausible causes for predicted events, retrieve supporting evidence, and
+rank predictions for improved accuracy. Meanwhile, LEAP [165]
+replaces GNNs and RNNs with LLMs by framing event detection as
+a question-answering task, predicting missing event components
+and forecasting future relations through self-attention mechanisms.
+
+• Event Detection
+• Event Prediction
+• Even Interpretation
+
+W
+
+3.4.2 STFMs for Inferential Problems. Inferential problems in ST
+data require the integration of both reasoning and understanding
+of environments. These problems involve high-level cognitive tasks
+where accurate representation of locations, movements, and environmental context is essential. Addressing such problems goes
+beyond numerical predictions — it necessitates answering critical
+inferential questions: What happened? Where is it? What to do? What
+if? FMs have shown their potential to enhance solutions for these
+challenges by leveraging their capacity to handle ST knowledge
+and interpret complex, unstructured data.
+
+Event Analysis
+
+W
+
+- Others. Furthermore, FMs have demonstrated great potential
+in other numerical problems such as time series classification [18],
+geospatial prediction [39, 100], traffic speed inference [7], and socioeconomic indicator prediction [40, 142, 150].
+
+Yuxuan Liang et al.
+
+•
+•
+•
+•
+
+Geo-Localization
+Map Reconstruction
+Intelligent Routing
+Navigation
+
+Scenario Simulation
+•
+•
+•
+•
+
+Urban Planning
+Society Evolution
+Epidemic Simulation
+Gameplay
+
+Figure 4: STFMs for addressing inferential problems.
+“What to do?” - Decision Making. Optimizing policies and
+real-time decision-making in dynamic environments based on inferential insights plays a crucial role in a wide range of applications, including traffic control, autonomous vehicles, and disaster response.
+In traffic control and management, LLMs improve adaptability and
+interpretability compared to traditional reinforcement learning
+approaches [61]. Additionally, they facilitate sim-to-real transfer
+by modeling real-world traffic dynamics, improving the reliability
+of traffic signal optimization [22]. Beyond signal control, models
+like TrafficGPT [168] integrate multimodal traffic data with structured reasoning to analyze, predict, and optimize traffic efficiency
+and safety in real time. In autonomous vehicles, STFMs contribute
+to decision-making through both direct and indirect mechanisms.
+Directly, models such as DDM-Lag [88] employ diffusion-based
+frameworks with Lagrangian safety enhancements and hybrid policy updates to refine policy articulation and ensure safety. Indirectly,
+STFMs enhance autonomous driving by predicting realistic driving
+behaviors [55, 114] and leveraging multi-modal perception to integrate sensor data, bird’s eye view maps, and traffic contexts [20, 184],
+improving situational awareness and vehicle control. Beyond transportation, STFMs play a critical role in disaster management and
+emergency response by integrating diverse spatio-temporal data
+sources, such as weather forecasts, remote sensing, and social media signals, to predict disaster impacts and optimize evacuation
+strategies [16, 31, 65].
+“What if?” - Scenario Simulation. STFMs, with their advanced
+perception and reasoning capabilities, enable the development of
+STFM-based agents that integrate into Multi-Agent Systems (MAS)
+to model complex interactions across diverse domains [29]. In urban planning and social simulation, MAS facilitates participatory
+urban design by simulating interactions between planners and
+residents. For example, LLM-driven MAS has been used to collaboratively refine land-use plans, leading to improved accessibility
+and ecological outcomes that surpass human expert solutions [185].
+Beyond urban planning, MAS contributes to social science research
+by modeling human-like behaviors in AI-driven networks. Studies
+such as [23, 107, 109] demonstrate that LLM-based agents can naturally develop social structures, providing valuable insights into
+emergent social dynamics. Beyond urban applications, MAS significantly advances game AI and strategic decision-making. Recent
+studies [112, 133, 187] highlight how MAS-powered reinforcement
+learning enables strategic gameplay, real-time opponent modeling,
+and interactive storytelling, fostering the development of more
+adaptive, intelligent, and realistic virtual agents.
+
+Foundation Models for Spatio-Temporal Data Science: A Tutorial and Survey
+
+4
+
+The Methodology Perspective
+
+As shown in Figure 5, we delve into STFMs from a methodology
+perspective, focusing on 𝑖) LLM-based models, which are widely
+applied across the entire workflow of ST data science by zero-shot
+utilization or fine-tuning and 𝑖𝑖) PFM-based models, i.e., pretraining
+FMs from scratch, which is mainly utilized for ST data mining. The
+comparison between them can be found in Appendix C.
+Prompt Engineering
+
+[33, 53, 87, 147, 149, 175]
+
+Zero-shot Learner
+LLM
+Fine-tuning
+
+STFM
+
+Agentic Engineering
+
+[49, 50, 63, 64, 155, 168, 174]
+
+All Parameters
+
+[98, 99, 104, 108]
+
+Partial Parameters
+
+[13, 86, 183]
+
+Add-on Parameters
+
+[53, 61, 180]
+
+Transformer-based
+
+[7, 72, 77, 85, 131, 158]
+
+Diffusion-based
+
+[12, 21, 96, 160, 161]
+
+Graph-based
+
+[62, 130]
+
+Others
+
+[8, 43, 59, 97, 118]
+
+Generative
+
+[85, 98, 130, 131, 138, 189]
+
+Contrastive
+
+[7, 84, 171]
+
+Hybrid
+
+[77, 118]
+
+Location
+
+[7, 40, 71, 138, 142, 150, 171]
+
+Trajectory/Event
+
+[21, 84, 85, 103, 121, 189]
+
+ST Raster
+
+[10, 15, 98, 104, 108, 158, 160]
+
+ST Graph
+
+[62, 72, 111, 117, 137]
+
+Neural Architecture
+
+PFM
+
+Pre-training Scheme
+
+Data Modality
+
+Figure 5: A method-centric taxonomy. Full version: Fig. 7.
+
+4.1
+
+Large Language Models (LLM)
+
+4.1.1 Zero-shot Learner. LLMs exhibit strong reasoning and contextual understanding capabilities, making them highly effective
+across various ST tasks, including data sensing, management, and
+mining. As shown in Appendix B, they can function as augmenters,
+predictors, or agents. To ease the presentation, we adopt a broad
+definition of LLMs, encompassing standard LLMs, Vision-Language
+Models (VLM), and Multimodal LLMs (MLLM). The zero-shot utilization of LLMs can be categorized into two primary classes.
+- Prompt Engineering. When taking LLMs as zero-shot predictors [33, 53, 125] or data augmenters [150] for various tasks, prompt
+engineering plays an essential role in shaping model outputs. Below, we summarize key aspects for prompt engineering in current
+research: a) Prompt Construction: A well-designed prompt typically contains key elements like Task Instruction, Tokenization, and
+Few-shot Examples. Task instruction [53, 147, 149] aims to explicitly
+guide LLMs to execute specific operations, incorporating domain
+knowledge [157] if applicable. Tokenization [33, 53] is crucial to
+aligning ST data formats with LLM input structures. Additionally,
+presenting a small number of annotated examples [175] facilitates
+in-context learning, enabling LLMs to better generalize to complex tasks while ensuring output consistency and adherence to the
+expected format. b) Prompt Learning: [73, 148] Also known as
+instruction-tuning, this method learns prompts dynamically rather
+than relying on manually crafted ones. By optimizing prompt structures during training, it provides a flexible and efficient way to adapt
+LLMs to new tasks without altering their underlying model weights.
+
+Conference’17, July 2017, Washington, DC, USA
+
+c) Chain-of-Thought (CoT) Prompting: CoT [87, 175] enhances
+LLMs’ reasoning capabilities by guiding them through step-by-step
+logical progression. This method improves their ability to tackle
+complex spatio-temporal tasks, ensuring more interpretable, structured, and accurate outputs in decision-making processes.
+- Agentic Engineering. The emergence of LLM-based agents [49,
+144, 168, 174, 185] with reasoning, memory and tool-calling capabilities is transforming ST data science, enabling more adaptive and autonomous decision-making. When designing agent-based solutions,
+existing works primarily consider the following key aspects: a) Role
+Assignment. [50, 144, 174] clearly specify the responsibilities and
+functional boundaries of each agent within the system. b) Memorization [64, 174] refers to the agent’s capability to store, recall,
+and leverage past information and context during task execution. A
+basic approach involves embedding past interactions into prompts,
+while more advanced techniques like Retrieval-Augmented Generation (RAG) [143, 155] dynamically retrieve relevant information
+from external knowledge bases, incorporating only the most pertinent content into the prompt. c) Tool Definition [168, 174], which
+identify and integrate various tools and functionalities that an agent
+can call upon to solve complex tasks. In ST data science, various
+expert models like STGNNs [51] can be wrapped as a tool and added
+into the agent in a plug-and-play manner. d) Multi-Agent System. Deploying multiple specialized agents to work collaboratively
+(each with distinct roles) enhances the efficiency and robustness of
+solutions for intricate ST challenges [49, 63, 185].
+4.1.2 Supervised Fine-Tuning for LLMs. Fine-tuning adapts LLMs
+to ST tasks by adjusting their parameters based on domain-specific
+datasets, sometimes incorporating additional modalities such as
+texts [79, 150] and vision [180]. We categorize fine-tuning methods
+into three approaches based on the extent of parameter updates:
+• Full Parameter Fine-Tuning [68, 98, 100, 104, 108] updates all
+model parameters based on downstream ST datasets, achieving
+maximal adaptation to specific tasks. However, it requires substantial labeled data and high computational resources, making
+it impractical for many real-world applications.
+• Partial Parameter Fine-tuning. To reduce computational overhead, this method [13, 183] freezes most parameters, such as
+attention weights, while fine-tuning only a small subset (e.g., position encodings and layer normalization). However, modifying
+a subset of parameters can disrupt the LLM’s learned representations, leading to catastrophic forgetting of general knowledge.
+• Add-on Parameter Fine-Tuning. To mitigate forgetting while
+maintaining efficiency, this technique [61] introduces trainable
+low-rank matrices (e.g., LoRA [42]), while keeping the original
+LLM weights frozen. This strategy preserves pretrained knowledge while enabling efficient adaptation to ST tasks. Besides
+fine-tuning LLMs’ weights, another way is training additional
+layers for input tokenization or task adaption. For instance, TimeLLM [53] trains a self-attention layer that aligns patched time
+series representations with pretrained text prototype embeddings.
+Similarly, Time-VLM [180] trains a memory-enhanced attention
+to capture both short- and long-term dependencies. For task adaption, existing methods typically train an additional prediction
+head (e.g., linear layers) to project the LLM’s output embeddings
+into a domain-specific space [53, 180].
+
+Conference’17, July 2017, Washington, DC, USA
+
+4.2
+
+Yuxuan Liang et al.
+
+Pretrained Foundation Models (PFM)
+
+SpaBERT
+
+Unlike LLMs, which build STFMs by directly using or fine-tuning
+LLMs, PFMs are developed from scratch, independent of existing
+LLMs. This approach enables domain-specific optimization, allowing models to better capture ST dependencies from cross-domain
+ST data without constraints imposed by linguistic priors. Following
+this, we examine PFMs through three key dimensions:
+
+UrbanCLIP
+
+UniTraj
+
+TrajGDM
+
+TrajFM
+
+UrbanVLP
+
+Location
+Trajectory/event
+
+G2PTL
+
+MOTOR
+
+GeoVectors
+
+ReFound
+CityFM
+
+ClimaX
+OpenCity
+W-MAE
+
+FourCastNet
+
+4.2.1 Neural Architecture. The architecture of PFMs is a fundamental design choice that directly influences their capabilities, efficiency,
+and adaptability in ST tasks, which can be categorized into:
+• Transformer-based PFMs. Transformers have been the predominant architecture choice for building PFMs thanks to its powerful sequential modeling ability introduced by the self-attention
+mechanism [7, 72, 77, 85, 158].
+• Diffusion-based PFMs. Diffusion-based models have recently
+emerged as a powerful approach for ST representation learning [12, 21, 136, 160, 161, 188], particularly in generative and
+predictive modeling. These models iteratively learn to reverse a
+stochastic noise process, enabling them to generate high-fidelity
+spatio-temporal sequences with strong generalization properties.
+• Graph-based PFMs. Unlike sequential models, GNNs excel at
+representing spatially structured data such as road networks.
+[62, 130] build FMs based on graph neural networks to learn the
+complex correlation between different entities in ST applications.
+• Others. Another emerging class of PFMs is State Space Model
+(SSM)-based models [8, 43, 97], which construct PFMs using structured state-space representations. Meanwhile, several studies
+utilize CNNs [118] as backbones for developing PFMs.
+
+LTM
+
+STEP
+
+ST Graph
+
+TFM
+
+MOIRAI
+UniST
+
+Pangu
+2023
+
+ST Raster
+
+FengWu
+
+2024
+
+UrbanDiT
+
+2025
+
+Figure 6: Representative PFMs for different types of ST data.
+
+4.2.2 Pretraining Scheme. To enhance generalization ability, PFMs
+are usually pretrained based on cross-domain datasets [91, 137, 158],
+enabling them to learn diverse ST patterns across multiple domains.
+Existing pretraining schemes of PFMs can be classified into three
+types based on the training objectives: a) Generative Pretraining [85, 98, 130, 138, 189] focuses on reconstructing input data by
+learning its underlying distribution, enabling the model to generate
+realistic time series or ST data, while b) Contrastive Pretraining
+[7, 84, 171] emphasize distinguishing between similar and dissimilar
+data pairs to learn robust representations by maximizing agreement
+between augmented views of the same sample. It is particularly
+effective in multimodal ST learning, aligning heterogeneous data
+sources such as satellite imagery and its text description. c) Hybrid Pretraining [77] integrates both generative and contrastive
+objectives, leveraging their complementary strengths.
+
+• Trajectory & Event. PFMs for trajectory/event data [21, 84, 85,
+103, 121, 189] are designed to learn general sequential patterns
+from inputs. A pioneering effort in this direction is TrajFM [85],
+which introduces a trajectory FM capable of supporting both
+regional and task transferability. Pretrained on vehicle trajectories from multiple cities, TrajFM employs a trajectory-masking
+and autoregressive recovery mechanism to enhance its learning
+capabilities. To tackle the limited resources of cross-domain trajectories, UniTraj [189] curates a billion-scale mobility dataset
+spanning diverse geographic regions to facilitate the advancement of trajectory-based FMs. For event data, MOTOR [121]
+proposes a time-to-event FM for structured medical records.
+• ST Raster. PFMs for ST raster data [10, 15, 98, 104, 108, 117, 160]
+organize spatial information in a grid-like format, with a typical
+applied domain being weather/climate forecasting. For instance,
+W-MAE [98] trains a mask autoencoder for ST grid forecasting.
+ClimaX [104] develops a general-purpose climate foundation
+model, pretrained on diverse datasets spanning various variables,
+ST scales, and physical contexts. Pangu [10] is trained on 39
+years of global climate data, which achieves superior forecasting
+performance compared to leading numerical weather prediction
+systems. UniST [158] first pretrains the model in various ST raster
+data via masked pretraining, and then proposes a learnable ST
+prompt to enhance the model’s generalization ability.
+• ST Graph. PFMs for ST graph data [62, 72, 93, 111, 117, 134] learn
+the ST dependencies from ST graphs that generalize effectively
+in unseen spatial and temporal contexts. Unlike ST Raster PFMs,
+there are limited works in this area, which is more challenging due to the complex graph correlation. One representative is
+OpenCity [72] for ST graph forecasting, which integrates Transformer and GNN to model the ST dependencies in traffic data.
+
+4.2.3 Data Modality. ST data manifests in various modalities, each
+characterized by unique properties (see Section 2), necessitating
+the development of modality-specific STFMs:
+• Location. PFMs for location data [7, 40, 71, 124, 138, 150, 171]
+aim to learn general embedding for geographical entities. For
+instance, GeoVectors [124] and SpaBERT [71] learn location embeddings based on open-source data such OpenStreetMap, while
+G2PTL [138] learns from massive logistics delivery data. Notably,
+there is a noticeable trend that leverages multi-modalities (such
+as satellite image and text) for comprehensive location embeddings. For example, both UrbanCLIP [150], UrbanVLP [40], and
+ReFound [142] utilize satellite images for urban region profiling.
+
+The rapid advancement of FMs has transformed ST data science,
+impacting sensing, management, and mining. This survey provides
+a comprehensive review of FMs for ST data science, identifying key
+capabilities such as perception, reasoning, and optimization while
+exploring diverse downstream tasks and datasets. We also establish
+a systematic taxonomy of methodologies, enhancing understanding
+of how STFMs model ST data. Despite progress, challenges remain
+in generalization, interpretability, and efficiency. By consolidating
+recent advances and outlining future directions (see Appendix A),
+this survey aims to inspire further innovations, driving the development of scalable and adaptive STFMs for real practice.
+
+5
+
+Conclusion and Future Directions
+
+Foundation Models for Spatio-Temporal Data Science: A Tutorial and Survey
+
+References
+[1] Oluwanifemi Adebayo Moses Adekanye. 2024. Llm-powered synthetic environments for self-driving scenarios. In Proceedings of the AAAI Conference on
+Artificial Intelligence, Vol. 38. 23721–23723.
+[2] Nurwahyu Alamsyah, Muhamad Amirul Haq, and Chayadi Oktomy Noto Susanto. 2024. Automated Smart City Planning through Personalized Large Language Model with Retrieval Augmented Generation. In 2024 International Conference on Information Technology and Computing (ICITCOM). IEEE, 306–311.
+[3] Sarah Alnegheimish, Linh Nguyen, Laure Berti-Equille, and Kalyan Veeramachaneni. 2024. Large language models can be zero-shot anomaly detectors for time
+series? arXiv preprint arXiv:2405.14755 (2024).
+[4] Abdul Fatir Ansari, Lorenzo Stella, Caner Turkmen, Xiyuan Zhang, Pedro
+Mercado, Huibin Shen, Oleksandr Shchur, Syama Sundar Rangapuram, Sebastian Pineda Arango, Shubham Kapoor, et al. 2024. Chronos: Learning the
+language of time series. arXiv preprint arXiv:2403.07815 (2024).
+[5] Gowtham Atluri, Anuj Karpatne, and Vipin Kumar. 2018. Spatio-temporal data
+mining: A survey of problems and methods. ACM Computing Surveys (CSUR)
+51, 4 (2018), 1–41.
+[6] Lei Bai, Lina Yao, Can Li, Xianzhi Wang, and Can Wang. 2020. Adaptive graph
+convolutional recurrent network for traffic forecasting. In NeurIPS, Vol. 33.
+17804–17815.
+[7] Pasquale Balsebre, Weiming Huang, Gao Cong, and Yi Li. 2024. City foundation models for learning general purpose representations from openstreetmap.
+In Proceedings of the 33rd ACM International Conference on Information and
+Knowledge Management. 87–97.
+[8] Sathya Kamesh Bhethanabhotla, Omar Swelam, Julien Siems, David Salinas, and
+Frank Hutter. 2024. Mamba4Cast: Efficient Zero-Shot Time Series Forecasting
+with State Space Models. arXiv preprint arXiv:2410.09385 (2024).
+[9] Kaifeng Bi, Lingxi Xie, Hengheng Zhang, Xin Chen, Xiaotao Gu, and Qi Tian.
+2023. Accurate medium-range global weather forecasting with 3D neural networks. Nature 619, 7970 (2023), 533–538.
+[10] Kaifeng Bi, Lingxi Xie, Hengheng Zhang, Xin Chen, Xiaotao Gu, and Qi Tian.
+2023. Accurate medium-range global weather forecasting with 3D neural networks. Nature 619, 7970 (2023), 533–538.
+[11] Tom Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared D Kaplan,
+Prafulla Dhariwal, Arvind Neelakantan, Pranav Shyam, Girish Sastry, Amanda
+Askell, et al. 2020. Language models are few-shot learners. Advances in neural
+information processing systems 33 (2020), 1877–1901.
+[12] Defu Cao, Wen Ye, and Yan Liu. [n. d.]. TimeDiT: General-purpose Diffusion
+Transformers for Time Series Foundation Model. In ICML 2024 Workshop on
+Foundation Models in the Wild.
+[13] Ching Chang, Wen-Chih Peng, and Tien-Fu Chen. 2023. LLM4TS: Two-Stage
+Fine-Tuning for Time-Series Forecasting with Pre-Trained LLMs. arXiv preprint
+arXiv:2308.08469 (2023).
+[14] Jiaqi Chen, Bingqian Lin, Ran Xu, Zhenhua Chai, Xiaodan Liang, and KwanYee K Wong. 2024. Mapgpt: Map-guided prompting with adaptive path planning
+for vision-and-language navigation. arXiv preprint arXiv:2401.07314 (2024).
+[15] Kang Chen, Tao Han, Junchao Gong, Lei Bai, Fenghua Ling, Jing-Jia Luo, Xi
+Chen, Leiming Ma, Tianning Zhang, Rui Su, et al. 2023. FengWu: Pushing the
+Skillful Global Medium-range Weather Forecast beyond 10 Days Lead. arXiv
+preprint arXiv:2304.02948 (2023).
+[16] Minze Chen, Zhenxiang Tao, Weitong Tang, Tingxin Qin, Rui Yang, and Chunli
+Zhu. 2024. Enhancing emergency decision-making with knowledge graphs
+and large language models. International Journal of Disaster Risk Reduction 113
+(2024), 104804.
+[17] Jinguo Cheng, Chunwei Yang, Wanlin Cai, Yuxuan Liang, Qingsong Wen, and
+Yuankai Wu. 2024. NuwaTS: a Foundation Model Mending Every Incomplete
+Time Series. arXiv preprint arXiv:2405.15317 (2024).
+[18] Mingyue Cheng, Yiheng Chen, Qi Liu, Zhiding Liu, and Yucong Luo. 2024.
+Advancing time series classification with multimodal language modeling. arXiv
+preprint arXiv:2403.12371 (2024).
+[19] Garima Chhikara, Anurag Sharma, V Gurucharan, Kripabandhu Ghosh, and
+Abhijnan Chakraborty. 2024. LaMSUM: Amplifying Voices Against Harassment
+through LLM Guided Extractive Summarization of User Incident Reports. arXiv
+preprint arXiv:2406.15809 (2024).
+[20] Tushar Choudhary, Vikrant Dewangan, Shivam Chandhok, Shubham Priyadarshan, Anushka Jain, Arun K Singh, Siddharth Srivastava, Krishna Murthy Jatavallabhula, and K Madhava Krishna. 2024. Talk2BEV: Language-enhanced Bird’seye view maps for autonomous driving. In 2024 IEEE International Conference
+on Robotics and Automation (ICRA). IEEE, 16345–16352.
+[21] Chen Chu, Hengcai Zhang, and Feng Lu. 2023. TrajGDM: A New Trajectory
+Foundation Model for Simulating Human Mobility. In Proceedings of the 31st
+ACM International Conference on Advances in Geographic Information Systems.
+1–2.
+[22] Longchao Da, Minchiuan Gao, Hao Mei, and Hua Wei. 2023. Llm powered
+sim-to-real transfer for traffic signal control. arXiv preprint arXiv:2308.14284
+(2023).
+
+Conference’17, July 2017, Washington, DC, USA
+
+[23] Gordon Dai, Weijia Zhang, Jinhan Li, Siqi Yang, Srihas Rao, Arthur Caetano,
+Misha Sra, et al. 2024. Artificial leviathan: Exploring social evolution of llm
+agents through the lens of hobbesian social contract theory. arXiv preprint
+arXiv:2406.14373 (2024).
+[24] Zifeng Ding, Heling Cai, Jingpei Wu, Yunpu Ma, Ruotong Liao, Bo Xiong,
+and Volker Tresp. 2024. zrLLM: Zero-Shot Relational Learning on Temporal
+Knowledge Graphs with Large Language Models. In Proceedings of the 2024
+Conference of the North American Chapter of the Association for Computational
+Linguistics: Human Language Technologies (Volume 1: Long Papers). 1877–1895.
+[25] Quang Minh Dinh, Minh Khoi Ho, Anh Quan Dang, and Hung Phong Tran.
+2024. Trafficvlm: A controllable visual language model for traffic video captioning. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern
+Recognition Workshop. 7134–7143.
+[26] Manqing Dong, Hao Huang, and Longbing Cao. 2024. Can LLMs Serve As Time
+Series Anomaly Detectors? arXiv preprint arXiv:2408.03475 (2024).
+[27] Vitor Gaboardi dos Santos, Guto Leoni Santos, Theo Lynn, and Boualem Benatallah. 2024. Identifying Citizen-Related Issues from Social Media Using
+LLM-Based Data Augmentation. In International Conference on Advanced Information Systems Engineering. Springer, 531–546.
+[28] Jie Feng, Yuwei Du, Jie Zhao, and Yong Li. 2024. Agentmove: Predicting human
+mobility anywhere using large language model based agentic framework. arXiv
+preprint arXiv:2408.13986 (2024).
+[29] Chen Gao, Xiaochong Lan, Nian Li, Yuan Yuan, Jingtao Ding, Zhilun Zhou,
+Fengli Xu, and Yong Li. 2024. Large language models empowered agent-based
+modeling and simulation: A survey and perspectives. Humanities and Social
+Sciences Communications 11, 1 (2024), 1–24.
+[30] Yunfan Gao, Yun Xiong, Xinyu Gao, Kangxiang Jia, Jinliu Pan, Yuxi Bi, Yi Dai,
+Jiawei Sun, and Haofen Wang. 2023. Retrieval-augmented generation for large
+language models: A survey. arXiv preprint arXiv:2312.10997 (2023).
+[31] Vinicius G Goecks and Nicholas R Waytowich. 2023. Disasterresponsegpt: Large
+language models for accelerated plan of action development in disaster response
+scenarios. arXiv preprint arXiv:2306.17271 (2023).
+[32] Adam Goodge, Wee Siong Ng, Bryan Hooi, and See Kiong Ng. 2025. SpatioTemporal Foundation Models: Vision, Challenges, and Opportunities. arXiv
+preprint arXiv:2501.09045 (2025).
+[33] Nate Gruver, Marc Finzi, Shikai Qiu, and Andrew Gordon Wilson. 2023. Large
+language models are zero-shot time series forecasters. Advances in neural
+information processing systems (2023).
+[34] Nate Gruver, Marc Finzi, Shikai Qiu, and Andrew G Wilson. 2024. Large language
+models are zero-shot time series forecasters. Advances in Neural Information
+Processing Systems 36 (2024).
+[35] Qinghua Guan, Jinhui Ouyang, Di Wu, and Weiren Yu. 2024. CityGPT: Towards
+Urban IoT Learning, Analysis and Interaction with Multi-Agent System. arXiv
+preprint arXiv:2405.14691 (2024).
+[36] Daya Guo, Dejian Yang, Haowei Zhang, Junxiao Song, Ruoyu Zhang, Runxin
+Xu, Qihao Zhu, Shirong Ma, Peiyi Wang, Xiao Bi, et al. 2025. Deepseek-r1:
+Incentivizing reasoning capability in llms via reinforcement learning. arXiv
+preprint arXiv:2501.12948 (2025).
+[37] Shengnan Guo, Youfang Lin, Ning Feng, Chao Song, and Huaiyu Wan. 2019.
+Attention based spatial-temporal graph convolutional networks for traffic flow
+forecasting. In AAAI, Vol. 33. 922–929.
+[38] Devashish Vikas Gupta, Azeez Syed Ali Ishaqui, and Divya Kiran Kadiyala. 2024.
+Geode: A Zero-shot Geospatial Question-Answering Agent with Explicit Reasoning and Precise Spatio-Temporal Retrieval. arXiv preprint arXiv:2407.11014
+(2024).
+[39] Wes Gurnee and Max Tegmark. 2023. Language models represent space and
+time. arXiv preprint arXiv:2310.02207 (2023).
+[40] Xixuan Hao, Wei Chen, Yibo Yan, Siru Zhong, Kun Wang, Qingsong Wen,
+and Yuxuan Liang. 2024. UrbanVLP: A Multi-Granularity Vision-Language
+Pre-Trained Foundation Model for Urban Indicator Prediction. arXiv preprint
+arXiv:2403.16831 (2024).
+[41] Ce Hou, Fan Zhang, Yong Li, Haifeng Li, Gengchen Mai, Yuhao Kang, Ling Yao,
+Wenhao Yu, Yao Yao, Song Gao, et al. 2025. Urban sensing in the era of large
+language models. The Innovation 6, 1 (2025).
+[42] Edward J Hu, Yelong Shen, Phillip Wallis, Zeyuan Allen-Zhu, Yuanzhi Li, Shean
+Wang, Lu Wang, and Weizhu Chen. 2021. Lora: Low-rank adaptation of large
+language models. arXiv preprint arXiv:2106.09685 (2021).
+[43] Jiaxi Hu, Disen Lan, Ziyu Zhou, Qingsong Wen, and Yuxuan Liang. 2024. TimeSSM: Simplifying and Unifying State Space Models for Time Series Forecasting.
+arXiv preprint arXiv:2405.16312 (2024).
+[44] Yiheng Huang, Xiaowei Mao, Shengnan Guo, Yubin Chen, Junfeng Shen,
+Tiankuo Li, Youfang Lin, and Huaiyu Wan. 2024. STD-PLM: Understanding
+Both Spatial and Temporal Properties of Spatial-Temporal Data with PLM. arXiv
+preprint arXiv:2407.09096 (2024).
+[45] Aaron Hurst, Adam Lerer, Adam P Goucher, Adam Perelman, Aditya Ramesh,
+Aidan Clark, AJ Ostrow, Akila Welihinda, Alan Hayes, Alec Radford, et al. 2024.
+Gpt-4o system card. arXiv preprint arXiv:2410.21276 (2024).
+[46] Junzhong Ji, Fan Yu, and Minglong Lei. 2022. Self-Supervised Spatiotemporal
+Graph Neural Networks With Self-Distillation for Traffic Prediction. IEEE TITS
+
+Conference’17, July 2017, Washington, DC, USA
+
+(2022).
+[47] Yue Jiang, Qin Chao, Yile Chen, Xiucheng Li, Shuai Liu, and Gao Cong. 2024.
+UrbanLLM: Autonomous Urban Activity Planning and Management with Large
+Language Models. arXiv preprint arXiv:2406.12360 (2024).
+[48] Yushan Jiang, Zijie Pan, Xikun Zhang, Sahil Garg, Anderson Schneider, Yuriy
+Nevmyvaka, and Dongjin Song. 2024. Empowering Time Series Analysis with
+Large Language Models: A Survey. In Proceedings of the Thirty-Third International Joint Conference on Artificial Intelligence, IJCAI-24, Kate Larson (Ed.).
+International Joint Conferences on Artificial Intelligence Organization, 8095–
+8103. https://doi.org/10.24963/ijcai.2024/895 Survey Track.
+[49] Yushan Jiang, Wenchao Yu, Geon Lee, Dongjin Song, Kijung Shin, Wei Cheng,
+Yanchi Liu, and Haifeng Chen. 2025. Explainable Multi-modal Time Series
+Prediction with LLM-in-the-Loop. arXiv preprint arXiv:2503.01013 (2025).
+[50] WANG JIAWEI, Renhe Jiang, Chuang Yang, Zengqing Wu, Ryosuke Shibasaki,
+Noboru Koshizuka, Chuan Xiao, et al. 2024. Large language models as urban
+residents: An llm agent framework for personal mobility generation. Advances
+in Neural Information Processing Systems 37 (2024), 124547–124574.
+[51] Guangyin Jin, Yuxuan Liang, Yuchen Fang, Zezhi Shao, Jincai Huang, Junbo
+Zhang, and Yu Zheng. 2023. Spatio-temporal graph neural networks for predictive learning in urban computing: A survey. IEEE Transactions on Knowledge
+and Data Engineering (2023).
+[52] Ming Jin, Huan Yee Koh, Qingsong Wen, Daniele Zambon, Cesare Alippi, Geoffrey I Webb, Irwin King, and Shirui Pan. 2024. A survey on graph neural
+networks for time series: Forecasting, classification, imputation, and anomaly
+detection. IEEE Transactions on Pattern Analysis and Machine Intelligence (2024).
+[53] Ming Jin, Shiyu Wang, Lintao Ma, Zhixuan Chu, James Y Zhang, Xiaoming Shi,
+Pin-Yu Chen, Yuxuan Liang, Yuan-Fang Li, Shirui Pan, et al. 2023. Time-LLM:
+Time series forecasting by reprogramming large language models. arXiv preprint
+arXiv:2310.01728 (2023).
+[54] Ming Jin, Qingsong Wen, Yuxuan Liang, Chaoli Zhang, Siqiao Xue, Xue Wang,
+James Zhang, Yi Wang, Haifeng Chen, Xiaoli Li, et al. 2023. Large models for
+time series and spatio-temporal data: A survey and outlook. arXiv preprint
+arXiv:2310.10196 (2023).
+[55] Ye Jin, Xiaoxi Shen, Huiling Peng, Xiaoan Liu, Jingli Qin, Jiayang Li, Jintao Xie,
+Peizhong Gao, Guyue Zhou, and Jiangtao Gong. 2023. Surrealdriver: Designing
+generative driver agent simulation framework in urban contexts based on large
+language model. arXiv preprint arXiv:2309.13193 (2023).
+[56] Chenlu Ju, Jiaxin Liu, Shobhit Sinha, Hao Xue, and Flora Salim. 2025. TrajLLM: A Modular LLM-Enhanced Agent-Based Framework for Realistic Human
+Trajectory Simulation. (2025).
+[57] Subbarao Kambhampati, Karthik Valmeekam, Lin Guan, Mudit Verma, Kaya
+Stechly, Siddhant Bhambri, Lucas Saldyt, and Anil Murthy. 2024. LLMs can’t
+plan, but can help planning in LLM-modulo frameworks. arXiv preprint
+arXiv:2402.01817 (2024).
+[58] Jacob Devlin Ming-Wei Chang Kenton and Lee Kristina Toutanova. 2019. Bert:
+Pre-training of deep bidirectional transformers for language understanding. In
+Proceedings of naacL-HLT, Vol. 1. Minneapolis, Minnesota.
+[59] Dmitrii Kochkov, Janni Yuval, Ian Langmore, Peter Norgaard, Jamie Smith,
+Griffin Mooers, Milan Klöwer, James Lottes, Stephan Rasp, Peter Düben, et al.
+2024. Neural general circulation models for weather and climate. Nature 632,
+8027 (2024), 1060–1066.
+[60] Alexandre Lacoste, Nils Lehmann, Pau Rodriguez, Evan Sherwin, Hannah Kerner,
+Björn Lütjens, Jeremy Irvin, David Dao, Hamed Alemohammad, Alexandre
+Drouin, et al. 2024. Geo-bench: Toward foundation models for earth monitoring.
+Advances in Neural Information Processing Systems 36 (2024).
+[61] Siqi Lai, Zhao Xu, Weijia Zhang, Hao Liu, and Hui Xiong. 2025. Large language
+models as traffic signal control agents: Capacity and opportunity. In Proceedings
+of the 31st ACM SIGKDD conference on knowledge discovery and data mining.
+[62] Remi Lam, Alvaro Sanchez-Gonzalez, Matthew Willson, Peter Wirnsberger,
+Meire Fortunato, Ferran Alet, Suman Ravuri, Timo Ewalds, Zach Eaton-Rosen,
+Weihua Hu, et al. 2023. GraphCast: Learning skillful medium-range global
+weather forecasting. Science 382, 6677 (2023), 1416–1421.
+[63] Geon Lee, Wenchao Yu, Kijung Shin, Wei Cheng, and Haifeng Chen. 2025.
+TimeCAP: Learning to Contextualize, Augment, and Predict Time Series Events
+with Large Language Model Agents. arXiv preprint arXiv:2502.11418 (2025).
+[64] Mingcong Lei, Yiming Zhao, Ge Wang, Zhixin Mai, Shuguang Cui, Yatong Han,
+and Jinke Ren. 2025. STMA: A Spatio-Temporal Memory Agent for Long-Horizon
+Embodied Task Planning. arXiv preprint arXiv:2502.10177 (2025).
+[65] Zhenyu Lei, Yushun Dong, Weiyu Li, Rong Ding, Qi Wang, and Jundong Li.
+2025. Harnessing Large Language Models for Disaster Management: A Survey.
+arXiv preprint arXiv:2501.06932 (2025).
+[66] Jiangtong Li, Li Niu, and Liqing Zhang. 2022. From representation to reasoning: Towards both evidence and commonsense reasoning for video questionanswering. In Proceedings of the IEEE/CVF conference on computer vision and
+pattern recognition. 21273–21282.
+[67] Jinpeng Li, Haiping Wang, Yuan Liu, Zhiyang Dou, Yuexin Ma, Sibei Yang,
+Yuan Li, Wenping Wang, Zhen Dong, Bisheng Yang, et al. [n. d.]. CityAnchor:
+City-scale 3D Visual Grounding with Multi-modality LLMs. In The Thirteenth
+
+Yuxuan Liang et al.
+
+International Conference on Learning Representations.
+[68] Peibo Li, Maarten de Rijke, Hao Xue, Shuang Ao, Yang Song, and Flora D Salim.
+2024. Large language models for next point-of-interest recommendation. In
+Proceedings of the 47th International ACM SIGIR Conference on Research and
+Development in Information Retrieval. 1463–1472.
+[69] Wenbin Li, Di Yao, Ruibo Zhao, Wenjie Chen, Zijie Xu, Chengxue Luo, Chang
+Gong, Quanliang Jing, Haining Tan, and Jingping Bi. 2024. STBench: Assessing
+the ability of large language models in spatio-temporal analysis. arXiv preprint
+arXiv:2406.19065 (2024).
+[70] Yaguang Li, Rose Yu, Cyrus Shahabi, and Yan Liu. 2017. Diffusion convolutional recurrent neural network: Data-driven traffic forecasting. arXiv preprint
+arXiv:1707.01926 (2017).
+[71] Zekun Li, Jina Kim, Yao-Yi Chiang, and Muhao Chen. 2022. SpaBERT: A pretrained language model from geographic data for geo-entity representation.
+arXiv preprint arXiv:2210.12213 (2022).
+[72] Zhonghang Li, Long Xia, Lei Shi, Yong Xu, Dawei Yin, and Chao Huang. 2024.
+Opencity: Open spatio-temporal foundation models for traffic prediction. arXiv
+preprint arXiv:2408.10269 (2024).
+[73] Zhonghang Li, Lianghao Xia, Jiabin Tang, Yong Xu, Lei Shi, Long Xia, Dawei
+Yin, and Chao Huang. 2024. Urbangpt: Spatio-temporal large language models.
+In Proceedings of the 30th ACM SIGKDD Conference on Knowledge Discovery and
+Data Mining. 5351–5362.
+[74] Zhonghang Li, Lianghao Xia, Yong Xu, and Chao Huang. 2024. GPT-ST: generative pre-training of spatio-temporal graph neural networks. Advances in Neural
+Information Processing Systems 36 (2024).
+[75] Zongrong Li, Junhao Xu, Siqin Wang, Yifan Wu, and Haiyang Li. 2024.
+StreetviewLLM: Extracting Geographic Information Using a Chain-of-Thought
+Multimodal Large Language Model. arXiv preprint arXiv:2411.14476 (2024).
+[76] Zhe Li, Ronghui Xu, Jilin Hu, Zhong Peng, Xi Lu, Chenjuan Guo, and Bin Yang.
+2024. Ocean Significant Wave Height Estimation with Spatio-temporally Aware
+Large Language Models. In Proceedings of the 33rd ACM International Conference
+on Information and Knowledge Management. 3892–3896.
+[77] Zekun Li, Wenxuan Zhou, Yao-Yi Chiang, and Muhao Chen. 2023. Geolm: Empowering language models for geospatially grounded language understanding.
+arXiv preprint arXiv:2310.14478 (2023).
+[78] Yuxuan Liang, Songyu Ke, Junbo Zhang, Xiuwen Yi, and Yu Zheng. 2018. Geoman: Multi-level attention networks for geo-sensory time series prediction.. In
+IJCAI, Vol. 2018. 3428–3434.
+[79] Yuebing Liang, Yichao Liu, Xiaohan Wang, and Zhan Zhao. 2023. Exploring
+large language models for human mobility prediction under public events. arXiv
+preprint arXiv:2311.17351 (2023).
+[80] Yuxuan Liang, Kun Ouyang, Yiwei Wang, Zheyi Pan, Yifang Yin, Hongyang
+Chen, Junbo Zhang, Yu Zheng, David S Rosenblum, and Roger Zimmermann.
+2022. Mixed-Order Relation-Aware Recurrent Neural Networks for SpatioTemporal Forecasting. IEEE TKDE (2022).
+[81] Yuxuan Liang, Haomin Wen, Yuqi Nie, Yushan Jiang, Ming Jin, Dongjin Song,
+Shirui Pan, and Qingsong Wen. 2024. Foundation models for time series analysis:
+A tutorial and survey. In Proceedings of the 30th ACM SIGKDD conference on
+knowledge discovery and data mining. 6555–6565.
+[82] Yuxuan Liang, Yutong Xia, Songyu Ke, Yiwei Wang, Qingsong Wen, Junbo
+Zhang, Yu Zheng, and Roger Zimmermann. 2023. Airformer: Predicting nationwide air quality in china with transformers. In Proceedings of the AAAI
+Conference on Artificial Intelligence, Vol. 37. 14329–14337.
+[83] Jaesung Lim, Seunghwan An, Gyeongdong Woo, ChangHyun Kim, and JongJune Jeon. [n. d.]. Context-Driven Missing Data Imputation via Large Language
+Model. ([n. d.]).
+[84] Yan Lin, Yichen Liu, Zeyu Zhou, Haomin Wen, Erwen Zheng, Shengnan
+Guo, Youfang Lin, and Huaiyu Wan. 2024. PTrajM: Efficient and Semanticrich Trajectory Learning with Pretrained Trajectory-Mamba. arXiv preprint
+arXiv:2408.04916 (2024).
+[85] Yan Lin, Tonglong Wei, Zeyu Zhou, Haomin Wen, Jilin Hu, Shengnan Guo,
+Youfang Lin, and Huaiyu Wan. 2024. TrajFM: A Vehicle Trajectory Foundation
+Model for Region and Task Transferability. arXiv preprint arXiv:2408.15251
+(2024).
+[86] Chenxi Liu, Sun Yang, Qianxiong Xu, Zhishuai Li, Cheng Long, Ziyue Li, and
+Rui Zhao. 2024. Spatial-temporal large language model for traffic prediction.
+arXiv preprint arXiv:2401.10134 (2024).
+[87] Haoxin Liu, Zhiyuan Zhao, Jindong Wang, Harshavardhan Kamarthi, and
+B Aditya Prakash. 2024. Lstprompt: Large language models as zero-shot time
+series forecasters by long-short-term prompting. arXiv preprint arXiv:2402.16132
+(2024).
+[88] Jiaqi Liu, Peng Hang, Xiaocong Zhao, Jianqiang Wang, and Jian Sun. 2024.
+DDM-lag: A diffusion-based decision-making model for autonomous vehicles
+with lagrangian safety enhancement. IEEE Transactions on Artificial Intelligence
+(2024).
+[89] Jun Liu, Chaoyun Zhang, Jiaxu Qian, Minghua Ma, Si Qin, Chetan Bansal,
+Qingwei Lin, Saravan Rajmohan, and Dongmei Zhang. 2024. Large language
+models can deliver accurate and interpretable time series anomaly detection.
+
+Foundation Models for Spatio-Temporal Data Science: A Tutorial and Survey
+
+arXiv preprint arXiv:2405.15370 (2024).
+[90] Lei Liu, Shuo Yu, Runze Wang, Zhenxun Ma, and Yanming Shen. 2024. How
+can large language models understand spatial-temporal data? arXiv preprint
+arXiv:2401.14192 (2024).
+[91] Xu Liu, Junfeng Hu, Yuan Li, Shizhe Diao, Yuxuan Liang, Bryan Hooi, and
+Roger Zimmermann. 2024. Unitime: A language-empowered unified model for
+cross-domain time series forecasting. In Proceedings of the ACM Web Conference
+2024. 4095–4106.
+[92] Xu Liu, Yuxuan Liang, Chao Huang, Yu Zheng, Bryan Hooi, and Roger Zimmermann. 2022. When do contrastive learning signals help spatio-temporal graph
+forecasting?. In SIGSPATIAL. 1–12.
+[93] Xu Liu, Juncheng Liu, Gerald Woo, Taha Aksu, Yuxuan Liang, Roger Zimmermann, Chenghao Liu, Silvio Savarese, Caiming Xiong, and Doyen Sahoo. 2024.
+Moirai-MoE: Empowering Time Series Foundation Models with Sparse Mixture
+of Experts. arXiv preprint arXiv:2410.10469 (2024).
+[94] Yu Liu, Jingtao Ding, Yanjie Fu, and Yong Li. 2023. Urbankg: An urban knowledge
+graph system. ACM Transactions on Intelligent Systems and Technology 14, 4
+(2023), 1–25.
+[95] Lin Long, Rui Wang, Ruixuan Xiao, Junbo Zhao, Xiao Ding, Gang Chen, and
+Haobo Wang. 2024. On llms-driven synthetic data generation, curation, and
+evaluation: A survey. arXiv preprint arXiv:2406.15126 (2024).
+[96] Qingyue Long, Yuan Yuan, and Yong Li. 2024. A Universal Model for Human
+Mobility Prediction. arXiv preprint arXiv:2412.15294 (2024).
+[97] Haoyu Ma, Yushu Chen, Wenlai Zhao, Jinzhe Yang, Yingsheng Ji, Xinghua Xu,
+Xiaozhu Liu, Hao Jing, Shengzhuo Liu, and Guangwen Yang. 2024. A Mamba
+Foundation Model for Time Series Forecasting. arXiv preprint arXiv:2411.02941
+(2024).
+[98] Xin Man, Chenghong Zhang, Changyu Li, and Jie Shao. 2023. W-MAE: Pretrained weather model with masked autoencoder for multi-variable weather
+forecasting. arXiv preprint arXiv:2304.08754 (2023).
+[99] Rohin Manvi, Samar Khanna, Gengchen Mai, Marshall Burke, David Lobell,
+and Stefano Ermon. 2023. Geollm: Extracting geospatial knowledge from large
+language models. arXiv preprint arXiv:2310.06213 (2023).
+[100] Rohin Manvi, Samar Khanna, Gengchen Mai, Marshall Burke, David B Lobell,
+and Stefano Ermon. 2024. GeoLLM: Extracting Geospatial Knowledge from
+Large Language Models. In The Twelfth International Conference on Learning
+Representations.
+[101] Justin M Mittelstädt, Julia Maier, Panja Goerke, Frank Zinn, and Michael Hermes.
+2024. Large language models can outperform humans in social situational
+judgments. Scientific Reports 14, 1 (2024), 27449.
+[102] Seungwhan Moon, Andrea Madotto, Zhaojiang Lin, Aparajita Saraf, Amy Bearman, and Babak Damavandi. 2023. IMU2CLIP: Language-grounded Motion
+Sensor Translation with Multimodal Contrastive Learning. In Findings of the
+Association for Computational Linguistics: EMNLP 2023. 13246–13253.
+[103] Alameen Najjar. 2023. Towards A Foundation Model For Trajectory Intelligence.
+In IEEE ICDMW. IEEE, 832–835.
+[104] Tung Nguyen, Johannes Brandstetter, Ashish Kapoor, Jayesh K Gupta, and
+Aditya Grover. 2023. ClimaX: A foundation model for weather and climate.
+International Conference on Machine Learning (2023).
+[105] Yansong Ning and Hao Liu. 2024. UrbanKGent: A Unified Large Language Model
+Agent Framework for Urban Knowledge Graph Construction. arXiv preprint
+arXiv:2402.06861 (2024).
+[106] Yansong Ning, Hao Liu, Hao Wang, Zhenyu Zeng, and Hui Xiong. 2024. UUKG:
+unified urban knowledge graph dataset for urban spatiotemporal prediction.
+Advances in Neural Information Processing Systems 36 (2024).
+[107] Joon Sung Park, Joseph O’Brien, Carrie Jun Cai, Meredith Ringel Morris, Percy
+Liang, and Michael S Bernstein. 2023. Generative agents: Interactive simulacra
+of human behavior. In Proceedings of the 36th annual acm symposium on user
+interface software and technology. 1–22.
+[108] Jaideep Pathak, Shashank Subramanian, Peter Harrington, Sanjeev Raja, Ashesh
+Chattopadhyay, Morteza Mardani, Thorsten Kurth, David Hall, Zongyi Li,
+Kamyar Azizzadenesheli, et al. 2022. Fourcastnet: A global data-driven highresolution weather model using adaptive fourier neural operators. arXiv preprint
+arXiv:2202.11214 (2022).
+[109] Jinghua Piao, Zhihong Lu, Chen Gao, Fengli Xu, Fernando P Santos, Yong Li,
+and James Evans. 2025. Emergence of human-like polarization among large
+language model agents. arXiv preprint arXiv:2501.05171 (2025).
+[110] Arian Prabowo, Wei Shao, Hao Xue, Piotr Koniusz, and Flora D Salim. 2023.
+Because every sensor is unique, so is every pair: Handling dynamicity in traffic
+forecasting. In Proceedings of the 8th ACM/IEEE Conference on Internet of Things
+Design and Implementation. 93–104.
+[111] Arian Prabowo, Hao Xue, Wei Shao, Piotr Koniusz, and Flora D Salim. 2024.
+Traffic forecasting on new roads using spatial contrastive pre-training (SCPT).
+Data Mining and Knowledge Discovery 38, 3 (2024), 913–937.
+[112] Siyuan Qi, Shuo Chen, Yexin Li, Xiangyu Kong, Junqi Wang, Bangcheng
+Yang, Pring Wong, Yifan Zhong, Xiaoyuan Zhang, Zhaowei Zhang, et al. 2024.
+CivRealm: A Learning and Reasoning Odyssey in Civilization for DecisionMaking Agents. In The Twelfth International Conference on Learning Representations.
+
+Conference’17, July 2017, Washington, DC, USA
+
+[113] Kyle K Qin, Yongli Ren, Wei Shao, Brennan Lake, Filippo Privitera, and Flora D
+Salim. 2023. Multiple-level point embedding for solving human trajectory
+imputation with prediction. ACM Transactions on Spatial Algorithms and Systems
+9, 2 (2023), 1–22.
+[114] Hao Sha, Yao Mu, Yuxuan Jiang, Li Chen, Chenfeng Xu, Ping Luo, Shengbo Eben
+Li, Masayoshi Tomizuka, Wei Zhan, and Mingyu Ding. 2023. Languagempc:
+Large language models as decision makers for autonomous driving. arXiv
+preprint arXiv:2310.03026 (2023).
+[115] Jie-Jing Shao, Xiao-Wen Yang, Bo-Wen Zhang, Baizhi Chen, Wen-Da Wei, LanZhe Guo, and Yu-feng Li. 2024. ChinaTravel: A Real-World Benchmark for
+Language Agents in Chinese Travel Planning. arXiv preprint arXiv:2412.13682
+(2024).
+[116] Wei Shao, Zhiling Jin, Shuo Wang, Yufan Kang, Xiao Xiao, Hamid Menouar,
+Zhaofeng Zhang, Junshan Zhang, and Flora Salim. 2022. Long-term spatiotemporal forecasting via dynamic multiple-graph attention. In Proceedings of the
+Thirty-Third International Joint Conference on Artificial Intelligence, IJCAI-22.
+[117] Zezhi Shao, Zhao Zhang, Fei Wang, and Yongjun Xu. 2022. Pre-training enhanced spatial-temporal graph neural network for multivariate time series
+forecasting. In Proceedings of the 28th ACM SIGKDD conference on knowledge
+discovery and data mining. 1567–1577.
+[118] Qichao Shentu, Beibu Li, Kai Zhao, Yang Shu, Zhongwen Rao, Lujia Pan, Bin
+Yang, and Chenjuan Guo. 2024. Towards a General Time Series Anomaly
+Detector with Adaptive Bottlenecks and Dual Adversarial Decoders. arXiv
+preprint arXiv:2405.15273 (2024).
+[119] Xiaoming Shi, Shiyu Wang, Yuqi Nie, Dianqi Li, Zhou Ye, Qingsong Wen, and
+Ming Jin. 2025. Time-MoE: Billion-Scale Time Series Foundation Models with
+Mixture of Experts. In The Thirteenth International Conference on Learning
+Representations (ICLR).
+[120] Xiaoming Shi, Siqiao Xue, Kangrui Wang, Fan Zhou, James Zhang, Jun Zhou,
+Chenhao Tan, and Hongyuan Mei. 2023. Language models can improve event
+prediction by few-shot abductive reasoning. Advances in Neural Information
+Processing Systems 36 (2023), 29532–29557.
+[121] Ethan Steinberg, Jason Fries, Yizhe Xu, and Nigam Shah. 2023. MOTOR: A TimeTo-Event Foundation Model For Structured Medical Records. arXiv preprint
+arXiv:2301.03150 (2023).
+[122] Mingtian Tan, Mike A Merrill, Vinayak Gupta, Tim Althoff, and Thomas
+Hartvigsen. 2024. Are language models actually useful for time series forecasting?. In The Thirty-eighth Annual Conference on Neural Information Processing
+Systems.
+[123] Yihong Tang, Zhaokai Wang, Ao Qu, Yihao Yan, Zhaofeng Wu, Dingyi Zhuang,
+Jushi Kai, Kebing Hou, Xiaotong Guo, Jinhua Zhao, et al. 2024. ITINERA:
+Integrating Spatial Optimization with Large Language Models for Open-domain
+Urban Itinerary Planning. In Proceedings of the 2024 Conference on Empirical
+Methods in Natural Language Processing: Industry Track. 1413–1432.
+[124] Nicolas Tempelmeier, Simon Gottschalk, and Elena Demidova. 2021. GeoVectors:
+a linked open corpus of OpenStreetMap Embeddings on world scale. In Proceedings of the 30th ACM International Conference on Information & Knowledge
+Management. 4604–4612.
+[125] Saeid Ashraf Vaghefi, Dominik Stammbach, Veruska Muccione, Julia Bingler,
+Jingwei Ni, Mathias Kraus, Simon Allen, Chiara Colesanti-Senni, Tobias Wekhof,
+Tobias Schimanski, et al. 2023. ChatClimate: Grounding conversational AI in
+climate science. Communications Earth & Environment 4, 1 (2023), 480.
+[126] Jiawei Wang, Renhe Jiang, Chuang Yang, Zengqing Wu, Makoto Onizuka,
+Ryosuke Shibasaki, Noboru Koshizuka, and Chuan Xiao. 2024. Large language
+models as urban residents: An llm agent framework for personal mobility generation. Advances in Neural Information Processing Systems (2024).
+[127] Junyang Wang, Haiyang Xu, Jiabo Ye, Ming Yan, Weizhou Shen, Ji Zhang, Fei
+Huang, and Jitao Sang. 2024. Mobile-agent: Autonomous multi-modal mobile
+device agent with visual perception. arXiv preprint arXiv:2401.16158 (2024).
+[128] Kun Wang, Hao Wu, Yifan Duan, Guibin Zhang, Kai Wang, Xiaojiang Peng,
+Yu Zheng, Yuxuan Liang, and Yang Wang. 2024. NuwaDynamics: Discovering
+and Updating in Causal Spatio-Temporal Modeling. In The Twelfth International
+Conference on Learning Representations.
+[129] Senzhang Wang, Jiannong Cao, and Philip Yu. 2020. Deep learning for spatiotemporal data mining: A survey. IEEE TKDE (2020).
+[130] Xuhong Wang, Ding Wang, Liang Chen, Fei-Yue Wang, and Yilun Lin. 2023.
+Building transportation foundation model via generative graph transformer. In
+2023 IEEE 26th International Conference on Intelligent Transportation Systems
+(ITSC). IEEE, 6042–6047.
+[131] Yihang Wang, Yuying Qiu, Peng Chen, Kai Zhao, Yang Shu, Zhongwen Rao, Lujia
+Pan, Bin Yang, and Chenjuan Guo. 2024. ROSE: Register Assisted General Time
+Series Forecasting with Decomposed Frequency Learning. CoRR abs/2405.17478
+(2024).
+[132] Yu Wang, Tongya Zheng, Shunyu Liu, Zunlei Feng, Kaixuan Chen, Yunzhi Hao,
+and Mingli Song. 2024. Spatiotemporal-Augmented Graph Neural Networks
+for Human Mobility Simulation. IEEE Transactions on Knowledge and Data
+Engineering (2024).
+
+Conference’17, July 2017, Washington, DC, USA
+
+[133] Zihao Wang, Shaofei Cai, Guanzhou Chen, Anji Liu, Xiaojian Ma, Yitao Liang,
+and Team CraftJarvis. 2023. Describe, explain, plan and select: interactive
+planning with large language models enables open-world multi-task agents. In
+Proceedings of the 37th International Conference on Neural Information Processing
+Systems. 34153–34189.
+[134] Zhaonan Wang, Renhe Jiang, Hao Xue, Flora D Salim, Xuan Song, and Ryosuke
+Shibasaki. 2022. Event-aware multimodal mobility nowcasting. In AAAI, Vol. 36.
+4228–4236.
+[135] Tonglong Wei, Yan Lin, Youfang Lin, Shengnan Guo, Jilin Hu, Gao Cong, and
+Huaiyu Wan. 2024. PTR: A Pre-trained Language Model for Trajectory Recovery.
+arXiv preprint arXiv:2410.14281 (2024).
+[136] Haomin Wen, Youfang Lin, Yutong Xia, Huaiyu Wan, Qingsong Wen, Roger
+Zimmermann, and Yuxuan Liang. 2023. Diffstg: Probabilistic spatio-temporal
+graph forecasting with denoising diffusion models. In ACM SIGSPATIAL. 1–12.
+[137] Gerald Woo, Chenghao Liu, Akshat Kumar, Caiming Xiong, Silvio Savarese,
+and Doyen Sahoo. 2024. Unified training of universal time series forecasting
+transformers. (2024).
+[138] Lixia Wu, Jianlin Liu, Junhong Lou, Minhui Deng, Jianbin Zheng, Haomin Wen,
+Chao Song, and Shu He. 2024. G2PTL: A Geography-Graph Pre-trained Model.
+In Proceedings of the 33rd ACM International Conference on Information and
+Knowledge Management. 4991–4999.
+[139] Wansen Wu, Weiyi Yang, Juanjuan Li, Yong Zhao, Zhengqiu Zhu, Bin Chen,
+Sihang Qiu, Yong Peng, and Fei-Yue Wang. 2024. Autonomous crowdsensing: operating and organizing crowdsensing for sensing automation. IEEE Transactions
+on Intelligent Vehicles (2024).
+[140] Zonghan Wu, Shirui Pan, Guodong Long, Jing Jiang, Xiaojun Chang, and
+Chengqi Zhang. 2020. Connecting the dots: Multivariate time series forecasting
+with graph neural networks. In SIGKDD. 753–763.
+[141] Zonghan Wu, Shirui Pan, Guodong Long, Jing Jiang, and Chengqi Zhang. 2019.
+Graph wavenet for deep spatial-temporal graph modeling. arXiv preprint
+arXiv:1906.00121 (2019).
+[142] Congxi Xiao, Jingbo Zhou, Yixiong Xiao, Jizhou Huang, and Hui Xiong. 2024.
+ReFound: Crafting a Foundation Model for Urban Region Understanding upon
+Language and Visual Foundations. In Proceedings of the 30th ACM SIGKDD
+Conference on Knowledge Discovery and Data Mining. 3527–3538.
+[143] Mengxi Xiao, Zihao Jiang, Lingfei Qian, Zhengyu Chen, Yueru He, Yijing Xu,
+Yuecheng Jiang, Dong Li, Ruey-Ling Weng, Min Peng, et al. 2025. Retrievalaugmented Large Language Models for Financial Time Series Forecasting. arXiv
+preprint arXiv:2502.05878 (2025).
+[144] Fengli Xu, Jun Zhang, Chen Gao, Jie Feng, and Yong Li. 2023. Urban generative intelligence (ugi): A foundational platform for agents in embodied city
+environment. arXiv preprint arXiv:2312.11813 (2023).
+[145] Jiehui Xu, Haixu Wu, Jianmin Wang, and Mingsheng Long. 2022. Anomaly
+Transformer: Time Series Anomaly Detection with Association Discrepancy. In
+International Conference on Learning Representations.
+[146] Mingxing Xu, Wenrui Dai, Chunmiao Liu, Xing Gao, Weiyao Lin, Guo-Jun Qi,
+and Hongkai Xiong. 2020. Spatial-temporal transformer networks for traffic
+flow forecasting. arXiv preprint arXiv:2001.02908 (2020).
+[147] Hao Xue and Flora D Salim. 2023. Promptcast: A new prompt-based learning
+paradigm for time series forecasting. IEEE Transactions on Knowledge and Data
+Engineering 36, 11 (2023), 6851–6864.
+[148] Hao Xue, Tianye Tang, Ali Payani, and Flora D Salim. 2024. Prompt Mining for
+Language Models-based Mobility Flow Forecasting. In Proceedings of the 32nd
+ACM International Conference on Advances in Geographic Information Systems.
+[149] Hao Xue, Bhanu Prakash Voutharoja, and Flora D Salim. 2022. Leveraging
+language foundation models for human mobility forecasting. In Proceedings of
+the 30th International Conference on Advances in Geographic Information Systems.
+[150] Yibo Yan, Haomin Wen, Siru Zhong, Wei Chen, Haodong Chen, Qingsong
+Wen, Roger Zimmermann, and Yuxuan Liang. 2024. Urbanclip: Learning textenhanced urban region profiling with contrastive language-image pretraining
+from the web. In Proceedings of the ACM on Web Conference 2024. 4006–4017.
+[151] Yuwei Yan, Qingbin Zeng, Zhiheng Zheng, Jingzhe Yuan, Jie Feng, Jun Zhang,
+Fengli Xu, and Yong Li. 2024. OpenCity: A Scalable Platform to Simulate Urban
+Activities with Massive LLM Agents. arXiv preprint arXiv:2410.21286 (2024).
+[152] Jianwei Yang, Reuben Tan, Qianhui Wu, Ruijie Zheng, Baolin Peng, Yongyuan
+Liang, Yu Gu, Mu Cai, Seonghyeon Ye, Joel Jang, et al. 2025. Magma: A Foundation Model for Multimodal AI Agents. arXiv preprint arXiv:2502.13130 (2025).
+[153] Jihan Yang, Shusheng Yang, Anjali W Gupta, Rilyn Han, Li Fei-Fei, and Saining
+Xie. 2024. Thinking in space: How multimodal large language models see,
+remember, and recall spaces. arXiv preprint arXiv:2412.14171 (2024).
+[154] Kairui Yang, Zihao Guo, Gengjie Lin, Haotian Dong, Zhao Huang, Yipeng Wu,
+Die Zuo, Jibin Peng, Ziyuan Zhong, Xin WANG, Qing Guo, Xiaosong Jia, Junchi
+Yan, and Di Lin. 2025. Trajectory-LLM: A Language-based Data Generator for
+Trajectory Prediction in Autonomous Driving. In ICLR.
+[155] Silin Yang, Dong Wang, Haoqi Zheng, and Ruochun Jin. 2024. TimeRAG: BOOSTING LLM Time Series Forecasting via Retrieval-Augmented Generation. arXiv
+preprint arXiv:2412.16643 (2024).
+[156] Tiankai Yang, Yi Nian, Shawn Li, Ruiyao Xu, Yuangang Li, Jiaqi Li, Zhuo Xiao,
+Xiyang Hu, Ryan Rossi, Kaize Ding, et al. 2024. Ad-llm: Benchmarking large
+
+Yuxuan Liang et al.
+
+language models for anomaly detection. arXiv preprint arXiv:2412.11142 (2024).
+[157] Xinli Yu, Zheng Chen, Yuan Ling, Shujing Dong, Zongyi Liu, and Yanbin Lu.
+2023. Temporal data meets LLM–explainable financial time series forecasting.
+arXiv preprint arXiv:2306.11025 (2023).
+[158] Yuan Yuan, Jingtao Ding, Jie Feng, Depeng Jin, and Yong Li. 2024. Unist: A
+prompt-empowered universal model for urban spatio-temporal prediction. In
+Proceedings of the 30th ACM SIGKDD Conference on Knowledge Discovery and
+Data Mining. 4095–4106.
+[159] Yuan Yuan, Jingtao Ding, Chonghua Han, Depeng Jin, and Yong Li. 2024. A
+Foundation Model for Unified Urban Spatio-Temporal Flow Prediction. arXiv
+preprint arXiv:2411.12972 (2024).
+[160] Yuan Yuan, Chonghua Han, Jingtao Ding, Depeng Jin, and Yong Li. 2024. Urbandit: A foundation model for open-world urban spatio-temporal learning. arXiv
+preprint arXiv:2411.12164 (2024).
+[161] Yuan Yuan, Chenyang Shao, Jingtao Ding, Depeng Jin, and Yong Li. 2024. Spatiotemporal few-shot learning via diffusive neural network generation. In The
+Twelfth International Conference on Learning Representations.
+[162] Ye Yuan, Yong Zhang, Boyue Wang, Yuan Peng, Yongli Hu, and Baocai Yin.
+2022. STGAN: Spatio-temporal generative adversarial network for traffic data
+imputation. IEEE Transactions on Big Data 9, 1 (2022), 200–211.
+[163] Zhenghang Yuan, Zhitong Xiong, Lichao Mou, and Xiao Xiang Zhu. 2024.
+Chatearthnet: A global-scale, high-quality image-text dataset for remote sensing.
+arXiv preprint arXiv:2402.11325 (2024).
+[164] Kunpeng Zhang, Feng Zhou, Lan Wu, Na Xie, and Zhengbing He. 2024. Semantic
+understanding and prompt engineering for large-scale traffic data imputation.
+Information Fusion 102 (2024), 102038.
+[165] Libo Zhang and Yue Ning. 2024. Large Language Models as Event Forecasters.
+arXiv preprint arXiv:2406.10492 (2024).
+[166] Qianru Zhang, Xubin Ren, Lianghao Xia, Siu Ming Yiu, and Chao Huang.
+2024. Spatio-Temporal Graph Learning With Large Language Model. https:
+//openreview.net/forum?id=QUkcfqa6GX
+[167] Qianru Zhang, Haixin Wang, Cheng Long, Liangcai Su, Xingwei He, Jianlong
+Chang, Tailin Wu, Hongzhi Yin, Siu-Ming Yiu, Qi Tian, et al. 2024. A Survey
+of Generative Techniques for Spatial-Temporal Data Mining. arXiv preprint
+arXiv:2405.09592 (2024).
+[168] Siyao Zhang, Daocheng Fu, Wenzhe Liang, Zhao Zhang, Bin Yu, Pinlong Cai,
+and Baozhen Yao. 2024. Trafficgpt: Viewing, processing and interacting with
+traffic foundation models. Transport Policy 150 (2024), 95–105.
+[169] Weijia Zhang, Jindong Han, Zhao Xu, Hang Ni, Hao Liu, and Hui Xiong. 2024.
+Urban Foundation Models: A Survey. In Proceedings of the 30th ACM SIGKDD
+Conference on Knowledge Discovery and Data Mining. 6633–6643.
+[170] Xin Zhang, Tianjian Ouyang, Yu Shang, Qingmin Liao, and Yong Li. [n. d.].
+UrbanMLLM: Joint Learning of Cross-view Imagery for Urban Understanding.
+([n. d.]).
+[171] Yu Zhang, Weiming Huang, Yao Yao, Song Gao, Lizhen Cui, and Zhongmin Yan.
+2024. Urban region representation learning with human trajectories: a multiview approach incorporating transition, spatial, and temporal perspectives.
+GIScience & Remote Sensing 61, 1 (2024), 2387392.
+[172] Yimei Zhang, Xiangjie Kong, Wenfeng Zhou, Jin Liu, Yanjie Fu, and Guojiang
+Shen. 2024. A comprehensive survey on traffic missing data imputation. IEEE
+Transactions on Intelligent Transportation Systems (2024).
+[173] Yunxiang Zhang and Xiaojun Wan. 2024. SITUATEDGEN: incorporating geographical and temporal contexts into generative commonsense reasoning.
+Advances in Neural Information Processing Systems 36 (2024).
+[174] Yifan Zhang, Cheng Wei, Shangyou Wu, Zhengting He, and Wenhao Yu. 2023.
+GeoGPT: understanding and processing geospatial tasks through an autonomous
+GPT. arXiv preprint arXiv:2307.07930 (2023).
+[175] Zeyang Zhang, Xin Wang, Ziwei Zhang, Haoyang Li, Yijian Qin, and Wenwu
+Zhu. 2024. LLM4DyG: can large language models solve spatial-temporal problems on dynamic graphs?. In Proceedings of the 30th ACM SIGKDD Conference
+on Knowledge Discovery and Data Mining. 4350–4361.
+[176] Yu Zhao, Pan Deng, Junting Liu, Xiaofeng Jia, and Jianwei Zhang. 2023. Generative Causal Interpretation Model for Spatio-Temporal Representation Learning.
+In Proceedings of the 29th ACM SIGKDD Conference on Knowledge Discovery and
+Data Mining. 3537–3548.
+[177] Chuanpan Zheng, Xiaoliang Fan, Cheng Wang, and Jianzhong Qi. 2020. Gman:
+A graph multi-attention network for traffic prediction. In AAAI, Vol. 34. 1234–
+1241.
+[178] Yu Zheng, Licia Capra, Ouri Wolfson, and Hai Yang. 2014. Urban computing:
+concepts, methodologies, and applications. ACM TIST 5, 3 (2014), 1–55.
+[179] Siru Zhong, Xixuan Hao, Yibo Yan, Ying Zhang, Yangqiu Song, and Yuxuan
+Liang. 2024. Urbancross: Enhancing satellite image-text retrieval with crossdomain adaptation. In Proceedings of the 32nd ACM International Conference on
+Multimedia. 6307–6315.
+[180] Siru Zhong, Weilin Ruan, Ming Jin, Huan Li, Qingsong Wen, and Yuxuan Liang.
+2025. Time-VLM: Exploring Multimodal Vision-Language Models for Augmented Time Series Forecasting. arXiv preprint arXiv:2502.04395 (2025).
+
+Foundation Models for Spatio-Temporal Data Science: A Tutorial and Survey
+
+[181] Gengze Zhou, Yicong Hong, Zun Wang, Xin Eric Wang, and Qi Wu. 2024. Navgpt2: Unleashing navigational reasoning capability for large vision-language models. In European Conference on Computer Vision. Springer, 260–278.
+[182] Gengze Zhou, Yicong Hong, and Qi Wu. 2024. Navgpt: Explicit reasoning in
+vision-and-language navigation with large language models. In Proceedings of
+the AAAI Conference on Artificial Intelligence, Vol. 38. 7641–7649.
+[183] Tian Zhou, Peisong Niu, Xue Wang, Liang Sun, and Rong Jin. 2023. One Fits
+All: Power General Time Series Analysis by Pretrained LM. Advances in Neural
+Information Processing Systems (2023).
+[184] Xingcheng Zhou, Mingyu Liu, Bare Luka Zagar, Ekim Yurtsever, and Alois C
+Knoll. 2023. Vision language models in autonomous driving and intelligent
+transportation systems. arXiv preprint arXiv:2310.14414 (2023).
+[185] Zhilun Zhou, Yuming Lin, Depeng Jin, and Yong Li. 2024. Large language model
+for participatory urban planning. arXiv preprint arXiv:2402.17161 (2024).
+[186] Zihao Zhou and Rose Yu. 2024. Can LLMs Understand Time Series Anomalies?
+arXiv preprint arXiv:2410.05440 (2024).
+[187] Xizhou Zhu, Yuntao Chen, Hao Tian, Chenxin Tao, Weijie Su, Chenyu Yang, Gao
+Huang, Bin Li, Lewei Lu, Xiaogang Wang, et al. 2023. Ghost in the minecraft:
+Generally capable agents for open-world environments via large language
+models with text-based knowledge and memory. arXiv preprint arXiv:2305.17144
+(2023).
+[188] Yuanshao Zhu, James Jianqiao Yu, Xiangyu Zhao, Qidong Liu, Yongchao Ye,
+Wei Chen, Zijian Zhang, Xuetao Wei, and Yuxuan Liang. 2024. Controltraj:
+Controllable trajectory generation with topology-constrained diffusion model.
+In Proceedings of the 30th ACM SIGKDD Conference on Knowledge Discovery and
+Data Mining. 4676–4687.
+[189] Yuanshao Zhu, James Jianqiao Yu, Xiangyu Zhao, Xuetao Wei, and Yuxuan
+Liang. 2024. UniTraj: Universal Human Trajectory Modeling from Billion-Scale
+Worldwide Traces. arXiv preprint arXiv:2411.03859 (2024).
+[190] Zhengqiu Zhu, Yatai Ji, Sihang Qiu, Yong Zhao, Kai Xu, Rusheng Ju, and Bin
+Chen. 2024. A Prototype Design of LLM-Based Autonomous Web Crowdsensing.
+In International Conference on Web Engineering. Springer, 406–409.
+[191] Zhengqiu Zhu, Yong Zhao, Bin Chen, Sihang Qiu, Kai Xu, Quanjun Yin, Jincai Huang, Zhong Liu, and Fei-Yue Wang. 2024. Conversational Crowdsensing: A Parallel Intelligence Powered Novel Sensing Approach. arXiv preprint
+arXiv:2402.06654 (2024).
+
+A
+
+Limitations and Future Opportunities
+
+We further discuss the potential limitations of current research
+and identify several key future directions aimed at advancing the
+development of more powerful, transparent, and reliable STFMs:
+• The curse of accuracy against interpretability. We have identified a significant challenge in developing FMs for addressing numerical problems in ST data science. Directly leveraging LLMs for
+numerical tasks such as forecasting proves to be non-trivial [34].
+Meanwhile, fine-tuning LLMs or training STFMs from scratch
+using large-scale, cross-domain ST data often comes at the cost
+of interactive capabilities, thereby hindering interpretability in
+the prediction outcomes. These limitations motivate us to explore a novel paradigm that not only retains strong numerical
+reasoning abilities but also enhances interpretability, bridging
+the gap between predictive accuracy and explanatory insight.
+• Large foundation models are all we need? While the extensive parameterization of FMs enables impressive generalization
+capabilities, particularly in zero/few-shot settings, their superiority over smaller expert models remains context-dependent. In ST
+domains such as time series analysis [122] and urban planning
+[57], smaller expert models often outperform FMs when provided
+with sufficient domain-specific training data. This raises fundamental questions about the trade-offs between model scalability,
+efficiency, and task-specific optimization. Future research should
+delve into hybrid approaches that combine the adaptability of
+large models with the precision of expert models.
+• One-fit-all FMs across the full workflow. While current FMs
+are typically designed to support only specific stages of ST data
+science, we envision a more unified FM capable of seamlessly
+
+Conference’17, July 2017, Washington, DC, USA
+
+spanning the entire workflow, from initial data sensing and management to mining and supporting downstream applications.
+Achieving this goal will likely require the development of advanced LLM agents that can function as full-stack engineers (i.e.,
+strongly benefiting all stages) for ST data science.
+• Integrating STFMs with multimodal understanding. While
+current STFMs excel in processing structured ST data, their ability
+to integrate and reason over multimodal information, including
+text, images, video, and sensor data, remains underdeveloped.
+Many tasks require models to jointly interpret geospatial context, temporal dynamics, and text descriptions. Future research
+can focus on designing multimodal STFMs that effectively align,
+fuse, and reason over heterogeneous data sources, enabling more
+context-aware and human-interpretable decision-making.
+
+B
+
+Zero-shot Utilization of LLMs
+
+There are three ways of directly using LLMs for various ST tasks:
+• LLM-as-Augmenter. Pretrained LLMs can enhance both data
+understanding and model performance. On the one hand, it can
+serve as the input augmenter, which enhances data interoperability or provides external information [40, 79] (e.g., textual or
+visual). On the other hand, LLMs can serve as a parameter-frozen
+model component [102, 150, 166], thus augmenting domain models by injecting the pretrained external knowledge in LLMs.
+• LLM-as-Predictor. LLMs can be directly employed as predictors [33, 53, 73, 125] for various tasks. Due to the modality gap
+between text and ST data, preprocessing is required to fit the
+input spaces of LLMs. Such step typically contains prompt engineering [73, 125, 147–149] or patch & tokenization [53].
+• LLM-as-Agent. LLM-based agents are typically equipped with
+the ability to memorize and call various tools. When applied to ST
+data science, various domain-expert models can be wrapped as a
+tool and added into the agent in a plug-and-play manner [144, 168,
+174]. As such, LLM serves as a router to access different models
+with both flexibility and performance guarantees. Furthermore,
+multi-agent systems [185] can be built to solve more complex
+tasks in the ST domain.
+
+C
+
+Comparison between LLMs and PFMs
+
+Table 3 demonstrates the comparison between LLMs and PFMs on
+their capabilities, including perception, optimization, and reasoning. For example, PFMs excel in exceptional numerical reasoning
+abilities, yet they often struggle with common-sense understanding.
+There is still no free lunch, and the user can choose either LLMs or
+PFMs according to the downstream applications.
+Table 3: A capability comparison between LLMs and PFMs
+for ST data science.
+Capabilities
+Perception
+Optimization
+Common-sense
+Reasoning
+Numerical
+Reasoning
+Causal
+Reasoning
+
+Large Language Models (LLMs)
+▲ Limited native ST perception; can be
+enhanced via fine-tuning
+✓ Agent-based reasoning for decisionmaking; relies on prompting and heuristics
+✓ Strong via pretraining on vast textual
+data; can be enhanced with fine-tuning
+▲ Handles arithmetic but struggles with
+structured ST computations
+▲ Can infer causal relations from text but
+lacks structured ST modeling
+
+Pretrained Foundation Models (PFMs)
+✓ Strong ST perception, integrating sensor
+data and domain-specific learning
+▲ Limited; lacks decision-making ability
+for control and planning
+▲ Limited; relies on structured ST data
+rather than broad world knowledge
+✓ Designed for numerical problems, e.g.,
+forecasting, anomaly detection
+✓ Built-in graph-based and ST causal modeling
+
+Conference’17, July 2017, Washington, DC, USA
+
+Zero-shot
+Learner
+LLM
+Fine-tuning
+
+STFM
+Neural
+Architecture
+
+PFM
+
+Pre-training
+Scheme
+
+Data
+Modality
+
+Yuxuan Liang et al.
+
+Prompt Engineering
+
+Time-LLM [53], AuxMobLCast [149], Promptcast [147], LLMTIME [33], LSTPrompt [87]
+
+Agentic Engineering
+
+GeoGPT [174], LLMob [50], STMA [64], TrafficGPT [168], TimeXL [49], TimeCAP [63]
+
+All Parameters
+
+W-MAE [98], ClimaX [104], FourcastNet [108], GeoLLM [99]
+
+Partial Parameters
+
+LLM4TS [13], OFA [183], ST-LLM [86]
+
+Add-on Parameters
+
+Time-LLM [53], LLMLight [61], Time-VLM [180]
+
+Transformer-based
+
+TrajFM [85], GeoLM [77], CityFM [7], OpenCity [72], UniST [158], ROSE [131]
+
+Diffusion-based
+
+TimeDiT [12], UrbanDiT [160], GPD [161], TrajGDM [21], UniMob [96]
+
+Graph-based
+
+TFM [130], GraphCast [62]
+
+Others
+
+TSMamba [97], Mamba4Cast [8], Time-SSM [43], NeuralGCM [59], DADA [118]
+
+Generative
+
+TrajFM [85], TFM [130], W-MAE [98], G2PTL [138], UniTraj [189], ROSE [131]
+
+Contrastive
+
+CityFM [7], PTrajM [84], MTE [171]
+
+Hybrid
+
+GeoLM [77], DADA [118]
+
+Location
+
+CityFM [7], SpaBERT [71], G2PTL [138], UrbanCLIP [150], UrbanVLP [40], ReFound [142]
+
+Trajectory/Event
+
+TrajFM [85], LTM [103], PTrajM [84], UniTraj [189], TrajGDM [21], MOTOR [121]
+
+ST Raster
+
+W-MAE [98], UrbanDiT [160], ClimaX [104], Pangu [10], Fengwu [15], UniST [158]
+
+ST Graph
+
+STEP [117], OpenCity [72], GraphCast [62], SCPT [111], Moirai [137]
+
+Figure 7: Taxonomy from the methodology perspective.
+
+

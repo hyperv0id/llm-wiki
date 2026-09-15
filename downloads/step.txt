@@ -1,0 +1,1667 @@
+arXiv:2206.09113v2 [cs.LG] 16 Aug 2022
+
+Pre-training Enhanced Spatial-temporal Graph Neural Network
+for Multivariate Time Series Forecasting
+Zezhi Shao
+
+Zhao Zhang
+
+Institute of Computing Technology,
+Chinese Academy of Sciences
+University of Chinese Academy of Sciences
+shaozezhi19b@ict.ac.cn
+
+Institute of Computing Technology,
+Chinese Academy of Sciences
+zhangzhao2021@ict.ac.cn
+
+Fei Wang∗
+
+Yongjun Xu
+
+Institute of Computing Technology,
+Chinese Academy of Sciences
+wangfei@ict.ac.cn
+
+Institute of Computing Technology,
+Chinese Academy of Sciences
+xyj@ict.ac.cn
+
+ABSTRACT
+Multivariate Time Series (MTS) forecasting plays a vital role in a
+wide range of applications. Recently, Spatial-Temporal Graph Neural Networks (STGNNs) have become increasingly popular MTS
+forecasting methods. STGNNs jointly model the spatial and temporal patterns of MTS through graph neural networks and sequential
+models, significantly improving the prediction accuracy. But limited by model complexity, most STGNNs only consider short-term
+historical MTS data, such as data over the past one hour. However,
+the patterns of time series and the dependencies between them (i.e.,
+the temporal and spatial patterns) need to be analyzed based on
+long-term historical MTS data. To address this issue, we propose
+a novel framework, in which STGNN is Enhanced by a scalable
+time series Pre-training model (STEP). Specifically, we design a
+pre-training model to efficiently learn temporal patterns from very
+long-term history time series (e.g., the past two weeks) and generate
+segment-level representations. These representations provide contextual information for short-term time series input to STGNNs and
+facilitate modeling dependencies between time series. Experiments
+on three public real-world datasets demonstrate that our framework
+is capable of significantly enhancing downstream STGNNs, and our
+pre-training model aptly captures temporal patterns.
+
+(a) Traffic flow over 9 days in PeMS04 datasets.
+
+(b) Similar traffic trend in different context.
+
+(c) Different traffic trend between similar series.
+
+Figure 1: Examples of traffic flow multivariate time series
+data. (a) The two time series exhibit complex temporal patterns and strong spatial correlations. (b) Similar traffic trends
+within small windows in different contexts. (c) Different traffic trends within a small window between two similar series.
+Knowledge Discovery and Data Mining (KDD ’22), August 14–18, 2022, Washington, DC, USA. ACM, New York, NY, USA, 11 pages. https://doi.org/10.
+1145/3534678.3539396
+
+CCS CONCEPTS
+• Information systems → Data mining.
+
+KEYWORDS
+multivariate time series forecasting, spatial-temporal graph neural
+network, pre-training model
+ACM Reference Format:
+Zezhi Shao, Zhao Zhang, Fei Wang, Yongjun Xu. 2022. Pre-training Enhanced Spatial-temporal Graph Neural Network for Multivariate Time Series Forecasting. In Proceedings of the 28th ACM SIGKDD Conference on
+∗ Corresponding author.
+
+This work is licensed under a Creative Commons Attribution
+International 4.0 License.
+KDD ’22, August 14–18, 2022, Washington, DC, USA
+© 2022 Copyright held by the owner/author(s).
+ACM ISBN 978-1-4503-9385-0/22/08.
+https://doi.org/10.1145/3534678.3539396
+
+1
+
+INTRODUCTION
+
+Multivariate time series data is ubiquitous in our lives, from transportation and energy to economics. It contains time series from
+multiple interlinked variables. Predicting future trends based on
+historical observations is of great value in helping to make better decisions. Thus, multivariate time series forecasting has remained an
+enduring research topic in both academia and industry for decades.
+Indeed, multivariate time series can be generally formalized as
+spatial-temporal graph data [36]. On the one hand, multivariate
+time series have complex temporal patterns, e.g., multiple periodicities. On the other hand, different time series can affect other’s
+evolutionary processes because of the underlying interdependencies between variables, which is non-Euclidean and is reasonably
+modeled by the graph structure. To illustrate, we take the traffic
+flow system as an example, where each sensor corresponds to a
+variable. Figure 1(a) depicts the traffic flow time series generated
+from two sensors deployed on the road network. Apparently, there
+
+KDD ’22, August 14–18, 2022, Washington, DC, USA
+
+are two repeating temporal patterns, i.e., daily and weekly periodicities. The morning/evening peaks occur every day, while the
+weekdays and weekends exhibit different patterns. Furthermore,
+the two time series share very similar trends because the selected
+sensors 20 and 301 are closely connected in the traffic network.
+Consequently, accurate time series forecasting depends not only
+on the pattern of its temporal dimension but also on its interlinked
+time series. Besides, it is worth noting that we made the above
+analysis on the basis of observing a sufficiently long time series.
+To make accurate predictions, Spatial-Temporal Graph Neural
+Networks (STGNNs) have attracted increasing attention recently.
+STGNNs combine Graph Neural Networks (GNNs) [18] and sequential models. The former is used to deal with the dependencies
+between time series, and the latter is used to learn the temporal
+patterns. Benefitting from jointly modeling the spatial and temporal patterns, STGNNs have achieved state-of-the-art performance.
+In addition, an increasing number of recent works are further exploring the joint learning of graph structures and STGNNs since
+the dependency graph between time series, which is handcrafted
+by prior knowledge, is often biased and incorrect, even missing in
+many cases. In short, spatial-temporal graph neural networks have
+made significant progress for multivariate time series forecasting
+in many real-world applications. However, there is no free lunch.
+More powerful models require more complex structures. The computational complexity usually increases linearly or quadratically
+with the length of the input time series. Further considering the
+number of time series (e.g., hundreds), it is not easy for STGNNs to
+scale to very long-term historical time series. In fact, most models
+use historical data in a small window to make predictions, e.g., use
+the past twelve time steps (one hour) to predict the future twelve
+time steps [20, 29, 35, 36, 41]. The inability to explicitly learn from
+long-term information brings up some intuitive concerns.
+Firstly, the STGNN model is blind to the context information
+beyond the window. Considering that time series are usually noisy,
+it may be difficult for the model to distinguish short-term time series in different contexts. For example, when observing data within
+two small windows of length twelve shown in Figure 1(b), we find
+that the two time series in different contexts are similar. Therefore,
+it is difficult for models to make accurate predictions about their
+different future trends based on limited historical data. Secondly,
+short-term information is unreliable for modeling the dependency
+graph, which is represented by the similarity (or correlation) between time series. As shown in Figure 1(c), the two time series are
+not similar when we observe data within the small window, neither
+in number nor in trend. On the contrary, long-term historical time
+series are beneficial for resisting noise, which facilitates obtaining
+more robust and accurate dependencies. Although long-term historical information is beneficial, as mentioned above, it is expensive
+for the STGNNs to scale to very long-term historical time series directly. Furthermore, the optimization of the model can also become
+problematic as the length of the input sequence increases.
+To address these challenges, we propose a novel framework, in
+which STGNN is Enhanced by a scalable time series Pre-training
+model (STEP). The pre-training model aims to efficiently learn the
+temporal patterns from very long-term historical time series and
+generate segment-level representations, which contain rich contextual information that is beneficial to address the first challenge.
+
+Zezhi Shao et al.
+
+In addition, the learned representations of these segments (i.e., the
+short-term time series) are able to incorporate the information from
+the whole long historical time series to calculate the correlation
+between time series, thus solving the second challenge, the problem of missing the dependency graph. Specifically, we design an
+efficient unsupervised pre-training model for Time Series based
+on TransFormer blocks [33] (TSFormer), which is trained through
+the masked autoencoding strategy [13]. TSFormer efficiently captures information over very long-term historical data over weeks,
+and produces segment-level representations that correctly reflect
+complex patterns in time series. Second, we design a graph structure learner based on the representation of TSFormer, which learns
+discrete dependency graph and utilizes the 𝑘NN graph computed
+based on the representation of TSFormer as a regularization to
+guide the joint training of graph structure and STGNN. Notably,
+STEP is a general framework that can extend to almost arbitrary
+STGNNs. In summary, the main contributions are the following:
+• We propose a novel framework for multivariate time series forecasting, where the STGNN is enhanced by a pretraining model. Specifically, the pre-training model generates segment-level representations that contain contextual
+information to improve the downstream models.
+• We design an efficient unsupervised pre-training model for
+time series based on Transformer blocks and train it by the
+masked autoencoding strategy. Furthermore, we design a
+graph structure learner for learning the dependency graph.
+• Experimental results on three real-world datasets show that
+our method can significantly enhance the performance of
+downstream STGNNs, and our pre-training model aptly captures temporal patterns.
+
+2
+
+PRELIMINARIES
+
+We first define the concept of multivariate time series, the dependency graph. Then, we define the forecasting problem addressed.
+Definition 1. Multivariate Time Series. A multivariate time
+series has multiple time-dependent variable, such as observations from
+multiple sensors. It can be denoted as a tensor X ∈ R𝑇 ×𝑁 ×𝐶 , where
+𝑇 is the number of time steps, 𝑁 is the number of variables, e.g., the
+sensors, and 𝐶 is the number of channels. We additionaly denote the
+data of time series 𝑖 as S𝑖 ∈ R𝑇 ×𝐶 .
+Definition 2. Dependency Graph. Each variable depends not
+only on its past values but also on other variables. Such dependencies
+are captured by a dependency graph G = (𝑉 , 𝐸), where 𝑉 is the set of
+|𝑉 | = 𝑁 nodes, and each node corresponds to a variable, e.g., a sensor.
+𝐸 is the set of |𝐸| = 𝑀 edges. The graph can also be denoted as an
+adjacent matrix A ∈ R𝑁 ×𝑁 .
+Definition 3. Multivariate Time Series Forecasting. Given
+historical signals X ∈ R𝑇ℎ ×𝑁 ×𝐶 from the past 𝑇ℎ time steps, multivariate time series forecasting aims to predict the values Y ∈
+R𝑇𝑓 ×𝑁 ×𝐶 of the 𝑇𝑓 nearest future time steps.
+
+3
+
+MODEL ARCHITECTURE
+
+As shown in Figure 2, STEP has two stages: the pre-training stage
+and the forecasting stage. In the pre-training stage, we design a
+masked autoencoding model for Time Series based on TransFormer
+
+Pre-training Enhanced Spatial-temporal Graph Neural Network for Multivariate Time Series Forecasting
+
+KDD ’22, August 14–18, 2022, Washington, DC, USA
+
+Ŷ
+Spatial-Temporal
+Graph Neural Network
+Prediction Layer
+
+A
+
+Transformer Blocks
+
+Decoder
+
+Graph Structure Learning
+
+Encoder
+
+Encoder
+
+Transformer Blocks
+
+Transformer Blocks
+
+Learnable Positional Encoding
+
+Learnable Positional Encoding
+
+Input Embedding
+
+Input Embedding
+
+Si3
+
+SiP− 2
+
+HiP
+
+Hi
+
+Hij
+
+Si1
+
+SiP
+
+SiP
+
+Si1
+
+Si2
+
+⋯
+
+SiP
+
+Figure 2: The overview of the proposed STEP framework. Left: the pre-training stage. We split very long-term time series into
+segments and feed them into TSFormer, which is trained via the masked autoencoding strategy. Right: the forecasting stage.
+We enhance the downstream STGNN based on the segment-level representations of the pre-trained TSFormer.
+blocks (TSFormer) to efficiently learn temporal patterns. TSFormer
+is capable of learning from the very long-term sequence and gives
+segment-level representations that contain rich context information.
+In the forecasting stage, we use the pre-trained encoder to provide
+context information to enhance the downstream STGNN. Furthermore, based on the representations of the pre-training model, we
+further design a discrete and sparse graph learner to deal with the
+cases that the pre-defined graph is missing.
+
+3.1
+
+The Pre-training Stage
+
+In this part, we aim at designing an efficient unsupervised pretraining model for time series. While the pre-training model has
+made significant progress in natural language processing [3, 8, 27],
+progress in time series lags behind them. First, we would like to discuss the difference between time series and natural language, which
+will motivate the design of TSFormer. We attempt to distinguish
+them from the following two perspectives:
+(i) Time series information density is lower. As humangenerated signals, each data point in natural language (i.e., a word
+in a sentence) has rich semantics and is suitable as the data unit for
+model input. On the contrary, isolated data points in time series give
+less semantic information. Semantics only arise when we observe
+at least segment-level data, such as going up or down. On the other
+hand, language models are usually trained by predicting only a few
+missing words per sentence. However, masked values in time series
+can often be trivially predicted by simple interpolation [39], making
+the pre-training model only focuses on low-level information. To
+address this problem, a simple strategy that works well is to mask a
+very high portion of the model’s input to encourage the learning of
+high-level semantics, motivated by recent development in computer
+
+vision [13]. It creates a challenging self-supervised task that forces
+the model to obtain holistic understanding of time series.
+(ii) Time series require longer sequences to learn the temporal patterns. In natural languages, sequences of hundreds of
+lengths have contained rich semantic information. Thus, language
+pre-training models usually cut or pad the input sequence to hundreds [3, 8, 27]. However, although time series have relatively more
+straightforward semantics than natural languages, they require
+longer sequences to learn it. For example, traffic system records
+data every five seconds, and if we want to learn the weekly periodicity, we need at least consecutive 2016 time slices. Although
+sampling at a lower frequency is a possible solution, it inevitably
+loses information. Fortunately, although longer time series will
+increase the model complexity, we can alleviate it by stacking fewer
+Transformer blocks and fix model parameters during the forecasting
+stage to reduce computational and memory overhead.
+Motivated by the above analyses and recent computer vision
+models [9], especially Masked AutoEncoder (MAE) [13], we propose
+a masked autoencoding model for time series based on Transformer
+blocks (i.e., TSFormer). TSFormer reconstructs the original signal
+based on the given partial observed signals. We use an asymmetric
+design to largely reduce computation: the encoder operates on only
+partially visible signals, and the decoder uses a lightweight network
+on the full signals. The model is shown in Figure 2(left), and we
+will introduce each component in detail next.
+Masking. We divide the input sequence S𝑖 from node 𝑖 into 𝑃 nonoverlapping patches of length 𝐿 (Input sequences are obtained over
+the original time series through a sliding window of length 𝑃 ∗ 𝐿).
+The 𝑗th patch can be denoted as S𝑖𝑗 ∈ R𝐿𝐶 , where 𝐶 is the input
+
+KDD ’22, August 14–18, 2022, Washington, DC, USA
+
+Zezhi Shao et al.
+
+channel. We assume 𝐿 is the commonly used length of input time
+series of STGNNs. We randomly mask a subset of patches with
+masking ratio 𝑟 set to a high number of 75% to create a challenging self-supervised task. Here, we emphasize that the strategy of
+using patches as input units serves multiple purposes. Firstly, segments (i.e., patches) are more appropriate for explicitly providing
+semantics than separate points. Secondly, it facilitates the use of
+downstream models, as downstream STGNNs take a single segment
+as input. Last but not least, it significantly reduces the length of
+sequences input to the encoder, and the high masking ratio 𝑟 makes
+the encoder more efficient during the pre-training stage.
+Encoder. Our encoder is a series of Transformer blocks [33] with an
+input embedding layer and a positional encoding layer. The encoder
+only operates on unmasked patches. As the semantics of time series
+are more straightforward than languages, we use four layers of
+Transformer blocks, far less than the depth of Transformer-based
+models in computer vision [9, 13] and natural languages [3, 8].
+Specifically, the input embedding layer is a linear projection to
+transform the unmasked patches into latent space:
+U𝑖𝑗 = W · S𝑖𝑗 + b,
+
+(1)
+
+where W ∈ R𝑑×(𝐿𝐶) and b ∈ R𝑑 are learnable parameters, U𝑖𝑗 ∈ R𝑑
+are the model input vectors, and 𝑑 is the hidden dimension. For
+masked patches, we use a shared learnable mask token to indicate the presence of a missing patch to be predicted. Next, the
+positional encoding layer is used to add sequential information.
+Notably, the positional encoding operates on all patches, although
+the mask tokens are not used in the encoder. Moreover, unlike the
+deterministic, sinusoidal embeddings used in MAE [13], we use
+learnable positional embeddings. On the one hand, in this work,
+learnable embeddings significantly outperform sinusoidal ones for
+all datasets. On the other hand, we observe that learned positional
+embeddings are crucial in learning time series’ periodic features,
+which will be demonstrated in Section 4.3. Finally, we obtain the
+latent representations H𝑖𝑗 ∈ R𝑑 through Transformer blocks for all
+unmasked patches 𝑗.
+Decoder. The decoder is also a series of Transformer blocks that
+reconstruct the latent representations back to a lower semantic
+level, i.e., numerical information. The decoder operates on the full
+set of patches, including the mask tokens. Unlike MAE [13], we no
+longer add positional embeddings here since all patches already
+have positional information added in the encoder. Notably, the
+decoder is only used during the pre-training stage to perform the
+sequence reconstruction task, and can be designed independently
+of the encoder. We use only a single layer of Transformer block
+for balancing efficiency and effectiveness. Finally, we apply MultiLayer Perceptions (MLPs) to make predictions whose number of
+output dimensions equals the length of each patch. Specifically,
+given the latent representation H𝑖𝑗 ∈ R𝑑 of patch 𝑗, the decoder
+
+In summary, TSFormer is efficient thanks to the high masking
+ratio and fewer Transformer blocks. TSFormer is capable of learning from the very long-term sequence (e.g., weeks) and can be
+trained on a single GPU. The encoder generates representations
+for the input patches (segments). Furthermore, another noteworthy difference from MAE [13] is that we pay more attention to
+the representations of the patches. On the one hand, we can use
+the representations to verify periodic patterns in the data, which
+will be demonstrated in Section 4.3. More importantly, they can
+conveniently act as contextual information for short-term input of
+downstream STGNNs, which will be introduced in the next.
+
+3.2
+
+The Forecasting Stage
+
+For a given time series 𝑖, TSFormer takes its historical signals S𝑖 ∈
+R𝑇𝑝 ×𝐶 of the past 𝑇𝑝 = 𝐿 × 𝑃 time steps as input. We divide it
+into 𝑃 non-overlapping patches of length 𝐿: S𝑖1, · · · , S𝑖𝑃 , where S𝑖𝑗 ∈
+R𝐿×𝐶 . The pre-trained TSFormer encoder generates representations
+H𝑖𝑗 ∈ R𝑑 for each S𝑖𝑗 , where 𝑑 is the dimension of hidden states.
+Considering that the computational complexity usually increases
+linearly or quadratically with the length of the input time series,
+STGNNs can only take the latest, i.e., the last patch S𝑖𝑃 ∈ R𝐿×𝐶 for
+each time series 𝑖 as input. For example, the most typical setting is
+𝐿 = 12. In the forecasting stage, we aim at enhancing the STGNNs
+based on the representations of the pre-trained TSFormer encoder.
+Graph structure learning. Many STGNNs [20, 36, 41] depend on
+a pre-defined graph to indicate the relationship between nodes (i.e.,
+time series). However, such a graph is not available or is incomplete
+in many cases. An intuitive idea is to train a matrix A ∈ R𝑁 ×𝑁 ,
+where A𝑖 𝑗 ∈ [0, 1] indicates the dependency between time series 𝑖
+and 𝑗. However, since the learning of graph structure and STGNNs
+are coupled compactly, and there is no supervised loss information
+for graph structure learning [21], optimizing such a contiguous matrix usually leads to a complex bilevel optimization problem [10]. In
+addition, the dependency A𝑖 𝑗 is usually measured by the similarity
+between time series, which is also a challenging task.
+Fortunately, we can alleviate these problems based on the pretrained TSFormer. Motivated by recent works [10, 17, 29], we aim to
+learn a discrete sparse graph, where Θ𝑖 𝑗 parameterizes the Bernoulli
+distribution from which the discrete dependency graph A is sampled. First, we introduce graph regularization to provide supervised
+information for graph optimization based on the representations
+of TSFormer. Specifically, we denote H𝑖 = H𝑖1 ∥ H𝑖2 ...H𝑖𝑃 −1 ∥ H𝑖𝑃 ∈
+R𝑃𝑑 as the feature of time series 𝑖, where ∥ means the concatenation
+operation. Then we calculate a 𝑘NN graph A𝑎 among all the nodes.
+We can control the sparsity of the learned graph by setting different 𝑘. Benefiting from the ability of TSFormer, A𝑎 can reflect the
+dependencies between nodes, which is helpful to guide the training
+of the graph structure. Then, we compute Θ𝑖 𝑗 as follows:
+
+gives the reconstructed sequence Ŝ𝑖𝑗 ∈ R𝐿𝐶 .
+Reconstruction target. Our loss function compute mean absolute
+error between the original sequence S𝑖𝑗 and reconstructed sequence
+
+Θ𝑖 𝑗 = FC(relu(FC(Z𝑖 ∥ Z 𝑗 )))
+
+Ŝ𝑖𝑗 . Kindly note that we only compute loss over the masked patches,
+which is in line with other pre-training models [8, 13]. Moreover,
+all these operations are computed in parallel for all time series 𝑖.
+
+where Θ𝑖 𝑗 ∈ R2 is the unnormalized probability. The first dimension indicates the probability of positive, and the second dimension indicates the probability of negative. G𝑖 is the global feature
+of time series 𝑖, which is obtained by a convolutional network
+
+Z𝑖 = relu(FC(H𝑖 )) + G𝑖 ,
+
+(2)
+
+Pre-training Enhanced Spatial-temporal Graph Neural Network for Multivariate Time Series Forecasting
+
+G𝑖 = FC(vec(Conv(S𝑖𝑡𝑟𝑎𝑖𝑛 ))), where S𝑖𝑡𝑟𝑎𝑖𝑛 ∈ R𝐿𝑡𝑟𝑎𝑖𝑛 is the entire
+sequence 𝑖 over training dataset, and 𝐿𝑡𝑟𝑎𝑖𝑛 is the length of the training dataset. S𝑖𝑡𝑟𝑎𝑖𝑛 is static for all samples during training, helping
+to make the training process more robust and accurate. The feature
+H𝑖 is dynamic for different training samples to reflect the dynamics of dependency graphs [19]. As such, we use the cross-entropy
+between Θ and the 𝑘NN graph 𝐴𝑎 as graph structure regularization:
+∑︁
+′
+′
+L𝑔𝑟𝑎𝑝ℎ =
+−A𝑖𝑎𝑗 log Θ𝑖 𝑗 − (1 − A𝑖𝑎𝑗 ) log(1 − Θ𝑖 𝑗 ),
+(3)
+𝑖𝑗
+′
+
+where Θ𝑖 𝑗 = softmax(Θ𝑖 𝑗 ) ∈ R is the normalized probability.
+The last problem of discrete graph structure learning is that the
+sampling operation from Θ to adjacent matrix A is not differentiable. Hence, we apply the Gumbel-Softmax reparametrization
+trick proposed by [15, 25]:
+A𝑖 𝑗 = softmax((Θ𝑖 𝑗 + g)/𝜏),
+
+(4)
+
+where g ∈ R2 is a vector of i.i.d. samples drawn from a Gumbel(0,1)
+distribution. 𝜏 is the softmax temperature parameter. The GumbelSoftmax converges to one-hot samples (i.e., discrete) when 𝜏 → 0.
+Downstream spatial-temporal graph neural network. A normal downstream STGNN takes the last patch and the dependency
+graph as input, while the enhanced STGNN also considers the input patch’s representation. Since the TSFormer has strong power
+at extracting very long-term dependencies, the representation H𝑖𝑃
+contains rich context information. STEP framework can extend
+to almost any STGNN, and we choose a representative method
+as our backend, the Graph WaveNet [36]. Graph WaveNet captures spatial-temporal dependencies efficiently and effectively by
+combining graph convolution with dilated casual convolution. It
+makes predictions based on its output latent hidden representations
+′
+H𝑔𝑤 ∈ R𝑁 ×𝑑 by a regression layer, which is a Multi-Layer Perception (MLP). For brevity, we omit its details, and interested readers
+can refer to the paper [36]. Denoting the representations H𝑖𝑃 of
+TSFormer for all node 𝑖 as H𝑃 ∈ R𝑁 ×𝑑 , we fuse the representations
+of Graph WaveNet and TSFormer by:
+H 𝑓 𝑖𝑛𝑎𝑙 = SP(H𝑃 ) + H𝑔𝑤 ,
+
+(5)
+
+where SP(·) is the semantic projector to transform the H𝑖𝑃 to the
+semantic space of H𝑔𝑤 . We implement it with a MLP. Finally, we
+make predictions by the regression layer: Ŷ ∈ R𝑇𝑓 ×𝑁 ×𝐶 . Given
+the ground truth Y ∈ R𝑇𝑓 ×𝑁 ×𝐶 , we use mean absolute error as the
+regression loss:
+𝑇𝑓
+
+L𝑟𝑒𝑔𝑟𝑒𝑠𝑠𝑖𝑜𝑛 = L ( Ŷ, Y) =
+
+𝑁
+
+𝐶
+
+1 ∑︁ ∑︁ ∑︁
+| Ŷ𝑖 𝑗𝑘 − Y𝑖 𝑗𝑘 |,
+𝑇𝑓 𝑁𝐶 𝑗=1 𝑖=1
+
+(6)
+
+𝑘=1
+
+where 𝑁 is the number of nodes, 𝑇𝑓 is the number of forecasting
+steps, and 𝐶 is the dimensionality of the output. The downstream
+STGNN and the graph structure is trained in an end-to-end manner:
+L = L𝑟𝑒𝑔𝑟𝑒𝑠𝑠𝑖𝑜𝑛 + 𝜆L𝑔𝑟𝑎𝑝ℎ .
+
+(7)
+
+We set the graph regularization term 𝜆 gradually decay during the
+training process to go beyond the 𝑘NN graph. Notably, the pretrained TSFormer encoder is fixed in the forecasting stage to reduce
+computational and memory overhead.
+
+KDD ’22, August 14–18, 2022, Washington, DC, USA
+
+Table 1: Statistics of datasets.
+Dataset
+
+# Samples
+
+# Node
+
+Sample Rate
+
+Time Span
+
+METR-LA
+PEMS-BAY
+PEMS04
+
+34272
+52116
+16992
+
+207
+325
+307
+
+5mins
+5mins
+5mins
+
+4 months
+6 months
+2 months
+
+4
+
+EXPERIMENTS
+
+In this section, we present experiments on three real-world datasets
+to demonstrate the effectiveness of the proposed STEP and TSFormer. Furthermore, we conduct comprehensive experiments to
+evaluate the impact of important hyper-parameters and components. More experimental details, such as optimization settings and
+efficiency study, can be found in Appendix A, B, and C. It is notable
+that we conduct pre-training for each dataset since these datasets
+are heterogeneous in terms of length of time series, physical nature,
+and temporal patterns. Our code can be found in this repository1 .
+
+4.1
+
+Experimental Setup
+
+Datasets. Following previous works [29, 35, 36], we conduct experiments on three commonly used multivariate time series datasets:
+• METR-LA is a traffic speed dataset collected from loopdetectors located on the LA County road network [14]. It
+contains data of 207 selected sensors over a period of 4
+months from Mar to Jun in 2012 [20]. The traffic information is recorded at the rate of every 5 minutes, and the total
+number of time slices is 34,272.
+• PEMS-BAY is a traffic speed dataset collected from California Transportation Agencies (CalTrans) Performance Measurement System (PeMS) [5]. It contains data of 325 sensors
+in the Bay Area over a period of 6 months from Jan 1st 2017
+to May 31th 2017 [20]. The traffic information is recorded
+at the rate of every 5 minutes, and the total number of time
+slices is 52,116.
+• PEMS04 is a traffic flow dataset also collected from CalTrans
+PeMS [5]. It contains data of 307 sensors in the Bay Area over
+a period of 2 months from Jan 1st 2018 to Feb 28th 2018 [11].
+The traffic information is recorded at the rate of every 5
+minutes, and the total number of time slices is 16,992.
+The statistical information is summarized in Table 1. For a fair
+comparison, we follow the dataset division in previous works. For
+METR-LA and PEMS-BAY, we use about 70% of data for training,
+20% of data for testing, and the remaining 10% for validation [20, 36].
+For PEMS04, we use about 60% of data for training, 20% of data for
+testing, and the remaining 20% for validation [11, 12].
+Baselines. We select a wealth of baselines that have official public
+code. Historical Average (HA), VAR [23], and SVR [30] are traditional methods. FC-LSTM [32], DCRNN [20], Graph WaveNet [36],
+ASTGCN [11], and STSGCN [31] are typical deep learning methods.
+GMAN [41], MTGNN [35], and GTS [29] are recent state-of-the-art
+works. More details of baselines can be found in Appendix A.1.
+Metrics. We evaluate the performances of all baselines by three
+commonly used metrics in multivariate time series forecasting,
+including Mean Absolute Error (MAE), Root Mean Squared Error
+(RMSE) and Mean Absolute Percentage Error (MAPE).
+1 https://github.com/zezhishao/STEP
+
+KDD ’22, August 14–18, 2022, Washington, DC, USA
+
+Implementation. We set patch size 𝐿 to 12. We set the number of
+patches 𝑃 to 168 for METR-LA and PEMS-BAY, and 336 for PEMS04,
+i.e., we use historical information for a week for METR-LA and
+PEMS-BAY, and two weeks for PEMS04. We aim at forecasting the
+next 12 time steps. The masking ratio 𝑟 is set to 75%. The hidden
+dimension of the latent representations of TSFormer 𝑑 is set to 96.
+The TSFormer encoder uses 4 layer of Transformer blocks, and the
+decoder uses 1 layer. The number of attention heads in Transformer
+blocks is set to 4. The hyper-parameter of Graph WaveNet is set to
+default in their papers [36]. For the 𝑘NN graph A𝑎 , we set 𝑘 to 10.
+We perform significance tests (t-test with p-value < 0.05) over all
+the experimental results.
+
+4.2
+
+(a)
+
+(b)
+
+(c)
+
+(d)
+
+Main Results
+
+As shown in Table 2, our STEP framework consistently achieves the
+best performance in almost all horizons in all datasets, indicating
+the effectiveness of our framework. GTS and MTGNN jointly learn
+the graph structure among multiple time series and the spatialtemporal graph neural networks. GTS extends DCRNN by introducing a neighborhood graph as a regularization to improve graph
+quality and reformulates the problem as a unilevel optimization
+problem. MTGNN replaces the GNN and Gated TCN in Graph
+WaveNet with mix-hop propagation layer [1] and dilated inception
+layer, and proposes to learn latent adjacency matrix to seek further improvement. However, they can not consistently outperform
+other baselines. Kindly note that the results of GTS may have some
+gaps with the original paper because it calculates the evaluation
+metrics in a slightly different manner. Some details can be found
+in the appendix in the original paper [29] and similar issues in
+its official code repository2 . We unify the evaluation process with
+other baselines, run GTS five times, and report its best performance.
+GMAN performs better in long-term prediction benefiting from the
+powerful ability of the attention mechanism in capturing long-term
+dependency. DCRNN and Graph WaveNet are two typical spatialtemporal graph neural networks. Even compared with many newer
+works such as ASTGCN and STSGCN, their performance is still
+very promising. This may be due to their refined and reasonable
+model architecture. FC-LSTM, a classic recurrent neural network,
+can not perform well since it only considers temporal features,
+ignoring the dependencies between time series. Other non-deep
+learning methods HA, VAR, and SVR perform worst since they have
+strong assumptions about the data, e.g., stationary or linear. Thus,
+they can not capture the strong nonlinear and dynamic spatial and
+temporal correlations in real-world datasets.
+In a nutshell, STEP provides stable performance gains for Graph
+WaveNet by fully exploiting representations extracted by TSFormer
+from very long-term historical time series. However, despite the
+significant performance improvements, it is difficult for us to intuitively understand what TSFormer has learned and how it can help
+STGNNs. In the next subsection, we will inspect the TSFormer and
+demonstrate the learned multiple periodicities temporal pattern.
+
+4.3
+
+Zezhi Shao et al.
+
+Inspecting The TSFormer
+
+In this subsection, we would like to intuitively explore what TSFormer has learned. We conduct experiments on the PEMS04 dataset.
+2 https://github.com/chaoshangcs/GTS/issues
+
+Figure 3: Inspecting the TSFormer. (a) Learned temporal periodicity. (b) Reconstruction. (c) Similarity of latent representations among different patches. (d) Similarity of positional embeddings among different patches.
+Small
+Specifically, we randomly select
+a time series in the PEMS04 and
+then randomly choose a sample of the test dataset to analyze TSFormer. Note that each input sample in PEMS04 has 336 patches of
+length 12, which means it covers data of the past two weeks.
+Learned temporal pattern. Firstly, we would like to explore whether
+TSFormer learned temporal patterns. We expect it to generate meaningful representations and be able to solve the problem in Figure
+1(b). Therefore, we randomly select a patch, compute the cosine
+similarity with the representations of all the other patches, and
+select the most similar 3 patches. The result is shown in Figure
+3(a), where the original patch is in the black circle, and the selected
+most similar patches are in the red circle. Apparently, TSFormer has
+a strong ability to identify similar patches. Furthermore, in order
+to get the bigger picture, we also calculate the pairwise similarity
+between all patches and get a 336 × 336 heat map, where element
+in 𝑖-th column and 𝑗-th row indicates the cosine similarity between
+patch 𝑖 and patch 𝑗. The result shown in Figure 3(c) presents clear
+daily and weekly periodicities. For each patch, it is similar to the
+patch at the same time of a day, and the most similar patch usually
+falls on the same time of the week on the same day. The observation
+is in line with human intuition. The blue columns or rows mean that
+the sensor is down or has a large noise fluctuation at this moment,
+which makes it different from other patches. Since TSFormer has
+learned the correct relationship between patches, it is reasonable
+that it can significantly enhance the downstream STGNNs.
+Reconstruction visualization. Additionally, we also visualized
+the results of the TSFormer reconstruction, which is shown in
+Figure 3(b), where the grey line presents masked patches and the
+red line demonstrates the reconstruction. The results show that
+TSFormer can effectively reconstruct masked patches based on a
+small number of unmasked patches (blue line).
+Positional embeddings. Another important difference between
+TSFormer and MAE [13] and the original Transformer [33] is the
+
+Pre-training Enhanced Spatial-temporal Graph Neural Network for Multivariate Time Series Forecasting
+
+KDD ’22, August 14–18, 2022, Washington, DC, USA
+
+Table 2: Multivariate time series forecasting on the METR-LA, PEMS-BAY, and PEMS04 datasets. Numbers marked with ∗
+indicate that the improvement is statistically significant compared with the best baseline (t-test with p-value< 0.05).
+Datasets
+
+METR-LA
+
+PEMS-BAY
+
+PEMS04
+
+Horizon 3
+
+Methods
+
+Horizon 6
+
+Horizon 12
+
+MAE
+
+RMSE
+
+MAPE
+
+MAE
+
+RMSE
+
+MAPE
+
+MAE
+
+RMSE
+
+MAPE
+
+HA
+VAR
+SVR
+FC-LSTM
+DCRNN
+STGCN
+Graph WaveNet
+ASTGCN
+STSGCN
+GMAN
+MTGNN
+GTS
+
+4.79
+4.42
+3.39
+3.44
+2.77
+2.88
+2.69
+4.86
+3.31
+2.80
+2.69
+2.67
+
+10.00
+7.80
+8.45
+6.30
+5.38
+5.74
+5.15
+9.27
+7.62
+5.55
+5.18
+5.27
+
+11.70%
+13.00%
+9.30%
+9.60%
+7.30%
+7.62%
+6.90%
+9.21%
+8.06%
+7.41%
+6.88%
+7.21%
+
+5.47
+5.41
+5.05
+3.77
+3.15
+3.47
+3.07
+5.43
+4.13
+3.12
+3.05
+3.04
+
+11.45
+9.13
+10.87
+7.23
+6.45
+7.24
+6.22
+10.61
+9.77
+6.49
+6.17
+6.25
+
+13.50%
+12.70%
+12.10%
+10.09%
+8.80%
+9.57%
+8.37%
+10.13%
+10.29%
+8.73%
+8.19%
+8.41%
+
+6.99
+6.52
+6.72
+4.37
+3.60
+4.59
+3.53
+6.51
+5.06
+3.44
+3.49
+3.46
+
+13.89
+10.11
+13.76
+8.69
+7.60
+9.40
+7.37
+12.52
+11.66
+7.35
+7.23
+7.31
+
+17.54%
+15.80%
+16.70%
+14.00%
+10.50%
+12.70%
+10.01%
+11.64%
+12.91%
+10.07%
+9.87%
+9.98%
+
+STEP
+
+2.61∗
+
+4.98∗
+
+6.60%∗
+
+2.96∗
+
+5.97∗
+
+7.96%∗
+
+3.37∗
+
+6.99∗
+
+9.61%∗
+
+HA
+VAR
+SVR
+FC-LSTM
+DCRNN
+STGCN
+Graph WaveNet
+ASTGCN
+STSGCN
+GMAN
+MTGNN
+GTS
+
+1.89
+1.74
+1.85
+2.05
+1.38
+1.36
+1.30
+1.52
+1.44
+1.34
+1.32
+1.34
+
+4.30
+3.16
+3.59
+4.19
+2.95
+2.96
+2.74
+3.13
+3.01
+2.91
+2.79
+2.83
+
+4.16%
+3.60%
+3.80%
+4.80%
+2.90%
+2.90%
+2.73%
+3.22%
+3.04%
+2.86%
+2.77%
+2.82%
+
+2.50
+2.32
+2.48
+2.20
+1.74
+1.81
+1.63
+2.01
+1.83
+1.63
+1.65
+1.66
+
+5.82
+4.25
+5.18
+4.55
+3.97
+4.27
+3.70
+4.27
+4.18
+3.76
+3.74
+3.78
+
+5.62%
+5.00%
+5.50%
+5.20%
+3.90%
+4.17%
+3.67%
+4.48%
+4.17%
+3.68%
+3.69%
+3.77%
+
+3.31
+2.93
+3.28
+2.37
+2.07
+2.49
+1.95
+2.61
+2.26
+1.86
+1.94
+1.95
+
+7.54
+5.44
+7.08
+4.96
+4.74
+5.69
+4.52
+5.42
+5.21
+4.32
+4.49
+4.43
+
+7.65%
+6.50%
+8.00%
+5.70%
+4.90%
+5.79%
+4.63%
+6.00%
+5.40%
+4.37%
+4.53%
+4.58%
+
+STEP
+
+1.26∗
+
+2.73∗
+
+2.59%∗
+
+1.55∗
+
+3.58∗
+
+3.43%∗
+
+1.79∗
+
+4.20∗
+
+4.18%∗
+
+HA
+VAR
+SVR
+FC-LSTM
+DCRNN
+STGCN
+Graph WaveNet
+ASTGCN
+STSGCN
+GMAN
+MTGNN
+GTS
+
+28.92
+21.94
+22.52
+21.42
+20.34
+19.35
+18.15
+20.15
+19.41
+18.28
+18.22
+18.97
+
+42.69
+34.30
+35.30
+33.37
+31.94
+30.76
+29.24
+31.43
+30.69
+29.32
+30.13
+29.83
+
+20.31%
+16.42%
+14.71%
+15.32%
+13.65%
+12.81%
+12.27%
+14.03%
+12.82%
+12.35%
+12.47%
+13.06%
+
+33.73
+23.72
+27.63
+25.83
+23.21
+21.85
+19.12
+22.09
+21.83
+18.75
+19.27
+19.29
+
+49.37
+36.58
+42.23
+39.10
+36.15
+34.43
+30.62
+34.34
+34.33
+30.77
+32.21
+30.85
+
+24.01%
+18.02%
+18.29%
+20.35%
+15.70%
+14.13%
+13.28%
+15.47%
+14.54%
+12.96%
+13.09%
+13.92%
+
+46.97
+26.76
+37.86
+36.41
+29.24
+26.97
+20.69
+26.03
+26.27
+19.95
+20.93
+21.04
+
+67.43
+40.28
+56.01
+50.73
+44.81
+41.11
+33.02
+40.02
+40.11
+30.21
+34.49
+34.81
+
+35.11%
+20.94%
+26.72%
+29.92%
+20.09%
+16.84%
+14.11%
+19.17%
+14.71%
+12.97%
+14.02%
+14.94%
+
+STEP
+
+17.34∗
+
+28.44∗
+
+11.57%∗
+
+18.12∗
+
+29.81∗
+
+12.00%∗
+
+19.27∗
+
+31.33
+
+12.78%∗
+
+learnable positional embedding. Therefore, we would like to explore
+whether TSFormer has learned reasonable positional embeddings.
+We compute the cosine similarity between the positional embeddings of 336 patches and get a 336 × 336 heat map, shown in Figure
+3(d). We find that the positional embedding of TSFormer better
+reflects the multi-periodicity in time series. This is because, unlike
+the representation of the encoder, which needs to depend on the
+input patches, the positional embeddings are completely free to
+optimize and are less affected by the noise of the input data. We
+
+conjecture that such positional embedding is the key factor for the
+success of TSFormer since we found that TSFormer could not get
+meaningful representations if we replace the learnable positional
+embeddings with the deterministic, sinusoidal ones.
+
+4.4
+
+Ablation Study
+
+In this part, we conduct experiment to verify the impact of some
+key components. First, we set STEP w/o GSL to test the performance without the graph structure learning model. Second, we
+
+KDD ’22, August 14–18, 2022, Washington, DC, USA
+
+(a) Impact of important components.
+
+Zezhi Shao et al.
+
+self-supervised learning task and can not get useful representations.
+When 𝑟 is large, the model would lose too much information and
+fail to learn temporal patterns. For 𝑘 of the 𝑘NN graph in graph
+structure learning, a small value of 𝑘 would make the learned graph
+incomplete and lose dependency information, thus the performance
+is worse. A large value of 𝑘 would introduce redundancies, which
+may hurt the information aggregation of graph neural networks,
+leading to unsatisfactory performance.
+
+5 RELATED WORK
+5.1 Spatial-Temporal Graph Neural Networks
+
+(b) Impact of masking ratio r.
+
+(c) Impact of k of kNN graph.
+Figure 4: Ablation study and hyper-parameter study.
+
+set STEP w/o reg to replace the 𝑘NN graph computed by the representations of TSFormer with the 𝑘NN graph in GTS [29], which is
+computed based on the cosine similarity of raw time series S𝑖𝑡𝑟𝑎𝑖𝑛 ,
+to test the superiority of the long sequence representations of TSFormer. Finally, we also test more downstream STGNNs to verify
+the generality of STEP. We choose DCRNN as another backend,
+i.e., STEP-DCRNN. Additionally, we also present the performance
+of DCRNN for comparison. The results are shown in Figure 4(a).
+As can be seen from the figure, STEP outperforms STEP w/o GSL,
+which shows that our graph structure learning module consistently
+plays a positive role. Meanwhile, STEP w/o GSL still achieves satisfactory performance, demonstrating that segment-level representation
+plays a vital role. STEP also outperforms STEP w/o reg, showing
+that the long sequence representations of TSFormer is superior in
+improving the graph quality. In addition, as mentioned in Section 1,
+DCRNN represents a large class of STGNNs [21, 26, 29, 41] that are
+based on the seq2seq [32] architecture. We fuse the representation
+of TSFormer to the latent representations of the seq2seq encoder
+according to Eq.(5). We can see that STEP significantly enhances
+the performance of DCRNN, which verifies the generality of STEP.
+
+4.5
+
+Hyper-parameter Study
+
+We conduct experiments to analyze the impacts of two hyperparameters: the masking ratio 𝑟 , the 𝑘 of the 𝑘NN graph in graph
+structure learning. We present the results on METR-LA dataset.
+The effect of 𝑟 and 𝑘 are shown in Figure 4(b) and Figure 4(c),
+respectively. We find there exist optimal values for both 𝑟 and 𝑘. For
+masking ratio 𝑟 , when 𝑟 is small, masked values in time series can be
+predicted by simple average or interpolation. Thus it creates a trivial
+
+The accuracy of multivariate time series forecasting has been largely
+improved by artificial intelligence [37], especially deep learning
+techniques. Among these techniques, Spatial-Temporal Graph Neural Networks (STGNNs) are the most promising methods, which
+combine Graph Neural Networks (GNNs) [7, 18] and sequential
+models [6, 32] to model the spatial and temporal dependency jointly.
+Graph WaveNet [36], MTGNN [35], STGCN [38], and StemGNN [4]
+combine graph convolutional networks and gated temporal convolutional networks with their variants. These methods are based
+on convolution operation, which facilitates parallel computation.
+DCRNN [20], ST-MetaNet [26], AGCRN [2], and TGCN [40] combine diffusion convolutional networks and recurrent neural networks [6, 32] with their variants. They follow the seq2seq [32]
+architecture to predict step by step. Moreover, attention mechanism is widely used in many methods, such as GMAN [41] and
+ASTGCN [11]. Although STGNNs have made significant progress,
+the complexity of STGNNs is high because it needs to deal with
+both temporal and spatial dependency at every step. Therefore,
+STGNNs can only take short-term historical time series as input,
+such as the past 1 hour (twelve time steps in many datasets).
+More recently, an increasing number of works [10, 17, 29] have
+focused on joint learning of graph structures and graph neural
+networks to model the dependencies between nodes. LDS [10]
+models the edges as random variables whose parameters are treated
+as hyperparameters in a bilevel learning framework. The random
+variables parameterize the element-wise Bernoulli distribution from
+which the adjacency matrix A is sampled. GTS [29] introduces a
+neighborhood graph as a regularization that improves graph quality
+and reformulates the problem as a unilevel optimization problem.
+Notably, We follow the framework of GTS but enhance it by the pretraining model since TSFormer gives better latent representations
+of time series for calculating their correlations.
+
+5.2
+
+Pre-training Model
+
+The pre-training model is used to learn a good representation from
+massive unlabeled data and then use these representations for other
+downstream tasks. Recent studies have demonstrated significant
+performance gains on many natural language processing tasks
+with the help of the representation extracted from pre-training
+models [28]. Prominent examples are the BERT [8] and GPT [3],
+which are based on the Transformer encoder and decoder, respectively. The Transformer architecture is more powerful and more
+efficient than LSTM architecture [27, 32] and has become the mainstream approach for designing pre-training models. More recently,
+Transformer for images has attracted increasing attention because
+
+Pre-training Enhanced Spatial-temporal Graph Neural Network for Multivariate Time Series Forecasting
+
+of its powerful performance. ViT [9] proposes to split an image
+into patches and provide the sequence of linear embeddings of
+these patches as an input to a Transformer, showing impressive
+performance. However, ViT needs supervised training, which requires massive labeled data. On the contrary, MAE [13] uses selfsupervised learning based on the masked autoencoding strategy.
+MAE enables us to train large models efficiently and effectively and
+outperforms supervised pre-training. Although the pre-training
+model has made significant progress in natural language processing
+and computer vision, progress in time series lags behind them. In
+this paper, we propose a pre-training model (named TSFormer) for
+time series based on Transformer blocks and improve the performance of the downstream forecasting task.
+
+6
+
+CONCLUSION
+
+In this paper, we propose a novel STEP framework for multivariate
+time series forecasting to address the inability of STGNNs to learn
+long-term information. The downstream STGNN is enhanced by a
+scalable time series pre-training model TSFormer. TSFormer is capable of efficiently learning the temporal pattern from very long-term
+historical time series and generating segment-level representations,
+which provide rich contextual information for short-term input of
+STGNNs and facilitate modeling dependencies between time series. Extensive experiments on three real-world datasets show the
+superiority of the STEP framework and the proposed TSFormer.
+
+ACKNOWLEDGMENTS
+This work is partially supported by NSFC No. 61902376 and No.
+61902382. In addition, Zhao Zhang is supported by the China Postdoctoral Science Foundation under Grant No. 2021M703273.
+
+REFERENCES
+[1] Sami Abu-El-Haija, Bryan Perozzi, Amol Kapoor, Nazanin Alipourfard, Kristina
+Lerman, Hrayr Harutyunyan, Greg Ver Steeg, and Aram Galstyan. 2019. MixHop:
+Higher-Order Graph Convolutional Architectures via Sparsified Neighborhood
+Mixing. In ICML.
+[2] Lei Bai, Lina Yao, Can Li, Xianzhi Wang, and Can Wang. 2020. Adaptive Graph
+Convolutional Recurrent Network for Traffic Forecasting. In NeurIPS.
+[3] Tom B. Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared Kaplan,
+Prafulla Dhariwal, Arvind Neelakantan, Pranav Shyam, Girish Sastry, Amanda
+Askell, et al. 2020. Language Models are Few-Shot Learners. In NeurIPS.
+[4] Defu Cao, Yujing Wang, Juanyong Duan, Ce Zhang, Xia Zhu, Congrui Huang,
+Yunhai Tong, Bixiong Xu, Jing Bai, Jie Tong, and Qi Zhang. 2020. Spectral
+Temporal Graph Neural Network for Multivariate Time-series Forecasting. In
+NeurIPS.
+[5] Chao Chen, Karl Petty, Alexander Skabardonis, Pravin Varaiya, and Zhanfeng
+Jia. 2001. Freeway performance measurement system: mining loop detector data.
+Transportation Research Record (2001).
+[6] Kyunghyun Cho, Bart van Merrienboer, Dzmitry Bahdanau, and Yoshua Bengio. 2014. On the Properties of Neural Machine Translation: Encoder-Decoder
+Approaches. In SSST@EMNLP.
+[7] Michaël Defferrard, Xavier Bresson, and Pierre Vandergheynst. 2016. Convolutional Neural Networks on Graphs with Fast Localized Spectral Filtering. In
+NeurIPS.
+[8] Jacob Devlin, Ming-Wei Chang, Kenton Lee, and Kristina Toutanova. 2019. BERT:
+Pre-training of Deep Bidirectional Transformers for Language Understanding. In
+NAACL.
+[9] Alexey Dosovitskiy, Lucas Beyer, Alexander Kolesnikov, Dirk Weissenborn, Xiaohua Zhai, Thomas Unterthiner, Mostafa Dehghani, Matthias Minderer, Georg
+Heigold, Sylvain Gelly, Jakob Uszkoreit, and Neil Houlsby. 2021. An Image is
+Worth 16x16 Words: Transformers for Image Recognition at Scale. In ICLR.
+[10] Luca Franceschi, Mathias Niepert, Massimiliano Pontil, and Xiao He. 2019. Learning Discrete Structures for Graph Neural Networks. In ICML.
+[11] Shengnan Guo, Youfang Lin, Ning Feng, Chao Song, and Huaiyu Wan. 2019.
+Attention Based Spatial-Temporal Graph Convolutional Networks for Traffic
+
+KDD ’22, August 14–18, 2022, Washington, DC, USA
+
+Flow Forecasting. In AAAI.
+[12] Shengnan Guo, Youfang Lin, Huaiyu Wan, Xiucheng Li, and Gao Cong. 2021.
+Learning dynamics and heterogeneity of spatial-temporal graph data for traffic
+forecasting. TKDE (2021).
+[13] Kaiming He, Xinlei Chen, Saining Xie, Yanghao Li, Piotr Dollár, and Ross Girshick. 2021. Masked autoencoders are scalable vision learners. arXiv preprint
+arXiv:2111.06377 (2021).
+[14] Hosagrahar V Jagadish, Johannes Gehrke, Alexandros Labrinidis, Yannis Papakonstantinou, Jignesh M Patel, Raghu Ramakrishnan, and Cyrus Shahabi. 2014.
+Big data and its technical challenges. Commun. ACM (2014).
+[15] Eric Jang, Shixiang Gu, and Ben Poole. 2017. Categorical Reparameterization
+with Gumbel-Softmax. In ICLR.
+[16] Diederik P Kingma and Jimmy Ba. 2015. Adam: A Method for Stochastic Optimization. In ICLR.
+[17] Thomas Kipf, Ethan Fetaya, Kuan-Chieh Wang, Max Welling, and Richard Zemel.
+2018. Neural relational inference for interacting systems. In ICML.
+[18] Thomas N. Kipf and Max Welling. 2017. Semi-Supervised Classification with
+Graph Convolutional Networks. In ICLR.
+[19] Fuxian Li, Jie Feng, Huan Yan, Guangyin Jin, Depeng Jin, and Yong Li. 2021. Dynamic Graph Convolutional Recurrent Network for Traffic Prediction: Benchmark
+and Solution. CoRR (2021). arXiv:2104.14917
+[20] Yaguang Li, Rose Yu, Cyrus Shahabi, and Yan Liu. 2018. Diffusion Convolutional
+Recurrent Neural Network: Data-Driven Traffic Forecasting. In ICLR.
+[21] Haozhe Lin, Yushun Fan, Jia Zhang, and Bing Bai. 2021. REST: Reciprocal Framework for Spatiotemporal-coupled Predictions. In TheWebConference.
+[22] Ilya Loshchilov and Frank Hutter. 2018. Decoupled Weight Decay Regularization.
+In ICLR.
+[23] Zheng Lu, Chen Zhou, Jing Wu, Hao Jiang, and Songyue Cui. 2016. Integrating
+Granger Causality and Vector Auto-Regression for Traffic Prediction of LargeScale WLANs. KSII Trans. Internet Inf. Syst. (2016).
+[24] Helmut Lütkepohl. 2005. New introduction to multiple time series analysis. Springer
+Science & Business Media.
+[25] Chris J. Maddison, Andriy Mnih, and Yee Whye Teh. 2017. The Concrete Distribution: A Continuous Relaxation of Discrete Random Variables. In ICLR.
+[26] Zheyi Pan, Yuxuan Liang, Weifeng Wang, Yong Yu, Yu Zheng, and Junbo Zhang.
+2019. Urban traffic prediction from spatio-temporal data using deep meta learning.
+In SIGKDD. 1720–1730.
+[27] Matthew E Peters, Mark Neumann, Mohit Iyyer, Matt Gardner, Christopher
+Clark, Kenton Lee, and Luke Zettlemoyer. 2018. Deep contextualized word
+representations. In NAACL.
+[28] Xipeng Qiu, Tianxiang Sun, Yige Xu, Yunfan Shao, Ning Dai, and Xuanjing Huang.
+2020. Pre-trained models for natural language processing: A survey. Science
+China Technological Sciences (2020).
+[29] Chao Shang, Jie Chen, and Jinbo Bi. 2021. Discrete Graph Structure Learning for
+Forecasting Multiple Time Series. In ICLR.
+[30] Alexander J. Smola and Bernhard Schölkopf. 2004. A tutorial on support vector
+regression. Stat. Comput. (2004).
+[31] Chao Song, Youfang Lin, Shengnan Guo, and Huaiyu Wan. 2020. Spatial-Temporal
+Synchronous Graph Convolutional Networks: A New Framework for SpatialTemporal Network Data Forecasting. In AAAI.
+[32] Ilya Sutskever, Oriol Vinyals, and Quoc V. Le. 2014. Sequence to Sequence
+Learning with Neural Networks. In NeurIPS.
+[33] Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones,
+Aidan N. Gomez, Lukasz Kaiser, and Illia Polosukhin. 2017. Attention is All
+you Need. In NeurIPS.
+[34] Xiaoyang Wang, Yao Ma, Yiqi Wang, Wei Jin, Xin Wang, Jiliang Tang, Caiyan Jia,
+and Jian Yu. 2020. Traffic Flow Prediction via Spatial Temporal Graph Neural
+Network. In WWW.
+[35] Zonghan Wu, Shirui Pan, Guodong Long, Jing Jiang, Xiaojun Chang, and Chengqi
+Zhang. 2020. Connecting the Dots: Multivariate Time Series Forecasting with
+Graph Neural Networks. In SIGKDD.
+[36] Zonghan Wu, Shirui Pan, Guodong Long, Jing Jiang, and Chengqi Zhang. 2019.
+Graph WaveNet for Deep Spatial-Temporal Graph Modeling. In IJCAI.
+[37] Yongjun Xu, Xin Liu, Xin Cao, Changping Huang, Enke Liu, Sen Qian, Xingchen
+Liu, Yanjun Wu, Fengliang Dong, Cheng-Wei Qiu, et al. 2021. Artificial intelligence: A powerful paradigm for scientific research. The Innovation 2, 4 (2021).
+[38] Bing Yu, Haoteng Yin, and Zhanxing Zhu. 2018. Spatio-Temporal Graph Convolutional Networks: A Deep Learning Framework for Traffic Forecasting. In
+IJCAI.
+[39] George Zerveas, Srideepika Jayaraman, Dhaval Patel, Anuradha Bhamidipaty,
+and Carsten Eickhoff. 2021. A Transformer-based Framework for Multivariate
+Time Series Representation Learning. In SIGKDD.
+[40] Ling Zhao, Yujiao Song, Chao Zhang, Yu Liu, Pu Wang, Tao Lin, Min Deng, and
+Haifeng Li. 2020. T-GCN: A Temporal Graph Convolutional Network for Traffic
+Prediction. IEEE TITS (2020).
+[41] Chuanpan Zheng, Xiaoliang Fan, Cheng Wang, and Jianzhong Qi. 2020. GMAN:
+A Graph Multi-Attention Network for Traffic Prediction. In AAAI.
+
+KDD ’22, August 14–18, 2022, Washington, DC, USA
+
+• HA: Historical Average model, which models time series as
+a periodic process and uses weighted averages from previous
+periods as predictions for future periods.
+• VAR: Vector Auto-Regression [23, 24] assumes that the past
+time series is stationary and estimates the relationship between the time series and their lag value. [34]
+• SVR: Support Vector Regression (SVR) uses linear support
+vector machine for classical time series regression task.
+• FC-LSTM [32]: Long Short-Term Memory network with
+fully connected hidden units is a well-known network architecture that is powerful in capturing sequential dependency.
+• DCRNN [20]: Diffusion Convolutional Recurrent Neural
+Network [20] replaces the fully connected layer in GRU [6]
+by diffusion convolutional layer to form a new Diffusion
+Convolutional Gated Recurrent Unit (DCGRU).
+• Graph WaveNet [36]: Graph WaveNet stacks gated temporal convolutional layer and GCN layer by layer to jointly
+capture the spatial and temporal dependencies.
+• ASTGCN [11]: ASTGCN combines the spatial-temporal attention mechanism to capture the dynamic spatial-temporal
+characteristics simultaneously.
+• STSGCN [31]: STSGCN is proposed to effectively capture
+the localized spatial-temporal correlations and consider the
+heterogeneity in spatial-temporal data.
+• MTGNN [35]: MTGNN extends Graph WaveNet through
+the mix-hop propagation layer in the spatial module, the
+dilated inception layer in the temporal module, and a more
+delicate graph learning layer.
+• GMAN [41]: GMAN is an attention-based model which
+stacks spatial, temporal and transform attentions.
+• GTS [29]: GTS learns a graph structure among multiple time
+series and forecasts them simultaneously with DCRNN.
+
+A.2
+
+Optimization Settings
+Table 3: Pre-training setting.
+
+config
+
+value
+
+optimizer
+base learning rate
+weight decay
+epsilon
+optimizer momentum
+learning rate schedule
+milestones
+gamma
+gradient clip
+
+AdamW [22]
+5.0e-4
+0
+1.0e-8
+𝛽 1, 𝛽 2 = 0.9, 0.95
+MultiStepLR
+50
+0.5
+5
+
+Pre-training stage. The default setting is shown in Table 3. We
+use uniform distribution to initialize the positional embeddings,
+and we use truncated normal distribution with 𝜇 = 0 and 𝜎 = 0.02
+to initialize the mask token, similar to MAE [13]. We use PyTorch
+official implementation to implement the Transformer blocks. We
+
+use the linear scaling rule for learning rate and batch size: lr =
+base_lr × (batch_size/8) for all datasets in the pre-training stage.
+Table 4: Forecasting setting.
+config
+
+value
+
+optimizer
+learning rate
+
+Adam [16]
+0.001/0.005/0.002
+(PEMS-BAY/METR-LA/PEMS04)
+
+batch size
+
+64/64/32
+(PEMS-BAY/METR-LA/PEMS04)
+
+weight decay
+epsilon
+learning rate schedule
+milestones
+gamma
+gradient clip
+cl_num
+warm_num
+
+1.0e-5
+1.0e-8
+MultiStepLR
+[1, 18, 36, 54, 72]
+0.5
+5
+3
+30
+
+Forecasting stage. All the settings are shown in Table 4. Following
+many recent works, such as MTGNN [35] and GTS [29], we use the
+curriculum learning strategy for the forecasting task. The strategy
+gradually increases the prediction length of the model with the
+increase in iteration number. We increase the prediction length
+by one per cl_num epochs. Moreover, we additionally perform
+a warm-up of warm_num epochs to better initialize the model
+for curriculum learning. In addition, 𝜆 in Equation (7) decays by
+𝜆 = 1/(⌈𝑒𝑝𝑜𝑐ℎ/6⌉), where ⌈·⌉ means ceiling function and epoch is
+the epoch number.
+
+1000
+900
+800
+700
+600
+500
+400
+300
+200
+100
+0
+
+Speed(s/epoch)
+
+A MORE EXPERIMENTS DETAILS
+A.1 Baseline Details
+
+Zezhi Shao et al.
+
+738.6
+581.3
+
+491.1 447.7
+341.5 312.9
+
+279.3
+
+20% 40% 50% 60% 75% 80% 90%
+Model
+
+Figure 5: Training speed of different masking ratio 𝑟 .
+
+B
+
+EFFICIENCY
+
+In this part, we compare the efficiency of STEP with other models
+and their own variants based on the METR-LA dataset. For a more
+intuitive and effective comparison, we compare the average training
+time required for each epoch. All the experiments are running on an
+Intel(R) Xeon(R) Gold 5217 CPU @ 3.00GHz, 128G RAM computing
+server, equipped with RTX 3090 graphics cards. First, we compare
+
+Pre-training Enhanced Spatial-temporal Graph Neural Network for Multivariate Time Series Forecasting
+
+600
+
+Speed(s/epoch)
+
+failed in the afternoon of June 13th, 2012. However, the model does
+not overfit the noise.
+
+494.3
+
+500
+
+KDD ’22, August 14–18, 2022, Washington, DC, USA
+
+400
+300
+200
+
+236.3
+
+181.3
+
+100
+0
+
+STEP
+w/o GSL
+
+STEP
+w/o preprocssing
+
+STEP
+
+Model
+
+Figure 6: Training speed of different methods.
+
+the efficiency of TSFormer in the pre-training stage under different
+masking ratios. The result is shown in Figure 5. As the masking
+ratio increases, the TSFormer will be more efficient. In summary,
+thanks to the high masking ratio and fewer Transformer blocks in
+the encoder and decoder, the TSFormer is lightweight and can be
+trained efficiently on a single NVIDIA 3090 GPU.
+Second, we compare the efficiency of STEP framework in the
+forecasting stage with its variants. Recalling that the parameter of
+TSFormer is fixed during the forecasting stage, we can use TSFormer
+to provide off-the-shelf representations by preprocessing the whole
+dataset to reduce redundant calculations in the training process.
+We also test the efficiency of STEP without preprocessing, denoting
+the variant as STEP w/o pre. In addition, we test the efficiency of
+STEP without graph structure learning, i.e., STEP w/o GSL. The
+result is shown in Figure 6. We have the following findings: (i) the
+graph structure learning module accounts for about 55s per epoch
+on average. (ii) preprocessing does significantly reduce repetitive
+computations.
+
+C
+
+Figure 7: Reconstruction visualizations.
+
+VISUALIZATION
+
+In order to further intuitively understand and evaluate our model,
+in this section, we give more visualizations. First, we provide more
+visualizations about reconstructions of the TSFormer on PEMS04
+dataset like Figure 3(b). The results are shown in Figure 7. Note
+that due to space limitation, we only visualize time series in a small
+window rather than the whole input time series S𝑖 . Surprisingly,
+we find that even given very limited information surrounding the
+unmasked patches, TSFormer reconstructs the masked patches
+accurately. These results again indicate that our model has a strong
+ability to learn rich temporal patterns from very long-term time
+series. Then, we visualize the prediction of our model and the
+groundtruth data based on METR-LA dataset. We randomly selected
+six time series and displayed their data from June 13th 2012 to June
+16th 2012 (located the test dataset). The forecasting results on six
+randomly selected time series are shown in Figure 8. We can see that
+our model can accurately make predictions for different time series.
+Furthermore, we find that the model has the ability to resist noise.
+For example, in the right top figure, the traffic sensor apparently
+
+Figure 8: Forecasting visualizations.
+
+

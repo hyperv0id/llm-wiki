@@ -1,0 +1,1575 @@
+Revealing the Power of Masked Autoencoders in Traffic
+Forecasting
+Jiarui Sun∗
+
+arXiv:2309.15169v2 [cs.LG] 28 Jul 2024
+
+University of Illinois Urbana-Champaign
+Urbana, IL, USA
+jsun57@illinois.edu
+
+Yujie Fan
+
+Chin-Chia Michael Yeh
+
+Visa Research
+Foster City, CA, USA
+yufan@visa.com
+
+Visa Research
+Foster City, CA, USA
+miyeh@visa.com
+
+Wei Zhang
+
+Girish Chowdhary
+
+Visa Research
+Foster City, CA, USA
+wzhan@visa.com
+
+University of Illinois Urbana-Champaign
+Urbana, IL, USA
+girishc@illinois.edu
+(a)
+
+ABSTRACT
+Traffic forecasting, crucial for urban planning, requires accurate
+predictions of spatial-temporal traffic patterns across urban areas.
+Existing research mainly focuses on designing complex models
+that capture spatial-temporal dependencies among variables explicitly. However, this field faces challenges related to data scarcity
+and model stability, which results in limited performance improvement. To address these issues, we propose Spatial-Temporal Masked
+AutoEncoders (STMAE), a plug-and-play framework designed to
+enhance existing spatial-temporal models on traffic prediction.
+STMAE consists of two learning stages. In the pretraining stage,
+an encoder processes partially visible traffic data produced by a
+dual-masking strategy, including biased random walk-based spatial
+masking and patch-based temporal masking. Subsequently, two
+decoders aim to reconstruct the masked counterparts from both
+spatial and temporal perspectives. The fine-tuning stage retains the
+pretrained encoder and integrates it with decoders from existing
+backbones to improve forecasting accuracy. Our results on traffic
+benchmarks show that STMAE can largely enhance the forecasting
+capabilities of various spatial-temporal models.
+
+CCS CONCEPTS
+• Computing methodologies → Neural networks.
+
+KEYWORDS
+Masked autoencoders; Spatial-temporal models; Traffic forecasting
+ACM Reference Format:
+Jiarui Sun, Yujie Fan, Chin-Chia Michael Yeh, Wei Zhang, and Girish Chowdhary. 2024. Revealing the Power of Masked Autoencoders in Traffic Forecasting. In Proceedings of the 33rd ACM International Conference on Information
+and Knowledge Management (CIKM ’24), October 21–25, 2024, Boise, ID, USA.
+ACM, New York, NY, USA, 10 pages. https://doi.org/10.1145/3627673.3679989
+∗ Work done while at Visa Research. Our code is released at: https://github.com/jsun57/
+
+STMAE.
+Permission to make digital or hard copies of all or part of this work for personal or
+classroom use is granted without fee provided that copies are not made or distributed
+for profit or commercial advantage and that copies bear this notice and the full citation
+on the first page. Copyrights for third-party components of this work must be honored.
+For all other uses, contact the owner/author(s).
+CIKM ’24, October 21–25, 2024, Boise, ID, USA
+© 2024 Copyright held by the owner/author(s).
+ACM ISBN 979-8-4007-0436-9/24/10
+https://doi.org/10.1145/3627673.3679989
+
+Data
+Aug.
+
+v.s.
+
+S.T. Data
+
+S.T.
+Masker
+
+Contrastive
+Discrimination
+
+Contrastive
+Head
+
+Maximize
+Agreement
+
+S.T.
+Encoder
+Decoder%.
+Masked
+Reconstruction
+
+Decoder#.
+
+(b)
+
+Figure 1: Illustration of SSL approaches: (a) Contrastive-based
+and (b) Mask-based frameworks for traffic forecasting.
+
+1
+
+INTRODUCTION
+
+Spatial-temporal forecasting is a pivotal task with applications in
+numerous fields, including human motion modeling [16, 20] and
+epidemic simulation [2, 10]. Within these applications, traffic forecasting emerges as a crucial area for urban planning and management. This particular aspect of spatial-temporal analysis focuses
+on predicting traffic flow and speed based on historical data, which
+is essential for optimizing transportation systems. To make accurate predictions, state-of-the-art methods develop spatial-temporal
+models to capture complex interactions of traffic data over both
+space and time. By jointly modeling spatial and temporal patterns,
+these models exhibit remarkable traffic prediction performance.
+However, despite efforts, several issues impede the performance
+of spatial-temporal models. First, data scarcity in traffic datasets
+often leads to model overfitting. Unlike domains such as computer vision which utilize massive datasets for training, traffic benchmarks
+typically cover only a few months and are limited to specific geographic locations. This constrained data scope makes it difficult for
+models to generalize well across varying traffic patterns, increasing
+the risk of overfitting. Second, data incompleteness poses challenges
+to model stability. Traffic data, collected from sensors deployed
+across road networks, inevitably suffer from inconsistencies due
+to sensor malfunctions. These issues lead to gaps and errors in the
+data, resulting in unstable training conditions for spatial-temporal
+models, which ultimately compromises their performance.
+Self-supervised learning (SSL) [29] offers a promising avenue
+for mitigating the above challenges. Contrastive SSL, for instance,
+shows potential by learning to contrast sample pairs, as depicted
+
+CIKM ’24, October 21–25, 2024, Boise, ID, USA
+
+Sun et al.
+
+Pretrain
+
+𝐺
+
+Dec!
+
+Dual
+SpatialTemporal
+Masking
+
+Enc
+Dec"
+
+𝑋
+Dual masking
+
+Spatial-temporal models
+
+2
+1
+4
+
+3
+6
+
+5
+
+Fine-tune
+
+2
+
+4
+
+5
+
+1
+
+1
+
+4
+
+2
+
+6
+
+5
+
+4
+
+7
+
+Pred
+
+3
+6
+
+Enc
+
+Pred
+
+7
+
+Optimized by reconstruction loss:
+𝐿%&'(&)*+ : 𝜆 ⋅ 𝐿𝑨 + 𝐿-
+
+Biased random walk-based spatial masking
+
+…
+…
+…
+
+Patch-based temporal masking
+
+Enc: GNN + RNN / CNN
+Pred: MLP
+
+Optimized by prediction loss:
+𝐿%&'. : 𝑌. − 𝑌 /
+
+Figure 2: The STMAE framework, including the (a) pretraining and (b) fine-tuning stages. Specified by (c), We use a biased
+random walk-based spatial masking strategy on G, and a patch-based temporal masking strategy on X. After reconstruction,
+learning is guided jointly by LA and L X . As shown in (d), STMAE can be easily plugged into existing spatial-temporal models.
+in fig. 1 (a). However, this method heavily depends on manually
+crafted heuristics to derive data samples, which are limited in the
+traffic scenario. To overcome the limitation, we turn to generative
+SSL [15], specifically Masked Autoencoders (MAE) [8] as a more
+potent solution. Illustrated in fig. 1 (b), MAE focuses on reconstructing masked portions of input data to learn robust features, and can
+be seamlessly integrated to spatial-temporal models for traffic forecasting. Notably, this approach not only mitigates overfitting via
+self-reconstruction but also improves model stability by learning
+from incomplete data, thus enhancing prediction accuracy.
+Inspired by MAE, we present Spatial-Temporal Masked AutoEncoders (STMAE), a versatile framework that leverages the principles
+of MAE to elevate the capability of existing spatial-temporal models for traffic forecasting. STMAE, shown in Figure 2, includes
+pretraining and fine-tuning stages. Initially, an encoder from an
+existing spatial-temporal model, along with two decoders, reconstructs masked traffic data produced by a dual-masking strategy
+that combines biased random walk-based spatial and patch-based
+temporal masking. This challenges the encoder to acquire robust
+and predictive traffic features. In the fine-tuning phase, the encoder is retained, and the decoders are replaced with the original
+predictor from the backbone for forecasting. STMAE offers seamless integration to existing models without needing complex data
+augmentation, positioning itself as a flexible and powerful enhancement tool for traffic forecasting. Our primary contributions are
+summarized below:
+• We present STMAE, a versatile framework that seamlessly integrates with established spatial-temporal backbones, alleviating
+model overfitting and stability concerns.
+• We propose a dual-masking strategy, including biased random
+walk-based spatial masking and patch-based temporal masking.
+This establishes a challenging pretext task that encourages the
+encoder to acquire informative traffic data representations.
+
+• We conducted extensive experiments on various traffic benchmarks, showing large performance enhancements over existing
+spatial-temporal models.
+
+2 RELATED WORK
+2.1 Spatial-Temporal Models
+By considering the interdependence among different variables,
+spatial-temporal models [4, 11, 25, 28, 30] have shown remarkable
+traffic forecasting performance. For example, Li et al. introduced
+DCRNN [13], which utilizes RNN-based graph diffusion convolution to capture spatial-temporal correlations. Bai et al. proposed
+AGCRN [1], which incorporates several adaptive graph learning
+modules that dynamically capture sensor dependencies recurrently.
+Wu et al. designed MTGNN [24], which learns spatial-temporal correlations among traffic sensors effectively using adaptive GNN and
+CNN-based modules. Despite these innovations, the limited scale of
+traffic data often leads to model overfitting. Addressing these challenges, Liu et al. introduced STGCL [14], using contrastive SSL to
+enhance model learning from traffic network structures and temporal patterns. However, STGCL’s reliance on specific data knowledge
+limits its application. In contrast, our STMAE framework provides a
+flexible, plug-and-play solution without needing such detailed prior
+information, offering a robust enhancement to existing models.
+
+2.2
+
+Masked Autoencoders
+
+Masked autoencoders (MAE) are a generative SSL method for robust
+feature representation learning [3, 5, 8]. MAE employs an encoder
+to map masked inputs to latent representations and a decoder for
+reconstruction. It has been adapted across domains: BERT [3] uses
+bidirectional context to model language through sentence masking,
+while the visual MAE [8] is designed for image learning. MAE
+has also been applied to graphs [9, 12, 22, 23, 26]. These methods
+underscore its potential as a unified representation learning method
+
+Revealing the Power of Masked Autoencoders in Traffic Forecasting
+
+with minimal domain knowledge. On a similar line of our work,
+STEP [17] uses a feature masking strategy with a Transformer
+model to encode temporal patterns from long-term traffic data.
+Contrary to STEP with its specialized architecture, STMAE is a more
+generalizable enhancer for various spatial-temporal backbones.
+
+3 PRELIMINARIES
+3.1 Traffic Forecasting
+Given traffic data X ∈ R𝐻 ×𝑁 ×𝐶 with 𝐻 frames of 𝑁 variables and
+𝐶 features, traffic forecasting predicts future traffic Ŷ ∈ R𝐹 ×𝑁 ×𝐶
+for 𝐹 steps. The variables in X are spatially interrelated, represented
+by a graph G = (V, E, A), with A ∈ R𝑁 ×𝑁 as the adjacency matrix
+representing connectivity. The forecasting problem can be defined
+as 𝑓𝜃 (X, A) → Ŷ, where 𝑓𝜃 (·) is the parameterized forecaster.
+
+3.2
+
+Pipeline of Spatial-Temporal Models
+
+Existing spatial-temporal models often employ an encoder-decoder
+design. The encoder, Enc(X, A) → S, extracts complex spatialtemporal patterns from historical data into a hidden representation
+S ∈ R𝑁 ×𝐷 , where 𝐷 is the hidden dimension. On the other hand,
+the predictor (decoder), denoted as Pred(S) → Ŷ, focuses on making predictions based on the encoded state S. In contrast to the
+encoder, Pred(·) is typically lightweight, often designed as a multilayer perceptron (MLP) with few layers. Therefore, the pipeline of
+spatial-temporal models for traffic forecasting can be summarized
+
+as: 𝑓𝜃 (X, A) B Pred Enc(X, A) → Ŷ. Lastly, the mean absolute
+error between predictions Ŷ and groundtruth Y is used as the
+objective to train spatial-temporal models. This forecasting loss can
+be represented as Lpred = ∥ Ŷ − Y ∥ 1 .
+
+4
+
+METHODOLOGY
+
+STMAE implements a two-stage training process: pretraining and
+fine-tuning. During pretraining, STMAE reconstructs masked traffic data using dual spatial-temporal masking. The fine-tuning stage
+utilizes the pretrained encoder to generate contextual representations for the predictor. STMAE adopts existing spatial-temporal
+model components for both the encoder and predictor.
+
+4.1
+
+Pretraining
+
+The pretraining stage uncovers spatial-temporal patterns in traffic data via self-supervised masking. First, we enhance existing
+encoders Enc(·) with a dual masking module. Given the spatialtemporal interactions in traffic data, we combine spatial and temporal masking rather than isolating one domain. For the masking
+approach, spatially, we use biased random walk-based masking
+instead of simple uniform masking to preserve and challenge structural integrity of traffic networks. Temporally, we employ patchbased masking, dividing data into non-overlapping patches and
+masking these, which proves more challenging than masking single
+timesteps. Each component is detailed below.
+Spatial Masking. While existing graph MAEs often uniformly
+mask a subset of relations, we enhance the challenge by using paths
+as the basic unit of masking to capture more complex structures.
+Leveraging a biased random walk-based spatial masking strategy
+inspired by [6], we generate paths using a biased random walker
+
+CIKM ’24, October 21–25, 2024, Boise, ID, USA
+
+that blends breadth-first and depth-first sampling, enabling deeper
+graph exploration. Relations for masking Emask with size |E | · 𝑝𝑠
+are selected from E as:
+Emask ∼ BiasedRandomWalk(E, R, 𝑝, 𝑞),
+
+(1)
+
+where 𝑝𝑠 is the spatial masking ratio, R ∈ V is the set of root nodes,
+and 𝑝 and 𝑞 are hyperparameters controlling the walk dynamics.
+Masked relations are then set to zero in the adjacency matrix A:
+(
+0
+(𝑢, 𝑣) ∈ Emask,
+A𝑢𝑣 ←
+(2)
+A𝑢𝑣 otherwise.
+Our spatial masking strategy enhances the reconstruction task’s
+complexity and the encoder’s capacity to infer hidden structure.
+Temporal Masking. With relatively low information density, traffic data can be easily recovered by interpolation, especially when
+temporal masking areas are sparse. To counteract this, we implement patch-based temporal masking. We partition the original data
+X into 𝑃 nonoverlapping temporal patches, each of length 𝐿, and
+selectively mask a subset of these patches. Masked patches are
+𝑃
+then substituted with a shared, learnable mask token. Let {X𝑖 }𝑖=1
+𝐿×𝑁
+×𝐷
+represent the embedding patches with X𝑖 ∈ R
+. Temporal
+masking is defined as:
+(
+M 𝑟 ∼ Bernoulli(𝑝𝑡 ), 𝑟 = 1,
+X𝑖 ←
+(3)
+X𝑖 , otherwise,
+where M is the mask token and 𝑝𝑡 is the temporal masking ratio.
+Decoders. Second, two lightweight decoders are used for reconstruction. The decoders’ goal is to reconstruct both A and X simultaneously. After masking, the masked inputs A𝑀 and X𝑀 are
+encoded by Enc(·) into a state S. Now, instead of predicting Ŷ
+directly, the goal is to reconstruct the original inputs from both
+spatial and temporal dimensions using two specialized decoders:
+Dec𝑡 (·) for data and Dec𝑠 (·) for structural dependencies:
+S = Enc(X𝑀 , A𝑀 ), X̂ = Dec𝑡 (S), Â = Dec𝑠 (S),
+
+(4)
+
+where X̂ and Â are the reconstructed data and adjacency matrix.
+The spatial decoder, Dec𝑠 (·), performs a linear transformation followed by a sigmoid operation:
+
+Â𝑢𝑣 = Sigmoid (SW)(SW)𝑇 𝑢𝑣 ,
+(5)
+with W ∈ R𝐷 ×𝐷 as a trainable matrix. The temporal decoder,
+Dec𝑡 (·), uses a linear layer to map S back to its original dimensions.
+This asymmetric encoder-decoder setup is designed to maximize the
+encoder’s ability to capture detailed spatial-temporal interactions.
+Reconstruction Targets. To guide spatial-temporal reconstruction,
+we leverage two objectives, consisting of a classification loss LA
+and a regression loss L X tailored to adjacency matrix A and the data
+X, respectively. Specifically, LA aims to reconstruct the masked
+walks using a classification objective. Formally, we have:
+∑︁
+1
+LA = −
+log Â𝑢𝑣 .
+(6)
+|Emask |
+(𝑢,𝑣) ∈ Emask
+
+On the other hand, L X computes the mean absolute error of the
+masked patches between X and the reconstruction X̂:
+L X = ∥ X̂[𝑀 ] − X[𝑀 ] ∥ 1,
+
+(7)
+
+CIKM ’24, October 21–25, 2024, Boise, ID, USA
+
+Sun et al.
+
+Table 1: Quantitative results of STMAE compared with STGCL and various base models. Subscripts A, D, M correspond to the
+initials of the base models in which STMAE and STGCL are coupled with.
+
+MAE
+
+PEMS03
+MAPE RMSE
+
+MAE
+
+PEMS04
+MAPE RMSE
+
+MAE
+
+AGCRN [1]
+STGCLA
+STMAEA
+
+15.47
+15.36
+15.09
+
+15.26
+14.85
+14.72
+
+27.06
+27.15
+26.61
+
+19.39
+19.23
+19.05
+
+13.24
+13.01
+12.91
+
+31.07
+31.36
+31.32
+
+20.64
+20.61
+20.13
+
+8.80
+8.74
+8.53
+
+34.19
+34.14
+33.79
+
+15.65
+15.91
+15.01
+
+10.33
+10.43
+9.79
+
+24.51
+24.88
+23.97
+
+DCRNN [13]
+footnotesizeSTGCLD
+STMAED
+
+15.76
+15.64
+15.74
+
+15.69
+15.68
+15.44
+
+26.76
+27.08
+26.73
+
+21.48
+21.23
+21.20
+
+14.65
+14.57
+14.23
+
+33.99
+33.60
+33.57
+
+22.55
+22.34
+22.12
+
+9.78
+9.68
+9.45
+
+35.24
+35.21
+34.98
+
+16.63
+16.51
+16.36
+
+10.78
+10.70
+10.68
+
+26.01
+25.93
+25.76
+
+MTGNN [24]
+STGCLM
+STMAEM
+
+14.94
+14.87
+14.84
+
+16.02
+15.37
+14.15
+
+25.29
+25.53
+24.95
+
+19.02
+18.94
+18.87
+
+13.32
+13.34
+12.78
+
+30.95
+30.79
+30.28
+
+20.83
+20.72
+20.57
+
+9.00
+8.95
+8.90
+
+33.77
+33.78
+33.47
+
+15.44
+15.39
+15.03
+
+10.35
+10.13
+9.82
+
+24.30
+24.32
+24.08
+
+18
+
+AGCRN
+STGCL_A
+STMAE_A
+
+where the subscript [𝑀] denotes the masked area index. In line
+with recent work [21], we only compute losses over the masked
+portions. The overall objective of the pretraining stage is:
+Lpretrain = 𝜆 · LA + L X ,
+
+(8)
+
+where 𝜆 is a non-negative hyperparameter trading off the spatial
+reconstruction loss and the temporal reconstruction loss.
+
+4.2
+
+Fine-tuning
+
+After pretraining the encoder Enc(·) with the reconstruction objectives, we fine-tune Enc(·) with the original predictor Pred(·)
+obtained from spatial-temporal models to predict Ŷ. In this stage,
+we provide Enc(·) with the complete spatial-temporal data without
+masking, as opposed to the pretraining stage and discard the spatial
+decoder Dec𝑠 (·) and the temporal decoder Dec𝑡 (·). This fine-tuning
+process aligns with the training pipeline described in section 3.2,
+aiming to optimize the forecasting loss Lpred .
+
+5 EXPERIMENTS
+5.1 Experimental Setup
+Datasets. Four traffic benchmarks—PEMS03, PEMS04, PEMS07,
+and PEMS08 [11, 14, 19]—are used to assess STMAE’s effectiveness.
+Each dataset is split into training, validation, and test sets in a 6:2:2
+ratio chronologically. The training set supports both pretraining
+and fine-tuning phases, consistent with standard practices [27]. For
+a fair comparison with previous methods, we predict the next 12
+steps based on 12-step historical traffic flow data.
+Base Models and Metrics. STMAE is evaluated against STGCL
+[14], which uses contrastive SSL to enhance spatial-temporal models on traffic forecasting. Within STMAE, we incorporate widely
+recognized models DCRNN [13], AGCRN [1], and MTGNN [24] to
+assess their performance improvements with our approach. DCRNN
+requires a predefined graph as input, whereas AGCRN and MTGNN
+dynamically learn the graph structure during training. We adopt
+three metrics, including mean absolute error (MAE), root mean
+squared error (RMSE), and mean absolute percentage error (MAPE).
+Implementation Details. STMAE is a versatile framework that
+can be seamlessly integrated into existing spatial-temporal backbones, in which the encoder Enc(·) and the predictor Pred(·) are
+
+MAE per Time Step
+
+Datasets
+Method
+
+20
+
+PEMS07
+MAPE RMSE
+
+AGCRN
+STGCL_A
+STMAE_A
+
+MAE
+
+17
+16
+
+19
+
+PEMS08
+MAPE RMSE
+
+15
+
+18
+
+PEMS04
+1 2 3 4 5 6 7 8 9 10 11 12
+
+14
+13
+
+PEMS08
+1 2 3 4 5 6 7 8 9 10 11 12
+
+Evaluation Time Step Index
+
+Figure 3: Per-step MAE results of STMAEA compared with
+its corresponding base model AGCRN and STGCLA .
+
+taken directly from the base models. Therefore, our framework
+avoids extensive hyper-parameter tuning, such as adjusting model
+depth, batch size, hidden dimension and learning rate, which are
+commonly practiced to obtain optimal results for spatial-temporal
+models. For hyper-parameters required for STMAE, we conduct a
+grid search to determine few hyper-parameters: 𝐿 from {2, 3}, 𝑝, 𝑞,
+𝜆 from {0.5, 1, 2, 4} and the masking ratios from 20% to 80% based
+on the validation MAE performance. For all datasets, we pretrain
+STMAE for 100 epochs, followed by 100 epochs of fine-tuning.
+
+5.2
+
+Results
+
+Quantitative Results. Table 1 summarizes the experimental results averaged across all evaluation timesteps on four datasets.
+Through analysing the results, we have the following observations:
+(1) Demonstrated by the comparison among three base models,
+AGCRN and MTGNN, that dynamically learn the graph from the
+data, tend to outperform DCRNN, which relies on a predefined
+graph. (2) SSL can enhance the capability of spatial-temporal models
+for the traffic forecasting task, as both STGCL and STMAE achieve
+better performance than the backbones at most scenarios. (3) Our
+proposed STMAE, which leverages generative-based SSL through
+masking reconstruction, always outperforms STGCL, which is contrastive learning-based. More importantly, it does not require complex data augmentation processes that STGCL heavily relies on.
+This shows the efficacy of our framework.
+To gain a deeper insight into the predictive capabilities of STMAE,
+we illustrate the per-step MAE results of STMAEA and its corresponding base model and STGCLA in fig. 3. Upon analysing the
+
+Revealing the Power of Masked Autoencoders in Traffic Forecasting
+
+CIKM ’24, October 21–25, 2024, Boise, ID, USA
+
+Table 2: Ablations of STMAEA on PEMS04 and PEMS08.
+Variant
+Base Model
+STMAENT
+STMAENS
+STMAEU
+STMAE
+
+MAE
+19.39
+19.27
+19.27
+19.11
+19.05
+
+PEMS04
+MAPE RMSE
+13.24
+31.07
+13.32
+31.07
+12.85
+31.34
+12.96
+31.67
+12.91
+31.32
+
+0.8
+
+MAE
+15.65
+15.41
+15.26
+15.09
+15.01
+
+pretrain loss
+27
+fintune train loss
+fintune valid loss
+base model valid loss 23
+
+PEMS04
+
+results, we have the following conclusions: (1) The prediction error
+is positively correlated with the forecasting step as MAE continues
+to increase as the forecasting step becomes larger. This indicates the
+performance degradation issue of traffic forecasting. (2) STMAEA
+consistently outperforms STGCLA and their respective base models in terms of MAE at each timestep. (3) Importantly, as evaluation forecasting timestep increases, the performance gap between
+STMAE and the two variants gradually widens. This suggests that
+STMAE, aided by masked self-supervision, can effectively alleviates
+the performance degradation issue.
+Qualitative Visualization. To study STMAE’s predictive ability
+qualitatively, we randomly select two sensors from PEMS04 and
+PEMS08, and visualize one-hour-ahead predictions of STMAEA and
+AGCRN against the groundtruth on a test snapshot in fig. 4. We
+observe that STMAE outperforms the counterpart base model both
+in areas with gradual or sudden changes (red rectangles), showing
+STMAE’s efficacy in adapting to various spatial-temporal patterns.
+
+5.3
+
+Ablation Study
+
+In STMAE, a dual-masking strategy is proposed for model pretraining, targeting both spatial and temporal dimensions. To assess this,
+we introduced three variants: STMAENT (no temporal masking),
+STMAENS (no spatial masking), and STMAEU (uniform spatialtemporal masking). All ablation results are presented in table 2, with
+AGCRN serving as the backbone and PEMS04, PEMS08 as evaluation datasets. The experimental results yield the following insights:
+(1) Both STMAENT and STMAENS improve MAE performance, confirming the efficacy of individual spatial and temporal masking in
+the pretraining phase. (2) STMAEU outperforms STMAENT and
+STMAENS in terms of MAE. This suggests that jointly applying
+masking techniques from both spatial and temporal perspectives is
+more advantageous for accurate prediction. (3) STMAE achieves superior performance compared to the base model and all its variants
+in terms of MAE, and it consistently ranks either first or second in
+terms of MAPE and RMSE metrics. This underscores the advantages
+of our approach, where the dual masking strategy can create challenging pretext tasks for spatial-temporal models, thus improving
+their traffic forecasting capacities.
+
+Pretrain and Fintune Losses
+
+0.6
+
+Figure 4: Visualization of one-hour-ahead predictions on two
+snapshots from PEMS04 and PEMS08 test sets.
+
+PEMS08
+MAPE RMSE
+10.33
+24.51
+10.08
+24.26
+9.89
+24.43
+10.03
+24.22
+9.79
+23.97
+
+0.4
+19
+0.2
+15
+pretrain loss
+23
+fintune train loss
+fintune valid loss
+base model valid loss 20
+
+PEMS08
+
+0.8
+0.6
+0.4
+
+17
+
+0.2
+0
+
+20
+
+40
+
+60
+
+Num. of Training Epochs
+
+80
+
+100
+
+14
+
+Figure 5: Training and validation processes of STMAEA and
+AGCRN on PEMS04 and PEMS08. Both pretraining and finetuning are performed for 100 epochs.
+
+5.4
+
+Stability Study
+
+This section investigates STMAE’s stability with an in-depth analysis of its learning behavior on PEMS04 and PEMS08 datasets. In
+Figure 5, we plot the learning curves for both the pretraining and
+fine-tuning stages of STMAEA , alongside the learning curve for the
+AGCRN backbone. Our analysis of the plot leads us to the following conclusions: (1) Both the pretraining and fine-tuning stages of
+STMAE are stable, as both training curves of STMAE (i.e., pretrain
+loss and fine-tune train loss) depict a smoothly decreasing trend. (2)
+The pretraining stage proves advantageous for STMAE. Specifically,
+for the PEMS04 dataset, STMAE exhibits a significantly lower initial validation loss compared to the base model, indicating a more
+effective starting point for fine-tuning. For the PEMS08 dataset,
+STMAE not only starts with a lower initial validation loss but also
+maintains this lead to achieve a substantially lower final validation
+loss. This underscores the effectiveness of the dual reconstruction
+objective employed during the pretraining phase, which enables
+STMAE to initialize more effectively. (3) In contrast to STMAE,
+the validation curves of the base model exhibit a more erratic fluctuation behavior with a higher MAE level. In summary, all three
+observations above signify the stability of STMAE.
+
+5.5
+
+Masking Ratio Sensitivity
+
+In this section, we examine STMAE’s sensitivity to its key hyperparameters, i.e., the spatial and temporal masking ratios. We explore the impact of varying these ratios from 20% to 80% when
+coupling STMAE with AGCRN. Test MAE results for PEMS04 and
+
+CIKM ’24, October 21–25, 2024, Boise, ID, USA
+
+0.2 0.3 0.5 0.7 0.8
+
+19.7
+19.6
+19.5
+19.4
+19.3
+19.2
+19.1
+
+PEMS08
+0.2 0.3 0.5 0.7 0.8
+
+Temporal Masking Ratio
+
+0.2 0.3 0.5 0.7 0.8
+
+PEMS04
+
+Sun et al.
+
+15.5
+15.4
+15.3
+15.2
+15.1
+
+0.2 0.3 0.5 0.7 0.8
+
+Spatial Masking Ratio
+
+Figure 6: Masking ratio sensitivity analysis of STMAEA on
+PEMS04 and PEMS08. Heatmaps show test MAE scores.
+PEMS08 datasets are shown in fig. 6. The heatmaps indicate that
+STMAE achieves the best performance with a temporal masking
+ratio of 30% for both datasets. Spatially, it peaks at a 70% masking
+ratio for PEMS08 and 30% for PEMS04. We hypothesis that this difference is attributed to the greater structural density of PEMS08’s
+traffic network (0.01 for PEMS08 vs. 0.004 for PEMS04). Notably,
+STMAE underperforms when masking ratios are either too high or
+too low. This observation, in conjunction with our ablation study,
+underscores the efficacy of our dual masking strategy in enhancing
+spatial-temporal model performance in traffic forecasting.
+
+6
+
+CONCLUSION
+
+Spatial-temporal models are effective for traffic forecasting but often face challenges related to overfitting and instability due to data
+scarcity and incompleteness. In response, we explore generative
+SSL and propose a novel framework STMAE based on masking
+reconstruction. STMAE integrates seamlessly into existing traffic
+forecasting spatial-temporal frameworks, structured around pretraining and fine-tuning phases. During pretraining, our novel dual
+masking strategy—utilizing biased random walk-based spatial and
+patch-based temporal masking—presents rigorous challenges that
+prompt the encoder to learn robust spatial-temporal patterns. In the
+fine-tuning stage, we leverage the pretrained encoder with the original predictor to improve forecast accuracy. Comprehensive evaluations on multiple traffic benchmarks affirm that STMAE greatly
+enhances the performance of traffic forecasting models. Ablation
+studies further validate the effectiveness of our dual-masking strategy in addressing the specific challenges of traffic prediction.
+
+REFERENCES
+[1] Lei Bai, Lina Yao, Can Li, Xianzhi Wang, and Can Wang. 2020. Adaptive graph
+convolutional recurrent network for traffic forecasting. Advances in neural
+information processing systems 33 (2020), 17804–17815.
+[2] Songgaojun Deng, Shusen Wang, Huzefa Rangwala, Lijing Wang, and Yue Ning.
+2020. Cola-GNN: Cross-location Attention based Graph Neural Networks for
+Long-term ILI Prediction. In CIKM. 245–254.
+[3] Jacob Devlin, Ming-Wei Chang, Kenton Lee, and Kristina Toutanova. 2019. BERT:
+Pre-training of Deep Bidirectional Transformers for Language Understanding. In
+NAACL-HLT. 4171–4186. https://doi.org/10.18653/v1/n19-1423
+[4] Zheng Fang, Qingqing Long, Guojie Song, and Kunqing Xie. 2021. SpatialTemporal Graph ODE Networks for Traffic Flow Forecasting. In KDD. 364–373.
+https://doi.org/10.1145/3447548.3467430
+[5] Christoph Feichtenhofer, Yanghao Li, Kaiming He, et al. 2022. Masked autoencoders as spatiotemporal learners. Advances in neural information processing
+systems 35 (2022), 35946–35958.
+[6] Aditya Grover and Jure Leskovec. 2016. node2vec: Scalable Feature Learning for
+Networks. In KDD. 855–864. https://doi.org/10.1145/2939672.2939754
+
+[7] Shengnan Guo, Youfang Lin, Ning Feng, Chao Song, and Huaiyu Wan. 2019.
+Attention Based Spatial-Temporal Graph Convolutional Networks for Traffic
+Flow Forecasting. In AAAI. 922–929. https://doi.org/10.1609/aaai.v33i01.3301922
+[8] Kaiming He, Xinlei Chen, Saining Xie, Yanghao Li, Piotr Dollár, and Ross B.
+Girshick. 2022. Masked Autoencoders Are Scalable Vision Learners. In CVPR.
+15979–15988. https://doi.org/10.1109/CVPR52688.2022.01553
+[9] Zhenyu Hou, Xiao Liu, Yukuo Cen, Yuxiao Dong, Hongxia Yang, Chunjie Wang,
+and Jie Tang. 2022. GraphMAE: Self-Supervised Masked Graph Autoencoders. In
+KDD. 594–604. https://doi.org/10.1145/3534678.3539321
+[10] Amol Kapoor, Xue Ben, Luyang Liu, Bryan Perozzi, Matt Barnes, Martin Blais,
+and Shawn O’Banion. 2020. Examining COVID-19 Forecasting using SpatioTemporal Graph Neural Networks. CoRR abs/2007.03113 (2020). arXiv:2007.03113
+https://arxiv.org/abs/2007.03113
+[11] Shiyong Lan, Yitong Ma, Weikang Huang, Wenwu Wang, Hongyu Yang, and
+Pyang Li. 2022. DSTAGNN: Dynamic Spatial-Temporal Aware Graph Neural
+Network for Traffic Flow Forecasting. In ICML, Vol. 162. 11906–11917. https:
+//proceedings.mlr.press/v162/lan22a.html
+[12] Jintang Li, Ruofan Wu, Wangbin Sun, Liang Chen, Sheng Tian, Liang Zhu,
+Changhua Meng, Zibin Zheng, and Weiqiang Wang. 2023. What’s Behind the
+Mask: Understanding Masked Graph Modeling for Graph Autoencoders. In KDD.
+1268–1279. https://doi.org/10.1145/3580305.3599546
+[13] Yaguang Li, Rose Yu, Cyrus Shahabi, and Yan Liu. 2018. Diffusion Convolutional
+Recurrent Neural Network: Data-Driven Traffic Forecasting. In ICLR. https:
+//openreview.net/forum?id=SJiHXGWAZ
+[14] Xu Liu, Yuxuan Liang, Chao Huang, Yu Zheng, Bryan Hooi, and Roger Zimmermann. 2022. When do contrastive learning signals help spatio-temporal graph
+forecasting?. In SIGSPATIAL. 5:1–5:12. https://doi.org/10.1145/3557915.3560939
+[15] Xiao Liu, Fanjin Zhang, Zhenyu Hou, Li Mian, Zhaoyu Wang, Jing Zhang, and
+Jie Tang. 2023. Self-Supervised Learning: Generative or Contrastive. IEEE TKDE
+35, 1 (2023), 857–876. https://doi.org/10.1109/TKDE.2021.3090866
+[16] Wei Mao, Miaomiao Liu, Mathieu Salzmann, and Hongdong Li. 2019. Learning
+Trajectory Dependencies for Human Motion Prediction. In ICCV. IEEE, 9488–9496.
+https://doi.org/10.1109/ICCV.2019.00958
+[17] Zezhi Shao, Zhao Zhang, Fei Wang, and Yongjun Xu. 2022. Pre-training Enhanced
+Spatial-temporal Graph Neural Network for Multivariate Time Series Forecasting.
+In KDD. 1567–1577. https://doi.org/10.1145/3534678.3539396
+[18] David I. Shuman, Sunil K. Narang, Pascal Frossard, Antonio Ortega, and Pierre
+Vandergheynst. 2013. The Emerging Field of Signal Processing on Graphs: Extending High-Dimensional Data Analysis to Networks and Other Irregular Domains.
+IEEE Signal Process. Mag. 30, 3 (2013), 83–98.
+[19] Chao Song, Youfang Lin, Shengnan Guo, and Huaiyu Wan. 2020. Spatial-Temporal
+Synchronous Graph Convolutional Networks: A New Framework for SpatialTemporal Network Data Forecasting. In AAAI. 914–921. https://ojs.aaai.org/
+index.php/AAAI/article/view/5438
+[20] Jiarui Sun and Girish Chowdhary. 2023. Towards Globally Consistent Stochastic
+Human Motion Prediction via Motion Diffusion. CoRR abs/2305.12554 (2023).
+https://doi.org/10.48550/arXiv.2305.12554 arXiv:2305.12554
+[21] Qiaoyu Tan, Ninghao Liu, Xiao Huang, Rui Chen, Soo-Hyun Choi, and Xia Hu.
+2022. MGAE: Masked Autoencoders for Self-Supervised Learning on Graphs.
+CoRR abs/2201.02534 (2022). arXiv:2201.02534 https://arxiv.org/abs/2201.02534
+[22] Qiaoyu Tan, Ninghao Liu, Xiao Huang, Soo-Hyun Choi, Li Li, Rui Chen, and
+Xia Hu. 2023. S2GAE: Self-Supervised Graph Autoencoders are Generalizable
+Learners with Graph Masking. In WSDM. 787–795. https://doi.org/10.1145/
+3539597.3570404
+[23] Yijun Tian, Kaiwen Dong, Chunhui Zhang, Chuxu Zhang, and Nitesh V. Chawla.
+2023. Heterogeneous Graph Masked Autoencoders. In AAAI. 9997–10005. https:
+//doi.org/10.1609/aaai.v37i8.26192
+[24] Zonghan Wu, Shirui Pan, Guodong Long, Jing Jiang, Xiaojun Chang, and Chengqi
+Zhang. 2020. Connecting the Dots: Multivariate Time Series Forecasting with
+Graph Neural Networks. In KDD. ACM, 753–763. https://doi.org/10.1145/3394486.
+3403118
+[25] Zonghan Wu, Shirui Pan, Guodong Long, Jing Jiang, and Chengqi Zhang. 2019.
+Graph WaveNet for Deep Spatial-Temporal Graph Modeling. In IJCAI. 1907–1913.
+https://doi.org/10.24963/ijcai.2019/264
+[26] Yaowen Ye, Lianghao Xia, and Chao Huang. 2023. Graph Masked Autoencoder
+for Sequential Recommendation. In SIGIR. 321–330. https://doi.org/10.1145/
+3539618.3591692
+[27] Jiaqi Zeng and Pengtao Xie. 2021. Contrastive self-supervised learning for graph
+classification. In Proceedings of the AAAI conference on Artificial Intelligence,
+Vol. 35. 10824–10832.
+[28] Chenhan Zhang, James Jian Qiao Yu, and Yi Liu. 2019. Spatial-Temporal Graph
+Attention Networks: A Deep Learning Approach for Traffic Forecasting. IEEE
+Access 7 (2019). https://doi.org/10.1109/ACCESS.2019.2953888
+[29] Richard Zhang, Phillip Isola, and Alexei A. Efros. 2016. Colorful Image Colorization. In ECCV (Lecture Notes in Computer Science, Vol. 9907). 649–666.
+https://doi.org/10.1007/978-3-319-46487-9_40
+[30] Chuanpan Zheng, Xiaoliang Fan, Cheng Wang, and Jianzhong Qi. 2020. GMAN:
+A Graph Multi-Attention Network for Traffic Prediction. In AAAI. 1234–1241.
+
+Revealing the Power of Masked Autoencoders in Traffic Forecasting
+
+A
+
+CIKM ’24, October 21–25, 2024, Boise, ID, USA
+
+DATASET DETAILS
+
+• AGCRN [1]: a pioneer traffic forecasting framework which
+avoids relying on pre-defined graphs by learning the dependency graph dynamically from data. From the spatial side,
+AGCRN learns an adaptive graph on which graph convolution operates. Temporally, this adaptive graph convolution
+module is embedded in RNN to generate the state embeddings which are used for forecasting.
+• DCRNN [13]: an early traffic forecasting framework incorporating the graph concept for spatial modeling. After graph
+construction, DCRNN learns spatial dependencies via bidirectional random walks on the graph, and the temporal correlations are modeled through RNNs with scheduled sampling.
+As a pioneer work, DCRNN is not as performative when
+compared to the other two base models.
+• MTGNN [24]: a lightweight spatial-temporal forecasting
+framework. Similar to AGCRN, MTGNN also extracts relations among variables adaptively through a graph learning
+module. Differently, MTGNN relies on interleaved graph
+convolution and temporal convolution modules to capture
+the spatial-temporal dependencies within the data. Without
+utilizing recurrent structures, MTGNN is both more lightweight and computationally efficient compared with AGCRN
+and DCRNN.
+
+Four widely used traffic datasets1 are selected to evaluate the effectiveness of STMAE on the traffic forecasting task. These include:
+• PEMS03 [19]: The dataset contains traffic flow data in the
+Bay Area. 307 sensors are used for data collection starting
+from 09/01/2018 to 12/01/2018.
+• PEMS04 [7]: The dataset contains traffic flow data in the Bay
+Area. There are 307 sensors and the period of data ranges
+from 01/01/2018 to 02/28/2018.
+• PEMS07 [19]: The dataset contains traffic flow information
+from California. The data is collected by 883 sensors from
+05/01/2017 to 08/07/2017.
+• PEMS08 [7]: The dataset contains traffic flow information
+collected from 170 sensors in the San Bernardino area from
+07/01/2016 to 08/31/2016.
+The number of variables (sensors) 𝑁 , number of edges, the density of the predefined graph G and the time range are summarized
+in table 3. We follow the practices in [14] to construct the predefined graphs that are necessary for DCRNN, that the adjacency
+matrix A is constructed by road-network distance using Gaussian
+thresholding [18]. Formally,
+
+(
+2
+exp − dist(𝑢,𝑣)
+, if dist (𝑢, 𝑣) ⩽ 𝑘
+2
+𝜎
+A𝑢𝑣 =
+(9)
+0,
+otherwise,
+where dist(𝑢, 𝑣) denotes the road network distance between sensor
+𝑢 and 𝑣, 𝜎 denotes distance standard deviation, and 𝑘 = 0.1 is the
+threshold. The training, validation, and testing dataset partition
+split is performed with a ratio of 6:2:2 for all four datasets, and
+the partition details are provided in table 4, where each instance
+represents a 5-minute traffic recording.
+Table 3: Dataset statistics.
+Datasets
+PEMS03
+PEMS04
+PEMS07
+PEMS08
+
+#Sensors
+358
+307
+883
+170
+
+#Edges
+442
+209
+790
+137
+
+Density
+0.007
+0.004
+0.002
+0.01
+
+Time Range
+09/18 - 11/18
+01/18 - 02/18
+05/17 - 08/17
+07/16 - 08/16
+
+Table 4: Dataset partition details.
+Datasets
+PEMS03
+PEMS04
+PEMS07
+PEMS08
+
+#Training
+15,724
+10,195
+16,934
+10,713
+
+#Validation
+5,242
+3,398
+5,645
+3,571
+
+#Testing
+5,242
+3,399
+5,645
+3,572
+
+#Instances
+26,208
+16,992
+28,224
+17,856
+
+The hyper-parameters of all three base models are used from
+their respective papers. For AGCRN, a two-layer RNN is used for
+encoding and one linear layer is used for prediction. The hidden
+dimension is 64, and the learning rate is 0.003. For DCRNN, both
+the encoder and decoder consist of two-layer RNNs with hidden
+dimension 64. With an initial learning rate of 0.01, scheduled sam𝜇
+pling is employed with decay probability 𝜖𝑖 = 𝜇+exp(𝑖/𝜇 ) at the 𝑖 𝑡ℎ
+training step, where 𝜇 = 2000 is the convergence rate. For MTGNN,
+three graph convolution modules and three temporal convolution
+modules are interleaved to learn spatial-temporal correlations with
+node embedding dimension of 40. The learning rate and gradient
+clipping is set to 0.001 and 5, respectively.
+Besides STMAE, these base models are also integrated with
+STGCL [14], a contrastive learning-based spatial-temporal model
+enhancer. STGCL defines an auxiliary contrastive objective, which
+is jointly optimized alongside the main forecasting loss. This contrastive objective is calculated based on positive and negative samples, which are generated based on various data augmentation
+techniques guided by predefined heuristics. Following the original
+paper setup, we select input masking from {edge masking, input
+masking, temporal shifting, input smoothing} as base augmentation
+technique with ratio of 0.01 and a negative filtering threshold of 60
+minutes. Based on paper recommendations, STGCL is trained with
+a two-layer multilayer perceptron with batch normalization layer
+as the contrastive projection head.
+
+C
+B
+
+BASE MODEL DETAILS
+
+To study STMAE’s effectiveness in enhancing various backbones
+for traffic forecasting, three widely recognized spatial-temporal
+base models are used. These include:
+1 https://github.com/Davidham3/STSGCN/
+
+PER-STEP RESULTS
+
+In this section, we provide additional per-step MAE results, including (1) STMAED , DCRNN and STGCLD and (2) STMAEM , MTGNN
+and STGCLM in figs. 7 and 8. The additional results further confirms
+STMAE’s ability in alleviating the performance degradation issue in
+spatial-temporal models with its generally enhanced performance
+over baselines.
+
+CIKM ’24, October 21–25, 2024, Boise, ID, USA
+
+18
+17
+16
+
+DCRNN
+STGCL_D
+STMAE_D
+
+22
+20
+
+MAE per Time Step
+
+14
+
+PEMS03
+
+13
+
+18
+
+1 2 3 4 5 6 7 8 9 10 11 12
+
+24
+
+DCRNN
+STGCL_D
+STMAE_D
+
+24
+
+15
+
+26
+
+Sun et al.
+
+DCRNN
+STGCL_D
+STMAE_D
+
+PEMS04
+1 2 3 4 5 6 7 8 9 10 11 12
+
+DCRNN
+STGCL_D
+STMAE_D
+
+19
+18
+17
+
+22
+
+16
+
+20
+
+15
+
+18
+
+PEMS07
+
+14
+
+1 2 3 4 5 6 7 8 9 10 11 12
+
+PEMS08
+1 2 3 4 5 6 7 8 9 10 11 12
+
+Evaluation Time Step Index
+
+Figure 7: Per-step MAE results of STMAED compared with
+its corresponding base model DCRNN and STGCLD .
+16
+15
+
+MTGNN
+STGCL_M
+STMAE_M
+
+MAE per Time Step
+
+14
+13
+
+PEMS03
+1 2 3 4 5 6 7 8 9 10 11 12
+
+23
+22
+21
+
+MTGNN
+STGCL_M
+STMAE_M
+
+MTGNN
+STGCL_M
+STMAE_M
+
+PEMS04
+1 2 3 4 5 6 7 8 9 10 11 12
+
+MTGNN
+STGCL_M
+STMAE_M
+
+17
+16
+
+19
+
+Figure 9: Visualizations of STMAEA and AGCRN one-hourahead predictions on snapshots from PEMS03, PEMS04,
+PEMS07 and PEMS08 test sets.
+Table 5: Additional ablation results of STMAEA on PEMS03
+and PEMS07. Best results are bolded and second bests are
+underlined.
+
+15
+
+20
+18
+
+20.5
+20.0
+19.5
+19.0
+18.5
+18.0
+17.5
+17.0
+
+14
+
+PEMS07
+1 2 3 4 5 6 7 8 9 10 11 12
+
+13
+
+PEMS08
+1 2 3 4 5 6 7 8 9 10 11 12
+
+Variant
+AGCRN
+STMAENT
+STMAENS
+STMAEU
+STMAEA
+
+Evaluation Time Step Index
+
+Figure 8: Per-step MAE results of STMAEM compared with
+its corresponding base model MTGNN and STGCLM .
+
+D
+
+PEMS03
+MAPE
+15.26
+15.26
+15.30
+15.12
+14.72
+
+RMSE
+27.06
+26.84
+27.05
+27.31
+26.61
+
+MAE
+20.64
+20.52
+20.42
+20.38
+20.13
+
+PEMS07
+MAPE RMSE
+8.80
+34.19
+8.81
+34.28
+8.63
+34.29
+8.50
+34.22
+8.53
+33.79
+
+ADDITIONAL VISUALIZATIONS
+
+In this section, we provide additional qualitative visualizations in
+figs. 9, 10 and 12. To further demonstrate STMAE’s stability against
+data irregularities, we randomly select a subset of sensors and
+days from the PEMS03, PEMS04, PEMS07 and PEMS08 datasets,
+characterized by sudden traffic flow changes. We visualize onehour-ahead predictions of STMAE against the corresponding base
+models. From the areas highlighted by red rectangles, indicative of
+sudden flow changes, we can confirm that STMAE is more robust
+to data irregularities, consistently outperforming the counterpart
+base models.
+
+E
+
+MAE
+15.47
+15.30
+15.27
+15.25
+15.09
+
+ADDITIONAL ABLATION RESULTS
+
+In this section, we include additional ablation results for evaluating
+STMAE’s overall design. Experimental results are presented in
+
+table 5, with AGCRN serving as the backbone, while PEMS03 and
+PEMS07 are used as additional evaluation datasets. The results
+further underscores the advantages of our approach, where the
+advanced dual-masking strategy can create challenging pretext
+tasks for spatial-temporal models, thus improving their forecasting
+capacities.
+
+F
+
+ADDITIONAL STABILITY STUDY RESULTS
+
+We provide additional experimental results for STMAE stability
+study in fig. 11, including visualizations of the learning curves
+for both the pretraining and fine-tuning stages of STMAEA on
+PEMS03 and PEMS07, alongside the learning curve for the AGCRN
+backbone.
+
+Revealing the Power of Masked Autoencoders in Traffic Forecasting
+
+CIKM ’24, October 21–25, 2024, Boise, ID, USA
+
+15.50
+
+0.19
+
+13.75
+
+0.10
+0.45
+
+12.00
+
+0.28
+
+pretrain loss
+29.00
+fintune train loss
+fintune valid loss
+26.00
+base model valid loss
+23.00
+
+0.19
+
+20.00
+
+PEMS07
+
+0.37
+
+0.10
+0
+
+20
+
+40
+
+60
+
+Num. of Training Epochs
+
+80
+
+100
+
+17.00
+
+0.2 0.3 0.5 0.7 0.8
+
+19.65
+19.50
+19.35
+19.20
+0.2 0.3 0.5 0.7 0.8
+
+PEMS07
+
+PEMS08
+
+20.85
+20.70
+20.55
+20.40
+20.25
+0.2 0.3 0.5 0.7 0.8
+
+Figure 11: Additional training and validation processes of
+STMAEA and AGCRN on PEMS03 and PEMS07 datasets.
+
+PEMS04
+0.2 0.3 0.5 0.7 0.8
+
+Pretrain and Fintune Losses
+
+0.28
+
+16.20
+16.00
+15.80
+15.60
+15.40
+15.20
+
+0.2 0.3 0.5 0.7 0.8
+
+0.37
+
+PEMS03
+0.2 0.3 0.5 0.7 0.8
+
+pretrain loss
+19.00
+fintune train loss
+fintune valid loss
+base model valid loss 17.25
+
+PEMS03
+
+Temporal Masking Ratio
+
+0.45
+
+Figure 12: Visualizations of STMAEM and MTGNN onehour-ahead predictions on snapshots from PEMS03, PEMS04,
+PEMS07 and PEMS08 test sets.
+
+0.2 0.3 0.5 0.7 0.8
+
+Figure 10: Visualizations of STMAED and DCRNN one-hourahead predictions on snapshots from PEMS03, PEMS04,
+PEMS07 and PEMS08 test sets.
+
+19.05
+15.50
+15.40
+15.30
+15.20
+15.10
+
+0.2 0.3 0.5 0.7 0.8
+
+Spatial Masking Ratio
+
+Figure 13: Masking ratio sensitivity analysis of STMAEA on
+PEMS03, PEMS04, PEMS07 and PEMS08. The values denote
+the MAE metric. Lighter is better.
+
+CIKM ’24, October 21–25, 2024, Boise, ID, USA
+
+G
+
+ADDITIONAL MASKING RATIO RESULTS
+
+In this section, we include additional results for studying STMAE’s
+sensitivity to the spatial and temporal masking ratios. As mentioned
+in the main paper, we explore the impact of varying these ratios
+from 20% to 80% when coupling STMAE with AGCRN, and experimental results for all four datasets: PEMS03, PEMS04, PEMS07 and
+PEMS08 are shown in fig. 13, where the values indicate test set
+
+Sun et al.
+
+MAE performance. From the heatmaps, we draw the same conclusion that STMAE exhibits optimal performance when the temporal
+masking ratio is around 20% to 30% for all datasets. On the other
+hand, from the spatial perspective, STMAE performs the best with
+a spatial masking ratio of 70% for PEMS08, while for other datasets,
+20% to 30% is a more favorable choice. We attribute this difference
+to the greater physical structural density of PEMS08 as shown in
+table 3.
+
+

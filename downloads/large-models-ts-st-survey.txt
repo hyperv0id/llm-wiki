@@ -1,0 +1,2917 @@
+arXiv:2310.10196v3 [cs.LG] 8 Jun 2026
+
+Large Models for Time Series and Spatio-Temporal Data: A Survey and Outlook
+MING JIN, Griffith University, Australia
+YAXUAN KONG, University of Oxford, United Kingdom
+YUXUAN LIANG, Hong Kong University of Science and Technology (Guangzhou), China
+CHAOLI ZHANG, Zhejiang Normal University, China
+SIQIAO XUE, Ant Group, China
+XUE WANG, Alibaba Group, China
+JAMES ZHANG, Deloitte Service LLP, USA
+YI WANG, The University of Hong Kong, China
+HAIFENG CHEN, NEC Laboratories America, USA
+XIAOLI LI, A*STAR, Singapore
+VINCENT S. TSENG, National Yang Ming Chiao Tung University, Taiwan
+YU ZHENG, JD Technology, China
+LEI CHEN, Hong Kong University of Science and Technology (Guangzhou), China
+HUI XIONG, Hong Kong University of Science and Technology (Guangzhou), China
+SHIRUI PAN∗ , Griffith University, Australia
+QINGSONG WEN∗ , Squirrel Ai Learning, USA
+Temporal data — including time series and spatio-temporal data — are pervasive in real-world applications. Generated in massive
+volumes by physical and virtual sensors, they record dynamic system behaviors and enable a wide range of downstream tasks.
+Effectively analyzing such data is crucial to unlocking their rich information content. Recent advances in large language models
+and other foundation models have accelerated their use in time series and spatio-temporal data mining. These approaches not only
+improve pattern recognition and reasoning across diverse domains but also support progress toward artificial general intelligence that
+can understand and process temporal data. In this survey, we present a comprehensive, up-to-date review of large models tailored or
+∗ Correspondence to: Shirui Pan <s.pan@griffith.edu.au> and Qingsong Wen <qingsongedu@gmail.com>.
+
+Authors’ Contact Information: Ming Jin, mingjinedu@gmail.com, Griffith University, Brisbane, Queensland, Australia; Yaxuan Kong, yaxuan.kong@
+eng.ox.ac.uk, University of Oxford, Oxford, United Kingdom; Yuxuan Liang, yuxliang@outlook.com, Hong Kong University of Science and Technology
+(Guangzhou), Guangzhou, China; Chaoli Zhang, chaolizcl@zjnu.edu.cn, Zhejiang Normal University, Jinhua, Zhejiang, China; Siqiao Xue, siqiao.xsq@
+antgroup.com, Ant Group, Hangzhou, Zhejiang, China; Xue Wang, xue.w@alibaba-inc.com, Alibaba Group, Hangzhou, Zhejiang, China; James Zhang,
+jameszhang@deloitte.com, Deloitte Service LLP, New York, USA; Yi Wang, yi-wang@eee.hku.hk, The University of Hong Kong, Hong Kong, China;
+Haifeng Chen, haifeng@nec-labs.com, NEC Laboratories America, Princeton, New Jersey, USA; Xiaoli Li, xlli@i2r.a-star.edu.sg, A*STAR, Singapore,
+Singapore; Vincent S. Tseng, vtseng@cs.nycu.edu.tw, National Yang Ming Chiao Tung University, Hsinchu, Taiwan; Yu Zheng, msyuzheng@outlook.com,
+JD Technology, Beijing, China; Lei Chen, leichen@cse.ust.hk, Hong Kong University of Science and Technology (Guangzhou), Guangzhou, China; Hui
+Xiong, xionghui@ust.hk, Hong Kong University of Science and Technology (Guangzhou), Guangzhou, China; Shirui Pan, s.pan@griffith.edu.au, Griffith
+University, Gold Coast, Queensland, Australia; Qingsong Wen, qingsongedu@gmail.com, Squirrel Ai Learning, Bellevue, Washington, USA.
+Permission to make digital or hard copies of all or part of this work for personal or classroom use is granted without fee provided that copies are not
+made or distributed for profit or commercial advantage and that copies bear this notice and the full citation on the first page. Copyrights for components
+of this work owned by others than the author(s) must be honored. Abstracting with credit is permitted. To copy otherwise, or republish, to post on
+servers or to redistribute to lists, requires prior specific permission and/or a fee. Request permissions from permissions@acm.org.
+© 2026 Copyright held by the owner/author(s). Publication rights licensed to ACM.
+Manuscript submitted to ACM
+Manuscript submitted to ACM
+
+1
+
+2
+
+Jin et al.
+
+adapted for time series and spatio-temporal data along four dimensions: data types, model categories, model scopes, and application
+areas/tasks. We organize existing work into two main groups: large models for time series analysis (LM4TS) and for spatio-temporal
+data mining (LM4STD), and further distinguish general-purpose from domain-specific models. We also curate related resources,
+including datasets, model implementations, and tools, organized by major application areas. Overall, this survey consolidates recent
+advances and highlights foundations, applications, resources, and open research opportunities in large model–centric temporal data
+analysis.
+CCS Concepts: • General and reference → Surveys and overviews; • Mathematics of computing → Time series analysis; •
+Computing methodologies → Natural language processing.
+Additional Key Words and Phrases: Large language models, pre-trained foundation models, temporal data
+ACM Reference Format:
+Ming Jin, Yaxuan Kong, Yuxuan Liang, Chaoli Zhang, Siqiao Xue, Xue Wang, James Zhang, Yi Wang, Haifeng Chen, Xiaoli Li, Vincent
+S. Tseng, Yu Zheng, Lei Chen, Hui Xiong, Shirui Pan, and Qingsong Wen. 2026. Large Models for Time Series and Spatio-Temporal
+Data: A Survey and Outlook. 1, 1 (June 2026), 35 pages. https://doi.org/10.1145/nnnnnnn.nnnnnnn
+
+1
+
+Introduction
+
+Large models, specifically referred to as large language models (LLMs) and pre-trained foundation models (PFMs), have
+witnessed remarkable success across a multitude of tasks and domains, such as natural language processing (NLP) [281],
+computer vision (CV) [7], and various other interdisciplinary areas [99, 152, 187]. Initially, LLMs are developed to serve
+as pre-trained language foundation models for solving different natural language tasks, such as text classification [88],
+question answering [189], and machine translation [274]. However, the emergent abilities of LLMs [230] to learn intricate
+semantic and knowledge representations from large-scale text corpora to reason on various tasks have profoundly
+inspired the community. A case in point is GPT-3 [17], endowed with 175 billion parameters, which has exhibited robust
+few-shot and zero-shot learning capabilities, a feat not achieved by its predecessor, GPT-2 [169], which has 1.5 billion
+parameters. Another example is PaLM [2, 35] with even more parameters, showcasing remarkable performance on
+language understanding, general reasoning, and even code-related tasks. The meteoric rise of LLMs has concurrently
+catalyzed and reconfigured the landscape of PFMs, though the underpinnings such as deep neural networks, selfsupervised learning [128], and transfer learning [232] have been well studied for years. A salient illustration is the
+emergence of vision-language models (VLMs) [7] to reason on both visual and textual data, showing promising results
+in diverse tasks like image captioning [65], visual question answering [87], and commonsense reasoning [270]. Recently,
+the influence of large models has extended into other sectors, such as audio and speech analysis [99], covering an
+expansive array of modalities (e.g., audio, images, and text) and tasks. Given the remarkable achievements of large
+models in these diverse fields, an intriguing question emerges: can large models be effectively employed to analyze
+time series and spatio-temporal data?
+Temporal data, primarily consisting of time series and spatio-temporal data, have long been studied and proven to be
+indispensable in a myriad of real-world applications, encompassing fields such as geoscience [90], transportation [80],
+energy [292], healthcare [58], environment [239], and finance [205]. Both time series and spatio-temporal data are
+fundamentally temporal in nature and encapsulate various data modalities (see Sec. 2.3). While they share commonalities
+in modeling temporal dynamics, spatio-temporal data also require the integration of spatial dependencies to precisely
+capture the interactions within the data. Combining the study of these two broad and intrinsically linked data categories
+is crucial, as they are both pervasive and can be sourced from a diverse range of platforms, such as sensors [100, 264],
+Manuscript submitted to ACM
+
+Large Models for Time Series and Spatio-Temporal Data: A Survey and Outlook
+Time Series Data
+
+General Purposes
+
+Spatio-Temporal Data
+B
+A
+
+B
+
+D
+C
+
+A
+
+B
+
+D
+C
+
+A
+
+Training
+
+𝑡#
+
+𝑡!
+
+𝑡"
+
+𝑡#
+
+𝑡!
+
+𝑡"
+
+𝑡#
+
+Repurposing
+
+Language & Other
+Foundation Models
+
+…
+
+Forecasting
+
+Classification
+
+Generation
+
+Question
+Answering
+
+D
+C
+
+𝑡"
+
+𝑡!
+
+3
+
+…
+
+Domain-Specific Applications
+Climate
+Modeling
+
+Clinical
+Q&A
+
+Urban
+Computing
+
+Video
+Reasoning
+
+…
+
+Fig. 1. Large models (i.e., language and other related foundation models) can be either trained or adeptly repurposed to handle time
+series and spatio-temporal data for a range of general-purpose tasks and specialized domain applications.
+
+financial market transactions [180], cloud monitoring [291], and so on. By surveying them together, we can gain a
+holistic understanding of the inherent dynamics they encapsulate across various systems.
+While large models have rapidly reshaped many fields (see Fig. 2), time series and spatio-temporal analysis have
+historically developed through statistical modeling and compact deep architectures. Classical statistical models date
+back to early time series studies [269]. Deep learning later introduced stronger data-driven models based on recurrent
+neural networks (RNNs) [64], convolutional neural networks (CNNs) [101], graph neural networks (GNNs) [80, 82],
+and Transformers [179, 234]. However, most of these models are relatively small and task-specific, which limits their
+ability to support broad transfer, semantic representation, and multi-task reasoning. Earlier self-supervised pre-training
+approaches, such as TF-C [279], SimMTM [42], STEP [181], and AdaMAE [11], improved transferability but mainly
+served as precursors to the current large-model paradigm.
+Despite the remarkable progress in developing large models for time series and spatio-temporal data, the limited
+availability of high-quality, diverse large-scale datasets still poses a substantial challenge in many domains [83, 289].
+Even so, recent years have witnessed a surge of successful applications across various tasks and sectors (see Tab. 2),
+underscoring the growing potential of foundation models for temporal data analysis. In data-rich scientific domains,
+Pangu-Weather [14] and ClimaX [156] have revolutionized global climate modeling by delivering unprecedented
+forecasting accuracy while dramatically reducing computational costs. In the field of urban computing, TFM [223]
+introduced one of the first transportation foundation models. For spatio-temporal video understanding, models such as
+Valley [137], LAVILA [283], and mPLUG-2 [248] demonstrate how large-scale multimodal pre-training can capture complex temporal dynamics. The trend has also expanded to the time series foundation model (TSFM) space. Representative
+examples include Chronos [4], Time-MoE [184], and MOIRAI [235], which aim to build general-purpose models for
+forecasting and representation learning across diverse domains. Complementary to TSFMs, recent efforts have sought
+to harness the reasoning and generalization capabilities of LLMs for time series analysis. Early explorations such as
+PromptCast [256] and OFA [289] leveraged LLMs for generic time series analysis through prompting or lightweight
+Manuscript submitted to ACM
+
+4
+
+Jin et al.
+
+fine-tuning, while Time-LLM [83] proposed reprogramming time series inputs with natural-language prompts to exploit
+off-the-shelf LLMs. In specialized applications, OpenTSLM [98] and MedTsLLM [22] exemplify large clinical language
+models that show promise for medical event prediction. Despite these significant strides and their inherent promise, the
+integration of large models into time series and spatio-temporal data analysis continues to confront unique challenges
+that necessitate focused investigation (see Sec. 7). This underscores the necessity for a comprehensive review tailored
+to examine the progress in this burgeoning field.
+In this paper, we fulfill this need by providing a unified, comprehensive, and up-to-date review of large models
+dedicated to time series and spatio-temporal data analysis, encompassing both LLMs and PFMs across different data
+categories, model scopes, application domains, and representative tasks. Time series and spatio-temporal data are
+both temporal in nature and often share similarities in analytical methods. Combining them in a single survey allows
+practitioners to explore the synergies and commonalities between these two areas. Integrating insights from both
+domains can also foster cross-pollination of ideas. This integration may help researchers transfer strengths from one
+domain to address challenges in the other and build a more interconnected understanding of large models for temporal
+data. Our contributions are summarized as follows:
+• A Comprehensive and Foundational Survey. This work offers an extensive and in-depth survey of advancements in large models for time series and spatio-temporal data analysis. By systematically charting the field’s
+landscape and examining the nuances of key methodologies, this paper serves as a foundational resource for
+researchers and practitioners, delivering a thorough and organized understanding of this dynamic area of study.
+• Unified and Structured Taxonomy. We introduce a unified and structured taxonomy that categorizes existing
+research into two principal clusters: large model for time series (LM4TS) and for spatio-temporal data (LM4STD),
+organized based on data categories. We further divide each cluster into two subgroups, i.e., LLMs and PFMs,
+according to model types. Subsequent categorizations are conducted through the lenses of model scopes, application domains, and specific tasks. This multi-faceted classification provides the reader with a coherent roadmap
+for understanding the field from multiple perspectives.
+• Abundant Resource Compilation. We compile and summarize a wealth of resources in this field, encompassing
+datasets, open-source implementations, and evaluation benchmarks. Additionally, we outline the practical
+applications of pertinent large models across various domains. This compilation serves as a valuable reference
+point for future research and development endeavors.
+• Future Research Opportunities. We identify and elaborate on multiple promising avenues for future research,
+encompassing a range of perspectives such as data sources, model architectures, training and inference paradigms,
+as well as other potential opportunities. This discussion equips the reader with a nuanced understanding of the
+current state of the field, while also highlighting prospective directions for future investigation.
+Related Surveys and Differences. Several recent surveys have reviewed temporal data analysis from different
+perspectives, including foundation models for time series [95, 113, 125], LLM-based time-series methods [182], GNNs
+and structural inductive biases for spatio-temporal prediction [21, 114, 229], video foundation and diffusion models [141, 226], and temporal knowledge graphs [19, 280]. However, these reviews typically focus on a single modality or
+model family and rarely provide an integrated view across time series, spatio-temporal graphs, temporal knowledge
+graphs, and videos. Motivated by the rapid development of large models in vision [7], audio [99], and geoscience [142],
+this survey provides a unified review of large models for time series and spatio-temporal data analysis. As summarized
+in Tab. 1, our distinctive contribution is an integrated temporal-data perspective: we organize these data types under a
+Manuscript submitted to ACM
+
+Large Models for Time Series and Spatio-Temporal Data: A Survey and Outlook
+
+5
+
+Table 1. Comparison between this and other related surveys, focusing on domains (i.e., specific vs. general), relevant modalities
+(e.g., time series, spatio-temporal graphs (STGs), temporal knowledge graphs (TKGs), and videos), and primary areas of focus (i.e.,
+small-scale pre-training and fine-tuning (P&F), large language models (LLMs), and pre-trained foundation models (PFMs)).
+
+Survey
+
+Year
+
+Ma et al. [139]
+Latif et al. [99]
+Cai et al. [19]
+Zhang et al. [280]
+Madan et al. [141]
+Capone et al. [21]
+Wang et al. [229]
+Kottapalli et al. [95]
+Shi et al. [182]
+Liang et al. [114]
+This Survey
+
+2023
+2023
+2024
+2024
+2024
+2025
+2025
+2025
+2025
+2025
+2025
+
+Domain
+Specific General
+✓
+✓
+✓
+✓
+✓
+✓
+✓
+✓
+✓
+✓
+✓
+
+Time Series
+✓
+✗
+✗
+✗
+✗
+✗
+✗
+✓
+✓
+✓
+✓
+
+Modality
+STGs
+TKGs
+✗
+✗
+✗
+✗
+✗
+✓
+✗
+✓
+✗
+✗
+✓
+✗
+✓
+✗
+✗
+✗
+✓
+✗
+✓
+✓
+✓
+✓
+
+Videos
+✗
+✗
+✗
+✗
+✓
+✗
+✗
+✗
+✗
+✗
+✓
+
+P&F
+✓
+✗
+✓
+✓
+✓
+✗
+✓
+✓
+✓
+✓
+✓
+
+Focus
+LLMs
+✗
+✓
+✓
+✓
+✓
+✗
+✓
+✓
+✓
+✓
+✓
+
+PFMs
+✗
+✓
+✗
+✗
+✓
+✗
+✓
+✓
+✗
+✓
+✓
+
+unified LM4TS/LM4STD taxonomy and compare LLM repurposing and PFM pre-training across model scope, task type,
+application domain, and resource availability. This complements specialized surveys by highlighting cross-modality
+links, methodological differences, and transferable adaptation strategies.
+Survey Methodology and Scope. To enhance the verifiability of the survey coverage, we followed an iterative literature collection process. We searched major scholarly databases and indexing platforms, including ACM Digital Library,
+IEEE Xplore, SpringerLink, ScienceDirect, Web of Science, Google Scholar, and arXiv. We included representative studies
+on large models for time series and spatio-temporal data published or publicly released up to the time of submission. The
+search focused on works related to LLM adaptation, pre-trained foundation models, and large-model-based temporal
+data analysis across time series, spatio-temporal graphs, temporal knowledge graphs, and videos. We further expanded
+the candidate set through backward and forward snowballing from related surveys. The final selection prioritized early
+studies that initiated important research directions, influential works with clear methodological contributions, and
+peer-reviewed papers in relevant conferences and journals. For rapidly emerging topics, we also considered widely
+cited papers. We excluded works with only incidental large-model relevance, conventional small-scale neural methods
+without pre-training or large-model adaptation, and duplicate versions lacking distinct technical contributions.
+Paper Organization. The remainder of this paper is structured as follows: Sec. 2 furnishes the reader with essential
+background knowledge on large models, time series, and spatio-temporal data, as well as associated tasks. Sec. 3
+introduces our unified taxonomy for large models in the context of time series and spatio-temporal data analysis,
+offering a broad overview of the field before delving into the intricacies of specific approaches, which are elaborated
+upon in Sec. 4 and Sec. 5. Sec. 6 encapsulates the extensive resources and applications we have compiled pertaining to
+large models for time series and spatio-temporal data analysis. Sec. 7 outlines promising avenues for future research in
+this domain. Finally, we conclude our paper in Sec. 8.
+Manuscript submitted to ACM
+
+6
+
+Jin et al.
+2019
+
+GPT-2
+GPT-3
+
+T5
+
+2020
+
+Ernie 3.0
+Gopher
+
+T0
+
+ChatGPT
+
+Flan-T5
+
+DeepSeek
+
+Llama 2
+
+Gemini1.0
+
+Claude 2
+
+Gemini1.5
+
+Phi-3
+
+Llama 3.1
+
+GPT-o1 & o3
+
+Mixtral 8
+
+GPT-4.5 & 5
+
+DeepSeek-V3.2
+
+2023
+2024
+
+2025
+
+FLAN
+
+Llama
+
+2022
+
+Gemini 2.0 & 2.5
+
+PLUG
+
+GLaM
+
+2021
+
+RoBERTa
+
+BERT
+BiGANS
+
+2020
+
+FASTText
+
+2021
+
+BLOOM
+
+MAE
+
+PanGu-Σ
+
+PaLM
+
+SimVLM
+
+FLIP
+
+GPT-4
+
+Grok-1
+
+Whisper
+
+BLIP, BLIP-2
+
+InternLM
+
+Magneto
+
+Stable Diffusion
+
+CLIP
+
+2022
+
+UniDetector
+
+I-JEPA
+
+2023
+
+DeepSeek-V2 & V3
+
+InternImage
+
+SAM
+
+2024
+
+GLM-4.5
+
+Llama 4
+
+Claude 3.7 & 4 & 4.1
+Qwen 2.5 & 3
+
+Grok 4
+
+CLIP 2
+
+PailGemma
+Magma
+
+ZERO
+
+CV
+
+NLP
+
+Swin
+
+UNITER
+
+ViT
+
+CoVe
+
+DALL·E
+
+FLAVA
+
+BEIT-3
+
+GLIP
+
+EVA-2
+
+CoCa
+
+PanGu-Weather
+
+Nova
+
+Claude 3
+
+GloVe
+
+RetNet
+
+SEEM
+
+StrongSORT+
+Sora
+
+V-JEPA
+
+2025
+
+Grounding DINO
+CV+NLP
+
+Others
+
+Fig. 2. Roadmaps of representative large language models (left) and other foundation models (right).
+
+2
+
+Background
+
+This work reviews recent advances in adopting large models for solving time series and spatio-temporal data tasks.
+Specifically, we focus on two operational groups of large models commonly used in temporal data analysis: LLMs and
+PFMs. In the broad sense, LLMs can be regarded as a subclass of PFMs; however, in this survey, we distinguish them
+according to their role in existing studies. LLMs mainly refer to language-centered foundation models repurposed
+for time series or spatio-temporal tasks through prompting, reprogramming, or adaptation, whereas PFMs refer to
+pre-trained or foundation models designed or adapted as general-purpose backbones for temporal, spatial, relational,
+visual, or multimodal data. Accordingly, methods categorized as LLM4TS or LLM4STD are included when a large
+model serves as a central backbone, interface, or reasoning module, but they are not necessarily claimed to be newly
+trained standalone foundation models. In this section, we introduce these two groups and discuss their differences and
+connections. To improve clarity, we also provide a brief roadmap of large models in Fig. 2, which summarizes their
+development and sheds light on main research interests. Then, we define time series and spatio-temporal data, along
+with their representative tasks across different domains.
+2.1
+
+Large Language Models
+
+Language modeling forms the basis of many NLP tasks, and LLMs are originally developed to enhance language
+modeling performance. Compared with conventional language models, such as neural language models (NLMs) [151]
+and small-sized pre-trained language models (PLMs) [39, 105, 169], LLMs are known for their emergent ability [230] in
+solving various complex tasks [281] through in-context learning [43], reshaping the way we use AI. Recently, with
+the development of multimodal large language models (MLLMs) [268], the downstream tasks of LLMs have extended
+far beyond traditional natural language scope [134, 150] and cannot be easily solved by smaller PLMs. Upon the
+recent progress of modeling time series and spatio-temporal data with LLMs, we categorize them into two main types:
+Manuscript submitted to ACM
+
+Large Models for Time Series and Spatio-Temporal Data: A Survey and Outlook
+
+7
+
+embedding-visible LLMs and embedding-invisible LLMs, similar to [30, 281]. The former type of LLMs is usually opensourced with publicly accessible inner states. Typical examples include BLOOM [155], Llama [200, 201], Alpaca [198],
+Vicuna [34], and Falcon [1]. This branch of LLMs typically allows for the fine-tuning on different target tasks and
+shows promising few-shot and zero-shot capabilities without additional retraining. The latter type of LLMs is usually
+closed-sourced with no publicly available inner states, such as PaLM [35], ChatGPT1 , and GPT-4 [159], which are
+normally inferenced via prompting in API calls. A brief roadmap of LLMs is depicted in Fig. 2 (left) [281].
+Witnessing the big success of MLLMs, one of our primary interests is investigating how to adapt LLMs for solving
+time series and spatio-temporal data analytical tasks, which can generally be achieved by either multimodal re-purposing
+or API-based prompting in the existing literature. The former approach is normally used for activating the task-related
+capabilities of embedding-visible LLMs by aligning different modalities in the target and pre-training (source) tasks.
+This is closely related to the fine-tuning of LLMs (e.g., adapter tuning [66] and low-rank adaptation [67]) and model
+reprogramming [26], depending on whether LLMs are fine-tuned or frozen during the adaptation process. Two typical
+examples are OFA [289] and Time-LLM [83] detailed in Sec. 4.1. The latter approach, on the other hand, is more
+straightforward by wrapping the target modalities into natural language prompts and feeding them into LLMs for
+generative inference. This is similar to the black-box tuning for language-model-as-a-service (LMaaS) [193]. Examples
+include LLMTime [52] (Sec. 4.1), PPT [254] (Sec. 5.2), and VideoChat [108] (Sec. 5.3). Evidence shows that both paradigms
+are applicable and have shown promising results in different target tasks across various domains [30, 206], including
+learning on time series [52, 83, 289] and spatio-temporal data [102, 108, 140, 254].
+2.2
+
+Pre-Trained Foundation Models
+
+Pre-trained foundation models refer to large-scale pre-trained models that can be adapted to solve a wide range
+of downstream tasks. In the literature, LLMs and MLLMs can also be viewed as PFMs because they are large-scale
+pretrained models with broad transferability. To avoid ambiguity, we use the term PFM in the subsequent taxonomy
+in a narrower operational sense: it denotes pre-trained or foundation models whose backbone, pre-training data, or
+adaptation objective is designed beyond general language modeling, especially for temporal, spatial, relational, visual,
+or multimodal data [15, 287]. PFMs constitute a broader category of models that are characterized by their emergent
+capabilities and homogenization in effectively solving different tasks with the consolidation of methodologies in building
+AI systems [15], which are significantly different from task-specific models. In general, the capabilities of PFMs are in
+three key dimensions: modality bridging, reasoning and planning, and interaction.
+The first aspect refers to multimodal models [253], e.g., MLLMs like vision-language models, which have shown
+remarkable results in unifying the language and vision modalities [7]. For example, CLIP [168] initially proposed to
+bridge the gap between images and texts, and SAM [92] further extends the concept of textual prompting to visual
+prompting. Other recent works, such as NExT-GPT [237], further enlarge the boundary and even allow for the bridging
+of multiple different modalities. It is to be expected that data are naturally multimodal in the real world, such as in
+clinical medicine [187], where time series and spatio-temporal data are frequently involved like ECG and medical events.
+This also motivates recent research interests in multimodal time series and spatio-temporal data [248, 256]. A brief
+roadmap of PFMs is given in Fig. 2 (right), where VLMs remain the most popular research topic in this area but other
+PFMs related to time series and spatio-temporal data are emerging, though still in the early stage of development.
+
+1 https://openai.com/blog/chatgpt/
+
+Manuscript submitted to ACM
+
+8
+
+Jin et al.
+The second aspect highlights the reasoning and planning capabilities of PFMs. Typical examples include CoT [231]
+
+and GoT [12] in LLMs, as well as task-planning agents [228, 238]. The last aspect defines the interaction capabilities of
+PFMs, and this includes both actioning and communication. In this survey, we mainly focus on PFMs for time series
+and spatio-temporal data, in which most of them remain in the early stage of development and far from reaching the
+second and third aspects mentioned above. We refer readers to [15] for more details on PFMs.
+2.3
+
+Time Series and Spatio-Temporal Data
+
+Temporal data, notably time series and spatio-temporal data, serve as foundational data categories for a myriad of
+real-world applications [80, 233]. A time series is commonly defined as an ordered sequence of data points, organized
+by their occurrence in time. These sequences can be either univariate or multivariate. For example, daily temperature
+readings from a city would form a univariate time series, whereas combining daily temperature and humidity data
+would create a multivariate time series. In the sequel, we use bold uppercase letters (e.g., X) for matrices, bold lowercase
+letters (e.g., x) for vectors, calligraphic uppercase letters (e.g., X) for sets, and standard lowercase letters (e.g., 𝑥) for
+scalars. Formally, we adhere to the definitions of time series data outlined in [82], which we summarize below.
+Definition 1 (Time Series Data). A univariate time series x = {𝑥 1, 𝑥 2, · · · , 𝑥𝑇 } ∈ R𝑇 is a sequence of 𝑇 data points
+indexed in time order, where 𝑥𝑡 ∈ R is the value of the time series at time 𝑡. A multivariate time series X = {x1, x2, · · · , x𝑇 } ∈
+R𝑇 ×𝐷 is a sequence of 𝑇 data points indexed in time order but with 𝐷 dimensions, where x𝑡 ∈ R𝐷 (1 ≤ 𝑡 ≤ 𝑇 ) denotes the
+values of the time series at time 𝑡 along 𝐷 channels. We refer the reader to [82] for more in-depth discussions on this.
+Spatio-temporal data, on the other hand, are a sequence of data points organized by both temporal and spatial dimensions,
+encapsulating a wide variety of constructs, including spatio-temporal graphs (STGs) [82], temporal knowledge graphs
+(TKGs) [73], videos [91], point cloud streaming (PCS) [241], trajectories [6], among others. In this study, our primary focus
+is on the first three categories, which are highly representative and align closely with the current research interests.
+Formally, we follow the definitions of STGs and TKGs in [82] and [73], which we summarize as follows.
+Definition 2 (Spatio-Temporal Graphs). A spatio-temporal graph G = {G1, G2, · · · , G𝑇 } is a sequence of 𝑇 static
+graph snapshots indexed in time order, where G𝑡 = (V𝑡 , E𝑡 ) denotes a snapshot at time 𝑡; V𝑡 and E𝑡 are sets of nodes and
+edges at time 𝑡. The corresponding adjacency and node feature matrices are defined as A𝑡 ∈ R𝑁 ×𝑁 and X𝑡 ∈ R𝑁 ×𝐷 , where
+A𝑡 = {𝑎𝑖𝑡 𝑗 } and 𝑎𝑖𝑡 𝑗 ≠ 0 if there is an edge between node 𝑖 and 𝑗, s.t. 𝑒𝑖𝑡 𝑗 ∈ E𝑡 . Here, 𝑁 = |V𝑡 | is the number of nodes and 𝐷
+is the dimension of node features.
+Definition 3 (Temporal Knowledge Graphs). A temporal knowledge graph G = {G1, G2, · · · , G𝑇 } is a sequence of
+𝑇 static knowledge graph snapshots indexed in time order, where G𝑡 = (E𝑡 , R𝑡 ) is a snapshot consisting of the entity and
+relation sets at time 𝑡. Specifically, E𝑡 encapsulates both subject and object entities, and R𝑡 denotes the set of relations between
+them. In a temporal knowledge graph, entities and relations may possess different features, denoted by X𝑒𝑡 ∈ R | E𝑡 | ×𝐷𝑒 and
+X𝑟𝑡 ∈ R | R𝑡 | ×𝐷𝑟 , where 𝐷𝑒 and 𝐷𝑟 are feature dimensions.
+Video data can also be interpreted as a type of spatio-temporal data, which is usually defined as a sequence of images
+indexed in time order; thus, we define it as follows in a similar manner.
+Definition 4 (Video Data). Let V = {F1, F2, · · · , F𝑇 } be a video consisting of 𝑇 frames indexed in time order, where
+F𝑡 denotes the 𝑡-th frame. For simplicity, we let each frame F𝑡 be a matrix of pixels, i.e., F𝑡 ∈ R𝐻 ×𝑊 ×𝐶 , without considering
+other metadata, where 𝐻 , 𝑊 , and 𝐶 are the height, width, and color channels of the frame, respectively.
+Manuscript submitted to ACM
+
+Large Models for Time Series and Spatio-Temporal Data: A Survey and Outlook
+
+9
+
+Given the definitions above, we then briefly introduce the representative tasks associated with each data category,
+which are showcased in Fig. 1 and summarized below.
+• Time Series Tasks. This area typically includes four principal analytical tasks: forecasting, classification, anomaly
+detection, and imputation. In forecasting, the goal is to predict the future values of a time series, which can be further
+categorized into short-term and long-term forecasting depending on the prediction horizon. In classification, the goal
+is to classify the input time series into different categories. Time series anomaly detection can also be understood
+as a special type of classification task, where we aim to identify the abnormal time series from the normal ones. In
+imputation, the goal is to fill in the missing values in time series. Without loss of generality, we refer the reader to
+[82] for more details.
+• Spatio-Temporal Graph Tasks. The predominant downstream task in spatio-temporal graph is forecasting, which
+aims to predict the future node features by referring to the historical attributive and structural information. Typical
+examples include traffic forecasting [80] and some on-demand services [82]. Other common tasks include link
+prediction [41] and node/graph classification [75], where the former aims to predict the existence of an edge based
+on the historical information, and the latter aims to classify the nodes or graphs into different categories. A more
+in-depth discussion can be found in [175].
+• Temporal Knowledge Graph Tasks. There are two important tasks in temporal knowledge graphs: completion
+and forecasting. The former mainly aims to impute missing relations within the graph, while the latter focuses on
+predicting future relations. For an expanded discussion, please consult [18, 57].
+• Video Tasks. In the field of computer vision, video data encompasses several core tasks such as detection, captioning,
+anticipation, and querying. Detection aims to identify specific objects or actions within the video. Captioning seeks to
+generate natural language descriptions for the video content. Anticipation involves predicting forthcoming frames in
+a video sequence. Lastly, querying aims to retrieve video segments pertinent to a specific query. Notably, these tasks
+often traverse multiple modalities and have received considerable attention compared to the previously mentioned
+data types. For additional insights, the reader is directed to [7].
+3
+
+Overview and Categorization
+
+In this section, we provide an overview and categorization of the large models for time series and spatio-temporal
+data. Our survey is structured along four main dimensions: data categories, model architectures, model scopes, and
+application domains or tasks. A detailed synopsis of the related works can be found in Fig. 3 and Tab. 2. We primarily
+divide the existing body of literature into two major categories: large models for time series data (LM4TS) and large
+models for spatio-temporal data (LM4STD).
+In the first category, we subdivide the existing literature into two types: LLMs for time series data (LLM4TS) and
+PFMs for time series data (PFM4TS). The former refers to leveraging LLMs for solving time series tasks, irrespective of
+whether LLMs are fine-tuned or frozen during the adaptation process. The latter, on the other hand, focuses on the
+development of PFMs explicitly designed for various time series tasks. Thus, the LLM/PFM distinction in our taxonomy
+is practical rather than ontological. LLM4TS and LLM4STD emphasize the repurposing of language-centered foundation
+models, while PFM4TS and PFM4STD emphasize temporal or spatio-temporal foundation models developed as general
+backbones for the target data modalities. It is important to note that the field of PFM4TS is relatively nascent; existing
+models may not fully encapsulate the potential of general-purpose PFMs as defined in Sec. 2.2. Nevertheless, they offer
+valuable insights into the future development of this field. Thus, we also include them in this survey and categorize
+Manuscript submitted to ACM
+
+10
+
+Jin et al.
+Forecasting: LLM4TS [23], TimeCMA [118], Time-VLM [285],
+Time-LLM [83], TEMPO [20], UniTime [126], ChatTime [210],
+LLMTime [52], PromptCast [256]
+General-Purpose
+Multiple Tasks: Time-MQA [94], TimeOmni-1 [53],
+ChatTS [244], Time-MMD [119]
+LLMs for Time
+Series Data
+
+Transportation: Traffic-R1 [295], LEAF [282],
+LLM-Mob [222], xTP-LLM [55]
+Domain-Specific
+
+Large Models for
+Time Series Data
+(Sec. 4)
+
+Finance: M2VN [93], DINN [70], GPT4FTS [74],
+Lopez-Lira et al. [134]
+Healthcare: MedualTime [265], OpenTSLM [98],
+MedTsLLM [22], NYUTron [76]
+
+General-Purpose
+
+Forecasting: Chronos-2 [3], Time-MoE [184], Chronos [4],
+Sundial [131], Time-FFM [123], Lag-llama [172], TimesFM [36],
+MOIRAI [235], TimeMixer++ [218], PatchTST [157]
+Multiple Tasks: Timer [132], MOMENT [51]
+
+PFMs for Time
+Series Data
+
+Finance: SSPT [217], DELPHYNE [40]
+Domain-Specific
+Healthcare: ECG-FM [146], MIRA [106], Mathew et al. [144]
+
+Large Models for
+Time Series and
+Spatio-Temporal Data
+
+Spatio-Temporal
+Graphs
+
+Forecasting: FSTLLM [79], ST-LINK [72],
+RePST [211], STG-LLM [121]
+Transportation: GSF-LLM [212], ST-LLM+ [117],
+LLM-TFP [31], UrbanGPT [112]
+Completion: Ong et al. [158], TeRDy [133], Luo et al. [136]
+
+LLMs for SpatioTemporal Data
+
+Temporal
+Knowledge Graphs
+
+Forecasting: G2S [9], AnRe [196], Xia et al. [240],
+LLM-DA [215], LATE [276]
+Video Q&A: MovieChat [188], CaKE-LM [190]
+Sport: Jiang et al. [77], MatchVision [171]
+
+Video Data
+Large Models for
+Spatio-Temporal
+Data (Sec. 5)
+
+Traffic: TRIVIA [164]
+Multiple Tasks: Video-LLaMA-3 [275], Valley [137], MA-LMM [60],
+Video-XL [186], video-SALMONN-o1 [192], BOLT [124], LAVENDER [110]
+Video-ChatGPT [140], ProgGen [197], Video-LLaMA [277], Apollo [293]
+Climate: FourCastNet-3 [16], ClimaX [156], Pangu-Weather [14]
+
+Spatio-Temporal
+Graphs
+
+Transportation: TrafficBERT [81], TFM [223]
+Multiple Tasks: UMSST [284], UniSTD [195]
+
+PFMs for SpatioTemporal Data
+Video Data
+
+Multiple Tasks: MSTA [25], InternVideo [225],
+mPLUG-Owl2 [267], mPLUG-2 [248], OmniVL [213],
+mPLUG-video [247]
+
+Fig. 3. A comprehensive taxonomy of large models for time series and spatio-temporal data from the perspectives of methodologies
+(i.e., LLMs vs. PFMs), motivations (e.g., general vs. domain-specific purposes), and applications.
+
+them as PFM4TS. For each of these subdivisions, we further classify them into either general-purpose or domain-specific
+models, depending on whether the models are designed for solving general time series tasks or restricted to specific
+domains, including but not limited to transportation, finance, and healthcare.
+In the category of LM4STD, we employ a similar taxonomy, defining LLMs for spatio-temporal data (LLM4STD) and
+PFMs for spatio-temporal data (PFM4STD). Unlike time series data, spatio-temporal data encompass a broader array of
+entities spanning multiple domains; thus we explicitly categorize LLM4STD and PFM4STD by their relevant domains.
+While we offer a categorization based on model scopes in Tab. 2 to facilitate the understanding of the existing literature,
+this categorization is conditioned on different data modalities (e.g., STGs and videos), as they typically possess different
+problem definitions. Therefore, this classification is omitted in Fig. 3 for the sake of brevity. Herein, we focus on the three
+most prominent domains/modalities, using them as subcategories: spatio-temporal graphs, temporal knowledge graphs,
+Manuscript submitted to ACM
+
+Large Models for Time Series and Spatio-Temporal Data: A Survey and Outlook
+
+11
+
+and video data. For each of them, we summarize the representative tasks as the leaf nodes (see Fig. 3), which is similar to
+LM4TS. Notably, PFM4STD has seen more extensive development than its time series counterpart. Current research is
+mainly geared towards STGs and video data, often featuring enhanced capabilities of PFMs such as multimodal bridging
+and reasoning.
+With this foundational understanding of data categories, model architectures, model scopes, and application domains/tasks, we will delve into the specifics of LM4TS and LM4STD in the subsequent sections, labeled Sec. 4 and Sec. 5,
+respectively. Within these sections, we will review pivotal contributions in LLM4TS and PFM4TS as outlined in Sec. 4.1
+and Sec. 4.2. Similarly, in Sec. 5.1, we will summarize key research related to LLMs and PFMs for STGs, while in Sec. 5.2
+and Sec. 5.3, we will provide an overview of pertinent literature concerning LLMs and PFMs for TKGs and Video Data.
+4
+
+Large Models for Time Series Data
+
+In this section, we delve into the advancements of large language models and pre-trained foundation models in time
+series analysis. Within each subsection, we further segment our discussion based on whether the models serve general
+or domain-specific purposes, as outlined in Fig. 3.
+4.1
+
+Large Language Models in Time Series
+
+Time series analysis is a fundamental problem in many real-world applications, such as sales forecasting, imputation of
+missing economic time series data, anomaly detection for industrial maintenance, and classification of time series from
+various domains. Witnessing growth of LLMs in the NLP field, we are particularly interested in exploring the research
+question of whether we can take advantage of these models and adapt them for time series analysis. In this subsection,
+we discuss LLM4TS in terms of general-purpose and domain-specific models in the following parts, respectively.
+4.1.1
+
+General Models. Early general LLM4TS studies mainly examine whether existing LLMs can be adapted to time
+
+series through prompting, tokenization, decomposition, or reprogramming. As one of the first efforts in approaching
+general time series forecasting from an LLM perspective, [256] formally introduces a novel task: prompt-based time
+series forecasting — PromptCast. With the input and output being natural language sentences, PromptCast presents a
+novel “code less” solution for time series forecasting, which could provide a new perspective rather than purely focusing
+on designing complicated architectures. An instruction dataset (PISA) for the newly introduced task has been released.
+Another closely related study, LLMTime [52], demonstrates that LLMs are effective zero-shot time series learners with
+properly configured tokenization on time series data. TEMPO [20] remains focused on time series forecasting but
+incorporates additional fine-grained designs such as time series decomposition and soft prompts. Different from the
+above methods, a recent work Time-LLM [83] is proposed to reprogram time series with the source data modality
+along with natural language-based prompting to unleash the potential of LLMs as effective time series machines, which
+achieves state-of-the-art performance in various forecasting scenarios, as well as excels in both few-shot and zero-shot
+settings. UniTime [126] follows similar concepts, albeit with slightly different technical configurations. LLM4TS [23]
+further leverages a two-stage recipe — first aligning an LLM to time series data via supervised fine-tuning, then
+fine-tuning for downstream forecasting. A later trend moves beyond forecasting-oriented adaptation toward multimodal
+alignment, conversational interaction, and time series reasoning. Recently, ChatTime [210] and TimeCMA [118] extend
+this line by bridging multimodal and cross-modal aspects: ChatTime unifies numerical and textual modalities for
+joint understanding and zero-shot forecasting, while TimeCMA aligns temporal and linguistic features to enhance
+accuracy and interpretability. Complementing these model-centric efforts, the Time-MMD [119] study supplies a
+Manuscript submitted to ACM
+
+12
+
+Jin et al.
+
+Table 2. Summary of LLMs and PFMs for time series and spatio-temporal data modeling. General-purpose methods without a specific
+task/domain are marked as “-”. The table complements Fig. 3 with bibliographic and application-level details.
+Category
+
+Large Models for Time Series Data
+
+LLMs for Time Series Data
+
+PFMs for Time Series Data
+
+LLMs for Spatio-Temporal Graphs
+
+Large Models for Spatio-Temporal Data
+
+PFMs for Spatio-Temporal Graphs
+
+LLMs for Temporal Knowledge Graphs
+
+LLMs for Video Data
+
+PFMs for Video Data
+
+Manuscript submitted to ACM
+
+Method
+LLM4TS [23]
+TimeCMA [118]
+Time-VLM [285]
+Time-MQA [94]
+TimeOmni-1 [53]
+ChatTS [244]
+Time-MMD [119]
+Time-LLM [83]
+TEMPO [20]
+UniTime [126]
+ChatTime [210]
+LLMTime [52]
+PromptCast [256]
+MedualTime [265]
+Traffic-R1 [295]
+LEAF [282]
+M2VN [93]
+DINN [70]
+GPT4FTS [74]
+OpenTSLM [98]
+Lopez-Lira et al. [134]
+LLM-Mob [222]
+xTP-LLM [55]
+MedTsLLM [22]
+NYUTron [76]
+Chronos-2 [3]
+Time-MoE [184]
+TimeMixer++ [218]
+Sundial [131]
+Time-FFM [123]
+Lag-llama [172]
+TimesFM [36]
+Timer [132]
+MOIRAI [235]
+MOMENT [51]
+Chronos [4]
+PatchTST [157]
+SSPT [217]
+DELPHYNE [40]
+ECG-FM [146]
+MIRA [106]
+Mathew et al. [144]
+
+Scope
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+Domain-Specific
+Domain-Specific
+Domain-Specific
+Domain-Specific
+Domain-Specific
+Domain-Specific
+Domain-Specific
+Domain-Specific
+Domain-Specific
+Domain-Specific
+Domain-Specific
+Domain-Specific
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+Domain-Specific
+Domain-Specific
+Domain-Specific
+Domain-Specific
+Domain-Specific
+
+Task / Domain
+Forecasting
+Forecasting
+Forecasting
+Forecasting
+Forecasting
+Forecasting
+Forecasting
+Forecasting
+Forecasting
+Healthcare
+Transportation
+Transportation
+Finance
+Finance
+Finance
+Healthcare
+Finance
+Transportation
+Transportation
+Healthcare
+Healthcare
+Forecasting
+Forecasting
+Forecasting
+Forecasting
+Forecasting
+Forecasting
+Forecasting
+Forecasting
+Forecasting
+Forecasting
+Finance
+Finance
+Healthcare
+Healthcare
+Healthcare
+
+Institute
+NYCU
+NTU
+HKUST
+Oxford
+Griffith University
+Tsinghua
+Georgia Tech
+Monash/Alibaba/Ant
+USC/Google
+NUS
+BUPT
+NYU/CMU
+UNSW
+HKUST
+HKUST
+PKU
+Oxford
+Oxford
+Tongji University
+Stanford
+UFL
+UCL/Liverpool
+HKUST
+JHU
+NYU Langone Health
+Amazon
+Xiaohongshu/Princeton
+Griffith/HKUST
+Tsinghua
+HKUST
+Morgan Stanley
+Google
+Tsinghua
+Salesforce
+CMU
+Amazon
+Princeton/IBM
+Edinburgh
+CMU/Bloomberg
+UofT
+Microsoft
+Eko Health
+
+Venue
+ACM TIST
+AAAI
+ICML
+ACL
+ICLR
+VLDB
+NeurIPS
+ICLR
+ICLR
+WWW
+AAAI
+NeurIPS
+IEEE Trans. Knowl. Data Eng.
+IJCAI
+arXiv
+ACL
+ICAIF
+arXiv
+arXiv
+arXiv
+arXiv
+arXiv
+Commun.Transp.Res.
+MLHC
+Nature
+arXiv
+ICLR
+ICLR
+ICML
+NeurIPS
+NeurIPS Workshop
+ICML
+ICML
+ICML
+ICML
+TMLR
+ICLR
+KDD
+arXiv
+JAMIA Open
+NeurIPS
+npj Cardiovasc. Health.
+
+Year
+2025
+2025
+2025
+2025
+2026
+2025
+2024
+2024
+2024
+2024
+2025
+2023
+2024
+2025
+2025
+2025
+2025
+2025
+2026
+2026
+2025
+2024
+2024
+2024
+2023
+2025
+2025
+2025
+2025
+2024
+2023
+2024
+2024
+2024
+2024
+2024
+2023
+2025
+2025
+2025
+2025
+2024
+
+FSTLLM [79]
+ST-LINK [72]
+RePST [211]
+STG-LLM [121]
+GSF-LLM [212]
+ST-LLM+ [117]
+LLM-TFP [31]
+UrbanGPT [112]
+UMSST [284]
+UniSTD [195]
+FourCastNet-3 [16]
+ClimaX [156]
+Pangu-Weather [14]
+TFM [223]
+TrafficBERT [81]
+Ong et al. [158]
+TeRDy [133]
+G2S [9]
+AnRe [196]
+Luo et al. [136]
+Xia et al. [240]
+LLM-DA [215]
+LATE [276]
+Video-LLaMA-3 [275]
+Valley [137]
+Apollo [293]
+Video-XL [186]
+video-SALMONN-o1 [192]
+BOLT [124]
+ProgGen [197]
+MovieChat [188]
+Video-ChatGPT [140]
+MA-LMM [60]
+CaKE-LM [190]
+Video-LLaMA [277]
+LAVENDER [110]
+Jiang et al. [77]
+MatchVision [171]
+TRIVIA [164]
+MSTA [25]
+InternVideo [225]
+mPLUG-Owl2 [267]
+mPLUG-2 [248]
+mPLUG-video [247]
+OmniVL [213]
+
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+Domain-Specific
+Domain-Specific
+Domain-Specific
+Domain-Specific
+General-Purposed
+General-Purposed
+Domain-Specific
+Domain-Specific
+Domain-Specific
+Domain-Specific
+Domain-Specific
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+Domain-Specific
+Domain-Specific
+Domain-Specific
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+General-Purposed
+
+Forecasting
+Forecasting
+Forecasting
+Forecasting
+Transportation
+Transportation
+Transportation
+Transportation
+Climate
+Climate
+Climate
+Transportation
+Transportation
+Completion
+Completion
+Forecasting
+Forecasting
+Completion
+Forecasting
+Forecasting
+Forecasting
+Video Question Answering
+Video Question Answering
+Sport-Domain
+Sport-Domain
+Traffic-Domain VQA
+-
+
+NTU
+POSTECH
+HKUST
+DLUT
+Tongji University
+NTU
+NUPT
+HKU
+UTS
+CUHK
+NVIDIA
+UCLA/Microsoft
+Huawei
+Shanghai AI Lab
+CAU
+IC
+Tsinghua
+CAS
+HIT
+Tsinghua
+CAS
+BJUT
+USTC
+Alibaba
+ByteDance/Fudan
+Meta
+SJTU
+Cambridge/ByteDance
+KAUST
+Cornell
+ZJU
+MBZUAI
+UMD/Meta
+NTU
+Alibaba
+Microsoft
+MIT/Amazon
+SJTU/Alibaba
+USC
+Ant
+Shanghai AI Lab
+Alibaba
+Alibaba
+Alibaba
+Fudan
+
+ICML
+CIKM
+IJCAI
+arXiv
+Sensors
+IEEE Trans. Knowl. Data Eng.
+Appl. Soft Comput.
+KDD
+Knowl. -Based Syst.
+CVPR
+arXiv
+ICML
+Nature
+IEEE ITSC
+Expert Syst. Appl.
+ESWA
+ACL
+ACL
+ACL
+arXiv
+ACL
+NeurIPS
+ICAIRC
+arXiv
+arXiv
+CVPR
+CVPR
+ICML
+CVPR
+ICLR Workshop
+CVPR
+ACL
+CVPR
+CVPR
+EMNLP
+CVPR
+CVPR
+CVPR
+IEEE ITSC
+CVPR
+ECCV
+CVPR
+ICML
+arXiv
+NeurIPS
+
+2025
+2025
+2025
+2024
+2025
+2025
+2025
+2024
+2025
+2025
+2025
+2023
+2023
+2023
+2021
+2025
+2025
+2025
+2025
+2024
+2024
+2024
+2024
+2025
+2025
+2025
+2025
+2025
+2025
+2025
+2024
+2024
+2024
+2023
+2023
+2023
+2025
+2025
+2023
+2025
+2024
+2024
+2023
+2023
+2022
+
+Large Models for Time Series and Spatio-Temporal Data: A Survey and Outlook
+
+13
+
+large-scale multi-domain multimodal benchmark that tightly aligns text and series, enabling more rigorous evaluation
+of multimodal TS methods. Building on multimodal cues, Time-VLM [285] integrates vision–language priors to augment
+forecasting. Beyond forecasting toward understanding and reasoning, ChatTS [244] treats multivariate time series as a
+native modality for conversational Multimodal LLMs using synthetic curricula, and Time-MQA [94] unifies multi-task
+question answering over time series, supporting both numerical analytics and open-ended reasoning. Pushing further,
+TimeOmni-1 [53] introduces a time series reasoning suite and a unified model spanning perception, extrapolation, and
+decision-making, signaling a shift from pattern matching to general time series reasoning.
+4.1.2
+
+Domain-Specific Models.
+
+Transportation. Recent work in Intelligent Transportation Systems (ITS) has increasingly leveraged LLMs to
+unify traffic forecasting, multimodal data integration, and interpretability. [55] introduce xTP-LLM, which transforms
+heterogeneous traffic features — historical flow, temporal indicators, weather, and POI context — into structured
+textual prompts, enabling an LLM to jointly predict traffic flow and produce natural-language explanations tied to
+observed patterns. Domain-specific transportation LLMs have since expanded this direction: Traffic-R1 [295] uses
+instruction tuning on traffic operation logs to support expert-style reasoning for routing and congestion analysis;
+LEAF [282] combines LLMs with spatial–temporal graph structures to capture network topology and road semantics;
+and LLM-Mob [222] integrates LLMs with trajectory data to support mobility-behavior analysis and scenario reasoning.
+Together, these models illustrate a growing trend toward LLMs that not only forecast traffic conditions but also interpret,
+contextualize, and interact with complex transportation data.
+Finance. Recent work has begun to explore LLM-based architectures in core financial prediction problems. M2VN [93]
+proposes a multi-modal volatility forecasting network that combines price, volume, and LLM-derived news embeddings,
+showing that jointly modeling numerical and textual signals improves equity-market volatility prediction. DINN [70] introduces a decision-informed neural network for portfolio optimization that integrates LLM-based semantic embeddings
+and a pretrained language model into a unified forecasting-and-allocation pipeline. GPT4FTS [74] explicitly enhances
+an LLM backbone for financial time series prediction via adaptive patch segmentation and dynamic wavelet-style
+modules, achieving state-of-the-art stock return forecasting performance. Complementing these architecture-oriented
+contributions, Lopez-Lira et al. [134] use general-purpose LLMs (e.g., ChatGPT) to score news headlines and demonstrate
+robust return predictability, suggesting that even non–domain-specific models can extract economically meaningful
+signals from financial text. Collectively, these studies illustrate a shift from purely tabular or classical NLP pipelines
+toward LLM-centric frameworks that fuse textual and numerical information for tasks such as volatility forecasting,
+portfolio construction, and return prediction.
+Healthcare. This is one of the most important and applicable domains of event sequence. By forecasting clinical
+events, i.e., patients’ sequences of time-stamped hospital visits with their symptoms, the clinical models can assist
+physicians and administrators in making decisions in everyday practice. However, existing structured data-based clinical
+models have limited use owing to the complexity of data processing, as well as model development and deployment.
+To address these limitations, [76] trains a clinical LLM (NYUTron) based on NYU Langone EHRs and subsequently
+fine-tunes it across a wide range of clinical and operational predictive tasks. The results show that NYUTron brings
+significant improvement over traditional models, demonstrating the potential for using clinical LLMs in medicine
+to read alongside physicians and provide guidance at the point of care. Extending this progress, recent multimodal
+frameworks such as MedualTime [265] and MedTsLLM [22] further integrate medical time series with clinical text
+Manuscript submitted to ACM
+
+14
+
+Jin et al.
+
+through dual-adapter and cross-modal learning mechanisms, enabling richer temporal–contextual representations and
+enhancing predictive performance across diverse clinical scenarios. In parallel, OpenTSLM [98] introduces a family of
+time series language models that treat time series as a native modality alongside text, enabling clinicians and patients
+to query, interpret, and reason about longitudinal health data directly in natural language.
+4.2
+
+Pre-Trained Foundation Models in Time Series
+
+Beyond leveraging LLMs for time series analysis, pre-trained foundation models for time series (PFM4TS) aim to capture
+generic temporal patterns that transfer across domains and tasks. In this subsection, we explore PFM4TS, distinguishing
+between general-purpose and domain-specific models, in parallel with the categorization in Sec. 4.1.
+4.2.1 General Models. General PFM4TS research is characterized by a shift from task-specific forecasting architectures
+toward scalable pre-training backbones that transfer across datasets, frequencies, variables, and downstream tasks. Since
+2023, research on large-scale, general-purpose time series foundation models has accelerated, inspired by advances in
+language and vision foundation models. PatchTST [157] is an early representative approach: it segments multivariate
+series into sub-series “patch” tokens and applies a channel-independent Transformer backbone, substantially improving long-term forecasting and motivating many subsequent architectures. Building on this foundation, Chronos [4]
+conceptualizes time series as a “language,” using large-scale generative pre-training to enable universal zero-shot
+forecasting across diverse datasets, while Chronos-2 [3] extends this paradigm from univariate to universal settings,
+supporting univariate, multivariate, and covariate-informed forecasting within a single encoder-only architecture
+and achieving state-of-the-art zero-shot performance on recent benchmarks. Parallel efforts explore alternative backbones and objectives: Lag-llama [172] focuses on general-purpose probabilistic univariate forecasting; TimesFM [36]
+develops a decoder-only Transformer pre-trained on billions of time points for zero-shot forecasting across domains;
+MOMENT [51] provides an open family of models for general-purpose time series analysis beyond forecasting; and
+Timer [132] casts forecasting, imputation, and anomaly detection into a unified generative pre-training objective.
+More recent work further broadens the PFM4TS design space along three axes: data scale, architectural efficiency,
+and task coverage. MOIRAI [235] proposes a masked encoder-based universal forecasting Transformer trained on the
+LOTSA corpus, enabling any-variate, multi-frequency zero-shot forecasting with exogenous covariates. Time-FFM [123]
+instead leverages pretrained language models and federated learning, mapping time series to text tokens and learning
+domain-adaptive prompts while respecting data-locality constraints. TimeMixer++ [218] introduces a fully MLP-based
+architecture that converts time series into multi-resolution “time images” to capture multi-scale, multi-periodic patterns
+and support a broad range of predictive tasks (forecasting, classification, anomaly detection, imputation). Sundial [131]
+advances a generative foundation-model family trained on the trillion-point TimeBench corpus, using continuous
+patching and a flow-matching-based TimeFlow loss to support flexible point and probabilistic zero-shot forecasting.
+Finally, Time-MoE [184] pushes scaling via a sparse decoder-only mixture-of-experts design trained on the Time-300B
+dataset, reaching billion-parameter models that activate only a subset of experts per query. Together, these models
+illustrate a rapid convergence toward scalable, general-purpose PFM4TS with strong zero-shot performance, support
+for multivariate and covariate-informed inputs, and increasing coverage of broader time series tasks.
+4.2.2 Domain-Specific Models. Beyond general-purpose PFMs, several models are tailored to specific domains such as
+finance. SSPT [217] proposes a customized pre-training strategy for stock time series using a dual-layer Transformer
+with auxiliary objectives (e.g., stock-code and sector prediction, moving-average forecasting) to capture both global
+temporal patterns and stock-specific structure, improving robustness in non-stationary markets. DELPHYNE [40]
+Manuscript submitted to ACM
+
+Large Models for Time Series and Spatio-Temporal Data: A Survey and Outlook
+
+15
+
+further targets financial applications by pre-training on a mixture of general and finance-specific time series, reducing
+negative transfer and achieving strong performance on diverse downstream forecasting tasks.
+In healthcare, ECG-FM [146] is an open-weight Transformer-based foundation model pre-trained on millions of
+electrocardiogram (ECG) recordings with ECG-specific augmentations, contrastive learning, and masking objectives,
+yielding embeddings that transfer well to diverse diagnostic tasks (e.g., arrhythmia and ventricular dysfunction).
+MIRA [106] extends this idea to heterogeneous clinical time series via continuous-time positional encodings and
+mixture-of-experts layers, enabling zero-shot and fine-tuned forecasting across institutions. Mathew et al. [144] develop
+related foundation models for cardiovascular disease detection from digital-stethoscope biosignals, pre-trained selfsupervised on large real-world datasets and adapted to multiple cardiac endpoints. These healthcare-specific PFMs
+illustrate how embedding domain structure and clinical objectives into pre-training can yield substantial gains over
+purely general-purpose time series models.
+5
+
+Large Models for Spatio-Temporal Data
+
+In this section, we review recent advances in large models for spatio-temporal data, focusing on three major categories:
+spatio-temporal graphs, temporal knowledge graphs, and videos, all with broad real-world applications. We further
+organize the literature by model type and scope (see Fig. 3).
+5.1
+
+Spatio-Temporal Graphs
+
+Individuals enter a planet imbued with inherent structure, where constituent elements engage in dynamic interactions
+across both spatial and temporal dimensions, culminating in a profound spatio-temporal composition. The conceptualization of this structural fabric within real-world problem-solving has been significantly enriched through the
+incorporation of spatio-temporal graphs (STGs) [80, 82]. The application of STG forecasting, such as traffic prediction
+[161, 162], air quality forecasting [115, 219], stock price estimation [145, 167], and human skeleton analysis [183, 246],
+has evolved into an indispensable tool for fostering informed decision-making and advancing sustainability objectives.
+In the era of deep learning, spatio-temporal graph neural networks (STGNNs) [80, 82] have emerged as the de-facto most
+popular approach for STG forecasting. They primarily use graph neural networks to capture spatial correlations among
+vertices and exploit other models (e.g., RNNs and CNNs) to learn temporal dependencies across different time steps.
+Recently, the emergence of LLMs and PFMs has provided invaluable support to STGNNs within the domain of spatiotemporal representation learning. These models excel in processing and contextualizing textual data, equipping them
+with the capability to distill insights from diverse textual sources, ranging from news articles and social media content
+to reports. These insights can be seamlessly integrated into the spatio-temporal fabric, enhancing its contextual richness.
+Moreover, they facilitate the fusion of multiple modalities, including text, images, and structured data, thus amplifying the
+depth and breadth of spatio-temporal comprehension. With their capacity to generate human-interpretable explanations,
+these models foster transparency and reliability, especially in applications like urban planning or disaster response.
+Furthermore, they contribute to computational efficiency by encoding high-level information in concise representations,
+streamlining both training and inference processes.
+5.1.1 Large Language Models in Spatio-Temporal Graphs. Recent work leverages LLMs for spatio-temporal forecasting
+by coupling them with graph-structured representations. STG-LLM [121] addresses the mismatch between text-trained
+LLMs and spatio-temporal graphs via an STG-Tokenizer that converts graph data into tokens and an STG-Adapter
+Manuscript submitted to ACM
+
+16
+
+Jin et al.
+
+that interfaces these tokens with LLMs, yielding strong general-purpose forecasting. RePST [211] reprograms pretrained language models with a physics-aware decomposer and selective discrete reprogramming, enabling reasoning
+over disentangled spatial and temporal components. FSTLLM [79] targets few-shot forecasting by treating each time
+series channel as a graph node and using LLM-enhanced graph construction, combined with a downstream STGNN
+backbone, to improve robustness under data scarcity. ST-LINK [72] further strengthens spatial and temporal modeling
+through Spatially-Enhanced Attention and a Memory Retrieval Feed-Forward Network. In the transportation domain,
+UrbanGPT [112], GSF-LLM [212], ST-LLM+ [117], and LLM-TFP [31] integrate graph encoders with partially frozen LLM
+backbones for traffic forecasting, jointly capturing spatial topology and temporal dynamics. Collectively, these models
+signal a shift from purely GNN-based designs toward LLM-centric, graph-aware architectures for spatio-temporal
+prediction. Their main advantage is the integration of language-level semantics with graph topology, while their
+practical boundary lies in the quality of graph construction, the stability of spatial dependencies, and the cost of
+adapting LLMs to large dynamic networks.
+5.1.2 Pre-Trained Foundation Models in Spatio-Temporal Graphs. We are currently witnessing a proliferation of pretrained machine learning models tailored for mastering STGs across an expansive spectrum of real-world applications.
+They significantly aid STG learning through knowledge transfer. In other words, they enable the transfer of learned
+representations, thereby improving the ability of STGs to capture intricate patterns, leading to more effective and
+efficient learning. In the subsequent parts, we introduce PFMs in both the general and specific domains.
+General Purposes. Contrastive learning, a cornerstone of self-supervised representation learning, remains a powerful
+paradigm for advancing STG modeling. UMSST [284] exemplifies this progress by introducing a two-stage pre-training
+strategy that captures both global and local spatio-temporal dependencies. It first learns holistic graph representations
+and then performs multi-subgraph contrastive pre-training to enhance representation transferability across downstream
+tasks such as forecasting and classification. Building upon these advances in pre-training, UniSTD [195] extends the
+scope from task-specific STG learning to a large-scale foundation model that unifies multiple spatio-temporal domains.
+Through a Transformer-based architecture with a rank-adaptive mixture-of-experts mechanism, UniSTD achieves
+robust generalization and cross-domain adaptability across a diverse range of forecasting and dynamic prediction tasks.
+Climate. Recent work on domain-specific climate foundation models has shifted from task-specific predictors toward
+scalable, data-driven architectures. Pangu-Weather [14] introduces a 3D Earth-Specific Transformer trained on decades
+of reanalysis data, achieving fast, accurate medium-range global weather forecasts that rival and sometimes surpass
+traditional numerical weather prediction systems. ClimaX [156] extends this idea to a general-purpose foundation
+model for weather and climate, using a Transformer pre-trained on heterogeneous CMIP6 datasets so it can be efficiently
+fine-tuned across variables, spatial resolutions, and time scales. Building on earlier Fourier-operator-based models,
+FourCastNet-3 [16] adopts a geometric, sphere-aware architecture with probabilistic ensembles, delivering calibrated
+long-range forecasts and combining strong skill with substantial gains in computational efficiency. Together, these
+models exemplify a transition toward versatile climate PFMs capable of both precision and scalability.
+Transportation. In the domain of traffic flow forecasting, TrafficBERT [81] leverages key characteristics inspired
+by BERT [39]. It employs a bidirectional transformer structure akin to BERT, allowing it to predict overall traffic flow
+instead of individual time steps. In contrast to conventional models that require distinct training for each specific road,
+TrafficBERT enhances model generalization by pre-training it using data from various roads. Furthermore, Wang et al.
+introduce the Transportation Foundation Model (TFM) [223], which incorporates traffic simulation into the realm of
+Manuscript submitted to ACM
+
+Large Models for Time Series and Spatio-Temporal Data: A Survey and Outlook
+
+17
+
+traffic prediction. TFM leverages graph structures and dynamic graph generation algorithms to adeptly capture the
+intricate dynamics and interactions among participants within transportation systems. This data-driven and modelfree simulation approach effectively tackles the long-standing challenges posed by conventional systems in terms of
+structural complexity and model accuracy, laying a robust foundation for addressing intricate transportation issues
+with real-world data.
+
+5.2
+
+Temporal Knowledge Graphs
+
+A host of applications such as search engines, question-answering systems, conversational dialogue systems, and social
+networks require reasoning over underlying structured knowledge. In particular, knowledge graphs (KGs) [191, 208]
+have gained much attention as an important model for studying complex multi-relational settings over such knowledge.
+KGs represent facts (events), usually extracted from text data, in the form of triples (𝑠, 𝑝, 𝑜) where 𝑠 and 𝑜 denote subject
+and object entities respectively, and 𝑝 as a relation type means predicate. However, in the real world, knowledge evolves
+continuously, inspiring the construction and application of the temporal knowledge graphs (TKGs) [203, 204], where the
+fact extends from a triple (𝑠, 𝑝, 𝑜) to a quadruple with a timestamp 𝑡, i.e., (𝑠, 𝑝, 𝑜, 𝑡). By effectively capturing temporal
+dependencies across facts in addition to the structural dependencies, TKGs help improve the understanding on the
+behavior of entities and how they contribute to the generation of facts over time.
+Recently, LLMs [159] have demonstrated strong performance on various text-reasoning tasks, motivating their use
+in TKG reasoning. Based on the tasks performed, existing LLM-related TKG models can be broadly divided into two
+categories: forecasting and completion. For forecasting, Xia et al. [240] propose Chain-of-History (CoH) reasoning,
+which incrementally incorporates higher-order historical facts into LLM prompts to provide rich yet compact temporal
+context for event prediction. Furthermore, LLM-DA [215] takes a complementary route by using LLMs to extract and
+dynamically adapt temporal logic rules as new events arrive, enabling interpretable and up-to-date temporal reasoning
+without repeated fine-tuning. LATE [276] further enhances robustness by combining structural, temporal, and textual
+signals through multi-view prompting, improving factual consistency across diverse temporal settings. Building on
+these advances, G2S [9] adopts a general-to-specific strategy that first trains LLMs on anonymized temporal structures
+to capture domain-agnostic patterns, then injects scenario-specific entity and relation information, while AnRe [196]
+designs a training-free analogical replay mechanism that retrieves and replays similar historical event chains so LLMs
+can exploit both semantic understanding and structural evolution for forecasting.
+For completion, LLM-based and embedding-based approaches have also begun to converge. Luo et al. [136] extend
+the Chain-of-History idea to temporal knowledge graph completion by formulating temporal link prediction as event
+generation along historical chains and applying parameter-efficient fine-tuning. This shows that LLMs can jointly handle
+interpolation and extrapolation of temporal facts. TeRDy [133] addresses temporal relation dynamics via frequency
+decomposition, modeling long-term trends and short-term fluctuations of relations with low- and high-frequency
+components and injecting them into relation–timestamp embeddings, thereby providing a strong, general-purpose
+TKGC backbone. More recently, [158] integrates LLMs with graph structural representations to address the challenge of
+emerging entities and relations in evolving TKGs. By jointly leveraging textual semantics and temporal graph context,
+it enhances the model’s ability to infer missing links in dynamic environments. Overall, LLM-based TKG methods
+progress from prompt-based historical reasoning to retrieval, rule adaptation, and structure-aware completion, but
+their effectiveness remains constrained by incomplete facts, sparse timestamps, and the difficulty of aligning symbolic
+graph dynamics with continuous temporal changes.
+Manuscript submitted to ACM
+
+18
+
+Jin et al.
+
+5.3
+
+Videos
+
+Video refers to the digital representation of visual information, typically composed of a sequence of images or frames
+that collectively convey motion and temporal changes. These data have become ubiquitous in various real-world
+applications, including surveillance systems, entertainment platforms, social media, and driver assistance systems [207].
+Conventional deep learning approaches for video understanding primarily involve two key paradigms: (1) 2D CNNs in
+which each video frame is processed separately by 2D convolutions and then aggregated along the time axis at the top of
+the network [89, 216]; (2) 3D CNNs which learn spatio-temporal video representation via 3D convolutions by aggregating
+spatial and temporal features [202, 245]. Recently, Transformers have also been widely used in modeling spatio-temporal
+dependencies for video recognition [5, 48] by virtue of their capability in capturing long-range dependencies.
+However, recent advances in LLMs and PFMs have paved the way for enhanced video understanding by leveraging
+the inherent multimodal nature of videos. These models, such as OpenAI’s CLIP [168] and DALL-E [170], can effectively
+extract rich contextual information from video data by jointly processing visual and textual modalities, enabling a more
+comprehensive understanding of complex scenes and events. Furthermore, these models have the potential to facilitate
+efficient transfer learning across diverse domains, leading to improved generalization and robustness in video analysis
+tasks. We will discuss LLMs and PFMs for video understanding in the following parts.
+5.3.1 Large Language Models for Video Data. The emergence of large multimodal models marks a shift in video understanding research — from narrowly defined recognition tasks toward comprehensive, reasoning-driven interpretation of
+dynamic visual data. Recent advancements in LLMs have facilitated the application of sequence reasoning capabilities,
+derived from pre-trained LLMs in natural language processing, to various video processing tasks as demonstrated in
+LAVENDER [110]. Furthermore, Video-ChatGPT [140] is a multimodal model tailored for video-based conversation. It
+combines a visual encoder adapted for processing video content with LLMs, enabling the model to comprehend and
+generate in-depth discussions related to videos. In a parallel line of research, Zhang et al. propose Video-LLaMA [277],
+another multi-modal framework that operates independently of textual data. Video-LLaMA empowers Llama [200]
+with visual and audio information via Q-Former to endow it with the ability to comprehend both visual and auditory
+information present in videos. To ensure alignment between the output of the visual and audio encoders and LLM’s
+embedding space, Video-LLaMA is trained on an extensive corpus of video/image-caption pairs, as well as visualinstruction-tuning datasets of moderate size but with superior quality. Video-LLaMA-3 [275] further advances this
+framework by enhancing multimodal alignment and temporal reasoning, enabling more coherent understanding of
+long-form and dynamic video content.
+Around the same period, other approaches began exploring complementary directions in long-context reasoning,
+causal inference, and memory-efficient modeling for extended video understanding. CaKE-LM [190] demonstrates that
+language models can act as causal knowledge extractors, enabling zero-shot video question answering by leveraging
+intrinsic world knowledge within LLMs. MovieChat [188] introduces a sparse memory mechanism that replaces
+dense token processing with selective memory representations, effectively scaling LLMs to handle videos exceeding
+10,000 frames. Expanding these ideas, MA-LMM [60] introduces a memory-augmented mechanism for long-term video
+understanding, enabling the model to retain contextual information over extended temporal spans, while Apollo [293]
+explores video understanding within large multimodal models through comprehensive scaling studies and unified
+pretraining strategies, improving generalization across diverse video tasks. In parallel, video-SALMONN-o1 [192]
+incorporates reasoning-enhanced audio-visual modeling by combining structured cognitive reasoning with multimodal
+fusion to improve video question answering and inference. Moving beyond understanding, ProgGen [197] applies
+Manuscript submitted to ACM
+
+Large Models for Time Series and Spatio-Temporal Data: A Survey and Outlook
+
+19
+
+programmatic reasoning to enable LLMs to perform video prediction and dynamic event modeling, demonstrating
+the potential of integrating generative reasoning into temporal visual tasks. Moreover, Valley [137] employs a spatiotemporal pooling strategy to extract a unified visual encoding from video and image inputs. It also curates a vast corpus
+of vision-text pairs for pre-training purposes, and subsequently generates a multi-task instruction-following video
+dataset, aided by ChatGPT for conversation design.
+Building on the long-form and generative push, two very recent works push the frontier of video-LLMs further.
+Video-XL [186] addresses the challenge of hour-scale video understanding by introducing a visual summarization token
+mechanism that compresses long visual sequences into compact representations for efficient processing. Simultaneously,
+BOLT [124] proposes a training-free frame selection strategy that improves long-form video VLM performance by
+choosing query-relevant frames during inference, thus boosting performance without additional model training.
+Together, these works illustrate the current frontier: handling drastically longer video inputs, compressing and selecting
+relevant information, and maintaining reasoning capability across extended temporal horizons.
+Beyond general-purpose video understanding, researchers have begun to tailor large vision–language models for
+specific real-world domains. In the traffic domain, Qasemi et al. introduce an innovative automatic captioning method
+called TRIVIA [164], which serves as a form of weak supervision to incorporate traffic-domain knowledge into extensive
+video-language models. In the sports domain, Rao et al. present MatchVision [171], a large-scale foundation model
+trained on the SoccerReplay-1988 dataset that supports unified soccer video understanding across event recognition,
+commentary generation, and foul detection. Jiang et al. [77] further refine this approach by fine-tuning a general
+video–language model through curriculum-style adaptation on thousands of soccer clips, which leads to substantial
+gains in domain-specific action recognition and video question answering accuracy. These studies demonstrate that
+adapting multi-modal LLMs to structured, domain-centric contexts produces more accurate and semantically grounded
+video understanding.
+5.3.2
+
+Pre-Trained Foundation Models for Video Data. In recent years, language, image-based vision, and multi-modal
+
+pre-training methodologies have significantly converged. Following this trend, recent research has pioneered various
+video-oriented pre-training strategies in a contrastive or generative way [61, 266, 286], leading to a series of video or
+video-language foundation models for video processing [213, 227, 247, 248]. Specifically, Wang et al. first present a
+vision-language foundation model called OmniVL [213], which unifies image-language and video-language modeling. It
+can naturally support a wide range of tasks, including visual-only tasks, cross-modal alignment tasks, and multi-modal
+tasks. Furthermore, mPLUG-2 [248] is a new Transformer framework, which allows for the utilization of various
+combinations of modules for both uni-modal and cross-modal tasks. To achieve this, mPLUG-2 shares universal modules
+while separating modality-specific ones, effectively addressing the issue of modality entanglement and offering flexibility
+in selecting various modules for diverse understanding and generation tasks across all modalities, encompassing text,
+image, and video. Building on the concept of mPLUG-2, Xu et al. further devise a modularized decoder-only model named
+mPLUG-video [247] with a restricted number of trainable parameters. This model is built upon a frozen pre-trained
+LLM and Youku-mPLUG2 . Building on these developments, mPLUG-Owl2 [267] introduces a modality collaboration
+mechanism that strengthens interactions among text, image, and video representations within a unified multimodal
+framework, improving cross-modal alignment and reasoning. InternVideo [225] further scales video foundation models
+by combining masked video modeling, cross-modal contrastive learning, and next-token prediction, advancing longform video comprehension and multimodal generalization. MSTA [25] complements these large-scale models with an
+2 The first public Chinese video-language pre-training dataset [247].
+
+Manuscript submitted to ACM
+
+20
+
+Jin et al.
+
+efficient transfer learning approach that uses lightweight adapter modules and spatio-temporal consistency constraints
+to enable effective adaptation with minimal fine-tuning.
+
+5.4
+
+Methodological Convergence and Cross-Domain Insights
+
+Although time series and spatio-temporal data differ in structure and modality, LM4TS and LM4STD share the goal of
+adapting large models to preserve temporal order, contextual information, and domain semantics. Three challenges
+are common. First, temporal observations must be tokenized into model-readable units: LM4TS maps sequences into
+patches, symbols, summaries, or prompt-aligned embeddings [4, 51, 83, 256], whereas LM4STD further augments tokens
+with topology, entity relations, trajectories, or visual frames for STGs, TKGs, and videos [117, 121, 124, 186, 215, 240].
+Second, both areas must handle long-range dependencies under limited context budgets. LM4TS often uses patching,
+decomposition, or lightweight adaptation [157, 235], while LM4STD relies on graph summarization, spatio-temporal
+pooling, memory modules, or frame selection to manage expansion over nodes, entities, regions, or frames [117, 124, 186].
+Third, both require external knowledge and modality alignment: LM4TS mainly uses prompts, calendar features, domain
+descriptions, or historical retrieval [83, 256], whereas LM4STD can additionally exploit road networks, entity relations,
+trajectories, and video-language alignment [121, 225]. These subfields also have complementary trade-offs: LM4TS is
+simple and scalable but may lose fine-grained numerical information; STG methods exploit topology but depend on
+graph quality; TKG methods support interpretable relational reasoning but suffer from incompleteness and sparsity; and
+video models capture rich visual-temporal context but incur high token and memory costs. Thus, graph tokenization,
+spatio-temporal pooling, retrieval, video memory, and frame selection can inspire structured representations and
+compression for time series analysis, while prompt-based and adapter-based transfer from LM4TS can reduce the cost
+of adapting large models to STGs, TKGs, and videos.
+
+6
+
+Resources and Applications
+
+In this section, we summarize the common datasets, models, and tools in various applications related to time series and
+spatio-temporal data, which are listed in Tab. 3.
+
+6.1
+
+Traffic Application
+
+Traffic flow forecasting has become a pivotal concern in the development of Intelligent Transportation Systems (ITS).
+The utilization of time series and spatio-temporal data aids in creating more accurate and adaptive predictive models.
+Several datasets have emerged as benchmarks in the field. For instance, METR-LA [111] is a notable dataset that
+encompasses traffic speed data procured from loop detectors stationed across the LA County road network. Similarly,
+PEMS-BAY [111] and PEMS04 [24] are datasets derived from the California Transportation Agencies’ Performance
+Measurement System, offering exhaustive insights into the traffic speed and flow in the Bay Area over distinct periods.
+Another significant dataset is SUTD-TrafficQA [252], which comprises 10,080 real-world videos annotated with 62,535
+question-answer pairs, capturing both stationary and ego-view perspectives. Furthermore, LargeST [127] is the first
+traffic dataset for large-scale traffic forecasting, encompassing over 8,000 sensors over road networks with a period of
+five years. For effective analysis and simulation, a number of tools are at the disposal of researchers. For instance, SUMO
+stands out as an open-source traffic simulator, and SafeGraph Data for Academics offers a platform to host anonymized
+real-world human mobility data.
+Manuscript submitted to ACM
+
+Large Models for Time Series and Spatio-Temporal Data: A Survey and Outlook
+
+21
+
+Table 3. A summary of common dataset resources in different applications.
+Applications
+
+Dataset
+
+Scale / Data Type
+
+Timeframe
+
+Source
+
+Citations
+
+Traffic
+
+METR-LA
+PEMS-BAY
+PEMS04
+SUTD-TrafficQA
+LargeST
+
+34,272 time steps; traffic sensor series
+52,116 time steps; traffic sensor series
+16,992 time steps; traffic sensor series
+10,080 videos; 62,535 questions
+525,888 frames; 8,600 sensors
+
+Mar to Jun 2012
+Jan 1 to May 31, 2017
+Jan 1 to Feb 28, 2018
+2017 to 2021
+
+[111]
+[111]
+[24]
+[252]
+[127]
+
+[84, 181]
+[84, 181]
+[181]
+[164]
+[127]
+
+Healthcare
+
+PTB-XL
+NYUTron
+UF Health clinical corpus
+MIMIC-III
+
+21,837 records; ECG signals
+387,144 records; clinical text/EHR
+2M records; clinical text
+112,000 records; ICU/EHR data
+
+Oct 1989 to Jun 1996
+Jan 2011 to May 2020
+2011 to 2021
+2001 to 2012
+
+[209]
+[76]
+[263]
+[85]
+
+[68, 147, 214]
+[56, 165]
+[154, 199]
+[163, 249, 273]
+
+Weather
+
+AvePRE
+SurTEMP
+SurUPS
+CMIP6
+
+88 satellite series; meteorological data
+525 satellite series; surface temperature data
+238 satellite series; meteorological data
+Global gridded climate data; 1 vertical level
+
+Apr 1, 2012 to Feb 28, 2016
+Jan 3, 2019 to May 2, 2022
+Jan 2, 2019 to Jul 29, 2022
+1850–2014 for historical and 2015–2100 for SSP expt.
+
+[28]
+[28]
+[28]
+[47]
+
+[29]
+[29]
+[29]
+[59, 86, 104]
+
+Finance
+
+Finance (Employment)
+StockNet
+EDT
+NASDAQ-100
+
+15,321 records; employment/finance data
+88 stocks; price/news data
+303,893 news articles; minute-level timestamps
+104 corporations; one-minute stock series
+
+during COVID-19
+2014/01/01 to 2016/01/01
+2020/03/01 to 2021/05/06
+July 26, 2016 to April 28, 2017
+
+[49]
+[255]
+[290]
+[167]
+
+[236]
+[50, 78, 176, 242, 243, 294]
+[129, 173]
+[130]
+
+Video
+
+TGIF-QA
+MSR-VTT
+WebVid
+COCO
+
+165K QA pairs; GIF/video data
+10,000 video clips; video-text data
+10M video clips; web video-text data
+328K images; image-text data
+
+41.2 hours
+13K hours
+-
+
+[71]
+[251]
+[10]
+[116]
+
+[108, 140, 248, 250]
+[27, 61, 271]
+[138, 221]
+[109, 220]
+
+Event Prediction
+
+Amazon
+Taobao
+Retweet
+StackOverflow
+Taxi
+
+5.2K event sequences; temporal point process
+4.8K event sequences; temporal point process
+5.2K event sequences; temporal point process
+2.2K event sequences; temporal point process
+2K event sequences; temporal point process
+
+January, 2008 to October, 2018
+November 25, 2017 to December 03, 2017
+2 years
+1 year
+
+[257]
+[257]
+[257]
+[257]
+[257]
+
+[185, 259, 260]
+[259, 260]
+[148, 224, 278, 296]
+[258–260]
+[149, 259]
+
+Others
+
+ETT
+M4
+Electricity
+Alibaba Cluster Trace
+TSSB
+UCR TS Classification Archive
+
+7-feature time series; hourly/15-minute granularity
+100,000 series; multi-frequency time series
+2,075,259 observations; household power series
+1,313 machines; cluster trace data
+75 series; segmentation benchmark
+128 datasets; time-series classification archive
+
+2 years
+4 years
+12 hours
+2002 to 2018
+
+[288]
+[143]
+[62]
+[33]
+[177]
+[37]
+
+[122, 272]
+[13, 45, 160]
+[44, 96, 122]
+[153]
+[38, 46]
+[32, 54, 178]
+
+6.2
+
+Healthcare Application
+
+Time series forecasting in healthcare has burgeoned due to its practical implications, despite inherent methodological
+challenges. Within medical contexts, forecasting models have been pivotal in predicting disease progression, estimating
+mortality rates, and evaluating time-dependent risks. To date, several datasets stand out. For instance, PTB-XL [209]
+comprises 21,837 clinical 12-lead ECG of 10-second duration from 18,885 patients, categorized into diagnosis, form, and
+rhythm, with 71 different statements in total. NYU Datasets [76] include NYU Notes, NYU Notes–Manhattan, NYU
+Notes–Brooklyn, spanning 10 years of unlabelled inpatient clinical notes. Fine-tuning datasets like "NYU Readmission",
+"NYU Mortality", among others, contain specific labels. UF Health clinical corpus [263] is an aggregation of clinical
+narratives from UF Health IDR, MIMIC-III corpus, PubMed collection, and Wikipedia articles, resulting in a more than
+90 billion-word corpus. MIMIC-III [85] is a public dataset with ICD-9 codes, vital signs, medications, and other critical
+patient data from intensive care units. In addition, a variety of model checkpoints and toolkits have emerged, tailored
+to healthcare applications, such as NYUTron [76], BioBERT [103], BlueBERT [163], and ClinicalBERT [69].
+6.3
+
+Weather Application
+
+Weather modeling primarily involves predicting atmospheric conditions, which are fundamental to a vast array of
+daily decisions and economic considerations. The analysis of time series in weather forecasting has greatly benefited
+from significant advancements in data collection and computational modeling. For instance, datasets such as AvePRE,
+SurTEMP, and SurUPS provided by NASA [28] shed light on the hourly changes of 12 weather parameters, captured
+by an extensive network of ground-based instruments. Moreover, CMIP6 [47] is an international consortium focusing
+on the evaluation of diverse global climate models. In the realm of recent foundational models, Pangu-Weather [14] is
+renowned for its rapid and precise global forecasts, while GraphCast [97], which incorporates GNNs, is noted for its
+adaptability in various prediction tasks.
+Manuscript submitted to ACM
+
+22
+6.4
+
+Jin et al.
+Finance Application
+
+Time series analysis in finance presents significant challenges, as it requires modeling both linear and non-linear
+historical interactions for future prediction. Common applications include predicting buy/sell signals and stock price
+shifts. EDT [290] and NASDAQ-100 [167] are two popular datasets: the former supports corporate event detection and
+text-based stock prediction, while the latter contains NASDAQ-100 stock prices retrieved from Yahoo Finance. Finance
+(Employment) [49] captures employment changes based on one million active US employees during the COVID-19
+pandemic and incorporates state-level policies as extreme-event markers. StockNet [255] covers 88 stocks over two
+years, combining tweets and historical stock prices. Recently, financial LLMs such as WeaverBird [261] and FinGPT [262]
+have emerged for financial prediction and decision-making.
+6.5
+
+Video Application
+
+Video question answering (VQA) aims to answer natural language questions using video content, with models expected
+to generate answers that accurately reflect the depicted scenes. The domain also includes video quality assessment
+and future video content prediction. Datasets such as TGIF-QA [71], which provides 165K GIF-based QA pairs, and
+WebVid [10], which contains 10 million annotated video clips, are notable examples. MSR-VTT (Microsoft Research
+Video to Text) [251] supports video captioning with 10,000 clips across 20 categories, while COCO (Microsoft Common
+Objects in Context) [116] supports object detection, segmentation, and captioning with 328K images. Contrastive
+language-image pre-training (CLIP) uses natural language supervision to train image representations. BLIP [107]
+introduces a bootstrapping method for noisy web data in vision-language pre-training, and ViLBERT (Vision-andLanguage BERT) [135] extends BERT to jointly process visual and textual inputs.
+6.6
+
+Event Prediction Application
+
+Event sequences, also known as asynchronous time series with irregular timestamps, play a crucial role in various
+real-world domains, including finance, online shopping, and social networks. Amazon [257] and Taobao [257] are
+two representative datasets of time-stamped user product-review behavior on e-commerce platforms. Retweet [257],
+StackOverflow [257] and Taxi [257] are three other commonly used event sequence datasets, which contain user retweet,
+user question-answer, and user taxi pickup event sequences, respectively. In terms of useful tools, Tick [8] is a wellestablished library focused on statistical learning for classical TPPs, while EasyTPP [257] is the first open-source central
+repository offering a comprehensive suite of research resources, including data, models, evaluation programs, and
+documentation, in the field of neural event sequence modeling.
+6.7
+
+Other Applications
+
+Beyond the applications above, time series forecasting, classification, and anomaly detection are widely used in
+electricity, cloud computing, and other sectors. Several benchmark datasets support these tasks, including ETT (Electricity
+Transformer Temperature) [288] for transformer temperature forecasting, Alibaba Cluster Trace [33] for cloud workload
+modeling, TSSB [177] for time-series segmentation, and the UCR Time Series Classification Archive [37] for classification.
+These resources cover diverse temporal patterns, sampling frequencies, and application settings, making them useful for
+evaluating the generalization of temporal models. For reproducible research, tools such as OpenSTL [194], Merlion [13],
+darts [63], and PyTorch Geometric Temporal [174] provide benchmarks for time series and spatio-temporal modeling.
+Manuscript submitted to ACM
+
+Large Models for Time Series and Spatio-Temporal Data: A Survey and Outlook
+7
+
+23
+
+Outlook and Future Opportunities
+
+In this section, we discuss the potential limitations of current research and highlight the top six future research directions
+aimed at developing more powerful, transparent, and reliable large models for temporal data.
+7.1
+
+Theoretical Analysis of Large Models
+
+Large models, especially LLMs, were primarily developed for natural language processing, but their ability to model
+long-range sequential dependencies has motivated their use in time series and spatio-temporal tasks. However, the
+theoretical basis for this transfer remains limited. It is still unclear when linguistic representations, tokenization schemes,
+or attention mechanisms can effectively capture temporal patterns, and when they may fail due to distribution shift,
+numerical precision loss, or modality mismatch. Future work should develop deeper theoretical analyses of large models
+for temporal data, including the similarities and differences between language and temporal sequences, the conditions
+under which pre-trained representations can transfer, and the task-specific limits of large models in forecasting, anomaly
+detection, classification, and spatio-temporal reasoning.
+7.2
+
+Development of Multimodal Models
+
+Real-world time series and spatio-temporal data are accompanied by supplementary information, such as text descriptions, news articles, or tweets. This is especially useful in economics and finance, where forecasting can combine
+textual signals with numerical time series. LLMs can therefore be adapted to learn joint representations that capture
+both temporal dynamics and modality-specific information. Since different modalities may have different temporal
+resolutions, future models should better align multi-resolution temporal signals to leverage cross-modal information.
+Recent work on networking systems for video anomaly detection further suggests that cross-domain temporal modeling
+should consider deployability constraints, including edge-cloud collaboration, latency, privacy, and robustness, in
+addition to algorithmic accuracy [120].
+7.3
+
+Continuous Learning and Adaptation
+
+Real-world applications often involve non-stationary temporal patterns, making it important for large models to
+adapt continuously without catastrophic forgetting. While online learning, concept drift adaptation, and evolvingpattern modeling have been studied in conventional machine learning, their integration with large temporal models
+remains under-explored. Cross-domain transfer is also important when source-domain data cannot be shared due to
+privacy or deployment constraints; recent source-free foundation-model-enabled state-of-health estimation for lithiumion batteries shows that intelligent adapter mapping can transfer temporal representations across battery domains,
+suggesting a promising direction for privacy-preserving and domain-adaptive PFMs in industrial applications [166].
+7.4
+
+Interpretability and Explainability
+
+Understanding why a model produces a particular forecast or prediction is crucial for time series analysis, especially in
+high-stakes domains such as healthcare and finance. However, the internal mechanisms of LLMs remain difficult to
+interpret, making it important to develop theoretical frameworks and practical tools for analyzing what they learn
+from temporal data and how they generate predictions. Improved interpretability can provide rationales for forecasts,
+anomaly detection, and classification decisions. A promising direction is to integrate explicit temporal reasoning
+Manuscript submitted to ACM
+
+24
+
+Jin et al.
+
+into large models, enabling counterfactual analysis, causal inference, root cause analysis, scenario simulation, and
+intervention planning, where understanding not only what will happen but also why it happens is essential.
+7.5
+
+Privacy and Adversarial Attacks on Large Models
+
+Temporal data can be highly sensitive, especially in applications like healthcare and finance. When LLMs are trained or
+fine-tuned on such data, they can memorize specific details, posing the risk of leaking private information. Privacypreserving techniques, such as differential privacy and federated learning, offer promising directions for ensuring data
+privacy while still benefiting from the power of LLMs for time series and spatio-temporal analysis.
+7.6
+
+LLM Agents and Decision Making Process in Time Series Systems
+
+LLMs can act as agents that continuously observe temporal or spatio-temporal signals and select actions. In such systems,
+prediction errors can accumulate through feedback into the environment, making reliable decision policies critical.
+Real-world temporal data often exhibit non-stationarity, regime shifts, and rare but high-impact events. Under these
+distribution shifts, LLM-based agents may issue overconfident or unsafe decisions, especially when policies are learned
+from noisy, biased, or adversarially manipulated trajectories. This motivates research on robust, uncertainty-aware
+decision-making for LLM agents in time series and spatio-temporal settings, including out-of-distribution detection
+and abstention, conservative or risk-sensitive policies, safe exploration, and human- or rule-in-the-loop oversight to
+prevent harmful cascades and ensure alignment with safety and performance requirements.
+8
+
+Conclusion
+
+We present an extensive and up-to-date survey of large models for the analysis of time series and spatio-temporal data.
+Our aim is to offer a fresh perspective on this dynamic field by introducing a novel taxonomy that categorizes the reviewed
+models. We summarize the most prominent techniques in each category, examine their strengths and limitations, and
+illuminate promising avenues for future research. Within this exciting topic, the scope for groundbreaking investigations
+is boundless. This survey will serve as a catalyst for stimulating further curiosity and fostering an enduring passion for
+research in the realm of large models for time series and spatio-temporal data analysis.
+References
+[1] Ebtesam Almazrouei, Hamza Alobeidli, Abdulaziz Alshamsi, Alessandro Cappelli, Ruxandra Cojocaru, Merouane Debbah, Etienne Goffinet, Daniel
+Heslow, Julien Launay, Quentin Malartic, et al. 2023. Falcon-40B: an open large language model with state-of-the-art performance.
+[2] Rohan Anil, Andrew M Dai, Orhan Firat, Melvin Johnson, Dmitry Lepikhin, Alexandre Passos, Siamak Shakeri, Emanuel Taropa, Paige Bailey,
+Zhifeng Chen, et al. 2023. Palm 2 technical report. arXiv preprint arXiv:2305.10403 (2023).
+[3] Abdul Fatir Ansari, Oleksandr Shchur, Jaris Küken, Andreas Auer, Boran Han, Pedro Mercado, Syama Sundar Rangapuram, Huibin Shen, Lorenzo
+Stella, Xiyuan Zhang, et al. 2025. Chronos-2: From Univariate to Universal Forecasting. arXiv preprint arXiv:2510.15821 (2025).
+[4] Abdul Fatir Ansari, Lorenzo Stella, Ali Caner Turkmen, Xiyuan Zhang, Pedro Mercado, Huibin Shen, Oleksandr Shchur, Syama Sundar Rangapuram,
+Sebastian Pineda Arango, et al. 2024. Chronos: Learning the Language of Time Series. Transactions on Machine Learning Research (2024).
+[5] Anurag Arnab, Mostafa Dehghani, Georg Heigold, Chen Sun, Mario Lučić, and Cordelia Schmid. 2021. ViViT: A Video Vision Transformer. In 2021
+IEEE/CVF International Conference on Computer Vision (ICCV). 6816–6826.
+[6] Gowtham Atluri, Anuj Karpatne, and Vipin Kumar. 2018. Spatio-temporal data mining: A survey of problems and methods. Comput. Surveys 51, 4
+(2018), 1–41.
+[7] Muhammad Awais, Muzammal Naseer, Salman Khan, Rao Muhammad Anwer, Hisham Cholakkal, Mubarak Shah, Ming-Hsuan Yang, and
+Fahad Shahbaz Khan. 2025. Foundation Models Defining a New Era in Vision: A Survey and Outlook. IEEE Transactions on Pattern Analysis and
+Machine Intelligence 47, 4 (2025), 2245–2264.
+[8] Emmanuel Bacry, Martin Bompaire, Philip Deegan, Stéphane Gaïffas, and Søren V. Poulsen. 2018. tick: a Python Library for Statistical Learning,
+with an emphasis on Hawkes Processes and Time-Dependent Models. Journal of Machine Learning Research 18, 214 (2018), 1–5.
+Manuscript submitted to ACM
+
+Large Models for Time Series and Spatio-Temporal Data: A Survey and Outlook
+
+25
+
+[9] Long Bai, Zixuan Li, Xiaolong Jin, Jiafeng Guo, Xueqi Cheng, and Tat-Seng Chua. 2025. G2S: A General-to-Specific Learning Framework for
+Temporal Knowledge Graph Forecasting with Large Language Models. In Findings of the Association for Computational Linguistics: ACL 2025.
+Association for Computational Linguistics, Vienna, Austria, 20927–20938.
+[10] Max Bain, Arsha Nagrani, Gül Varol, and Andrew Zisserman. 2021. Frozen in time: A joint video and image encoder for end-to-end retrieval. In
+Proceedings of the IEEE/CVF International Conference on Computer Vision. 1728–1738.
+[11] Wele Gedara Chaminda Bandara, Naman Patel, Ali Gholami, Mehdi Nikkhah, Motilal Agrawal, and Vishal M Patel. 2023. AdaMAE: Adaptive
+Masking for Efficient Spatiotemporal Learning with Masked Autoencoders. In CVPR. 14507–14517.
+[12] Maciej Besta, Nils Blach, Ales Kubicek, Robert Gerstenberger, Michał Podstawski, Lukas Gianinazzi, Joanna Gajda, Tomasz Lehmann, Hubert
+Niewiadomski, et al. 2024. Graph of thoughts: solving elaborate problems with large language models. In Proceedings of the 38th AAAI Conference
+on Artificial Intelligence and 36th Conference on Innovative Applications of Artificial Intelligence and Fourteenth Symposium on Educational Advances
+in Artificial Intelligence (AAAI’24/IAAI’24/EAAI’24). AAAI Press, Article 1972, 9 pages.
+[13] Aadyot Bhatnagar, Paul Kassianik, Chenghao Liu, Tian Lan, Wenzhuo Yang, Rowan Cassius, Doyen Sahoo, Devansh Arpit, Sri Subramanian, Gerald
+Woo, et al. 2023. Merlion: End-to-End Machine Learning for Time Series. Journal of Machine Learning Research 24, 226 (2023), 1–6.
+[14] Kaifeng Bi, Lingxi Xie, Hengheng Zhang, Xin Chen, Xiaotao Gu, and Qi Tian. 2023. Accurate medium-range global weather forecasting with 3D
+neural networks. Nature 619, 7970 (2023), 533–538.
+[15] Rishi Bommasani, Drew A Hudson, Ehsan Adeli, Russ Altman, Simran Arora, Sydney von Arx, Michael S Bernstein, Jeannette Bohg, Antoine
+Bosselut, Emma Brunskill, et al. 2021. On the opportunities and risks of foundation models. arXiv preprint arXiv:2108.07258 (2021).
+[16] Boris Bonev, Thorsten Kurth, Ankur Mahesh, Mauro Bisson, Jean Kossaifi, Karthik Kashinath, Anima Anandkumar, William D Collins, Michael S
+Pritchard, and Alexander Keller. 2025. FourCastNet 3: A geometric approach to probabilistic machine-learning weather forecasting at scale. arXiv
+preprint arXiv:2507.12144 (2025).
+[17] Tom Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared D Kaplan, Prafulla Dhariwal, Arvind Neelakantan, Pranav Shyam, Girish Sastry,
+Amanda Askell, et al. 2020. Language models are few-shot learners. In NeurIPS, Vol. 33. 1877–1901.
+[18] Borui Cai, Yong Xiang, Longxiang Gao, He Zhang, Yunfeng Li, and Jianxin Li. 2023. Temporal knowledge graph completion: a survey. In Proceedings
+of the Thirty-Second International Joint Conference on Artificial Intelligence (Macao, P.R.China) (IJCAI ’23). Article 734, 9 pages.
+[19] Li Cai, Xin Mao, Yuhao Zhou, Zhaoguang Long, Changxu Wu, and Man Lan. 2024. A survey on temporal knowledge graph: Representation
+learning and applications. arXiv preprint arXiv:2403.04782 (2024).
+[20] Defu Cao, Furong Jia, Sercan O Arik, Tomas Pfister, Yixiang Zheng, Wen Ye, and Yan Liu. 2024. TEMPO: Prompt-based Generative Pre-trained
+Transformer for Time Series Forecasting. In The Twelfth International Conference on Learning Representations.
+[21] Vincenzo Capone, Angelo Casolaro, and Francesco Camastra. 2025. Spatio-temporal prediction using graph neural networks: A survey. Neurocomputing (2025), 130400.
+[22] Nimeesha Chan, Felix Parker, William Bennett, Tianyi Wu, Mung Yao Jia, James Fackler, and Kimia Ghobadi. 2024. Leveraging llms for multimodal
+medical time series analysis. In Machine Learning for Healthcare Conference. PMLR.
+[23] Ching Chang, Wei-Yao Wang, Wen-Chih Peng, and Tien-Fu Chen. 2025. Llm4ts: Aligning pre-trained llms as data-efficient time-series forecasters.
+ACM Transactions on Intelligent Systems and Technology 16, 3 (2025), 1–20.
+[24] Chao Chen, Karl Petty, Alexander Skabardonis, Pravin Varaiya, and Zhanfeng Jia. 2001. Freeway Performance Measurement System: Mining Loop
+Detector Data. Transportation Research Record 1748, 1 (2001), 96–102.
+[25] Haoxing Chen, Zizheng Huang, Yan Hong, Yanshuo Wang, Zhongcai Lyu, Zhuoer Xu, Jun Lan, and Zhangxuan Gu. 2025. Efficient transfer learning
+for video-language foundation models. In Proceedings of the Computer Vision and Pattern Recognition Conference. 29129–29138.
+[26] Pin-Yu Chen. 2024. Model reprogramming: resource-efficient cross-domain machine learning. In Proceedings of the 38th AAAI Conference on
+Artificial Intelligence and 36th Conference on Innovative Applications of Artificial Intelligence and Fourteenth Symposium on Educational Advances in
+Artificial Intelligence (AAAI’24/IAAI’24/EAAI’24). AAAI Press, Article 2519, 8 pages.
+[27] Sihan Chen, Handong Li, Qunbo Wang, Zijia Zhao, Mingzhen Sun, Xinxin Zhu, and Jing Liu. 2023. VAST: A Vision-Audio-Subtitle-Text OmniModality Foundation Model and Dataset. In Thirty-seventh Conference on Neural Information Processing Systems.
+[28] Shengchao Chen, Guodong Long, Tao Shen, and Jing Jiang. 2023. Prompt Federated Learning for Weather Forecasting: Toward Foundation Models
+on Meteorological Data. In IJCAI.
+[29] Shengchao Chen, Ting Shu, Huan Zhao, and Yuan Yan Tang. 2023. MASK-CNN-Transformer for real-time multi-label weather recognition.
+Knowledge-Based Systems 278 (2023), 110881.
+[30] Zhikai Chen, Haitao Mao, Hang Li, Wei Jin, Hongzhi Wen, Xiaochi Wei, Shuaiqiang Wang, Dawei Yin, Wenqi Fan, Hui Liu, et al. 2024. Exploring
+the Potential of Large Language Models (LLMs)in Learning on Graphs. SIGKDD Explor. Newsl. 25, 2 (March 2024), 42–61.
+[31] Haitao Cheng, Zibin Gong, and Chang Wang. 2025. LLM-TFP: Integrating large language models with spatio-temporal features for urban traffic
+flow prediction. Applied Soft Computing (2025), 113174.
+[32] Lei Cheng, Ruslan Khalitov, Tong Yu, Jing Zhang, and Zhirong Yang. 2022. Classification of long sequential data using circular dilated convolutional
+neural networks. Neurocomputing (2022).
+[33] Yue Cheng, Zheng Chai, and Ali Anwar. 2018. Characterizing Co-located Datacenter Workloads: An Alibaba Case Study. In Proceedings of the 9th
+Asia-Pacific Workshop on Systems (Jeju Island, Republic of Korea) (APSys ’18). Association for Computing Machinery, New York, NY, USA, Article
+12, 3 pages.
+Manuscript submitted to ACM
+
+26
+
+Jin et al.
+
+[34] Wei-Lin Chiang, Zhuohan Li, Zi Lin, Ying Sheng, Zhanghao Wu, Hao Zhang, Lianmin Zheng, Siyuan Zhuang, Yonghao Zhuang, Joseph E Gonzalez,
+et al. 2023. Vicuna: An open-source chatbot impressing gpt-4 with 90%* chatgpt quality.
+[35] Aakanksha Chowdhery, Sharan Narang, Jacob Devlin, Maarten Bosma, Gaurav Mishra, Adam Roberts, Paul Barham, Hyung Won Chung, Charles
+Sutton, et al. 2023. PaLM: scaling language modeling with pathways. J. Mach. Learn. Res. 24, 1, Article 240 (Jan. 2023), 113 pages.
+[36] Abhimanyu Das, Weihao Kong, Rajat Sen, and Yichen Zhou. 2024. A decoder-only foundation model for time-series forecasting. In Forty-first
+International Conference on Machine Learning.
+[37] Hoang Anh Dau, Anthony Bagnall, Kaveh Kamgar, Chin-Chia Michael Yeh, Yan Zhu, Shaghayegh Gharghabi, Chotirat Ann Ratanamahatana, and
+Eamonn Keogh. 2019. The UCR Time Series Archive. IEEE/CAA Journal of Automatica Sinica 6, 6 (Nov. 2019), 1293–1305.
+[38] Shohreh Deldari, Daniel V. Smith, Amin Sadri, and Flora D. Salim. 2020. Entropy and ShaPe awaRe timE-Series SegmentatiOn for processing
+heterogeneous sensor data. In IMWUT, Vol. 4. Article 77.
+[39] Jacob Devlin, Ming-Wei Chang, Kenton Lee, and Kristina Toutanova. 2019. BERT: Pre-training of Deep Bidirectional Transformers for Language
+Understanding. In Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics: Human
+Language Technologies, Volume 1 (Long and Short Papers). Association for Computational Linguistics, Minneapolis, Minnesota, 4171–4186.
+[40] Xueying Ding, Aakriti Mittal, and Achintya Gopal. 2025. DELPHYNE: A Pre-Trained Model for General and Financial Time Series. arXiv preprint
+arXiv:2506.06288 (2025).
+[41] Aswathy Divakaran and Anuraj Mohan. 2020. Temporal link prediction: A survey. New Generation Computing 38 (2020), 213–258.
+[42] Jiaxiang Dong, Haixu Wu, Haoran Zhang, Li Zhang, Jianmin Wang, and Mingsheng Long. 2023. SimMTM: A Simple Pre-Training Framework for
+Masked Time-Series Modeling. In NeurIPS.
+[43] Qingxiu Dong, Lei Li, Damai Dai, Ce Zheng, Jingyuan Ma, Rui Li, Heming Xia, Jingjing Xu, Zhiyong Wu, Baobao Chang, Xu Sun, Lei Li, and
+Zhifang Sui. 2024. A Survey on In-context Learning. In Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing,
+Yaser Al-Onaizan, Mohit Bansal, and Yun-Nung Chen (Eds.). Association for Computational Linguistics, Miami, Florida, USA, 1107–1128.
+[44] Wenjie Du, David Cote, and Yan Liu. 2023. SAITS: Self-Attention-based Imputation for Time Series. Expert Systems with Applications 219 (2023),
+119619.
+[45] Nick Erickson, Jonas Mueller, Alexander Shirkov, Hang Zhang, Pedro Larroy, Mu Li, and Alexander Smola. 2020. AutoGluon-Tabular: Robust and
+Accurate AutoML for Structured Data. arXiv preprint arXiv:2003.06505 (2020).
+[46] Arik Ermshaus, Patrick Schäfer, and Ulf Leser. 2023. Window Size Selection In Unsupervised Time Series Analytics: A Review and Benchmark. In
+Advanced Analytics and Learning on Temporal Data.
+[47] Veronika Eyring, Sandrine Bony, Gerald A Meehl, Catherine A Senior, Bjorn Stevens, Ronald J Stouffer, and Karl E Taylor. 2016. Overview of
+the Coupled Model Intercomparison Project Phase 6 (CMIP6) experimental design and organization. Geoscientific Model Development 9, 5 (2016),
+1937–1958.
+[48] Haoqi Fan, Bo Xiong, Karttikeya Mangalam, Yanghao Li, Zhicheng Yan, Jitendra Malik, and Christoph Feichtenhofer. 2021. Multiscale Vision
+Transformers. In 2021 IEEE/CVF International Conference on Computer Vision (ICCV). 6804–6815.
+[49] Ashkan Farhangi, Jiang Bian, Arthur Huang, Haoyi Xiong, Jun Wang, and Zhishan Guo. 2023. AA-Forecast: Anomaly-Aware Forecast for Extreme
+Events. Data Mining and Knowledge Discovery 37 (2023), 1209–1229.
+[50] Fuli Feng, Huimin Chen, Xiangnan He, Ji Ding, Maosong Sun, and Tat-Seng Chua. 2019. Enhancing Stock Movement Prediction with Adversarial
+Training. IJCAI (2019).
+[51] Mononito Goswami, Konrad Szafer, Arjun Choudhry, Yifu Cai, Shuo Li, and Artur Dubrawski. 2024. MOMENT: a family of open time-series
+foundation models. In Proceedings of the 41st International Conference on Machine Learning (Vienna, Austria) (ICML’24). JMLR.org, Article 642,
+38 pages.
+[52] Nate Gruver, Marc Finzi, Shikai Qiu, and Andrew Gordon Wilson. 2023. Large Language Models Are Zero-Shot Time Series Forecasters. In NeurIPS.
+[53] Tong Guan, Zijie Meng, Dianqi Li, Shiyu Wang, Chao-Han Huck Yang, Qingsong Wen, Zuozhu Liu, Sabato Marco Siniscalchi, Ming Jin, and Shirui
+Pan. 2026. TimeOmni-1: Incentivizing Complex Reasoning with Time Series in Large Language Models. In The Fourteenth International Conference
+on Learning Representations.
+[54] Antoine Guillaume, Christel Vrain, and Wael Elloumi. 2022. Random Dilated Shapelet Transform: A New Approach for Time Series Shapelets. In
+Pattern Recognition and Artificial Intelligence. 653–664.
+[55] Xusen Guo, Qiming Zhang, Junyue Jiang, Mingxing Peng, Meixin Zhu, and Hao Frank Yang. 2024. Towards explainable traffic flow prediction with
+large language models. Communications in Transportation Research 4 (2024), 100150.
+[56] Tianyu Han, Sven Nebelung, Firas Khader, et al. 2024. Medical large language models are susceptible to targeted misinformation attacks. npj
+Digital Medicine 7, 1 (2024), 288.
+[57] Zhen Han, Zifeng Ding, Yunpu Ma, Yujia Gu, and Volker Tresp. 2021. Learning Neural Ordinary Equations for Forecasting Future Links on Temporal
+Knowledge Graphs. In Proceedings of the 2021 Conference on Empirical Methods in Natural Language Processing. Association for Computational
+Linguistics, Online and Punta Cana, Dominican Republic, 8352–8364.
+[58] Hrayr Harutyunyan, Hrant Khachatrian, David C Kale, Greg Ver Steeg, and Aram Galstyan. 2019. Multitask learning and benchmarking with
+clinical time series data. Scientific data 6, 1 (2019), 96.
+[59] Amirhossein Hassani, Adisa Azapagic, and Nima Shokri. 2021. Global predictions of primary soil salinization under changing climate in the 21st
+century. Nature communications 12, 1 (2021), 6663.
+Manuscript submitted to ACM
+
+Large Models for Time Series and Spatio-Temporal Data: A Survey and Outlook
+
+27
+
+[60] Bo He, Hengduo Li, Young Kyun Jang, Menglin Jia, Xuefei Cao, Ashish Shah, Abhinav Shrivastava, and Ser-Nam Lim. 2024. Ma-lmm: Memoryaugmented large multimodal model for long-term video understanding. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern
+Recognition. 13504–13514.
+[61] Xingjian He, Sihan Chen, Fan Ma, Zhicheng Huang, Xiaojie Jin, Zikang Liu, Dongmei Fu, Yi Yang, Jing Liu, and Jiashi Feng. 2023. VLAB: Enhancing
+Video Language Pre-training by Feature Adapting and Blending. arXiv preprint arXiv:2305.13167 (2023).
+[62] Georges Hebrail and Alice Berard. 2012. Individual household electric power consumption.
+[63] Julien Herzen, Francesco Lässig, Samuele Giuliano Piazzetta, Thomas Neuer, Léo Tafti, Guillaume Raille, Tomas Van Pottelbergh, Marek Pasieka,
+Andrzej Skrodzki, Nicolas Huguenin, et al. 2022. Darts: User-Friendly Modern Machine Learning for Time Series. Journal of Machine Learning
+Research 23, 124 (2022), 1–6.
+[64] Hansika Hewamalage, Christoph Bergmeir, and Kasun Bandara. 2021. Recurrent neural networks for time series forecasting: Current status and
+future directions. International Journal of Forecasting 37, 1 (2021), 388–427.
+[65] MD Zakir Hossain, Ferdous Sohel, Mohd Fairuz Shiratuddin, and Hamid Laga. 2019. A comprehensive survey of deep learning for image captioning.
+Comput. Surveys 51, 6 (2019), 1–36.
+[66] Neil Houlsby, Andrei Giurgiu, Stanislaw Jastrzebski, Bruna Morrone, Quentin De Laroussilhe, Andrea Gesmundo, Mona Attariyan, and Sylvain
+Gelly. 2019. Parameter-efficient transfer learning for NLP. In ICML. 2790–2799.
+[67] Edward J Hu, yelong shen, Phillip Wallis, Zeyuan Allen-Zhu, Yuanzhi Li, Shean Wang, Lu Wang, and Weizhu Chen. 2022. LoRA: Low-Rank
+Adaptation of Large Language Models. In International Conference on Learning Representations.
+[68] Rui Hu, Jie Chen, and Li Zhou. 2022. A transformer-based deep neural network for arrhythmia detection using continuous ECG signals. Computers
+in Biology and Medicine 144 (2022), 105325.
+[69] Kexin Huang, Jaan Altosaar, and Rajesh Ranganath. 2020. Clinicalbert: Modeling clinical notes and predicting hospital readmission. In CHIL.
+[70] Yoontae Hwang, Yaxuan Kong, Stefan Zohren, and Yongjae Lee. 2025. Decision-informed neural networks with large language model integration
+for portfolio optimization. arXiv preprint arXiv:2502.00828 (2025).
+[71] Yunseok Jang, Yale Song, Chris Dongjoo Kim, Youngjae Yu, Youngjin Kim, and Gunhee Kim. 2019. Video Question Answering with Spatio-Temporal
+Reasoning. IJCV (2019).
+[72] Hyotaek Jeon, Hyunwook Lee, Juwon Kim, and Sungahn Ko. 2025. ST-LINK: Spatially-Aware Large Language Models for Spatio-Temporal
+Forecasting. In Proceedings of the 34th ACM International Conference on Information and Knowledge Management (Seoul, Republic of Korea) (CIKM
+’25). Association for Computing Machinery, New York, NY, USA, 1057–1067.
+[73] Shaoxiong Ji, Shirui Pan, Erik Cambria, Pekka Marttinen, and S Yu Philip. 2021. A survey on knowledge graphs: Representation, acquisition, and
+applications. IEEE transactions on neural networks and learning systems 33, 2 (2021), 494–514.
+[74] Renjun Jia, Zian Liu, Peng Zhu, Dawei Cheng, and Yuqi Liang. 2026. Beyond Fixed Patches: Enhancing GPTs for Financial Prediction with Adaptive
+Segmentation and Learnable Wavelets. arXiv preprint arXiv:2505.02880 (2026).
+[75] Ziyu Jia, Youfang Lin, Jing Wang, Ronghao Zhou, Xiaojun Ning, Yuanlai He, and Yaoshuai Zhao. 2020. GraphSleepNet: Adaptive Spatial-Temporal
+Graph Convolutional Networks for Sleep Stage Classification.. In IJCAI, Vol. 2021. 1324–1330.
+[76] Lavender Yao Jiang, Xujin Chris Liu, Nima Pour Nejatian, Mustafa Nasir-Moin, Duo Wang, Anas Abidin, Kevin Eaton, Howard Antony Riina, Ilya
+Laufer, Paawan Punjabi, et al. 2023. Health system-scale language models are all-purpose prediction engines. Nature (2023), 1–6.
+[77] Tiancheng Jiang, Henry Wang, Md Sirajus Salekin, Parmida Atighehchian, and Shinan Zhang. 2025. Domain adaptation of VLM for soccer video
+understanding. In Proceedings of the Computer Vision and Pattern Recognition Conference. 6111–6121.
+[78] Weiwei Jiang. 2021. Applications of deep learning in stock market prediction: recent progress. Expert Systems with Applications 184 (2021), 115537.
+[79] Yue Jiang, Yile Chen, Xiucheng Li, Qin Chao, Shuai Liu, and Gao Cong. 2025. FSTLLM: Spatio-Temporal LLM for Few Shot Time Series Forecasting.
+In Proceedings of the 42nd International Conference on Machine Learning (Proceedings of Machine Learning Research, Vol. 267), Aarti Singh, Maryam
+Fazel, Daniel Hsu, Simon Lacoste-Julien, Felix Berkenkamp, Tegan Maharaj, Kiri Wagstaff, and Jerry Zhu (Eds.). PMLR, 27492–27509.
+[80] Guangyin Jin, Yuxuan Liang, Yuchen Fang, Zezhi Shao, Jincai Huang, Junbo Zhang, and Yu Zheng. 2024. Spatio-Temporal Graph Neural Networks
+for Predictive Learning in Urban Computing: A Survey. IEEE Transactions on Knowledge and Data Engineering 36, 10 (2024), 5388–5408.
+[81] KyoHoon Jin, JeongA Wi, EunJu Lee, ShinJin Kang, SooKyun Kim, and YoungBin Kim. 2021. TrafficBERT: Pre-trained model with large-scale data
+for long-range traffic flow forecasting. Expert Systems with Applications 186 (2021), 115738.
+[82] Ming Jin, Huan Yee Koh, Qingsong Wen, Daniele Zambon, Cesare Alippi, Geoffrey I. Webb, Irwin King, and Shirui Pan. 2024. A Survey on Graph
+Neural Networks for Time Series: Forecasting, Classification, Imputation, and Anomaly Detection. IEEE Transactions on Pattern Analysis and
+Machine Intelligence 46, 12 (2024), 10466–10485.
+[83] Ming Jin, Shiyu Wang, Lintao Ma, Zhixuan Chu, James Y. Zhang, Xiaoming Shi, Pin-Yu Chen, Yuxuan Liang, Yuan-Fang Li, Shirui Pan, and
+Qingsong Wen. 2024. Time-LLM: Time Series Forecasting by Reprogramming Large Language Models. In The Twelfth International Conference on
+Learning Representations.
+[84] Ming Jin, Yu Zheng, Yuan-Fang Li, Siheng Chen, Bin Yang, and Shirui Pan. 2023. Multivariate Time Series Forecasting With Dynamic Graph Neural
+ODEs. IEEE Trans. on Knowl. and Data Eng. 35, 9 (Sept. 2023), 9168–9180.
+[85] Alistair Johnson, Tom Pollard, Lu Shen, Li-wei Lehman, Mengling Feng, Mohammad Ghassemi, Benjamin Moody, Peter Szolovits, Leo Celi, and
+Roger Mark. 2016. MIMIC-III, a freely accessible critical care database. Scientific Data 3 (2016), 160035.
+Manuscript submitted to ACM
+
+28
+
+Jin et al.
+
+[86] Matthew W Jones, John T Abatzoglou, Sander Veraverbeke, Niels Andela, Gitta Lasslop, Matthias Forkel, Adam JP Smith, Chantelle Burton,
+Richard A Betts, et al. 2022. Global and regional trends and drivers of fire under climate change. Reviews of Geophysics 60, 3 (2022).
+[87] Kushal Kafle and Christopher Kanan. 2017. Visual question answering: Datasets, algorithms, and future challenges. Computer Vision and Image
+Understanding 163 (2017), 3–20.
+[88] Neel Kant, Raul Puri, Nikolai Yakovenko, and Bryan Catanzaro. 2018. Practical text classification with large pre-trained language models. arXiv
+preprint arXiv:1812.01207 (2018).
+[89] Andrej Karpathy, George Toderici, Sanketh Shetty, Thomas Leung, Rahul Sukthankar, and Li Fei-Fei. 2014. Large-scale video classification with
+convolutional neural networks. In CVPR. 1725–1732.
+[90] Anuj Karpatne, Imme Ebert-Uphoff, Sai Ravela, Hassan Ali Babaie, and Vipin Kumar. 2018. Machine learning for the geosciences: Challenges and
+opportunities. IEEE Transactions on Knowledge and Data Engineering 31, 8 (2018), 1544–1554.
+[91] Salman Khan, Muzammal Naseer, Munawar Hayat, Syed Waqas Zamir, Fahad Shahbaz Khan, and Mubarak Shah. 2022. Transformers in vision: A
+survey. ACM computing surveys 54, 10 (2022), 1–41.
+[92] Alexander Kirillov, Eric Mintun, Nikhila Ravi, Hanzi Mao, Chloe Rolland, Laura Gustafson, Tete Xiao, Spencer Whitehead, Alexander C Berg,
+Wan-Yen Lo, et al. 2023. Segment Anything. In Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV). 4015–4026.
+[93] Yaxuan Kong, Yoontae Hwang, Marcus Kaiser, Chris Vryonides, Roel Oomen, and Stefan Zohren. 2025. Fusing Narrative Semantics for Financial
+Volatility Forecasting. In Proceedings of the 6th ACM International Conference on AI in Finance (ICAIF ’25). Association for Computing Machinery,
+New York, NY, USA, 683–691.
+[94] Yaxuan Kong, Yiyuan Yang, Yoontae Hwang, Wenjie Du, Stefan Zohren, Zhangyang Wang, Ming Jin, and Qingsong Wen. 2025. Time-MQA: Time
+Series Multi-Task Question Answering with Context Enhancement. In Proceedings of the 63rd Annual Meeting of the Association for Computational
+Linguistics (Volume 1: Long Papers), Wanxiang Che, Joyce Nabende, Ekaterina Shutova, and Mohammad Taher Pilehvar (Eds.). Association for
+Computational Linguistics, Vienna, Austria, 29736–29753.
+[95] Siva Rama Krishna Kottapalli, Karthik Hubli, Sandeep Chandrashekhara, Garima Jain, Sunayana Hubli, Gayathri Botla, and Ramesh Doddaiah.
+2025. Foundation Models for Time Series: A Survey. arXiv preprint arXiv:2504.04011 (2025).
+[96] Zhichen Lai, Dalin Zhang, Huan Li, Christian S Jensen, Hua Lu, and Yan Zhao. 2023. LightCTS: A Lightweight Framework for Correlated Time
+Series Forecasting. Proceedings of the ACM on Management of Data 1, 2 (2023), 1–26.
+[97] Remi Lam, Alvaro Sanchez-Gonzalez, Matthew Willson, Peter Wirnsberger, Meire Fortunato, Ferran Alet, Suman Ravuri, Timo Ewalds, et al. 2023.
+Learning skillful medium-range global weather forecasting. Science 382, 6677 (2023), 1416–1421.
+[98] Patrick Langer, Thomas Kaar, Max Rosenblattl, Maxwell A Xu, Winnie Chow, Martin Maritsch, Aradhana Verma, Brian Han, Daniel Seung Kim,
+Henry Chubb, et al. 2026. OpenTSLM: Time-Series Language Models for Reasoning over Multivariate Medical Text-and Time-Series Data. arXiv
+preprint arXiv:2510.02410 (2026).
+[99] Siddique Latif, Moazzam Shoukat, Fahad Shamshad, Muhammad Usama, Heriberto Cuayáhuitl, and Björn W Schuller. 2023. Sparks of Large Audio
+Models: A Survey and Outlook. arXiv preprint arXiv:2308.12792 (2023).
+[100] Iosif Lazaridis and Sharad Mehrotra. 2003. Capturing sensor-generated time series with quality guarantees. In ICDE. 429–440.
+[101] Colin Lea, Rene Vidal, Austin Reiter, and Gregory D Hager. 2016. Temporal convolutional networks: A unified approach to action segmentation. In
+ECCV. 47–54.
+[102] Dong-Ho Lee, Kian Ahrabian, Woojeong Jin, Fred Morstatter, and Jay Pujara. 2023. Temporal Knowledge Graph Forecasting Without Knowledge
+Using In-Context Learning. In Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing. Association for Computational
+Linguistics, Singapore, 544–557.
+[103] Jinhyuk Lee, Wonjin Yoon, Sungdong Kim, Donghyeon Kim, Sunkyu Kim, Chan Ho So, and Jaewoo Kang. 2020. BioBERT: a pre-trained biomedical
+language representation model for biomedical text mining. Bioinformatics 36, 4 (2020), 1234–1240.
+[104] June-Yi Lee, Jochem Marotzke, Govindasamy Bala, Long Cao, Susanna Corti, John P Dunne, Francois Engelbrecht, Erich Fischer, John C Fyfe,
+Christopher Jones, et al. 2021. Future global climate: scenario-based projections and near-term information. In Climate change. 553–672.
+[105] Mike Lewis, Yinhan Liu, Naman Goyal, Marjan Ghazvininejad, Abdelrahman Mohamed, Omer Levy, Veselin Stoyanov, and Luke Zettlemoyer. 2020.
+BART: Denoising Sequence-to-Sequence Pre-training for Natural Language Generation, Translation, and Comprehension. In Proceedings of the
+58th Annual Meeting of the Association for Computational Linguistics. Association for Computational Linguistics, Online, 7871–7880.
+[106] Hao Li, Bowen Deng, Chang Xu, ZhiYuan Feng, Viktor Schlegel, Yu-Hao Huang, Yizheng Sun, Jingyuan Sun, Kailai Yang, et al. 2025. MIRA: Medical
+Time Series Foundation Model for Real-World Health Data. In The Thirty-ninth Annual Conference on Neural Information Processing Systems.
+[107] Junnan Li, Dongxu Li, Caiming Xiong, and Steven Hoi. 2022. Blip: Bootstrapping language-image pre-training for unified vision-language
+understanding and generation. In ICML. 12888–12900.
+[108] KunChang Li, Yinan He, Yi Wang, Yizhuo Li, Wenhai Wang, Ping Luo, Yali Wang, Limin Wang, and Yu Qiao. 2023. Videochat: Chat-centric video
+understanding. arXiv preprint arXiv:2305.06355 (2023).
+[109] Kunpeng Li, Yulun Zhang, Kai Li, Yuanyuan Li, and Yun Fu. 2022. Image-text embedding learning via visual and textual semantic reasoning. IEEE
+Transactions on Pattern Analysis and Machine Intelligence 45, 1 (2022), 641–656.
+[110] Linjie Li, Zhe Gan, Kevin Lin, Chung-Ching Lin, Zicheng Liu, Ce Liu, and Lijuan Wang. 2023. Lavender: Unifying video-language understanding as
+masked language modeling. In CVPR. 23119–23129.
+Manuscript submitted to ACM
+
+Large Models for Time Series and Spatio-Temporal Data: A Survey and Outlook
+
+29
+
+[111] Yaguang Li, Rose Yu, Cyrus Shahabi, and Yan Liu. 2018. Diffusion Convolutional Recurrent Neural Network: Data-Driven Traffic Forecasting. In
+ICLR.
+[112] Zhonghang Li, Lianghao Xia, Jiabin Tang, Yong Xu, Lei Shi, Long Xia, Dawei Yin, and Chao Huang. 2024. UrbanGPT: Spatio-Temporal Large
+Language Models. In Proceedings of the 30th ACM SIGKDD Conference on Knowledge Discovery and Data Mining (Barcelona, Spain) (KDD ’24).
+Association for Computing Machinery, New York, NY, USA, 5351–5362.
+[113] Yuxuan Liang, Haomin Wen, Yuqi Nie, Yushan Jiang, Ming Jin, Dongjin Song, Shirui Pan, and Qingsong Wen. 2024. Foundation models for time
+series analysis: A tutorial and survey. In Proceedings of the 30th ACM SIGKDD conference on knowledge discovery and data mining. 6555–6565.
+[114] Yuxuan Liang, Haomin Wen, Yutong Xia, Ming Jin, Bin Yang, Flora Salim, Qingsong Wen, Shirui Pan, and Gao Cong. 2025. Foundation models for
+spatio-temporal data science: A tutorial and survey. In Proceedings of the 31st ACM SIGKDD Conference on Knowledge Discovery and Data Mining V.
+2. 6063–6073.
+[115] Yuxuan Liang, Yutong Xia, Songyu Ke, Yiwei Wang, Qingsong Wen, Junbo Zhang, Yu Zheng, and Roger Zimmermann. 2023. AirFormer: predicting
+nationwide air quality in china with transformers (AAAI’23/IAAI’23/EAAI’23). AAAI Press, Article 1607, 9 pages.
+[116] Tsung-Yi Lin, Michael Maire, Serge Belongie, James Hays, Pietro Perona, Deva Ramanan, Piotr Dollár, and C Lawrence Zitnick. 2014. Microsoft
+coco: Common objects in context. In ECCV. 740–755.
+[117] Chenxi Liu, Kethmi Hirushini Hettige, Qianxiong Xu, Cheng Long, Shili Xiang, Gao Cong, Ziyue Li, and Rui Zhao. 2025. ST-LLM+: Graph Enhanced
+Spatio-Temporal Large Language Models for Traffic Prediction. IEEE Transactions on Knowledge and Data Engineering (2025).
+[118] Chenxi Liu, Qianxiong Xu, Hao Miao, Sun Yang, Lingzheng Zhang, Cheng Long, Ziyue Li, and Rui Zhao. 2025. Timecma: Towards llm-empowered
+multivariate time series forecasting via cross-modality alignment. In Proceedings of the AAAI Conference on Artificial Intelligence, Vol. 39. 18780–
+18788.
+[119] Haoxin Liu, Shangqing Xu, Zhiyuan Zhao, Lingkai Kong, Harshavardhan Prabhakar Kamarthi, Aditya Sasanur, Megha Sharma, Jiaming Cui,
+Qingsong Wen, Chao Zhang, et al. 2024. Time-mmd: Multi-domain multimodal dataset for time series analysis. Advances in Neural Information
+Processing Systems 37 (2024), 77888–77933.
+[120] Jing Liu, Yang Liu, Jieyu Lin, Jielin Li, Liang Cao, Peng Sun, Bo Hu, Liang Song, Azzedine Boukerche, and Victor C. M. Leung. 2025. Networking
+systems for video anomaly detection: A tutorial and survey. Comput. Surveys 57, 10, Article 270 (2025), 270:1–270:37 pages.
+[121] Lei Liu, Shuo Yu, Runze Wang, Zhenxun Ma, and Yanming Shen. 2024. How can large language models understand spatial-temporal data? arXiv
+preprint arXiv:2401.14192 (2024).
+[122] Minhao Liu, Ailing Zeng, Muxi Chen, Zhijian Xu, Qiuxia Lai, Lingna Ma, and Qiang Xu. 2022. SCINet: Time Series Modeling and Forecasting with
+Sample Convolution and Interaction. In NeurIPS.
+[123] Qingxiang Liu, Xu Liu, Chenghao Liu, Qingsong Wen, and Yuxuan Liang. 2024. Time-ffm: Towards lm-empowered federated foundation model for
+time series forecasting. Advances in Neural Information Processing Systems 37 (2024), 94512–94538.
+[124] Shuming Liu, Chen Zhao, Tianqi Xu, and Bernard Ghanem. 2025. BOLT: Boost Large Vision-Language Model Without Training for Long-form
+Video Understanding. In Proceedings of the Computer Vision and Pattern Recognition Conference. 3318–3327.
+[125] Xu Liu, Taha Aksu, Juncheng Liu, Qingsong Wen, Yuxuan Liang, Caiming Xiong, Silvio Savarese, Doyen Sahoo, Junnan Li, and Chenghao Liu. 2025.
+Empowering Time Series Analysis with Synthetic Data: A Survey and Outlook in the Era of Foundation Models. arXiv preprint arXiv:2503.11411
+(2025).
+[126] Xu Liu, Junfeng Hu, Yuan Li, Shizhe Diao, Yuxuan Liang, Bryan Hooi, and Roger Zimmermann. 2024. Unitime: A language-empowered unified
+model for cross-domain time series forecasting. In Proceedings of the ACM Web Conference 2024. 4095–4106.
+[127] Xu Liu, Yutong Xia, Yuxuan Liang, Junfeng Hu, Yiwei Wang, Lei Bai, Chao Huang, Zhenguang Liu, Bryan Hooi, and Roger Zimmermann. 2023.
+LargeST: A Benchmark Dataset for Large-Scale Traffic Forecasting. In Advances in Neural Information Processing Systems.
+[128] Xiao Liu, Fanjin Zhang, Zhenyu Hou, Li Mian, Zhaoyu Wang, Jing Zhang, and Jie Tang. 2021. Self-supervised learning: Generative or contrastive.
+IEEE transactions on knowledge and data engineering 35, 1 (2021), 857–876.
+[129] Xiao-Yang Liu, Guoxuan Wang, Hongyang Yang, and Daochen Zha. 2023. Data-centric FinGPT: Democratizing Internet-scale Data for Financial
+Large Language Models. NeurIPS Workshop on Instruction Tuning and Instruction Following (2023).
+[130] Xiao-Yang Liu, Hongyang Yang, Qian Chen, Runjia Zhang, Liuqing Yang, Bowen Xiao, and Christina Dan Wang. 2020. FinRL: A deep reinforcement
+learning library for automated stock trading in quantitative finance. arXiv preprint arXiv:2011.09607 (2020).
+[131] Yong Liu, Guo Qin, Zhiyuan Shi, Zhi Chen, Caiyin Yang, Xiangdong Huang, Jianmin Wang, and Mingsheng Long. 2025. Sundial: A Family of
+Highly Capable Time Series Foundation Models. In Forty-second International Conference on Machine Learning.
+[132] Yong Liu, Haoran Zhang, Chenyu Li, Xiangdong Huang, Jianmin Wang, and Mingsheng Long. 2024. Timer: generative pre-trained transformers
+are large time series models. In Proceedings of the 41st International Conference on Machine Learning (Vienna, Austria) (ICML’24). JMLR.org, Article
+1313, 31 pages.
+[133] Ziyang Liu and Chaokun Wang. 2025. TeRDy: Temporal Relation Dynamics through Frequency Decomposition for Temporal Knowledge Graph
+Completion. In Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers). 9611–9622.
+[134] Alejandro Lopez-Lira and Yuehua Tang. 2025. Can chatgpt forecast stock price movements? return predictability and large language models. arXiv
+preprint arXiv:2304.07619 (2025).
+[135] Jiasen Lu, Dhruv Batra, Devi Parikh, and Stefan Lee. 2019. Vilbert: Pretraining task-agnostic visiolinguistic representations for vision-and-language
+tasks. In NeurIPS, Vol. 32.
+Manuscript submitted to ACM
+
+30
+
+Jin et al.
+
+[136] Ruilin Luo, Tianle Gu, Haoling Li, Junzhe Li, Zicheng Lin, Jiayi Li, and Yujiu Yang. 2024. Chain of History: Learning and Forecasting with LLMs for
+Temporal Knowledge Graph Completion. arXiv preprint arXiv:2401.06072 (2024).
+[137] Ruipu Luo, Ziwang Zhao, Min Yang, Junwei Dong, Minghui Qiu, Pengcheng Lu, Tao Wang, and Zhongyu Wei. 2025. Valley: Video Assistant with
+Large Language model Enhanced ability. arXiv preprint arXiv:2306.07207 (2025).
+[138] Zhengxiong Luo, Dayou Chen, Yingya Zhang, Yan Huang, Liang Wang, Yujun Shen, Deli Zhao, Jingren Zhou, and Tieniu Tan. 2023. VideoFusion:
+Decomposed Diffusion Models for High-Quality Video Generation. In CVPR. 10209–10218.
+[139] Qianli Ma, Zhen Liu, Zhenjing Zheng, Ziyang Huang, Siying Zhu, Zhongzhong Yu, and James T. Kwok. 2024. A Survey on Time-Series Pre-Trained
+Models. IEEE Transactions on Knowledge and Data Engineering 36, 12 (2024), 7536–7555.
+[140] Muhammad Maaz, Hanoona Rasheed, Salman Khan, and Fahad Khan. 2024. Video-ChatGPT: Towards Detailed Video Understanding via Large
+Vision and Language Models. In Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers).
+Association for Computational Linguistics, Bangkok, Thailand, 12585–12602.
+[141] Neelu Madan, Andreas Møgelmose, Rajat Modi, Yogesh S Rawat, and Thomas B Moeslund. 2024. Foundation models for video understanding: A
+survey. arXiv preprint arXiv:2405.03770 (2024).
+[142] Gengchen Mai, Weiming Huang, Jin Sun, Suhang Song, Deepak Mishra, Ninghao Liu, Song Gao, Tianming Liu, Gao Cong, Yingjie Hu, et al. 2023.
+On the opportunities and challenges of foundation models for geospatial artificial intelligence. arXiv preprint arXiv:2304.06798 (2023).
+[143] Spyros Makridakis, Evangelos Spiliotis, and Vassilios Assimakopoulos. 2018. The M4 Competition: Results, findings, conclusion and way forward.
+International Journal of Forecasting 34, 4 (2018), 802–808.
+[144] George Mathew, Daniel Barbosa, John Prince, and Subramaniam Venkatraman. 2024. Foundation models for cardiovascular disease detection via
+biosignals from digital stethoscopes. npj Cardiovascular Health 1, 1 (2024), 25.
+[145] Daiki Matsunaga, Toyotaro Suzumura, and Toshihiro Takahashi. 2019. Exploring graph neural networks for stock market predictions with rolling
+window analysis. arXiv preprint arXiv:1909.10660 (2019).
+[146] Kaden McKeen, Sara Masood, Augustin Toma, Barry Rubin, and Bo Wang. 2025. ECG-FM: an open electrocardiogram foundation model. JAMIA
+Open 8, 5 (16 oct 2025), ooaf122.
+[147] Temesgen Mehari and Nils Strodthoff. 2022. Self-supervised representation learning from 12-lead ECG data. Computers in biology and medicine 141
+(2022), 105114.
+[148] Hongyuan Mei and Jason Eisner. 2017. The neural hawkes process: a neurally self-modulating multivariate point process (NIPS’17). Curran
+Associates Inc., Red Hook, NY, USA, 6757–6767.
+[149] Hongyuan Mei, Guanghui Qin, Minjie Xu, and Jason Eisner. 2020. Neural Datalog Through Time: Informed Temporal Modeling via Logical
+Specification. In NeurIPS.
+[150] Sachit Menon and Carl Vondrick. 2023. Visual Classification via Description from Large Language Models. In The Eleventh International Conference
+on Learning Representations.
+[151] Tomas Mikolov, Martin Karafiát, Lukas Burget, Jan Cernockỳ, and Sanjeev Khudanpur. 2010. Recurrent neural network based language model. In
+Interspeech. 1045–1048.
+[152] Suvir Mirchandani, Fei Xia, Pete Florence, brian ichter, Danny Driess, Montserrat Gonzalez Arenas, Kanishka Rao, Dorsa Sadigh, and Andy Zeng.
+2023. Large Language Models as General Pattern Machines. In 7th Annual Conference on Robot Learning.
+[153] Clément Mommessin, Renyu Yang, Natalia V. Shakhlevich, Xiaoyang Sun, Satish Kumar, Junqing Xiao, and Jie Xu. 2023. Affinity-aware resource
+provisioning for long-running applications in shared clusters. J. Parallel Distrib. Comput. 177, C (July 2023), 1–16.
+[154] Michael Moor, Oishi Banerjee, Zahra Shakeri Hossein Abad, Harlan M Krumholz, Jure Leskovec, Eric J Topol, and Pranav Rajpurkar. 2023.
+Foundation models for generalist medical artificial intelligence. Nature 616, 7956 (2023), 259–265.
+[155] Niklas Muennighoff, Thomas Wang, Lintang Sutawika, Adam Roberts, Stella Biderman, Teven Le Scao, M Saiful Bari, Sheng Shen, Zheng Xin
+Yong, Hailey Schoelkopf, et al. 2023. Crosslingual Generalization through Multitask Finetuning. In Proceedings of the 61st Annual Meeting of the
+Association for Computational Linguistics (Volume 1: Long Papers). Association for Computational Linguistics, Toronto, Canada, 15991–16111.
+[156] Tung Nguyen, Johannes Brandstetter, Ashish Kapoor, Jayesh K Gupta, and Aditya Grover. 2023. ClimaX: A foundation model for weather and
+climate. In ICML.
+[157] Yuqi Nie, Nam H Nguyen, Phanwadee Sinthong, and Jayant Kalagnanam. 2023. A time series is worth 64 words: Long-term forecasting with
+transformers. In ICLR.
+[158] Ryan Ong, Jiahao Sun, Yi-Ke Guo, and Ovidiu Serban. 2025. Dynamic link prediction: Using language models and graph structures for temporal
+knowledge graph completion with emerging entities and relations. Expert Systems with Applications 272 (2025), 126648.
+[159] OpenAI. 2023. GPT-4 Technical Report. ArXiv abs/2303.08774 (2023).
+[160] Boris N. Oreshkin, Dmitri Carpov, Nicolas Chapados, and Yoshua Bengio. 2020. N-BEATS: Neural basis expansion analysis for interpretable time
+series forecasting. In International Conference on Learning Representations.
+[161] Zheyi Pan, Songyu Ke, Xiaodu Yang, Yuxuan Liang, Yong Yu, Junbo Zhang, and Yu Zheng. 2021. AutoSTG: Neural Architecture Search for
+Predictions of Spatio-Temporal Graph. In WWW. 1846–1855.
+[162] Zheyi Pan, Wentao Zhang, Yuxuan Liang, Weinan Zhang, Yong Yu, Junbo Zhang, and Yu Zheng. 2020. Spatio-temporal meta learning for urban
+traffic prediction. IEEE Transactions on Knowledge and Data Engineering 34, 3 (2020), 1462–1476.
+Manuscript submitted to ACM
+
+Large Models for Time Series and Spatio-Temporal Data: A Survey and Outlook
+
+31
+
+[163] Yifan Peng, Shankai Yan, and Zhiyong Lu. 2019. Transfer Learning in Biomedical Natural Language Processing: An Evaluation of BERT and ELMo
+on Ten Benchmarking Datasets. In Proceedings of the 18th BioNLP Workshop and Shared Task. Association for Computational Linguistics, Florence,
+Italy, 58–65.
+[164] Ehsan Qasemi, Jonathan M Francis, and Alessandro Oltramari. 2023. Traffic-Domain Video Question Answering with Automatic Captioning. arXiv
+preprint arXiv:2307.09636 (2023).
+[165] Hongzhi Qi, Guanghui Fu, Jianqiang Li, Changwei Song, Wei Zhai, Dan Luo, Shuo Liu, Yijing Yu, Bingxiang Yang, and Qing Zhao. 2025. Supervised
+Learning and Large Language Model Benchmarks on Mental Health Datasets: Cognitive Distortions and Suicidal Risks in Chinese Social Media.
+Bioengineering 12, 8 (2025), 882.
+[166] Yan Qin, Qingyue Huang, Liang Cao, Wei Dai, and Chau Yuen. 2026. Source-free foundation model-enabled transferable state of health estimation
+for lithium-ion batteries with intelligent adapter mapping. Pattern Recognition 179 (2026), 113498.
+[167] Yao Qin, Dongjin Song, Haifeng Cheng, Wei Cheng, Guofei Jiang, and Garrison W. Cottrell. 2017. A dual-stage attention-based recurrent neural
+network for time series prediction. In Proceedings of the 26th International Joint Conference on Artificial Intelligence (Melbourne, Australia) (IJCAI’17).
+AAAI Press, 2627–2633.
+[168] Alec Radford, Jong Wook Kim, Chris Hallacy, Aditya Ramesh, Gabriel Goh, Sandhini Agarwal, Girish Sastry, Amanda Askell, Pamela Mishkin, Jack
+Clark, Gretchen Krueger, and Ilya Sutskever. 2021. Learning Transferable Visual Models From Natural Language Supervision. In Proceedings of the
+38th International Conference on Machine Learning (Proceedings of Machine Learning Research, Vol. 139), Marina Meila and Tong Zhang (Eds.). PMLR,
+8748–8763.
+[169] Alec Radford, Jeffrey Wu, Rewon Child, David Luan, Dario Amodei, Ilya Sutskever, et al. 2019. Language models are unsupervised multitask
+learners. OpenAI blog 1, 8 (2019), 9.
+[170] Aditya Ramesh, Prafulla Dhariwal, Alex Nichol, Casey Chu, and Mark Chen. 2022. Hierarchical text-conditional image generation with clip latents.
+arXiv preprint arXiv:2204.06125 1, 2 (2022), 3.
+[171] Jiayuan Rao, Haoning Wu, Hao Jiang, Ya Zhang, Yanfeng Wang, and Weidi Xie. 2025. Towards universal soccer video understanding. In Proceedings
+of the Computer Vision and Pattern Recognition Conference. 8384–8394.
+[172] Kashif Rasul, Arjun Ashok, Andrew Robert Williams, Arian Khorasani, George Adamopoulos, Rishika Bhagwatkar, Marin Biloš, Hena Ghonia,
+Nadhir Hassen, Anderson Schneider, et al. 2023. Lag-llama: Towards foundation models for time series forecasting. In R0-FoMo: Robustness of
+Few-shot and Zero-shot Learning in Large Foundation Models.
+[173] Alex Reneau, Jerry Yao-Chieh Hu, Ammar Gilani, and Han Liu. 2023. Feature programming for multivariate time series prediction. In Proceedings
+of the 40th International Conference on Machine Learning (Honolulu, Hawaii, USA) (ICML’23). JMLR.org, Article 1204, 21 pages.
+[174] Benedek Rozemberczki, Paul Scherer, Yixuan He, George Panagopoulos, Alexander Riedel, Maria Astefanoaei, Oliver Kiss, Ferenc Beres, Guzman
+Lopez, Nicolas Collignon, and Rik Sarkar. 2021. PyTorch Geometric Temporal: Spatiotemporal Signal Processing with Neural Machine Learning
+Models. In CIKM. 4564–4573.
+[175] Zahraa Al Sahili and Mariette Awad. 2023. Spatio-Temporal Graph Neural Networks: A Survey. arXiv preprint arXiv:2301.10569 (2023).
+[176] Ramit Sawhney, Shivam Agarwal, Arnav Wadhwa, and Rajiv Shah. 2020. Deep attentive learning for stock movement prediction from social media
+text and company correlations. In EMNLP. 8415–8426.
+[177] Patrick Schäfer, Arik Ermshaus, and Ulf Leser. 2021. ClaSP - Time Series Segmentation. In CIKM.
+[178] Patrick Schäfer and Ulf Leser. 2023. WEASEL 2.0: a random dilated dictionary transform for fast, accurate and memory constrained time series
+classification. Machine Learning 112, 12 (dec 2023), 4763–4788. doi:10.1007/s10994-023-06395-w
+[179] Javier Selva, Anders S Johansen, Sergio Escalera, Kamal Nasrollahi, Thomas B Moeslund, and Albert Clapés. 2023. Video transformers: A survey.
+IEEE Transactions on Pattern Analysis and Machine Intelligence (2023).
+[180] Omer Berat Sezer, Mehmet Ugur Gudelek, and Ahmet Murat Ozbayoglu. 2020. Financial time series forecasting with deep learning: A systematic
+literature review: 2005–2019. Applied soft computing 90 (2020), 106181.
+[181] Zezhi Shao, Zhao Zhang, Fei Wang, and Yongjun Xu. 2022. Pre-training enhanced spatial-temporal graph neural network for multivariate time
+series forecasting. In SIGKDD. 1567–1577.
+[182] Feifei Shi, Xueyan Yin, Kang Wang, Wanyu Tu, Qifu Sun, and Huansheng Ning. 2025. Large Language models for Time Series Analysis: Techniques,
+Applications, and Challenges. arXiv preprint arXiv:2506.11040 (2025).
+[183] Lei Shi, Yifan Zhang, Jian Cheng, and Hanqing Lu. 2019. Skeleton-based action recognition with directed graph neural networks. In Proceedings of
+the IEEE/CVF conference on computer vision and pattern recognition. 7912–7921.
+[184] Xiaoming Shi, Shiyu Wang, Yuqi Nie, Dianqi Li, Zhou Ye, Qingsong Wen, and Ming Jin. 2025. Time-MoE: Billion-Scale Time Series Foundation
+Models with Mixture of Experts. In The Thirteenth International Conference on Learning Representations.
+[185] Xiaoming Shi, Siqiao Xue, Kangrui Wang, Fan Zhou, James Y Zhang, Jun Zhou, Chenhao Tan, and Hongyuan Mei. 2023. Language Models Can
+Improve Event Prediction by Few-Shot Abductive Reasoning. In NeurIPS.
+[186] Yan Shu, Zheng Liu, Peitian Zhang, Minghao Qin, Junjie Zhou, Zhengyang Liang, Tiejun Huang, and Bo Zhao. 2025. Video-xl: Extra-long vision
+language model for hour-scale video understanding. In Proceedings of the Computer Vision and Pattern Recognition Conference. 26160–26169.
+[187] Karan Singhal, Shekoofeh Azizi, Tao Tu, et al. 2023. Large language models encode clinical knowledge. Nature 620, 7972 (aug 2023), 172–180.
+[188] Enxin Song, Wenhao Chai, Guanhong Wang, Yucheng Zhang, Haoyang Zhou, Feiyang Wu, Haozhe Chi, Xun Guo, Tian Ye, Yanting Zhang, et al.
+2024. Moviechat: From dense token to sparse memory for long video understanding. In Proceedings of the IEEE/CVF Conference on Computer Vision
+Manuscript submitted to ACM
+
+32
+
+Jin et al.
+
+and Pattern Recognition. 18221–18232.
+[189] Dan Su, Yan Xu, Genta Indra Winata, Peng Xu, Hyeondey Kim, Zihan Liu, and Pascale Fung. 2019. Generalizing question answering system with
+pre-trained language model fine-tuning. In MRQA@ACL. 203–211.
+[190] Hung-Ting Su, Yulei Niu, Xudong Lin, Winston H Hsu, and Shih-Fu Chang. 2023. Language Models are Causal Knowledge Extractors for Zero-shot
+Video Question Answering. In CVPR. 4950–4959.
+[191] Fabian M. Suchanek, Gjergji Kasneci, and Gerhard Weikum. 2007. Yago: A Core of Semantic Knowledge. In WWW. 697–706.
+[192] Guangzhi Sun, Yudong Yang, Jimin Zhuang, Changli Tang, Yixuan Li, Wei Li, Zejun MA, and Chao Zhang. 2025. video-SALMONN-o1: Reasoningenhanced Audio-visual Large Language Model. In Forty-second International Conference on Machine Learning.
+[193] Tianxiang Sun, Yunfan Shao, Hong Qian, Xuanjing Huang, and Xipeng Qiu. 2022. Black-box tuning for language-model-as-a-service. In ICML.
+20841–20855.
+[194] Cheng Tan, Siyuan Li, Zhangyang Gao, Wenfei Guan, Zedong Wang, Zicheng Liu, Lirong Wu, and Stan Z Li. 2023. OpenSTL: A Comprehensive
+Benchmark of Spatio-Temporal Predictive Learning. In NeurIPS.
+[195] Chen Tang, Xinzhu Ma, Encheng Su, Xiufeng Song, Xiaohong Liu, Wei-Hong Li, Lei Bai, Wanli Ouyang, and Xiangyu Yue. 2025. UniSTD:
+Towards Unified Spatio-Temporal Learning across Diverse Disciplines. In Proceedings of the Computer Vision and Pattern Recognition Conference.
+29213–29224.
+[196] Guo Tang, Zheng Chu, Wenxiang Zheng, Junjia Xiang, Yizhuo Li, Weihao Zhang, Ming Liu, and Bing Qin. 2025. AnRe: Analogical Replay for
+Temporal Knowledge Graph Forecasting. In Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long
+Papers). 4632–4650.
+[197] Hao Tang, Kevin Ellis, Suhas Lohit, Michael J Jones, and Moitreya Chatterjee. 2025. Programmatic Video Prediction Using Large Language Models.
+arXiv preprint arXiv:2505.14948 (2025).
+[198] Rohan Taori, Ishaan Gulrajani, Tianyi Zhang, Yann Dubois, Xuechen Li, Carlos Guestrin, Percy Liang, and Tatsunori B Hashimoto. 2023. Alpaca: A
+strong, replicable instruction-following model. Stanford CRFM (2023).
+[199] Arun James Thirunavukarasu, Darren Shu Jeng Ting, Kabilan Elangovan, et al. 2023. Large language models in medicine. Nature Medicine 29, 8
+(aug 2023), 1930–1940.
+[200] Hugo Touvron, Thibaut Lavril, Gautier Izacard, Xavier Martinet, Marie-Anne Lachaux, Timothée Lacroix, Baptiste Rozière, Naman Goyal, Eric
+Hambro, Faisal Azhar, et al. 2023. Llama: Open and efficient foundation language models. arXiv preprint arXiv:2302.13971 (2023).
+[201] Hugo Touvron, Louis Martin, Kevin Stone, Peter Albert, Amjad Almahairi, Yasmine Babaei, Nikolay Bashlykov, Soumya Batra, Prajjwal Bhargava,
+Shruti Bhosale, et al. 2023. Llama 2: Open foundation and fine-tuned chat models. arXiv preprint arXiv:2307.09288 (2023).
+[202] Du Tran, Lubomir Bourdev, Rob Fergus, Lorenzo Torresani, and Manohar Paluri. 2015. Learning spatiotemporal features with 3d convolutional
+networks. In ICCV. 4489–4497.
+[203] Rakshit Trivedi, Hanjun Dai, Yichen Wang, and Le Song. 2017. Know-Evolve: Deep Temporal Reasoning for Dynamic Knowledge Graphs. In ICML.
+[204] Rakshit Trivedi, Mehrdad Farajtabar, Prasenjeet Biswal, and Hongyuan Zha. 2019. DyRep: Learning Representations over Dynamic Graphs. In
+ICLR.
+[205] Ruey S Tsay. 2005. Analysis of financial time series. John wiley & sons.
+[206] Maria Tsimpoukelli, Jacob L Menick, Serkan Cabi, SM Eslami, Oriol Vinyals, and Felix Hill. 2021. Multimodal few-shot learning with frozen
+language models. In NeurIPS, Vol. 34. 200–212.
+[207] Sarvesh Vishwakarma and Anupam Agrawal. 2013. A survey on activity recognition and behavior understanding in video surveillance. The Visual
+Computer 29 (2013), 983–1009.
+[208] Denny Vrandečić and Markus Krötzsch. 2014. Wikidata: A Free Collaborative Knowledgebase. Commun. ACM 57, 10 (2014), 78–85.
+[209] Patrick Wagner, Nils Strodthoff, Ralf-Dieter Bousseljot, Dieter Kreiseler, Fatima Lunze, Wojciech Samek, and Tobias Schaeffter. 2020. PTB-XL, a
+large publicly available electrocardiography dataset. Scientific Data 7 (2020), 154.
+[210] Chengsen Wang, Qi Qi, Jingyu Wang, Haifeng Sun, Zirui Zhuang, Jinming Wu, Lei Zhang, and Jianxin Liao. 2025. Chattime: A unified multimodal
+time series foundation model bridging numerical and textual data. In Proceedings of the AAAI Conference on Artificial Intelligence, Vol. 39.
+12694–12702.
+[211] Hao Wang, Jindong Han, Wei Fan, Leilei Sun, and Hao Liu. 2025. RePST: Language Model Empowered Spatio-Temporal Forecasting via SemanticOriented Reprogramming. In Proceedings of the 34th International Joint Conference on Artificial Intelligence.
+[212] Honggang Wang, Ye Li, Wenzhi Zhao, Haozhe Zhu, Jin Zhang, and Xuening Wu. 2025. GSF-LLM: Graph-Enhanced Spatio-Temporal Fusion-Based
+Large Language Model for Traffic Prediction. Sensors 25, 21 (2025), 6698.
+[213] Junke Wang, Dongdong Chen, Zuxuan Wu, Chong Luo, Luowei Zhou, Yucheng Zhao, Yujia Xie, Ce Liu, Yu-Gang Jiang, and Lu Yuan. 2022. Omnivl:
+One foundation model for image-language and video-language tasks. In NeurIPS, Vol. 35. 5696–5710.
+[214] Jikuo Wang, Xu Qiao, Changchun Liu, Xinpei Wang, YuanYuan Liu, Lianke Yao, and Huan Zhang. 2021. Automated ECG classification using a
+non-local convolutional block attention module. Computer Methods and Programs in Biomedicine 203 (2021), 106006.
+[215] Jiapu Wang, Kai Sun, Linhao Luo, Wei Wei, Yongli Hu, Alan W Liew, Shirui Pan, and Baocai Yin. 2024. Large language models-guided dynamic
+adaptation for temporal knowledge graph reasoning. Advances in Neural Information Processing Systems 37 (2024), 8384–8410.
+[216] Limin Wang, Yuanjun Xiong, Zhe Wang, Yu Qiao, Dahua Lin, Xiaoou Tang, and Luc Van Gool. 2018. Temporal segment networks for action
+recognition in videos. IEEE transactions on pattern analysis and machine intelligence 41, 11 (2018), 2740–2755.
+Manuscript submitted to ACM
+
+Large Models for Time Series and Spatio-Temporal Data: A Survey and Outlook
+
+33
+
+[217] Mengyu Wang, Tiejun Ma, and Shay B Cohen. 2025. Pre-training Time Series Models with Stock Data Customization. In Proceedings of the 31st
+ACM SIGKDD Conference on Knowledge Discovery and Data Mining V. 2. 3019–3030.
+[218] Shiyu Wang, Jiawei LI, Xiaoming Shi, Zhou Ye, Baichuan Mo, Wenze Lin, Ju Shengtong, Zhixuan Chu, and Ming Jin. 2025. TimeMixer++: A General
+Time Series Pattern Machine for Universal Predictive Analysis. In The Thirteenth International Conference on Learning Representations.
+[219] Shuo Wang, Yanran Li, Jiang Zhang, Qingye Meng, Lingwei Meng, and Fei Gao. 2020. PM2. 5-GNN: A domain knowledge enhanced graph neural
+network for PM2. 5 forecasting. In SIGSPATIAL. 163–166.
+[220] Wenhai Wang, Jifeng Dai, Zhe Chen, Zhenhang Huang, Zhiqi Li, Xizhou Zhu, Xiaowei Hu, Tong Lu, Lewei Lu, Hongsheng Li, et al. 2023. Internimage:
+Exploring large-scale vision foundation models with deformable convolutions. In CVPR. 14408–14419.
+[221] Wenjing Wang, Huan Yang, Zixi Tuo, Huiguo He, Junchen Zhu, Jianlong Fu, and Jiaying Liu. 2023. VideoFactory: Swap Attention in Spatiotemporal
+Diffusions for Text-to-Video Generation. arXiv preprint arXiv:2305.10874 (2023).
+[222] Xinglei Wang, Meng Fang, Zichao Zeng, and Tao Cheng. 2024. Where Would I Go Next? Large Language Models as Human Mobility Predictors.
+arXiv preprint arXiv:2308.15197 (2024).
+[223] Xuhong Wang, Ding Wang, Liang Chen, and Yilun Lin. 2023. Building Transportation Foundation Model via Generative Graph Transformer. arXiv
+preprint arXiv:2305.14826 (2023).
+[224] Yan Wang, Zhixuan Chu, Tao Zhou, Caigao Jiang, Hongyan Hao, Minjie Zhu, Xindong Cai, Qing Cui, Longfei Li, James Zhang, Siqiao Xue, and Jun
+Zhou. 2022. Enhancing Event Sequence Modeling with Contrastive Relational Inference. In NeurIPS, Vol. 35. 23751–23764.
+[225] Yi Wang, Kunchang Li, Xinhao Li, Jiashuo Yu, Yinan He, Guo Chen, Baoqi Pei, Rongkun Zheng, Zun Wang, Yansong Shi, et al. 2024. Internvideo2:
+Scaling foundation models for multimodal video understanding. In European Conference on Computer Vision. Springer, 396–416.
+[226] Yimu Wang, Xuye Liu, Wei Pang, Li Ma, Shuai Yuan, Paul Debevec, and Ning Yu. 2025. Survey of Video Diffusion Models: Foundations,
+Implementations, and Applications. Transactions on Machine Learning Research (2025).
+[227] Zhenhailong Wang, Ansel Blume, Sha Li, Genglin Liu, Jaemin Cho, Zineng Tang, Mohit Bansal, and Heng Ji. 2023. Paxion: Patching Action
+Knowledge in Video-Language Foundation Models. In Thirty-seventh Conference on Neural Information Processing Systems.
+[228] Zihao Wang, Shaofei Cai, Guanzhou Chen, Anji Liu, Xiaojian Ma, and Yitao Liang. 2023. Describe, Explain, Plan and Select: Interactive Planning
+with LLMs Enables Open-World Multi-Task Agents. In Thirty-seventh Conference on Neural Information Processing Systems.
+[229] Zehong Wang, Zheyuan Liu, Tianyi Ma, Jiazheng Li, Zheyuan Zhang, Xingbo Fu, Yiyang Li, Zhengqing Yuan, Wei Song, Yijun Ma, et al. 2025.
+Graph Foundation Models: A Comprehensive Survey. arXiv preprint arXiv:2505.15116 (2025).
+[230] Jason Wei, Yi Tay, Rishi Bommasani, Colin Raffel, Barret Zoph, Sebastian Borgeaud, Dani Yogatama, Maarten Bosma, Denny Zhou, Donald Metzler,
+et al. 2022. Emergent Abilities of Large Language Models. Transactions on Machine Learning Research (2022).
+[231] Jason Wei, Xuezhi Wang, Dale Schuurmans, Maarten Bosma, Fei Xia, Ed Chi, Quoc V Le, Denny Zhou, et al. 2022. Chain-of-thought prompting
+elicits reasoning in large language models. In NeurIPS, Vol. 35. 24824–24837.
+[232] Karl Weiss, Taghi M Khoshgoftaar, and DingDing Wang. 2016. A survey of transfer learning. Journal of Big data 3, 1 (2016), 1–40.
+[233] Qingsong Wen, Linxiao Yang, Tian Zhou, and Liang Sun. 2022. Robust time series analysis and applications: An industrial perspective. In SIGKDD.
+4836–4837.
+[234] Qingsong Wen, Tian Zhou, Chaoli Zhang, Weiqi Chen, Ziqing Ma, Junchi Yan, and Liang Sun. 2023. Transformers in time series: A survey. In IJCAI.
+6778–6786.
+[235] Gerald Woo, Chenghao Liu, Akshat Kumar, Caiming Xiong, Silvio Savarese, and Doyen Sahoo. 2024. Unified Training of Universal Time Series
+Forecasting Transformers. In Proceedings of the 41st International Conference on Machine Learning (ICML) (Proceedings of Machine Learning Research,
+Vol. 235). PMLR, 53140–53164.
+[236] Qiong Wu, Jian Li, Zhenming Liu, Yanhua Li, and Mihai Cucuringu. 2023. Symphony in the latent space: provably integrating high-dimensional
+techniques with non-linear machine learning models. In AAAI, Vol. 37. 10361–10369.
+[237] Shengqiong Wu, Hao Fei, Leigang Qu, Wei Ji, and Tat-Seng Chua. 2024. NExT-GPT: any-to-any multimodal LLM. In Proceedings of the 41st
+International Conference on Machine Learning (Vienna, Austria) (ICML’24). JMLR.org, Article 2187, 32 pages.
+[238] Zhenyu Wu, Ziwei Wang, Xiuwei Xu, Jiwen Lu, and Haibin Yan. 2023. Embodied task planning with large language models. arXiv preprint
+arXiv:2307.01848 (2023).
+[239] Yutong Xia, Yuxuan Liang, Haomin Wen, Xu Liu, Kun Wang, Zhengyang Zhou, and Roger Zimmermann. 2023. Deciphering Spatio-Temporal
+Graph Forecasting: A Causal Lens and Treatment. In Thirty-seventh Conference on Neural Information Processing Systems.
+[240] Yuwei Xia, Ding Wang, Qiang Liu, Liang Wang, Shu Wu, and Xiao-Yu Zhang. 2024. Chain-of-History Reasoning for Temporal Knowledge
+Graph Forecasting. In Findings of the Association for Computational Linguistics: ACL 2024, Lun-Wei Ku, Andre Martins, and Vivek Srikumar (Eds.).
+Association for Computational Linguistics, Bangkok, Thailand, 16144–16159.
+[241] Aoran Xiao, Jiaxing Huang, Dayan Guan, Xiaoqin Zhang, Shijian Lu, and Ling Shao. 2023. Unsupervised point cloud representation learning with
+deep neural networks: A survey. IEEE Transactions on Pattern Analysis and Machine Intelligence (2023).
+[242] Qianqian Xie, Weiguang Han, Xiao Zhang, Yanzhao Lai, Min Peng, Alejandro Lopez-Lira, and Jimin Huang. 2023. PIXIU: a large language model,
+instruction data and evaluation benchmark for finance (NIPS ’23). Curran Associates Inc., Red Hook, NY, USA, Article 1454, 16 pages.
+[243] Yong Xie, Dakuo Wang, Pin-Yu Chen, Jinjun Xiong, Sijia Liu, and Oluwasanmi Koyejo. 2022. A Word is Worth A Thousand Dollars: Adversarial
+Attack on Tweets Fools Stock Prediction. In Proceedings of the 2022 Conference of the North American Chapter of the Association for Computational
+Linguistics: Human Language Technologies. Association for Computational Linguistics, Seattle, United States, 587–599.
+Manuscript submitted to ACM
+
+34
+
+Jin et al.
+
+[244] Zhe Xie, Zeyan Li, Xiao He, Longlong Xu, Xidao Wen, Tieying Zhang, Jianjun Chen, Rui Shi, and Dan Pei. 2025. ChatTS: Aligning Time Series with
+LLMs via Synthetic Data for Enhanced Understanding and Reasoning. Proc. VLDB Endow. 18, 8 (April 2025), 2385–2398.
+[245] Huijuan Xu, Abir Das, and Kate Saenko. 2017. R-c3d: Region convolutional 3d network for temporal activity detection. In ICCV. 5783–5792.
+[246] Haojun Xu, Yan Gao, Zheng Hui, Jie Li, and Xinbo Gao. 2023. Language Knowledge-Assisted Representation Learning for Skeleton-Based Action
+Recognition. arXiv preprint arXiv:2305.12398 (2023).
+[247] Haiyang Xu, Qinghao Ye, Xuan Wu, Ming Yan, Yuan Miao, Jiabo Ye, Guohai Xu, Anwen Hu, Yaya Shi, Guangwei Xu, et al. 2023. Youku-mPLUG: A
+10 Million Large-scale Chinese Video-Language Dataset for Pre-training and Benchmarks. arXiv preprint arXiv:2306.04362 (2023).
+[248] Haiyang Xu, Qinghao Ye, Ming Yan, Yaya Shi, Jiabo Ye, Yuanhong Xu, Chenliang Li, Bin Bi, Qi Qian, Wei Wang, et al. 2023. mplug-2: A modularized
+multi-modal foundation model across text, image and video. In ICML.
+[249] Jie Xu, Benjamin S Glicksberg, Chang Su, Peter Walker, Jiang Bian, and Fei Wang. 2021. Federated learning for healthcare informatics. Journal of
+Healthcare Informatics Research 5 (2021), 1–19.
+[250] Jiaqi Xu, Bo Liu, Yunkuo Chen, Mengli Cheng, and Xing Shi. 2023. MuLTI: Efficient Video-and-Language Understanding with MultiWay-Sampler
+and Multiple Choice Modeling. arXiv preprint arXiv:2303.05707 (2023).
+[251] Jun Xu, Tao Mei, Ting Yao, and Yong Rui. 2016. Msr-vtt: A large video description dataset for bridging video and language. In CVPR. 5288–5296.
+[252] Li Xu, He Huang, and Jun Liu. 2021. SUTD-TrafficQA: A Question Answering Benchmark and an Efficient Network for Video Reasoning Over
+Traffic Events. In CVPR. 9878–9888.
+[253] Peng Xu, Xiatian Zhu, and David A Clifton. 2023. Multimodal learning with transformers: A survey. IEEE Transactions on Pattern Analysis and
+Machine Intelligence (2023).
+[254] Wenjie Xu, Ben Liu, Miao Peng, Xu Jia, and Min Peng. 2023. Pre-trained Language Model with Prompts for Temporal Knowledge Graph Completion.
+In ACL.
+[255] Yumo Xu and Shay B Cohen. 2018. Stock movement prediction from tweets and historical prices. In ACL. 1970–1979.
+[256] Hao Xue and Flora D. Salim. 2024. PromptCast: A New Prompt-Based Learning Paradigm for Time Series Forecasting. IEEE Transactions on
+Knowledge and Data Engineering 36, 11 (2024), 6851–6864.
+[257] Siqiao Xue, Xiaoming Shi, Zhixuan Chu, Yan Wang, Hongyan Hao, Fan Zhou, Caigao JIANG, Chen Pan, James Y. Zhang, Qingsong Wen, JUN
+ZHOU, and Hongyuan Mei. 2024. EasyTPP: Towards Open Benchmarking Temporal Point Processes. In The Twelfth International Conference on
+Learning Representations.
+[258] Siqiao Xue, Xiaoming Shi, Hongyan Hao, Lintao Ma, James Zhang, Shiyu Wang, and Shijun Wang. 2021. A Graph Regularized Point Process Model
+For Event Propagation Sequence. In IJCNN. 1–7.
+[259] Siqiao Xue, Xiaoming Shi, Y James Zhang, and Hongyuan Mei. 2022. HYPRO: A Hybridly Normalized Probabilistic Model for Long-Horizon
+Prediction of Event Sequences. In NeurIPS.
+[260] Siqiao Xue, Yan Wang, Zhixuan Chu, Xiaoming Shi, Caigao Jiang, Hongyan Hao, Gangwei Jiang, Xiaoyun Feng, James Zhang, and Jun Zhou. 2023.
+Prompt-augmented Temporal Point Process for Streaming Event Sequence. In NeurIPS.
+[261] Siqiao Xue, Fan Zhou, Yi Xu, Ming Jin, Qingsong Wen, Hongyan Hao, Qingyang Dai, Caigao Jiang, Hongyu Zhao, Shuo Xie, et al. 2023. Weaverbird:
+Empowering financial decision-making with large language model, knowledge base, and search engine. arXiv preprint arXiv:2308.05361 (2023).
+[262] Hongyang Yang, Xiao-Yang Liu, and Christina Dan Wang. 2023. FinGPT: Open-Source Financial Large Language Models. arXiv preprint
+arXiv:2306.06031 (2023).
+[263] Xi Yang, Aokun Chen, Nima PourNejatian, Hoo Chang Shin, Kaleb E Smith, Christopher Parisien, Colin Compas, Cheryl Martin, Anthony B Costa,
+Mona G Flores, et al. 2022. A large language model for electronic health records. NPJ Digital Medicine 5, 1 (2022), 194.
+[264] Shuochao Yao, Shaohan Hu, Yiran Zhao, Aston Zhang, and Tarek Abdelzaher. 2017. Deepsense: A unified deep learning framework for time-series
+mobile sensing data processing. In WWW. 351–360.
+[265] Jiexia Ye, Weiqi Zhang, Ziyue Li, Jia Li, Meng Zhao, and Fugee Tsung. 2025. MedualTime: a dual-adapter language model for medical time series-text
+multimodal learning. In Proceedings of the Thirty-Fourth International Joint Conference on Artificial Intelligence (Montreal, Canada) (IJCAI ’25).
+Article 880, 9 pages.
+[266] Qinghao Ye, Guohai Xu, Ming Yan, Haiyang Xu, Qi Qian, Ji Zhang, and Fei Huang. 2023. HiTeA: Hierarchical Temporal-Aware Video-Language
+Pre-training. In 2023 IEEE/CVF International Conference on Computer Vision (ICCV). 15359–15370.
+[267] Qinghao Ye, Haiyang Xu, Jiabo Ye, Ming Yan, Anwen Hu, Haowei Liu, Qi Qian, Ji Zhang, and Fei Huang. 2024. mplug-owl2: Revolutionizing
+multi-modal large language model with modality collaboration. In Proceedings of the ieee/cvf conference on computer vision and pattern recognition.
+13040–13051.
+[268] Shukang Yin, Chaoyou Fu, Sirui Zhao, Ke Li, Xing Sun, Tong Xu, and Enhong Chen. 2024. A survey on multimodal large language models. National
+Science Review 11, 12 (dec 2024), nwae403.
+[269] G Udny Yule. 1926. Why do we sometimes get nonsense-correlations between Time-Series?–a study in sampling and the nature of time-series.
+Journal of the royal statistical society 89, 1 (1926), 1–63.
+[270] Rowan Zellers, Yonatan Bisk, Ali Farhadi, and Yejin Choi. 2019. From recognition to cognition: Visual commonsense reasoning. In CVPR. 6720–6731.
+[271] Andy Zeng, Maria Attarian, brian ichter, Krzysztof Marcin Choromanski, Adrian Wong, Stefan Welker, Federico Tombari, Aveek Purohit, Michael S
+Ryoo, et al. 2023. Socratic Models: Composing Zero-Shot Multimodal Reasoning with Language. In The Eleventh International Conference on
+Learning Representations.
+Manuscript submitted to ACM
+
+Large Models for Time Series and Spatio-Temporal Data: A Survey and Outlook
+
+35
+
+[272] Ailing Zeng, Muxi Chen, Lei Zhang, and Qiang Xu. 2023. Are Transformers Effective for Time Series Forecasting?. In AAAI.
+[273] Angela Zhang, Lei Xing, James Zou, and Joseph C Wu. 2022. Shifting machine learning for healthcare from development to deployment and from
+models to data. Nature Biomedical Engineering 6, 12 (2022), 1330–1345.
+[274] Biao Zhang, Barry Haddow, and Alexandra Birch. 2023. Prompting large language model for machine translation: a case study. In Proceedings of the
+40th International Conference on Machine Learning (Honolulu, Hawaii, USA) (ICML’23). JMLR.org, Article 1722, 19 pages.
+[275] Boqiang Zhang, Kehan Li, Zesen Cheng, Zhiqiang Hu, Yuqian Yuan, Guanzheng Chen, Sicong Leng, Yuming Jiang, Hang Zhang, Xin Li, et al. 2025.
+Videollama 3: Frontier multimodal foundation models for image and video understanding. arXiv preprint arXiv:2501.13106 (2025).
+[276] Da Zhang, Tong Xu, Fake Lin, and Jiayue Chen. 2024. Harnessing Large Language Models for Temporal Knowledge Graph Forecasting with
+Multi-view Prompting. In 2024 4th International Conference on Artificial Intelligence, Robotics, and Communication (ICAIRC). IEEE, 120–125.
+[277] Hang Zhang, Xin Li, and Lidong Bing. 2023. Video-LLaMA: An Instruction-tuned Audio-Visual Language Model for Video Understanding. In
+Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing: System Demonstrations. Association for Computational
+Linguistics, Singapore, 543–553.
+[278] Qiang Zhang, Aldo Lipani, Omer Kirnap, and Emine Yilmaz. 2020. Self-attentive Hawkes process. In ICML.
+[279] Xiang Zhang, Ziyuan Zhao, Theodoros Tsiligkaridis, and Marinka Zitnik. 2022. Self-supervised contrastive pre-training for time series via
+time-frequency consistency. In NeurIPS, Vol. 35. 3988–4003.
+[280] Yuchao Zhang, Xiangjie Kong, Zhehui Shen, Jianxin Li, Qiuhua Yi, Guojiang Shen, and Bo Dong. 2024. A survey on temporal knowledge graph
+embedding: Models and applications. Knowledge-Based Systems 304 (2024), 112454.
+[281] Wayne Xin Zhao, Kun Zhou, Junyi Li, Tianyi Tang, Xiaolei Wang, Yupeng Hou, Yingqian Min, Beichen Zhang, Junjie Zhang, Zican Dong, et al.
+2023. A survey of large language models. arXiv preprint arXiv:2303.18223 (2023).
+[282] Yusheng Zhao, Xiao Luo, Haomin Wen, Zhiping Xiao, Wei Ju, and Ming Zhang. 2025. Embracing large language models in traffic flow forecasting.
+In Findings of the Association for Computational Linguistics: ACL 2025. 8108–8123.
+[283] Yue Zhao, Ishan Misra, Philipp Krähenbühl, and Rohit Girdhar. 2023. Learning Video Representations from Large Language Models. In CVPR.
+6586–6597.
+[284] Mingze Zhong, Zexuan Long, Xinglei Wang, Tao Cheng, Meng Fang, and Ling Chen. 2025. A unified multi-subgraph pre-training framework for
+spatio-temporal graph. Knowledge-Based Systems 330, Part A (nov 2025), 114428.
+[285] Siru Zhong, Weilin Ruan, Ming Jin, Huan Li, Qingsong Wen, and Yuxuan Liang. 2025. Time-VLM: Exploring Multimodal Vision-Language Models
+for Augmented Time Series Forecasting. In Forty-second International Conference on Machine Learning.
+[286] Weihong Zhong, Mao Zheng, Duyu Tang, Xuan Luo, Heng Gong, Xiaocheng Feng, and Bing Qin. 2023. STOA-VLP: spatial-temporal modeling
+of object and action for video-language pre-training. In Proceedings of the 37th AAAI Conference on Artificial Intelligence and 35th Conference on
+Innovative Applications of Artificial Intelligence and Thirteenth Symposium on Educational Advances in Artificial Intelligence (AAAI’23/IAAI’23/EAAI’23).
+AAAI Press, Article 414, 9 pages.
+[287] Ce Zhou, Qian Li, Chen Li, et al. 2025. A comprehensive survey on pretrained foundation models: a history from BERT to ChatGPT. International
+Journal of Machine Learning and Cybernetics 16, 12 (dec 2025), 9851–9915.
+[288] Haoyi Zhou, Shanghang Zhang, Jieqi Peng, Shuai Zhang, Jianxin Li, Hui Xiong, and Wancai Zhang. 2021. Informer: Beyond Efficient Transformer
+for Long Sequence Time-Series Forecasting. In AAAI, Vol. 35. 11106–11115.
+[289] Tian Zhou, Peisong Niu, Xue Wang, Liang Sun, and Rong Jin. 2023. One Fits All: Power General Time Series Analysis by Pretrained LM. In NeurIPS.
+[290] Zhihan Zhou, Liqian Ma, and Han Liu. 2021. Trade the Event: Corporate Events Detection for News-Based Event-Driven Trading. In ACL.
+2114–2124.
+[291] Zhiqiang Zhou, Chaoli Zhang, Lingna Ma, Jing Gu, Huajie Qian, Qingsong Wen, Liang Sun, Peng Li, and Zhimin Tang. 2023. AHPA: Adaptive
+Horizontal Pod Autoscaling Systems on Alibaba Cloud Container Service for Kubernetes. In AAAI.
+[292] Zhaoyang Zhu, Weiqi Chen, Rui Xia, Tian Zhou, Peisong Niu, Bingqing Peng, Wenwei Wang, Hengbo Liu, Ziqing Ma, Qingsong Wen, et al. 2023.
+eForecaster: unifying electricity forecasting with robust, flexible, and explainable machine learning algorithms. In AAAI.
+[293] Orr Zohar, Xiaohan Wang, Yann Dubois, Nikhil Mehta, Tong Xiao, Philippe Hansen-Estruch, Licheng Yu, Xiaofang Wang, Felix Juefei-Xu, Ning
+Zhang, et al. 2025. Apollo: An exploration of video understanding in large multimodal models. In Proceedings of the Computer Vision and Pattern
+Recognition Conference. 18891–18901.
+[294] Jinan Zou, Haiyao Cao, Lingqiao Liu, Yuhao Lin, Ehsan Abbasnejad, and Javen Qinfeng Shi. 2022. Astock: A new dataset and automated stock
+trading based on stock-specific news analyzing model. arXiv preprint arXiv:2206.06606 (2022).
+[295] Xingchen Zou, Yuhao Yang, Zheng Chen, Xixuan Hao, Yiqi Chen, Chao Huang, and Yuxuan Liang. 2025. Traffic-r1: Reinforced llms bring human-like
+reasoning to traffic signal control systems. arXiv preprint arXiv:2508.02344 (2025).
+[296] Simiao Zuo, Haoming Jiang, Zichong Li, Tuo Zhao, and Hongyuan Zha. 2020. Transformer Hawkes Process. In ICML. 11692–11702.
+
+Manuscript submitted to ACM
+
+

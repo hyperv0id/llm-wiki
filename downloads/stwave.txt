@@ -1,0 +1,1611 @@
+Spatio-Temporal meets Wavelet: Disentangled Traffic Flow Forecasting via
+Efficient Spectral Graph Attention Network
+
+arXiv:2112.02740v2 [cs.LG] 17 Jan 2022
+
+Yuchen Fang1 , Yanjun Qin1∗ , Haiyong Luo2† , Fang Zhao1† ,
+Bingbing Xu3 , Chenxing Wang1 and Liang Zeng4
+1
+School of Computer Science (National Pilot Software Engineering School),
+Beijing University of Posts and Telecommunications, China
+2
+Research Center for Ubiquitous Computing Systems,
+Institute of Computing Technology, Chinese Academy of Sciences, China
+3
+CAS Key Laboratory of Network Data Science and Technology,
+Institute of Computing Technology, Chinese Academy of Sciences, China
+4
+Institute for Interdisciplinary Information Sciences (IIIS), Tsinghua University, China
+{fangyuchen, qinyanjun, zfsse, wangchenxing}@bupt.edu.cn, {yhluo,xubingbing}@ict.ac.cn,
+zengl18@mails.tsinghua.edu.cn
+Abstract
+Traffic forecasting is crucial for public safety and
+resource optimization, yet is very challenging due
+to three aspects: i) current existing works mostly
+exploit intricate temporal patterns (e.g., the shortterm thunderstorm and long-term daily trends)
+within a single method, which fail to accurately
+capture spatio-temporal dependencies under different schemas; ii) the under-exploration of the graph
+positional encoding limit the extraction of spatial
+information in the commonly used full graph attention network; iii) the quadratic complexity of the
+full graph attention introduces heavy computational
+needs. To achieve the effective traffic flow forecasting, we propose an efficient spectral graph attention network with disentangled traffic sequences.
+Specifically, the discrete wavelet transform is leveraged to obtain the low- and high-frequency components of traffic sequences, and a dual-channel encoder is elaborately designed to accurately capture
+the spatio-temporal dependencies under long- and
+short-term schemas of the low- and high-frequency
+components. Moreover, a novel wavelet-based
+graph positional encoding and a query sampling
+strategy are introduced in our spectral graph attention to effectively guide message passing and efficiently calculate the attention. Extensive experiments on four real-world datasets show the superiority of our model, i.e., the higher traffic forecasting
+precision with lower computational cost.
+
+1
+
+Introduction
+
+Given the observed traffic conditions and underlying road networks, traffic flow forecasting aims to predict a sequence
+∗
+†
+
+Equal contribution.
+Corresponding author.
+
+of future traffic flow, which benefits both daily travel and
+traffic management. Despite its importance, traffic forecasting is very challenging because of the intricate spatiotemporal dependencies. Recently, data-driven algorithms
+have received significant attention in the community. Among
+them, recurrent neural network (RNN), temporal convolution network (TCN), and Transformer-based methods have
+been widely adopted to capture temporal dependencies for
+each road individually [Zhou et al., 2021; Xu et al., 2021;
+Sutskever et al., 2014; Lv et al., 2018; Elmi, 2020]. Though
+the uni-variate model endowed above methods to predict traffic flow, they exploit the entangled temporal patterns within
+a single model (e.g., using a sequential model to extract the
+contrary influence of increasing and decreasing flow in car
+accidents and epidemic), which fail to accurately extract the
+spatio-temporal information under different schemas.
+The adoption of graph convolutional networks (GCNs)
+[Defferrard et al., 2016] has recently solved the issue of capturing spatial correlations in traffic forecasting. DCRNN [Li
+et al., 2018] and STGCN [Yu et al., 2018] use GCN to model
+the interactions of neighboring roads. Subsequent works,
+such as Graph WaveNet, AGCRN, STFGNN, and STGODE
+[Wu et al., 2019; Bai et al., 2020; Li and Zhu, 2021; Fang
+et al., 2021], propose multiple variants of GCN to improve
+performance by expanding spatial receptive fields. However,
+GCN-based methods ignore that the weight of edges in the
+graph of road networks is constantly changing over time.
+ST-CGA [Zhang et al., 2020] and LSGCN [Huang et al.,
+2020] use the graph attention network (GAT) and its variant to learn the weights between neighbor roads in each time
+step. ST-GRAT [Park et al., 2020] and GMAN [Zheng et al.,
+2020] further utilize the full GAT for traffic speed forecasting,
+which drops the input graph in vanilla GAT to alleviate the influence of hard inductive bias and capture the global spatial
+dependence. Although the full GAT-based works have shown
+promising performance in other traffic forecasting tasks, most
+of them suffer from two limitations: 1) they neglect the learn-
+
+ing efficiency on the full attention, i.e., the time and space
+complexity of well-known self-attention is O(N 2 ), which introduces heavy computational needs; 2) the central issue of
+vanilla GAT is that the input graph restricts the spatial receptive field into neighbors, and full GAT lacks structural information to effectively guide message passing.
+To alleviate the above limitations, we propose a novel efficient spectral graph attention network for traffic flow forecasting with disentangled traffic sequences. For the temporal
+dimension, to model the intricate temporal patterns individually, we firstly utilize discrete wavelet transform to obtain the
+low- and high-frequency components from traffic sequences,
+where the low- and high-frequency components can reflect
+the temporal patterns of the long- and short-term schemas.
+Then we carefully design a dual-channel spatio-temporal encoder to represent the different dual-scale temporal patterns.
+Moreover, we propose a fusion attention to aggregate the latent representations of the dual-scale temporal patterns, and
+perform multi-supervision to predict a sequence of future
+low-frequency component, which is in parallel with the traffic flow forecasting. For the spatial dimension, to improve the
+performance of the full GAT for traffic flow forecasting, we
+propose an efficient spectral graph attention network, which
+is a variant of the self-attention with only O(N logN ) complexity. The novel wavelet-based graph positional encoding
+and query sampling strategy are introduced in our attention to
+guide message passing and sparsify the nodes in the query of
+self-attention. The key technical contribution of this paper is
+a elaborately designed model, namely STWave, which leverages the graph and discrete wavelet on spatio-temporal dimensions simultaneously. Experimental results on four realworld datasets show STWave significantly outperforms stateof-the-arts on traffic flow forecasting.
+
+Self-Attention. Self-attention is the mostly used attention
+mechanism. The key idea behind the mechanism is that each
+element in a sequence learns to gather information from other
+tokens. The input of self-attention consists of queries, keys,
+and values of dimension d. Then compute √
+the dot products
+of the query with all keys, divide each by d, and apply a
+sof tmax function to obtain the weights on the values:
+Att(Q, K, V ) = sof tmax(
+
+Preliminaries
+
+Traffic Network. Traffic network is defined as an undirected graph G = (V, E, A), where V is the set of nodes, E is
+the set of edges between neighboring nodes, and A ∈ RN ×N
+corresponds to the adjacency matrix of G. In practice, a node
+may represent a sensor located at the corresponding road of
+the traffic network. Each node records traffic flow. Here in
+this paper, two kinds of the graph are adopted, Aspa is the
+adjacency matrix of the spatial graph according to the traffic network and Atem is the adjacency matrix of the temporal
+graph. The weights of Atem derived from the dynamic time
+warping (DTW) algorithm [Berndt and Clifford, 1994] followed by STFGNN [Li and Zhu, 2021].
+Problem Definition. For a traffic network, let xit ∈
+RC , C = 1 represents the traffic flow value of the ith node
+T
+N ×C
+at time step t, and Xt = [x1t , ..., xit , ..., xN
+rept ] ∈ R
+resents the traffic flow values of all nodes at time step t.
+Given history traffic data X = {X1 , ..., XT1 } ∈ RT1 ×N ×C ,
+the purpose of traffic prediction is to predict the traffic
+flow of all nodes in future T2 time steps, namely Ŷ =
+{Ŷ(T1 +1) , ..., Ŷ(T1 +T2 ) } ∈ RT2 ×N ×C , and its ground truth
+is denoted by X̂ = {X(T1 +1) , ..., X(T1 +T2 ) } ∈ RT2 ×N ×C .
+
+(1)
+
+where W Q , W K , W V are learnable parameters of projections, Att(·) denotes the self-attention operation.
+Wavelet Transform. Wavelet [Daubechies, 1992] is associated with scaling function and wavelet function, whose
+shifts and expansions compose stable basis for the signal
+space. The scaling and wavelet functions of discrete wavelet
+are closely related with low-pass filter g = {gk }k∈Z and
+high-pass filter h = {hk }k∈Z , respectively. For a 1D signal x = {xj }j∈Z , discrete wavelet transform decomposes
+it into low-frequency component xl = {xlk }k∈Z and highfrequency component xh = {xhk }k∈Z :
+X
+X
+xlk =
+gj−2k xj , xhk =
+hj−2k xj .
+(2)
+j
+
+j
+
+Besides, the wavelet of graph corresponds to the signal on
+graph diffused away from nodes with a scaling matrix Gs =
+diag(σ(sλ1 ), ..., σ(sλd )), σ(sλi ) = eλi s and λi is the ith
+lowest graph Laplacian eigenvalues. The expression of the
+graph wavelet ψs at scale s can be formulated as:
+ψs = ΦGs ΦT ,
+
+(3)
+
+where Φ is eigenvectors of the graph Laplacian. For a graph
+signal x, the graph wavelet transform is defined as x̃ = ψs−1 x.
+
+3
+2
+
+(QW Q )(K T W K )
+√
+)(V W V ) ,
+d
+
+Methodology
+
+Our STWave is outlined in Figure 1, consisting of a disentangling flow layer, a dual-channel spatio-temporal encoder, and
+a frequency-specific decoder. The disentangling flow layer
+is used to separate entangled long- and short-term temporal
+patterns to avoid the interference between them. The dualchannel spatio-temporal encoder are stacked by L layers,
+aims to effectively represent the dual-scale spatio-temporal
+patterns. Then the fusion attention and multi-supervision are
+utilized in the frequency-specific decoder to merge and exploit the dual-scale information.
+
+3.1
+
+Disentangling Flow Layer
+
+Given the traffic sequences X ∈ RT1 ×N ×d , we use the discrete wavelet transform (DWT) to obtain the low- and highfrequency components from the entangled traffic sequences,
+where the dual-scale components indicate the long- and shortterm temporal patterns because the low-frequency component
+is stable and has long-term trends, while the fluctuate highfrequency has short-term influences. The DWT with the input
+traffic sequences X can be formulated as:
+X̄l = gX , X̄h = hX ,
+
+(4)
+
+where the time steps in the candidate low- and high-frequency
+components X̄l and X̄h are reduced to the half of the input by
+
+
+
+Time
+
+Disentangling flow
+High Pass
+Filter h
+Inverse High
+T
+Pass Filter h
+
+Inverse Low T
+Pass Filter g
+
+Fusion Attention
+
+FC
+
+̂l
+
+̂l
+
+FC
+
+l
+
+...
+
+h
+
+FC
+FC
+
+...
+
+...
+FC
+
+̂ hf
+
+FC
+
+Softmax Mask Scale
+
+
+
+Predictor
+
+Frequency-specific decoder
+
+̂
+
+...
+
+Query
+Sample
+
+l tatt
+
+FC
+
+2
+
+Temporal Attention
+
+i : i-th lowest eigenvalue of graph Laplacian
+i ,n: i-th lowest eigenvector of graph Laplacian
+
+A spa
+
+1,n 2,n3,n ... d ,n
+
+conv
+
+Compute the first d
+eigenvectors of graph
+Graph
+positional
+encoding
+
+: Fully-connected layer
+
+Softmax
+
+FC
+
+h
+
+: Positional encoding
+
+Scale
+
+1 2 3 ... d
+
+Dilated casual convolution
+
+1
+FC
+
+FC
+
+Scale Mask Softmax
+
+Copy
+
+FC
+
+FC
+
+h esgat
+
+FC
+
+FC
+
+3
+
+l esgat
+
+Predictor
+
+FC
+
+̂
+
+T1  1
+
+̂ lf
+
+FC
+
+Softmax Mask Scale
+
+l
+
+...
+
+T1
+
+T1  2
+
+Low Pass
+Filter g
+
+Spatial graph
+
+Atem
+
+1 2 3 ... d
+1,n2,n 3,n ... d ,n
+
+Temporal graph
+
+Efficient
+spectral
+graph
+attention
+
+Dual-channel spatio-temporal encoder
+
+L
+
+Figure 1: The architecture of the proposed STWave.
+
+the down-sampling operation in DWT. Therefore, the inverse
+low- and high-pass filters gT , hT are adopted in this layer to
+up-sample to consist with the input. Then we use a fullyconnected layer to transform the low- and high-frequency
+components into high-dimensional low- and high-frequency
+components Xl , Xh ∈ RT1 ×N ×d , which can improve the representation power of STWave. The up-sampling operation
+and fully-connected layer are formulated as:
+Xl = W g gT X̄l + bg , Xh = W h hT X̄h + bh ,
+(5)
+g
+h
+C×d
+g h
+d
+where W , W ∈ R
+and b , b ∈ R are learnable parameters.
+
+3.2
+
+Dual-Channel Spatio-Temporal Encoder
+
+The dual-channel spatio-temporal encoder, composed of the
+temporal attention, dilated causal convolution, and efficient
+spectral graph attention network (ESGAT).
+Disentangled Temporal Feature Extraction
+Different from previous works use a single method to model
+the intricate temporal patterns in the entangled traffic sequences, we use the dilated causal convolution and temporal
+attention to capture the short- and long-term temporal correlations in the high- and low-frequency components, respectively. The dilated causal convolution is a special 1D convolution, which slides over inputs by skipping values with a
+certain step, as illustrated in Figure 1. Mathematically, given
+a 1D sequence input x ∈ RT and a filter f ∈ RJ , the dilated causal convolution operation of x with f at time step t
+is formulated as:
+J
+X
+x ? f (t) =
+f (j)x(t − c × j) ,
+(6)
+j=0
+
+where c is the dilation factor. The dilated causal convolution
+for the high-frequency component is represented as:
+Xhconv = ReLU (Θ ? Xh + b) ,
+
+(7)
+
+where Θ and b are learnable parameters, ReLU (·) is the
+rectified linear unit. Moreover, we utilize the masked selfattention on temporal dimension of the low-frequency component because the low-frequency component is stable and
+can represent the obvious long-term trends of traffic flow:
+Xltatt = Concat(ta1 , ...tan , ..., taN )
+where tan = Att(Xln , Xln , Xln ) .
+
+(8)
+
+Efficient Global Spatial Feature Extraction
+For spatial correlation, we firstly consider adopting the
+vanilla GAT to dynamically calculate the weights between
+connected nodes. However, the spatial receptive field of the
+vanilla GAT is restricted in neighbors. Therefore, we further
+utilize the full GAT to dynamically capture the global spatial
+dependence by performing the self-attention on the spatial dimension of Xhconv and Xltatt . For simplicity, we remove the
+superscript and subscript in Xhconv and Xltatt in this section.
+The full GAT with simplified input X can be formulated as:
+X satt = Concat(sa1 , ...sat , ..., saT1 )
+where sat = Att(Xt , Xt , Xt ) .
+
+(9)
+
+However, Eq. (9) is limited by the quadratic calculation complexity and lacks the structural information of the graph.
+Query Sampling. An intuitive way to reduce the complexity of Eq. (9) is to gain information from neighbors, which
+
+is equal to the vanilla GAT and loses the global information. To maintain these information, we propose a query sampling strategy to sample active nodes as sparse queries in the
+self-attention. The attention weights of unsampled nodes are
+copied from a sampled node which has the highest attention
+weight between them. This strategy is based on the fact that
+nodes in a region or community always have similar functions and weights under the hierarchical traffic system [Guo
+et al., 2021]. Therefore, we utilize a GAT to pass message
+in the graph and a topk-pooling to sample active nodes which
+on behalf of regions or communities. The GAT can be formulated as:
+Mt = Concat(ma1 , ..., man , ..., maN )
+where
+
+(10)
+
+man = Att(xnt , XtNn , XtNn ) ,
+
+where Nn and Mt ∈ RN ×d denote the index of neighbors
+of node n and the scores of nodes at time step t. Then we
+utilize the topk-pooling to sample dlogN e active nodes that
+receive max flow from other nodes in the GAT. Specifically,
+to evaluate how much flow from other nodes can be retained,
+we employ a trainable projection vector P ∈ Rd×1 to project
+the score matrix to 1D and sample nodes according to values:
+idxt = rank(
+
+Mt P
+, dlogN e) ,
+kP k
+
+(11)
+
+where rank(·) returns the index of the top dlogN e largest
+values, and idxt ∈ RdlogN e indicates the index of sampled
+queries at time step t. Finally, Eq. (9) can be rewritten as an
+efficient version with query sampling:
+X egat = Concat(sa1 , ...sat , ..., saT1 )
+where
+
+(12)
+
+sat = Att(Xtidxt , Xt , Xt ) .
+
+Graph Positional Encoding. To effectively guide message
+passing in the full GAT, we propose a novel graph positional
+encoding. In the vanilla self-attention, sine and cosine functions are utilized as the positional encoding for sequences,
+which is a essential part of the vanilla self-attention. However, sinusoids cannot be clearly defined in graphs, since
+there is no clear notion of position along an axis. Previous works utilize graph embedding algorithms to generate
+vectors as the graph positional encoding, but they are limited by the local context with extra parameters. Furthermore,
+[Dwivedi and Bresson, 2020] uses graph Laplacian eigenvectors as the graph positional encoding because the eigenvectors of the graph Laplacian are the natural equivalent of sine
+functions, which can reveal the structural information in the
+graph. However, the influence of the eigenvectors on the signal of one node is not localized in its neighborhood [Xu et al.,
+2019]. Inspired by the graph wavelet transform, our proposed
+graph positional encoding is the wavelet bases of the graph.
+The graph wavelet corresponds to graph Laplacian eigenvectors diffused away from a centered node with a scaling matrix
+on the graph and can reflect the localization property compared with eigenvectors. The wavelet-based graph positional
+encoding can be formulated as:
+1
+spa 2
+
+ρspa = Φspa Gs
+
+1
+tem 2
+
+, ρtem = Φtem Gs
+
+where ρspa , ρtem ∈ RN ×d are the graph positional encodings
+of the spatial graph and the temporal graph in our model. The
+dot-product of ρ and its transpose ρT is equivalent to wavelets
+of graphs, which can show not only the structural information
+but also the localization property of graphs. We further set
+the scale s in Eq. (13) as the learnable parameter to avoid
+misleading inductive bias. Finally, our efficient spectral graph
+attention can be formulated as follows:
+X esgat = Concat(sa1 , ...sat , ..., saT1 )
+where
+and
+
+3.3
+
+(13)
+
+X̃ = X + ρ
+
+spa
+
++ρ
+
+tem
+
+(14)
+
+.
+
+Frequency-Specific Decoder
+
+To transform the representations encoded by the dual-channel
+encoder into the future for the multi-step traffic flow forecasting, we use the predictor (i.e., a fully-connected layer) on the
+temporal dimension of Xlesgat , Xhesgat ∈ RT1 ×N ×d to derive
+the future representations Ŷlf , Ŷhf ∈ RT2 ×N ×d of the lowand high-frequency components. Then we utilize the fusion
+attention and multi-supervision to merge the information of
+the low- and high-frequency components and gain knowledge
+by supervising the low-frequency component.
+Disentangled Temporal Feature Fusion
+The aim of our paper is not to forecast the low- and highfrequency components but the traffic flow in the future.
+Therefore, as shown in Figure 1, we further propose a fusion
+attention to not only merge the representations of the lowand high-frequency components Ŷlf , Ŷhf into the traffic flow
+Ŷ f ∈ RT2 ×N ×d but also capture the intra-dependencies in
+the future. Specifically, the fusion attention regards the lowfrequency component as queries in two temporal attentions
+to extract useful long- and short-term information from the
+low- and high-frequency components. Fusion attention can
+be formulated as :
+Ŷ f = Concat(f a1 , ..., f an , ..., f aN )
+where
+
+n
+
+n
+
+n
+
+f an = Att(Ŷlf , Ŷlf , Ŷlf )
+
+(15)
+
+n
+n
+n
++ Att(Ŷlf , Ŷhf , Ŷhf ) .
+
+Multi-Supervision
+We use a fully-connected layer to transform the future representations of traffic flow Ŷ f into the expected prediction Ŷ
+with L1 loss during training. Besides, we supervise the lowfrequency component in our model same as the traffic flow.
+By gaining knowledge from the much stable low-frequency
+component, our model can effectively enhance its capability
+of learning the long-term trends of traffic flow, thus yielding
+better performance. Therefore, STWave is optimized by minimizing the following loss function:
+L=
+
+,
+
+sat = Att(X̃tidxt , X̃t , X̃t )
+
+T1
++T2 N
+X
+X
+t=T1 +1 n=1
+
+|xnt − ŷtn | + |xnlt − ŷlnt | .
+
+(16)
+
+Dataset
+
+#Nodes
+
+#Edges
+
+#Samples
+
+Sample Rate
+
+#MissingRatio
+
+Time range
+
+PeMSD3
+PeMSD4
+PeMSD7
+PeMSD8
+
+358
+307
+883
+170
+
+547
+340
+866
+295
+
+26208
+16992
+28224
+17856
+
+5 mins
+5 mins
+5 mins
+5 mins
+
+0.672%
+3.182%
+0.452%
+0.696%
+
+9/1/2018-11/30/2018
+1/1/2018-2/28/2018
+5/1/2017-8/31/2017
+7/1/2016-8/3/2016
+
+Table 1: Dataset statistics
+
+implemented by multi-head mechanism). Besides, the number of layers L in spatio-temporal encoder is set as 2. We
+integrate high-frequency temporal dependencies by stack 1
+dilated causal convolution layer with kernel size J = 2. The
+learning rate is initialized as 0.001 with a 0.1 decay rate.
+
+4.2
+Complexity Analysis
+The complexity of the dual-channel encoder is O(L(T N J +
+N T 2 +T N logN )), where dilated causal convolution, temporal attention, ESGAT cost O(T N J), O(N T 2 ), O(T N logN )
+complexity, and L denotes the number of stacked layers. The
+complexity of the disentangling layer and decoder is O(N T )
+and O(N T 2 ). Therefore, STWave achieves comparable time
+complexity as compared to other GCN-based frameworks.
+
+4
+
+Experiments
+
+We investigate the effectiveness of STWave with the goal
+of answering five research questions. RQ1: does our proposed STWave outperform the baselines? RQ2: how do different components of STWave (e.g., ESGAT) affect its performance? RQ3: how do hyper-parameters affect STWave?
+RQ4: does our proposed STWave more efficient than baselines? RQ5: how does wavelet affect STWave?
+
+4.1
+
+Experimental Setup
+
+Datasets and Metrics. We evaluate our model on four
+real-world datasets collected from the California Transportation Agencies (CalTrans) Performance Measurement System
+(PeMS). Descriptive statistics for those datasets are presented
+in Table 1. Following [Guo et al., 2019], we use the observations flow from the previous 12 time steps to predict the
+next 12 steps and split these four datasets into a training set
+(60%), validation set (20%), and test set (20%) in chronological order. Three standard metrics are adopted to evaluate
+the performance of all methods, namely, Mean Absolute Errors (MAE), Mean Absolute Percentage Errors (MAPE), and
+Root Mean Squared Errors (RMSE).
+Baselines. We compare our proposed STWave with the following baseline models in conjunction with the models we
+introduced in the related work1 section — in total, we use 15
+baseline models: 1) HA [Hamilton, 2020]: uses the average
+value of the last 12 times slices to predict the next value; 2)
+ARIMA [Williams and Hoel, 2003]: a statistical model of
+time series analysis; 3) VAR [Lu et al., 2016]: a time series
+model that can capture spatial correlations among all nodes;
+4) SVR [Wu et al., 2004]: utilizes a linear support vector machine to perform regression; 5) STSGCN [Song et al., 2020]:
+uses a spatial-temporal synchronous mechanism to capture
+the localized spatial-temporal correlations.
+Parameter Settings. We implement STWave using PyTorch and train model for 200 epochs using the Adam optimizer, with a batch size of 64 on all datasets. We present
+the default hyper-parameter settings of STWave as follows:
+the number of head e and dimension de of each head in attention is set as 8 and 16 (all attention modules in STWave is
+1
+
+Related work is in Appendix A due to space limitation.
+
+Performance Comparison (RQ1)
+
+The results of all methods across four datasets for forecasting
+traffic flow (measured by MAE, RMSE, and MAPE) are reported in Table 2, and results for each time step are shown in
+Appendix B. From Table 2, we have the following observations. HA provides a lower bound of model performance. The
+results of traditional and machine learning methods (ARIMA,
+VAR, and SVR) are much worse than the deep models due to
+the non-linear dependencies and lack of hand-craft features.
+In terms of all tasks, the non-graph-based methods (LSTM
+and TCN) generally perform worse than graph-based baselines (e.g., STGCN, DCRNN, and Graph WaveNet), demonstrating the efficacy of graph on modeling the spatial dependence. As for graph-based methods, ASTGCN and LSGCN
+perform better than Graph WaveNet, which indicates the effectiveness of the attention mechanism in modeling dynamic
+interactions between roads. STFGNN and STGODE perform
+better than prior graph-based methods, as they carefully design the temporal graph and graph ordinary differential equation to expand the receptive field of GCN, which, however,
+are inferior than AGCRN, due to they fail to capture the
+global spatial dependence. Overall, our STWave achieves
+the best performance on all tasks. This is mainly because:
+1) STWave extracts the low- and high-frequency components
+from traffic sequences and utilizes the dual-channel encoder
+to model each component individually; 2) STWave adopts the
+fusion attention and multi-supervision to fully merge and exploit the high- and low-frequency information of traffic series; and 3) STWave develops the powerful wavelet-based
+graph positional encoding in full GAT to effectively capture
+global dependence by injecting structural information.
+
+4.3
+
+Ablation Study (RQ2)
+
+To investigate the effectiveness of different components of
+STWave, we compare it with five different variants: 1) ”MS”: STWave without the multi-supervision; 2) ”-DF”:
+STWave without the disentangling flow layer; 3) ”-F”:
+STWave replaces the fusion attention with the addition operation; 4) ”-T”: STWave without the dilated causal convolution and temporal attention; 5) ”-S”: STWave without the
+ESGAT. Figure 2 shows the comparison results. It is obvious
+that the full version of STWave achieves the best performance
+compared to variants. Generally, the performance decrease of
+”-S” far exceeds that of ”-T”, implying that the spatial dimension plays a more important role than the temporal dimension
+in our model. Both ”-F”, ”-DF”, and ”-MS” underperform
+STWave, indicating the advantages of modeling intricate patterns individually. In summary, our proposed STWave benefits from the five delicately-designed components.
+
+4.4
+
+Parameter Sensitivity Analysis (RQ3)
+
+Figure 3 depicts the results of parameter sensitivity analysis on traffic forecasting. We search the number of heads
+
+Methods
+
+MAE
+31.58
+35.41
+23.65
+21.97
+21.33
+19.32
+17.55
+17.99
+19.12
+17.34
+17.94
+17.48
+15.98
+16.77
+16.50
+14.93
+
+HA
+ARIMA
+VAR
+SVR
+LSTM
+TCN
+STGCN
+DCRNN
+Graph WaveNet
+ASTGCN(r)
+LSGCN
+STSGCN
+AGCRN
+STFGNN
+STGODE
+STWave
+
+PeMSD3
+RMSE MAPE
+52.39 33.78%
+47.59 33.78%
+38.26 24.51%
+35.29 21.51%
+35.11 23.33%
+33.55 19.93%
+30.42 17.34%
+30.31 18.34%
+32.77 18.89%
+29.56 17.21%
+29.85 16.98%
+29.21 16.78%
+28.25 15.23%
+28.34 16.30%
+27.84 16.69%
+26.50 15.05%
+
+MAE
+38.03
+33.73
+24.54
+28.70
+26.77
+23.22
+21.16
+21.22
+24.89
+22.93
+21.53
+21.19
+19.83
+20.48
+20.84
+18.50
+
+PeMSD4
+RMSE MAPE
+59.24 27.88%
+48.80 24.18%
+38.61 17.24%
+44.56 19.20%
+40.65 18.23%
+37.26 15.59%
+34.89 13.83%
+33.44 14.17%
+39.66 17.29%
+35.22 16.56%
+33.86 13.18%
+33.65 13.90%
+32.26 12.97%
+32.51 16.77%
+32.82 13.77%
+30.39 12.43%
+
+MAE
+45.12
+38.17
+50.22
+32.49
+29.98
+32.72
+25.33
+25.22
+26.39
+24.01
+27.31
+24.26
+22.37
+23.46
+22.59
+19.94
+
+PeMSD7
+RMSE MAPE
+65.64 24.51%
+59.27 19.46%
+75.63 32.22%
+50.22 14.26%
+45.94 13.20%
+42.23 14.26%
+39.34 11.21%
+38.61 11.82%
+41.50 11.97%
+37.87 10.73%
+41.46 11.98%
+39.03 10.21%
+36.55
+9.12%
+36.60
+9.21%
+37.54 10.14%
+33.88
+8.38%
+
+PeMSD8
+RMSE MAPE
+59.24 27.88%
+44.32 22.73%
+29.81 13.10%
+36.16 14.64%
+35.17 14.99%
+35.79 14.03%
+27.09 11.29%
+26.36 10.92%
+30.05 12.15%
+28.06 11.64%
+26.76 11.20%
+26.80 10.96%
+25.22 10.09%
+26.25 10.60%
+25.97 10.62%
+23.40
+8.90%
+
+MAE
+34.86
+31.09
+19.19
+23.25
+23.09
+22.72
+17.50
+16.82
+18.28
+18.25
+17.73
+17.13
+15.95
+16.94
+16.81
+13.42
+
+Table 2: Comparison of STWave and baselines on four traffic datasets. Bold: Best, underline: Second best.
+
+(a) PeMSD4 MAE
+
+15
+14
+13
+12
+11
+10
+
+STWave
+-MS
+-DF
+
+10
+
+STWave
+-MS
+-DF
+
+-F
+-T
+-S
+
+8
+
+STWave
+-MS
+-DF
+
+(c) PeMSD4 MAPE
+
+9.5
+9.0
+-F 8.5
+-T 8.0
+-S
+7.5
+7.0
+
+(e) PeMSD8 RMSE
+
+MAPE
+MAE
+
+19.0
+
+MAE 13.2
+MAPE
+
+12.9
+
+MAPE
+
+19.3
+
+12.6
+
+18.7
+
+18.4 1 2 3 4 12.3
+Layers Number #L
+9.0
+13.7
+MAE
+
+13.6
+13.5
+
+MAPE
+
+13.4 1 2 3 4 8.9
+Layers Number #L
+
+Figure 3: Hyper-parameter study on PeMSD4 and D8 datasets.
+
+STWave
+-MS
+-DF
+
+-F
+-T
+-S
+
+(f) PeMSD8 MAPE
+
+Figure 2: Performance comparison for variants of STWave.
+
+and dimensions of each head in attention from a search space
+of [2, 4, 6, 8, 10] and [4, 8, 12, 16, 20]. For the head number,
+STWave with 8 heads in attention outperforms the others. For
+the dimension of each head, the best performance is achieved
+with 16. Clearly, increasing the model size is capable of endowing our predictive model with better representation ability. Increasing more heads and dimensions may involve noise
+in refining learned representations. Furthermore, the performance of STWave climbs up as the number of layers increases
+and becomes stable with the number around 2.
+
+4.5
+
+MAPE
+MAE
+
+MAE
+
+12
+
+14.7
+20.8
+MAE
+MAPE 14.1
+20.2
+13.5
+19.6
+12.9
+19
+18.4 2 4 6 8 1012.3
+Heads Number #e
+15
+MAE 10.1
+MAPE 9.8
+14.6
+9.5
+14.2
+9.2
+13.8
+8.9
+13.4
+2 4 6 8 10
+Heads Number #e
+
+MAPE
+
+-F
+-T
+-S
+
+20.4
+MAE 13.9
+19.9
+MAPE 13.5
+19.4
+13.1
+18.9
+12.7
+18.4 4 8 12 16 2012.3
+Feature Dimension #de
+14.5
+9.6
+MAE
+14.3
+MAPE 9.4
+14
+9.2
+13.7
+9
+13.4 4 8 12 16 208.8
+Feature Dimension #de
+
+MAPE
+MAE
+
+STWave
+-MS
+-DF
+
+(b) PeMSD4 RMSE
+
+25
+23
+-F
+-T
+-S 21
+19
+
+(d) PeMSD8 MAE
+
+14
+
+MAPE
+MAE
+
+STWave
+-MS
+-DF
+
+35
+32
+29
+-F
+-T 26
+-S
+23
+20
+
+MAE
+
+21
+19
+17
+15
+13
+
+Computation Cost (RQ4)
+
+To show the performance on computation of our model, we
+compare STWave with the attention-based LSGCN, state-ofthe-art baselines, and two different variants of STWave: 1)
+”GAT”: STWave replaces ESGAT with the vanilla GAT; 2)
+”Full”: STWave without the query sample in ESGAT. Fig-
+
+ure 4a shows the trade-off between qualitative performance,
+model speed, and memory footprint. While ”Full” performs
+well, its speed and memory footprint is larger than STWave.
+On the other hand, STFGNN and ”GAT” is fast at the cost
+of lower quantitative performance. Prior attention-based LSGCN are worst in all aspects. Among these models, STWave
+seems to be able to make a better trade-off in terms of speed
+and performance, while having reasonable memory usage.
+
+4.6
+
+Wavelet Study (RQ5)
+
+To investigate the effectiveness of graph wavelet-based graph
+positional encoding, we design three variants of STWave: 1)
+”-GPE”: without the graph positional encoding; 2) ”EV”:
+sets the eigenvectors of the graph Laplacian as the graph
+positional encoding; 3) ”N2V”: sets the matrix derived by
+node2vec [Grover and Leskovec, 2016] as the graph positional encoding. As shown in Figure 4a, ”-GPE” has worst
+performance due to it without the inductive bias of structural
+information. The performance of ”EV” and ”N2V” are worse
+than STWave due to they fail to consider both the structural
+information and localization property. The attention weights
+of them are visualized in the Figure 4c, ”EV” and ”N2V” are
+more dense and more sparse than STWave respectively, which
+demonstrate the equilibrium of the graph wavelet. We further
+visualize the ground truth and the predicted curves of traffic
+
+21.5
+MAE
+
+20.5
+19.5
+
+-GPESTGODE
+STFGNN
+GAT
+N2V AGCRN
+EV
+
+LSGCN
+
+18.5 STWave Full
+50 70 90 110
+Speed (examples per sec)
+TruthSTWaveSTGODE00:0006:0012:0018:0024:00Time
+
+(a) Performance (y axis), speed (b) Traffic forecasting visualiza(x axis), and memory footprint tion. Traffic flow of node 261 on
+(size of the circles) of methods. 2/27/2018.
+
+STWave:
+EV:
+N2V:
+(c) Visualization for the learned weights on 2/27/2018.
+Figure 4: Wavelet study on the PeMSD4 dataset.
+
+flow in Figure 4b and Appendix C. The predicted curves of
+the stable component (the red rectangle) of STWave are more
+accurate than that of STGODE because the supervision of
+the low-frequency component benefits the prediction of longterm trends. In particular, STWave significantly outperforms
+STGODE for the fluctuation time points (the green rectangle)
+because we can obtain and learn the high-frequency pattern
+individually by the discrete wavelet transform.
+
+5
+
+Conclusion
+
+In this paper, we propose a novel STWave for traffic flow
+forecasting. Specifically, STWave is equipped with a DWT
+to disentangle intricate traffic sequences, whereby a dualchannel encoder is proposed, i.e., dilated causal convolution
+and temporal attention, to better represent the different dependencies. Furthermore, with the efficient spectral graph attention network, STWave refines the spatial representation under
+the global context efficiently and effectively. The frequencyspecific decoder then merges and exploits the latent representations of the low- and high-frequency components by fusion
+attention and multi-supervision. Experimental results show
+the superiority of STWave over baselines.
+
+References
+[Bai et al., 2020] Lei Bai, Lina Yao, Can Li, Xianzhi Wang,
+and Can Wang. Adaptive graph convolutional recurrent
+network for traffic forecasting. In Proceedings of NeurIPS,
+2020.
+[Berndt and Clifford, 1994] Donald J Berndt and James Clifford. Using dynamic time warping to find patterns in time
+series. In Proceedings of KDD workshop, 1994.
+[Daubechies, 1992] Ingrid Daubechies. Ten lectures on
+wavelets. SIAM, 1992.
+[Defferrard et al., 2016] Michaël Defferrard, Xavier Bresson, and Pierre Vandergheynst. Convolutional neural net-
+
+works on graphs with fast localized spectral filtering. In
+Proceedings of Neurips, 2016.
+[Dwivedi and Bresson, 2020] Vijay Prakash Dwivedi and
+Xavier Bresson. A generalization of transformer networks
+to graphs. arXiv preprint arXiv:2012.09699, 2020.
+[Elmi, 2020] Sayda Elmi. Deep stacked residual neural network and bidirectional lstm for speed prediction on reallife traffic data. In Proceedings of ECAI, 2020.
+[Fang et al., 2021] Zheng Fang, Qingqing Long, Guojie
+Song, and Kunqing Xie. Spatial-temporal graph ode networks for traffic flow forecasting. In Proceedings of
+SIGKDD, 2021.
+[Grover and Leskovec, 2016] Aditya Grover and Jure
+Leskovec.
+node2vec: Scalable feature learning for
+networks. In Proceedings of SIGKDD, 2016.
+[Guo et al., 2019] Shengnan Guo, Youfang Lin, Ning Feng,
+Chao Song, and Huaiyu Wan. Attention based spatialtemporal graph convolutional networks for traffic flow
+forecasting. In Proceedings of AAAI, 2019.
+[Guo et al., 2021] Kan Guo, Yongli Hu, Yanfeng Sun, Sean
+Qian, Junbin Gao, and Baocai Yin. Hierarchical graph
+convolution networks for traffic forecasting. In Proceedings of AAAI, 2021.
+[Hamilton, 2020] James Douglas Hamilton. Time series
+analysis. Princeton university press, 2020.
+[Huang et al., 2020] Rongzhou Huang, Chuyin Huang,
+Yubao Liu, Genan Dai, and Weiyang Kong. Lsgcn: Long
+short-term traffic prediction with graph convolutional
+networks. In Proceedings of IJCAI, 2020.
+[Li and Zhu, 2021] Mengzhang Li and Zhanxing Zhu.
+Spatial-temporal fusion graph neural networks for traffic
+flow forecasting. In Proceedings of AAAI, 2021.
+[Li et al., 2018] Yaguang Li, Rose Yu, Cyrus Shahabi, and
+Yan Liu. Diffusion convolutional recurrent neural network: Data-driven traffic forecasting. In Proceedings of
+ICLR, 2018.
+[Lu et al., 2016] Zheng Lu, Chen Zhou, Jing Wu, Hao Jiang,
+and Songyue Cui. Integrating granger causality and vector
+auto-regression for traffic prediction of large-scale wlans.
+KSII Transactions on Internet and Information Systems
+(TIIS), 10(1):136–151, 2016.
+[Lv et al., 2018] Zhongjian Lv, Jiajie Xu, Kai Zheng,
+Hongzhi Yin, Pengpeng Zhao, and Xiaofang Zhou. Lcrnn: A deep learning model for traffic speed prediction. In
+Proceedings of IJCAI, 2018.
+[Park et al., 2020] Cheonbok Park, Chunggi Lee, Hyojin
+Bahng, Yunwon Tae, Seungmin Jin, Kihwan Kim, Sungahn Ko, and Jaegul Choo. St-grat: A novel spatiotemporal graph attention networks for accurately forecasting dynamically changing road speed. In Proceedings of
+CIKM, 2020.
+[Song et al., 2020] Chao Song, Youfang Lin, Shengnan Guo,
+and Huaiyu Wan. Spatial-temporal synchronous graph
+
+convolutional networks: A new framework for spatialtemporal network data forecasting. In Proceedings of
+AAAI, 2020.
+[Sutskever et al., 2014] Ilya Sutskever, Oriol Vinyals, and
+Quoc V Le. Sequence to sequence learning with neural
+networks. In Proceedings of NeurIPS, 2014.
+[Van Lint and Van Hinsbergen, 2012] JWC Van Lint and
+CPIJ Van Hinsbergen. Short-term traffic and travel time
+prediction models. Artificial Intelligence Applications to
+Critical Transportation Issues, 22(1):22–41, 2012.
+[Williams and Hoel, 2003] Billy M Williams and Lester A
+Hoel. Modeling and forecasting vehicular traffic flow
+as a seasonal arima process: Theoretical basis and empirical results. Journal of transportation engineering,
+129(6):664–672, 2003.
+[Wu et al., 2004] Chun-Hsin Wu, Jan-Ming Ho, and DerTsai Lee. Travel-time prediction with support vector regression. IEEE transactions on intelligent transportation
+systems, 5(4):276–281, 2004.
+[Wu et al., 2019] Zonghan Wu, Shirui Pan, Guodong Long,
+Jing Jiang, and Chengqi Zhang. Graph wavenet for deep
+spatial-temporal graph modeling. In Proceedings of IJCAI,
+2019.
+[Xu et al., 2019] Bingbing Xu, Huawei Shen, Qi Cao, Yunqi
+Qiu, and Xueqi Cheng. Graph wavelet neural network. In
+Proceedings of ICLR, 2019.
+[Xu et al., 2021] Jiehui Xu, Jianmin Wang, Mingsheng
+Long, et al. Autoformer: Decomposition transformers
+with auto-correlation for long-term series forecasting. Proceedings of NeurIPS, 2021.
+[Yu et al., 2018] Bing Yu, Haoteng Yin, and Zhanxing Zhu.
+Spatio-temporal graph convolutional networks: A deep
+learning framework for traffic forecasting. In Proceedings
+of IJCAI, 2018.
+[Zhang et al., 2020] Xiyue Zhang, Chao Huang, Yong Xu,
+and Lianghao Xia. Spatial-temporal convolutional graph
+attention networks for citywide traffic flow forecasting. In
+Proceedings of CIKM, 2020.
+[Zheng et al., 2020] Chuanpan Zheng, Xiaoliang Fan,
+Cheng Wang, and Jianzhong Qi. Gman: A graph multiattention network for traffic prediction. In Proceedings of
+AAAI, 2020.
+[Zhou et al., 2021] Haoyi Zhou, Shanghang Zhang, Jieqi
+Peng, Shuai Zhang, Jianxin Li, Hui Xiong, and Wancai
+Zhang. Informer: Beyond efficient transformer for long
+sequence time-series forecasting. In Proceedings of AAAI,
+2021.
+
+A
+
+Related Work
+
+Traffic Forecasting. Early researches use the traditional
+statistical methods to predict traffic flow [Hamilton, 2020;
+Williams and Hoel, 2003], yet they base on linear assumptions, which fail to capture the non-linear dependencies in
+the traffic flow forecasting. [Wu et al., 2004; Van Lint and
+Van Hinsbergen, 2012] apply machine learning methods in
+traffic flow forecasting, but the hand-craft features limit their
+ability to generalize. With the success of deep learning in
+computer vision and natural language processing, a line of
+research models temporal patterns for each road individually,
+such as LSTM [Elmi, 2020], TCN [Sutskever et al., 2014],
+and Transformer [Zhou et al., 2021]. Another line combines
+GCNs with sequential methods to capture spatio-temporal
+patterns simultaneously, such as STGCN [Yu et al., 2018]
+and DCRNN [Li et al., 2018]. Graph WaveNet [Wu et al.,
+2019] and AGCRN [Bai et al., 2020] further combine adaptive graph convolution with TCN and RNN to capture spatiotemporal dependencies through back-propagation. STFGNN
+[Li and Zhu, 2021] expands the spatial receptive field by a
+novel fusion operation of various spatial and temporal graphs.
+STGODE [Fang et al., 2021] utilizes the tensor-based ODE
+to increase the depth of GCN. However, GCN-based methods
+fail to capture dynamic spatial patterns.
+Graph Attention Network for Traffic Forecasting. STCGA [Zhang et al., 2020] proposes a graph attention network
+(GAT) based method to learn the weights between neighbor
+roads in each time step. ASTGCN [Guo et al., 2019] further utilizes the attention mechanism on spatio-temporal dimensions to adjust the weights of spatio-temporal convolution. LSGCN [Huang et al., 2020] integrates a novel graph
+attention network and graph convolution into a spatial gated
+block to capture spatial dependence. ST-GRAT [Park et
+al., 2020] drops the input graph in the vanilla GAT to derive the full GAT. The full GAT can alleviate the influence
+of hard inductive bias and capture the global spatial dependence. Similar to ST-GRAT, GMAN [Zheng et al., 2020] utilizes the full GAT with a graph positional encoding derived
+by node2vec [Grover and Leskovec, 2016] to bring structural information into model. Compared with the graph positional encoding that takes advantage of the graph wavelet in
+STWave, node2vec is inefficient to extract global information
+and brings extra parameters. Moreover, the complexity of full
+GAT-based methods is O(N 2 ).
+
+B
+
+Prediction for Each Time Step
+
+Figure 6 shows the prediction error for each time step on all
+datasets. It is obvious that the error levels show a high correlation to the length in prediction. For all horizons, STWave
+shows smaller errors than other baselines.
+
+C
+
+Visualization
+
+We visualize more examples of the ground truth and the predicted curves of traffic flow in Figure 5. Besides, We enlarge the high- and low-frequency components selected by
+the green and red rectangles respectively.
+
+(a) Node 31 in PeMSD3.
+
+1759)0:0006:0012:0018:0024:00Time
+
+(b) Node 277 in PeMSD3.
+
+(c) Node 356 in PeMSD7.
+
+TruthSTWaveSTGODE00:0006:0012:0018:0024:00Time
+
+(d) Node 737 in PeMSD7.
+
+(e) Node 61 in PeMSD8.
+
+(f) Node 153 in PeMSD8.
+Figure 5: Traffic forecasting visualization.
+
+32
+
+STWave
+STGODE
+AGCRN
+
+30
+
+14
+13 1 2 3 4 5 6 7 8 9 10 11 12
+
+1 2 3 4 5 6 7 8 9 10 11 12
+
+Horizon
+
+Horizon
+
+(b) RMSE on PeMSD3.
+
+38
+
+STWave
+STGODE
+AGCRN
+
+36
+
+18
+17
+16
+15
+14
+13
+12
+
+32
+30
+28
+
+1 2 3 4 5 6 7 8 9 10 11 12
+
+1 2 3 4 5 6 7 8 9 10 11 12
+
+1 2 3 4 5 6 7 8 9 10 11 12
+
+Horizon
+
+(d) MAE on PeMSD4.
+
+Horizon
+
+(e) RMSE on PeMSD4.
+
+STWave
+STGODE
+AGCRN
+
+20
+18
+1 2 3 4 5 6 7 8 9 10 11 12
+
+Horizon
+
+13
+12
+11
+10
+9
+8
+7
+
+1 2 3 4 5 6 7 8 9 10 11 12
+
+Horizon
+
+(g) MAE on PeMSD7.
+
+(h) RMSE on PeMSD7.
+
+30
+
+STWave
+STGODE
+AGCRN
+
+28
+
+11
+
+(j) MAE on PeMSD8.
+
+STWave
+STGODE
+AGCRN
+
+MAPE
+
+RMSE
+
+MAE
+
+12
+
+9
+
+22
+
+Horizon
+
+Horizon
+
+10
+
+24
+
+1 2 3 4 5 6 7 8 9 10 11 12
+
+1 2 3 4 5 6 7 8 9 10 11 12
+(i) MAPE on PeMSD7.
+
+STWave
+STGODE
+AGCRN
+
+26
+
+20
+
+STWave
+STGODE
+AGCRN
+
+MAPE
+
+MAE
+
+22
+
+(f) MAPE on PeMSD4.
+
+STWave
+STGODE
+AGCRN
+
+RMSE
+
+24
+
+42
+40
+38
+36
+34
+32
+30
+28
+
+STWave
+STGODE
+AGCRN
+
+MAPE
+
+RMSE
+
+MAE
+
+(c) MAPE on PeMSD3.
+
+STWave
+STGODE
+AGCRN
+
+34
+
+Horizon
+
+20
+19
+18
+17
+16
+15
+14
+13
+12
+
+MAPE
+
+RMSE
+
+22
+
+(a) MAE on PeMSD3.
+
+26
+
+15
+
+24
+
+Horizon
+
+28
+
+17
+
+STWave
+STGODE
+AGCRN
+
+16
+
+26
+
+1 2 3 4 5 6 7 8 9 10 11 12
+25
+24
+23
+22
+21
+20
+19
+18
+17
+
+18
+
+STWave
+STGODE
+AGCRN
+
+28
+
+MAE
+
+20
+19
+18
+17
+16
+15
+14
+13
+
+1 2 3 4 5 6 7 8 9 10 11 12
+
+Horizon
+
+(k) RMSE on PeMSD8.
+Figure 6: Prediction for each time step on all datasets.
+
+8
+
+1 2 3 4 5 6 7 8 9 10 11 12
+
+Horizon
+
+(l) MAPE on PeMSD8.
+
+
