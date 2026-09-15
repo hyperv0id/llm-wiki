@@ -3864,3 +3864,10 @@ ingest 报告：[[ingest-reports/2026-09-15-diffusion-traffic-flow-inference|WHY
 核查用户清单中的 "Efficient Large-Scale Traffic Forecasting with Transformers: A Spatial Data Management Perspective"：该论文即 [[source-patchstg|PatchSTG]]（Fang et al., KDD 2025, arXiv:2412.09972, github.com/LMissher/PatchSTG），wiki 已有完整 source-summary（2026-06-08 ingest，含 Irregular Spatial Patching / leaf KDTree / Dual Attention / LargeST 实验）。按 [[AGENTS|链接规则]] 不建立重复页面，仅登记本次核查。
 创建的页面：无
 更新的页面：[[index]], [[log]]
+
+## [2026-09-15] maintenance | 为 13 篇新 ingest 页面补反向链接
+按 AGENTS.md「创建新页面时，检查应该链接到它的现有页面，并添加反向链接」，在 hub 页面补入反向链接：
+- [[traffic-forecasting]] 新增 `### LLM-Based Traffic Forecasting` 章节，对照 ST-LLM / TPLLM / STG-LLM / REPST / FlashST 五条路线的 token 化与微调策略；另在 `### Contrastive Auxiliary Regularization` 补 ST-SSL、`### Large-Scale Long-Horizon` 补 STWave、`### Pre-training & Masked Autoencoder` 补 STEP 与 STMAE、`### Probabilistic / Diffusion-Based` 补 DP-TFI；新增 10 条脚注定义。
+- [[diffusion-model]] 的 `## 相关概念` 补入 [[source-diffusion-ts-st-survey|TS/ST 扩散综述]] 与 [[source-diffusion-traffic-flow-inference|DP-TFI]]。
+创建的页面：无
+更新的页面：[[traffic-forecasting]], [[diffusion-model]], [[log]]

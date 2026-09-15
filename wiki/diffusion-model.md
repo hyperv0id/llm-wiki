@@ -159,6 +159,8 @@ Falck 等人（Microsoft Research, 2025）从 SNR 角度给出另一种频域解
 - [[ddim]] — DDIM，概率流 ODE 的一阶 Euler 离散化，确定性加速采样与可逆编码
 - [[rectified-flow|Rectified Flow]] — 通过 rectification 学习直线 ODE 轨迹实现少步生成
 - [[probability-flow-ode]] — 概率流 ODE，确定性 ODE 采样与精确似然计算
+- [[source-diffusion-ts-st-survey|TS/ST 扩散综述]] — 首篇同时覆盖 time series 与 spatio-temporal 的 diffusion 综述（arXiv 2024，投 ACM CSUR），四维分类（模型类别/任务/数据模态/应用领域）汇总 60 个方法，提出 denoiser-as-prior 框架连接生成采样与 Plug-and-Play 信号恢复
+- [[source-diffusion-traffic-flow-inference|DP-TFI]] — 把 DDPM 当训练期数据增强器（而非主生成器）的早期城市计算案例：fine-grained urban traffic flow inference，用 relax matrix 放宽 superregion/subregion 流量守恒的硬约束
 
 ## 引用
 

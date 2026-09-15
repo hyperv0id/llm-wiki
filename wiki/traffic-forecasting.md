@@ -34,6 +34,19 @@ The dominant paradigm since [[dcrnn|DCRNN]] (2018): Graph Neural Networks (GNNs)
 ### Transformer-Based
 STTN (2020), GMAN (2020), [[pdformer|PDFormer]] (2023)[^src-pdformer-jiang-2023], and [[staeformer|STAEformer]] (2024) use attention mechanisms to model global spatial-temporal dependencies[^src-hyperd-hybrid-periodicity-decoupling].
 
+### LLM-Based Traffic Forecasting
+2024 年出现一批直接把 LLM 用于交通预测的工作，按 token 化方式和微调策略分成几条不同路线。
+
+[[source-st-llm|ST-LLM]]（MDM 2024）把每个站点每个时间步当一个 token（$N$ 个站点 → $N$ 个 token），把 attention 的序列维度从时间轴**反转**到空间轴，用 GPT2 做站点间 self-attention；三嵌入（pointwise conv token / day+week 位置编码 / 不依赖邻接矩阵的 adaptive spatial）融合后接 PFA——前 $F$ 层全冻结、后 $U$ 层只解冻 MHA（作者判断预训练知识主要在 FFN）。NYCTaxi/CHBike 上平均 MAE 比 OFA 低 22.5%、比 LLAMA2 低 20.8%，但只在 2 个 2016 年 NYC 数据集验证，"zero-shot" 仅指 NYC 域内迁移[^src-st-llm]。
+
+[[source-tpllm|TPLLM]]（arXiv 2024）不含自然语言 prompt，完全冻结 GPT-2 只训 LoRA 注入的 attention Q/K（约 0.95% 参数）；PeMS08 全样本 MAE 15.45 vs ASTGCN 18.33，few-shot 退化幅度最小（+2.64 vs +4.14）[^src-tpllm]。
+
+[[source-how-llm-understand-st|STG-LLM]]（arXiv 2024）用 STG-Tokenizer 把**每个节点整体**编码成一个 token（token 内承载 $L\times F$ 完整历史序列），$N$ 个节点只需 $N$ 个 token；STG-Adapter 仅一层线性编码 + 一层带残差解码，冻结 GPT2 只微调位置编码和 layer norm，可训练参数 1.70%。PEMS07 MAE 19.82 全指标超 [[pdformer|PDFormer]]（20.62），且在无显式图结构的 Electricity 上优于 GraphWaveNet 233.72；消融显示 tokenizer 是最关键组件（去掉后 PEMS04 MAE 18.14→26.91）[^src-how-llm-understand-st]。
+
+[[source-physics-aware-reprogramming|REPST]]（arXiv 2024）走 reprogramming 路线：时空数据按 patch 编码成 query，对 Gumbel-Softmax top-K 采样出的 1000 词扩展词汇表做 cross-attention，冻结 GPT-2；物理约束来自 Koopman/DMD 演化矩阵 SVD 得到的可解释模态（红绿灯周期、风向驱动的污染），用于重构降噪，优于 Fourier 频率强度分解。METR-LA MAE 3.63/RMSE 7.43，zero-shot NYC→CHI 2.03 vs TimesFM 9.07[^src-physics-aware-reprogramming]。
+
+[[source-flashst|FlashST]]（ICML 2024）不改 LLM，而是做 model-agnostic 的 prompt-tuning：预训练阶段在 PEMS03/04/07/08 训 300 epochs，适配阶段冻结下游模型只训 prompt 网络 20 epochs，并用 InfoNCE 均匀性损失（τ=0.3、λ=1.0）对齐预训练与下游嵌入分布。四个目标数据集全胜 13 基线（PEMS07(M) MAE 2.59 vs MTGNN 2.70），训练时间降低 20%-80%；与 [[opencity|OpenCity]] 同一一作，代表从 prompt-tuning 到基础模型的演进[^src-flashst]。
+
 ### Structural-Entropy-Guided Attention
 [[multispans|MultiSPANS]] (WSDM 2024) 用结构熵最小化从路网导出编码树，把逐层社区划分变成多层注意力掩码（L 个掩码分给 L 个注意力头，其余头不掩码保持全局注意力），并以相对结构熵沿编码树路径求和作为层级相关分数加进空间注意力 logits。论文报告在 PEMSD4/8 上相对 SOTA 平均提升 MAE 2.57%、MAPE 2.16%、RMSE 3.78%；更长历史窗口（12→48 步）经时间卷积 stride 压缩后以约 332K 参数继续提升精度[^src-multispans]。见 [[structural-entropy]]。
 
@@ -56,14 +69,22 @@ Extending beyond accidents, [[igstgnn|IGSTGNN]] (KDD 2026) explicitly models the
 ### Contrastive Auxiliary Regularization
 [[stgcl|STGCL]]（SIGSPATIAL 2022）把对比损失当作辅助正则项与预测任务联合训练，不动网络结构、推理零开销。PEMS-04 上两阶段「对比预训练 + 微调」反而劣于基线（GWN 的 MAE 由 19.33 变成 20.22/20.67），因为对比学习优化的 uniformity 利于分类而非连续回归；端到端联合学习并把对比放在图级，则在 GWN、MTGNN、DCRNN 与 AGCRN 上一致改善，并用 time-of-day 阈值剔除时间邻近的假硬负样本[^src-stgcl]。
 
+[[source-st-ssl|ST-SSL]]（AAAI 2023）同样把自监督信号与预测任务联合训练，但方向不同：它显式建模被共享参数空间抹平的**空间/时间异质性**——空间侧用自适应图增强（按区域聚合嵌入余弦相似度 $q_{m,n}$ 决定掩码流量与增删边，扰动比例 0.1）生成软聚类伪标签做 cross-entropy，并用单纯形约束 + 最大熵正则防塌缩；时间侧把同一时间步的区域级与城市级嵌入当正对做对比判别（$g=\sigma(v_{t,n}^\top W_3 s_t)$）。NYCBike1/2、NYCTaxi、BJTaxi 四数据集 8 基线 MAE 全面最优（BJTaxi In 11.31 vs AGCRN 12.30），但只做 $t+1$ 单步预测、无预训练可迁移性[^src-st-ssl]。
+
 ### Large-Scale Long-Horizon
 FaST (KDD 2026) addresses computational bottlenecks in large-scale graphs (8,600+ nodes) with long-horizon predictions (672 steps = 1 week) using [[adaptive-graph-agent-attention|AGA-Att]] for O(N·a) spatial complexity and [[mixture-of-experts|Dense MoE]] for efficient feature extraction. Achieves 4.4%-18.4% MAE improvement over SOTA with 1.3x-2.2x faster inference[^src-fast-long-horizon-forecasting].
+
+[[source-stwave|STWave]]（ICDE 2023；期刊扩展版 STWave+ 发表于 TKDE 2023）走频域解耦路线：Disentangling Flow Layer 用一级 DWT 把流量拆成低频趋势与高频波动，双通道分别用 masked temporal self-attention 与 dilated causal convolution 建模；ESGAT 的 Query Sampling 只对 topk-pooling 选出的 $\lceil\log N\rceil$ 个活跃节点算注意力，复杂度从 $O(N^2T)$ 降到 $O(TN\log N)$。四个 Caltrans PeMS 数据集 MAE 全面最优（PeMSD4 18.50 vs AGCRN 19.83，PeMSD7 19.94 vs 22.37，PeMSD8 13.42 vs 15.95）。其 "long-term" 指低频分量的长期趋势依赖，输入输出仍是 12→12 步（1 小时），不是长时程预测[^src-stwave]。
 
 ### Pre-training & Masked Autoencoder
 
 Before STD-MAE, [[gpt-st|GPT-ST]] (NeurIPS 2023) pioneered the MAE pre-training paradigm for spatio-temporal graphs. GPT-ST is a plug-and-play pre-training framework that uses a customized temporal hypergraph encoder, a hierarchical spatial capsule clustering network, and a cluster-aware adaptive mask strategy. It seamlessly integrates with 13 diverse downstream STGNN baselines (STGCN, GWN, MTGNN, MSDR, etc.) without modifying their architectures, achieving universal performance improvement across 4 datasets[^src-gpt-st].
 
 [[std-mae|STD-MAE]] (IJCAI-2024) proposes a spatial-temporal-decoupled masked pre-training framework for traffic forecasting. It addresses a critical limitation of end-to-end models: short input horizons (typically 12 steps = 1 hour) that cause a **[[spatiotemporal-mirage|spatiotemporal mirage]]** — similar input sequences leading to dissimilar future values and vice versa. STD-MAE pre-trains two decoupled masked autoencoders (S-MAE for spatial, T-MAE for temporal) on long sequences (e.g., 864 steps = 3 days), learning clear spatiotemporal heterogeneity representations that can enhance any downstream predictor. On six PEMS benchmarks, STD-MAE achieves SOTA performance with 22.6%-72.5% faster pre-training than comparable methods[^src-2312-00516-std-mae].
+
+这条路线可追溯到 [[source-step|STEP]]（KDD 2022）：TSFormer 把历史序列按 patch size 12 切成互不重叠 patch（METR-LA/PEMS-BAY 取 168 个 patch 即一周），随机掩码 75% 后只对被掩 patch 算 MAE 重建损失，非对称 encoder 4 层 + decoder 1 层，可学习位置编码是关键（换 sinusoidal 学不到有效表征）；图结构学习沿用 GTS 框架但改用 TSFormer 表征算 kNN 图做交叉熵正则，$\lambda=1/\lceil epoch/6\rceil$ 逐步衰减跳出 kNN 约束。下游冻结 encoder，patch 表征经 semantic projector 与 Graph WaveNet 隐层相加。METR-LA H3 MAE 2.61 vs GWNet 2.69（$p<0.05$）、PEMS04 H3 17.34 vs 18.15[^src-step]。
+
+[[source-st-mae|STMAE]]（CIKM 2024）把掩码策略细化并做成**即插即用**框架（与 [[std-mae|STD-MAE]] 是不同论文）：空间掩码用 biased random walk（融合 BFS/DFS）掩**路径**而非节点，时间掩码因交通数据信息密度低改用 patch 级 Bernoulli 采样 + 共享 mask token；微调时丢弃两个 decoder，encoder 接回原 backbone。以 AGCRN 为骨干，PEMS04 MAE 19.39→19.05、PEMS08 15.65→15.01，全面优于对比式 SSL 的 [[stgcl|STGCL]]（19.27），且不需要数据增强[^src-st-mae]。
 
 ### Regularized Adaptive Graph Convolution
 [[ragc|RAGC]] (arXiv 2026) tackles two limitations of adaptive graph learning for large-scale networks: O(N²) graph convolution complexity and lack of node embedding regularization. It proposes [[efficient-cosine-operator|ECO]] for O(N) graph convolution via cosine similarity decomposition, and integrates [[stochastic-shared-embedding|SSE]] with adaptive graph convolution through a [[residual-difference-mechanism|residual difference mechanism]] that suppresses SSE-induced noise while retaining regularization benefits. On four LargeST datasets (716–8,600 nodes), RAGC consistently achieves the best prediction accuracy with competitive training/inference speed[^src-ragc-efficient-traffic-forecasting].
@@ -83,6 +104,7 @@ While traffic forecasting predicts future values at sensor locations, **road net
 Deterministic models only output point estimates, lacking uncertainty quantification. Probabilistic methods address this gap:
 - **[[specstg|SpecSTG]]** (arXiv 2024) is the first spectral diffusion framework for probabilistic STG forecasting. It generates the graph Fourier representation of future time series instead of raw sequences, naturally embedding spatial dependencies into the diffusion process. With [[fast-spectral-graph-convolution|Fast Spectral Graph Convolution]] reducing graph convolution complexity from $O(N^2)$ to $O(N)$, SpecSTG achieves up to 8% RMSE improvement and 3.33× training speedup over [[d3vae|GCRDD]] (the most efficient existing diffusion method)[^src-2401-08119-specstg].
 - **[[ustd|USTD]]** (SIGSPATIAL 2024) unifies forecasting and kriging into a single diffusion framework. Key innovation: pre-trained GWNet-style encoder (with graph sampling + 75% masking) separately from task-specific gated attention denoisers (TGA for forecasting, SGA for kriging). This decoupled training strategy enables USTD to become the first diffusion STG model to surpass deterministic baselines on forecasting (CRPS ↓12% on PEMS-BAY). Other diffusion methods ([[timegrad|TimeGrad]], [[d3vae|GCRDD]], [[diffstg|DiffSTG]], [[pristi|PriSTI]]) operate in the original domain and treat sensors independently during probabilistic generation, limiting spatial information usage[^src-2401-08119-specstg].
+- **[[source-diffusion-traffic-flow-inference|DP-TFI]]**（ICASSP 2023）处理的不是预测而是 fine-grained urban traffic flow inference：从 32×32 粗粒度流量图推断 128×128 细粒度图。diffusion 在此不作为主生成器，而是当数据增强器（Diffusion Probabilistic Augmentor）生成带不确定性的流量图实例，生成后仍过 $N^2$-Normalization；标题里的 relaxed structural constraint 指用 relax matrix 放宽「superregion 流量等于 subregion 之和」的硬约束（$\mu\approx0.02$-$0.03$ 最优，严格约束 $\mu=0$ 与过度放宽都更差）。TaxiBJ 四时段 RMSE/MAE/MAPE 全最优（P4 RMSE 3.429 vs UrbanPy 3.470）[^src-diffusion-traffic-flow-inference]。
 
 ### Spatial-Temporal Imputation
 时空数据填补与预测紧密相关——填补缺失值是许多预测管道的前置步骤。GSLI（AAAI 2025）提出多尺度图结构学习框架，通过节点尺度学习解决特征异质性问题，通过特征尺度学习捕获跨特征空间依赖，在 6 个真实数据集上取得最优填补性能[^src-yang-gsli-2025]。ImputeFormer（KDD 2024）则通过低秩归纳偏置实现线性复杂度的 Transformer 填补[^src-2312-01728]。CoFILL（arXiv 2025）使用条件扩散模型进行时空填补[^src-cofill-spatiotemporal-imputation]。
@@ -319,3 +341,13 @@ The XTraffic benchmark provides incident-aligned traffic datasets for California
 [^src-stgformer]: [[source-stgformer]]
 [^src-virtual-nodes]: [[source-virtual-nodes]]
 [^src-multispans]: [[source-multispans]]
+[^src-st-ssl]: [[source-st-ssl]]
+[^src-stwave]: [[source-stwave]]
+[^src-step]: [[source-step]]
+[^src-st-mae]: [[source-st-mae]]
+[^src-st-llm]: [[source-st-llm]]
+[^src-tpllm]: [[source-tpllm]]
+[^src-how-llm-understand-st]: [[source-how-llm-understand-st]]
+[^src-physics-aware-reprogramming]: [[source-physics-aware-reprogramming]]
+[^src-flashst]: [[source-flashst]]
+[^src-diffusion-traffic-flow-inference]: [[source-diffusion-traffic-flow-inference]]
