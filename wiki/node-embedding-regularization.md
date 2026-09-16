@@ -8,7 +8,7 @@ tags:
   - adaptive-graph-learning
 created: 2026-05-07
 last_updated: 2026-05-31
-source_count: 1
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -64,5 +64,7 @@ RAGC 提出 SSE + [[residual-difference-mechanism|RDM]] + 自适应图卷积的�
 - [[stochastic-shared-embedding|SSE]] — 嵌入层正则化技术
 - [[residual-difference-mechanism|RDM]] — 噪声抑制机制
 - [[traffic-forecasting]] — 交通预测方法概览
+- [[proxy-node-generation]] — AGCRN 的自适应邻接与节点嵌入被 FedHINT 用作空间编码器，嵌入矩阵行数扩到 $|V_m|+N$（含代理节点）[^src-fedhint]
 
 [^src-ragc-efficient-traffic-forecasting]: [[source-ragc-efficient-traffic-forecasting]]
+[^src-fedhint]: [[source-fedhint]]

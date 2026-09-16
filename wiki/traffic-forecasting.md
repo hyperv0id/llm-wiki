@@ -7,7 +7,7 @@ tags:
   - intelligent-transportation
 created: 2026-04-27
 last_updated: 2026-09-16
-source_count: 67
+source_count: 68
 confidence: high
 status: active
 ---
@@ -231,6 +231,10 @@ Key methods in this paradigm:
 - **[[eac|EAC]]** (Chen & Liang, ICLR 2025): Dynamic prompt pool with expand-and-compress operations, lightweight parameter-efficient CSTF[^src-stbp].
 - **[[stbp|STBP]]** (Liu & Zhang, ICLR 2026): Fixed general backbone + incrementally expanding [[contextual-pattern-bank|contextual pattern bank]]. Freezes backbone to prevent forgetting, expands only parametric bank for adaptation. Achieves 21.44% MAE reduction over EAC on PEMS-Stream via frequency-domain processing (FreNet) and dual-stream linear graph attention (DLGA)[^src-stbp].
 
+### Federated / Privacy-Preserving Training
+
+数据不集中时，各区域客户端只训练本地模型、服务器聚合参数，跨区域节点的相关性因此缺失。[[source-fedhint|FedHINT]]（AAAI 2026）从本地数据抽 [[hidden-global-components|隐藏全局成分]] 生成 [[proxy-node-generation|代理节点]] 顶替这些节点，只上传模型参数；key/value 先经 [[time-shifted-filters|时移滤波]]；隐藏成分提取器与 global encoder 参与聚合，local encoder 与 predictor 留在客户端（[[personalized-aggregation-strategy|PAS]]）[^src-fedhint]。METIS 切成 6 客户端的 PEMS03/04/07/08 上，论文报告相对次优方法平均降 MAE 3.73、RMSE 4.81；按 Table 1 核算 RMSE 平均降幅为 5.11，与自述不一致[^src-fedhint]。范式与基线谱系见 [[federated-traffic-prediction|联邦交通预测]]。
+
 ### Out-of-Distribution Generalization / Cross-Network Zero-Shot
 
 Recent work argues the node-to-node message-passing core of STGNNs is itself a source of out-of-distribution fragility: [[stop|STOP]] (ICML 2025) blocks node-to-node messages and routes all interaction through a small set of shared Context-Aware Units, improving OOD generalization by up to 17.01% and inductive performance on new sensors by up to 18.44%[^src-stop].
@@ -360,3 +364,4 @@ The XTraffic benchmark provides incident-aligned traffic datasets for California
 [^src-flashst]: [[source-flashst]]
 [^src-diffusion-traffic-flow-inference]: [[source-diffusion-traffic-flow-inference]]
 [^src-gencast]: [[source-gencast]]
+[^src-fedhint]: [[source-fedhint]]

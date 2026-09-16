@@ -1509,3 +1509,16 @@ All wiki pages, organized by type. Updated on every ingest.
 ## Techniques (continued)
 - [[lwr-traffic-pde]] — LWR 运动波守恒律：Greenshields 速度-密度关系导出速度形式残差；软约束（自动微分残差损失）与硬约束（图上平流-扩散算子离散）两种用法
 - [[differentiable-spatial-embedding]] — 可微空间嵌入 SE-L（冻结 LLaMA3 文本描述）与 SE-H（GeoHash + 字符 BERT，训练中更新），以及两者在不同数据集上的实证差异
+
+## Sources (continued)
+- [[source-fedhint]] — FedHINT：联邦交通预测中从本地数据抽取隐藏全局成分生成代理节点以恢复跨客户端依赖，只上传模型参数；METIS 切 6 客户端，PEMS03/04/07/08（Zhou et al., AAAI 2026）
+
+## Concepts (continued)
+- [[federated-traffic-prediction]] — 联邦交通预测：局部子图 + 参数聚合的设定、METIS 六客户端评估协议与四类方法谱系
+- [[inter-client-dependency]] — 跨客户端依赖：数据隔离切断的跨区域节点相关性，恢复路线对照与效果检验方式
+- [[hidden-global-components]] — 隐藏全局成分：局部数据中含反映跨区域交通变化的成分这一假设、提取机制与三条证据
+
+## Techniques (continued)
+- [[proxy-node-generation]] — 代理节点生成 GPN：共享 global queries + 时移滤波注意力在本地生成代表全局信息的节点，再经双掩码编码器恢复跨客户端依赖
+- [[time-shifted-filters]] — 时移滤波器 TSF：按 $j=t\bmod L$ 选取频域滤波器，作用于 attention 的 key/value
+- [[personalized-aggregation-strategy]] — 个性化聚合 PAS：按模块职责划分共享/私有参数，只聚合全局信息相关参数

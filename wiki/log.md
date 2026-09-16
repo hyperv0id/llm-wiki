@@ -3886,3 +3886,11 @@ ingest 报告：[[ingest-reports/2026-09-15-diffusion-traffic-flow-inference|WHY
 更新的页面：[[traffic-forecasting]]（新增 `### Unobserved-Region Forecasting`；source_count 56→67，按实测唯一引用数修正）、[[physics-informed-neural-network]]、[[source-geolocation-llm-st]]、[[vehicle-centric-graph-traffic-pde]]（补反向链接）、[[index]], [[log]]
 ingest 报告：[[ingest-reports/2026-09-16-gencast|WHY 报告]]
 [^src-gencast]: [[source-gencast]]
+
+## [2026-09-16] ingest | Inter-Client Dependency Recovery with Hidden Global Components for Federated Traffic Prediction (FedHINT, Zhou et al., AAAI 2026)
+联邦交通预测：客户端只见本地子图，跨区域节点相关性缺失。论文从本地数据抽出隐藏全局成分生成 $N$ 个代理节点顶替缺失节点（key/value 先经按 $j=t \bmod L$ 选行的频域时移滤波），用 global/local 两张掩码把 AGCRN 编码器分两支，query 之间加正交正则；聚合只上传隐藏成分提取器与 global encoder 的参数。
+PEMS03/04/07/08，METIS 切 6 客户端：对 FedGRU/CNFGNN/CTFL/FedGCN/FedGTP/FedTPS 全指标最优（PEMS03 11.95/19.12 vs 次优 15.48/23.92）。四个消融项均掉点，去代理节点在 PEMS03/04/07 降幅最大。自述平均降 MAE 3.73 与 Table 1 核算一致，自述平均降 RMSE 4.81 与核算的 5.11 不一致；隐私论证只到「不上传数据特征」。
+创建的页面：[[source-fedhint]], [[federated-traffic-prediction]], [[inter-client-dependency]], [[hidden-global-components]], [[proxy-node-generation]], [[time-shifted-filters]], [[personalized-aggregation-strategy]]
+更新的页面：[[traffic-forecasting]]（新增 `### Federated / Privacy-Preserving Training`；source_count 67→68）、[[virtual-nodes-traffic]]、[[node-embedding-regularization]]（补反向链接）、[[index]], [[log]]
+ingest 报告：[[ingest-reports/2026-09-16-fedhint|WHY 报告]]
+[^src-fedhint]: [[source-fedhint]]

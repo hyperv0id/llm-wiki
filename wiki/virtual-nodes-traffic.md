@@ -9,7 +9,7 @@ tags:
   - adaptive-adjacency
 created: 2026-08-30
 last_updated: 2026-08-30
-source_count: 2
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -69,6 +69,8 @@ over-squashing 的另一类缓解路线是用 global attention 让信息一步�
 - [[graphgps]] — over-squashing 的 global attention 缓解路线对照
 - [[over-smoothing-in-gnns]] — 相邻的 GNN 表征退化病理
 - [[stgformer]] — 单层长程建模的另一路线对照
+- [[proxy-node-generation]] — 联邦交通预测中由本地数据生成代理节点替代被隔离的跨区域节点；同为「追加辅助节点」，但目的与来源不同[^src-fedhint]
 
 [^src-virtual-nodes]: [[source-virtual-nodes]]
 [^src-mtgnn]: [[source-mtgnn]]
+[^src-fedhint]: [[source-fedhint]]
