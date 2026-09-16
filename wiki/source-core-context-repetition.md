@@ -30,7 +30,7 @@ CoRe 由 Sangwon Yu 等 6 人提出，发表于 Findings of NAACL 2025。[^src-c
 
 - 出版页：https://aclanthology.org/2025.findings-naacl.360/
 - PDF：https://aclanthology.org/2025.findings-naacl.360.pdf （DOI: 10.18653/v1/2025.findings-naacl.360，pp. 6450–6470）
-- 本地锁定版本：`downloads/core-context-repetition.pdf`（未放入 raw/）
+- 本地锁定版本：`downloads/core-context-repetition.pdf`（PDF 留在 downloads/；pdftotext 抽取文本在 `raw/core-context-repetition.txt`）
 - 阅读范围：pdftotext 全文提取后，完整阅读摘要、§1 引言、§2 相关工作、§3 方法（定义 1–3、定理 1、推论 1.1、§3.4 实践方法）、§4 实验设置与 §4.3 分析、Limitations、附录提示模板节选；主结果数值表为浏览级。
 
 ## 与主论文的关系

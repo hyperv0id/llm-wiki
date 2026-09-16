@@ -28,7 +28,7 @@ State over Tokens（SoT）由 Mosh Levy 等 4 人撰写，是 2025-12-14 提交�
 
 - arXiv 摘要页：https://arxiv.org/abs/2512.12777
 - PDF：https://arxiv.org/pdf/2512.12777 （v1，2025-12-14）
-- 本地锁定版本：`downloads/state-over-tokens.pdf`（未放入 raw/）
+- 本地锁定版本：`downloads/state-over-tokens.pdf`（PDF 留在 downloads/；pdftotext 抽取文本在 `raw/state-over-tokens.txt`）
 - 阅读范围：pdftotext 全文提取后，正文 §1–§7（含摘要、白板类比、形式框架、两个误解、本体论分歧、开放问题、结论）完整读完；参考文献列表为浏览级。
 
 ## 与主论文的关系

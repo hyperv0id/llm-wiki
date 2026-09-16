@@ -19,6 +19,6 @@ status: active
 
 ## 快照与出处
 
-原始快照存于 `downloads/mrcr-dataset.md`（raw/ 禁写，内容为 `https://huggingface.co/datasets/openai/mrcr/raw/main/README.md` 原样）。结构导航：主条目 [[trace-as-state]]；论文侧 "MRCRv2" 命名核查与本卡代码/论文判分口径的逐条对照见 [[trace-as-state-reproduction]]。
+原始快照存于 `downloads/mrcr-dataset.md`（内容为 `https://huggingface.co/datasets/openai/mrcr/raw/main/README.md` 原样）。结构导航：主条目 [[trace-as-state]]；论文侧 "MRCRv2" 命名核查与本卡代码/论文判分口径的逐条对照见 [[trace-as-state-reproduction]]。
 
 [^src-mrcr-dataset]: [[source-mrcr-dataset]] —— OpenAI, *OpenAI MRCR: Long Context Multiple Needle in a Haystack Benchmark*，数据集卡 <https://huggingface.co/datasets/openai/mrcr>（快照：raw/main 分支 README），访问日期 2026-09-13。

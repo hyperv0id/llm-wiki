@@ -19,6 +19,6 @@ status: active
 
 ## 快照与出处
 
-原始快照存于 `downloads/nub-1m-benchmark.md`（raw/ 禁写，内容为 `https://raw.githubusercontent.com/xz-keg/Novel-Understanding-Bench/main/README.md` 原样）。结构导航：主条目 [[trace-as-state]]；论文的 NUB-1M Season 2 实验用法与判分归因核对见 [[trace-as-state-reproduction]]。
+原始快照存于 `downloads/nub-1m-benchmark.md`（内容为 `https://raw.githubusercontent.com/xz-keg/Novel-Understanding-Bench/main/README.md` 原样）。结构导航：主条目 [[trace-as-state]]；论文的 NUB-1M Season 2 实验用法与判分归因核对见 [[trace-as-state-reproduction]]。
 
 [^src-nub-1m-benchmark]: [[source-nub-1m-benchmark]] —— xz-keg, *1M Novel Understanding Bench (NUB-1M)*，GitHub 仓库 <https://github.com/xz-keg/Novel-Understanding-Bench>（快照：raw/main 分支 README），访问日期 2026-09-13。

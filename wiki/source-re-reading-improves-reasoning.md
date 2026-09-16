@@ -30,7 +30,7 @@ Re2 由 Xiaohan Xu 等 8 人提出，发表于 EMNLP 2024 主会。[^src-re-read
 
 - 出版页：https://aclanthology.org/2024.emnlp-main.871/
 - PDF：https://aclanthology.org/2024.emnlp-main.871.pdf （DOI: 10.18653/v1/2024.emnlp-main.871，pp. 15549–15575）
-- 本地锁定版本：`downloads/re-reading-improves-reasoning.pdf`（未放入 raw/）
+- 本地锁定版本：`downloads/re-reading-improves-reasoning.pdf`（PDF 留在 downloads/；pdftotext 抽取文本在 `raw/re-reading-improves-reasoning.txt`）
 - 阅读范围：pdftotext 全文提取后，完整阅读摘要、§1 引言、§2 方法（re2 提示模板与式 1–3）、§3.1 基准列表、§3.3–3.5 结果讨论与指令变体分析（Table 7）、推理效率分析、Limitations；各数据集的完整数值表与附录提示模板为浏览级。
 
 ## 与主论文的关系

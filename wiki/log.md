@@ -3871,3 +3871,10 @@ ingest 报告：[[ingest-reports/2026-09-15-diffusion-traffic-flow-inference|WHY
 - [[diffusion-model]] 的 `## 相关概念` 补入 [[source-diffusion-ts-st-survey|TS/ST 扩散综述]] 与 [[source-diffusion-traffic-flow-inference|DP-TFI]]。
 创建的页面：无
 更新的页面：[[traffic-forecasting]], [[diffusion-model]], [[log]]
+
+## [2026-09-15] maintenance | 源文本抽取统一迁入 raw/
+用户指令：把 `downloads/` 下的 .txt 移到 `raw/`。执行 `git mv downloads/*.txt raw/`，共 19 个文件（本批 STFM/交通预测 13 个 + 既有 stgcl、trace-as-state、re-reading-improves-reasoning、core-context-repetition、state-over-tokens、recontext 6 个），git 全部识别为 rename（内容未变）。同批删除子代理遗留的 `raw/step.txt`——它是 downloads/step.txt 的副本，`cmp` 确认逐字节相同后删除，避免重名冲突。
+同步更新引用与过时表述：[[source-physics-aware-reprogramming]]、[[source-st-mae]]、[[source-stgcl]]、[[source-trace-as-state]]（含「归档边界」句）、[[source-graphwalks-dataset]]、[[source-mrcr-dataset]]、[[source-nub-1m-benchmark]]、[[source-re-reading-improves-reasoning]]、[[source-core-context-repetition]]、[[source-state-over-tokens]]、[[source-recontext]]。
+未动：`downloads/` 下的 PDF、TeX 包与 .md 快照（指令只涉及 txt）；[[log]] 与 ingest-reports/ 中的历史路径按「仅追加」原则不改写。
+创建的页面：无
+更新的页面：上述 11 个 source 页、[[log]]

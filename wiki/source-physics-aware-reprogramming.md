@@ -19,7 +19,7 @@ status: active
 **Authors**: Hao Wang, Jindong Han, Wei Fan, Leilei Sun, Hao Liu (HKUST-GZ, HKUST, Shandong, Oxford, Beihang)
 **Venue**: arXiv 2024（所读版本题为 REPST ... via Semantic-Oriented Reprogramming）
 **Code**: https://github.com/usail-hkust/REPST
-**Local**: downloads/physics-aware-reprogramming.txt
+**Local**: raw/physics-aware-reprogramming.txt
 
 ## 问题
 

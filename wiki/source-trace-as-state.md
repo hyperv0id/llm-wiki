@@ -21,10 +21,10 @@ status: active
 - **作者与署名单位**：Xu Zou（Z.ai）、Jie Tang（Tsinghua University）。[^src-trace-as-state]
 - **版本**：arXiv:2609.02702v1，2026-09-02；arXiv 著录为 preprint，不据此添加会议接收信息。[^src-trace-as-state]
 - **原文**：[arXiv 著录](https://arxiv.org/abs/2609.02702v1) · [完整 HTML](https://arxiv.org/html/2609.02702v1) · [21 页 PDF](https://arxiv.org/pdf/2609.02702v1) · [TeX Source](https://arxiv.org/src/2609.02702v1)。
-- **本地原文**：[[downloads/trace-as-state.pdf]]；TeX 包 `downloads/trace-as-state.tar.gz`；完整 `pdftotext -layout` 抽取为 `downloads/trace-as-state.txt`。
+- **本地原文**：[[downloads/trace-as-state.pdf]]；TeX 包 `downloads/trace-as-state.tar.gz`；完整 `pdftotext -layout` 抽取为 `raw/trace-as-state.txt`（2026-09-15 由 downloads/ 迁入）。
 - **许可与图版**：arXiv 声明 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)；本次只将原图 PDF 转为 PNG，未改图内内容。[^src-trace-as-state]
 - **来源计数**：PDF、HTML、TeX 是同一篇论文的不同载体，合计一个来源；脚注 slug 为 `trace-as-state`。
-- **归档边界**：`raw/` 在本仓库中只读，本次没有向其新增、修改或删除文件；在线来源保存到已有的 `downloads/`，不声称存在 `raw/trace-as-state.pdf`。
+- **归档边界**：PDF 与 TeX 包留存 `downloads/`；`pdftotext` 抽取文本自 2026-09-15 起存于 `raw/trace-as-state.txt`。本仓库不声称存在 `raw/trace-as-state.pdf`。
 - **阅读范围**：正文 §1–5、Limitations、References、Appendix A–F；图版来自 TeX 包的原始 PDF。
 - **PDF SHA256**：`85f79e1407f6d391f9a36907d5e8031f0ce84db9c094335095f69c3a9c887e1c`。
 - **TeX SHA256**：`bfc04fe5b8c47a0d77d904dc285ee43ce32d843173cfa7ec4e9e64cb2aa8cb27`。

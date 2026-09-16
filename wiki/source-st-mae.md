@@ -19,7 +19,7 @@ status: active
 
 **作者**：Jiarui Sun, Yujie Fan, Chin-Chia Michael Yeh, Wei Zhang, Girish Chowdhary（UIUC + Visa Research）
 **发表**：CIKM 2024（DOI 10.1145/3627673.3679989），arXiv:2309.15169v2
-**代码**：github.com/jsun57/STMAE；本地全文：`downloads/st-mae.txt`
+**代码**：github.com/jsun57/STMAE；本地全文：`raw/st-mae.txt`
 
 ## 问题与核心论点
 

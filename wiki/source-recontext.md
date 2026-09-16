@@ -33,7 +33,7 @@ ReContext 由 Yanjun Zhao 等 9 人提出，是 2026-07-02 的预印本。[^src-
 - arXiv 摘要页：https://arxiv.org/abs/2607.02509
 - PDF：https://arxiv.org/pdf/2607.02509 （v1，2026-07-02）
 - 官方代码：https://github.com/Yanjun-Zhao/ReContext
-- 本地锁定版本：`downloads/recontext.pdf`（未放入 raw/）
+- 本地锁定版本：`downloads/recontext.pdf`（PDF 留在 downloads/；pdftotext 抽取文本在 `raw/recontext.txt`）
 - 阅读范围：pdftotext 全文提取后，完整阅读摘要、§1 引言、§2 相关工作、§3 方法（证据选择、物化与回放、递归选择、理论分析）、§4 数据集与主结果表、§Limitations、附录 E.1/E.2 理论设定与证明开头；其余结果表与附录为浏览级。
 
 ## 与主论文的关系

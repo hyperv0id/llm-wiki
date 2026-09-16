@@ -19,6 +19,6 @@ status: active
 
 ## 快照与出处
 
-原始快照存于 `downloads/graphwalks-dataset.md`（raw/ 禁写，内容为 `https://huggingface.co/datasets/openai/graphwalks/raw/main/README.md` 原样）。结构导航：主条目 [[trace-as-state]]；本数据集在论文实验中的用法与口径差异核对见 [[trace-as-state-reproduction]]。
+原始快照存于 `downloads/graphwalks-dataset.md`（内容为 `https://huggingface.co/datasets/openai/graphwalks/raw/main/README.md` 原样）。结构导航：主条目 [[trace-as-state]]；本数据集在论文实验中的用法与口径差异核对见 [[trace-as-state-reproduction]]。
 
 [^src-graphwalks-dataset]: [[source-graphwalks-dataset]] —— OpenAI, *GraphWalks: A Multi Hop Reasoning Long Context Benchmark*，数据集卡 <https://huggingface.co/datasets/openai/graphwalks>（快照：raw/main 分支 README），访问日期 2026-09-13。

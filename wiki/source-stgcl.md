@@ -22,7 +22,7 @@ status: active
 - **发表**：ACM SIGSPATIAL 2022，DOI [10.1145/3557915.3560939](https://doi.org/10.1145/3557915.3560939)，正文 12 页。
 - **版本**：arXiv:2108.11873，v1 为 2021-08，本次读 v2 定稿（2022-11-03）。
 - **原文**：[arXiv](https://arxiv.org/abs/2108.11873v2) · [HTML](https://arxiv.org/html/2108.11873v2) · [PDF](https://arxiv.org/pdf/2108.11873v2.pdf) · [代码](https://github.com/liuxu77/STGCL)
-- **本地**：`downloads/stgcl.pdf`（SHA256 `5f6a27a9…b85cf`）、`downloads/stgcl.txt`（SHA256 `84f51b70…daa5`）。`raw/` 只读，未新增文件。
+- **本地**：`downloads/stgcl.pdf`（SHA256 `5f6a27a9…b85cf`）、`raw/stgcl.txt`（SHA256 `84f51b70…daa5`；2026-09-15 由 downloads/ 迁入 raw/）。
 - **阅读范围**：正文 §1–§7、References、Appendix A。表格数据经 PDF 文本抽取核对，未做版面级校验。
 - **性质**：实证探索 / 方法框架论文，不是 survey。
 
