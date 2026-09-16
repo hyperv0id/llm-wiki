@@ -8,7 +8,7 @@ tags:
   - fusion
   - fft
 created: 2026-05-03
-last_updated: 2026-08-08
+last_updated: 2026-09-16
 source_count: 1
 confidence: medium
 status: active
@@ -73,5 +73,7 @@ AFF performs fusion in the **frequency domain** with **learnable per-band weight
 - [[endogenous-text-alignment]] — representation-level alignment (ETA)
 - [[event-driven-reasoning]] — the event-driven prediction branch
 - [[source-event-driven-ts-forecasting]] — source summary
+- [[frequency-pathway-routing]] — 频率维上的 top-$K$ 选择与 softmax 加权融合（[[adafre|AdaFre]]，时空预测）
+- [[band-limited-temporal-decomposition]] — DFT 分带 + IFFT 回时域的频带视图构造
 
 [^src-event-driven-ts-forecasting]: [[source-event-driven-ts-forecasting]]

@@ -1522,3 +1522,16 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[proxy-node-generation]] — 代理节点生成 GPN：共享 global queries + 时移滤波注意力在本地生成代表全局信息的节点，再经双掩码编码器恢复跨客户端依赖
 - [[time-shifted-filters]] — 时移滤波器 TSF：按 $j=t\bmod L$ 选取频域滤波器，作用于 attention 的 key/value
 - [[personalized-aggregation-strategy]] — 个性化聚合 PAS：按模块职责划分共享/私有参数，只聚合全局信息相关参数
+
+## Sources (continued)
+- [[source-adafre]] — AdaFre: Adaptive Frequency Pathways for Spatiotemporal Forecasting（Qin et al., AAAI 2026），DFT 有效频带均匀切分 + 频率特异谱嵌入 + 节点级 top-2 频带路由 + 频率均衡损失，PeMSD3/4/7/8 MAE 14.27/17.89/18.58/12.99 全最优
+
+## Entities (continued)
+- [[adafre]] — AdaFre 模型页：时间分带、空间谱分组与稀疏频率路由的三段结构
+- [[stid]] — STID，仅用时空身份嵌入的轻量基线，常作效率参照、prompt 来源或频率分支 backbone
+
+## Techniques (continued)
+- [[band-limited-temporal-decomposition]] — 按 DFT 有效频带切带、带外置零后 IFFT 回时域，得到 $P$ 条 band-limited 时域视图
+- [[frequency-specific-spatial-embedding]] — 拉普拉斯特征向量按特征值等量切成 $P$ 组，与时间频带一一配对
+- [[frequency-pathway-routing]] — 频率维上的节点级温度 softmax + top-$K$ 选择，再按 softmax 权重融合分支输出
+- [[frequency-balance-loss]] — 惩罚各频率在 mini-batch 上的平均选择概率偏离 $1/P$ 的均衡正则

@@ -8,7 +8,7 @@ tags:
   - spectral-filtering
   - weather-forecasting
 created: 2026-05-03
-last_updated: 2026-05-03
+last_updated: 2026-09-16
 source_count: 1
 confidence: medium
 status: active
@@ -78,5 +78,7 @@ N 个局部滤波结果通过可学习权重加权聚合[^src-uniextreme]：
 - [[extreme-weather-forecasting]] — 极端天气预测概念
 - [[fedformer]] — 频域分解 Transformer（不同领域的频域方法）
 - [[frequency-aware-residual-representation]] — 傅里叶信号分解（相关频域技术）
+- [[band-limited-temporal-decomposition]] — 均匀切带的 band-limited 时域视图（[[adafre|AdaFre]]）
+- [[frequency-pathway-routing]] — 频率分支的稀疏选择与加权融合
 
 [^src-uniextreme]: [[source-uniextreme]]

@@ -7,7 +7,7 @@ tags:
   - intelligent-transportation
 created: 2026-04-27
 last_updated: 2026-09-16
-source_count: 68
+source_count: 69
 confidence: high
 status: active
 ---
@@ -52,6 +52,8 @@ STTN (2020), GMAN (2020), [[pdformer|PDFormer]] (2023)[^src-pdformer-jiang-2023]
 
 ### Frequency-Domain
 [[fedformer|FEDformer]] (ICML 2022) applies Fourier and Wavelet transforms in its [[frequency-enhanced-block|FEB]]/[[frequency-enhanced-attention|FEA]] blocks and [[moe-decomposition|MOEDecomp]] for adaptive seasonal-trend decomposition, but treats frequency components uniformly without separating periodic from residual signals. FreTS (NeurIPS 2023) and StemGNN (2020) follow similar uniform processing in the frequency domain[^src-hyperd-hybrid-periodicity-decoupling].
+
+[[adafre|AdaFre]]（AAAI 2026）把输入按 DFT 有效频带切成 $P=4$ 条 band-limited 时域视图，每个频带配对同序号的拉普拉斯特征向量分组（[[frequency-specific-spatial-embedding|频率特异谱嵌入]]），再以节点级温度 softmax + top-$K$（$K=2$）只激活 $K$ 个频带分支、按归一化权重融合，backbone 取 [[stid|STID]]。与 FEDformer 一路把频域当作统一处理对象不同，AdaFre 显式建模了频率重要性随上下文变化、空间依赖随频率变化这两点，并以均衡损失抑制路由坍塌[^src-adafre]。PeMSD3/4/7/8 输入 288 步预测 12 步，对 22 个基线 MAE 14.27 / 17.89 / 18.58 / 12.99 全部最低（PeMSD4 次优 HimNet 18.14，PeMSD8 次优 STWave 13.42），参数量 337K 低于 AGCRN 763K 与 HimNet 11B[^src-adafre]。见 [[band-limited-temporal-decomposition]]、[[frequency-pathway-routing]]、[[frequency-balance-loss]]。
 
 ### Periodicity-Decoupled
 [[hyperd|HyperD]] (2025) explicitly decouples short-term and long-term periodicity via hybrid frequency-domain decomposition[^src-hyperd-hybrid-periodicity-decoupling].
@@ -365,3 +367,4 @@ The XTraffic benchmark provides incident-aligned traffic datasets for California
 [^src-diffusion-traffic-flow-inference]: [[source-diffusion-traffic-flow-inference]]
 [^src-gencast]: [[source-gencast]]
 [^src-fedhint]: [[source-fedhint]]
+[^src-adafre]: [[source-adafre]]

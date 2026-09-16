@@ -3894,3 +3894,11 @@ PEMS03/04/07/08，METIS 切 6 客户端：对 FedGRU/CNFGNN/CTFL/FedGCN/FedGTP/F
 更新的页面：[[traffic-forecasting]]（新增 `### Federated / Privacy-Preserving Training`；source_count 67→68）、[[virtual-nodes-traffic]]、[[node-embedding-regularization]]（补反向链接）、[[index]], [[log]]
 ingest 报告：[[ingest-reports/2026-09-16-fedhint|WHY 报告]]
 [^src-fedhint]: [[source-fedhint]]
+
+## [2026-09-16] ingest | Adaptive Frequency Pathways for Spatiotemporal Forecasting (AdaFre, Qin et al., AAAI 2026)
+时间侧对 DFT 有效频带（前 ⌊T/2⌋+1 个 bin）均匀切 $P=4$ 带，带外置零后 IFFT 回时域得 band-limited 视图；空间侧把归一化拉普拉斯特征向量按特征值等量切 $P$ 组，与时间频带一一配对；节点级温度 softmax 打分后取 top-$K{=}2$ 频带，各带过独立 STID backbone，再按 softmax 权重融合；$L_{\text{total}}=L_{\text{pred}}+L_{\text{bal}}$，均衡项惩罚各频率在 batch 上的平均选择概率偏离 $1/P$。
+四个 Caltrans PeMS 数据集、输入 288 步预测 12 步、22 基线 MAE 与 RMSE 全最低、MAPE 除 PeMSD8 与 STAEFormer 并列 8.88% 外最低（MAE 14.27/17.89/18.58/12.99；PeMSD4 次优 HimNet 18.14，PeMSD8 次优 STWave 13.42）；三项消融（去分带 / 共享谱嵌入 / 去自适应路径）在四数据集均掉点，全模型优于三个变体。如实记录的不一致：式(13) L2 与正文 MAE 冲突、式(10) 分母写 $K$ 而语义为 $P$、式(14) 双重求和只除以 $B$、式(8) 说明文字写 "covers $P$ consecutive eigenvectors"、正文引用 "STWave (Fang et al. 2023b)" 与参考文献 2023a/2023b 对调、正文称相对 STAEFormer/PDFormer/STFGNN 显著更省算力而 Table 3 未列这三者。
+创建的页面：[[source-adafre]], [[adafre]], [[band-limited-temporal-decomposition]], [[frequency-specific-spatial-embedding]], [[frequency-pathway-routing]], [[frequency-balance-loss]], [[stid]]
+更新的页面：[[traffic-forecasting]], [[graph-frequency-decomposition]], [[source-stwave]], [[adaptive-frequency-fusion]], [[adaptive-frequency-modulation]], [[index]], [[log]]
+ingest 报告：[[ingest-reports/2026-09-16-adafre|WHY 报告]]
+[^src-adafre]: [[source-adafre]]
