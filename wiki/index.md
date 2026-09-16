@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-09-13
+last_updated: 2026-09-16
 tags:
   - meta
 source_count: 0
@@ -1499,3 +1499,13 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Techniques (continued)
 - [[stgcl]] — STGCL：时空图对比学习系统实证框架，联合学习 + 图级对比 + 时空多域增强 + 时域负样本过滤（SIGSPATIAL 2022）
+
+## Sources (continued)
+- [[source-gencast]] — GenCast：无观测区域交通预测，掩码子图对比骨干 + LWR 速度残差物理损失 + ERA5 天气交叉注意力门控融合 + 空间分组熵正则（Su et al., AAAI 2026）
+
+## Concepts (continued)
+- [[unobserved-region-forecasting]] — 无观测区域交通预测：克里金→外推→连续无观测区的任务谱系，掩码自监督、物理约束、外部动态信号、局部特征解耦四条路线
+
+## Techniques (continued)
+- [[lwr-traffic-pde]] — LWR 运动波守恒律：Greenshields 速度-密度关系导出速度形式残差；软约束（自动微分残差损失）与硬约束（图上平流-扩散算子离散）两种用法
+- [[differentiable-spatial-embedding]] — 可微空间嵌入 SE-L（冻结 LLaMA3 文本描述）与 SE-H（GeoHash + 字符 BERT，训练中更新），以及两者在不同数据集上的实证差异

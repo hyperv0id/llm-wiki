@@ -6,8 +6,8 @@ tags:
   - spatial-temporal
   - intelligent-transportation
 created: 2026-04-27
-last_updated: 2026-09-15
-source_count: 56
+last_updated: 2026-09-16
+source_count: 67
 confidence: high
 status: active
 ---
@@ -239,6 +239,14 @@ A complementary **explicit graph modeling** line is [[stunet|STUNet]] (KDD 2026)
 
 For **same-city year-over-year** shifts, the [[st-ood|ST-OOD]] benchmark (IEEE TMC 2025) trains on year *Y* and tests on the same calendar window of *Y+1* across six urban tasks (bike, taxi, pedestrians, speed, flow, 311). Leading STGNNs suffer ~40%–116% RMSE degradation on OUT; STID/MLP often generalize better than complex graph/attention models, specialized OOD methods (CaST/CauSTG/STONE) tend to underfit rather than learn invariants, and moderate dropout (0.2–0.3) substantially improves OUT with little IN cost[^src-st-ood].
 
+### Unobserved-Region Forecasting
+
+A different generalization axis is **spatial coverage, not distribution shift**: forecast a contiguous region with *no traffic sensors at all*. Kriging (IGNNK, INCREASE) and virtual-node methods (KITS) target *scattered* unobserved points and lose their local information flow once the unobserved area is large and contiguous; STSM (EDBT 2024), the previous SOTA, picks locations by *static* features (POI, coordinates) for masked contrastive training[^src-gencast]. See [[unobserved-region-forecasting]] for the task lineage.
+
+[[source-gencast|GenCast]] (AAAI 2026) keeps STSM's masked-subgraph contrastive backbone and adds three kinds of guidance[^src-gencast]: an [[lwr-traffic-pde|LWR]] velocity-form residual $R=\partial\hat{X}/\partial TE_{enc}+(2\hat{X}-X_{fspd})\odot\partial\hat{X}/\partial L_{enc}$ penalized by a Huber loss with a warm-up-quantile $\delta$ (which requires the continuously differentiable [[differentiable-spatial-embedding|SE-L / SE-H]] embeddings); a weather encoder aligning each node to its nearest ERA5-Land station and fusing a 12h context (temperature, solar radiation, precipitation, runoff) via cross-attention and gating; and a per-layer spatial grouping module whose entropy loss suppresses location-specific features.
+
+Under a 4:1:5 spatial split (test region unobserved, $T=T'=2$h) it reports the best RMSE/MAE/MAPE/$R^2$ against GE-GAN, IGNNK, INCREASE, STSM and KITS on PEMS07/PEMS08/PEMS-Bay/METR-LA and a Melbourne CBD dataset — PEMS-Bay RMSE 8.683 vs STSM 8.773, Melbourne $R^2$ 0.061 vs 0.027 (error reduction up to 3.1%, $p\ll10^{-8}$); ring-split PEMS-Bay $R^2$ +27.51%; NREL solar +1.46%~5.83%[^src-gencast]. The authors note the still-low absolute $R^2$ on Melbourne[^src-gencast].
+
 ### Test-Time Calibration / Distribution Shift
 [[st-ttc|ST-TTC]] (NeurIPS 2025 Spotlight) corrects non-stationary distribution shift at inference time without retraining: it appends a lightweight [[spectral-domain-calibration|spectral-domain calibrator]] (per-node amplitude/phase modulation) after a frozen backbone and updates it via a leakage-free [[flash-gradient-update|flash gradient update]] on historical labels, yielding consistent ~1–2% MAE/RMSE gains across 6 backbones on PEMS03/04/07/08, KnowAir, and UrbanEV (METR-LA RMSE 7.43→7.21 with GWNet), and complementing OOD and continual learning methods[^src-st-ttc].
 
@@ -351,3 +359,4 @@ The XTraffic benchmark provides incident-aligned traffic datasets for California
 [^src-physics-aware-reprogramming]: [[source-physics-aware-reprogramming]]
 [^src-flashst]: [[source-flashst]]
 [^src-diffusion-traffic-flow-inference]: [[source-diffusion-traffic-flow-inference]]
+[^src-gencast]: [[source-gencast]]

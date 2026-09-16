@@ -7,8 +7,8 @@ tags:
   - pde
   - deep-learning
 created: 2026-07-14
-last_updated: 2026-08-08
-source_count: 4
+last_updated: 2026-09-16
+source_count: 5
 confidence: high
 status: active
 ---
@@ -25,6 +25,7 @@ Physics-Informed Neural Network（PINN）是将物理定律（通常以 PDE 形�
 
 - **PI-MFM**：在预训练和微调阶段均施加 PDE 残差损失，实现跨 PDE 族的迁移。[^src-pi-mfm]
 - **Multimodal PINN (Tmrt)**：六方向辐射传输方程作为物理损失函数。[^src-multimodal-pinn]
+- **[[source-gencast|GenCast]]**：把 LWR 守恒律经 Greenshields 关系改写为只含速度的残差，用自动微分对预测求时空偏导后以 Huber 损失惩罚；残差阈值取热身轮残差的 $\tau$-分位数自适应确定，并要求时空位置编码连续可微（见 [[differentiable-spatial-embedding|可微空间嵌入]]）。[^src-gencast]
 
 优势是实现简单，可直接加入任意网络；劣势是约束强度依赖损失权重调参，且物理知识本身若有误差会引入有害归纳偏置。[^src-pi-mfm][^src-multimodal-pinn]
 
@@ -57,6 +58,7 @@ Physics-Informed Neural Network（PINN）是将物理定律（通常以 PDE 形�
 - [[ctenet]] — 架构嵌入型 PINN 实例
 - [[advection-diffusion-reaction-equation]] — CTENet 嵌入的核心 PDE
 - [[source-pi-mfm]]、[[source-multimodal-pinn]] — 损失约束型 PINN 实例
+- [[source-gencast]]、[[lwr-traffic-pde]] — 损失约束型 PINN 在交通预测中的实例与方程
 
 - [[pipe]] — PIPE 编码知情型实例
 - [[physics-informed-position-encoding]] — 物理知情位置编码
@@ -66,3 +68,4 @@ Physics-Informed Neural Network（PINN）是将物理定律（通常以 PDE 形�
 [^src-multimodal-pinn]: [[source-multimodal-pinn]]
 [^src-ctenet]: [[source-ctenet]]
 [^src-pipe]: [[source-pipe]]
+[^src-gencast]: [[source-gencast]]

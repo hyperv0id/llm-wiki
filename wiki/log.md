@@ -3878,3 +3878,11 @@ ingest 报告：[[ingest-reports/2026-09-15-diffusion-traffic-flow-inference|WHY
 未动：`downloads/` 下的 PDF、TeX 包与 .md 快照（指令只涉及 txt）；[[log]] 与 ingest-reports/ 中的历史路径按「仅追加」原则不改写。
 创建的页面：无
 更新的页面：上述 11 个 source 页、[[log]]
+
+## [2026-09-16] ingest | GenCast: Generalising Traffic Forecasting to Regions Without Traffic Observations (Su et al., AAAI 2026)
+无观测区域（连续无传感器片区）交通预测。沿用 STSM 掩码子图对比骨干，加三类外部知识：LWR 守恒律经 Greenshields 关系化为速度形式残差，用自动微分 + Huber 损失约束（$\delta$ 取热身轮残差的 $\tau$-分位数，因此要求可微时空嵌入）；节点按最近邻对齐 ERA5-Land 气象站，取 12h 上下文做 cross-attention + 门控融合；逐层空间分组软聚类 + 熵最小化压制节点局部特异特征。空间嵌入并列两版：SE-L（冻结 LLaMA3-8B 读 OSM/POI 文本）与 SE-H（GeoHash + character-BERT，训练中更新）。
+4 个高速数据集 + Melbourne CBD，4:1:5 空间切分、测试区无观测、$T=T'=2$h：对 GE-GAN/IGNNK/INCREASE/STSM/KITS 全指标最优（PEMS-Bay RMSE 8.683 vs STSM 8.773；Melbourne $R^2$ 0.061 vs 0.027，误差最多降 3.1%，$p\ll10^{-8}$；环形切分 $R^2$ +27.51%；NREL 1.46%~5.83%）。论文自述 Melbourne $R^2$ 绝对值仍低。注意与 Google DeepMind 气象模型 GenCast 同名。
+创建的页面：[[source-gencast]], [[unobserved-region-forecasting]], [[lwr-traffic-pde]], [[differentiable-spatial-embedding]]
+更新的页面：[[traffic-forecasting]]（新增 `### Unobserved-Region Forecasting`；source_count 56→67，按实测唯一引用数修正）、[[physics-informed-neural-network]]、[[source-geolocation-llm-st]]、[[vehicle-centric-graph-traffic-pde]]（补反向链接）、[[index]], [[log]]
+ingest 报告：[[ingest-reports/2026-09-16-gencast|WHY 报告]]
+[^src-gencast]: [[source-gencast]]

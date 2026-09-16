@@ -59,5 +59,6 @@ This is the first framework to **preserve microscopic stochasticity within macro
 - [[advection-diffusion-reaction-equation]] — ADR 方程在污染物传输中的连续形式与 FTCS 离散化（互补视角，欧拉 vs 拉格朗日）
 - [[mmckm]] — MMCKM 模型实体
 - [[ctenet]] — 欧拉框架下的 ADR 架构嵌入（对比参照）
+- [[lwr-traffic-pde]] — LWR 守恒律的方程形式，以及速度形式残差的软约束用法（对照本页的硬约束离散）
 
 [^src-mmckm]: [[source-mmckm]]

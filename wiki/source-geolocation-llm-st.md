@@ -10,7 +10,7 @@ tags:
   - time-series-forecasting
   - aaai-2025
 created: 2026-06-18
-last_updated: 2026-06-18
+last_updated: 2026-09-16
 source_count: 1
 confidence: medium
 status: active
@@ -72,5 +72,9 @@ status: active
 - 目前仅测试了 LLaMa3 8B 和 Mistral 8x7B，更大 LLM 的效果有待验证
 - 提示设计对性能有显著影响（地址信息最为关键，POI 数量需适中）
 - 计算开销虽小但需额外调用 LLM 进行嵌入生成
+
+## 相关页面
+
+- [[differentiable-spatial-embedding]] — GenCast 的 SE-L 与本页同源（LLM + OpenStreetMap 生成地理表示），但进入物理残差微分路径并增设可训练分支 SE-H
 
 [^src-geolocation-llm-st]: [[source-geolocation-llm-st]]
