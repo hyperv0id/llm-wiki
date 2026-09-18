@@ -138,6 +138,10 @@ FaST 首次将 MoE 应用于大规模长视野时空图预测：
 - [[time-300b|Time-300B]]
 - [[fusionbench|FusionBench]] · [[deep-model-fusion]] · [[model-merging]]
 
+## 相关分析
+
+- [[moe-in-time-series-and-spatio-temporal]] — MoE 在时序/时空领域的机制谱系：动机、插入位置、门控/稀疏/均衡/专家形态四维对照，并列出与 MoE 易混的边界机制
+
 [^src-fast-long-horizon-forecasting]: [[source-fast-long-horizon-forecasting]]
 [^src-most]: [[source-most]]
 [^src-dynamix]: [[source-dynamix]]

@@ -8,8 +8,8 @@ tags:
   - generalization
   - distribution-shift
 created: 2026-07-23
-last_updated: 2026-08-30
-source_count: 5
+last_updated: 2026-09-16
+source_count: 6
 confidence: medium
 status: active
 ---
@@ -42,7 +42,7 @@ The core diagnosis from [[stop|STOP]] (ICML 2025) is that the **node-to-node mes
 | **Test-Time Computing** | [[st-ttc|ST-TTC]] (NeurIPS 2025) | Lightweight spectral calibrator at inference, no retraining |
 | **Perturbation + DRO** | [[stop|STOP]] (ICML 2025) | GenPU-generated variant environments + worst-case optimization |
 | **Explicit Graph Tokenization** | [[stunet|STUNet]] (KDD 2026) | Adjacency-matrix patches as frozen spatial tokens + [[query-aggregate-attention|query-aggregate attention]]; cross-network zero-shot (train A → test B)[^src-stunet] |
-| **Natural Year-Shift Benchmark** | [[st-ood|ST-OOD]] (IEEE TMC 2025) | Six urban scenarios, same-calendar IN vs next-year OUT; stress-tests standard ST models and CaST/CauSTG/STONE under real multi-year drift[^src-st-ood] |
+| **Dynamic Topology Tracking** | DynaSTar (IJCAI 2026) | Momentum-updated Bernoulli graph prototype + per-node neighborhood environment sampling + FiLM-modulated predictor; [[dynastar|DynaSTar]] frames this as out-of-time (OOT) generalization under continuously evolving topology[^src-dynastar] |
 
 The field is moving toward unified frameworks that handle both temporal and structural OOD simultaneously. [[stop|STOP]]'s centralized messaging reframes the problem at the architecture level rather than treating OOD as a training objective alone[^src-stop]. [[stunet|STUNet]] takes the opposite architectural bet on structure: **keep** topology, but make it an explicit, time-invariant token basis and evaluate transfer across whole non-overlapping road networks rather than only within-graph node add/remove[^src-stunet].
 
@@ -60,10 +60,13 @@ A model-side data point for **same-graph year-shift (T-OOD)**: [[stgformer|STGfo
 - [[centralized-message-passing]] — STOP's core mechanism
 - [[continual-spatio-temporal-forecasting]] — alternative paradigm for evolving ST data
 - [[stgformer]] — same-graph year-shift T-OOD evidence (LargeST 2019→2020, arXiv 2024)
+- [[dynastar]] — DynaSTar, dynamic-topology OOT learning
+- [[out-of-time-generalization]] — the OOT setting DynaSTar proposes
 
 [^src-stop]: [[source-stop]]
 [^src-cast]: [[source-cast]]
 [^src-stunet]: [[source-stunet]]
 [^src-st-ood]: [[source-st-ood]]
+[^src-dynastar]: [[source-dynastar]]
 [^src-stgformer]: [[source-stgformer]]
 

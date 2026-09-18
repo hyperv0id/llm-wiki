@@ -1535,3 +1535,41 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[frequency-specific-spatial-embedding]] — 拉普拉斯特征向量按特征值等量切成 $P$ 组，与时间频带一一配对
 - [[frequency-pathway-routing]] — 频率维上的节点级温度 softmax + top-$K$ 选择，再按 softmax 权重融合分支输出
 - [[frequency-balance-loss]] — 惩罚各频率在 mini-batch 上的平均选择概率偏离 $1/P$ 的均衡正则
+
+## Sources (continued)
+- [[source-dynastar]] — DynaSTar: Dynamic Graph Invariant Learning for Reliable Out-of-Time Spatio-Temporal Prediction (IJCAI 2026)
+
+## Concepts (continued)
+- [[out-of-time-generalization]] — OOT 泛化：按 temporal phase 划分部署后时间线，信号分布与图结构同时在相位间演化的长期部署设定（DynaSTar 提出）
+
+## Entities (continued)
+- [[dynastar]] — DynaSTar：动量更新概率图 + 节点异质不变学习的 OOT 交通预测模型（IJCAI 2026）
+
+## Techniques (continued)
+- [[momentum-updated-probabilistic-graph]] — 动量更新的逐边 Bernoulli 图原型，训练 ST Gumbel-Softmax 稀疏采样、推理阈值化
+- [[node-heterogeneous-invariant-learning]] — 邻域环境集采样 + 节点条件 FiLM 调制 + InfoNCE/IRM 双辅助损失
+
+## Sources (continued)
+- [[source-ripcn]] — RIPCN: Road Impedance Principal Component Network for Probabilistic Traffic Flow Forecasting (KDD 2026)
+
+## Entities (continued)
+- [[ripcn]] — RIPCN：阻抗演化 + 时空主成分网络的概率交通流预测模型（KDD 2026）
+
+## Techniques (continued)
+- [[road-impedance]] — BPR 道路阻抗 + 流量变异因子 + 相邻路段阻抗差动态图
+- [[spatiotemporal-principal-component]] — 直接预测未来流量的时空协方差主成分，单次前向构造概率样本
+
+## Analyses (continued)
+- [[moe-in-time-series-and-spatio-temporal]] — MoE 在时序/时空的机制谱系：四类动机、七类插入位置、门控/稀疏/均衡/专家形态四维对照，含 Zotero 库中未建页工作的机制与量级，并单列与 MoE 易混的边界机制
+
+## Sources (continued)
+- [[source-soft-shape]] — SoftShape: Learning Soft Sparse Shapes for Efficient Time-Series Classification（ICML 2025），shape 级 MoE（k=1、专家数=类别数）+ Inception 共享专家 + 变异系数负载均衡
+- [[source-interpgn]] — InterpGN: Shedding Light on Time Series Classification Using Interpretability Gated Networks（ICLR 2025），2 专家混合，门控来自可解释模型自身的 Gini 置信度
+- [[source-tfps]] — TFPS: Learning Pattern-Specific Experts for Time Series Forecasting Under Patch-level Distribution Shift（NeurIPS 2025），子空间聚类亲和度当路由输入的 patch 级 MoE
+- [[source-dutytte]] — DutyTTE: Deciphering Uncertainty in Origin-Destination Travel Time Estimation，noisy top-k MoE（C=8/k=4）驱动的 OD 通行时间区间预测
+- [[source-transfertraj]] — TransferTraj: A Vehicle Trajectory Learning Model for Region and Task Transferability，每层 TRIE 之后的 Spatial Context MoE（C=8/k=4）
+- [[source-adaptraj]] — AdapTraj: A Multi-Source Domain Generalization Framework for Multi-Agent Trajectory Prediction，借用专家集合思想的逐域 extractor + 域标签聚合（无门控网络）
+- [[source-tsrag]] — TS-RAG: Retrieval-Augmented Generation based Time Series Foundation Models are Stronger Zero-Shot Forecasters，把检索嵌入当专家的 MoE 增强模块（稠密 softmax）
+- [[source-flownet]] — FlowNet: Modeling Dynamic Spatio-Temporal Systems via Flow Propagation（NeurIPS 2025），M-MLP 内的 Mixture of Linears（16 个线性专家）
+- [[source-smartraj2]] — SMARTraj2: A Stable Multi-City Adaptive Method for Multi-View Spatio-Temporal Trajectory Representation（NeurIPS 2025），城市/轨迹级 sigmoid 特征门控，正文无专家集合
+- [[source-graph-mixture-density-networks]] — Graph Mixture Density Networks（ICML 2021），走 MDN 而非 MoE，论文自述的取舍作为两者边界

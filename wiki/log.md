@@ -3902,3 +3902,27 @@ ingest 报告：[[ingest-reports/2026-09-16-fedhint|WHY 报告]]
 更新的页面：[[traffic-forecasting]], [[graph-frequency-decomposition]], [[source-stwave]], [[adaptive-frequency-fusion]], [[adaptive-frequency-modulation]], [[index]], [[log]]
 ingest 报告：[[ingest-reports/2026-09-16-adafre|WHY 报告]]
 [^src-adafre]: [[source-adafre]]
+
+## [2026-09-16] ingest | Tracking Topological Shifts: How Can Dynamic Graph Invariant Learning Enable Reliable Out-of-Time Spatio-Temporal Prediction? (DynaSTar, Hao et al., IJCAI 2026)
+论文提出 out-of-time（OOT）泛化设定：部署后按 temporal phase 划分时间线，信号分布与邻接拓扑同时在相位间持续演化，既有 OOD 方法用静态图建模漂移故随部署时间退化。方法两段式：4.1 动态拓扑追踪——L=3 时空注意力块编码 → 32×32 memory bank cross-attention 提纯 → 节点对相关分数得瞬时图 → 动量规则 $\mathcal{G}^{proto}_t \leftarrow \beta\mathcal{G}^{proto}_{t-1}+(1-\beta)\mathcal{G}^p_t$ 平滑更新 → sigmoid 化逐边 Bernoulli 概率图 → 训练以 Straight-Through Gumbel-Softmax（温度 10、每 batch 2 张）采样稀疏二值图、推理以 >0.5 阈值化；4.2 节点异质不变学习——按节点邻域 Bernoulli 分布采样环境集（$p_e{=}2$）、条件向量 $c_i^t=\mathrm{MLP}(z_i^t+e_{time}(t))$ 生成逐层 FiLM 仿射参数调制共享预测器、InfoNCE 节点对比（$\gamma_1{=}0.01$）+ 跨环境风险方差惩罚（IRM 风格，$\gamma_2{=}1$）。
+LargeST SD（716 传感器）/SGBA（1278）子集，2019 训练 → 2020 测试（上半年近期部署、下半年长期部署），12 步输入预测 12 步、3/6/12 步平均、5 次运行：论文报告两数据集两阶段全指标对 10 基线最优（SD 长期 60min MAE 27.94 vs STONE 38.22；SGBA 长期 29.23 vs STEVE 32.45）；消融 w/o MG（去动量图）长期降幅最大（26.87→28.49）；NWGBA/NEGBA 未见图零样本优于 STONE/STEVE；稀疏图聚合带来最低运行时间与最高吞吐。
+创建的页面：[[source-dynastar]], [[dynastar]], [[out-of-time-generalization]], [[momentum-updated-probabilistic-graph]], [[node-heterogeneous-invariant-learning]]
+更新的页面：[[traffic-forecasting]]（OOD 小节补动态图反方段落；source_count 69→70）、[[spatio-temporal-ood-learning]]（解法全景加 Dynamic Topology Tracking 行；source_count 5→6）、[[ood-generalization]]（补 OOT 重构段落；source_count 3→4）、[[reparameterization-trick]]（补离散图采样应用与关系表行；source_count 2→3）、[[index]], [[log]]
+ingest 报告：[[ingest-reports/2026-09-16-dynastar|WHY 报告]]
+[^src-dynastar]: [[source-dynastar]]
+
+## [2026-09-16] ingest | RIPCN: A Road Impedance Principal Component Network for Probabilistic Traffic Flow Forecasting (Lv, Lin, Guo et al., KDD 2026)
+概率交通流预测（PTFF）：BPR 阻抗 + 流量变异因子经 temporal attention 演化为动态阻抗图（$\mathcal{L}_R$ 监督），ST-Graph 块直接预测未来流量的 $K{=}3$ 个时空协方差主成分（$\mathcal{L}_D$ 方向对齐 + $\mathcal{L}_V$ 幅值匹配，Schmidt 正交化），推理按 $\hat{X}^P + t_k \sigma_k \boldsymbol{w}_k$ 单次前向构造样本。PEMS03/04/08 + Seattle 对 9 个概率基线全指标最优（PEMS08 MAE 15.14、CRPS 0.0565）；消融 w/o ST-Graph 降幅最大；推理较扩散基线快一个量级。
+创建的页面：[[source-ripcn]], [[ripcn]], [[road-impedance]], [[spatiotemporal-principal-component]]
+更新的页面：[[traffic-forecasting]]（source_count 70→71）、[[diffstg]]（1→2）、[[generative-time-series-forecasting]]（19→20）、[[index]], [[log]]
+ingest 报告：[[ingest-reports/2026-09-16-ripcn|WHY 报告]]
+[^src-ripcn]: [[source-ripcn]]
+
+
+## [2026-09-17] query+ingest | MoE 在时序/时空领域的机制谱系（本地 wiki + Zotero storage 汇总）
+用户要求汇总时序/时空领域的 MoE 技术，来源限定为本地仓库与 `/run/media/jcheng/WD-Data/yjs/Zotero/storage/`。检索方法：Zotero 全库 155 个 `.zotero-ft-cache`（PDF 全文纯文本）命中 mixture of experts，逐篇定性后筛出真正把 MoE 当组件或少数组件的工作；本地侧清点 wiki 中 35 个描述 MoE 机制的页面与 `raw/` 一手源。
+关键结论：(1) 插入位置分七类——层内 FFN 替换、输入/尺度/频率选择、空间与图结构生成、分解滤波器、框架外层路由、输出/形状层、事后装配；(2) 路由信号是最大区分维度，从 token 线性投影、加噪 top-k、原始序列 + 异质性 bias、预训练表示簇中心距离、多模态/外生文本嵌入、记忆库检索、观测稀疏度、抽象状态注意力、频率能量，到域标签与可解释模型自身输出；(3) 负载均衡不是默认配置——Zotero 新增四篇时序/时空 MoE 里三篇（TFPS、DutyTTE、TS-RAG）无任何均衡损失，TransferTraj 用加噪代替；把均衡当核心主张的是 MAGE（βk 符号 SGD、每专家约 6.25% 激活率）与 Time-MoE（去辅助损失 0.262→0.275）；(4) 边界案例必须单列：GMDN 走 MDN 而非 MoE、AdapTraj 是「借专家集合思想但无门控」、SMARTraj2 正文没有专家集合、MSHLLM 的 mixture of prompts 是提示融合。
+噪声处理：多数 Zotero 命中只是把 Time-MoE / Moirai-MoE 当零样本基线或只在 related work 引用（TimeMosaic、Timer-XL、Zeus、AdaPTS、TimeTIC、MSHLLM、STUnet、ST-SSDL、STOP、HUTFormer），未收入机制谱系。新 source 页的证据源为 Zotero 全文缓存，不在 `raw/`，页面内已注明路径。
+创建的页面：[[moe-in-time-series-and-spatio-temporal]], [[source-soft-shape]], [[source-interpgn]], [[source-tfps]], [[source-dutytte]], [[source-transfertraj]], [[source-adaptraj]], [[source-tsrag]], [[source-flownet]], [[source-smartraj2]], [[source-graph-mixture-density-networks]]
+更新的页面：[[mixture-of-experts]]（补谱系页指路）、[[index]], [[log]]
+ingest 报告：[[ingest-reports/2026-09-17-moe-ts-st|WHY 报告]]

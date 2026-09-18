@@ -8,8 +8,8 @@ tags:
   - flow-matching
   - diffusion-models
 created: 2026-05-03
-last_updated: 2026-08-30
-source_count: 19
+last_updated: 2026-09-16
+source_count: 20
 confidence: high
 status: active
 ---
@@ -121,6 +121,7 @@ status: active
 - [[s2dbm]] — S²DBM，布朗桥扩散桥模型，s=0 时退化为无噪声确定性生成器以做点对点预测、s=1 时做概率预测（arXiv 2024）[^src-s2dbm]
 - [[deepstate]] — DeepState，RNN 参数化线性 SSM + Kalman（NeurIPS 2018）[^src-deepstate]
 - [[deep-state-space-model]] — 深度状态空间模型概念
+- 非生成式对照：分布参数化路线不做数据生成过程，直接估计分布参数或协方差结构。[[ripcn|RIPCN]]（KDD 2026）用 [[road-impedance|道路阻抗]]驱动的 [[spatiotemporal-principal-component|主成分网络]] 预测未来流量的时空主成分，单次前向构造样本，在 PTFF 基准上报告优于扩散基线且推理快一个数量级——其论文将生成式方法的多步采样列为主要效率短板（CSDI/PriSTI/DiffSTG 推理数百秒 vs RIPCN 16.77s）[^src-ripcn]
 
 ## 相关页面
 
@@ -185,3 +186,4 @@ status: active
 [^src-deepstate]: [[source-deepstate]]
 [^src-deepar]: [[source-deepar]]
 [^src-climatear]: [[source-climatear]]
+[^src-ripcn]: [[source-ripcn]]

@@ -8,8 +8,8 @@ tags:
   - robustness
   - machine-learning-theory
 created: 2026-06-08
-last_updated: 2026-07-27
-source_count: 3
+last_updated: 2026-09-16
+source_count: 4
 confidence: medium
 status: active
 ---
@@ -29,6 +29,8 @@ Spatio-temporal graph neural networks (STGNNs) are especially brittle under S-OO
 
 For **natural year-over-year T-OOD in real cities**, the [[st-ood|ST-OOD]] benchmark (IEEE TMC 2025) defines same-calendar IN vs next-year OUT splits across six urban scenarios (bike, taxi, pedestrians, speed, flow, 311). It finds RMSE degradation of about 40%–116% under OUT, with simple STID/MLP often beating complex STGNNs, and specialized OOD methods (CaST/CauSTG/STONE) looking robust mainly via underfitting rather than invariant features; moderate dropout (0.2–0.3) is a cheap OUT boost[^src-st-ood].
 
+A deployment-oriented reframing of T-OOD is **out-of-time (OOT) generalization** (see [[out-of-time-generalization]]): DynaSTar (IJCAI 2026) partitions the timeline into temporal phases and requires accuracy on future phases where *both* the signal distribution and the adjacency $\mathbf{A}_t$ evolve, arguing prior OOD methods model shifts with static graphs and therefore degrade over deployment time; it reports year-shift (2019→2020, LargeST SD/SGBA) state-of-the-art among ten baselines via a momentum-updated probabilistic graph plus per-node invariant learning[^src-dynastar].
+
 For a systematic comparison of ST-OOD solution approaches (causal, centralized messaging, information bottleneck, continual fine-tuning, test-time computing, benchmarks), see [[spatio-temporal-ood-learning]].
 
 ## Approaches
@@ -38,4 +40,5 @@ Strategies for ST-OOD include causal/invariant-learning frameworks (CauSTG, CaST
 [^src-stop]: [[source-stop]]
 [^src-stunet]: [[source-stunet]]
 [^src-st-ood]: [[source-st-ood]]
+[^src-dynastar]: [[source-dynastar]]
 

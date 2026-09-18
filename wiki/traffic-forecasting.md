@@ -7,7 +7,7 @@ tags:
   - intelligent-transportation
 created: 2026-04-27
 last_updated: 2026-09-16
-source_count: 69
+source_count: 71
 confidence: high
 status: active
 ---
@@ -107,6 +107,7 @@ Deterministic models only output point estimates, lacking uncertainty quantifica
 - **[[specstg|SpecSTG]]** (arXiv 2024) is the first spectral diffusion framework for probabilistic STG forecasting. It generates the graph Fourier representation of future time series instead of raw sequences, naturally embedding spatial dependencies into the diffusion process. With [[fast-spectral-graph-convolution|Fast Spectral Graph Convolution]] reducing graph convolution complexity from $O(N^2)$ to $O(N)$, SpecSTG achieves up to 8% RMSE improvement and 3.33× training speedup over [[d3vae|GCRDD]] (the most efficient existing diffusion method)[^src-2401-08119-specstg].
 - **[[ustd|USTD]]** (SIGSPATIAL 2024) unifies forecasting and kriging into a single diffusion framework. Key innovation: pre-trained GWNet-style encoder (with graph sampling + 75% masking) separately from task-specific gated attention denoisers (TGA for forecasting, SGA for kriging). This decoupled training strategy enables USTD to become the first diffusion STG model to surpass deterministic baselines on forecasting (CRPS ↓12% on PEMS-BAY). Other diffusion methods ([[timegrad|TimeGrad]], [[d3vae|GCRDD]], [[diffstg|DiffSTG]], [[pristi|PriSTI]]) operate in the original domain and treat sensors independently during probabilistic generation, limiting spatial information usage[^src-2401-08119-specstg].
 - **[[source-diffusion-traffic-flow-inference|DP-TFI]]**（ICASSP 2023）处理的不是预测而是 fine-grained urban traffic flow inference：从 32×32 粗粒度流量图推断 128×128 细粒度图。diffusion 在此不作为主生成器，而是当数据增强器（Diffusion Probabilistic Augmentor）生成带不确定性的流量图实例，生成后仍过 $N^2$-Normalization；标题里的 relaxed structural constraint 指用 relax matrix 放宽「superregion 流量等于 subregion 之和」的硬约束（$\mu\approx0.02$-$0.03$ 最优，严格约束 $\mu=0$ 与过度放宽都更差）。TaxiBJ 四时段 RMSE/MAE/MAPE 全最优（P4 RMSE 3.429 vs UrbanPy 3.470）[^src-diffusion-traffic-flow-inference]。
+- **[[ripcn|RIPCN]]**（KDD 2026）走的是**非生成式**第三条路：不学数据生成过程，而是直接参数化未来流量的时空协方差——用道路阻抗驱动的 [[spatiotemporal-principal-component|主成分网络]] 预测未来流量的前 $K{=}3$ 个时空主成分，推理一次前向即可沿主成分构造样本（$\hat{X}^P + t_k \sigma_k \boldsymbol{w}_k$），避开扩散模型的多步去噪。论文报告 PEMS03/04/08 + Seattle 四数据集全指标（含 CRPS/MIS）优于 [[diffstg|DiffSTG]]、[[csdi|CSDI]]、[[deepar|DeepAR]] 等 9 个概率基线，且推理时间低一个数量级（PEMS08 16.77s vs CSDI/PriSTI/DiffSTG 数百秒）[^src-ripcn]。
 
 ### Spatial-Temporal Imputation
 时空数据填补与预测紧密相关——填补缺失值是许多预测管道的前置步骤。GSLI（AAAI 2025）提出多尺度图结构学习框架，通过节点尺度学习解决特征异质性问题，通过特征尺度学习捕获跨特征空间依赖，在 6 个真实数据集上取得最优填补性能[^src-yang-gsli-2025]。ImputeFormer（KDD 2024）则通过低秩归纳偏置实现线性复杂度的 Transformer 填补[^src-2312-01728]。CoFILL（arXiv 2025）使用条件扩散模型进行时空填补[^src-cofill-spatiotemporal-imputation]。
@@ -245,6 +246,8 @@ A complementary **explicit graph modeling** line is [[stunet|STUNet]] (KDD 2026)
 
 For **same-city year-over-year** shifts, the [[st-ood|ST-OOD]] benchmark (IEEE TMC 2025) trains on year *Y* and tests on the same calendar window of *Y+1* across six urban tasks (bike, taxi, pedestrians, speed, flow, 311). Leading STGNNs suffer ~40%–116% RMSE degradation on OUT; STID/MLP often generalize better than complex graph/attention models, specialized OOD methods (CaST/CauSTG/STONE) tend to underfit rather than learn invariants, and moderate dropout (0.2–0.3) substantially improves OUT with little IN cost[^src-st-ood].
 
+A counter-position from the **dynamic-graph** side: [[dynastar|DynaSTar]] (IJCAI 2026) treats continuous topology evolution — not just signal drift — as the source of deployment degradation, and addresses it with a [[momentum-updated-probabilistic-graph|momentum-updated Bernoulli graph prototype]] (ST Gumbel-Softmax sparse sampling in training, >0.5 thresholding at inference) plus [[node-heterogeneous-invariant-learning|per-node FiLM-modulated invariant learning]] trained over sampled neighborhood environments ($L_{total}=L_{pred}+0.01\,L_{node}+1\,L_{inv}$). On LargeST SD/SGBA (716/1278 sensors, 2019-train → 2020-test split into near-term Jan–Jun and long-term Jul–Dec deployment), it reports the best MAE/MAPE at all horizons in both phases against 10 baselines spanning GNN (STGCN/GWNet/AGCRN), temporal-OOD (AdaRNN/Diversify/RevIN) and ST-OOD (CaST/CauSTG/STONE/STEVE) models — e.g., SD long-term 60min MAE 27.94 vs STONE 38.22; zero-shot transfer to unseen NWGBA/NEGBA subgraphs and the lowest runtime/highest throughput vs STEVE/STONE are also reported[^src-dynastar].
+
 ### Unobserved-Region Forecasting
 
 A different generalization axis is **spatial coverage, not distribution shift**: forecast a contiguous region with *no traffic sensors at all*. Kriging (IGNNK, INCREASE) and virtual-node methods (KITS) target *scattered* unobserved points and lose their local information flow once the unobserved area is large and contiguous; STSM (EDBT 2024), the previous SOTA, picks locations by *static* features (POI, coordinates) for masked contrastive training[^src-gencast]. See [[unobserved-region-forecasting]] for the task lineage.
@@ -368,3 +371,5 @@ The XTraffic benchmark provides incident-aligned traffic datasets for California
 [^src-gencast]: [[source-gencast]]
 [^src-fedhint]: [[source-fedhint]]
 [^src-adafre]: [[source-adafre]]
+[^src-dynastar]: [[source-dynastar]]
+[^src-ripcn]: [[source-ripcn]]

@@ -7,8 +7,8 @@ tags:
   - probabilistic-forecasting
   - traffic-forecasting
 created: 2026-05-31
-last_updated: 2026-06-01
-source_count: 1
+last_updated: 2026-09-16
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -114,6 +114,8 @@ DiffSTG 开创了"用扩散模型做 STG 概率预测"的范式，证明了三�
 
 后续工作包括 [[specstg|SpecSTG]]（将扩散移至图谱域）、D3（扩散+去噪+解耦）、DiffLoad（电力负荷预测不确定性量化）、[[ustd|USTD]]（统一预测与插值的预训练编码器+扩散 decoder 两阶段框架，首次让 diffusion STG 在预测上超越 deterministic baseline，SIGSPATIAL 2024）、UrbanDiT（扩散 Transformer + Rectified Flow）等[^src-diffstg]。
 
+一个非扩散方向的对照数据点：[[ripcn|RIPCN]]（KDD 2026，直接参数化协方差的主成分路线）在 PEMS03/04/08 + Seattle 上报告全面优于 DiffSTG（PEMS08 MAE 15.14 vs 17.74、CRPS 0.0565 vs 0.0607），且案例分析称 DiffSTG 在平稳条件下仍维持高不确定性估计，而 RIPCN 的区间随交通动态自适应收缩；推理效率上扩散多步去噪 vs RIPCN 单次前向构造样本差距达一个数量级（RIPCN 报告 PEMS08 推理 16.77s，扩散类方法数百秒）[^src-ripcn]。
+
 ## 关联页面
 
 - [[generative-time-series-forecasting]] — 生成式时间序列预测范式
@@ -125,3 +127,4 @@ DiffSTG 开创了"用扩散模型做 STG 概率预测"的范式，证明了三�
 - [[ustd]] — USTD，解耦预训练的统一时空扩散预测与插值框架（SIGSPATIAL 2024）
 
 [^src-diffstg]: [[source-diffstg]]
+[^src-ripcn]: [[source-ripcn]]

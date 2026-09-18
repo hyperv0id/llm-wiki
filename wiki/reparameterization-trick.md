@@ -8,8 +8,8 @@ tags:
   - variational-inference
   - diffusion
 created: 2026-05-04
-last_updated: 2026-05-04
-source_count: 2
+last_updated: 2026-09-16
+source_count: 3
 confidence: high
 status: active
 ---
@@ -90,6 +90,10 @@ $$\mathbf{x}_t = \sqrt{1-\beta_t}\mathbf{x}_{t-1} + \sqrt{\beta_t}\epsilon, \qua
 
 策略网络输出均值和方差，动作通过重参数化采样得到低方差策略梯度估计。[^src-bluuuuue-reparameterization-trick]
 
+### 离散图结构采样（Straight-Through Gumbel-Softmax）
+
+离散变量走不出上表的"位置-尺度族"前提，[[dynastar|DynaSTar]]（IJCAI 2026）给出交通图上的离散重参数化用法：把动量更新的边概率 $\hat{A}_{ij}\in(0,1)$ 当作 Bernoulli 类别概率，经 Gumbel-Softmax 得连续松弛 $\bar{A}_{ij}$，argmax 得离散边 $\hat{A}_{ij}$，再用直通估计 $\hat{A} := \bar{A} + \mathrm{detach}(\hat{A} - \bar{A})$ 让梯度回传到概率图参数；推理阶段放弃采样、直接以 $\hat{A}_{ij}>0.5$ 阈值化，保证预测确定性。这是表内"Gumbel-Softmax 松弛"路线在时空图结构学习上的实例，见 [[momentum-updated-probabilistic-graph]]。[^src-dynastar]
+
 ## 与相关概念的关系
 
 | 概念 | 关系 |
@@ -100,8 +104,10 @@ $$\mathbf{x}_t = \sqrt{1-\beta_t}\mathbf{x}_{t-1} + \sqrt{\beta_t}\epsilon, \qua
 | [[score-function|分数函数]] | REINFORCE 使用得分函数 $\nabla_\phi \log q_\phi$，重参数化绕过了它的高方差问题 |
 | [[ddpm-simplified-training-objective|$L_{\text{simple}}$]] | DDPM 训练目标中 $\mathbf{x}_t = \sqrt{\bar\alpha_t}\mathbf{x}_0 + \sqrt{1-\bar\alpha_t}\epsilon$ 即重参数化 |
 | [[scaling-factor-sqrt-dk|缩放因子 $1/\sqrt{d_k}$]] | 同系列文章：缩放因子解决 Softmax 饱和，重参数化解决采样不可导——两者都是数值/梯度稳定性的结构性方案 |
+| [[dynastar|DynaSTar]] 的稀疏图采样 | 离散边选择的可微化：ST Gumbel-Softmax + 阈值化推理 |
 
 ## 引用
 
 [^src-bluuuuue-reparameterization-trick]: [[source-bluuuuue-reparameterization-trick]]
+[^src-dynastar]: [[source-dynastar]]
 [^src-understanding-diffusion-models]: [[source-understanding-diffusion-models]]
