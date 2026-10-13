@@ -8,7 +8,7 @@ tags:
   - joint-embedding
 created: 2026-10-13
 last_updated: 2026-10-13
-source_count: 2
+source_count: 3
 confidence: high
 status: active
 ---
@@ -69,12 +69,18 @@ $$\ell(Z,Z') = \lambda\, s(Z,Z') + \mu\,[v(Z)+v(Z')] + \nu\,[c(Z)+c(Z')]$$
 
 方差与协方差正则均以 batch 统计量为对象，VICReg 仅防止嵌入空间塌缩，不约束表征聚焦的具体特征：Sobal et al. 在 toy 环境证明，固定噪声下三项目标可同时被平凡解满足，见 [[jepa]]。
 
+## 时序预测中的应用
+
+WorldTS 把方差/协方差正则移入时序潜空间预测：对预测状态与编码真值未来观测所得状态两组序列施加正则，防止 state matching 中的表征塌缩；统计量不再取自图像 batch 维，而改为跨样本与预测步计算。逐超参扫描（Colbun/Climate/MMSP，MAE）中 $\lambda_{VIC}=0.1$ 最优或次优，升至 0.5 时 MMSP 误差明显上升[^src-worldts]。
+
 ## Related Pages
 
 - [[non-contrastive-ssl]] — 防塌缩路线谱系与 VICReg 的理论定位
 - [[jepa]] — VICReg 作为 JEPA 训练判据及固定噪声下的失效
 - [[contrastive-learning]] — 负样本路线及其代价
 - [[energy-based-model]] — 塌缩问题的能量视角
+- [[worldts]] — 把 VICReg 正则用于时序潜空间 state matching 的下游工作
 
 [^src-vicreg]: [[source-vicreg-variance-invariance-covariance-regularization]]
 [^src-autonomous-machine-intelligence]: [[source-autonomous-machine-intelligence]]
+[^src-worldts]: [[source-worldts]]

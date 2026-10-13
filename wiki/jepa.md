@@ -9,7 +9,7 @@ tags:
   - joint-embedding
 created: 2026-10-13
 last_updated: 2026-10-13
-source_count: 2
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -74,7 +74,7 @@ Sobal 等人针对 JEPA 在固定干扰噪声下的表征行为展开实证检�
 
 ## 范围
 
-失效实证基于单点 toy 环境与线性探针，复杂场景下的表现仍待验证。层级扩展见 [[hierarchical-jepa]]，作为世界模型的定位见 [[world-model]]，能量模型背景见 [[energy-based-model]]。
+失效实证基于单点 toy 环境与线性探针，复杂场景下的表现仍待验证。层级扩展见 [[hierarchical-jepa]]，作为世界模型的定位见 [[world-model]]，能量模型背景见 [[energy-based-model]]。「编码未来观测、在表征空间预测」的思想也已落地到时序预测（TimeAlign、LatentTSF、WorldTS），见 [[latent-space-future-state-prediction]][^src-worldts]。
 
 ## Related Pages
 
@@ -83,7 +83,9 @@ Sobal 等人针对 JEPA 在固定干扰噪声下的表征行为展开实证检�
 - [[hierarchical-jepa]] — 多层级、多时间尺度的 JEPA 堆叠与分层规划
 - [[world-model]] — 论文对世界模型的职责、不确定性与数据来源的规定
 - [[energy-based-model]] — 能量函数作为基本对象、塌缩与正则化路线
+- [[latent-space-future-state-prediction]] — 该思想在时序预测中的技术化落地（TimeAlign/LatentTSF/WorldTS）
 - [[contrastive-learning]] — 对比方法与本文主张的正则化路线之别
 
 [^src-autonomous-machine-intelligence]: [[source-autonomous-machine-intelligence]]
 [^src-jepa-focus-on-slow-features]: [[source-jepa-focus-on-slow-features]]
+[^src-worldts]: [[source-worldts]]

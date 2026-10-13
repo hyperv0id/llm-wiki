@@ -9,8 +9,8 @@ tags:
   - time-mmd
   - kdd-2026
 created: 2026-07-28
-last_updated: 2026-08-11
-source_count: 3
+last_updated: 2026-10-13
+source_count: 4
 confidence: high
 status: active
 ---
@@ -62,16 +62,18 @@ CFA：\(W_{\mathrm{down}}:D\to D/r\)，ReLU∘LN，\(W_{\mathrm{up}}\) 回 \(D\)
 | [[time-vlm|Time-VLM]] | 架构特定 VLM 桥接 + 门控；文内归 architecture-specific；门控与 constrained 思想可对照 |
 | [[ts-vl-alignment|TS–VL Alignment]] | 表示空间诊断：TS–TXT 难对齐 → 与“文本不可无控注入”互补 |
 | [[cross-modal-misalignment|Cross-modal misalignment]] | 预训练 MMCL：省略/扰动语义进不了对比表示；CFA 是**任务侧**再过滤，理论层解释“为何文本容量应压低”[^src-cross-modal-misalignment] |
+| [[worldts|WorldTS]] | 下游采用：把 CFA 从文本协变量扩展到文本+图像，注入位置从 encoder 各层改为潜状态空间残差，与历史状态融合共同条件化未来状态预测[^src-worldts] |
 
 ## 局限
-
-仅文本；理论浅；未系统扩 vision/tabular；部分 constrained 仍可能偶发低于 unimodal，故 CFA 强调更强过滤[^src-constrained-text-fusion]。
+仅文本；理论浅；未系统扩 vision/tabular；部分 constrained 仍可能偶发低于 unimodal，故 CFA 强调更强过滤[^src-constrained-text-fusion]。原文未覆盖视觉模态；[[worldts|WorldTS]] 随后把 CFA 用于图像协变量[^src-worldts]。
 
 ## 相关页面
 
 - [[source-constrained-text-fusion]] — 源摘要  
 - [[time-mmd]] · [[multimodal-time-series-forecasting]] · [[non-fusion-guidance]] · [[timi]] · [[vot]] · [[time-vlm]] · [[ts-vl-alignment]] · [[tats]] · [[cross-modal-misalignment]] · [[source-cross-modal-misalignment]] · [[tess]]
+- [[worldts]] · [[latent-space-future-state-prediction]] — CFA 的下游采用：潜状态空间残差注入
 
 [^src-constrained-text-fusion]: [[source-constrained-text-fusion]]
 [^src-cross-modal-misalignment]: [[source-cross-modal-misalignment]]
 [^src-tess]: [[source-tess]]
+[^src-worldts]: [[source-worldts]]

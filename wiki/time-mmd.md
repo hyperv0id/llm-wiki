@@ -8,8 +8,8 @@ tags:
   - text-numeric-alignment
   - neurips-2024
 created: 2026-07-28
-last_updated: 2026-08-19
-source_count: 5
+last_updated: 2026-10-13
+source_count: 6
 confidence: high
 status: active
 ---
@@ -78,6 +78,7 @@ Time-MMD 是**数据与评测基础设施**，不是预测模型。下游常引�
 | [[cross-modal-misalignment|Cross-modal misalignment]] | 配对 MMCL 理论：文本省略/扰动 = selection/perturbation；表示只保留无偏共享语义——解释为何“对齐文本”质量与覆盖决定可学因子[^src-cross-modal-misalignment] |
 | [[pir|PIR]]（Post-forecasting Identification and Revision，Liu et al., NeurIPS 2025） | Energy / Health 子集上验证对齐文本描述作为外生信息的后处理修订（周频，Lin=24）[^src-pir] |
 | [[trace|TRACE]] | Health/Energy/Environment 子集预测验证，TRACE 独立编码器 SOTA |
+| [[worldts|WorldTS]]（arXiv 2026） | 用其中 8 域（VoT 协议，horizon 12）做文本协变量预测；16 组数据集-指标对比中 14 组第一，Health 增益最大（MSE −8.9%、MAE −9.1%）[^src-worldts] |
 
 释放元数据：数值（起止、目标、协变量）+ 文本（起止、fact/prediction 内容与来源）。GitHub: `https://github.com/AdityaLab/Time-MMD`[^src-time-mmd]。
 
@@ -96,8 +97,10 @@ Time-MMD 是**数据与评测基础设施**，不是预测模型。下游常引�
 - [[cross-modal-misalignment]] · [[source-cross-modal-misalignment]] — selection/perturbation 与缓解 vs 利用
 - [[tsfm-covariate-adaptation-comparison]] · [[covariate-homogenization]]
 
+- [[worldts]] · [[source-worldts]] · [[latent-space-future-state-prediction]] — 潜空间未来状态预测路线，8 域文本协变量评测
 [^src-time-mmd]: [[source-time-mmd]]
 [^src-constrained-text-fusion]: [[source-constrained-text-fusion]]
 [^src-cross-modal-misalignment]: [[source-cross-modal-misalignment]]
 [^src-pir]: [[source-pir]]
 [^src-trace-neurips2025]: [[source-trace-neurips2025]]
+[^src-worldts]: [[source-worldts]]

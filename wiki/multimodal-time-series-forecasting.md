@@ -8,8 +8,8 @@ tags:
   - covariate
   - satellite-imagery
 created: 2026-04-29
-source_count: 19
-last_updated: 2026-08-19
+source_count: 20
+last_updated: 2026-10-13
 confidence: high
 status: active
 ---
@@ -180,6 +180,10 @@ UniCA 在多模态场景下的表现：
 
 ---
 
+## WorldTS：多模态协变量条件化的潜空间预测
+
+**[[worldts|WorldTS]]**（arXiv:2609.31162, 2026）与上列方法不同：多模态协变量（数值/文本/图像）被编码为潜表征，直接条件化潜空间中的未来状态预测。预测状态由共享编码器编码真值未来观测所得状态直接监督（L1 + cosine + [[vicreg|VICReg]] 防塌缩正则）；两阶段训练把动力学学习与观测解码解耦（Stage 2 冻结编码器与 predictor，只训解码器）[^src-worldts]。文本分支沿用 [[vot|VoT]] 的冻结 GPT-2 embedding 特征，图像沿用 UniCA 的轻量 CNN，融合沿用 [[constrained-text-fusion|CFA]] 低秩残差；实验覆盖 12 个数值协变量数据集 + 8 个 Time-MMD 文本域 + MMSP 图像协变量（指标 MSE/MAE）：数值协变量 12 个数据集的平均 MSE/MAE 全部最低，Time-MMD 8 域 16 组对比中 14 组第一，MMSP MSE 0.061/MAE 0.171 最低；消融中单阶段观测空间训练与去协变量变体误差更高[^src-worldts]。技术路线详见 [[latent-space-future-state-prediction]]。
+
 ## MTP：多模态交通状态分类
 
 与本章侧重**预测**的多模态方法不同，[[mtp|MTP]] (Xiang et al., AAAI 2026) 将多模态方法扩展到交通状态的**分类**任务（畅通/缓行/拥堵）[^src-mtp]。MTP 通过频域模态增强：FFT 转换数值序列为频率图像 + 周期性图像（视觉模态），LLM 生成描述性文本（文本模态），三大编码器均在频域处理，通过分层对比学习（监督 + InfoNCE + JS 散度分布对齐）融合三模态[^src-mtp]。6 个数据集 8 个基线 SOTA，首次证明多模态增强对时间序列分类同样有效[^src-mtp]。
@@ -248,6 +252,8 @@ UniCA 在多模态场景下的表现：
 - [[channel-biased-attention]] — Channel-biased Attention
 - [[dual-level-hard-negative-mining]] — 双级硬负采样
 - [[source-cross-modal-misalignment]] — 源摘要
+- [[worldts]] — WorldTS 多模态协变量条件化潜空间预测（arXiv 2026）
+- [[latent-space-future-state-prediction]] — 潜空间未来状态预测技术（TimeAlign/LatentTSF/WorldTS）
 
 ---
 
@@ -272,3 +278,4 @@ UniCA 在多模态场景下的表现：
 [^src-cross-modal-misalignment]: [[source-cross-modal-misalignment]]
 [^src-tess]: [[source-tess]]
 [^src-trace-neurips2025]: [[source-trace-neurips2025]]
+[^src-worldts]: [[source-worldts]]

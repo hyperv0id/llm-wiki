@@ -3956,3 +3956,17 @@ ingest 报告：[[ingest-reports/2026-10-13-vicreg|WHY 报告]]
 ## [2026-10-13] maintenance | VICReg ingest 文案整页重润色
 应用户要求改为整页结合论文全文润色：每个触及页面（vicreg、source-vicreg、non-contrastive-ssl、contrastive-learning、jepa）连同论文 pdftotext 全文送 `pi --model google/gemini-3.8-flash:high`，以论文为准核对并补入硬事实（半监督 54.8/69.5、迁移 Places/VOC/iNat/COCO det 数字、expander 双重作用、标准差而非方差的梯度论证、多模态分支异系数）。Gemini 幻觉 2 处已人工核对修正：SimSiam 增益数字（论文无，改为"增益更小"）、Sobal 平凡解结论误挂 [^src-vicreg]（改挂 [^src-jepa-focus-on-slow-features]，source-summary source_count 1→2）。
 更新的页面：[[vicreg]], [[source-vicreg-variance-invariance-covariance-regularization]], [[non-contrastive-ssl]], [[contrastive-learning]], [[jepa]], [[log]]
+
+## [2026-10-13] ingest | WorldTS: World Modeling for Multimodal Covariate-aware Time Series Forecasting (Zhu et al., arXiv:2609.31162)
+多模态协变量（数值/文本/图像）编码为潜表征直接条件化未来状态预测：Stage 1 用共享编码器编码真值未来观测的状态做 stop-gradient state matching（L1+cosine）+ VICReg 防塌缩正则，Stage 2 冻结编码器与 predictor 只训解码器（预测+重建）。数值协变量 12/12 数据集平均 MSE/MAE 最低、Time-MMD 8 域 16 组对比 14 组第一、MMSP MSE 0.061 最低；消融中单阶段观测空间训练误差更高。新建技术页接住 TimeAlign/LatentTSF 谱系；核实 UrbanFM 的 WorldST（数据语料组件）与 WorldTS 无关，不构成混淆。
+创建的页面：[[worldts]], [[latent-space-future-state-prediction]], [[source-worldts]]
+更新的页面：[[world-model]]（时序迁移段，source_count 1→2）, [[jepa]]（时序实例，source_count 2→3）, [[vicreg]]（时序应用段，source_count 2→3）, [[constrained-text-fusion]]（CFA 下游采用，source_count 3→4）, [[time-mmd]]（谱系表新增行，source_count 5→6）, [[texts-as-auxiliary-variables]]（融合策略表新增行，source_count 1→2）, [[heterogeneous-covariates]]（非同质化路线，source_count 1→2）, [[multimodal-time-series-forecasting]]（WorldTS 段落，source_count 19→20）, [[index]], [[log]]
+ingest 报告：[[ingest-reports/2026-10-13-worldts|WHY 报告]]
+
+## [2026-10-13] maintenance | WorldTS 页面归因措辞改写
+对齐 2026-10-08 MoBA 归因口径：删逐句「论文提出/论文报告/据论文/论文自述」前缀与「不代表/不构成」式免责句；实证数字靠「设置+脚注」定位（证据节开头一句声明来源与协议），机制段主语改为 WorldTS/模块名并补设计动机（state matching 塌缩 → VICReg 正则，动力学学习与解码耦合 → 两阶段解耦），Table 5 逐 horizon 例外直接陈述；仅定位性断言保留归因（worldts 与 source-worldts 各 1 处）。ingest 报告数值备注的 MMSP 数字不一致改为待查记录。
+更新的页面：[[worldts]], [[latent-space-future-state-prediction]], [[source-worldts]], [[multimodal-time-series-forecasting]], [[world-model]], [[jepa]], [[vicreg]], [[constrained-text-fusion]], [[time-mmd]], [[ingest-reports/2026-10-13-worldts|WHY 报告]], [[log]]
+
+## [2026-10-13] maintenance | WorldTS ingest 文案重润色
+WorldTS ingest 触及的全部文案（3 整页 + 8 处局部段落/表行/单句）连同论文 pdftotext 全文送 `pi --model google/gemini-3.8-flash:high` 重新润色，逐字 diff 核对后仅应用 4 处安全改动：worldts 开头段去「出发点：」标签、补「会把…纠缠在一起」因果连接并把「各模态编码器」精确为「各模态专用编码器」；multimodal WorldTS 节首句按「机制／两阶段训练」切分；source-worldts「MMSP 图像协变量最低」补「预测误差」；heterogeneous 非同质化节整段换 Gemini 拆句版。Gemini 其余改动整体回退（违规约 20 处，要点）：latentspace 新增「取适中」「全面上升」判断（论文与原表只支持非零最优、误差上升）；worldts 无中生有「联合优化编码器与 predictor」、删证据节首声明与消融「六变体」、把「逐超参扫描」误作「单超参扫描」、「无一致增益」丢「一致」、「沿用」降格为「参考」、丢「（PatchTST 式）」；jepa「…的思想」被改成「…的机制」并删引号；time-mmd 表行「用其中 8 域」丢「其中」指代；constrained-text-fusion 表行丢「下游采用：」关系定位、「原文」被改「原设计」；texts 段 "latent-state-space residuals" 丢 "-space"；vicreg 节丢「两组序列」限定；world-model 节「真值」被改「真实」；multimodal 节丢「与上列方法不同：」定位并新增「显著」。数字、数据集、指标、[^src-*] 脚注、[[wikilink]]、LaTeX、表格与标题结构、frontmatter、两处「论文将其定位为」归因均零变化；source-worldts 润色后 353 个中文字符（300–500 内）。
+更新的页面：[[worldts]], [[source-worldts]], [[multimodal-time-series-forecasting]], [[heterogeneous-covariates]], [[log]]

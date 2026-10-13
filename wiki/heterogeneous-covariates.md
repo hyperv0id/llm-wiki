@@ -9,8 +9,8 @@ tags:
   - categorical
   - multimodal
 created: 2026-04-29
-last_updated: 2026-07-13
-source_count: 1
+last_updated: 2026-10-13
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -197,6 +197,10 @@ UniCA 提出的核心解决方案是**协变量同质化 (Covariate Homogenizati
 
 详细过程见 [[covariate-homogenization]]。
 
+## 非同质化路线：潜空间条件化
+
+WorldTS 采用非同质化设计，不将异构输入转换为统一形态，而是为各模态设置专用编码器：数值协变量使用与 TS Encoder 同构的因果 patch 编码器，文本使用冻结 GPT-2 的输入 embedding 层配合 mean pooling，图像使用轻量 CNN。编码特征作为潜状态空间的条件信号参与建模：数值协变量与历史状态通过 concat 融合，文本与图像表征经由 CFA 低秩瓶颈以残差形式注入，共同条件化潜空间中的未来状态预测；预测状态由共享编码器编码真值未来观测所得状态直接监督[^src-worldts]。该路线面向从零训练的专用模型，不涉及基础模型适配，模型逐数据集单独训练[^src-worldts]。
+
 ---
 
 ## 相关概念
@@ -209,6 +213,8 @@ UniCA 提出的核心解决方案是**协变量同质化 (Covariate Homogenizati
 - [[cora-tsfm|CoRA]] — 替代处理路线：冻结 FM 特征提取 + 因果嵌入选择
 - [[tsfm-covariate-adaptation-comparison]] — 各适配路线的系统对比
 - [[nbeatsx]] / [[source-nbeatsx]] — 早期同质数值外生 + 可解释基扩展（非异构）
+- [[worldts]] — 潜空间条件化路线：多模态协变量直接条件化未来状态预测（arXiv 2026）
+- [[latent-space-future-state-prediction]] — WorldTS 所属的潜空间未来状态预测技术
 - [[tft]] / [[source-tft]] — 早期可解释 multi-horizon：static / known / observed 表格协变量 + 分位数（非图像/文本异构）
 
 ---
@@ -216,3 +222,4 @@ UniCA 提出的核心解决方案是**协变量同质化 (Covariate Homogenizati
 ## 引用
 
 [^src-unca]: [[source-unca]]
+[^src-worldts]: [[source-worldts]]

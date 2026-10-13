@@ -8,8 +8,8 @@ tags:
   - plug-and-play
   - iclr-2026
 created: 2026-05-03
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-10-13
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -54,8 +54,10 @@ By encoding texts into numerical vectors and concatenating them as new "channels
 | Cross-modal Attention | [[mindts|MindTS]] | Medium (cross-attention) | Fusion module |
 | LLM Reasoning | [[vot|VoT]] | High (LLM generation) | Dual-branch architecture |
 | Modality-Guided Attention | [[aurora|Aurora]] | High (tokenization + distillation) | Custom attention mechanism |
+| **Low-rank Residual (CFA)** | [[constrained-text-fusion|CFA]] / [[worldts|WorldTS]] | Medium (low-rank bottleneck) | Predictor-side adapter |
 
 The auxiliary variables approach is the **simplest** and most **widely compatible**, trading off deeper semantic integration for universal applicability[^src-language-in-the-flow-of-time].
+WorldTS instantiates residual injection for multimodal covariates: text/image representations are mapped through a CFA low-rank bottleneck into latent-state-space residuals that condition future-state prediction[^src-worldts].
 
 ## Advantages
 
@@ -79,5 +81,7 @@ The auxiliary variables approach is the **simplest** and most **widely compatibl
 - [[multimodal-time-series-forecasting]] — task concept
 - [[channel-independence]] — related TS technique
 - [[covariate-homogenization]] — UniCA's alternative approach
+- [[worldts]] — CFA-style residual fusion applied to latent-state forecasting with text/image covariates
 
 [^src-language-in-the-flow-of-time]: [[source-language-in-the-flow-of-time]]
+[^src-worldts]: [[source-worldts]]

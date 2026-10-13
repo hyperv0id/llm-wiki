@@ -1596,3 +1596,12 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-autonomous-machine-intelligence]] — LeCun《A Path Towards Autonomous Machine Intelligence》v0.9.2（2022-06-27，62 页）立场论文：可配置认知架构 + JEPA/H-JEPA + 非对比 SSL 四项自述贡献与 8.1 节自述缺口（证据源为 PDF 全文，不在 raw/）
 - [[source-jepa-focus-on-slow-features]] — JEPA Focus on Slow Features（Sobal et al., NeurIPS 2022 SSL workshop，arXiv:2211.10831，4 页）：移动点 toy 环境、无奖励全离线，JEPA+VICReg/SimCLR 在噪声逐帧变化时持平或更好、在固定噪声下失败并给出平凡解解释
 - [[source-vicreg-variance-invariance-covariance-regularization]] — VICReg（Bardes, Ponce & LeCun，ICLR 2022）：三项防塌缩损失（不变/方差/协方差），分支独立正则带来权重、架构与模态自由度，含 BYOL/SimSiam 缓慢塌缩证据
+
+## Entities (continued)
+- [[worldts]] — WorldTS：多模态协变量条件化的潜空间未来状态预测框架，两阶段训练（arXiv:2609.31162）
+
+## Techniques (continued)
+- [[latent-space-future-state-prediction]] — 潜空间未来状态预测：编码真值未来观测作预测目标 + stop-gradient state matching（L1+cosine）+ 防塌缩正则，两阶段解耦动力学学习与解码（TimeAlign/LatentTSF/WorldTS）
+
+## Sources (continued)
+- [[source-worldts]] — WorldTS（Zhu et al., arXiv:2609.31162v1，2026-09-25）：多模态协变量直接条件化潜空间未来状态预测，两阶段训练；21 数据集上数值协变量 12/12 平均最优、Time-MMD 14/16 第一、MMSP 最低

@@ -8,7 +8,7 @@ tags:
   - uncertainty
 created: 2026-10-13
 last_updated: 2026-10-13
-source_count: 1
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -76,11 +76,17 @@ $$\mathrm{Mem}(q) = \sum_j c_j v_j, \qquad \tilde{c}_j = \mathrm{Match}(k_j, q),
 
 论文把"多少能靠被动观察（模式 1、2、4）学到、多少需要自运动（模式 3）、多少需要完整施动性（模式 5）"列为开放问题；并指出要主动收集最大化理解的信息，可能需要内在动机模块驱动注意力、好奇心与探索，去往世界模型预测目前不精确或不确定的状态空间角落[^src-autonomous-machine-intelligence]。
 
+## 向时间序列预测的迁移
+
+潜空间未来状态预测已从世界模型思想移植到时序预测：TimeAlign 对齐历史与真未来的表征，LatentTSF 在共享潜空间预测未来状态再解码回观测；WorldTS 进一步把多模态协变量编码为潜表征条件化未来状态预测，以编码真值未来观测的状态直接监督预测状态，并用两阶段训练把动力学学习与观测解码解耦[^src-worldts]。WorldTS 消融（Colbun/Climate/MMSP）中，去掉潜空间监督的单阶段观测空间训练误差更高[^src-worldts]。
+
 ## Related Pages
 
 - [[jepa]] — 论文提议的世界模型架构及其失效证据
 - [[hierarchical-jepa]] — 多层级、多时间尺度的世界模型
 - [[autonomous-agent-architecture]] — 世界模型在整体架构中的位置
+- [[worldts]] — 世界建模思想在多模态时序预测上的落地实例
 - [[mode-1-mode-2-planning]] — 世界模型在 Mode-2 中的用法
 
 [^src-autonomous-machine-intelligence]: [[source-autonomous-machine-intelligence]]
+[^src-worldts]: [[source-worldts]]
