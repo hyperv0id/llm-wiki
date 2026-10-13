@@ -9,7 +9,7 @@ tags:
   - joint-embedding
 created: 2026-10-13
 last_updated: 2026-10-13
-source_count: 3
+source_count: 5
 confidence: medium
 status: active
 ---
@@ -56,6 +56,10 @@ JEPA 可使用对比方法训练，但在高维空间样本效率低（见 [[non
 
 此外可引入任务相关的归纳偏置：在 $\tilde{s}_y$ 上附加预测头，预测易于从数据导出且与任务相关的变量[^src-autonomous-machine-intelligence]。
 
+正则化路线仍在演进：VISReg 将 VICReg 式正则解耦为 scale（方差项）与 shape（Sliced Wasserstein sketching）两个独立目标，依据 Cramér-Wold 定理对齐所有 1D 投影的边缘分布而非仅做二阶去相关，以塌缩时梯度有界为设计准则，并在 ImageNet 预训练的 ViT 上报告了超过 ImageNet-1K 预训练对比组的 OOD 精度（见 [[visreg]]）[^src-visreg]。
+
+LeJEPA（Balestriero & LeCun，arXiv:2511.08544，2025 preprint）为该路线补充了分布层面的理论：首先证明在协方差受标量约束的分布族内，各向同性高斯是唯一最小化 worst-case 下游预测风险的嵌入分布，进而提出 SIGReg 分布匹配正则实现该目标；其预测损失与正则项的凸组合仅依赖单超参 $\lambda$，移除了 stop-gradient、teacher-student 与超参调度器。训练损失与下游准确率的 Spearman 相关约 85%，经 $\lambda$ 缩放律修正后达 94–99%，训练损失因此可用于无标签模型选择（见 [[lejepa]]、[[sigreg]]、[[isotropic-gaussian-embeddings]]）[^src-lejepa]。
+
 ## 证据：固定干扰噪声下的失效
 
 Sobal 等人针对 JEPA 在固定干扰噪声下的表征行为展开实证检验[^src-jepa-focus-on-slow-features]：
@@ -78,6 +82,8 @@ Sobal 等人针对 JEPA 在固定干扰噪声下的表征行为展开实证检�
 
 ## Related Pages
 
+- [[visreg]] — 正则化路线的最新实现：scale/shape 解耦与 SWD sketching
+- [[lejepa]] — 各向同性高斯最优性 + SIGReg 的单超参 JEPA 训练，本页启发式手段的替代方案
 - [[non-contrastive-ssl]] — JEPA 的非对比训练判据与 VICReg 的谱系定位
 - [[vicreg]] — VICReg 损失结构、系数与实验证据
 - [[hierarchical-jepa]] — 多层级、多时间尺度的 JEPA 堆叠与分层规划
@@ -89,3 +95,5 @@ Sobal 等人针对 JEPA 在固定干扰噪声下的表征行为展开实证检�
 [^src-autonomous-machine-intelligence]: [[source-autonomous-machine-intelligence]]
 [^src-jepa-focus-on-slow-features]: [[source-jepa-focus-on-slow-features]]
 [^src-worldts]: [[source-worldts]]
+[^src-visreg]: [[source-visreg]]
+[^src-lejepa]: [[source-lejepa]]

@@ -8,7 +8,7 @@ tags:
   - joint-embedding
 created: 2026-10-13
 last_updated: 2026-10-13
-source_count: 3
+source_count: 5
 confidence: high
 status: active
 ---
@@ -69,6 +69,10 @@ $$\ell(Z,Z') = \lambda\, s(Z,Z') + \mu\,[v(Z)+v(Z')] + \nu\,[c(Z)+c(Z')]$$
 
 方差与协方差正则均以 batch 统计量为对象，VICReg 仅防止嵌入空间塌缩，不约束表征聚焦的具体特征：Sobal et al. 在 toy 环境证明，固定噪声下三项目标可同时被平凡解满足，见 [[jepa]]。
 
+后续工作直接以 VICReg 的损失结构为改造对象：VISReg 保留方差项用于 scale 控制，将协方差项替换为 Sliced Wasserstein sketching 用于 shape 控制；其动机在于协方差矩阵计算复杂度为 $O(ND^2)$ 且仅约束二阶统计量，维度间去相关无法保证嵌入分布具有正确的形状（见 [[visreg]]）[^src-visreg]。
+
+LeJEPA 阐明了 VICReg 在其分布匹配框架下的极限特例位置：若将检验统计量设为矩形式 $\mathrm{mean}^2+(\mathrm{std}-1)^2$，SIGReg 在期望意义下强制 $\mathbb{E}[Z]=0$ 与 $\mathrm{Cov}(Z)=I_d$，并在大切片数极限下恢复出 VICReg。然而，有限矩匹配无法保证分布一致（Theorem 3），面对「各边缘像高斯、联合分布仍退化」的构型时矩检验会失效（受控实验见 [[sigreg]]）；论文据此反对该退化设置，指出其会导致 shortcut 解，且该现象在 VICReg 中已有观察（固定噪声失效的独立证据见 [[jepa]]）[^src-lejepa]。
+
 ## 时序预测中的应用
 
 WorldTS 把方差/协方差正则移入时序潜空间预测：对预测状态与编码真值未来观测所得状态两组序列施加正则，防止 state matching 中的表征塌缩；统计量不再取自图像 batch 维，而改为跨样本与预测步计算。逐超参扫描（Colbun/Climate/MMSP，MAE）中 $\lambda_{VIC}=0.1$ 最优或次优，升至 0.5 时 MMSP 误差明显上升[^src-worldts]。
@@ -79,8 +83,12 @@ WorldTS 把方差/协方差正则移入时序潜空间预测：对预测状态�
 - [[jepa]] — VICReg 作为 JEPA 训练判据及固定噪声下的失效
 - [[contrastive-learning]] — 负样本路线及其代价
 - [[energy-based-model]] — 塌缩问题的能量视角
+- [[visreg]] — 保留方差项、以 SWD sketching 替换协方差项的后继方法
+- [[lejepa]] — 把 VICReg 收为矩检验退化极限并给出矩统计不足的定理
 - [[worldts]] — 把 VICReg 正则用于时序潜空间 state matching 的下游工作
 
 [^src-vicreg]: [[source-vicreg-variance-invariance-covariance-regularization]]
 [^src-autonomous-machine-intelligence]: [[source-autonomous-machine-intelligence]]
+[^src-visreg]: [[source-visreg]]
 [^src-worldts]: [[source-worldts]]
+[^src-lejepa]: [[source-lejepa]]

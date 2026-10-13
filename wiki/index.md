@@ -1605,3 +1605,20 @@ All wiki pages, organized by type. Updated on every ingest.
 
 ## Sources (continued)
 - [[source-worldts]] — WorldTS（Zhu et al., arXiv:2609.31162v1，2026-09-25）：多模态协变量直接条件化潜空间未来状态预测，两阶段训练；21 数据集上数值协变量 12/12 平均最优、Time-MMD 14/16 第一、MMSP 最低
+
+## Techniques (continued)
+- [[visreg]] — VISReg：方差 + SWD sketching + center 三项解耦正则的 JEPA 训练方法，stop-gradient 归一化隔离 scale/shape，塌缩区梯度有界，O(NDK)（arXiv:2606.02572）
+- [[sliced-wasserstein-distance]] — SWD：Cramér-Wold 定理保证随机 1D 投影对齐决定全分布，1D W2 闭式解为排序后逐点 Lp 距离
+
+## Sources (continued)
+- [[source-visreg]] — VISReg（Wu, Balestriero & Levine，Altos Labs/Brown，arXiv:2606.02572v1，2026-06-01 preprint）：以 SWD sketching 替换 VICReg 协方差项的 JEPA 训练正则化；OOD 六数据集平均最高、ImageNet-22K 训练后与 10 倍数据 DINOv2 相当
+
+## Techniques (continued)
+- [[lejepa]] — LeJEPA，JEPA 预测损失 + SIGReg 各向同性高斯正则的单超参凸组合：无 stop-gradient/teacher-student/调度器，超参扫描无塌缩，训练损失与下游准确率 Spearman 94–99% 支持无标签模型选择，Galaxy10 域内预训练超 DINOv2/v3 迁移，1.8B ViT-g 平稳训练（arXiv:2511.08544）
+- [[sigreg]] — SIGReg，1D 随机投影 + Epps-Pulley 特征函数检验的各向同性高斯分布匹配正则：方向检验充分性（Cramér-Wold）、损失/梯度/曲率有界、O(N) 复杂度；矩检验退化极限恢复 VICReg（arXiv:2511.08544）
+
+## Concepts (continued)
+- [[isotropic-gaussian-embeddings]] — 各向同性高斯嵌入分布：协方差受标量约束的分布族内唯一最小化 worst-case 下游预测风险（线性探针偏差/方差两引理 + k-NN/kernel 积分平方偏差定理）（arXiv:2511.08544）
+
+## Sources (continued)
+- [[source-lejepa]] — LeJEPA: Provable and Scalable Self-Supervised Learning Without the Heuristics（Balestriero & LeCun，arXiv:2511.08544v3，2025-11 preprint）：各向同性高斯最优性 + SIGReg + 单超参 JEPA 训练；10+ 数据集、60+ 架构验证

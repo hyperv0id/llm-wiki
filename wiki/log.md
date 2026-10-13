@@ -3970,3 +3970,15 @@ ingest 报告：[[ingest-reports/2026-10-13-worldts|WHY 报告]]
 ## [2026-10-13] maintenance | WorldTS ingest 文案重润色
 WorldTS ingest 触及的全部文案（3 整页 + 8 处局部段落/表行/单句）连同论文 pdftotext 全文送 `pi --model google/gemini-3.8-flash:high` 重新润色，逐字 diff 核对后仅应用 4 处安全改动：worldts 开头段去「出发点：」标签、补「会把…纠缠在一起」因果连接并把「各模态编码器」精确为「各模态专用编码器」；multimodal WorldTS 节首句按「机制／两阶段训练」切分；source-worldts「MMSP 图像协变量最低」补「预测误差」；heterogeneous 非同质化节整段换 Gemini 拆句版。Gemini 其余改动整体回退（违规约 20 处，要点）：latentspace 新增「取适中」「全面上升」判断（论文与原表只支持非零最优、误差上升）；worldts 无中生有「联合优化编码器与 predictor」、删证据节首声明与消融「六变体」、把「逐超参扫描」误作「单超参扫描」、「无一致增益」丢「一致」、「沿用」降格为「参考」、丢「（PatchTST 式）」；jepa「…的思想」被改成「…的机制」并删引号；time-mmd 表行「用其中 8 域」丢「其中」指代；constrained-text-fusion 表行丢「下游采用：」关系定位、「原文」被改「原设计」；texts 段 "latent-state-space residuals" 丢 "-space"；vicreg 节丢「两组序列」限定；world-model 节「真值」被改「真实」；multimodal 节丢「与上列方法不同：」定位并新增「显著」。数字、数据集、指标、[^src-*] 脚注、[[wikilink]]、LaTeX、表格与标题结构、frontmatter、两处「论文将其定位为」归因均零变化；source-worldts 润色后 353 个中文字符（300–500 内）。
 更新的页面：[[worldts]], [[source-worldts]], [[multimodal-time-series-forecasting]], [[heterogeneous-covariates]], [[log]]
+
+## [2026-10-13] ingest | VISReg: Variance-Invariance-Sketching Regularization for JEPA training (Wu, Balestriero & Levine, arXiv:2606.02572)
+把 VICReg 的协方差正则替换为 Sliced Wasserstein sketching、保留方差项的联合嵌入训练正则化：stop-gradient 归一化解耦 scale/shape，塌缩区梯度有界（SIGReg 在塌缩区梯度消失），复杂度 O(NDK)，切片数 K 可按 GPU 数分摊保持常数。ImageNet-1K 预训练 ViT-B/L：域内线性探针落后 DINO/iBOT，OOD 六数据集平均 70.63 超过 ImageNet-1K 预训练对比组，ImageNet-22K 训练后 72.94 与 10 倍数据 DINOv2（72.93）相当；低质量数据（ImageNet-LT 35.14、Galaxy10 80.76）经 shape 4:1 重加权后为各方法最好。数值备注（Figure 3 显存口径歧义、消融/主模型视图数口径不一、OOD 结论限定 IN-1K 预训练组）记入 ingest 报告，未触发矛盾流程。
+创建的页面：[[visreg]], [[sliced-wasserstein-distance]], [[source-visreg]]
+更新的页面：[[jepa]]（训练节补正则化演进句，source_count 3→4）, [[vicreg]]（谱系位置补 VISReg 后继关系，source_count 3→4）, [[non-contrastive-ssl]]（二阶统计量→全分布形状演进，source_count 2→3）, [[index]], [[log]]
+ingest 报告：[[ingest-reports/2026-10-13-visreg|WHY 报告]]
+
+## [2026-10-13] ingest | LeJEPA: Provable and Scalable Self-Supervised Learning Without the Heuristics (Balestriero & LeCun, arXiv:2511.08544v3)
+把 JEPA 防塌缩从启发式换成分布目标：证明各向同性高斯是协方差标量约束族内唯一最小化 worst-case 下游预测风险的嵌入分布（线性探针偏差/方差两引理 + k-NN/kernel 积分平方偏差定理），以 SIGReg（1D 随机投影 + Epps-Pulley 特征函数检验，损失/梯度/曲率有界，O(N)）实现，预测损失与正则的单超参凸组合移除 stop-gradient/teacher-student/调度器。10+ 数据集、60+ 架构超参扫描无塌缩；训练损失与下游准确率 Spearman 85%、λ 缩放律修正后 93.8–99.2%（无标签模型选择）；Galaxy10 域内预训练超 DINOv2/v3 迁移；IN-1K 在线线性探针 ViT-L 77.1%、ConvNeXtV2-H 78.5%、摘要口径 ViT-H/14 79%；1.8B ViT-g 平稳训练。数值备注（正文 consistently outperform 与 Table 2 1-shot 均值出入、Fig 11 与附录 Fig 19 相关数取整差、Table 5 自然图像小数据集上 I-JEPA/22K 迁移仍更高）记入 ingest 报告，未触发矛盾流程；并发 VISReg ingest 期间恢复 jepa.md 被误删的 [^src-worldts] 脚注定义。
+创建的页面：[[lejepa]], [[sigreg]], [[isotropic-gaussian-embeddings]], [[source-lejepa]]
+更新的页面：[[jepa]]（训练节补 LeJEPA 分布目标段，source_count 4→5）, [[vicreg]]（谱系位置补矩检验退化极限与 Thm 3 批评，source_count 4→5）, [[non-contrastive-ssl]]（新增 LeJEPA 分布目标节，source_count 3→4）, [[index]], [[log]]
+ingest 报告：[[ingest-reports/2026-10-13-lejepa|WHY 报告]]
