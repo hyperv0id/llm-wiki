@@ -3946,3 +3946,13 @@ LeCun 立场论文（可配置认知架构 + JEPA/H-JEPA + 非对比 SSL + 不�
 创建的页面：[[jepa]], [[hierarchical-jepa]], [[non-contrastive-ssl]], [[autonomous-agent-architecture]], [[intrinsic-cost-and-critic]], [[mode-1-mode-2-planning]], [[world-model]], [[source-autonomous-machine-intelligence]], [[source-jepa-focus-on-slow-features]]
 更新的页面：[[energy-based-model]], [[contrastive-learning]]（补对比方法的代价一节，并修正其 source_count 基数）, [[index]], [[log]]
 ingest 报告：[[ingest-reports/2026-10-13-lecun-jepa|WHY 报告]]
+
+## [2026-10-13] ingest | VICReg: Variance-Invariance-Covariance Regularization (Bardes, Ponce & LeCun, ICLR 2022)
+三项防塌缩损失（不变 MSE + 方差 hinge + 协方差去相关），分支独立正则使两分支可用不同权重、架构、输入模态。线性评估 73.2%（1000 ep）；DW/DA 配置与 MS-COCO 图文检索优于 Barlow Twins，BYOL 在 DW/DA 直接塌缩；方差正则使 predictor 冗余，BYOL/SimSiam 的缓慢塌缩证据（嵌入 std 精确匹配 $1/\sqrt{d}$ 而表征层 std 下降）。全部新增/修改文案经 Gemini（gemini-3.8-flash:high）润色。
+创建的页面：[[vicreg]], [[source-vicreg-variance-invariance-covariance-regularization]]
+更新的页面：[[non-contrastive-ssl]]（source_count 1→2，VICReg 段补一手源与证据）, [[jepa]]（VICReg 链接）, [[contrastive-learning]]（batch size 实证，source_count 9→10）, [[index]], [[log]]
+ingest 报告：[[ingest-reports/2026-10-13-vicreg|WHY 报告]]
+
+## [2026-10-13] maintenance | VICReg ingest 文案整页重润色
+应用户要求改为整页结合论文全文润色：每个触及页面（vicreg、source-vicreg、non-contrastive-ssl、contrastive-learning、jepa）连同论文 pdftotext 全文送 `pi --model google/gemini-3.8-flash:high`，以论文为准核对并补入硬事实（半监督 54.8/69.5、迁移 Places/VOC/iNat/COCO det 数字、expander 双重作用、标准差而非方差的梯度论证、多模态分支异系数）。Gemini 幻觉 2 处已人工核对修正：SimSiam 增益数字（论文无，改为"增益更小"）、Sobal 平凡解结论误挂 [^src-vicreg]（改挂 [^src-jepa-focus-on-slow-features]，source-summary source_count 1→2）。
+更新的页面：[[vicreg]], [[source-vicreg-variance-invariance-covariance-regularization]], [[non-contrastive-ssl]], [[contrastive-learning]], [[jepa]], [[log]]

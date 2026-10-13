@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-09-16
+last_updated: 2026-10-13
 tags:
   - meta
 source_count: 0
@@ -1584,6 +1584,7 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[jepa]] — JEPA，非生成式预测世界模型：两分支编码 + predictor 在表征空间预测，能量为 $D(s_y,\mathrm{Pred}(s_x,z))$，四条非对比判据；含固定干扰噪声下聚焦慢特征的失效证据（Sobal et al. 2022）
 - [[hierarchical-jepa]] — H-JEPA，JEPA 的多层级多时间尺度堆叠与不确定下的分层 Mode-2 规划：高层"动作"即低层状态须满足的条件，$k^t$ 条轨迹需剪枝
 - [[non-contrastive-ssl]] — 非对比自监督：按架构分型的能量塌缩（生成式隐变量/自编码器/联合嵌入可塌缩）、对比 vs 正则化两条路线、VICReg 的方差/协方差项与隐变量信息量控制手段
+- [[vicreg]] — VICReg（ICLR 2022）：不变 MSE + 方差 hinge + 协方差去相关三项损失，分支可用不同权重/架构/模态；线性 73.2%，DW/DA 配置与多模态检索优于 Barlow Twins；VR 使 predictor 冗余、揭示 BYOL/SimSiam 缓慢塌缩
 
 ## Concepts (continued)
 - [[autonomous-agent-architecture]] — LeCun 2022 的可配置认知架构：configurator/perception/world model/cost/short-term memory/actor 六模块全可微，configurator 调制参数与连接图
@@ -1594,3 +1595,4 @@ All wiki pages, organized by type. Updated on every ingest.
 ## Sources (continued)
 - [[source-autonomous-machine-intelligence]] — LeCun《A Path Towards Autonomous Machine Intelligence》v0.9.2（2022-06-27，62 页）立场论文：可配置认知架构 + JEPA/H-JEPA + 非对比 SSL 四项自述贡献与 8.1 节自述缺口（证据源为 PDF 全文，不在 raw/）
 - [[source-jepa-focus-on-slow-features]] — JEPA Focus on Slow Features（Sobal et al., NeurIPS 2022 SSL workshop，arXiv:2211.10831，4 页）：移动点 toy 环境、无奖励全离线，JEPA+VICReg/SimCLR 在噪声逐帧变化时持平或更好、在固定噪声下失败并给出平凡解解释
+- [[source-vicreg-variance-invariance-covariance-regularization]] — VICReg（Bardes, Ponce & LeCun，ICLR 2022）：三项防塌缩损失（不变/方差/协方差），分支独立正则带来权重、架构与模态自由度，含 BYOL/SimSiam 缓慢塌缩证据
