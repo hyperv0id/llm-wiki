@@ -7,8 +7,8 @@ tags:
   - kv-cache
   - streaming
 created: 2026-08-30
-last_updated: 2026-08-30
-source_count: 1
+last_updated: 2026-10-08
+source_count: 2
 confidence: low
 status: active
 ---
@@ -21,6 +21,8 @@ Attention sink 指 LLM 中初始位置的 token 无论内容如何都获得不�
 
 在 TriAttention 的框架里，attention sink 型模式（远距离成峰）被解释为 [[attention-distance-preference|距离偏好曲线]] 的一种形态：部分注意力头的三角级数在远距离成峰，与近距离成峰（局部注意力）的头并存，峰位由 Q/K 中心决定[^src-triattention]。
 
+MoBA 论文（Moonshot AI，2025）把 attention sink 型稀疏（初始 token 加近期窗口）归为 [[moba-attention]] 的特例：门控永远选初始块与最近块。该归类只说明固定门控能表达这种模式，不涉及 sink 现象为何产生[^src-moba-mixture-of-block-attention]。
+
 > [!warning] 二手转述
 > 本页论断转引自 [[source-triattention]] 的 related work 章节；原始出处 StreamingLLM（Xiao et al., ICLR 2024）与 VATP（Guo et al., EMNLP 2024）尚未 ingest，待其入库后应补一手引注并核对表述。
 
@@ -29,6 +31,8 @@ Attention sink 指 LLM 中初始位置的 token 无论内容如何都获得不�
 - [[kv-cache-compression]] — sink token 与 StreamingLLM 所在的方法谱系
 - [[attention-distance-preference]] — sink 型远距成峰的几何解释
 - [[triattention]] — 提出该解释的论文
+- [[moba-attention]] — 把 sink 型稀疏归为门控特例的块稀疏架构
 - [[source-triattention]] — 源摘要
 
 [^src-triattention]: [[source-triattention]]
+[^src-moba-mixture-of-block-attention]: [[source-moba-mixture-of-block-attention]]

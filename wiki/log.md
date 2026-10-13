@@ -3926,3 +3926,23 @@ ingest 报告：[[ingest-reports/2026-09-16-ripcn|WHY 报告]]
 创建的页面：[[moe-in-time-series-and-spatio-temporal]], [[source-soft-shape]], [[source-interpgn]], [[source-tfps]], [[source-dutytte]], [[source-transfertraj]], [[source-adaptraj]], [[source-tsrag]], [[source-flownet]], [[source-smartraj2]], [[source-graph-mixture-density-networks]]
 更新的页面：[[mixture-of-experts]]（补谱系页指路）、[[index]], [[log]]
 ingest 报告：[[ingest-reports/2026-09-17-moe-ts-st|WHY 报告]]
+
+## [2026-10-08] ingest | MoBA: Mixture of Block Attention for Long-Context LLMs (arXiv:2502.13189)
+Moonshot AI 的块稀疏 MoE attention（KV 块即专家、top-k 门控选块、可与 full attention 无缝切换）。新建技术页与源摘要；MoE 页补「MoE 原则用于 attention」一节；attention-sink 页补 MoBA 论文对其的特例归类（归因于论文自述）；kv-cache-compression 页补训练期架构稀疏正交路线。
+创建的页面：[[moba-attention]], [[source-moba-mixture-of-block-attention]]
+更新的页面：[[mixture-of-experts]], [[attention-sink]], [[kv-cache-compression]], [[index]], [[log]]
+ingest 报告：[[ingest-reports/2026-10-08-moba|WHY 报告]]
+
+## [2026-10-08] maintenance | MoBA 相关页面去冗余
+删除同页内重复陈述与空转过渡句：moba-attention 导语与「无缝切换」段、source-moba 贡献列表与局限中与核心论点重复的条目、attention-sink / kv-cache-compression 插入段的冗余修饰、index 条目尾部。
+更新的页面：[[moba-attention]], [[source-moba-mixture-of-block-attention]], [[attention-sink]], [[kv-cache-compression]], [[index]], [[log]]
+
+## [2026-10-08] maintenance | MoBA 页面归因措辞改写
+去掉逐句「论文自述/论文称/论文据此主张」前缀：实证数字靠「设置+脚注」定位（证据节开头一句声明来源），机制解释写明验证状态（如「原因未直接验证」），只有真正的定位性断言保留归因且改用结构化表达（如「仅论文一条来源」）。
+更新的页面：[[moba-attention]], [[source-moba-mixture-of-block-attention]], [[attention-sink]], [[kv-cache-compression]], [[mixture-of-experts]], [[log]]
+
+## [2026-10-13] ingest | A Path Towards Autonomous Machine Intelligence (LeCun v0.9.2, 2022-06-27) + JEPA Focus on Slow Features (arXiv:2211.10831)
+LeCun 立场论文（可配置认知架构 + JEPA/H-JEPA + 非对比 SSL + 不确定下分层规划）落为 7 个机制页；Sobal et al. 用移动点 toy 环境检验 JEPA，其固定噪声下的失效并入 [[jepa]] 作为已知局限。
+创建的页面：[[jepa]], [[hierarchical-jepa]], [[non-contrastive-ssl]], [[autonomous-agent-architecture]], [[intrinsic-cost-and-critic]], [[mode-1-mode-2-planning]], [[world-model]], [[source-autonomous-machine-intelligence]], [[source-jepa-focus-on-slow-features]]
+更新的页面：[[energy-based-model]], [[contrastive-learning]]（补对比方法的代价一节，并修正其 source_count 基数）, [[index]], [[log]]
+ingest 报告：[[ingest-reports/2026-10-13-lecun-jepa|WHY 报告]]

@@ -1573,3 +1573,24 @@ All wiki pages, organized by type. Updated on every ingest.
 - [[source-flownet]] — FlowNet: Modeling Dynamic Spatio-Temporal Systems via Flow Propagation（NeurIPS 2025），M-MLP 内的 Mixture of Linears（16 个线性专家）
 - [[source-smartraj2]] — SMARTraj2: A Stable Multi-City Adaptive Method for Multi-View Spatio-Temporal Trajectory Representation（NeurIPS 2025），城市/轨迹级 sigmoid 特征门控，正文无专家集合
 - [[source-graph-mixture-density-networks]] — Graph Mixture Density Networks（ICML 2021），走 MDN 而非 MoE，论文自述的取舍作为两者边界
+
+## Techniques (continued)
+- [[moba-attention]] — MoBA，把 MoE top-k 门控用于 attention：KV 块即专家、query 与块内 key 均值内积选块、当前块强制加 causal mask（Moonshot AI / Kimi，arXiv:2502.13189）
+
+## Sources (continued)
+- [[source-moba-mixture-of-block-attention]] — MoBA: Mixture of Block Attention for Long-Context LLMs（Moonshot AI，arXiv:2502.13189），块稀疏 MoE attention：8K 缩放验证 loss 差 1e-3 内、Llama-8B-1M RULER 0.7818 vs 0.7849、attention 层 1M prefill 6.5× / 10M 16× 加速，自述部署于 Kimi
+
+## Techniques (continued)
+- [[jepa]] — JEPA，非生成式预测世界模型：两分支编码 + predictor 在表征空间预测，能量为 $D(s_y,\mathrm{Pred}(s_x,z))$，四条非对比判据；含固定干扰噪声下聚焦慢特征的失效证据（Sobal et al. 2022）
+- [[hierarchical-jepa]] — H-JEPA，JEPA 的多层级多时间尺度堆叠与不确定下的分层 Mode-2 规划：高层"动作"即低层状态须满足的条件，$k^t$ 条轨迹需剪枝
+- [[non-contrastive-ssl]] — 非对比自监督：按架构分型的能量塌缩（生成式隐变量/自编码器/联合嵌入可塌缩）、对比 vs 正则化两条路线、VICReg 的方差/协方差项与隐变量信息量控制手段
+
+## Concepts (continued)
+- [[autonomous-agent-architecture]] — LeCun 2022 的可配置认知架构：configurator/perception/world model/cost/short-term memory/actor 六模块全可微，configurator 调制参数与连接图
+- [[intrinsic-cost-and-critic]] — 代价模块：$C=IC+TC$，不可训练的 intrinsic cost 定行为驱力，critic 由短期记忆中的 (τ, s_τ, IC) 三元组训练以预判长期能量
+- [[mode-1-mode-2-planning]] — Mode-1 反应式策略 vs Mode-2 用世界模型做滚动时域 MPC（七步流程），Mode-2 结果可编译成 Mode-1 策略；推理即能量最小化
+- [[world-model]] — 世界模型的职责、三类待解问题、七种不确定性分类、表征空间预测、键值可写记忆跟踪世界状态与五种数据获取方式
+
+## Sources (continued)
+- [[source-autonomous-machine-intelligence]] — LeCun《A Path Towards Autonomous Machine Intelligence》v0.9.2（2022-06-27，62 页）立场论文：可配置认知架构 + JEPA/H-JEPA + 非对比 SSL 四项自述贡献与 8.1 节自述缺口（证据源为 PDF 全文，不在 raw/）
+- [[source-jepa-focus-on-slow-features]] — JEPA Focus on Slow Features（Sobal et al., NeurIPS 2022 SSL workshop，arXiv:2211.10831，4 页）：移动点 toy 环境、无奖励全离线，JEPA+VICReg/SimCLR 在噪声逐帧变化时持平或更好、在固定噪声下失败并给出平凡解解释

@@ -6,8 +6,8 @@ tags:
   - architecture
   - scalability
 created: 2026-04-29
-last_updated: 2026-08-11
-source_count: 9
+last_updated: 2026-10-08
+source_count: 10
 references:
   - [[source-fast-long-horizon-forecasting]]
 confidence: high
@@ -123,6 +123,10 @@ FaST 首次将 MoE 应用于大规模长视野时空图预测：
 
 详见 [[fusionbench]]、[[deep-model-fusion]]、[[source-jmlr-25-1243]]。
 
+## MoE 原则用于 attention
+
+MoBA（Moonshot AI，2025）把 top-k 门控的对象从 FFN 专家换成 KV 上下文块：query 与块内 key 均值的内积作亲和分数，选 top-k 块做 attention；当前块强制选择并类比 shared expert；不引入新参数，top-k 全选时退化为 full attention。568M–2.1B 缩放实验中验证 loss 与 full attention 相差 1e-3 以内[^src-moba-mixture-of-block-attention]。机制与证据详见 [[moba-attention]]。
+
 ## 相关技术
 
 - [[glu-gated-linear-unit|Gated Linear Units (GLU)]]
@@ -137,6 +141,7 @@ FaST 首次将 MoE 应用于大规模长视野时空图预测：
 - [[time-moe|Time-MoE]]
 - [[time-300b|Time-300B]]
 - [[fusionbench|FusionBench]] · [[deep-model-fusion]] · [[model-merging]]
+- [[moba-attention]] — MoE top-k 门控用于 attention（KV 块即专家，LLM 长上下文）
 
 ## 相关分析
 
@@ -150,4 +155,5 @@ FaST 首次将 MoE 应用于大规模长视野时空图预测：
 [^src-time-moe]: [[source-time-moe]]
 [^src-moirai-moe]: [[source-moirai-moe]]
 [^src-timi]: [[source-timi]]
+[^src-moba-mixture-of-block-attention]: [[source-moba-mixture-of-block-attention]]
 [^src-jmlr-25-1243]: [[source-jmlr-25-1243]]
