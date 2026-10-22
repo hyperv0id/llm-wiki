@@ -10,7 +10,7 @@ tags:
   - visual-autoregressive
   - multi-scale
 created: 2026-07-16
-last_updated: 2026-07-16
+last_updated: 2026-10-20
 source_count: 1
 confidence: medium
 status: active
@@ -45,6 +45,7 @@ ClimateAR 由两大组件构成：
 ## 相关页面
 
 - [[source-climatear]] — 论文源摘要
+- [[scale-wise-autoregressive-decoding]] — VAR 的 next-scale 解码在交通轨迹预测中的移植（[[trajar]]）
 - [[mixed-scale-conditioning]] — 混合尺度条件控制机制
 - [[weather-foundation-model]] — 天气基础模型
 - [[generative-time-series-forecasting]] — 生成式时间序列预测

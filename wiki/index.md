@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-10-13
+last_updated: 2026-10-20
 tags:
   - meta
 source_count: 0
@@ -10,1615 +10,1293 @@ confidence: medium
 status: active
 ---
 
-All wiki pages, organized by type. Updated on every ingest.
-
-## Overview
-- [[overview]] — wiki scope and current state
+All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五段（Sources / Entities / Concepts / Techniques / Analyses），段内按页面名字母序，每页仅一条；新增或更新页面时直接改对应那条，不再追加 `(continued)` 段。`— TODO` 表示该页尚无一句话摘要。
 
 ## Sources
-- [[source-pdformer-jiang-2023]] — PDFormer: Propagation Delay-Aware Dynamic Long-Range Transformer for Traffic Flow Prediction（AAAI 2023），地理/语义双 mask 空间自注意力 + DFT 显式建模传播时延，6 数据集 17 基线
-- [[source-multispans]] — MultiSPANS: 多尺度时空 Transformer，结构熵最小化导出编码树做多层注意力掩码 + 层级相关分数，MFCL 多滤波卷积支持长窗口低成本注入，PEMSD4/8（WSDM 2024）
-- [[source-climax]] — ClimaX: 首个气象/气候基础模型，ViT + variable tokenization + cross-attention aggregation + CMIP6 预训练 + 随机预测目标，WeatherBench/ClimateBench SOTA，ICML 2023
-- [[source-climatear]] — ClimateAR: 首个 VAR 自回归概率气候预测模型，对齐 VQ 分词器 + 混合尺度条件控制，ERA5 ACC 提升 37.56%，ICML 2026
-- [[source-cast]] — CaST: Causal Spatio-Temporal Neural Network for STG Forecasting, SCM + back-door adjustment (temporal OoD) + front-door adjustment with Hodge-Laplacian (dynamic spatial causation), NeurIPS 2023
-- [[source-causalx]] — CausalX: causally-interpretable plug-and-play multi-modal ST forecasting, multi-source causal constraints (Granger/do-calculus/TDMI/VAE) + diffusion graph refinement, ICML 2026
-- [[source-stgcl]] — When Do Contrastive Learning Signals Help STG Forecasting? (Liu et al., SIGSPATIAL 2022 / arXiv:2108.11873v2, PDF 内核实)：Q1–Q4 四问、PEMS-04/08/BAY 三基准、四骨干模型插拔验证与预训练-微调掉点的负结果
-- [[source-gpt4mts]] — DP-GPT4MTS: Dual-Prompt LLM 多模态时序预测框架，explicit prompt（任务指令）+ textual prompt（BERT 文本上下文嵌入）+ frozen GPT-2 骨干，GDELT/Time-MMD SOTA，arXiv 2025
+
+- [[source-2108-00298]] — GRIN: Filling the G_ap_s — Multivariate Time Series Imputation by Graph Neural Networks (ICLR 2022)
+- [[source-2312-00516-std-mae]] — STD-MAE: Spatial-Temporal-Decoupled Masked Pre-training for Spatiotemporal Forecasting (IJCAI-2024)
+- [[source-2312-01728]] — ImputeFormer: Low Rankness-Induced Transformers for Generalizable Spatiotemporal Imputation (KDD 2024)
+- [[source-2401-08119-specstg]] — SpecSTG: A Fast Spectral Diffusion Framework for Probabilistic Spatio-Temporal Traffic Forecasting (arXiv 2024)
+- [[source-2412-18730]] — Elucidating Flow Matching ODE Dynamics via Data Geometry and Denoisers, denoiser 吸引/吸收元定理 + FM ODE 三阶段轨迹 + 终端收敛（首个覆盖低维子流形支撑）+ 记忆几何理论 (Wan, Wang, Mishne, Wang, ICML 2025 Poster, arXiv:2412.18730 v4)
+- [[source-2502-10236]] — Shaping Inductive Bias in Diffusion Models through Frequency-Based Noise Control (ICLR 2025 Workshop) superseded by [[source-sagd]]
+- [[source-2509-22259]] — Rotary Position Encodings for Graphs (WIRE): 用 Laplacian 谱坐标对 query/key 施加旋转，RoPE 的图推广 (ICML 2026)
+- [[source-2510-25760]] — Multimodal Spatial Reasoning in the Large Model Era: A Survey and Benchmarks, Zheng et al. (arXiv 2025)
+- [[source-2511-16426]] — FrèqFlow/SpectFlow: Long-term forecasting using lightweight flow matching (NeurIPS 2025)
+- [[source-2605-07319]] — Generative Modeling with Flux Matching：全新生成建模范式，推广得分函数为任意生成向量场 (Pao-Huang et al., Stanford, arXiv 2026)
+- [[source-2607-01918]] — Zeus: Towards Tuning-Free Foundation Model for Time Series Analysis，U 形多尺度 encoder-only + MOTM 掩码预训练，五任务 tuning-free（ICML 2026; PDF raw/2607.01918.pdf）
+- [[source-adafre]] — AdaFre: Adaptive Frequency Pathways for Spatiotemporal Forecasting（Qin et al., AAAI 2026），DFT 有效频带均匀切分 + 频率特异谱嵌入 + 节点级 top-2 频带路由 + 频率均衡损失，PeMSD3/4/7/8 MAE 14.27/17.89/18.58/12.99 全最优
+- [[source-adaptraj]] — AdapTraj: A Multi-Source Domain Generalization Framework for Multi-Agent Trajectory Prediction，借用专家集合思想的逐域 extractor + 域标签聚合（无门控网络）
+- [[source-afe-tfnet]] — AFE-TFNet: adaptive feature extraction time-frequency network for wave height
+- [[source-alibi]] — ALiBi: attention with linear biases enables input length extrapolation (ICLR 2022)
+- [[source-allspark]] — AllSpark: multimodal spatio-temporal general intelligence model with 10 modalities via LaRF (Shao et al., 2024)
+- [[source-alphaflow]] — AlphaFlow: Understanding and Improving MeanFlow Models, MeanFlow 损失分解为轨迹流匹配 + 轨迹一致性、梯度冲突实证、α 统一目标族与课程退火 (arXiv 2025, Snap Research)
+- [[source-armd]] — ARMD: Auto-Regressive Moving Diffusion Models for Time Series Forecasting, ARMA-inspired sliding-window diffusion (AAAI 2025)
+- [[source-astgcn]] — ASTGCN: attention spatial-temporal graph convolutional networks for traffic (AAAI 2019)
+- [[source-aurora]] — Aurora: universal generative multimodal time series forecasting (ICLR 2026)
+- [[source-autoformer]] — Autoformer: decomposition transformers with auto-correlation (NeurIPS 2021)
+- [[source-autonomous-machine-intelligence]] — LeCun《A Path Towards Autonomous Machine Intelligence》v0.9.2（2022-06-27，62 页）立场论文：可配置认知架构 + JEPA/H-JEPA + 非对比 SSL 四项自述贡献与 8.1 节自述缺口（证据源为 PDF 全文，不在 raw/）
+- [[source-back-to-basics-let-denoising-generative-models-denoise]] — Back to Basics: Let Denoising Generative Models Denoise, x-prediction via plain ViT on pixel patches (Li & He, MIT, arXiv 2025)
 - [[source-benamou-brenier-blog]] — Benamou-Brenier 算法（博客笔记），最优传输的动态公式化与增广拉格朗日求解
 - [[source-beyond-imitation-mobility]] — Beyond Imitation: Generating Human Mobility from Context-aware Reasoning with LLMs (MobiGeaR)
-- [[source-sa-bcp]] — SA-BCP: Optimal Spatio-Temporal Decoupling for Bayesian Conformal Prediction (arXiv 2026)
-- [[source-s-mamba]] — S-Mamba: first Mamba-based MTSF baseline, bidirectional Mamba for VC + FFN for TD (Neurocomputing 2024)
-- [[source-scale]] — SCALE: Spectral Conformal Prediction via Wavelet Transform (ICML 2026)
-- [[source-solar-vlm]] — Solar-VLM: multimodal vision-language framework fusing satellite imagery, text weather reports, and time series with GAT + cross-site attention for solar power spatiotemporal prediction (arXiv 2026)
-- [[source-afe-tfnet]] — AFE-TFNet: adaptive feature extraction time-frequency network for wave height
-- [[source-astgcn]] — ASTGCN: attention spatial-temporal graph convolutional networks for traffic (AAAI 2019)
-- [[source-autoformer]] — Autoformer: decomposition transformers with auto-correlation (NeurIPS 2021)
+- [[source-bigcity]] — BIGCity: first MTMD spatio-temporal model unifying trajectory + traffic state (arXiv 2024)
+- [[source-bigst]] — BigST: Linear Complexity Spatio-Temporal GNN for Traffic Forecasting on Large-Scale Road Networks (PVLDB 2024)
+- [[source-bist]] — BiST: A Lightweight and Efficient Bi-Directional Model for Spatiotemporal Prediction (PVLDB 2025)
+- [[source-bluuuuue-reparameterization-trick]] — 数学直觉系列（二）：VAE与重参数化——将不可逆的随机采样重构为可微的确定性变换 (bluuuuue, 小红书)
+- [[source-bluuuuue-scaling-factor-intuition]] — 数学直觉系列（一）：缩放因子1/√dₖ——注意力机制的数值稳定性条件 (bluuuuue, 小红书)
+- [[source-cast]] — CaST: Causal Spatio-Temporal Neural Network for STG Forecasting, SCM + back-door adjustment (temporal OoD) + front-door adjustment with Hodge-Laplacian (dynamic spatial causation), NeurIPS 2023
+- [[source-causal-llm]] — Causal-LLM: Spatiotemporal Foundation Model with Predictive and Interpretable Capabilities
+- [[source-causalx]] — CausalX: causally-interpretable plug-and-play multi-modal ST forecasting, multi-source causal constraints (Granger/do-calculus/TDMI/VAE) + diffusion graph refinement, ICML 2026
+- [[source-cbsa]] — CBSA: Towards Interpretable and Efficient Attention (NeurIPS 2025)
+- [[source-chan-2025-diffusion-tutorial]] — Diffusion model comprehensive tutorial (Chan, 2025)
+- [[source-chan-diffusion-tutorial]] — Diffusion model tutorial (Chan, earlier version)
+- [[source-channelmts]] — ChannelMTS: Multi-modal Time-Series Framework for High-Speed Railway Channel Prediction (KDD 2026)
 - [[source-chapter-1-basic-concepts]] — 第 1 章：强化学习基础概念与 MDP 形式化
 - [[source-chapter-2-state-values-and-bellman-equation]] — 第 2 章：状态值、动作值与贝尔曼方程
 - [[source-chapter-3-optimal-state-values-and-bellman-optimality-equation]] — 第 3 章：最优状态值与贝尔曼最优方程
 - [[source-chapter-4-value-iteration-and-policy-iteration]] — 第 4 章：值迭代与策略迭代
 - [[source-chapter-5-monte-carlo-methods]] — 第 5 章：蒙特卡洛方法与 ε-greedy
 - [[source-chapter-7-temporal-difference-methods]] — 第 7 章：TD 方法、Sarsa 与 Q-learning
-- [[source-deep-time-series-survey]] — Deep Time Series Models: comprehensive survey and benchmark (TSLib)
-- [[source-distdf]] — DistDF: Distribution-aware Direct Forecast, joint-distribution Wasserstein alignment for training time-series forecasting models, 解决 MSE 的自相关偏差 (ICLR 2026)
-- [[source-dualformer]] — Dualformer: time-frequency dual domain learning for long-term forecasting
-- [[source-fedformer]] — FEDformer: frequency enhanced decomposed transformer (ICML 2022)
-- [[source-flightdiff]] — FlightDiff: Dual-Constraint Guided Two-Phase Diffusion Framework for Flight Prediction
-- [[source-fredf]] — FreDF: Frequency-enhanced Direct Forecast, learns multi-step DF in the frequency domain to mitigate label autocorrelation (arXiv 2024 / ICLR 2025 labeled)
-- [[source-qcgs]] — QCGS (Station2Radar): Query-Conditioned Gaussian Splatting fusing AWS + satellite for radar-free precipitation field generation, >50% RMSE improvement vs IMERG/MSWEP/GSMaP (ICLR 2026)
-- [[source-qdf]] — QDF: Quadratic Direct Forecast, learns PSD weighting matrix Σ for quadratic NLL objective addressing label autocorrelation + heterogeneous task weights (ICLR 2026 preprint, arXiv:2511.00053)
-- [[source-rivermamba]] — RiverMamba: 首个全球 0.05° 河流流量和洪水预报 Mamba 模型，双向 SSM + 空间填充曲线 + LOAN + Hindcast-Forecast，NeurIPS 2025
-- [[source-loft-llm]] — LoFT-LLM: Low-Frequency Time-Series Forecasting with LLMs, PLFM 低频监督 + 残差学习 + LLM 语义校准三阶段流水线 (KDD 2026)
-- [[source-frets]] — FreTS: frequency-domain MLPs for time series forecasting (NeurIPS 2023)
-- [[source-from-news-to-forecast]] — From News to Forecast: LLM generative agent iteratively filters news events with reflection + CoT for time series prediction (NeurIPS 2024)
-- [[source-grid-world-code-readme]] — 网格世界环境官方代码说明（Zhao, Mi & Li）
-- [[source-gcrdd]] — D³VAE (GCRDD): generative time series forecasting with coupled diffusion, denoise, and disentanglement (NeurIPS 2022)
-- [[source-geolocation-llm-st]] — LLMGeovec: Geolocation Representation from LLMs for Spatio-Temporal Learning (AAAI 2025)
-- [[source-gpd]] — GPD: generative pre-training on diffusion for spatio-temporal few-shot learning via hypernetwork (ICLR 2024)
-- [[source-gpt-st]] — GPT-ST: spatio-temporal MAE pre-training framework with hypergraph capsule clustering (NeurIPS 2023)
-- [[source-gtr]] — GTR: Global Temporal Retriever, plug-and-play global cycle retrieval for MTSF (ICLR 2026)
-- [[source-hyperd-hybrid-periodicity-decoupling]] — "HyperD: Hybrid Periodicity Decoupling Framework for Traffic Forecasting" (Wen & Feng, 2025)
-- [[source-math-foundation-rl-readme]] — "Mathematical Foundations of Reinforcement Learning" 配套 Readme（Zhao, 2025）
-- [[source-mhc-manifold-constrained-hyper-connections]] — mHC: Manifold-Constrained Hyper-Connections (DeepSeek-AI, arXiv 2026)
-- [[source-penguin]] — PENGUIN: periodic-nested group attention for long-term forecasting (AISTATS 2026)
-- [[source-pir]] — PIR: Improving Time Series Forecasting via Instance-aware Post-hoc Revision，模型无关预测后识别-修订框架，误差估计识别失败实例 + 局部/全局上下文修订（NeurIPS 2025）
-- [[source-prnet]] — PRNet: periodic residual learning for crowd flow forecasting
-- [[source-simdiff]] — SimDiff: simpler yet better diffusion model for time series point forecasting (AAAI 2026)
-- [[source-siren-rope]] — Learning to Rotate: Temporal and Semantic Rotary Encoding for Sequential Modeling (arXiv 2026)
-- [[source-st-resnet]] — ST-ResNet: deep spatio-temporal residual networks for crowd flow (AAAI 2017)
-- [[source-st-ssdl]] — ST-SSDL: Self-Supervised Deviation Learning for Spatio-Temporal Forecasting, historical anchors + learnable prototypes + contrastive/deviation losses + GCRU backbone (NeurIPS 2025)
-- [[source-stgcn]] — STGCN: spatial-temporal graph convolutional networks for traffic forecasting (IJCAI 2018)
-- [[source-stg-mamba]] — STG-Mamba: 首个将选择性 SSM (Mamba) 应用于 STG 预测的工作，GS3B + KFGN 实现线性复杂度 (arXiv 2024)
-- [[source-middir]] — MiDDiR: Mixed Channel Dependency Diffusion Model with Retrieval Guidance (ICLR 2026 under review)
-- [[source-metadg]] — MetaDG: Meta Dynamic Graph for Traffic Flow Prediction (AAAI 2026)
-- [[source-midas]] — MIDAS: Mutual Information Disentanglement with Uncertainty-Aware Fusion, MI minimax 解耦 + 变分不确定性加权处理不完全多模态情感分析 (TPAMI 2026)
-- [[source-timesnet]] — TimesNet: temporal 2D-variation modeling for general time series analysis (ICLR 2023)
-- [[source-timexer]] — TimeXer: patch-wise self-attention + variate-wise cross-attention 融合内生 patch 与外生 variate token，NeurIPS 2024 (Tsinghua)
-- [[source-timesfm]] — TimesFM: Decoder-Only Foundation Model for Time-Series Forecasting (ICLR 2024)
+- [[source-cheng-2025-cora-correlation-aware-adapter]] — CoRA (Correlation-aware Adapter): TSFM 下游通道相关插件，DCE 低秩时变/时不变 + HPCL 异质-部分对比，推理 O(N)（Cheng et al., ICLR 2026）
 - [[source-chronos]] — Chronos: Learning the Language of Time Series (ICLR 2024)
-- [[source-chronosx]] — ChronosX: Adapting Pretrained Time Series Models with Exogenous Variables; IIB+OIB modular adapters, 32 synthetic + 18 real (AISTATS 2025, arXiv:2503.12107)
-- [[source-time-vlm]] — Time-VLM: frozen VLM bridges temporal/visual/textual via RAL+VAL+TAL; few/zero-shot strong (ICML 2025, arXiv:2502.04395)
-- [[source-ts-vl-alignment]] — TS–VL Alignment: near-orthogonal frozen TS/V/L; post-hoc contrastive projection limits (arXiv:2602.19367)
+- [[source-chronosx]] — ChronosX: IIB past + OIB future modular covariate adapters for pretrained TS models; 32 synthetic benchmark; TimesFMX/MOMENTX (AISTATS 2025, arXiv:2503.12107)
+- [[source-cirt]] — CirT: Geometry-Inspired Spherical Transformer for S2S Climate Forecasting, 圆形分块 + 傅里叶域自注意力，超越 ECMWF/PanguWeather/GraphCast，ICLR 2025
+- [[source-classifier-free-diffusion-guidance]] — Classifier-Free Diffusion Guidance (Ho & Salimans, 2022), original CFG paper
+- [[source-climatear]] — ClimateAR: 首个 VAR 自回归概率气候预测模型，对齐 VQ 分词器 + 混合尺度条件控制，ERA5 ACC 提升 37.56%，ICML 2026
+- [[source-climax]] — ClimaX: 首个气象/气候基础模型，ViT + variable tokenization + cross-attention aggregation + CMIP6 预训练 + 随机预测目标，WeatherBench/ClimateBench SOTA，ICML 2023
+- [[source-clmtr]] — CLMTR: Contrastive Learning for Multi-modal Trajectory Representation
+- [[source-cofill-spatiotemporal-imputation]] — CoFILL: Spatiotemporal Data Imputation by Conditional Diffusion (arXiv 2025)
+- [[source-cogencast]] — CoGenCast: A Coupled Autoregressive–Flow Generative Framework for Time Series Forecasting, LLM + FM encoder-decoder hybrid (ICML 2026)
+- [[source-conformer]] — ConFormer: Conditional Transformer for accident-informed traffic forecasting (KDD 2026)
+- [[source-consistency-models]] — Consistency Models: one-step generation (ICML 2023)
 - [[source-constrained-text-fusion]] — Constrained Text Fusion / CFA: naive add/concat often hurts vs unimodal; low-rank plug-in (KDD ’26 MILETS, arXiv:2603.22372)
+- [[source-cora]] — CoRA: Covariate-Aware Adaptation of Time Series Foundation Models (ICLR 2026)
+- [[source-core-context-repetition]] — CoRe：重复上下文以包含所需文档顺序的有序子序列；与 Trace as State 的位置干预区别（Findings NAACL 2025）
+- [[source-costi]] — CoSTI: Consistency models for (a faster) spatio-temporal imputation, 一致性训练直接适配 MTSI，1–2 步采样替代扩散插补 50–100 步去噪，作者报告插补时间最多降低 98%（KBS 327 (2025) 114117, Elsevier 正式排版）
+- [[source-cpiri]] — CPiRi: channel permutation-invariant relational interaction for MTSF (ICLR 2026)
+- [[source-craft]] — CRAFT: Cross City Traffic Flow Generation via Retrieval Augmented Diffusion Model (NeurIPS 2025)
 - [[source-cross-modal-misalignment]] — Cross-modal misalignment: selection/perturbation bias; MMCL block-identifies unbiased semantics (NeurIPS 2025, arXiv:2504.10143)
-- [[source-zhou-informer-2021]] — Informer: Beyond Efficient Transformer for Long Sequence Time-Series Forecasting (AAAI 2021 Best Paper)
-- [[source-timedit]] — TimeDiT: General-purpose Diffusion Transformers for Time Series Foundation Model (KDD 2025)
-- [[source-tips]] — TIPS: transformer with inductive prior synthesis for financial forecasting
-- [[source-tide]] — TiDE: Time-series Dense Encoder, residual MLP encoder–decoder for LTSF with covariates (Das et al., arXiv:2304.08424)
-- [[source-tft]] — TFT: Temporal Fusion Transformer for interpretable multi-horizon forecasting with static/known/observed inputs + quantile outputs (Lim et al., Google, arXiv:1912.09363)
-- [[source-nbeatsx]] — NBEATSx: neural basis expansion with exogenous variables for electricity price forecasting (Olivares et al., IJF 2022 / arXiv:2104.05522)
-- [[source-new-bounds-on-diffsequences]] — New Bounds on Diffsequences: Ramsey theory, improved exponential lower bound for D={2ⁱ} diffsequences, classification of 2-accessible dividing sequences (Clifton, arXiv 2022)
-- [[source-tqn]] — TQNet: Temporal Query Network for efficient multivariate forecasting (ICML 2025)
-- [[source-trajectory-dl-survey]] — Comprehensive Survey of Deep Learning for Trajectory Data Management and Mining
-- [[source-timegrad]] — TimeGrad: autoregressive denoising diffusion for probabilistic time series forecasting (ICML 2021)
-- [[source-probts]] — ProbTS: unified benchmark for point and distributional forecasting across short/long horizons (NeurIPS 2024 D&B, arXiv:2310.07446)
-- [[source-diffstg]] — DiffSTG: probabilistic spatio-temporal graph forecasting with diffusion models (AAAI 2023)
+- [[source-crossformer-2023]] — Crossformer: Transformer Utilizing Cross-Dimension Dependency for MTS Forecasting (ICLR 2023)
+- [[source-crosslinear]] — CrossLinear: plug-and-play 1D-conv cross-correlation embedding for exogenous many-to-one TS forecasting (KDD 2025, arXiv:2505.23116)
 - [[source-csdi]] — CSDI: Conditional Score-based Diffusion Models for Probabilistic Time Series Imputation (NeurIPS 2021)
 - [[source-ctenet]] — CTENet: chemical transport Eulerian network, ADR equation embedded in neural architecture, NeurIPS 2025
-- [[source-prs]] — Predict, Refine, Synthesize / TSDiff: unconditional diffusion + observation self-guidance for probabilistic TS forecasting (NeurIPS 2023, arXiv:2307.11494)
-- [[source-ssdts]] — SSD-TS: Mamba as diffusion denoising backbone for time series imputation (KDD 2025)
-- [[source-pristi]] — PriSTI: A Conditional Diffusion Framework for Spatiotemporal Imputation (arXiv 2023 / ICDE 2023)
-- [[source-sparsetsf]] — SparseTSF: lightweight LTSF with <1k parameters via sparse modeling (TPAMI 2026 & ICML 2024 Oral)
-- [[source-tedm]] — TEDM: first EDM-based TS forecasting framework with O(H) sampling via diffusion-physical time alignment (ICLR 2026)
-- [[source-terra]] — Terra: large-scale multimodal Earth spatiotemporal dataset, 6.48M grids × 45 years hourly meteo TS + geo-images + LLM text (NeurIPS 2024)
+- [[source-cvpe-2025]] — CVPE: Enhancing CI Forecasting via Cross-Variate Patch Embedding (arXiv 2025)
 - [[source-cyclenet]] — CycleNet: modeling periodic patterns for time series forecasting (NeurIPS 2024)
-- [[source-cora]] — CoRA: Covariate-Aware Adaptation of Time Series Foundation Models (ICLR 2026)
-- [[source-unica]] — UniCA: Unified Covariate Adaptation for Time Series Foundation Model (ICLR 2026)
-- [[source-ddpm]] — DDPM: Denoising Diffusion Probabilistic Models (NeurIPS 2020)
+- [[source-dag]] — DAG: A Dual Correlation Network for TS Forecasting with Exogenous Variables（时间+通道双相关发现—注入，IJCAI 2026）
 - [[source-dcrnn]] — DCRNN: Diffusion Convolutional Recurrent Neural Network for Traffic Forecasting (ICLR 2018)
 - [[source-ddim]] — DDIM: Denoising Diffusion Implicit Models (ICLR 2021), 确定性 ODE 加速采样
 - [[source-ddim-ode-spaces-ac-cn]] — 生成扩散模型漫谈（六）：一般框架之 ODE 篇 (苏剑林, 2022), F-P 方程视角下的概率流 ODE 与 DDIM
-- [[source-deepfec]] — DeepFEC: Energy Consumption Prediction under Real-World Driving Conditions for Smart Cities
+- [[source-ddpm]] — DDPM: Denoising Diffusion Probabilistic Models (NeurIPS 2020)
+- [[source-deep-time-series-survey]] — Deep Time Series Models: comprehensive survey and benchmark (TSLib)
 - [[source-deepar]] — DeepAR: Probabilistic Forecasting with Autoregressive Recurrent Networks, global shared LSTM + Gaussian/negbin likelihood + MC sample paths (Salinas et al., Amazon, arXiv:1704.04110)
+- [[source-deepfec]] — DeepFEC: Energy Consumption Prediction under Real-World Driving Conditions for Smart Cities
 - [[source-deepstate]] — DeepState: Deep State Space Models for Time Series Forecasting, RNN-parametrized linear SSM + Kalman likelihood (NeurIPS 2018)
+- [[source-demystify-mamba-linear-attention-2024]] — Demystify Mamba in Vision: A Linear Attention Perspective (NeurIPS 2024)
+- [[source-detr]] — DETR: End-to-End Object Detection with Transformers（Carion et al., Facebook AI, arXiv:2005.12872v3，venue 未在 PDF 内核实），direct set prediction + Hungarian 二部匹配损失 + Transformer encoder-decoder + learned object queries 并行解码，COCO AP 42.0 与强化 Faster R-CNN 相当、APL 优 APS 弱，panoptic PQ 45.1（R101, COCO val）
+- [[source-diffputer]] — DiffPuter: Empowering Diffusion Models for Missing Data Imputation, EM 交替式扩散插补（M 步扩散密度估计 / E 步前向-反向混合条件采样），9 个表格数据集 MCAR 30% 相对最强基线平均提升 6.94% MAE / 4.78% RMSE（ICLR 2025）
+- [[source-diffstg]] — DiffSTG: probabilistic spatio-temporal graph forecasting with diffusion models (AAAI 2023)
+- [[source-diffusion-traffic-flow-inference]] — DP-TFI: Diffusion Probabilistic Modeling for Fine-Grained Urban Traffic Flow Inference (ICASSP 2023), DPA 扩散增强 + RDU relaxed structural constraint, TaxiBJ 四时段 RMSE/MAE/MAPE 全最优
+- [[source-diffusion-ts-st-survey]] — A Survey on Diffusion Models for Time Series and Spatio-Temporal Data (arXiv 2024), 首篇 TS+ST diffusion 综述，四维分类（模型类别/任务/模态/领域），Table 1 汇总 60 个方法
+- [[source-diffusionblocks]] — DiffusionBlocks: Block-wise Neural Network Training via Diffusion Interpretation (Sakana AI, ICLR 2026)
+- [[source-distdf]] — DistDF: Distribution-aware Direct Forecast, joint-distribution Wasserstein alignment for training time-series forecasting models, 解决 MSE 的自相关偏差 (ICLR 2026)
+- [[source-dit]] — DiT: Scalable Diffusion Models with Transformers, ViT replaces U-Net backbone (Peebles & Xie, ICCV 2023)
+- [[source-dits]] — DiTS: Multimodal Diffusion Transformers Are Time Series Forecasters (arXiv 2026)
+- [[source-doflow]] — DoFlow: Flow-based Generative Models for Interventional and Counterfactual Forecasting on Time Series (ICLR 2026)
+- [[source-dpgnet]] — DPGNet: Dynamic Graph Prediction Network with AGL + ASL for spatiotemporal forecasting (ICLR 2026 under review)
+- [[source-dpm-solver]] — DPM-Solver: Fast ODE solver for diffusion models (NeurIPS 2022)
 - [[source-dst-mamba]] — DST-Mamba: Decomposed Spatio-Temporal Mamba for Long-Term Traffic Prediction (AAAI 2025)
-- [[source-sde]] — Score-Based SDE: Unified framework for SMLD and DDPM (ICLR 2021)
+- [[source-dualformer]] — Dualformer: time-frequency dual domain learning for long-term forecasting
+- [[source-dutytte]] — DutyTTE: Deciphering Uncertainty in Origin-Destination Travel Time Estimation，noisy top-k MoE（C=8/k=4）驱动的 OD 通行时间区间预测
+- [[source-dyffusion]] — DYffusion: A Dynamics-informed Diffusion Model for Spatiotemporal Forecasting (NeurIPS 2023)
+- [[source-dynamix]] — DynaMix: 首个零样本 DSR 基础模型，AL-RNN MoE + STF，从上下文信号重建动力系统长期统计特性，NeurIPS 2025
+- [[source-dynastar]] — DynaSTar: Dynamic Graph Invariant Learning for Reliable Out-of-Time Spatio-Temporal Prediction (IJCAI 2026)
+- [[source-e2-cstp]] — E²-CSTP: causal multi-modal spatio-temporal prediction with GCN+Mamba (NeurIPS 2025)
+- [[source-eac]] — EAC: Expand and Compress, prompt-based continual STG forecasting with frozen backbone + expandable/compressible prompt pool, ICLR 2025
+- [[source-edm]] — EDM: Elucidating the Design Space of Diffusion-Based Generative Models (Karras et al., NeurIPS 2022)
+- [[source-elf-embedded-language-flows]] — ELF: Embedded Language Flows, continuous diffusion LM via Flow Matching (MIT, arXiv 2026)
+- [[source-energy-based-model]] — TODO
+- [[source-equal-snr]] — A Fourier Space Perspective on Diffusion Models: EqualSNR frequency-SNR analysis (Microsoft Research, 2025)
+- [[source-erdm]] — ERDM: Elucidated Rolling Diffusion Models, EDM + 滚动扩散统一框架，渐进噪声 + 混合 3D 架构，Navier-Stokes 超越 DYffusion/PDE-Refiner；ERA5 中长程与 IFS ENS/NeuralGCM ENS 竞争 (Cachay et al., NeurIPS 2025)
+- [[source-event-driven-ts-forecasting]] — VoT: event-driven reasoning and multi-level alignment for time series forecasting (ICLR 2026)
+- [[source-exollm]] — ExoLLM: 首个 LLM-driven 外生变量预测方法，Meta-task Instruction + Multi-grained Prompts + Dual TS-Text Attention（WWW 2025）
 - [[source-exost]] — ExoST（arXiv:2509.05779 **预印本，未接收**）：作者提出 select-then-balance 外生 ST 建模；仅 related-work 级参考，非默认必读
 - [[source-exotst]] — ExoTST: Exogenous-Aware Temporal Sequence Transformer, treats past and future exogenous as distinct modalities with cross-temporal fusion for autoregressive time series prediction (arXiv 2024)
-- [[source-select-then-balance]] — Select, then Balance 旧 slug（已由 [[source-exost]] 取代；同文 arXiv only）
-- [[source-exollm]] — ExoLLM: 首个 LLM-driven 外生变量预测方法，Meta-task Instruction + Multi-grained Prompts + Dual TS-Text Attention（WWW 2025）
-- [[source-timi]] — TiMi: LLM + MMoE 路由引导时序预测（arXiv:2602.21693）
-- [[source-crosslinear]] — CrossLinear: plug-and-play 1D-conv cross-correlation embedding for exogenous many-to-one TS forecasting (KDD 2025, arXiv:2505.23116)
-- [[source-dpm-solver]] — DPM-Solver: Fast ODE solver for diffusion models (NeurIPS 2022)
-- [[source-consistency-models]] — Consistency Models: one-step generation (ICML 2023)
-- [[source-glow]] — Glow: Generative Flow with Invertible 1×1 Convolutions (NeurIPS 2018)
-- [[source-gloeckle-2024-multi-token-prediction]] — Better & Faster LLMs via Multi-token Prediction: shared trunk + n independent heads, sample-efficient code LM pretraining + self-speculative 3× decode, ICML 2024 / arXiv:2404.19737 (Meta FAIR)
-- [[source-stunet]] — STUNet: Unified Spatio-Temporal Tokens are Bases for Generalizable Traffic Forecasting; adjacency-matrix spatial tokenizer + query-aggregate attention + frozen spatial tokens for cross-network zero-shot (KDD 2026, ZJU/SUPCON)
-- [[source-st-ood]] — ST-OOD: Evaluating the Generalization Ability of Spatiotemporal Models in Urban Scenarios; six-scenario year-over-year IN/OUT benchmark, complex STGNNs degrade 40–116% RMSE, STID/MLP + light dropout often win OUT (IEEE TMC 2025)
-- [[source-freqflow]] — FreqFlow: Frequency-Aware Flow Matching for High-Quality Image Generation (arXiv 2026)
-- [[source-shortcut-models]] — Shortcut Models: one-step diffusion via self-consistency (arXiv 2025)
-- [[source-rectified-flow]] — Rectified Flow: Flow Straight and Fast, ODE-based generation with few-step sampling (arXiv 2022)
-- [[source-instaflow]] — InstaFlow: One Step is Enough, reflow+distill SD to one-step generation (ICLR 2024)
-- [[source-alibi]] — ALiBi: attention with linear biases enables input length extrapolation (ICLR 2022)
-- [[source-roformer]] — RoFormer: Enhanced Transformer with Rotary Position Embedding (Su et al., arXiv 2021/2023)
-- [[source-2509-22259]] — Rotary Position Encodings for Graphs (WIRE): 用 Laplacian 谱坐标对 query/key 施加旋转，RoPE 的图推广 (ICML 2026)
-- [[source-yarn]] — YaRN: efficient context window extension of large language models (2023)
-- [[source-paperbench]] — Long Context, Less Focus: A Scaling Gap in LLMs (Gu et al., 2026)
-- [[source-vetcha-2026-towards-infinite-length-extrapolation]] — Vetcha 2026: Towards Infinite Length Extrapolation - A Unified Approach
-- [[source-conformer]] — ConFormer: Conditional Transformer for accident-informed traffic forecasting (KDD 2026)
-- [[source-gamma-net]] — GAMMA-Net: GAT + Multi-Axis Mamba Interleaved for traffic forecasting (arXiv 2026)
-- [[source-2312-01728]] — ImputeFormer: Low Rankness-Induced Transformers for Generalizable Spatiotemporal Imputation (KDD 2024)
-- [[source-cofill-spatiotemporal-imputation]] — CoFILL: Spatiotemporal Data Imputation by Conditional Diffusion (arXiv 2025)
-- [[source-sadi]] — SADI: Self-attention-based Diffusion Model for Time-series Imputation in Partial Blackout Scenarios (AAAI 2025)
-- [[source-channelmts]] — ChannelMTS: Multi-modal Time-Series Framework for High-Speed Railway Channel Prediction (KDD 2026)
-- [[source-clmtr]] — CLMTR: Contrastive Learning for Multi-modal Trajectory Representation
-- [[source-classifier-free-diffusion-guidance]] — Classifier-Free Diffusion Guidance (Ho & Salimans, 2022), original CFG paper
-- [[source-ncsn]] — NCSN: Generative Modeling by Estimating Gradients of the Data Distribution (Song & Ermon, 2020)
-- [[source-understanding-diffusion-models]] — Understanding Diffusion Models: A Unified Perspective (Luo, 2022)
-- [[source-edm]] — EDM: Elucidating the Design Space of Diffusion-Based Generative Models (Karras et al., NeurIPS 2022)
-- [[source-erdm]] — ERDM: Elucidated Rolling Diffusion Models, EDM + 滚动扩散统一框架，渐进噪声 + 混合 3D 架构，Navier-Stokes 超越 DYffusion/PDE-Refiner；ERA5 中长程与 IFS ENS/NeuralGCM ENS 竞争 (Cachay et al., NeurIPS 2025)
-- [[source-rombach-ldm-2022]] — LDM: High-Resolution Image Synthesis with Latent Diffusion Models (Rombach et al., CVPR 2022)
-- [[source-neural-ode]] — Neural ODE: Neural Ordinary Differential Equations (Chen et al., NeurIPS 2018)
-- [[source-nsdiff]] — NsDiff: Non-stationary Diffusion for Probabilistic Time Series Forecasting (ICML 2025 Spotlight)
-- [[source-stats]] — StaTS: Spectral Trajectory Schedule Learning for Adaptive Time Series Forecasting with Frequency Guided Denoiser (arXiv 2026)
-- [[source-opencity]] — OpenCity: Open Spatio-Temporal Foundation Models for Traffic Prediction (arXiv 2024)
-- [[source-cbsa]] — CBSA: Towards Interpretable and Efficient Attention (NeurIPS 2025)
-- [[source-causal-llm]] — Causal-LLM: Spatiotemporal Foundation Model with Predictive and Interpretable Capabilities
+- [[source-factost]] — FactoST: factorized ST foundation model, universal temporal pretraining + lightweight spatial adaptation (NeurIPS 2025 / arXiv 2026)
 - [[source-fast-long-horizon-forecasting]] — FaST: Efficient Long-Horizon Forecasting for Large-Scale STG via MoE (KDD 2026)
-- [[source-muon-optimizer]] — Muon: An optimizer for hidden layers in neural networks (Jordan, 2024)
+- [[source-fedformer]] — FEDformer: frequency enhanced decomposed transformer (ICML 2022)
+- [[source-fedhint]] — FedHINT：联邦交通预测中从本地数据抽取隐藏全局成分生成代理节点以恢复跨客户端依赖，只上传模型参数；METIS 切 6 客户端，PEMS03/04/07/08（Zhou et al., AAAI 2026）
+- [[source-feedback-guidance-diffusion-models-arxiv25]] — FBG: Feedback Guidance of Diffusion Models, 加性误差假设 + 马尔可夫后验追踪的状态相关动态引导尺度 (NeurIPS 2025)
+- [[source-fence]] — FENCE: Spatial-Temporal Feedback Diffusion Guidance for Controlled Traffic Imputation (AAAI 2026)
+- [[source-fgti]] — FGTI: Frequency-aware Generative Models for Multivariate Time Series Imputation, 高频/主频双频域条件 + time/attribute-frequency 跨域表示学习 + DDPM 条件扩散插补，命题 3.1 条件熵论证，KDD/Guangzhou/PhysioNet MCAR 10-40% 作者报告最优（NeurIPS 2024 官方 proceedings，PDF 内核实）
+- [[source-flashst]] — FlashST: A Simple and Universal Prompt-Tuning Framework for Traffic Prediction (ICML 2024), model-agnostic 时空 prompt-tuning + InfoNCE 均匀性损失，4 目标数据集全胜 13 基线，训练时间降 20%-80%
+- [[source-flightdiff]] — FlightDiff: Dual-Constraint Guided Two-Phase Diffusion Framework for Flight Prediction
+- [[source-flow-grpo]] — Flow-GRPO: Training Flow Matching Models via Online RL (NeurIPS 2025)
+- [[source-flow-matching]] — Flow Matching: simulation-free CNF training with OT paths (NeurIPS 2023)
+- [[source-flow-matching-guide]] — Flow Matching Guide and Code（Lipman et al., arXiv:2412.06264v1，2024-12，83 页 PDF 内核实）：FM 长篇教程（含代码指南），设计选择体系（路径/耦合/参数化/引导）+ Marginalization Trick 与 Bregman 散度损失框架 + Riemannian/离散/Generator Matching 扩展 + 与扩散关系的精确口径，配 flow_matching PyTorch 库
+- [[source-flow-opd]] — Flow-OPD: On-Policy Distillation for Flow Matching Models (arXiv 2026)
+- [[source-flownet]] — FlowNet: Modeling Dynamic Spatio-Temporal Systems via Flow Propagation（NeurIPS 2025），M-MLP 内的 Mixture of Linears（16 个线性专家）
+- [[source-flowts]] — FlowTS: Time Series Generation via Rectified Flow (arXiv 2025)
+- [[source-fm-st-data-science]] — Foundation Models for ST Data Science: A Tutorial and Survey (KDD 2025), 首个覆盖 ST 数据科学全流程的 STFM 综述，LLM+PFM 二分 × 生命周期三阶段 × 能力三轴，覆盖 Pangu-Weather/ClimaX/UniST/OpenCity/TrajFM 等 15+ 模型
+- [[source-fredf]] — FreDF: Frequency-enhanced Direct Forecast, learns multi-step DF in the frequency domain to mitigate label autocorrelation (arXiv 2024 / ICLR 2025 labeled)
+- [[source-freqflow]] — FreqFlow: Frequency-Aware Flow Matching for High-Quality Image Generation (arXiv 2026)
+- [[source-frets]] — FreTS: frequency-domain MLPs for time series forecasting (NeurIPS 2023)
+- [[source-from-news-to-forecast]] — From News to Forecast: LLM generative agent iteratively filters news events with reflection + CoT for time series prediction (NeurIPS 2024)
+- [[source-fstllm]] — FSTLLM: Spatio-Temporal LLM for Few Shot Time Series Forecasting, plug-and-play LLM augmentation (ICML 2025)
+- [[source-gamma-net]] — GAMMA-Net: GAT + Multi-Axis Mamba Interleaved for traffic forecasting (arXiv 2026)
+- [[source-gcgnet]] — GCGNet: Graph-Consistent Generative Network for TS forecasting with exogenous variables (joint graph alignment + VAE generator + Graph Refiner, ICLR 2026)
+- [[source-gcrdd]] — D³VAE (GCRDD): generative time series forecasting with coupled diffusion, denoise, and disentanglement (NeurIPS 2022)
+- [[source-gencast]] — GenCast：无观测区域交通预测，掩码子图对比骨干 + LWR 速度残差物理损失 + ERA5 天气交叉注意力门控融合 + 空间分组熵正则（Su et al., AAAI 2026）
+- [[source-geolocation-llm-st]] — LLMGeovec: Geolocation Representation from LLMs for Spatio-Temporal Learning (AAAI 2025)
+- [[source-giflow]] — GiFlow: Spatiotemporal Imputation with Graph-Informed Flow Matching, 时空图滤波图信息先验 + 混合向量场 CFM 插补，传输代价定理 + 确定性少步推理 (ICML 2026, EPFL)
+- [[source-gloeckle-2024-multi-token-prediction]] — Better & Faster LLMs via Multi-token Prediction: shared trunk + n independent heads, sample-efficient code LM pretraining + self-speculative 3× decode, ICML 2024 / arXiv:2404.19737 (Meta FAIR)
+- [[source-glow]] — Glow: Generative Flow with Invertible 1×1 Convolutions (NeurIPS 2018)
+- [[source-gmf]] — GMF: Geometry-based Schrödinger Bridges for Trustworthy Multimodal Fusion, 潜在空间传输几何用于多模态融合可靠性评估，打破统计方法的循环依赖
+- [[source-gpd]] — GPD: generative pre-training on diffusion for spatio-temporal few-shot learning via hypernetwork (ICLR 2024)
+- [[source-gpt-st]] — GPT-ST: spatio-temporal MAE pre-training framework with hypergraph capsule clustering (NeurIPS 2023)
+- [[source-gpt4mts]] — DP-GPT4MTS: Dual-Prompt LLM 多模态时序预测框架，explicit prompt（任务指令）+ textual prompt（BERT 文本上下文嵌入）+ frozen GPT-2 骨干，GDELT/Time-MMD SOTA，arXiv 2025
+- [[source-graph-mixture-density-networks]] — Graph Mixture Density Networks（ICML 2021），走 MDN 而非 MoE，论文自述的取舍作为两者边界
+- [[source-graphcast]] — GraphCast: Learning skillful medium-range global weather forecasting（Lam、Sanchez-Gonzalez、Willson 等 7 人共同一作，Google DeepMind + Google Research，arXiv:2212.12794v2，Science 著录未在 PDF 内核实），encode-process-decode GNN（36.7M 参数）+ 多分辨率 icosahedron multi-mesh + 6h 步长自回归滚动，2018 年 1380 验证目标 90.3% RMSE 优于 HRES（显著检验 89.9%），10 天 0.25° 预报单 TPU v4 不足 60 秒，含极端事件与训练数据时效实验
+- [[source-graphgps]] — GraphGPS: Recipe for a General, Powerful, Scalable Graph Transformer（Rampášek et al., NeurIPS 2022，会议标识 PDF 内核实），PE/SE + local MPNN + global attention 三要素模块化框架，论文自述首个 O(N+E) 图 Transformer，16 benchmark 消融与对比（arXiv v4）
+- [[source-graphsparsenet]] — GraphSparseNet: A Novel Method for Large Scale Traffic Flow Prediction (PVLDB 2025)
+- [[source-graphwalks-dataset]] — OpenAI GraphWalks 数据集卡：BFS/Parents 定义、公开评分示例与版本修复范围
+- [[source-grid-world-code-readme]] — 网格世界环境官方代码说明（Zhao, Mi & Li）
+- [[source-gtr]] — GTR: Global Temporal Retriever, plug-and-play global cycle retrieval for MTSF (ICLR 2026)
+- [[source-guo-imputation-evaluation]] — Guo et al., A Survey and Benchmarking of Spatial-Temporal Traffic Data Imputation Models（arXiv:2412.04733v2，PDF 内核实；v1 题名 An Experimental Evaluation of Imputation Models for Spatial-Temporal Traffic Data 见 FENCE 参考文献著录），practice-oriented 缺失模式四分类 + 模型双分类 + 11 模型 × 4 交通数据集 × 20 缺失场景统一评测管线，评测复现口径结论与模型选择建议
+- [[source-gwnet]] — GWNet: Graph WaveNet, adaptive adjacency matrix + dilated causal convolution for STG traffic forecasting (IJCAI 2019)
+- [[source-hephestus]] — HEPHAESTUS: Hierarchical Periodic Heterogeneous Adaptive Spatio-Temporal Unified System for Traffic Forecasting (ICLR 2026 under review)
+- [[source-heterogeneous-moe-routing]] — TODO
+- [[source-hifinet]] — HiFiNet: Hierarchical Frequency-Decomposition GNN for Road Network Representation Learning (AAAI 2026)
+- [[source-how-llm-understand-st]] — STG-LLM: How Can Large Language Models Understand Spatial-Temporal Data (arXiv 2024), STG-Tokenizer 节点即 token + STG-Adapter 冻结 GPT2 1.70% 参数, PEMS07 MAE 19.82
+- [[source-hyperd-hybrid-periodicity-decoupling]] — "HyperD: Hybrid Periodicity Decoupling Framework for Traffic Forecasting" (Wen & Feng, 2025)
+- [[source-improved-meanflows]] — Improved Mean Flows (iMF): On the Challenges of Fastforward Generative Models, MeanFlow 同团队后续：目标等价改写为 v-loss 再参数化并修正 JVP 输入、CFG 尺度改为条件变量、in-context conditioning，ImageNet-256 从头训练 1-NFE FID 1.72（Geng, Lu, Wu, Shechtman, Kolter, He; CMU/MIT/Adobe/THU, arXiv 2025 v2）
+- [[source-incident-guided-st-forecasting]] — IGSTGNN: Incident-Guided Spatiotemporal Graph Neural Network for Traffic Forecasting (KDD 2026)
+- [[source-instaflow]] — InstaFlow: One Step is Enough, reflow+distill SD to one-step generation (ICLR 2024)
+- [[source-interpgn]] — InterpGN: Shedding Light on Time Series Classification Using Interpretability Gated Networks（ICLR 2025），2 专家混合，门控来自可解释模型自身的 Gini 置信度
+- [[source-itransformer]] — iTransformer: Inverted Transformers Are Effective for Time Series Forecasting (ICLR 2024)
+- [[source-jepa-focus-on-slow-features]] — JEPA Focus on Slow Features（Sobal et al., NeurIPS 2022 SSL workshop，arXiv:2211.10831，4 页）：移动点 toy 环境、无奖励全离线，JEPA+VICReg/SimCLR 在噪声逐帧变化时持平或更好、在固定噪声下失败并给出平凡解解释
+- [[source-jitrl]] — JitRL: Just-In-Time Reinforcement Learning，免梯度测试时策略优化：非参数经验记忆检索估计优势、闭式加性规则改 logits，WebArena/Jericho 免训练方法 SOTA（NUS, ICML 2026）
+- [[source-jmlr-25-1243]] — FusionBench: unified library + benchmark for deep model fusion (JMLR 26, 2025; PDF raw/jmlr-25-1243.pdf)
+- [[source-jstc]] — JSTC: Travel Time Prediction with Joint Spatial-Temporal Correlation Mechanism
+- [[source-k2vae]] — K²VAE: Koopman-Kalman Enhanced VAE for Probabilistic Time Series Forecasting (ICML 2025 Spotlight)
+- [[source-kellerjordan-muon-blog]] — TODO
+- [[source-kexue-muon-analysis]] — Muon优化器赏析：从向量到矩阵的本质跨越 (苏剑林, 2024)
+- [[source-kite]] — KITE: Knowledge-Guided Probabilistic Modeling for Time Series Forecasting with Exogenous Variables（HCM + KGC + CFG，ICML 2026）
+- [[source-lagllm-icml2026]] — LagLLM: LLM-empowered lead–lag dependency learning for spatial-temporal time series forecasting，frozen LLM 判 lead–lag 语义掩码 + token 按图排序 + GPT-2 LoRA 骨干，8 数据集 27 例 22 例最优（ICML 2026, 浙大）
+- [[source-language-flow-time]] — Language in the Flow of Time: TaTS Framework (ICLR 2026) superseded by [[source-language-in-the-flow-of-time]]
+- [[source-language-in-the-flow-of-time]] — Language in the Flow of Time: TaTS framework for multimodal TS: CTR/TT-Wasserstein + 编码器与鲁棒性消融 (ICLR 2026, arXiv:2502.08942)
+- [[source-large-models-ts-st-survey]] — Large Models for Time Series and Spatio-Temporal Data: A Survey and Outlook (arXiv 2023, v3 2026), 最早系统梳理 TS+ST 大模型的综述，四维分类，LLM4TS 四路线+PFM4TS，Table 2 收 43 个方法
+- [[source-lcr]] — LCR: Laplacian Convolutional Representation for Traffic Time Series Imputation, circulant matrix nuclear norm 低秩 + Laplacian 核时域正则的凸优化插补，FFT 频域 ADMM，arXiv:2212.01529v3（TKDE 2024 著录来自用户，未在 PDF 内核实）
+- [[source-lejepa]] — LeJEPA: Provable and Scalable Self-Supervised Learning Without the Heuristics（Balestriero & LeCun，arXiv:2511.08544v3，2025-11 preprint）：各向同性高斯最优性 + SIGReg + 单超参 JEPA 训练；10+ 数据集、60+ 架构验证
+- [[source-lets-group]] — Let's Group: A Plug-and-Play SubGraph Learning Method for Memory-Efficient Spatio-Temporal Graph Modeling, SGPM 记忆向量锚点 top-K 子图划分 + SGFAM 跨子图特征平均聚合，O(N²)O(N+K²)，平均 GPU 内存最高降 56.4%（作者报告），IJCAI-25 官方 proceedings（Weng et al., pp. 3471–3479）
+- [[source-lightweight-mixed-graph-unrolling]] — Lightweight & Interpretable Transformer via Mixed Graph Algorithm Unrolling for Traffic Forecast, ADMM 展开混合图优化为轻量级类 Transformer，ICML 2026
+- [[source-loft]] — LOFT: Low-Rank Prior-Induced Consistency Flow Matching for Efficient Traffic Imputation, 低秩先验 + 速度一致性 + 不确定性矫正，2 NFE 推理 (KDD 2026)
+- [[source-loft-llm]] — LoFT-LLM: Low-Frequency Time-Series Forecasting with LLMs, PLFM 低频监督 + 残差学习 + LLM 语义校准三阶段流水线 (KDD 2026)
+- [[source-logtrans]] — LogTrans: convolutional self-attention + LogSparse Transformer (NeurIPS 2019)
+- [[source-lscd]] — LSCD: Lomb–Scargle Conditioned Diffusion for Time Series Imputation (ICML 2025)
+- [[source-lstnet]] — LSTNet: modeling long- and short-term temporal patterns with deep neural networks (SIGIR 2018)
 - [[source-mae]] — MAE: Masked Autoencoders Are Scalable Vision Learners (He et al., CVPR 2022)
 - [[source-maf]] — MANF: Multi-scale Attention Normalizing Flow for non-autoregressive multivariate probabilistic forecasting (arXiv:2205.07493)
-- [[source-phat]] — PHAT: Period Heterogeneity-Aware Transformer for MTS forecasting (ICLR 2026)
-- [[source-pipe]] — PIPE: Physics-Informed Position Encoding for satellite image-time series alignment in typhoon forecasting (NeurIPS 2025)
-- [[source-pi-mfm]] — PI-MFM: Physics-informed multimodal foundation model for solving PDEs, PDE-encoding MOL with physics losses in pretraining and adaptation (arXiv 2025)
-- [[source-hephestus]] — HEPHAESTUS: Hierarchical Periodic Heterogeneous Adaptive Spatio-Temporal Unified System for Traffic Forecasting (ICLR 2026 under review)
-- [[source-dpgnet]] — DPGNet: Dynamic Graph Prediction Network with AGL + ASL for spatiotemporal forecasting (ICLR 2026 under review)
-- [[source-rstib-mlp]] — RSTIB-MLP: Information Bottleneck-guided MLPs for Robust Spatial-temporal Forecasting (ICML 2025)
-- [[source-tsflow]] — TSFlow: Flow Matching with Gaussian Process Priors for Probabilistic Time Series Forecasting (ICLR 2025)
-- [[source-testam]] — TESTAM: Time-Enhanced Spatio-Temporal Attention Model with Mixture of Experts (ICLR 2024)
-- [[source-nuwats]] — NuwaTS: a Foundation Model Mending Every Incomplete Time Series, PLM-based one-for-all imputation (arXiv 2024)
-- [[source-t1]] — T1: One-to-One Channel-Head Binding for Multivariate Time-Series Imputation, CNN-Transformer hybrid (ICLR 2026)
-- [[source-prdim]] — PRDIM: Missing Pattern Recognized Diffusion Imputation Model for Missing Not At Random (arXiv 2026)
-- [[source-time-indexed-imputation]] — Are Time-Indexed Foundation Models the Future of Time Series Imputation? TabPFN-TS/MoTM zero-shot benchmark (TMLR 2026)
-- [[source-schrodinger-bridges-generative-modeling]] — Foundations of Schrödinger Bridges for Generative Modeling, 220 页综合性教程，统一 SB 理论与算法 (Tang, 2026)
-
-- [[source-ssf]] — SSF: Spectral Sheaf Filtering — A Topological Approach to Spatio-Temporal Modeling (ICLR 2026 under review)
-- [[source-stochasticinterpolants]] — Building Normalizing Flows with Stochastic Interpolants / InterFlow: quadratic simulation-free CNF velocity from arbitrary interpolants, finite-time OT max-min, ICLR 2023
-
-- [[source-kexue-muon-analysis]] — Muon优化器赏析：从向量到矩阵的本质跨越 (苏剑林, 2024)
-- [[source-incident-guided-st-forecasting]] — IGSTGNN: Incident-Guided Spatiotemporal Graph Neural Network for Traffic Forecasting (KDD 2026)
+- [[source-mage]] — MAGE: Less but More — Linear Adaptive Graph Learning with sparse-balanced MoE, NeurIPS 2025 (USTC)
+- [[source-maginet]] — MagiNet: Mask-Aware Graph Imputation Network for Incomplete Traffic Data, learnable missing encoding without pre-filling (arXiv 2024 / ACM TKDD 2025)
+- [[source-math-foundation-rl-readme]] — "Mathematical Foundations of Reinforcement Learning" 配套 Readme（Zhao, 2025）
+- [[source-meanflow]] — MeanFlow: Mean Flows for One-step Generative Modeling, 平均速度场 + MeanFlow Identity（JVP）一步生成，无预训练/蒸馏/课程（Geng, Deng, Bai, Kolter, He; CMU/MIT, arXiv 2025 v1）
+- [[source-metadg]] — MetaDG: Meta Dynamic Graph for Traffic Flow Prediction (AAAI 2026)
+- [[source-mhc-manifold-constrained-hyper-connections]] — mHC: Manifold-Constrained Hyper-Connections (DeepSeek-AI, arXiv 2026)
+- [[source-midas]] — MIDAS: Mutual Information Disentanglement with Uncertainty-Aware Fusion, MI minimax 解耦 + 变分不确定性加权处理不完全多模态情感分析 (TPAMI 2026)
+- [[source-middir]] — MiDDiR: Mixed Channel Dependency Diffusion Model with Retrieval Guidance (ICLR 2026 under review)
+- [[source-minitraffic]] — MiniTraffic: mini-sized contrastive learning pre-trained model for fine-grained traffic tasks, ICML 2026
+- [[source-mmckm]] — MMCKM: Micro-Macro Coupled Koopman Modeling for Traffic Flow Prediction (ICLR 2026)
+- [[source-moba-mixture-of-block-attention]] — MoBA: Mixture of Block Attention for Long-Context LLMs（Moonshot AI，arXiv:2502.13189），块稀疏 MoE attention：8K 缩放验证 loss 差 1e-3 内、Llama-8B-1M RULER 0.7818 vs 0.7849、attention 层 1M prefill 6.5× / 10M 16× 加速，自述部署于 Kimi
+- [[source-module-embedding-theorem-towers-algebras]] — Module Embedding Theorem via Towers of Algebras: Markov towers 进路推广 Jones-Penneys 嵌入定理至任意循环模，arXiv 2018
+- [[source-moirai-moe]] — Moirai-MoE: 首个 Sparse MoE 时间序列基础模型，token 级专业化替代频率级数据分组，cluster-based gating + next-token prediction，39 数据集 SOTA，ICML 2025（Salesforce）
 - [[source-most]] — MoST: A Foundation Model for Multi-modality Spatio-temporal Traffic Prediction (KDD 2026)
+- [[source-motm]] — MoTM: Towards a Foundation Model for Time Series Imputation based on Continuous Modeling，连续时间 INR 插补基础模型 (AALTD/ECML 2025 口头报告)
+- [[source-mrcr-dataset]] — OpenAI MRCR 数据集卡：多实例绑定、随机前缀与 SequenceMatcher；与论文 MRCRv2 命名的对应缺口
+- [[source-mtgnn]] — MTGNN: graph neural network for MTS forecasting with learned graph structure (KDD 2020)
 - [[source-mtp]] — MTP: Multimodal Urban Traffic Profiling with Modality Augmentation and Spectrum Fusion (AAAI 2026)
+- [[source-mts-imputation-survey]] — Deep Learning for Multivariate Time Series Imputation: A Survey, 预测式/生成式（插补不确定性）× 架构（RNN/CNN/GNN/Attention/VAE/GAN/Diffusion + 大模型单列）双视角分类 + PyPOTS 生态与 TSI-Bench + 未来方向（MNAR/下游集成/可扩展性/LLM），arXiv:2402.04059v3（IJCAI 2025 著录来自用户，未在 PDF 内核实）
+- [[source-mtsci]] — MTSCI: A Conditional Diffusion Model for Multivariate Time Series Consistent Imputation, 插补一致性（intra/inter）条件扩散插补：互补掩码双视图对比损失 + mixup 相邻窗口条件，ETT/Weather/METR-LA point/block 缺失 9 组设置作者报告数值最低（CIKM 2024, DOI 10.1145/3627673.3679532, PDF 内核实）
 - [[source-multimodal-pinn]] — Multimodal PINN for Mean Radiant Temperature (Tmrt) modeling, fuses fisheye images (ResNet-50) + radiative transfer physics loss, RMSE 3.50 / R² 0.88, arXiv 2025
 - [[source-multimodal-spatial-reasoning-survey]] — Multimodal Spatial Reasoning in the Large Model Era: A Survey and Benchmarks (Zheng et al., 2025)
 - [[source-multimodal-ts-anomaly-detection]] — MindTS: multimodal time series anomaly detection with semantic alignment and condensed interaction (ICLR 2026)
 - [[source-multimodal-ts-survey]] — Multi-modal Time Series Analysis: A Tutorial and Survey, unified cross-modal interaction framework (fusion/alignment/transference), 40+ methods catalog, Terra/Time-MMD benchmarks, arXiv 2025
-- [[source-event-driven-ts-forecasting]] — VoT: event-driven reasoning and multi-level alignment for time series forecasting (ICLR 2026)
-- [[source-fence]] — FENCE: Spatial-Temporal Feedback Diffusion Guidance for Controlled Traffic Imputation (AAAI 2026)
-- [[source-feedback-guidance-diffusion-models-arxiv25]] — FBG: Feedback Guidance of Diffusion Models, 加性误差假设 + 马尔可夫后验追踪的状态相关动态引导尺度 (NeurIPS 2025)
-- [[source-aurora]] — Aurora: universal generative multimodal time series forecasting (ICLR 2026)
-- [[source-bigcity]] — BIGCity: first MTMD spatio-temporal model unifying trajectory + traffic state (arXiv 2024)
+- [[source-multispans]] — MultiSPANS: 多尺度时空 Transformer，结构熵最小化导出编码树做多层注意力掩码 + 层级相关分数，MFCL 多滤波卷积支持长窗口低成本注入，PEMSD4/8（WSDM 2024）
+- [[source-muon-optimizer]] — Muon: An optimizer for hidden layers in neural networks (Jordan, 2024)
+- [[source-nbeatsx]] — NBEATSx: neural basis expansion with exogenous variables for electricity price forecasting (Olivares et al., IJF 2022 / arXiv:2104.05522)
+- [[source-ncsn]] — NCSN: Generative Modeling by Estimating Gradients of the Data Distribution (Song & Ermon, 2020)
+- [[source-neural-ode]] — Neural ODE: Neural Ordinary Differential Equations (Chen et al., NeurIPS 2018)
+- [[source-new-bounds-on-diffsequences]] — New Bounds on Diffsequences: Ramsey theory, improved exponential lower bound for D={2ⁱ} diffsequences, classification of 2-accessible dividing sequences (Clifton, arXiv 2022)
+- [[source-nsdiff]] — NsDiff: Non-stationary Diffusion for Probabilistic Time Series Forecasting (ICML 2025 Spotlight)
+- [[source-nub-1m-benchmark]] — NUB-1M 一手仓库：小说理解、Season 2 二十题、单次排行榜与当季答案公开策略
+- [[source-nuwats]] — NuwaTS: a Foundation Model Mending Every Incomplete Time Series, PLM-based one-for-all imputation (arXiv 2024)
+- [[source-omnicast]] — OmniCast: 掩码潜扩散模型统一跨时间尺度天气预测，VAE + 掩码生成 Transformer + per-token 扩散头，S2S SOTA，10–20× 快于 GenCast，NeurIPS 2025
+- [[source-omnifield]] — OmniField: continuity-aware multimodal conditioned neural field for robust spatiotemporal learning, MCT + ICMR + fleximodal fusion, ICLR 2026 (BNL/UCLA/Columbia)
+- [[source-opencity]] — OpenCity: Open Spatio-Temporal Foundation Models for Traffic Prediction (arXiv 2024)
+- [[source-over-squashing]] — On the Bottleneck of Graph Neural Networks and its Practical Implications（Alon & Yahav, Technion, ICLR 2021，会议标识 PDF 内核实），提出 over-squashing 概念解释 GNN 长程传播受限，给出隐藏维度组合下界（计数论证口径），FA 层干预实验（作者报告 QM9 六种 GNN 误差平均相对降 42%）（arXiv:2006.05205v4）
+- [[source-paperbench]] — Long Context, Less Focus: A Scaling Gap in LLMs (Gu et al., 2026)
+- [[source-past]] — PAST: Primary-Auxiliary Spatio-Temporal Network for Traffic Time Series Imputation, primary+auxiliary pattern disentanglement with GIM+CGM (PVLDB, arXiv 2025)
+- [[source-patchstg]] — PatchSTG: efficient large-scale traffic Transformer via irregular spatial patching and dual attention (KDD 2025)
+- [[source-patchtst]] — PatchTST: A Time Series is Worth 64 Words, long-term forecasting with Transformers (ICLR 2023)
+- [[source-pdformer-jiang-2023]] — PDFormer: Propagation Delay-Aware Dynamic Long-Range Transformer for Traffic Flow Prediction（AAAI 2023），地理/语义双 mask 空间自注意力 + DFT 显式建模传播时延，6 数据集 17 基线
+- [[source-penguin]] — PENGUIN: periodic-nested group attention for long-term forecasting (AISTATS 2026)
+- [[source-performer]] — Rethinking Attention with Performers（Choromanski et al., Google/Cambridge/DeepMind/Alan Turing Institute, ICLR 2021，会议标识 PDF 内核实；arXiv:2009.14794v4），FAVOR+：正随机特征无偏估计 softmax 核 + 正交化降方差，线性时空复杂度近似全秩 softmax 注意力（论文自述首个此类架构），MSE/尾界/一致收敛定理与 TrEMBL/ImageNet64/PG-19/LRA 实验
+- [[source-phat]] — PHAT: period heterogeneity-aware Transformer with 3D bucket + PNA for MTSF (ICLR 2026)
+- [[source-physics-aware-reprogramming]] — REPST: Language Model Empowered ST Forecasting via Physics-Aware Reprogramming (arXiv 2024), Koopman 分解 + Gumbel-Softmax selective discrete reprogramming, METR-LA MAE 3.63
+- [[source-pi-mfm]] — PI-MFM: Physics-informed multimodal foundation model for solving PDEs, PDE-encoding MOL with physics losses in pretraining and adaptation (arXiv 2025)
+- [[source-pipe]] — PIPE: Physics-Informed Position Encoding for satellite image-time series alignment in typhoon forecasting (NeurIPS 2025)
+- [[source-pir]] — PIR: Improving Time Series Forecasting via Instance-aware Post-hoc Revision，模型无关预测后识别-修订框架，误差估计识别失败实例 + 局部/全局上下文修订（NeurIPS 2025）
+- [[source-pn-train]] — PN-Train: perturbation-based pattern neuron detector + optimizer for urban time series forecasting, identifies and fine-tunes <10% neurons to boost low-frequency pattern accuracy, ICLR 2025
+- [[source-prdim]] — PRDIM: Missing Pattern Recognized Diffusion Imputation Model for Missing Not At Random (arXiv 2026)
+- [[source-predicting-the-future-by-retrieving-the-past-aaai2026]] — PFRP: Predicting the Future by Retrieving the Past, 检索增强单变量 TSF，GMB + PCL + K-medoids + 双门控 + 动态融合，AAAI 2026
+- [[source-pristi]] — PriSTI: A Conditional Diffusion Framework for Spatiotemporal Imputation (arXiv 2023 / ICDE 2023)
+- [[source-prnet]] — PRNet: periodic residual learning for crowd flow forecasting
+- [[source-probts]] — ProbTS: unified benchmark for point and distributional forecasting across short/long horizons (NeurIPS 2024 D&B, arXiv:2310.07446)
+- [[source-prs]] — Predict, Refine, Synthesize / TSDiff: unconditional diffusion + observation self-guidance for probabilistic TS forecasting (NeurIPS 2023, arXiv:2307.11494)
+- [[source-pyraformer]] — Pyraformer: pyramidal attention with O(L) complexity + O(1) path length (ICLR 2022 Oral)
+- [[source-qcgs]] — QCGS (Station2Radar): Query-Conditioned Gaussian Splatting fusing AWS + satellite for radar-free precipitation field generation, >50% RMSE improvement vs IMERG/MSWEP/GSMaP (ICLR 2026)
+- [[source-qdf]] — QDF: Quadratic Direct Forecast, learns PSD weighting matrix Σ for quadratic NLL objective addressing label autocorrelation + heterogeneous task weights (ICLR 2026 preprint, arXiv:2511.00053)
+- [[source-quest]] — QUEST: efficient long-range attention via token clustering
+- [[source-quizsf-zero-shot-forecasting-www26]] — QuiZSF: RAG for zero-shot TSF, ChronoRAG Base + HHTR + MSIL + MCC, 75%/87.5% Top1 (WWW 2026)
+- [[source-raf]] — RAF: Retrieval Augmented Forecasting, 首个系统性 RAG 框架用于 TSFM 零样本预测 (arXiv 2024)
+- [[source-ragc-efficient-traffic-forecasting]] — RAGC: Efficient Traffic Forecasting on Large-Scale Road Network by Regularized Adaptive Graph Convolution (arXiv 2026)
+- [[source-rainpro]] — RainPro-8: 高效 8h 概率降水预报模型，多源融合（雷达/卫星/NWP/地形）+ 有序一致性损失 + 单次前向预测，ICLR 2026
+- [[source-rast]] — RAST: Retrieval-Augmented Spatio-Temporal Framework for Traffic Prediction (AAAI 2026)
+- [[source-ratd]] — RATD: Retrieval-Augmented Diffusion Models for Time Series Forecasting, k-NN references guide denoising via RMA (NeurIPS 2024)
+- [[source-rdpi]] — RDPI: A Refine Diffusion Probability Generation Method for Spatiotemporal Data Imputation, 确定性初值 + 残差条件扩散、观测值纳入前向过程并推导新 ELBO，Table 3/4 作者报告 MAE/MSE 最优（Liu, Zhao, Song; 北航, arXiv 2412.12642 v1, AAAI 2025 著录）
+- [[source-re-reading-improves-reasoning]] — Re2：在单条 prompt 中重复任务输入，与思维激发提示组合（EMNLP 2024）
+- [[source-recontext]] — ReContext：内部相关性选择原文证据，递归回放后生成；白盒接口与完整上下文保留（arXiv 2026）
+- [[source-rectified-flow]] — Rectified Flow: Flow Straight and Fast, ODE-based generation with few-step sampling (arXiv 2022)
+- [[source-retrieval-augmented-st-traffic]] — RAST: Retrieval-Augmented Spatio-Temporal Traffic Forecasting
+- [[source-retrieval-augmented-statistical-channel]] — TODO
+- [[source-ripcn]] — RIPCN: Road Impedance Principal Component Network for Probabilistic Traffic Flow Forecasting (KDD 2026)
+- [[source-rivermamba]] — RiverMamba: 首个全球 0.05° 河流流量和洪水预报 Mamba 模型，双向 SSM + 空间填充曲线 + LOAN + Hindcast-Forecast，NeurIPS 2025
+- [[source-roformer]] — RoFormer: Enhanced Transformer with Rotary Position Embedding (Su et al., arXiv 2021/2023)
+- [[source-rombach-ldm-2022]] — LDM: High-Resolution Image Synthesis with Latent Diffusion Models (Rombach et al., CVPR 2022)
+- [[source-rstib-mlp]] — RSTIB-MLP: Information Bottleneck-guided MLPs for Robust Spatial-temporal Forecasting (ICML 2025)
+- [[source-s-mamba]] — S-Mamba: first Mamba-based MTSF baseline, bidirectional Mamba for VC + FFN for TD (Neurocomputing 2024)
+- [[source-s2dbm]] — S²DBM: Series-to-Series Diffusion Bridge Model, Brownian bridge pins both endpoints for deterministic point forecasting (arXiv 2024)
+- [[source-sa-bcp]] — SA-BCP: Optimal Spatio-Temporal Decoupling for Bayesian Conformal Prediction (arXiv 2026)
+- [[source-sadi]] — SADI: Self-attention-based Diffusion Model for Time-series Imputation in Partial Blackout Scenarios (AAAI 2025)
+- [[source-sagd]] — SAGD: Steering Diffusion via Spectrally Anisotropic Forward Noise (arXiv 2025, 完整版)
+- [[source-scale]] — SCALE: Spectral Conformal Prediction via Wavelet Transform (ICML 2026)
+- [[source-schrodinger-bridges-generative-modeling]] — Foundations of Schrödinger Bridges for Generative Modeling, 220 页综合性教程，统一 SB 理论与算法 (Tang, 2026)
+- [[source-score-based-generative-models]] — TODO
+- [[source-sde]] — Score-Based SDE: Unified framework for SMLD and DDPM (ICLR 2021)
+- [[source-select-then-balance]] — Select, then Balance 旧 slug（已由 [[source-exost]] 取代；同文 arXiv only）
+- [[source-shortcut-models]] — Shortcut Models: one-step diffusion via self-consistency (arXiv 2025)
+- [[source-sifusion]] — SIFusion: 统一多粒度北极海冰预测框架，Swin V2 空间编码 + granularity variate 跨粒度融合 (NeurIPS 2025)
+- [[source-simdiff]] — SimDiff: simpler yet better diffusion model for time series point forecasting (AAAI 2026)
+- [[source-siren-rope]] — Learning to Rotate: Temporal and Semantic Rotary Encoding for Sequential Modeling (arXiv 2026)
+- [[source-smartraj2]] — SMARTraj2: A Stable Multi-City Adaptive Method for Multi-View Spatio-Temporal Trajectory Representation（NeurIPS 2025），城市/轨迹级 sigmoid 特征门控，正文无专家集合
+- [[source-snr-t-bias]] — Elucidating the SNR-t Bias of Diffusion Probabilistic Models (Yu et al., CVPR 2026, AMAP Alibaba + LZU)
+- [[source-soft-shape]] — SoftShape: Learning Soft Sparse Shapes for Efficient Time-Series Classification（ICML 2025），shape 级 MoE（k=1、专家数=类别数）+ Inception 共享专家 + 变异系数负载均衡
+- [[source-solar-vlm]] — Solar-VLM: multimodal vision-language framework fusing satellite imagery, text weather reports, and time series with GAT + cross-site attention for solar power spatiotemporal prediction (arXiv 2026)
+- [[source-sparsetsf]] — SparseTSF: lightweight LTSF with <1k parameters via sparse modeling (TPAMI 2026 & ICML 2024 Oral)
+- [[source-spectral-bias-learning-dynamics]] — An Analytical Theory of Spectral Bias in the Learning Dynamics of Diffusion Models (NeurIPS 2025, Harvard)
+- [[source-srsnet]] — SRSNet / SRS: Selective Representation Space, adaptive patch selection + reassembly plugin for LTSF (NeurIPS 2025, arXiv:2510.14510)
+- [[source-ssdts]] — SSD-TS: Mamba as diffusion denoising backbone for time series imputation (KDD 2025)
+- [[source-ssf]] — SSF: Spectral Sheaf Filtering — A Topological Approach to Spatio-Temporal Modeling (ICLR 2026 under review)
+- [[source-st-foundation-models-survey]] — Spatio-Temporal Foundation Models: Vision, Challenges, and Opportunities, systematic vision for STFMs, 4 generalization capabilities (domain/spatial/temporal/scale), evaluates 6 models (UniST/ClimaX/Pangu etc.), multimodal training & causal reasoning opportunities, A*STAR 2025
+- [[source-st-llm]] — ST-LLM: Spatial-Temporal Large Language Model for Traffic Prediction (MDM 2024), LLM attention 从时间轴反转为空间轴，PFA 前 F 层冻结/后 U 层仅解冻 MHA(最优 U=2)，NYCTaxi/CHBike 四场景 MAE 均最低
+- [[source-st-mae]] — STMAE: Revealing the Power of Masked Autoencoders in Traffic Forecasting (CIKM 2024), 即插即用双掩码（biased random walk 路径级空间 + patch 级时间），PEMS03/04/07/08 三 backbone 全面提升
+- [[source-st-ood]] — ST-OOD: Evaluating the Generalization Ability of Spatiotemporal Models in Urban Scenarios; six-scenario year-over-year IN/OUT benchmark, complex STGNNs degrade 40–116% RMSE, STID/MLP + light dropout often win OUT (IEEE TMC 2025)
+- [[source-st-resnet]] — ST-ResNet: deep spatio-temporal residual networks for crowd flow (AAAI 2017)
+- [[source-st-ssdl]] — ST-SSDL: Self-Supervised Deviation Learning for Spatio-Temporal Forecasting, historical anchors + learnable prototypes + contrastive/deviation losses + GCRU backbone (NeurIPS 2025)
+- [[source-st-ssl]] — ST-SSL: Spatio-Temporal Self-Supervised Learning for Traffic Flow Prediction (AAAI 2023), 自适应图增强 + 软聚类/时序对比双 SSL 联合训练（非两阶段预训练），NYCBike/NYCTaxi/BJTaxi MAE 全面最优
+- [[source-st-ttc]] — ST-TTC: Learning with Calibration, test-time computing of spatio-temporal forecasting via spectral-domain calibration (NeurIPS 2025 Spotlight)
+- [[source-st-vision-llm]] — ST-Vision-LLM: Vision-LLMs for Spatiotemporal Traffic Forecasting, TS-as-image + GRPO for mobile traffic (arXiv 2025)
+- [[source-staeformer]] — TODO
+- [[source-stamimputer]] — STAMImputer: Spatio-Temporal Attention MoE for Traffic Data Imputation (arXiv 2025 / IJCAI 2025)
+- [[source-state-over-tokens]] — State over Tokens：把 reasoning prefix 理解为外化计算状态的概念框架，不等同忠实解释（arXiv 2025）
+- [[source-stationarity-aware-retrieval-augmented-forecasting-kdd26]] — SARAF: 平稳性感知检索增强预测，时间对齐 + 多样性 MMR + 自适应 Gaussian 聚合，KDD 2026
+- [[source-stats]] — StaTS: Spectral Trajectory Schedule Learning for Adaptive Time Series Forecasting with Frequency Guided Denoiser (arXiv 2026)
+- [[source-stbp]] — STBP: General Spatio-Temporal Backbone with Scalable Contextual Pattern Bank for Urban Continual Forecasting (ICLR 2026)
+- [[source-std-plm]] — STD-PLM: PLM-based unified ST forecasting+imputation with spatial-temporal tokenizer + sandglass attention (AAAI 2025)
+- [[source-step]] — STEP: Pre-training Enhanced STGNN (KDD 2022), TSFormer 掩码自编码（r=75% patch 级）+ GTS 式图结构学习增强 Graph WaveNet, METR-LA H3 MAE 2.61 vs GWNet 2.69
+- [[source-stfm-pipeline-review]] — Unraveling ST Foundation Models via the Pipeline Lens: comprehensive review of data harmonization, model design (primitive/transferred), training objectives, and adaptation techniques, covers UniST/UrbanDiT/ClimaX/Moirai/Chronos, arXiv 2025
+- [[source-stg-mamba]] — STG-Mamba: 首个将选择性 SSM (Mamba) 应用于 STG 预测的工作，GS3B + KFGN 实现线性复杂度 (arXiv 2024)
+- [[source-stgcl]] — When Do Contrastive Learning Signals Help STG Forecasting? (Liu et al., SIGSPATIAL 2022 / arXiv:2108.11873v2, PDF 内核实)：Q1–Q4 四问、PEMS-04/08/BAY 三基准、四骨干模型插拔验证与预训练-微调掉点的负结果
+- [[source-stgcn]] — STGCN: spatial-temporal graph convolutional networks for traffic forecasting (IJCAI 2018)
+- [[source-stgformer]] — STGformer: Efficient Spatiotemporal Graph Transformer for Traffic Forecasting（Wang et al., arXiv:2410.00385v2，PDF 内核实；IEEE 期刊模板排版、未见接收 venue），SGC 式图传播保留 0..k 阶 + 空间/时间共享 QKV 转置复用 + 分解内积线性化（O(N+T)）+ 递归门控交互的单层架构，8600 节点 CA 图批量推理较 STAEformer 100× 加速 / 99.8% GPU 内存降，LargeST SD/BA/LA 与 PEMS03/04/07/08 及跨年 20192020 均报告优于 STAEformer
+- [[source-stllm]] — STLLM: Spatio-Temporal LLM for reasoning about environments and actions, point cloud + video + text fusion (arXiv 2025)
+- [[source-stochasticinterpolants]] — Building Normalizing Flows with Stochastic Interpolants / InterFlow: quadratic simulation-free CNF velocity from arbitrary interpolants, finite-time OT max-min, ICLR 2023
+- [[source-stop]] — STOP: Robust Spatio-Temporal Centralized Interaction for OOD Learning (ICML 2025)
+- [[source-storminsight]] — StormInsight: Hierarchical Environmental Forcing and Vertical Coupling for Convective Systems Evolution, 3D 环境条件化对流临近预报，三分量编码 + Conditional Flow Matching + StormBench，ICML 2026
+- [[source-stpde]] — STPDE: PDE-inspired framework decoupling invariant diffusion operator + environment basis manifold for robust ST forecasting (ICML 2026)
+- [[source-streasoner]] — STReasoner: spatio-temporal reasoning in time series via spatial-aware RL (Ni et al., 2026)
+- [[source-stssl]] — TODO
+- [[source-stunet]] — STUNet: Unified Spatio-Temporal Tokens are Bases for Generalizable Traffic Forecasting; adjacency-matrix spatial tokenizer + query-aggregate attention + frozen spatial tokens for cross-network zero-shot (KDD 2026, ZJU/SUPCON)
+- [[source-stwave]] — STWave: Disentangled Traffic Flow Forecasting via Efficient Spectral Graph Attention Network (arXiv:2112.02740v2；会议/期刊版本信息未在文本中提供), Disentangling Flow Layer 小波解耦 + ESGAT（Query Sampling + 图小波位置编码）, PeMSD4 MAE 18.50
+- [[source-sundial]] — Sundial: A Family of Highly Capable Time Series Foundation Models, Flow Matching + TimeFlow Loss (ICML 2025)
+- [[source-swift]] — Swift: An Autoregressive Consistency Model for Efficient Weather Forecasting (arXiv 2025)
+- [[source-t1]] — T1: One-to-One Channel-Head Binding for Multivariate Time-Series Imputation, CNN-Transformer hybrid (ICLR 2026)
+- [[source-tcp]] — TCP-Diffusion: 多模态扩散模型全球 TC 降水预测，ARP 机制 + 多编码器 + NWP 集成，ICML 2025
+- [[source-team]] — TEAM: Topological Evolution-aware Framework for Traffic Forecasting (PVLDB 2024)
+- [[source-tedm]] — TEDM: first EDM-based TS forecasting framework with O(H) sampling via diffusion-physical time alignment (ICLR 2026)
+- [[source-terra]] — Terra: large-scale multimodal Earth spatiotemporal dataset, 6.48M grids × 45 years hourly meteo TS + geo-images + LLM text (NeurIPS 2024)
+- [[source-tess]] — TESS: 离散原语 + 门控 + PatchTST prefix（arXiv:2603.12664v2）
+- [[source-testam]] — TESTAM: Time-Enhanced Spatio-Temporal Attention Model with Mixture of Experts (ICLR 2024)
+- [[source-tfps]] — TFPS: Learning Pattern-Specific Experts for Time Series Forecasting Under Patch-level Distribution Shift（NeurIPS 2025），子空间聚类亲和度当路由输入的 patch 级 MoE
+- [[source-tft]] — TFT: Temporal Fusion Transformer for interpretable multi-horizon forecasting with static/known/observed inputs + quantile outputs (Lim et al., Google, arXiv:1912.09363)
+- [[source-tide]] — TiDE: Time-series Dense Encoder, residual MLP encoder–decoder for LTSF with covariates (Das et al., arXiv:2304.08424)
+- [[source-time-gated-multi-scale-flow-matching]] — TG-MSFM: Time-Gated Multi-Scale Flow Matching for Time-Series Imputation, 数据条件 FM ODE + visibility-masked attention + 时间门控多尺度速度头 + Heun/每步 DC 确定性插补，MSE 十基准全列最低 (ICLR 2026)
+- [[source-time-indexed-imputation]] — Are Time-Indexed Foundation Models the Future of Time Series Imputation? TabPFN-TS/MoTM zero-shot benchmark (TMLR 2026)
 - [[source-time-llm]] — Time-LLM: Time Series Forecasting by Reprogramming Large Language Models (ICLR 2024)
+- [[source-time-mmd]] — Time-MMD: 9-domain multimodal numeric–text TS dataset + MM-TSFlib; fine-grained alignment & contamination control (NeurIPS 2024 D&B, arXiv:2406.08627v4)
 - [[source-time-moe]] — Time-MoE: 论文称首个稀疏 MoE 时序基础模型，decoder-only + 逐点 token 化 + 多分辨率预测头，2.4B 参数，Time-300B (309B pts)，ICLR 2025
+- [[source-time-vlm]] — Time-VLM: frozen VLM bridges temporal/visual/textual via RAL+VAL+TAL; few/zero-shot strong (ICML 2025, arXiv:2502.04395)
 - [[source-timecap]] — TimeCAP: contextualize, augment, and predict time series events with LLM agents (AAAI 2025 Oral)
-- [[source-bluuuuue-scaling-factor-intuition]] — 数学直觉系列（一）：缩放因子1/√dₖ——注意力机制的数值稳定性条件 (bluuuuue, 小红书)
-- [[source-bluuuuue-reparameterization-trick]] — 数学直觉系列（二）：VAE与重参数化——将不可逆的随机采样重构为可微的确定性变换 (bluuuuue, 小红书)
-- [[source-2605-07319]] — Generative Modeling with Flux Matching：全新生成建模范式，推广得分函数为任意生成向量场 (Pao-Huang et al., Stanford, arXiv 2026)
-- [[source-language-flow-time]] — Language in the Flow of Time: TaTS Framework (ICLR 2026) ⚠️ superseded by [[source-language-in-the-flow-of-time]]
-- [[source-language-in-the-flow-of-time]] — Language in the Flow of Time: TaTS framework for multimodal TS: CTR/TT-Wasserstein + 编码器与鲁棒性消融 (ICLR 2026, arXiv:2502.08942)
+- [[source-timedit]] — TimeDiT: General-purpose Diffusion Transformers for Time Series Foundation Model (KDD 2025)
+- [[source-timegrad]] — TimeGrad: autoregressive denoising diffusion for probabilistic time series forecasting (ICML 2021)
+- [[source-timemixer]] — TimeMixer: decomposable multiscale mixing for time series forecasting (ICLR 2024)
+- [[source-timesfm]] — TimesFM: Decoder-Only Foundation Model for Time-Series Forecasting (ICLR 2024)
+- [[source-timesnet]] — TimesNet: temporal 2D-variation modeling for general time series analysis (ICLR 2023)
+- [[source-timexer]] — TimeXer: patch-wise self-attention + variate-wise cross-attention 融合内生 patch 与外生 variate token，NeurIPS 2024 (Tsinghua)
+- [[source-timi]] — TiMi: LLM + MMoE 路由引导时序预测（arXiv:2602.21693）
+- [[source-tips]] — TIPS: transformer with inductive prior synthesis for financial forecasting
+- [[source-tpllm]] — TPLLM: A Traffic Prediction Framework Based on Pretrained Large Language Models (arXiv 2024), 冻结 GPT-2 + LoRA Q/K (0.95% 参数), PeMS04/08 few-shot 退化幅度最小
+- [[source-tqn]] — TQNet: Temporal Query Network for efficient multivariate forecasting (ICML 2025)
+- [[source-trace-as-state]] — Trace as State：Xu Zou、Jie Tang；同题推理轨迹前置后重读，21 页正文与附录 A–F（arXiv:2609.02702v1）
+- [[source-trace-neurips2025]] — TRACE: Grounding Time Series in Context for Multimodal Embedding and Retrieval, cross-modal TS-text retriever with CIT + CbA + dual-level hard negative mining, NeurIPS 2025
+- [[source-trajar]] — TrajAR（Gong, Lin et al.，IJCAI-26，pp. 2635–2643）：next-scale 自回归轨迹预测 + Motion MoE + 高斯核边权 GAT；四个 SinD/InD 数据集表内 ADE/FDE 最低，相对 KI-GAN 降 17.4%–24.3%（ADE/FDE，基线作分母）
+- [[source-trajectory-dl-survey]] — Comprehensive Survey of Deep Learning for Trajectory Data Management and Mining
+- [[source-transfertraj]] — TransferTraj: A Vehicle Trajectory Learning Model for Region and Task Transferability，每层 TRIE 之后的 Spatial Context MoE（C=8/k=4）
+- [[source-triattention]] — TriAttention: Efficient Long Reasoning with Trigonometric KV Compression，pre-RoPE Q/K 集中 + 三角级数距离偏好做 KV cache 压缩，AIME25 同精度 2.5× 吞吐 / 10.7× KV 内存 (ICML 2026)
+- [[source-triattention-openreview]] — TriAttention 的 OpenReview 评审记录：ICML 2026 regular accept（4 评审 5/4/4/4），rebuttal 补 LongBench/RULER/LazyEviction/Ada-KV 对比
+- [[source-ts-memory-time-series-foundation-models-kdd26]] — TS-Memory: Plug-and-Play Memory for TSFMs, parametric memory distillation from offline kNN teacher lightweight PlugMem, retrieval-free O(1) inference (KDD 2026)
+- [[source-ts-vl-alignment]] — TS–VL Alignment: near-orthogonal frozen TS/V/L; post-hoc contrastive projection limits (arXiv:2602.19367)
+- [[source-tsflow]] — TSFlow: Flow Matching with Gaussian Process Priors for Probabilistic Time Series Forecasting (ICLR 2025)
+- [[source-tsrag]] — TS-RAG: Retrieval-Augmented Generation based Time Series Foundation Models are Stronger Zero-Shot Forecasters，把检索嵌入当专家的 MoE 增强模块（稠密 softmax）
+- [[source-unca]] — UniCA: Unified Covariate Adaptation (alternate source page)
+- [[source-understanding-diffusion-models]] — Understanding Diffusion Models: A Unified Perspective (Luo, 2022)
+- [[source-unica]] — UniCA: Unified Covariate Adaptation for Time Series Foundation Model (ICLR 2026)
 - [[source-uniextreme]] — UniExtreme: universal extreme weather forecasting foundation model (arXiv 2025)
 - [[source-uniflow]] — UniFlow: foundation model for unified urban spatio-temporal flow prediction (arXiv 2024)
 - [[source-unist]] — UniST: prompt-empowered universal model for urban spatio-temporal prediction (KDD 2024)
-- [[source-2312-00516-std-mae]] — STD-MAE: Spatial-Temporal-Decoupled Masked Pre-training for Spatiotemporal Forecasting (IJCAI-2024)
-- [[source-urbandit]] — UrbanDiT: Diffusion Transformers as Open-World Spatiotemporal Foundation Models (NeurIPS 2025) ⚠️ 基于完整论文重写
-- [[source-urbangpt]] — UrbanGPT: Spatio-Temporal Large Language Models (KDD 2024)
-- [[source-urbanpg]] — UrbanPG: Personalized Context + General Backbone for Urban Spatio-Temporal Learning (AAAI 2026)
-- [[source-videomae]] — VideoMAE: masked autoencoders are data-efficient learners for self-supervised video pre-training (NeurIPS 2022)
-- [[source-ragc-efficient-traffic-forecasting]] — RAGC: Efficient Traffic Forecasting on Large-Scale Road Network by Regularized Adaptive Graph Convolution (arXiv 2026)
-- [[source-visifold]] — VisiFold: Long-Term Traffic Forecasting via Temporal Folding Graph and Node Visibility (arXiv 2026)
-- [[source-2401-08119-specstg]] — SpecSTG: A Fast Spectral Diffusion Framework for Probabilistic Spatio-Temporal Traffic Forecasting (arXiv 2024)
-- [[source-demystify-mamba-linear-attention-2024]] — Demystify Mamba in Vision: A Linear Attention Perspective (NeurIPS 2024)
-- [[source-2502-10236]] — Shaping Inductive Bias in Diffusion Models through Frequency-Based Noise Control (ICLR 2025 Workshop) ⚠️ superseded by [[source-sagd]]
-- [[source-sagd]] — SAGD: Steering Diffusion via Spectrally Anisotropic Forward Noise (arXiv 2025, 完整版)
-- [[source-spectral-bias-learning-dynamics]] — An Analytical Theory of Spectral Bias in the Learning Dynamics of Diffusion Models (NeurIPS 2025, Harvard)
-- [[source-snr-t-bias]] — Elucidating the SNR-t Bias of Diffusion Probabilistic Models (Yu et al., CVPR 2026, AMAP Alibaba + LZU)
-- [[source-yang-gsli-2025]] — GSLI: Graph Structure Learning for Spatial-Temporal Imputation Adapting to Node and Feature Scales (Yang et al., AAAI 2025)
-- [[source-equal-snr]] — A Fourier Space Perspective on Diffusion Models: EqualSNR frequency-SNR analysis (Microsoft Research, 2025)
-- [[source-flow-grpo]] — Flow-GRPO: Training Flow Matching Models via Online RL (NeurIPS 2025)
-- [[source-flow-opd]] — Flow-OPD: On-Policy Distillation for Flow Matching Models (arXiv 2026)
-- [[source-elf-embedded-language-flows]] — ELF: Embedded Language Flows, continuous diffusion LM via Flow Matching (MIT, arXiv 2026)
-- [[source-back-to-basics-let-denoising-generative-models-denoise]] — Back to Basics: Let Denoising Generative Models Denoise, x-prediction via plain ViT on pixel patches (Li & He, MIT, arXiv 2025)
-
-- [[source-chan-2025-diffusion-tutorial]] — Diffusion model comprehensive tutorial (Chan, 2025)
-- [[source-chan-diffusion-tutorial]] — Diffusion model tutorial (Chan, earlier version)
-- [[source-flow-matching]] — Flow Matching: simulation-free CNF training with OT paths (NeurIPS 2023)
-- [[source-flowts]] — FlowTS: Time Series Generation via Rectified Flow (arXiv 2025)
-- [[source-quest]] — QUEST: efficient long-range attention via token clustering
-- [[source-raf]] — RAF: Retrieval Augmented Forecasting, 首个系统性 RAG 框架用于 TSFM 零样本预测 (arXiv 2024)
-- [[source-unca]] — UniCA: Unified Covariate Adaptation (alternate source page)
-
-## Sources (continued)
-- [[source-2511-16426]] — FrèqFlow/SpectFlow: Long-term forecasting using lightweight flow matching (NeurIPS 2025)
-- [[source-cvpe-2025]] — CVPE: Enhancing CI Forecasting via Cross-Variate Patch Embedding (arXiv 2025)
-- [[source-2108-00298]] — GRIN: Filling the G_ap_s — Multivariate Time Series Imputation by Graph Neural Networks (ICLR 2022)
-- [[source-lscd]] — LSCD: Lomb–Scargle Conditioned Diffusion for Time Series Imputation (ICML 2025)
-- [[source-crossformer-2023]] — Crossformer: Transformer Utilizing Cross-Dimension Dependency for MTS Forecasting (ICLR 2023)
-- [[source-dits]] — DiTS: Multimodal Diffusion Transformers Are Time Series Forecasters (arXiv 2026)
-- [[source-sundial]] — Sundial: A Family of Highly Capable Time Series Foundation Models, Flow Matching + TimeFlow Loss (ICML 2025)
-- [[source-cogencast]] — CoGenCast: A Coupled Autoregressive–Flow Generative Framework for Time Series Forecasting, LLM + FM encoder-decoder hybrid (ICML 2026)
-- [[source-storminsight]] — StormInsight: Hierarchical Environmental Forcing and Vertical Coupling for Convective Systems Evolution, 3D 环境条件化对流临近预报，三分量编码 + Conditional Flow Matching + StormBench，ICML 2026
-- [[source-tcp]] — TCP-Diffusion: 多模态扩散模型全球 TC 降水预测，ARP 机制 + 多编码器 + NWP 集成，ICML 2025
-
-## Sources (continued)
-- [[source-patchstg]] — PatchSTG: efficient large-scale traffic Transformer via irregular spatial patching and dual attention (KDD 2025)
-- [[source-patchtst]] — PatchTST: A Time Series is Worth 64 Words, long-term forecasting with Transformers (ICLR 2023)
-- [[source-zeng-2022-are-transformers-effective]] — Are Transformers Effective for Time Series Forecasting? LTSF-Linear baseline (Zeng et al., 2022)
-- [[source-itransformer]] — iTransformer: Inverted Transformers Are Effective for Time Series Forecasting (ICLR 2024)
-- [[source-jstc]] — JSTC: Travel Time Prediction with Joint Spatial-Temporal Correlation Mechanism
-- [[source-logtrans]] — LogTrans: convolutional self-attention + LogSparse Transformer (NeurIPS 2019)
-- [[source-mtgnn]] — MTGNN: graph neural network for MTS forecasting with learned graph structure (KDD 2020)
-- [[source-pyraformer]] — Pyraformer: pyramidal attention with O(L) complexity + O(1) path length (ICLR 2022 Oral)
-- [[source-timemixer]] — TimeMixer: decomposable multiscale mixing for time series forecasting (ICLR 2024)
-- [[source-xcpd]] — xCPD: graph spectral decomposition for channel-patch dependency routing (ICLR 2026)
-- [[source-cpiri]] — CPiRi: channel permutation-invariant relational interaction for MTSF (ICLR 2026)
-- [[source-dit]] — DiT: Scalable Diffusion Models with Transformers, ViT replaces U-Net backbone (Peebles & Xie, ICCV 2023)
-- [[source-lstnet]] — LSTNet: first cross-dimension deep MTS model, CNN+RNN+Skip-RNN+AR (SIGIR 2018)
-- [[source-phat]] — PHAT: period heterogeneity-aware Transformer with 3D bucket + PNA for MTSF (ICLR 2026)
-- [[source-cora]] — CoRA: Covariate-Aware Adaptation of Time Series Foundation Models (ICLR 2026)
-- [[source-gtr]] — GTR: global temporal retrieval for long-cycle periodic patterns (ICLR 2026)
-- [[source-gwnet]] — GWNet: Graph WaveNet, adaptive adjacency matrix + dilated causal convolution for STG traffic forecasting (IJCAI 2019)
-- [[source-timecap]] — TimeCAP: contextualize + augment + predict time series events with LLM agents (AAAI 2025 Oral)
-- [[source-lstnet]] — LSTNet: modeling long- and short-term temporal patterns with deep neural networks (SIGIR 2018)
-- [[source-s-mamba]] — S-Mamba: Mamba-based framework for multivariate time series forecasting (Neurocomputing 2024)
-- [[source-tedm]] — TEDM: diffusion time = physical time, O(H) sampling for TS forecasting (ICLR 2026)
-- [[source-std-plm]] — STD-PLM: PLM-based unified ST forecasting+imputation with spatial-temporal tokenizer + sandglass attention (AAAI 2025)
-- [[source-stfm-pipeline-review]] — Unraveling ST Foundation Models via the Pipeline Lens: comprehensive review of data harmonization, model design (primitive/transferred), training objectives, and adaptation techniques, covers UniST/UrbanDiT/ClimaX/Moirai/Chronos, arXiv 2025
-- [[source-st-foundation-models-survey]] — Spatio-Temporal Foundation Models: Vision, Challenges, and Opportunities, systematic vision for STFMs, 4 generalization capabilities (domain/spatial/temporal/scale), evaluates 6 models (UniST/ClimaX/Pangu etc.), multimodal training & causal reasoning opportunities, A*STAR 2025
-- [[source-fm-st-data-science]] — Foundation Models for ST Data Science: A Tutorial and Survey (KDD 2025), 首个覆盖 ST 数据科学全流程的 STFM 综述，LLM+PFM 二分 × 生命周期三阶段 × 能力三轴，覆盖 Pangu-Weather/ClimaX/UniST/OpenCity/TrajFM 等 15+ 模型
-- [[source-large-models-ts-st-survey]] — Large Models for Time Series and Spatio-Temporal Data: A Survey and Outlook (arXiv 2023, v3 2026), 最早系统梳理 TS+ST 大模型的综述，四维分类，LLM4TS 四路线+PFM4TS，Table 2 收 43 个方法
-- [[source-diffusion-ts-st-survey]] — A Survey on Diffusion Models for Time Series and Spatio-Temporal Data (arXiv 2024), 首篇 TS+ST diffusion 综述，四维分类（模型类别/任务/模态/领域），Table 1 汇总 60 个方法
-- [[source-st-llm]] — ST-LLM: Spatial-Temporal Large Language Model for Traffic Prediction (MDM 2024), LLM attention 从时间轴反转为空间轴，PFA 前 F 层冻结/后 U 层仅解冻 MHA(最优 U=2)，NYCTaxi/CHBike 四场景 MAE 均最低
-- [[source-tpllm]] — TPLLM: A Traffic Prediction Framework Based on Pretrained Large Language Models (arXiv 2024), 冻结 GPT-2 + LoRA Q/K (0.95% 参数), PeMS04/08 few-shot 退化幅度最小
-- [[source-physics-aware-reprogramming]] — REPST: Language Model Empowered ST Forecasting via Physics-Aware Reprogramming (arXiv 2024), Koopman 分解 + Gumbel-Softmax selective discrete reprogramming, METR-LA MAE 3.63
-- [[source-how-llm-understand-st]] — STG-LLM: How Can Large Language Models Understand Spatial-Temporal Data (arXiv 2024), STG-Tokenizer 节点即 token + STG-Adapter 冻结 GPT2 1.70% 参数, PEMS07 MAE 19.82
-- [[source-st-ssl]] — ST-SSL: Spatio-Temporal Self-Supervised Learning for Traffic Flow Prediction (AAAI 2023), 自适应图增强 + 软聚类/时序对比双 SSL 联合训练（非两阶段预训练），NYCBike/NYCTaxi/BJTaxi MAE 全面最优
-- [[source-st-mae]] — STMAE: Revealing the Power of Masked Autoencoders in Traffic Forecasting (CIKM 2024), 即插即用双掩码（biased random walk 路径级空间 + patch 级时间），PEMS03/04/07/08 三 backbone 全面提升
-- [[source-step]] — STEP: Pre-training Enhanced STGNN (KDD 2022), TSFormer 掩码自编码（r=75% patch 级）+ GTS 式图结构学习增强 Graph WaveNet, METR-LA H3 MAE 2.61 vs GWNet 2.69
-- [[source-flashst]] — FlashST: A Simple and Universal Prompt-Tuning Framework for Traffic Prediction (ICML 2024), model-agnostic 时空 prompt-tuning + InfoNCE 均匀性损失，4 目标数据集全胜 13 基线，训练时间降 20%-80%
-- [[source-stwave]] — STWave: Disentangled Traffic Flow Forecasting via Efficient Spectral Graph Attention Network (arXiv:2112.02740v2；会议/期刊版本信息未在文本中提供), Disentangling Flow Layer 小波解耦 + ESGAT（Query Sampling + 图小波位置编码）, PeMSD4 MAE 18.50
-- [[source-diffusion-traffic-flow-inference]] — DP-TFI: Diffusion Probabilistic Modeling for Fine-Grained Urban Traffic Flow Inference (ICASSP 2023), DPA 扩散增强 + RDU relaxed structural constraint, TaxiBJ 四时段 RMSE/MAE/MAPE 全最优
-- [[source-ustd]] — USTD: Unified Spatio-Temporal Diffusion for probabilistic forecasting and kriging (SIGSPATIAL 2024)
-- [[source-factost]] — FactoST: factorized ST foundation model, universal temporal pretraining + lightweight spatial adaptation (NeurIPS 2025 / arXiv 2026)
-- [[source-urbanfm]] — UrbanFM: Scaling Urban Spatio-Temporal Foundation Models, WorldST+MiniST+minimalist Transformer (arXiv 2026)
-
-## Sources (continued)
-- [[source-urbanverse]] — UrbanVerse: Learning Urban Region Representation Across Cities and Tasks, cross-city/cross-task foundation model (arXiv 2026)
-- [[source-urbanmind]] — UrbanMind: Urban Dynamics Prediction with Multifaceted Spatial-Temporal Large Language Models (KDD 2025)
-- [[source-dyffusion]] — DYffusion: A Dynamics-informed Diffusion Model for Spatiotemporal Forecasting (NeurIPS 2023)
-- [[source-dynamix]] — DynaMix: 首个零样本 DSR 基础模型，AL-RNN MoE + STF，从上下文信号重建动力系统长期统计特性，NeurIPS 2025
-- [[source-allspark]] — AllSpark: multimodal spatio-temporal general intelligence model with 10 modalities via LaRF (Shao et al., 2024)
-- [[source-swift]] — Swift: An Autoregressive Consistency Model for Efficient Weather Forecasting (arXiv 2025)
-- [[source-streasoner]] — STReasoner: spatio-temporal reasoning in time series via spatial-aware RL (Ni et al., 2026)
-- [[source-e2-cstp]] — E²-CSTP: causal multi-modal spatio-temporal prediction with GCN+Mamba (NeurIPS 2025)
-- [[source-eac]] — EAC: Expand and Compress, prompt-based continual STG forecasting with frozen backbone + expandable/compressible prompt pool, ICLR 2025
-- [[source-hifinet]] — HiFiNet: Hierarchical Frequency-Decomposition GNN for Road Network Representation Learning (AAAI 2026)
-- [[source-rast]] — RAST: Retrieval-Augmented Spatio-Temporal Framework for Traffic Prediction (AAAI 2026)
-- [[source-retrieval-augmented-st-traffic]] — RAST: Retrieval-Augmented Spatio-Temporal Traffic Forecasting
 - [[source-uomo]] — UoMo: A Universal Model of Mobile Traffic Forecasting for Wireless Network Optimization (KDD 2025 ADS Track)
-- [[source-craft]] — CRAFT: Cross City Traffic Flow Generation via Retrieval Augmented Diffusion Model (NeurIPS 2025)
-- [[source-stbp]] — STBP: General Spatio-Temporal Backbone with Scalable Contextual Pattern Bank for Urban Continual Forecasting (ICLR 2026)
-- [[source-stpde]] — STPDE: PDE-inspired framework decoupling invariant diffusion operator + environment basis manifold for robust ST forecasting (ICML 2026)
-- [[source-mmckm]] — MMCKM: Micro-Macro Coupled Koopman Modeling for Traffic Flow Prediction (ICLR 2026)
-- [[source-bist]] — BiST: A Lightweight and Efficient Bi-Directional Model for Spatiotemporal Prediction (PVLDB 2025)
-- [[source-graphsparsenet]] — GraphSparseNet: A Novel Method for Large Scale Traffic Flow Prediction (PVLDB 2025)
-- [[source-team]] — TEAM: Topological Evolution-aware Framework for Traffic Forecasting (PVLDB 2024)
+- [[source-urbandit]] — UrbanDiT: Diffusion Transformers as Open-World Spatiotemporal Foundation Models (NeurIPS 2025) 基于完整论文重写
+- [[source-urbanfm]] — UrbanFM: Scaling Urban Spatio-Temporal Foundation Models, WorldST+MiniST+minimalist Transformer (arXiv 2026)
+- [[source-urbangpt]] — UrbanGPT: Spatio-Temporal Large Language Models (KDD 2024)
+- [[source-urbanmind]] — UrbanMind: Urban Dynamics Prediction with Multifaceted Spatial-Temporal Large Language Models (KDD 2025)
+- [[source-urbanpg]] — UrbanPG: Personalized Context + General Backbone for Urban Spatio-Temporal Learning (AAAI 2026)
+- [[source-urbanverse]] — UrbanVerse: Learning Urban Region Representation Across Cities and Tasks, cross-city/cross-task foundation model (arXiv 2026)
+- [[source-ustd]] — USTD: Unified Spatio-Temporal Diffusion for probabilistic forecasting and kriging (SIGSPATIAL 2024)
+- [[source-vetcha-2026-towards-infinite-length-extrapolation]] — Vetcha 2026: Towards Infinite Length Extrapolation - A Unified Approach
+- [[source-vicreg-variance-invariance-covariance-regularization]] — VICReg（Bardes, Ponce & LeCun，ICLR 2022）：三项防塌缩损失（不变/方差/协方差），分支独立正则带来权重、架构与模态自由度，含 BYOL/SimSiam 缓慢塌缩证据
+- [[source-videomae]] — VideoMAE: masked autoencoders are data-efficient learners for self-supervised video pre-training (NeurIPS 2022)
+- [[source-virtual-nodes]] — Virtual Nodes Improve Long-term Traffic Prediction（Zhuang et al., MIT/清华/UF，arXiv:2501.10048v1，venue 未在 PDF 内核实），将 Virtual Nodes 图改写引入 ST-GNN 长期交通预测：semi-adaptive 邻接矩阵（距离图 + MTGNN 式反对称自适应权重）缓解 over-squashing，LargeST SD 上作者报告 Semi-10 V.N. 在 12 种邻接配置中全部指标最低
+- [[source-visifold]] — VisiFold: Long-Term Traffic Forecasting via Temporal Folding Graph and Node Visibility (arXiv 2026)
+- [[source-visreg]] — VISReg（Wu, Balestriero & Levine，Altos Labs/Brown，arXiv:2606.02572v1，2026-06-01 preprint）：以 SWD sketching 替换 VICReg 协方差项的 JEPA 训练正则化；OOD 六数据集平均最高、ImageNet-22K 训练后与 10 倍数据 DINOv2 相当
+- [[source-wardropnet]] — WardropNet: COAML pipeline embedding Wardrop equilibrium as differentiable layer for traffic flow prediction, Fenchel-Young loss + perturbation regularization, ICLR 2025
+- [[source-weathergfm]] — WeatherGFM: Learning A Weather Generalist Foundation Model via In-context Learning (ICLR 2025)
+- [[source-weatherpeft]] — WeatherPEFT: Task-Adaptive Parameter-Efficient Fine-Tuning for Weather Foundation Models (ICLR 2026)
 - [[source-whatif-tsf]] — WIT: What If TSF benchmark, scenario-guided multimodal forecasting with expert-crafted plausible/counterfactual futures, 4 domains, 5,352 samples, arXiv 2026
-- [[source-gmf]] — GMF: Geometry-based Schrödinger Bridges for Trustworthy Multimodal Fusion, 潜在空间传输几何用于多模态融合可靠性评估，打破统计方法的循环依赖
-- [[source-lightweight-mixed-graph-unrolling]] — Lightweight & Interpretable Transformer via Mixed Graph Algorithm Unrolling for Traffic Forecast, ADMM 展开混合图优化为轻量级类 Transformer，ICML 2026
-- [[source-predicting-the-future-by-retrieving-the-past-aaai2026]] — PFRP: Predicting the Future by Retrieving the Past, 检索增强单变量 TSF，GMB + PCL + K-medoids + 双门控 + 动态融合，AAAI 2026
-- [[source-trace-neurips2025]] — TRACE: Grounding Time Series in Context for Multimodal Embedding and Retrieval, cross-modal TS-text retriever with CIT + CbA + dual-level hard negative mining, NeurIPS 2025
-- [[source-stationarity-aware-retrieval-augmented-forecasting-kdd26]] — SARAF: 平稳性感知检索增强预测，时间对齐 + 多样性 MMR + 自适应 Gaussian 聚合，KDD 2026
-- [[source-ts-memory-time-series-foundation-models-kdd26]] — TS-Memory: Plug-and-Play Memory for TSFMs, parametric memory distillation from offline kNN teacher → lightweight PlugMem, retrieval-free O(1) inference (KDD 2026)
-- [[source-triattention]] — TriAttention: Efficient Long Reasoning with Trigonometric KV Compression，pre-RoPE Q/K 集中 + 三角级数距离偏好做 KV cache 压缩，AIME25 同精度 2.5× 吞吐 / 10.7× KV 内存 (ICML 2026)
-- [[source-triattention-openreview]] — TriAttention 的 OpenReview 评审记录：ICML 2026 regular accept（4 评审 5/4/4/4），rebuttal 补 LongBench/RULER/LazyEviction/Ada-KV 对比
-- [[source-jitrl]] — JitRL: Just-In-Time Reinforcement Learning，免梯度测试时策略优化：非参数经验记忆检索估计优势、闭式加性规则改 logits，WebArena/Jericho 免训练方法 SOTA（NUS, ICML 2026）
+- [[source-worldts]] — WorldTS（Zhu et al., arXiv:2609.31162v1，2026-09-25）：多模态协变量直接条件化潜空间未来状态预测，两阶段训练；21 数据集上数值协变量 12/12 平均最优、Time-MMD 14/16 第一、MMSP 最低
+- [[source-xcpd]] — xCPD: graph spectral decomposition for channel-patch dependency routing (ICLR 2026)
+- [[source-yang-consistency-fm-arxiv24]] — Consistency-FM: Defining Straight Flows with Velocity Consistency, 速度一致性直线流少步 FM，LOFT $L_{CT}$ 的方法来源 (arXiv 2024 preprint, v1)
+- [[source-yang-gsli-2025]] — GSLI: Graph Structure Learning for Spatial-Temporal Imputation Adapting to Node and Feature Scales (Yang et al., AAAI 2025)
+- [[source-yarn]] — YaRN: efficient context window extension of large language models (2023)
+- [[source-zeng-2022-are-transformers-effective]] — Are Transformers Effective for Time Series Forecasting? LTSF-Linear baseline (Zeng et al., 2022)
+- [[source-zhou-informer-2021]] — Informer: Beyond Efficient Transformer for Long Sequence Time-Series Forecasting (AAAI 2021 Best Paper)
 
 ## Entities
-- [[pdformer]] — PDFormer, propagation delay-aware dynamic long-range Transformer for traffic flow prediction (AAAI 2023)
-- [[multispans]] — MultiSPANS, multi-range ST Transformer with structural-entropy-optimized spatial attention (WSDM 2024)
-- [[jingyuan-wang]] — Jingyuan Wang, Beihang BIGSCITY 团队（鹏城实验室），PDFormer 通讯作者
-- [[std-plm]] — STD-PLM, unified PLM-based ST forecasting+imputation with spatial+time dual tokenizer (AAAI 2025)
-- [[st-ssdl]] — ST-SSDL, self-supervised deviation learning framework with historical anchors + learnable prototypes + GCRU backbone (NeurIPS 2025)
-- [[bist]] — BiST, lightweight bidirectional spatio-temporal prediction with MLP backbone + residual correction (PVLDB 2025)
-- [[graphsparsenet]] — GraphSparseNet (GSNet), scalable GNN with low-dimensional compressed adjacency for large-scale traffic (PVLDB 2025)
-- [[team]] — TEAM, first framework for traffic forecasting on evolving road networks with continual learning (PVLDB 2024)
-- [[stunet]] — STUNet, explicit adjacency-patch spatial tokens + query-aggregate attention for generalizable traffic forecasting / cross-network zero-shot (KDD 2026)
-- [[st-ood]] — ST-OOD benchmark, six urban scenarios with same-calendar IN vs next-year OUT for natural temporal distribution shift (IEEE TMC 2025)
-- [[mmckm]] — MMCKM, history-free micro-macro coupled Koopman model unifying vehicle trajectory + traffic density prediction (ICLR 2026 Poster)
-- [[stbp]] — STBP, continual spatio-temporal forecasting with fixed backbone + scalable contextual pattern bank (ICLR 2026)
-- [[stpde]] — STPDE, PDE-driven ST forecasting decoupling invariant diffusion operator + environment basis manifold (ICML 2026)
-- [[stormbench]] — StormBench, 多源观测+ERA5 再分析对流临近预报基准，美法双区域 (ICML 2026)
-- [[storminsight]] — StormInsight, 环境条件化对流临近预报框架，三分量编码 + CFM 分层调制 (ICML 2026)
-- [[tcp-diffusion]] — TCP-Diffusion, 论文自称首个 DL 全球 TC 降水预测模型，ARP + 多模态编码器 + NWP 集成 (ICML 2025)
-- [[pfrp]] — PFRP, 模型无关检索增强单变量 TSF 框架，GMB + PCL + K-medoids + 双门控 + 动态融合 (AAAI 2026)
-- [[time-300b]] — Time-300B, Time-MoE 的 309B 时间点预训练数据集，9+ 领域，当时最大开放访问时序数据集合
-- [[time-moe]] — Time-MoE, 论文称首个稀疏 MoE 时序基础模型系列，decoder-only + 逐点 token 化 + 多分辨率预测，最高 2.4B 参数，ICLR 2025
-- [[trafficstream]] — TrafficStream, first CSTF framework with historical data replay + parameter smoothing (IJCAI 2021)
-- [[pecpm]] — PECPM, pattern-matching-based CSTF with expandable pattern bank without historical data replay (KDD 2023)
-- [[craft]] — CRAFT, cross-city retrieval-augmented diffusion model for zero-shot traffic flow generation (NeurIPS 2025)
-- [[ctenet]] — CTENet, ADR 架构嵌入 PINN + 欧拉连续空间，空气质量预测，NeurIPS 2025
-- [[eac]] — EAC (Expand and Compress), prompt-based CSTF with frozen STGNN backbone + continuous prompt parameter pool, ICLR 2025
-- [[e2-cstp]] — E²-CSTP, causal multi-modal ST prediction with dual-branch causal inference + GCN+Mamba (NeurIPS 2025)
-- [[causalx]] — CausalX, causally-interpretable plug-and-play multi-modal ST forecasting with multi-source causal constraints + diffusion graph refinement, ICML 2026
-- [[hifinet]] — HiFiNet, hierarchical frequency-decomposition GNN for road network representation learning (AAAI 2026)
-- [[hephestus]] — HEPHAESTUS, adaptive multi-scale MoE + periodic temporal attention + heterogeneous spatial attention for traffic forecasting (ICLR 2026, under review)
-- [[middir]] — MiDDiR, mixed channel dependency diffusion with retrieval guidance for probabilistic MTS forecasting (ICLR 2026, under review)
-- [[dpgnet]] — DPGNet, dynamic graph prediction network with plug-and-play AGL + multi-scale ASL for spatiotemporal forecasting (ICLR 2026, under review)
-- [[dynamix]] — DynaMix，首个动力系统重建（DSR）零样本基础模型，MoE + AL-RNN + STF，~10k 参数（NeurIPS 2025）
-- [[streasoner]] — STReasoner, first TS-LM for spatio-temporal reasoning (Ni et al., 2026)
-- [[rstib-mlp]] — RSTIB-MLP, information bottleneck-guided robust MLP for spatial-temporal forecasting (ICML 2025)
-- [[testam]] — TESTAM, MoE-based spatio-temporal attention model with 3 heterogeneous experts (ICLR 2024)
-- [[ssf]] — SSF, Spectral Sheaf Filtering: cellular sheaf + spectral filtering for spatio-temporal modeling (ICLR 2026 under review)
-- [[allspark]] — AllSpark, 10-modality spatio-temporal general intelligence model (Shao et al., 2024)
-- [[wardropnet]] — WardropNet, COAML pipeline combining neural network + Wardrop equilibrium layer for traffic flow prediction, ICLR 2025
-- [[sa-bcp]] — SA-BCP, state-adaptive Bayesian conformal prediction (arXiv 2026)
-- [[scale]] — SCALE, spectral conformal prediction via wavelet transform (ICML 2026)
-- [[sundial]] — Sundial，首个原生 Flow Matching 时间序列基础模型系列，TimeFlow Loss + TimeBench (ICML 2025)
-- [[timebench]] — TimeBench，Sundial 的万亿级 (1.032T) 时间序列预训练数据集
-- [[adaptive-positional-encoding]] — APE, adaptive positional encoding for infinite length extrapolation (2026)
-- [[long-tiny-stories-dataset]] — LongTinyStories, synthetic dataset for long-context evaluation (2026)
-- [[autoformer]] — Autoformer, decomposition transformer with auto-correlation (NeurIPS 2021)
-- [[cyclenet]] — CycleNet, periodicity modeling with residual cycle forecasting (NeurIPS 2024)
-- [[informer]] — Informer, efficient Transformer for LSTF with ProbSparse attention (AAAI 2021 Best Paper)
-- [[itransformer]] — iTransformer, inverted Transformer with attention on variates and FFN on time (ICLR 2024)
-- [[logtrans]] — LogTrans, first Transformer for time series forecasting with convolutional + LogSparse attention (NeurIPS 2019)
-- [[lstnet]] — LSTNet, first cross-dimension deep learning model for MTS, CNN+GRU+Skip-RNN+AR (SIGIR 2018)
-- [[mtgnn]] — MTGNN, adaptive graph learning + dilated inception for MTS forecasting (KDD 2020)
-- [[pyraformer]] — Pyraformer, multi-resolution pyramidal attention Transformer, O(L) complexity + O(1) max path (ICLR 2022 Oral)
-- [[timedit]] — TimeDiT, general-purpose diffusion transformer for time series foundation model (KDD 2025)
-- [[timemixer]] — TimeMixer, fully MLP-based multiscale mixing for long-term and short-term forecasting (ICLR 2024)
-- [[ddpm]] — DDPM, denoising diffusion probabilistic models (NeurIPS 2020)
-- [[d3vae]] — D³VAE (GCRDD), generative time series forecasting with coupled diffusion, denoising score matching, and latent disentanglement (NeurIPS 2022)
-- [[d3vae-and-gcrdd-naming]] — D³VAE vs GCRDD 命名关系
-- [[dcrnn]] — DCRNN, diffusion convolutional recurrent neural network for traffic forecasting (ICLR 2018)
-- [[deepar]] — DeepAR, global shared autoregressive LSTM probabilistic forecaster with scale handling (Amazon, arXiv:1704.04110)
-- [[deepstate]] — DeepState, RNN-parametrized linear Gaussian SSM with Kalman likelihood/prediction (NeurIPS 2018, Amazon)
-- [[dst-mamba]] — DST-Mamba, decomposed spatio-temporal Mamba for long-term traffic prediction (AAAI 2025)
-- [[diffstg]] — DiffSTG, probabilistic spatio-temporal graph forecasting with denoising diffusion (AAAI 2023)
-- [[digital-typhoon-dataset]] — Digital Typhoon, largest open-source typhoon satellite image dataset (1978-2023)
-- [[dpm-solver]] — DPM-Solver, fast ODE solver for diffusion model (NeurIPS 2022)
-- [[dyffusion]] — DYffusion, dynamics-informed diffusion model for spatiotemporal forecasting (NeurIPS 2023)
-- [[consistency-models]] — Consistency Models, one-step generation via trajectory consistency (ICML 2023)
-- [[swift]] — Swift, first autoregressive consistency model for weather forecasting, 39× acceleration (arXiv 2025)
-- [[shortcut-models]] — Shortcut Models, one-step diffusion via step-size conditioning and self-consistency (arXiv 2025)
-- [[instaflow]] — InstaFlow, reflow+distill pipeline for one-step SD text-to-image (ICLR 2024)
-- [[glow]] — Glow, normalizing flow with invertible 1x1 convolutions (NeurIPS 2018)
-- [[gpd]] — GPD, generative pre-training on diffusion for spatio-temporal few-shot learning via hypernetwork parameter generation (ICLR 2024)
-- [[gamma-net]] — GAMMA-Net, 交错式 GAT + 多轴 Mamba 时空交通预测模型 (arXiv 2026)
-- [[normalizing-flow]] — Normalizing Flow, invertible transformation based generative models
-- [[flowts]] — FlowTS，首个 rectified flow 时间序列生成模型，30 步采样 SOTA (arXiv 2025)
-- [[flow-matching]] — Flow Matching, simulation-free CNF training with OT paths (NeurIPS 2023)
-- [[optimal-transport]] — Optimal Transport, mathematical theory for probability distribution transformation
-- [[dualsformer]] — Dualformer, time-frequency dual domain learning with hierarchical frequency sampling (2026)
-- [[alibi]] — ALiBi, attention with linear biases for position extrapolation (ICLR 2022)
-- [[yarn]] — YaRN, efficient context window extension for RoPE models (2023)
-- [[roformer]] — RoFormer, Transformer with Rotary Position Embedding (Su et al., 2021/2023)
-- [[paperbench]] — PAPerBench, benchmark for privacy and personalization under long context (2026)
-- [[patchstg]] — PatchSTG, efficient large-scale traffic Transformer with leaf KDTree spatial patching + dual attention (KDD 2025)
-- [[long-context-scaling-gap]] — Long-Context Scaling Gap, fundamental limitation of LLMs under extended context (2026)
-- [[fence]] — FENCE, spatial-temporal feedback diffusion guidance for controlled traffic imputation (AAAI 2026)
-- [[fedformer]] — FEDformer, frequency enhanced decomposed transformer (ICML 2022)
-- [[fredf]] — FreDF, frequency-enhanced direct forecast training paradigm for multi-step TS (arXiv 2024)
-- [[qdf]] — QDF, quadratic direct forecast with bilevel-learned weighting matrix Σ for multi-step TS training (ICLR 2026)
-- [[grid-world-environment]] — 网格世界环境，强化学习教学示例
-- [[hyperd]] — Hybrid Periodicity Decoupling framework for traffic forecasting
-- [[conformer]] — ConFormer, conditional transformer for accident-aware traffic forecasting (KDD 2026)
-- [[tsflow]] — TSFlow，首个 CFM 时间序列预测模型，GP 先验 + OT 路径 (ICLR 2025)
-- [[math-foundation-of-reinforcement-learning]] — 《Mathematical Foundations of Reinforcement Learning》教材（Springer, 2025）
-- [[shiyu-zhao]] — 赵世钰，强化学习教材作者，西湖大学教授
-- [[s-mamba]] — S-Mamba, first Mamba-based MTSF baseline with bidirectional Mamba VC + FFN TD encoding (Neurocomputing 2024)
-- [[simdiff]] — SimDiff, end-to-end diffusion model for time series point forecasting (AAAI 2026)
-- [[siren-rope]] — SIREN-RoPE, learnable temporal rotary encoding for sequential modeling (2026)
-- [[timesnet]] — TimesNet, task-general time series foundation model (ICLR 2023)
-- [[timesfm]] — TimesFM, decoder-only foundation model for time-series forecasting (ICLR 2024)
-- [[chronos]] — Chronos, pretrained time series language model with tokenizer (ICLR 2024)
-- [[chronosx]] — ChronosX, modular past/future covariate injection for Chronos/TimesFM/MOMENT (AISTATS 2025)
-- [[time-vlm]] — Time-VLM, endogenous multimodal TS forecasting with retrieval memory + VLM (ICML 2025)
-- [[ts-vl-alignment]] — Yashwante & Yu trimodal contrastive alignment limits for TS–vision–language (arXiv:2602.19367)
-- [[constrained-text-fusion]] — CFA / constrained text fusion for multimodal TS (Lee et al., arXiv:2603.22372)
-- [[cross-modal-misalignment]] — selection/perturbation bias in MMCL; mitigate vs leverage (Cai & Liu et al., NeurIPS 2025)
-- [[probts]] — ProbTS, unified point+distributional time-series forecasting benchmark tool (NeurIPS 2024)
-- [[cora-tsfm]] — CoRA, covariate-aware adaptation framework for TSFMs with Causality Embedding and zero-initialization (ICLR 2026)
-- [[unified-covariate-adaptation]] — UniCA, unified covariate adaptation framework for TSFMs (ICLR 2026)
-- [[unica]] — UniCA entity page (alternative name)
-- [[channelmts]] — ChannelMTS, multimodal time-series framework for HSR channel prediction (KDD 2026)
-- [[igstgnn]] — IGSTGNN, incident-guided spatiotemporal graph neural network for traffic forecasting (KDD 2026)
-- [[most]] — MoST, multi-modality spatio-temporal traffic prediction foundation model (KDD 2026)
-- [[mtp]] — MTP, multimodal urban traffic profiling with modality augmentation and spectrum fusion (AAAI 2026)
-- [[metadg]] — MetaDG, meta dynamic graph for traffic flow prediction unifying dynamics and heterogeneity (AAAI 2026)
-- [[midas]] — MIDAS, 变分建模 + 互信息 minimax 解耦 + 不确定性感知融合的不完全多模态情感分析框架 (TPAMI 2026)
-- [[mindts]] — MindTS, multimodal time series anomaly detection model (ICLR 2026)
-- [[vot]] — VoT (Value of Text), multimodal time series forecasting model with event-driven reasoning (ICLR 2026)
-- [[aurora]] — Aurora, universal generative multimodal time series foundation model (ICLR 2026)
-- [[climatear]] — ClimateAR, VAR autoregressive probabilistic climate forecasting, ACC +37.56% (ICML 2026)
-- [[tats]] — TaTS (Texts as Time Series), plug-and-play multimodal TS framework (ICLR 2026)
-- [[timi]] — TiMi: LLM + MMoE 插件引导时序预测
-- [[uniextreme]] — UniExtreme, universal extreme weather forecasting foundation model (arXiv 2025)
-- [[uniflow]] — UniFlow, foundation model for unified grid+graph urban spatio-temporal flow prediction (arXiv 2024)
-- [[ragc]] — RAGC, regularized adaptive graph convolution for large-scale traffic forecasting (arXiv 2026)
-- [[rivermamba]] — RiverMamba, 首个全球 0.05° 河流流量和洪水预报 Mamba 模型，双向 SSM + 空间填充曲线 + LOAN + Hindcast-Forecast，NeurIPS 2025
-- [[visifold]] — VisiFold, temporal folding graph + node visibility for efficient long-term traffic forecasting (arXiv 2026)
-- [[rast]] — RAST, retrieval-augmented spatio-temporal forecasting framework, first RAG-for-STF (AAAI 2026)
-- [[specstg]] — SpecSTG, spectral diffusion framework for probabilistic STG traffic forecasting (arXiv 2024)
-- [[ustd]] — USTD, unified ST diffusion framework decoupling pre-trained encoder + task-specific denoisers (SIGSPATIAL 2024)
-- [[cofill]] — CoFILL, conditional diffusion model for spatiotemporal imputation (arXiv 2025)
-- [[sadi]] — SADI, self-attention diffusion model for time-series imputation in partial blackout scenarios (AAAI 2025)
-- [[urbandit]] — UrbanDiT, diffusion transformer for open-world spatiotemporal prediction with unified prompt learning (NeurIPS 2025)
-- [[urbanfm]] — UrbanFM, scaling-centric ST foundation model, WorldST (100+ cities), MiniST, minimalist Transformer (arXiv 2026)
-- [[imputeformer]] — ImputeFormer, low-rankness-induced Transformer with projected/embedded attention and Fourier sparsity loss for generalizable spatiotemporal imputation (KDD 2024)
-- [[nuwats]] — NuwaTS, PLM-based one-for-all foundation model for incomplete time series imputation, cross-variable/cross-domain generalization (arXiv 2024)
-- [[t1]] — T1, CNN-Transformer hybrid for MTS imputation with one-to-one channel-head binding, −46% MSE, robust under heavy missingness (ICLR 2026)
-- [[prdim]] — PRDIM, diffusion imputation with pattern recognizer + EM for Missing Not At Random (MNAR), multi-modal (arXiv 2026)
-- [[tabpfn-ts]] — TabPFN-TS, zero-shot imputation via Fourier features + TabPFN in-context regression; best in TMLR 2026 benchmark (NMAE 0.293) but slow
-- [[motm]] — MoTM (Mixture of TimeFlow Models), zero-shot imputation via modulated INR basis + ridge; 2nd-best, ~100× faster than TabPFN-TS
-- [[crossformer]] — Crossformer, Transformer utilizing cross-dimension dependency for MTS forecasting (ICLR 2023)
-- [[xcpd]] — xCPD, model-agnostic plugin for spectral-domain channel-patch dependency routing (ICLR 2026)
-- [[cpiri]] — CPiRi, CI+CD decoupled with channel shuffling for permutation-invariant MTSF (ICLR 2026)
-- [[phat]] — PHAT, period heterogeneity-aware Transformer, 3D bucket + PNA cross-bucket attention (ICLR 2026)
-- [[pipe]] — PIPE, physics-informed position encoding for multimodal typhoon forecasting (NeurIPS 2025)
-- [[pir]] — PIR（Post-forecasting Identification and Revision），模型无关预测后识别-修订框架，误差估计识别失败实例 + 局部/全局上下文修订（Liu et al., NeurIPS 2025, USTC）
-- [[cora-tsfm]] — CoRA, TSFM covariate adaptation with Causality Embedding + zero-init injection (ICLR 2026)
-- [[gtr]] — GTR, plug-and-play global temporal retrieval for extending temporal awareness (ICLR 2026)
-- [[lstnet]] — LSTNet, first cross-dimension MTS deep learning model, CNN+RNN+Skip-RNN+AR (SIGIR 2018)
-- [[s-mamba]] — S-Mamba, Mamba-based MTS forecasting with bidirectional VC + FFN TD encoding (Neurocomputing 2024)
-- [[timecap]] — TimeCAP, dual LLM agent contextualization + multi-modal encoder event prediction (AAAI 2025 Oral)
-- [[tedm]] — TEDM, elucidated diffusion for time series, diffusion time = physical time O(H) (ICLR 2026)
-- [[time-llm]] — Time-LLM, reprogramming frozen LLMs for time series forecasting (ICLR 2024)
-- [[timecap]] — TimeCAP, dual LLM agent + multi-modal encoder framework for time series event prediction (AAAI 2025 Oral)
-- [[timegrad]] — TimeGrad, first diffusion model for multivariate probabilistic time series forecasting (ICML 2021)
-- [[tsdiff]] — TSDiff, unconditional time-series diffusion with observation self-guidance (NeurIPS 2023)
-- [[patchtst]] — PatchTST, patch tokenization + channel independence Transformer for LSTF and self-supervised learning (ICLR 2023)
-- [[phat]] — PHAT, Period Heterogeneity-Aware Transformer with positive-negative attention and periodic bucket structure (ICLR 2026)
-- [[ltsf-linear]] — LTSF-Linear, embarrassingly simple linear baseline that outperforms Transformer LTSF models (Zeng et al., 2022)
-- [[tide]] — TiDE, residual-MLP encoder–decoder for long-term forecasting with static/dynamic covariates (Google, arXiv 2023/24)
-- [[tft]] — Temporal Fusion Transformer, interpretable multi-horizon quantile forecaster with GRN, variable selection, and interpretable multi-head attention (Google, 2020)
-- [[nbeatsx]] — NBEATSx, residual neural basis expansion with interpretable/generic exogenous stacks for EPF (IJF 2022)
-- [[edm]] — EDM, Elucidating the Design Space of Diffusion-Based Generative Models (NeurIPS 2022)
-- [[erdm]] — ERDM, EDM + 滚动扩散统一框架，渐进噪声 + 混合 3D 架构用于复杂动力学概率预测 (NeurIPS 2025)
-- [[grin]] — GRIN, first GNN-based multivariate time series imputation model with message-passing spatial decoder (ICLR 2022)
-- [[gtr]] — GTR, lightweight plug-and-play global temporal retrieval module for MTSF, extends cycle awareness beyond look-back window (ICLR 2026)
-- [[mamba]] — Mamba, selective state space model reformulated as linear attention variant (NeurIPS 2024)
-- [[manf]] — MANF, multi-scale attention + conditional RealNVP for NAR multivariate probabilistic TS forecasting (arXiv 2022/2023)
-- [[ssd-ts]] — SSD-TS, Mamba as diffusion denoising backbone with BAM+CMB for probabilistic time series imputation (KDD 2025)
-- [[mila]] — MILA, Mamba-Inspired Linear Attention model (NeurIPS 2024)
-- [[gsli]] — GSLI, multi-scale graph structure learning for spatiotemporal imputation with feature heterogeneity (AAAI 2025)
-- [[gwnet]] — GWNet, Graph WaveNet: self-adaptive adjacency matrix + dilated causal convolutions for STG forecasting (IJCAI 2019)
-- [[stgcn]] — STGCN, pure convolutional spatial-temporal graph network, "sandwich" ST-Conv Block (IJCAI 2018)
-- [[std-mae]] — STD-MAE, spatial-temporal-decoupled masked autoencoder for spatiotemporal pre-training (IJCAI-2024)
-- [[urbanpg]] — UrbanPG, prompt-backbone decoupled ST framework for large-scale prediction + few-shot + continual learning (AAAI 2026)
-- [[urbanverse]] — UrbanVerse, cross-city/cross-task urban region representation learning foundation model (arXiv 2026)
-- [[urbanmind]] — UrbanMind, multifaceted ST-LLM with Muffin-MAE and test-time adaptation for urban dynamics (KDD 2025)
 
-- [[cvpe]] — CVPE, Cross-Variate Patch Embedding for CI model enhancement (arXiv 2025)
+- [[adafre]] — AdaFre 模型页：时间分带、空间谱分组与稀疏频率路由的三段结构
+- [[adaptive-positional-encoding]] — APE, adaptive positional encoding for infinite length extrapolation (2026)
+- [[alibi]] — ALiBi, attention with linear biases for position extrapolation (ICLR 2022)
+- [[allspark]] — AllSpark, 10-modality spatio-temporal general intelligence model (Shao et al., 2024)
+- [[armd]] — ARMD, first continuous sequential diffusion TSF model; sliding-window evolution + linear distance-based devolution, unconditional, >10x faster (AAAI 2025)
+- [[aurora]] — Aurora, universal generative multimodal time series foundation model (ICLR 2026)
+- [[autoformer]] — Autoformer, decomposition transformer with auto-correlation (NeurIPS 2021)
+- [[bigst]] — BigST, linear-complexity STGNN scaling to ~100K nodes via PRF-kernel linearized spatial conv + cached long-sequence features (PVLDB 2024)
+- [[bist]] — BiST, lightweight bidirectional spatio-temporal prediction with MLP backbone + residual correction (PVLDB 2025)
+- [[causalx]] — CausalX, causally-interpretable plug-and-play multi-modal ST forecasting with multi-source causal constraints + diffusion graph refinement, ICML 2026
 - [[cbsa]] — CBSA, Contract-and-Broadcast Self-Attention (NeurIPS 2025)
 - [[cbt]] — CBT, Contract-and-Broadcast Transformer
+- [[channelmts]] — ChannelMTS, multimodal time-series framework for HSR channel prediction (KDD 2026)
+- [[chronos]] — Chronos, pretrained time series language model with tokenizer (ICLR 2024)
+- [[chronosx]] — ChronosX, modular past/future covariate injection for Chronos/TimesFM/MOMENT (AISTATS 2025)
+- [[cirt]] — CirT (Circular Transformer)，几何感知 S2S 气候预测 Transformer，圆形分块 + 傅里叶域自注意力，ICLR 2025 (HKUST + Alibaba DAMO)
+- [[climatear]] — ClimateAR, VAR autoregressive probabilistic climate forecasting, ACC +37.56% (ICML 2026)
+- [[cofill]] — CoFILL, conditional diffusion model for spatiotemporal imputation (arXiv 2025)
+- [[cogencast]] — CoGenCast，首个混合 LLM + Flow Matching 编码器-解码器时间序列预测模型，一步生成 (ICML 2026)
+- [[conformer]] — ConFormer, conditional transformer for accident-aware traffic forecasting (KDD 2026)
+- [[consistency-fm]] — Consistency-FM，速度一致性约束直线化 FM 轨迹（f 项 + α 加权速度项、EMA 目标、多段线性化），LOFT $L_{CT}$ 的方法来源 (arXiv 2024)
+- [[consistency-models]] — Consistency Models, one-step generation via trajectory consistency (ICML 2023)
+- [[constrained-text-fusion]] — CFA / constrained text fusion for multimodal TS (Lee et al., arXiv:2603.22372)
+- [[cora-correlation-aware-adapter]] — CoRA 通道相关适配器实体（≠ 协变量 [[cora-tsfm]]）
+- [[cora-tsfm]] — CoRA, covariate-aware adaptation framework for TSFMs with Causality Embedding and zero-initialization (ICLR 2026)
+- [[cpiri]] — CPiRi, CI+CD decoupled with channel shuffling for permutation-invariant MTSF (ICLR 2026)
+- [[craft]] — CRAFT, cross-city retrieval-augmented diffusion model for zero-shot traffic flow generation (NeurIPS 2025)
 - [[crate-white-box-transformer]] — CRATE, White-Box Transformer with interpretable structure
+- [[crossformer]] — Crossformer, Transformer utilizing cross-dimension dependency for MTS forecasting (ICLR 2023)
+- [[crosslinear]] — CrossLinear, Linear many-to-one exogenous forecaster with O(T) cross-correlation embedding (KDD 2025, USTC)
+- [[ctenet]] — CTENet, ADR 架构嵌入 PINN + 欧拉连续空间，空气质量预测，NeurIPS 2025
+- [[cvpe]] — CVPE, Cross-Variate Patch Embedding for CI model enhancement (arXiv 2025)
+- [[cyclenet]] — CycleNet, periodicity modeling with residual cycle forecasting (NeurIPS 2024)
+- [[dag]] — DAG，确定性外生预测框架：双相关发现—注入，gating 融合
+- [[dcrnn]] — DCRNN, diffusion convolutional recurrent neural network for traffic forecasting (ICLR 2018)
+- [[ddpm]] — DDPM, denoising diffusion probabilistic models (NeurIPS 2020)
+- [[deepar]] — DeepAR, global shared autoregressive LSTM probabilistic forecaster with scale handling (Amazon, arXiv:1704.04110)
+- [[deepstate]] — DeepState, RNN-parametrized linear Gaussian SSM with Kalman likelihood/prediction (NeurIPS 2018, Amazon)
+- [[diffstg]] — DiffSTG, probabilistic spatio-temporal graph forecasting with denoising diffusion (AAAI 2023)
+- [[diffusionblocks]] — DiffusionBlocks, principled block-wise training framework via diffusion interpretation, 3× memory reduction with competitive performance (Sakana AI, ICLR 2026)
+- [[digital-typhoon-dataset]] — Digital Typhoon, largest open-source typhoon satellite image dataset (1978-2023)
+- [[dits]] — DiTS, MM-DiT dual-stream flow matching forecaster for covariate-aware time series (arXiv 2026)
+- [[doflow]] — DoFlow, flow-based generative model on a causal DAG with per-node time-conditioned CNFs unifying observational/interventional/counterfactual forecasting + likelihood anomaly detection (ICLR 2026)
+- [[dpgnet]] — DPGNet, dynamic graph prediction network with plug-and-play AGL + multi-scale ASL for spatiotemporal forecasting (ICLR 2026, under review)
+- [[dpm-solver]] — DPM-Solver, fast ODE solver for diffusion model (NeurIPS 2022)
+- [[dst-mamba]] — DST-Mamba, decomposed spatio-temporal Mamba for long-term traffic prediction (AAAI 2025)
+- [[dualsformer]] — Dualformer, time-frequency dual domain learning with hierarchical frequency sampling (2026)
+- [[dyffusion]] — DYffusion, dynamics-informed diffusion model for spatiotemporal forecasting (NeurIPS 2023)
+- [[dynamix]] — DynaMix，首个动力系统重建（DSR）零样本基础模型，MoE + AL-RNN + STF，~10k 参数（NeurIPS 2025）
+- [[dynastar]] — DynaSTar：动量更新概率图 + 节点异质不变学习的 OOT 交通预测模型（IJCAI 2026）
+- [[e2-cstp]] — E²-CSTP, causal multi-modal ST prediction with dual-branch causal inference + GCN+Mamba (NeurIPS 2025)
+- [[eac]] — EAC (Expand and Compress), prompt-based CSTF with frozen STGNN backbone + continuous prompt parameter pool, ICLR 2025
+- [[edm]] — EDM, Elucidating the Design Space of Diffusion-Based Generative Models (NeurIPS 2022)
+- [[elf]] — ELF (Embedded Language Flows), continuous diffusion LM via Flow Matching (MIT, 2026)
+- [[fedformer]] — FEDformer, frequency enhanced decomposed transformer (ICML 2022)
+- [[flowts]] — FlowTS，首个 rectified flow 时间序列生成模型，30 步采样 SOTA (arXiv 2025)
+- [[fredf]] — FreDF, frequency-enhanced direct forecast training paradigm for multi-step TS (arXiv 2024)
+- [[freqflow-ts]] — FrèqFlow/SpectFlow, lightweight frequency-domain flow matching for time series forecasting (NeurIPS 2025)
+- [[fstllm]] — FSTLLM, LLM-augmented few-shot ST forecaster: LLM graph construction + STGNN backbone + QLoRA domain-knowledge injection, plug-and-play (ICML 2025)
+- [[fusionbench]] — FusionBench：深度模型融合统一库与基准（JMLR 2025）
+- [[gamma-net]] — GAMMA-Net, 交错式 GAT + 多轴 Mamba 时空交通预测模型 (arXiv 2026)
+- [[gcgnet]] — GCGNet, graph-consistent generative network for exogenous TS forecasting (ICLR 2026, ECNU)
+- [[giflow]] — GiFlow，图信息先验流匹配时空插补，推理时间远低于扩散基线 PriSTI（作者报告：Air-36 0.28 vs 9.30 min）(ICML 2026)
+- [[glow]] — Glow, normalizing flow with invertible 1x1 convolutions (NeurIPS 2018)
+- [[gmf]] — GMF, geometry-based multimodal fusion framework using SB/rectified flow transport costs for reliability assessment
+- [[gpd]] — GPD, generative pre-training on diffusion for spatio-temporal few-shot learning via hypernetwork parameter generation (ICLR 2024)
+- [[graphsparsenet]] — GraphSparseNet (GSNet), scalable GNN with low-dimensional compressed adjacency for large-scale traffic (PVLDB 2025)
+- [[grid-world-environment]] — 网格世界环境，强化学习教学示例
+- [[grin]] — GRIN, first GNN-based multivariate time series imputation model with message-passing spatial decoder (ICLR 2022)
+- [[gsli]] — GSLI, multi-scale graph structure learning for spatiotemporal imputation with feature heterogeneity (AAAI 2025)
+- [[gtr]] — GTR, lightweight plug-and-play global temporal retrieval module for MTSF, extends cycle awareness beyond look-back window (ICLR 2026)
+- [[hephestus]] — HEPHAESTUS, adaptive multi-scale MoE + periodic temporal attention + heterogeneous spatial attention for traffic forecasting (ICLR 2026, under review)
+- [[hifinet]] — HiFiNet, hierarchical frequency-decomposition GNN for road network representation learning (AAAI 2026)
+- [[hyperd]] — Hybrid Periodicity Decoupling framework for traffic forecasting
+- [[igstgnn]] — IGSTGNN, incident-guided spatiotemporal graph neural network for traffic forecasting (KDD 2026)
+- [[imputeformer]] — ImputeFormer, low-rankness-induced Transformer with projected/embedded attention and Fourier sparsity loss for generalizable spatiotemporal imputation (KDD 2024)
+- [[informer]] — Informer, efficient Transformer for LSTF with ProbSparse attention (AAAI 2021 Best Paper)
+- [[itransformer]] — iTransformer, inverted Transformer with attention on variates and FFN on time (ICLR 2024)
+- [[jingyuan-wang]] — Jingyuan Wang, Beihang BIGSCITY 团队（鹏城实验室），PDFormer 通讯作者
+- [[jit]] — JiT (Just image Transformers), x-prediction pixel-space diffusion on plain ViT (Li & He, MIT, 2025)
+- [[jitrl]] — JitRL，免训练 LLM agent 持续学习框架：非参数记忆 + 检索价值估计 + KL 约束闭式 logit 更新 (ICML 2026, NUS)
+- [[jiutian-platform]] — Jiutian Platform, China Mobile's AI platform for network simulation and optimization, hosts UoMo
+- [[k2vae]] — K²VAE, VAE-based one-step generative model linearizing TS via KoopmanNet + refining uncertainty via KalmanNet for long-term probabilistic forecasting (ICML 2025)
+- [[kite]] — KITE，外生条件概率时序预测框架：历史条件流形源 + 知识引导条件化 + CFG
+- [[lagllm]] — LagLLM，论文自称首个显式建模 lead–lag 依赖的 LLM 时空预测框架：HLLG 图构建 + STS token 排序 + GPT-2 微调 (ICML 2026)
 - [[latent-diffusion-models]] — Latent Diffusion Models (LDM), diffusion in latent space (CVPR 2022)
+- [[loft]] — LOFT，低秩信息先验 + 轨迹一致性 CFM 交通插补，2 NFE 推理超越 50 NFE 扩散基线 (KDD 2026)
+- [[loft-llm]] — LoFT-LLM, 低频频域学习 + LLM 语义校准的三阶段时序预测流水线 (KDD 2026)
+- [[logtrans]] — LogTrans, first Transformer for time series forecasting with convolutional + LogSparse attention (NeurIPS 2019)
+- [[long-context-scaling-gap]] — Long-Context Scaling Gap, fundamental limitation of LLMs under extended context (2026)
+- [[long-tiny-stories-dataset]] — LongTinyStories, synthetic dataset for long-context evaluation (2026)
+- [[lstnet]] — LSTNet, first cross-dimension deep learning model for MTS, CNN+GRU+Skip-RNN+AR (SIGIR 2018)
+- [[ltsf-linear]] — LTSF-Linear, embarrassingly simple linear baseline that outperforms Transformer LTSF models (Zeng et al., 2022)
+- [[mage]] — MAGE, Mixture of Adaptive Graph Experts, linear complexity adaptive graph learning for ST forecasting, NeurIPS 2025 (USTC)
+- [[maginet]] — MagiNet, mask-aware graph imputation network replacing pre-filling with learnable missing encoding + mask-weighted Chebyshev graph convolution (arXiv 2024)
+- [[mamba]] — Mamba, selective state space model reformulated as linear attention variant (NeurIPS 2024)
+- [[manf]] — MANF, multi-scale attention + conditional RealNVP for NAR multivariate probabilistic TS forecasting (arXiv 2022/2023)
+- [[math-foundation-of-reinforcement-learning]] — 《Mathematical Foundations of Reinforcement Learning》教材（Springer, 2025）
+- [[mcgvae]] — McgVAE, first road-lane joint modeling VAE for fine-grained traffic prediction, CIKM 2024
+- [[metadg]] — MetaDG, meta dynamic graph for traffic flow prediction unifying dynamics and heterogeneity (AAAI 2026)
+- [[metnet]] — MetNet 系列（Google），SOTA 概率降水预报模型（1/2/3），交叉熵 + 时效条件化 + 227M 参数，仅限美国
+- [[midas]] — MIDAS, 变分建模 + 互信息 minimax 解耦 + 不确定性感知融合的不完全多模态情感分析框架 (TPAMI 2026)
+- [[middir]] — MiDDiR, mixed channel dependency diffusion with retrieval guidance for probabilistic MTS forecasting (ICLR 2026, under review)
+- [[mila]] — MILA, Mamba-Inspired Linear Attention model (NeurIPS 2024)
+- [[mindts]] — MindTS, multimodal time series anomaly detection model (ICLR 2026)
+- [[minitraffic]] — MiniTraffic, first lightweight (~119K) pre-trained model for fine-grained (road+lane) traffic prediction, ICML 2026
+- [[mmckm]] — MMCKM, history-free micro-macro coupled Koopman model unifying vehicle trajectory + traffic density prediction (ICLR 2026 Poster)
+- [[moirai-moe]] — Moirai-MoE, 首个稀疏 MoE 时间序列基础模型，token 级专业化 + cluster-based gating，超越 Moirai/Chronos/Time-MoE，ICML 2025（Salesforce）
+- [[most]] — MoST, multi-modality spatio-temporal traffic prediction foundation model (KDD 2026)
+- [[motm]] — MoTM (Mixture of TimeFlow Models), zero-shot imputation via modulated INR basis + ridge; 2nd-best, ~100× faster than TabPFN-TS
+- [[mtgnn]] — MTGNN, adaptive graph learning + dilated inception for MTS forecasting (KDD 2020)
+- [[mtp]] — MTP, multimodal urban traffic profiling with modality augmentation and spectrum fusion (AAAI 2026)
+- [[multimodal-large-language-model]] — MLLM, 多模态大语言模型的标准三段式架构与空间推理增强策略 (Zheng et al., 2025)
+- [[muon-optimizer]] — Muon, neural network optimizer using Newton-Schulz orthogonalization (2024)
+- [[nbeatsx]] — NBEATSx, residual neural basis expansion with interpretable/generic exogenous stacks for EPF (IJF 2022)
 - [[ncsn]] — NCSN, Noise Conditional Score Networks (Song & Ermon, 2020)
-- [[nsdiff]] — NsDiff, non-stationary diffusion with LSNM+UANS for probabilistic TS forecasting (ICML 2025 Spotlight)
-- [[stats]] — StaTS, spectral trajectory schedule learning + frequency guided denoiser for diffusion TS forecasting (arXiv 2026)
 - [[neural-ordinary-differential-equation]] — Neural ODE, continuous-depth neural networks (NeurIPS 2018)
+- [[nsdiff]] — NsDiff, non-stationary diffusion with LSNM+UANS for probabilistic TS forecasting (ICML 2025 Spotlight)
+- [[nuwats]] — NuwaTS, PLM-based one-for-all foundation model for incomplete time series imputation, cross-variable/cross-domain generalization (arXiv 2024)
+- [[omnicast]] — OmniCast，掩码潜扩散天气预测模型，VAE + 掩码生成 Transformer + 扩散头，S2S SOTA，NeurIPS 2025 (UCLA/Argonne)
+- [[omnifield]] — OmniField, encoder-processor-decoder CNF unifying reconstruction/interpolation/forecasting/cross-modal prediction, ICLR 2026
+- [[paperbench]] — PAPerBench, benchmark for privacy and personalization under long context (2026)
+- [[past]] — PAST, primary-auxiliary spatio-temporal network for traffic imputation, GIM+CGM dual-module architecture (PVLDB, SJTU, 2025)
+- [[patchstg]] — PatchSTG, efficient large-scale traffic Transformer with leaf KDTree spatial patching + dual attention (KDD 2025)
+- [[patchtst]] — PatchTST, patch tokenization + channel independence Transformer for LSTF and self-supervised learning (ICLR 2023)
+- [[pecpm]] — PECPM, pattern-matching-based CSTF with expandable pattern bank without historical data replay (KDD 2023)
+- [[pfrp]] — PFRP, 模型无关检索增强单变量 TSF 框架，GMB + PCL + K-medoids + 双门控 + 动态融合 (AAAI 2026)
+- [[phat]] — PHAT, Period Heterogeneity-Aware Transformer with positive-negative attention and periodic bucket structure (ICLR 2026)
+- [[pipe]] — PIPE, physics-informed position encoding for multimodal typhoon forecasting (NeurIPS 2025)
+- [[pir]] — PIR（Post-forecasting Identification and Revision），模型无关预测后识别-修订框架，误差估计识别失败实例 + 局部/全局上下文修订（Liu et al., NeurIPS 2025, USTC）
+- [[pn-train]] — PN-Train, neuron-level training method with perturbation-based pattern neuron detection + fine-tuning for UTSMs (ICLR 2025)
+- [[prdim]] — PRDIM, diffusion imputation with pattern recognizer + EM for Missing Not At Random (MNAR), multi-modal (arXiv 2026)
+- [[probts]] — ProbTS, unified point+distributional time-series forecasting benchmark tool (NeurIPS 2024)
+- [[pypots]] — PyPOTS，部分观测时序端到端建模工具箱（综述统计含 37 个插补模型）与 TSI-Bench 基准生态（172 数据集、28 算法、34,804 实验）(KDD 2023 workshop / MTSI 综述 §6)
+- [[pyraformer]] — Pyraformer, multi-resolution pyramidal attention Transformer, O(L) complexity + O(1) max path (ICLR 2022 Oral)
+- [[qdf]] — QDF, quadratic direct forecast with bilevel-learned weighting matrix Σ for multi-step TS training (ICLR 2026)
 - [[quest-attention]] — QUEST Attention, efficient long-range attention via token clustering
+- [[ragc]] — RAGC, regularized adaptive graph convolution for large-scale traffic forecasting (arXiv 2026)
+- [[rainpro]] — RainPro 系列，高效多源融合概率降水预报（RainPro-8/8R/2R），有序一致性损失 + 单次预测，ICLR 2026
+- [[rast]] — RAST, retrieval-augmented spatio-temporal forecasting framework, first RAG-for-STF (AAAI 2026)
+- [[ratd]] — RATD, first retrieval-augmented time series diffusion model; embedding-based k-NN retrieval + Reference Modulated Attention (RMA) guides denoising (NeurIPS 2024)
+- [[ripcn]] — RIPCN：阻抗演化 + 时空主成分网络的概率交通流预测模型（KDD 2026）
+- [[rivermamba]] — RiverMamba, 首个全球 0.05° 河流流量和洪水预报 Mamba 模型，双向 SSM + 空间填充曲线 + LOAN + Hindcast-Forecast，NeurIPS 2025
+- [[roformer]] — RoFormer, Transformer with Rotary Position Embedding (Su et al., 2021/2023)
+- [[rstib-mlp]] — RSTIB-MLP, information bottleneck-guided robust MLP for spatial-temporal forecasting (ICML 2025)
+- [[s-mamba]] — S-Mamba, first Mamba-based MTSF baseline with bidirectional Mamba VC + FFN TD encoding (Neurocomputing 2024)
+- [[s2dbm]] — S²DBM, Brownian-bridge diffusion model pinning both endpoints (y0 and prior h) to reduce reverse-process stochasticity for point/probabilistic TS forecasting (arXiv 2024)
+- [[sa-bcp]] — SA-BCP, state-adaptive Bayesian conformal prediction (arXiv 2026)
+- [[sadi]] — SADI, self-attention diffusion model for time-series imputation in partial blackout scenarios (AAAI 2025)
+- [[saraf]] — SARAF, stationarity-aware retrieval-augmented forecasting with time-aligned enhancement + diversity MMR + adaptive Gaussian aggregation (KDD 2026)
+- [[scale]] — SCALE, spectral conformal prediction via wavelet transform (ICML 2026)
 - [[score-based-sde]] — Score-Based SDE, unified SMLD+DDPM framework (ICLR 2021)
+- [[shiyu-zhao]] — 赵世钰，强化学习教材作者，西湖大学教授
+- [[sifusion]] — SIFusion，统一多粒度北极海冰预测 Transformer，Swin V2 + granularity variate attention (NeurIPS 2025)
+- [[simdiff]] — SimDiff, end-to-end diffusion model for time series point forecasting (AAAI 2026)
+- [[siren-rope]] — SIREN-RoPE, learnable temporal rotary encoding for sequential modeling (2026)
 - [[sparsetsf]] — SparseTSF, lightweight LTSF with <1k parameters (TPAMI 2026)
+- [[specstg]] — SpecSTG, spectral diffusion framework for probabilistic STG traffic forecasting (arXiv 2024)
+- [[srsnet]] — SRSNet, SRS + MLP for long-term MTS forecasting via adaptive patch representation spaces (NeurIPS 2025, ECNU)
+- [[ssd-ts]] — SSD-TS, Mamba as diffusion denoising backbone with BAM+CMB for probabilistic time series imputation (KDD 2025)
+- [[ssf]] — SSF, Spectral Sheaf Filtering: cellular sheaf + spectral filtering for spatio-temporal modeling (ICLR 2026 under review)
+- [[st-ood]] — ST-OOD benchmark, six urban scenarios with same-calendar IN vs next-year OUT for natural temporal distribution shift (IEEE TMC 2025)
+- [[st-ssdl]] — ST-SSDL, self-supervised deviation learning framework with historical anchors + learnable prototypes + GCRU backbone (NeurIPS 2025)
+- [[st-ttc]] — ST-TTC, inference-time test-time computing for STF via plug-and-play spectral calibrator on a frozen backbone (NeurIPS 2025 Spotlight)
+- [[st-vision-llm]] — ST-Vision-LLM, vision-language fusion framework rendering 2D traffic grids as images for a Vision-LLM with single-token numerical encoding + SFT/GRPO (arXiv 2025)
+- [[staeformer]] — STAEFormer, previous SOTA transformer for traffic forecasting
+- [[stamimputer]] — STAMImputer, outer-layer MoE with temporal (MSAT) + spatial (LrSGAT) attention experts + observation-expert routing for traffic data imputation under block missing (arXiv 2025)
+- [[stats]] — StaTS, spectral trajectory schedule learning + frequency guided denoiser for diffusion TS forecasting (arXiv 2026)
+- [[stbp]] — STBP, continual spatio-temporal forecasting with fixed backbone + scalable contextual pattern bank (ICLR 2026)
+- [[std-plm]] — STD-PLM, unified PLM-based ST forecasting+imputation with spatial+time dual tokenizer (AAAI 2025)
+- [[stgformer]] — STGformer，单层图传播 × 统一时空线性注意力的高效交通 Transformer，效率锚点与同图跨年泛化证据 (arXiv 2024)
+- [[stid]] — STID，仅用时空身份嵌入的轻量基线，常作效率参照、prompt 来源或频率分支 backbone
+- [[stop]] — STOP (Spatio-Temporal OOD Processor), centralized ConAU messaging + GenPU perturbation + DRO for OOD traffic forecasting, +17.01% (ICML 2025)
+- [[stormbench]] — StormBench, 多源观测+ERA5 再分析对流临近预报基准，美法双区域 (ICML 2026)
+- [[storminsight]] — StormInsight, 环境条件化对流临近预报框架，三分量编码 + CFM 分层调制 (ICML 2026)
+- [[stpde]] — STPDE, PDE-driven ST forecasting decoupling invariant diffusion operator + environment basis manifold (ICML 2026)
+- [[streasoner]] — STReasoner, first TS-LM for spatio-temporal reasoning (Ni et al., 2026)
+- [[stunet]] — STUNet, explicit adjacency-patch spatial tokens + query-aggregate attention for generalizable traffic forecasting / cross-network zero-shot (KDD 2026)
+- [[subfactor-planar-algebra]] — 子因子平面代数，II₁ 子因子标准不变量的公理化，与 unitary 2×2 multitensor category 等价
+- [[sundial]] — Sundial，首个原生 Flow Matching 时间序列基础模型系列，TimeFlow Loss + TimeBench (ICML 2025)
+- [[swift]] — Swift, first autoregressive consistency model for weather forecasting, 39× acceleration (arXiv 2025)
+- [[t1]] — T1, CNN-Transformer hybrid for MTS imputation with one-to-one channel-head binding, −46% MSE, robust under heavy missingness (ICLR 2026)
+- [[tabpfn-ts]] — TabPFN-TS, zero-shot imputation via Fourier features + TabPFN in-context regression; best in TMLR 2026 benchmark (NMAE 0.293) but slow
+- [[tats]] — TaTS (Texts as Time Series), plug-and-play multimodal TS framework (ICLR 2026)
+- [[tcp-diffusion]] — TCP-Diffusion, 论文自称首个 DL 全球 TC 降水预测模型，ARP + 多模态编码器 + NWP 集成 (ICML 2025)
+- [[team]] — TEAM, first framework for traffic forecasting on evolving road networks with continual learning (PVLDB 2024)
 - [[tedm]] — TEDM, diffusion time = physical time, O(H) sampling, empirical noise/scale schedules (ICLR 2026)
+- [[tess]] — TESS 实体：离散时序原语 + 置信门控 + prefix 条件化 PatchTST（ICLR 2026）
+- [[testam]] — TESTAM, MoE-based spatio-temporal attention model with 3 heterogeneous experts (ICLR 2024)
+- [[tft]] — Temporal Fusion Transformer, interpretable multi-horizon quantile forecaster with GRN, variable selection, and interpretable multi-head attention (Google, 2020)
+- [[tg-msfm]] — TG-MSFM, 确定性 flow matching 多元时间序列插补：结构化端点 + gap-only supervision + 时间门控多尺度速度 + Heun+DC (ICLR 2026)
+- [[tide]] — TiDE, residual-MLP encoder–decoder for long-term forecasting with static/dynamic covariates (Google, arXiv 2023/24)
+- [[time-300b]] — Time-300B, Time-MoE 的 309B 时间点预训练数据集，9+ 领域，当时最大开放访问时序数据集合
+- [[time-llm]] — Time-LLM, reprogramming frozen LLMs for time series forecasting (ICLR 2024)
+- [[time-mmd]] — Time-MMD 实体：9 域数值–文本数据集 + MM-TSFlib（NeurIPS 2024 D&B）
+- [[time-moe]] — Time-MoE, 论文称首个稀疏 MoE 时序基础模型系列，decoder-only + 逐点 token 化 + 多分辨率预测，最高 2.4B 参数，ICLR 2025
+- [[time-vlm]] — Time-VLM, endogenous multimodal TS forecasting with retrieval memory + VLM (ICML 2025)
+- [[timebench]] — TimeBench，Sundial 的万亿级 (1.032T) 时间序列预训练数据集
+- [[timecap]] — TimeCAP, dual LLM agent + multi-modal encoder framework for time series event prediction (AAAI 2025 Oral)
+- [[timedit]] — TimeDiT, general-purpose diffusion transformer for time series foundation model (KDD 2025)
+- [[timegrad]] — TimeGrad, first diffusion model for multivariate probabilistic time series forecasting (ICML 2021)
+- [[timemixer]] — TimeMixer, fully MLP-based multiscale mixing for long-term and short-term forecasting (ICLR 2024)
+- [[timesfm]] — TimesFM, decoder-only foundation model for time-series forecasting (ICLR 2024)
+- [[timesnet]] — TimesNet, task-general time series foundation model (ICLR 2023)
+- [[timi]] — TiMi: LLM + MMoE 插件引导时序预测
 - [[tips]] — TIPS, Transformer with Inductive Prior Synthesis for financial forecasting
 - [[tqn]] — TQNet, Temporal Query Network for efficient multivariate forecasting (ICML 2025)
-- [[tslib]] — TSLib, open-source time series library and benchmark
-- [[gmf]] — GMF, geometry-based multimodal fusion framework using SB/rectified flow transport costs for reliability assessment
-
-## Entities
-- [[lscd]] — LSCD, Lomb–Scargle conditioned diffusion for time series imputation (ICML 2025)
-
-## Entities (continued)
-- [[freqflow-ts]] — FrèqFlow/SpectFlow, lightweight frequency-domain flow matching for time series forecasting (NeurIPS 2025)
-- [[loft-llm]] — LoFT-LLM, 低频频域学习 + LLM 语义校准的三阶段时序预测流水线 (KDD 2026)
-- [[saraf]] — SARAF, stationarity-aware retrieval-augmented forecasting with time-aligned enhancement + diversity MMR + adaptive Gaussian aggregation (KDD 2026)
+- [[trace]] — TRACE, first multimodal time-series retriever with channel-level alignment + dual-level hard negative mining (NeurIPS 2025)
+- [[trafficstream]] — TrafficStream, first CSTF framework with historical data replay + parameter smoothing (IJCAI 2021)
+- [[trajar]] — TrajAR：路口多道路使用者轨迹预测，IJCAI-26；多尺度自回归解码 + 动态感知编码器（Motion MoE + GAT + 高斯核边权），四个 SinD/InD 数据集 ADE/FDE 均最低；表 1/2 Imp 行以本方法为分母（摘要 23.8% 同口径为 23.9%，基线分母为 19.1%）
 - [[triattention]] — TriAttention，training-free KV cache 压缩：用 pre-RoPE Q/K 中心经三角级数距离偏好估计 key 重要性 (ICML 2026)
-- [[jitrl]] — JitRL，免训练 LLM agent 持续学习框架：非参数记忆 + 检索价值估计 + KL 约束闭式 logit 更新 (ICML 2026, NUS)
+- [[ts-memory]] — TS-Memory, plug-and-play memory adapter for frozen TSFMs, parametric memory distillation from offline kNN teacher, retrieval-free O(1) inference (KDD 2026)
+- [[ts-vl-alignment]] — Yashwante & Yu trimodal contrastive alignment limits for TS–vision–language (arXiv:2602.19367)
+- [[tsdiff]] — TSDiff, unconditional time-series diffusion with observation self-guidance (NeurIPS 2023)
+- [[tsflow]] — TSFlow，首个 CFM 时间序列预测模型，GP 先验 + OT 路径 (ICLR 2025)
+- [[tslib]] — TSLib, open-source time series library and benchmark
+- [[unica]] — UniCA entity page (alternative name)
+- [[uniextreme]] — UniExtreme, universal extreme weather forecasting foundation model (arXiv 2025)
+- [[uomo]] — UoMo, first universal model for mobile traffic forecasting, diffusion+transformer, deployed at China Mobile (KDD 2025)
+- [[urbandit]] — UrbanDiT, diffusion transformer for open-world spatiotemporal prediction with unified prompt learning (NeurIPS 2025)
+- [[urbanfm]] — UrbanFM, scaling-centric ST foundation model, WorldST (100+ cities), MiniST, minimalist Transformer (arXiv 2026)
+- [[ustd]] — USTD, unified ST diffusion framework decoupling pre-trained encoder + task-specific denoisers (SIGSPATIAL 2024)
+- [[visifold]] — VisiFold, temporal folding graph + node visibility for efficient long-term traffic forecasting (arXiv 2026)
+- [[vot]] — VoT (Value of Text), multimodal time series forecasting model with event-driven reasoning (ICLR 2026)
+- [[wardropnet]] — WardropNet, COAML pipeline combining neural network + Wardrop equilibrium layer for traffic flow prediction, ICLR 2025
+- [[weathergfm]] — WeatherGFM, paper-proposed first weather generalist foundation model unifying 10+ weather understanding tasks via visual in-context learning on a plain ViT (ICLR 2025)
+- [[weatherpeft]] — WeatherPEFT，论文自称首个 WFM 参数高效微调框架，TADP + SFAS 双阶段任务自适应（ICLR 2026）
+- [[worldts]] — WorldTS：多模态协变量条件化的潜空间未来状态预测框架，两阶段训练（arXiv:2609.31162）
+- [[xcpd]] — xCPD, model-agnostic plugin for spectral-domain channel-patch dependency routing (ICLR 2026)
+- [[yarn]] — YaRN, efficient context window extension for RoPE models (2023)
+- [[zeus]] — Zeus，unified tuning-free TSFM，point tokenization + U 形多尺度 encoder + MOTM，五任务零微调（ICML 2026）
 
 ## Concepts
-- [[structural-entropy]] — 结构熵与编码树，图的层次化社区抽象与最优编码（Li & Pan 2016 理论；MultiSPANS 自述首次用于优化空间注意力）
-- [[test-time-policy-optimization]] — 测试时策略优化：不更新参数、于部署阶段持续改进 LLM agent 策略的方法类（梯度 RL / ICL / logit 调制三路线）
-- [[non-parametric-policy-memory]] — 非参数策略记忆：把经验记忆当作策略分布本身，检索回报均值直接充当价值/优势估计 (JitRL, ICML 2026)
-- [[kl-regularized-policy-optimization]] — KL 约束策略优化：max E[A] − (1/β)KL 的闭式解 π* ∝ π_ref·exp(βA)，WebRL 与 JitRL 的共同目标形式
-- [[kv-cache-compression]] — KV cache 压缩：固定预算下的 KV 重要性估计问题与 post-RoPE 方法谱系（启发式/注意力/范数）
-- [[qk-concentration]] — Q/K 集中，pre-RoPE Q/K 向量集中于固定非零中心、跨位置/内容/域稳定 (TriAttention, ICML 2026)
-- [[attention-distance-preference]] — 注意力距离偏好：Q/K 集中时注意力 logit 近似为 Q-K 距离的三角级数，偏好可由中心预测
-- [[attention-sink]] — attention sink，初始 token 获得不成比例高注意力的现象（转引自 TriAttention related work）
-- [[dataset-stationarity-estimation]] — 基于矩统计量的数据集级平稳性估计，滑动窗口局部统计量跨窗口变异，O(NLC) 复杂度 (SARAF, KDD 2026)
-- [[stationarity-aware-retrieval]] — 平稳性感知检索，根据数据集平稳性自适应调节检索多样性和聚合锐度 (SARAF, KDD 2026)
-- [[combinatorial-optimization-augmented-machine-learning]] — COAML, hybrid ML-CO pipeline paradigm embedding combinatorial optimization as differentiable neural network layer
-- [[wardrop-equilibrium]] — generalized Wardrop equilibrium with non-decomposable latency functions, convex characterization via potential functions
-- [[vehicle-centric-graph-traffic-pde]] — Lagrangian discretization of LWR traffic PDE on dynamic vehicle graphs with skew-symmetric advection + PSD diffusion (ICLR 2026)
-- [[micro-macro-coupled-koopman-modeling]] — unified history-free Koopman operator framework for joint macro flow + micro vehicle prediction (ICLR 2026)
-- [[rstib]] — Robust Spatial-Temporal Information Bottleneck, IB generalization for dual-noise STF (ICML 2025)
-- [[retrieval-augmented-spatio-temporal-forecasting]] — RAG-for-STF 范式，通过外部记忆扩展模型容量以捕获复杂时空依赖 (AAAI 2026)
-- [[generative-time-series-forecasting]] — 生成式时间序列预测，通过概率建模实现不确定性量化的预测范式
-- [[deep-state-space-model]] — 深度状态空间模型：用神经网络参数化/扩展经典线性 SSM（DeepState 等）
-- [[timeflow-loss]] — TimeFlow Loss，Sundial 基于 Flow Matching 的生成式训练目标 (ICML 2025)
-- [[conformal-prediction]] — 共形预测，与模型无关的不确定性量化框架
-- [[crps]] — Continuous Ranked Probability Score，严格合适评分规则，衡量预测 CDF 与观测的 $L^2$ 距离
-- [[spatio-temporal-decoupling]] — 时空解耦在在线共形预测中的最优权衡
-- [[spatio-temporal-decomposition]] — 时空分解，将时空序列分解为趋势+季节成分分治建模 (DST-Mamba, AAAI 2025)
-- [[spatiotemporal-deviation]] — 时空偏差，输入与历史/标签的不一致现象 (BiST PVLDB 2025; ST-SSDL NeurIPS 2025)
-- [[relative-distance-consistency]] — 相对距离一致性，物理空间距离序关系在潜在空间的保持 (ST-SSDL, NeurIPS 2025)
-- [[bidirectional-spatiotemporal-prediction]] — 双向时空预测，前向基预测+后向残差校正的学习范式 (BiST, PVLDB 2025)
-- [[low-dimensional-graph-adjacency]] — 低维图邻接建模，将 N×N 邻接矩阵的学习迁移到 C×C 压缩空间 (GSNet, PVLDB 2025)
-- [[evolving-rn-traffic-forecasting]] — 演化道路网络交通预测，拓扑持续变化下的增量预测问题 (TEAM, PVLDB 2024)
-- [[spectral-graph-conditional-exchangeability]] — SGCE，谱图条件可交换性 (ICML 2026)
-- [[backdoor-adjustment]] — Pearl 后门调整，条件于混杂变量以消除虚假因果路径的 do-calculus 技术
-- [[bayesian-conformal-prediction]] — Bayesian 共形预测，时间折扣历史权重
+
+- [[accident-aware-traffic-forecasting]] — modeling disruptive impact of accidents on traffic prediction
+- [[action-value-function]] — 动作值函数 q(s,a) 及其与状态值关系
 - [[adaptive-conformal-inference]] — ACI，在线误差反馈驱动的共形预测
 - [[advection-diffusion-reaction-equation]] — ADR 方程，平流-扩散-反应 PDE，CTM 的数学基础
 - [[air-quality-forecasting]] — 空气质量预测，从物理模型到 PINN 的建模方法演进
-- [[heterogeneous-covariates]] — classification and multimodal covariates that differ from target time series (ICLR 2026)
+- [[algorithm-unrolling]] — algorithm unrolling, converting iterative optimization into neural network layers
+- [[ar-vs-nar-decoding]] — AR vs NAR multi-step decoding schemes and their horizon/seasonality trade-offs (ProbTS)
+- [[arctic-amplification]] — 北极放大效应，北极升温速度 2-4 倍于全球平均的气候现象
+- [[arma-inspired-diffusion]] — ARMA-Inspired Diffusion, using ARMA theory (AR + MA) as the design principle for continuous-sequential diffusion forecasting (AAAI 2025)
+- [[attention-distance-preference]] — 注意力距离偏好：Q/K 集中时注意力 logit 近似为 Q-K 距离的三角级数，偏好可由中心预测
+- [[attention-sink]] — attention sink，初始 token 获得不成比例高注意力的现象（转引自 TriAttention related work）
+- [[autocorrelation-bias]] — MSE 作为时序预测学习目标时的自相关偏差，源于标签序列的条件自相关被忽略 (DistDF, ICLR 2026; 问题由 FreDF 先系统提出)
+- [[autonomous-agent-architecture]] — LeCun 2022 的可配置认知架构：configurator/perception/world model/cost/short-term memory/actor 六模块全可微，configurator 调制参数与连接图
+- [[autoregressive-consistency-models]] — 自回归一致性模型，将单步 CM 扩展到序列自回归预测 (arXiv 2025)
+- [[backdoor-adjustment]] — Pearl 后门调整，条件于混杂变量以消除虚假因果路径的 do-calculus 技术
+- [[bayesian-conformal-prediction]] — Bayesian 共形预测，时间折扣历史权重
+- [[bidirectional-spatiotemporal-prediction]] — 双向时空预测，前向基预测+后向残差校正的学习范式 (BiST, PVLDB 2025)
+- [[birkhoff-polytope]] — $n \times n$ 双随机矩阵构成的 Birkhoff 多面体，mHC 的残差映射流形
+- [[block-wise-training]] — 块级训练，将网络分割为独立可训练组件以减少内存消耗的训练范式 (ICLR 2026)
+- [[branched-schrodinger-bridge]] — 分支 SB，处理多模态终端分布的轨迹分叉模型
+- [[causal-time-series-forecasting]] — 因果时间序列预测，超越观测的干预与反事实查询范式 (ICLR 2026)
+- [[cellular-sheaf]] — 胞腔层 (Cellular Sheaf)，代数拓扑中为图节点和边赋予向量空间与限制映射的结构 (ICLR 2026 under review)
+- [[chronological-textual-resonance]] — CTR，时间序列配对文本与数值序列的周期性共振现象 (ICLR 2026)
+- [[chronorag-base]] — ChronoRAG Base, hierarchical tree-structured TS database for RAG-augmented zero-shot forecasting (WWW 2026)
+- [[circular-dependency-in-multimodal-fusion]] — 多模态融合中的循环依赖问题：依赖分类器置信度检测错误形成自我指涉
+- [[coding-rate]] — Coding Rate, information-theoretic measure for data distribution compactness
+- [[combinatorial-optimization-augmented-machine-learning]] — COAML, hybrid ML-CO pipeline paradigm embedding combinatorial optimization as differentiable neural network layer
+- [[conditional-state-update]] — 条件状态更新：残差映射计数与条件先后顺序的最坏情况内存差；完整构造、证明及 KV cache 适用范围
+- [[conformal-prediction]] — 共形预测，与模型无关的不确定性量化框架
+- [[context-window-extension]] — extending inference context beyond pretraining length for LLMs
+- [[continual-spatio-temporal-forecasting]] — CSTF, incremental learning on streaming evolving ST graphs without catastrophic forgetting (ICLR 2026)
+- [[continuous-diffusion-language-model]] — 连续扩散语言模型，在连续 embedding/simplex/latent 空间中做 diffusion 的语言模型类别
+- [[continuous-normalizing-flow]] — 连续归一化流 (CNF)，基于 Neural ODE 的可逆生成模型
+- [[contraction-mapping-theorem]] — 最优性算子收敛分析的数学基础
+- [[cross-city-traffic-flow-generation]] — 跨城市交通流生成，无需目标城市历史数据的零样本流量合成 (NeurIPS 2025)
 - [[cross-dimension-dependency]] — Cross-Dimension Dependency，MTS 中不同变量之间的关联关系 (ICLR 2023)
+- [[cross-modal-misalignment]] — formal selection/perturbation bias; what contrastive multimodal encoders retain (NeurIPS 2025)
+- [[crps]] — Continuous Ranked Probability Score，严格合适评分规则，衡量预测 CDF 与观测的 $L^2$ 距离
+- [[d3vae-and-gcrdd-naming]] — D³VAE vs GCRDD 命名关系
+- [[dataset-stationarity-estimation]] — 基于矩统计量的数据集级平稳性估计，滑动窗口局部统计量跨窗口变异，O(NLC) 复杂度 (SARAF, KDD 2026)
+- [[deep-model-fusion]] — 深度模型融合：ensemble / merging / mixing 三分法与 learn-from-model 定位
+- [[deep-state-space-model]] — 深度状态空间模型：用神经网络参数化/扩展经典线性 SSM（DeepState 等）
+- [[diffsequence]] — Diffsequence（差序列），Ramsey 理论中 gaps 落在指定集合的递增整数序列，van der Waerden 定理的自然推广
+- [[diffusion-memorization-geometry]] — 记忆现象的几何理论：Voronoi 单元吸收强度 σ₀（重复样本抬权重）、渐近最优 denoiser 必然重现训练点、泛化要求终端 denoiser 逼近真实流形投影
+- [[diffusion-model]] — 扩散模型，通过逐步加噪和去噪学习的生成模型
+- [[diffusion-models]] — 扩散模型 (Diffusion Models)，包含 DDPM、SMLD、SDE 统一框架与应用
+- [[direct-forecast]] — Direct Forecast 多输出多步预测范式，与 iterative forecast 相对 (FreDF)
+- [[discrete-schrodinger-bridge]] — 离散 SB，将 SB 扩展到 CTMC 有限状态空间，用转移速率矩阵替代 drift
+- [[distributionally-robust-optimization]] — DRO, worst-case optimization over an uncertainty set of distributions; equivalent to ERM + variance regularization for OOD robustness
 - [[dynamical-systems-reconstruction]] — DSR，从观测数据学习生成式替代模型以复现动力系统长期行为（吸引子几何+不变统计量）
+- [[edge-noise-amplification]] — 边噪声放大，ReLU 在自适应图学习中放大负边权为正的伪空间依赖缺陷 (MAGE, NeurIPS 2025)
+- [[edm-design-space]] — EDM 统一设计空间，将 VP/VE/DDIM 等框架正交化
+- [[elbo]] — 证据下界（ELBO），潜变量模型中 $\log p(\mathbf{x})$ 的可优化下界
+- [[embodied-question-answering]] — EQA, 具身问答，agent 主动探索环境收集视觉证据并回答问题的基准任务 (Zheng et al., 2025)
+- [[energy-based-model]] — EBM, energy-based model with unnormalized probability via energy function
+- [[entropic-optimal-transport]] — 熵正则最优传输，经典 OMT 的 KL-正则化推广，等价于静态 SB
+- [[environment-conditioned-nowcasting]] — 环境条件化临近预报，将 2D 雷达外推扩展为 3D 垂直耦合+环境门控的对流动力学建模 (ICML 2026)
+- [[event-driven-reasoning]] — 事件驱动推理，利用 LLM 从外生文本中提取预测信号 (ICLR 2026)
+- [[evolving-rn-traffic-forecasting]] — 演化道路网络交通预测，拓扑持续变化下的增量预测问题 (TEAM, PVLDB 2024)
+- [[exploration-vs-exploitation]] — 强化学习中的探索与利用权衡
+- [[extreme-weather-forecasting]] — 极端天气预测，对罕见非线性大气极端事件的预报 (arXiv 2025)
+- [[federated-traffic-prediction]] — 联邦交通预测：局部子图 + 参数聚合的设定、METIS 六客户端评估协议与四类方法谱系
+- [[few-shot-traffic-forecasting]] — few-shot / data-scarce spatio-temporal forecasting, where STGNNs and TSFMs fail and contextual/transfer methods help (ICML 2025)
+- [[fine-grained-traffic-prediction]] — fine-grained traffic prediction unifying road-level and lane-level forecasting
+- [[flood-forecasting]] — 洪水预报，从物理模型（GloFAS）到深度学习（RiverMamba）的演进，含洪水重现期度量
+- [[flow-grpo]] — Flow-GRPO，首个将在线 GRPO 强化学习引入 Flow Matching 模型的方法，通过 ODE-to-SDE 转换和 Denoising Reduction 实现高效 T2I 对齐 (NeurIPS 2025)
+- [[flow-matching]] — Flow Matching, simulation-free CNF training with OT paths (NeurIPS 2023)
+- [[flow-matching-design-space]] — FM 指南的设计选择体系：路径设计（affine/Gaussian、conditional OT 的 kinetic energy 刻画、geodesic/premetric、mixture）× 数据耦合（independent/paired/multisample）× 速度参数化（velocity/x1/x0/score 转换表与 scheduler 等价）× 条件化（X1/X0/双侧）与引导，以 Marginalization Trick + Bregman 散度为数学主干 (arXiv 2024)
+- [[flow-matching-forecasting]] — Flow Matching for time series forecasting, rectified flow with 5-step sampling for probabilistic TS prediction
+- [[flux-matching]] — Flux Matching，通量匹配生成范式，推广 score matching 到任意分布保持向量场 (Pao-Huang et al., Stanford, 2026)
+- [[fm-ode-terminal-convergence]] — FM ODE 终端收敛：正 reach + 密度下界下流映射 Ψ₁ 对 a.e. x 存在（首个覆盖低维子流形），medial axis 奇异性、denoiser投影收敛与流映射等变性
+- [[fm-ode-trajectory-stages]] — FM ODE 三阶段轨迹动力学：denoiser 是向量场唯一数据依赖成分，noise-to-signal 统一坐标下吸引/吸收框架给出均值吸引局部簇吸收终端收敛
+- [[fokker-planck-equation]] — 福克-普朗克方程 (Fokker-Planck Equation)，描述随机过程概率密度演化的 PDE
+- [[fractional-schrodinger-bridge]] — Fractional SB, long-range temporal dependencies via fractional Brownian motion and OU approximation
+- [[frequency-aware-conditioning]] — 频率感知条件化，显式利用频域信息作为生成模型条件信号的范式
+- [[frequency-based-noise-control]] — 频域噪声控制，通过操控噪声频谱分布显式设置扩散模型归纳偏置 (ICLR 2025 Workshop SAGD 完整版)
+- [[frequency-hierarchy-in-diffusion]] — 扩散模型中由傅里叶功率律与白噪声共同诱导的低频到高频生成层级
+- [[gaussian-process-prior-flow-matching]] — GP 先验流匹配，在 CFM 中使用非各向同性高斯过程先验
+- [[gaussian-schrodinger-bridge]] — Gaussian SB, closed-form solution via Bures-Wasserstein geometry for Gaussian marginals
+- [[generalized-positional-encoding-framework]] — unified framework decomposing attention scores into multiplicative and additive components
+- [[generalized-schrodinger-bridge]] — 广义 SB，含 mean-field 交互项的 SB 扩展
+- [[generative-time-series-forecasting]] — 生成式时间序列预测，通过概率建模实现不确定性量化的预测范式
+- [[generative-vector-field]] — 生成向量场，驱动扩散过程以目标分布为平稳分布的向量场，不限于得分函数
+- [[generator-matching]] — Generator Matching，FM 指南第 8-9 章的 CTMP 统一框架：generator 与 KFE、universal characterization（$\mathbb{R}^d$ 上 generator = flow + diffusion + jump 之和）、GM 损失（Bregman）、组合模型（Markov superposition / divergence-free / predictor-corrector）与多模态 (arXiv 2024)
+- [[gradient-orthogonalization]] — orthogonalizing gradient updates to improve optimization
+- [[graph-frequency-decomposition]] — 图频率分解，通过层次图粗化分离低频和高频图信号分量 (AAAI 2026)
+- [[graph-learning-as-self-attention]] — 图学习即自注意力，图学习模块数学等价于 Transformer 自注意力但参数远少于 Q/K/V
+- [[heterogeneous-covariates]] — classification and multimodal covariates that differ from target time series (ICLR 2026)
+- [[heterogeneous-task-weights]] — 多步预测中对未来各步赋予非均匀任务权重（QDF 用 Σ^{-1} 对角元建模）
+- [[hidden-global-components]] — 隐藏全局成分：局部数据中含反映跨区域交通变化的成分这一假设、提取机制与三条证据
+- [[hybrid-llm-flow-matching-forecasting]] — 混合 LLM-流匹配预测，耦合预训练 LLM 语义理解与 FM 连续随机建模的生成式预测范式 (ICML 2026)
+- [[hybrid-periodicity-decoupling]] — explicitly separating short-term and long-term periodicity in time-series signals
+- [[identity-mapping-property]] — 残差连接中浅层信号直通深层的恒等映射性质
+- [[imputation-consistency]] — 插补一致性，intra（插补值与观测值互相可重构）+ inter（相邻窗口时序一致），MTSCI 提出并以 CRPS 度量；与 Consistency Models 的少步自一致性不同义 (CIKM 2024)
+- [[in-context-learning]] — ICL，冻结基础模型仅凭上下文演示适配新任务的范式；WeatherGFM 视觉 ICL 的基础 (2026)
+- [[inductive-bias-shaping]] — 归纳偏置塑造，显式引导模型学习数据分布特定方面
+- [[information-bottleneck-principle]] — IB, compressed representations retaining maximal task-relevant information
+- [[instance-level-variation]] — 实例级变化：逐实例误差差异显著、少数实例大误差长尾分布，被整体指标掩盖的预测失效来源（PIR, NeurIPS 2025）
+- [[inter-client-dependency]] — 跨客户端依赖：数据隔离切断的跨区域节点相关性，恢复路线对照与效果检验方式
+- [[intersection-trajectory-prediction]] — 路口轨迹预测：多类使用者 + 隐式交互 + 信号/路权约束下的长时轨迹预测，含逐步自回归/非自回归/多尺度三类输出框架对照（TrajAR 口径）
+- [[intrinsic-cost-and-critic]] — 代价模块：$C=IC+TC$，不可训练的 intrinsic cost 定行为驱力，critic 由短期记忆中的 (τ, s_τ, IC) 三元组训练以预判长期能量
+- [[isotropic-gaussian-embeddings]] — 各向同性高斯嵌入分布：协方差受标量约束的分布族内唯一最小化 worst-case 下游预测风险（线性探针偏差/方差两引理 + k-NN/kernel 积分平方偏差定理）（arXiv:2511.08544）
+- [[joint-temporal-channel-correlation]] — 联合时间–通道相关建模，反对外生预测中的两步串行相关学习 (GCGNet)
+- [[kalman-filter]] — Kalman 滤波，线性动力系统状态估计的递归 Predict/Update 算法 + 不确定性建模
+- [[kl-regularized-policy-optimization]] — KL 约束策略优化：max E[A] − (1/β)KL 的闭式解 π* ∝ π_ref·exp(βA)，WebRL 与 JitRL 的共同目标形式
+- [[koopman-linearization-for-forecasting]] — Koopman 线性化预测范式，把非线性 TS 提升到测量空间用线性算子 (DMD/eDMD/神经网络) 建模 (K²VAE/MMCKM)
+- [[kv-cache-compression]] — KV cache 压缩：固定预算下的 KV 重要性估计问题与 post-RoPE 方法谱系（启发式/注意力/范数）
+- [[label-autocorrelation]] — 多步标签序列在给定历史条件下的时间步依赖，破坏 DF 的条件独立假设 (FreDF)
+- [[language-as-reference-framework]] — LaRF, 以语言为参考框架的多模态统一原理 (Shao et al., 2024)
+- [[large-scale-spatial-temporal-graph]] — 大规模时空图预测的计算复杂度与解决方案
+- [[lead-lag-dependency]] — lead–lag 依赖：跨空间-时间的延迟依赖 $\tau_{ij}=|t_1-t_2|$，空间/时间依赖为其一维退化形式；统计/领域/深度三类建模谱系
+- [[linear-attention-unified-framework]] — Mamba Linear Attention unified formulation with 6 differences identified
+- [[location-scale-noise-model]] — LSNM，将条件分布的均值和方差同时建模的位置-尺度噪声模型，使扩散模型能感知数据异质性
+- [[lomb-scargle-periodogram]] — Lomb–Scargle 周期图，非均匀采样数据的频谱估计方法
+- [[long-context-personalization]] — personalization under long context (1K-256K tokens) with constraint satisfaction
+- [[low-dimensional-graph-adjacency]] — 低维图邻接建模，将 N×N 邻接矩阵的学习迁移到 C×C 压缩空间 (GSNet, PVLDB 2025)
+- [[lstf]] — Long Sequence Time-Series Forecasting, the problem setting formalized by Informer
+- [[mask-aware-imputation-no-prefilling]] — 无预填充的掩码感知填补，用可学习缺失嵌入直接表征缺失值而非零初始化 (MagiNet, arXiv 2024)
+- [[masked-generative-modeling]] — 掩码生成建模，随机掩码 token 后通过迭代并行解码的生成范式，应用于天气预测等连续科学数据（OmniCast, NeurIPS 2025）
+- [[mcr2]] — MCR², Maximal Coding Rate Reduction for learning compact structured representations
+- [[mdp-formal-definition]] — 马尔可夫决策过程的六要素与马尔可夫性质
+- [[memory-efficient-training]] — 内存高效训练，对比激活检查点、块级训练、混合精度等内存优化技术 (ICLR 2026)
 - [[message-passing-imputation]] — Message Passing Imputation，利用 GNN 消息传递进行时空缺失值重建 (ICLR 2022)
-- [[variable-wise-partitioning]] — 变量维度划分基准，沿变量而非时间切分 train/val/test 以检验跨变量/跨域插补泛化 (NuwaTS, arXiv 2024)
+- [[meta-dynamic-graph]] — extending dynamics from adjacency matrices to meta-parameters in ST models
+- [[micro-macro-coupled-koopman-modeling]] — unified history-free Koopman operator framework for joint macro flow + micro vehicle prediction (ICLR 2026)
 - [[missing-not-at-random]] — MNAR 与缺失机制 (MCAR/MAR/MNAR)，可忽略性，及各插补模型的缺失假设 (PRDIM, arXiv 2026)
-- [[time-indexed-foundation-model]] — 时间索引基础模型，每时间戳学 H(t)→x(t) 的连续时间零样本插补范式 (TabPFN-TS/MoTM, TMLR 2026)
+- [[mixed-channel-dependency]] — CD encoding + CI denoising hybrid for diffusion TS, inspired by MiDDiR (ICLR 2026 under review)
+- [[mixed-graph-spatiotemporal-modeling]] — 混合图时空建模，无向图（空间）+ 有向图（时间）统一表示框架
+- [[mixture-of-experts]] — MoE, mixture of experts architecture with dynamic expert routing
+- [[mm-dit-for-time-series]] — MM-DiT for Time Series, adapting multimodal diffusion transformer to treat covariates as distinct modality streams (arXiv 2026)
+- [[mobile-traffic-forecasting]] — mobile traffic forecasting for wireless network optimization, distinct from vehicle traffic forecasting
+- [[mode-1-mode-2-planning]] — Mode-1 反应式策略 vs Mode-2 用世界模型做滚动时域 MPC（七步流程），Mode-2 结果可编译成 Mode-1 策略；推理即能量最小化
+- [[model-reprogramming]] — 模型重编程，冻结预训练模型通过输入变换+输出投影跨域重用的范式
+- [[module-embedding-theorem-subfactor]] — 模嵌入定理（子因子），有限深子因子平面代数嵌入其任意循环模融合图的二部图平面代数中
+- [[mts-imputation-taxonomy]] — MTSI 综述的双视角分类框架：插补不确定性（预测式/生成式）× 网络架构，附 wiki 各插补方法（CSDI/PriSTI/GRIN/ImputeFormer/SADI/NuwaTS/TimesNet 等）的综述归类定位与二手口径警示 (arXiv 2024/2025 survey)
+- [[multi-granularity-sea-ice-forecasting]] — 多粒度海冰预测，联合日/周/月 SIC 跨粒度建模新范式
+- [[multi-level-alignment]] — 多级对齐，在表示级和预测级融合文本与时间序列模态 (ICLR 2026)
+- [[multi-marginal-schrodinger-bridge]] — 多边际 SB，K 个中间时间点约束的 SB 扩展
+- [[multimodal-spatial-reasoning]] — 多模态空间推理，从异构输入推断空间关系、位置与动作的能力框架 (Zheng et al., 2025)
+- [[multimodal-time-series-anomaly-detection]] — detecting anomalies using multimodal time series and text data (ICLR 2026)
 - [[multimodal-time-series-forecasting]] — forecasting tasks involving numerical time series plus images/text (ICLR 2026)
 - [[multimodal-traffic-profiling]] — classification of urban traffic states using multimodal numerical/visual/textual data (AAAI 2026)
-- [[multimodal-time-series-anomaly-detection]] — detecting anomalies using multimodal time series and text data (ICLR 2026)
-- [[hybrid-periodicity-decoupling]] — explicitly separating short-term and long-term periodicity in time-series signals
-- [[instance-level-variation]] — 实例级变化：逐实例误差差异显著、少数实例大误差长尾分布，被整体指标掩盖的预测失效来源（PIR, NeurIPS 2025）
-- [[traffic-forecasting]] — predicting future traffic states from historical sensor data
-- [[continual-spatio-temporal-forecasting]] — CSTF, incremental learning on streaming evolving ST graphs without catastrophic forgetting (ICLR 2026)
-- [[meta-dynamic-graph]] — extending dynamics from adjacency matrices to meta-parameters in ST models
-- [[st-unification]] — ST-isolated vs ST-unification spectrum for spatio-temporal modeling
-- [[accident-aware-traffic-forecasting]] — modeling disruptive impact of accidents on traffic prediction
-- [[mdp-formal-definition]] — 马尔可夫决策过程的六要素与马尔可夫性质
-- [[action-value-function]] — 动作值函数 q(s,a) 及其与状态值关系
-- [[exploration-vs-exploitation]] — 强化学习中的探索与利用权衡
-- [[contraction-mapping-theorem]] — 最优性算子收敛分析的数学基础
-- [[context-window-extension]] — extending inference context beyond pretraining length for LLMs
-- [[long-context-personalization]] — personalization under long context (1K-256K tokens) with constraint satisfaction
+- [[multivariate-correlation-attention]] — 多变量相关性注意力，iTransformer 中 attention 作用于 variate token 维度 (ICLR 2024)
+- [[mutual-information]] — 互信息，衡量两个随机变量之间共享信息量的信息论度量
+- [[node-embedding-regularization]] — 节点嵌入正则化，抑制自适应图学习中节点嵌入的过参数化
+- [[non-fusion-guidance]] — TiMi 方法标签：文本支路 + MoE 路由，无表示融合
+- [[non-gaussianity]] — window-level non-Gaussianity (JS vs Gaussian) as distribution complexity for forecasting (ProbTS)
+- [[non-parametric-policy-memory]] — 非参数策略记忆：把经验记忆当作策略分布本身，检索回报均值直接充当价值/优势估计 (JitRL, ICML 2026)
+- [[normalizing-flow]] — Normalizing Flow, invertible transformation based generative models
+- [[ood-generalization]] — out-of-distribution generalization: maintaining accuracy under temporal (T-OOD) and structural (S-OOD) distribution shift beyond the IID assumption
+- [[optimal-transport]] — Optimal Transport, mathematical theory for probability distribution transformation
+- [[out-of-time-generalization]] — OOT 泛化：按 temporal phase 划分部署后时间线，信号分布与图结构同时在相位间演化的长期部署设定（DynaSTar 提出）
+- [[over-smoothing-in-gnns]] — GNN 过平滑问题，层级消息传递导致节点表示不可区分的根本限制 (AAAI 2026)
+- [[over-squashing]] — Over-Squashing，长程任务下指数增长的感受野信息被压进固定长度向量的消息传递瓶颈；与 over-smoothing 分立、不可混用（ICLR 2021）
+- [[overview]] — wiki scope and current state
+- [[parametric-memory-distillation]] — 参数化记忆蒸馏，将在线检索的预测分布知识离线蒸馏为轻量参数模块，推理时无需检索 (TS-Memory, KDD 2026)
+- [[partial-blackout]] — 部分停电缺失模式，多特征在连续时间步同时缺失的统一框架 (SADI, AAAI 2025)
+- [[pattern-neuron]] — Pattern Neuron, UTSM 中与低频时序模式（节假日、极端天气）稳定关联的神经元，集中在注意力 query/key 组件中 (ICLR 2025)
+- [[pde-driven-spatio-temporal-forecasting]] — PDE-driven ST forecasting paradigm, reformulating ST dynamics as continuous PDE evolution vs discrete graph inference (STPDE, ICML 2026)
+- [[perceptual-compression]] — 感知压缩，将生成建模分为感知压缩和语义压缩两个层次
+- [[physics-informed-neural-network]] — PINN，损失约束型 vs 架构嵌入型 vs 编码知情型三大范式
+- [[precipitation-nowcasting]] — 降水临近预报，0-6h 短时高分辨率降水预测，从 ConvLSTM 到 QCGS 无雷达方法的演进 (ICLR 2026)
+- [[primary-auxiliary-patterns]] — 主-辅模式分类框架，将时空模式按信息源（内部/外部）划分为主模式和辅助模式，对齐不同缺失类型 (PAST, arXiv 2025)
 - [[privacy-reasoning]] — privacy leakage detection and reasoning in long contexts
+- [[qk-concentration]] — Q/K 集中，pre-RoPE Q/K 向量集中于固定非零中心、跨位置/内容/域稳定 (TriAttention, ICML 2026)
+- [[ramsey-theory]] — Ramsey 理论（拉姆齐理论），组合数学核心分支：足够大的结构中必然存在秩序子结构的哲学及其在数论/图论中的应用
+- [[rectified-flow-for-time-series]] — Rectified Flow 在时间序列生成中的应用范式 (FlowTS, 2025)
+- [[relative-distance-consistency]] — 相对距离一致性，物理空间距离序关系在潜在空间的保持 (ST-SSDL, NeurIPS 2025)
+- [[residual-connections-as-diffusion]] — 残差连接作为逆扩散的欧拉步，理论桥接残差网络与连续时间扩散模型 (ICLR 2026)
+- [[retrieval-augmented-spatio-temporal-forecasting]] — RAG-for-STF 范式，通过外部记忆扩展模型容量以捕获复杂时空依赖 (AAAI 2026)
 - [[road-network-representation-learning]] — 道路网络表示学习，学习可复用的路段嵌入以支持多下游任务 (AAAI 2026)
 - [[rolling-diffusion-models]] — 滚动扩散模型，snapshot-dependent 渐进噪声 schedule 显式建模序列预测中的不确定性增长
-- [[generalized-positional-encoding-framework]] — unified framework decomposing attention scores into multiplicative and additive components
-- [[elbo]] — 证据下界（ELBO），潜变量模型中 $\log p(\mathbf{x})$ 的可优化下界
-- [[diffusion-model]] — 扩散模型，通过逐步加噪和去噪学习的生成模型
-- [[diffsequence]] — Diffsequence（差序列），Ramsey 理论中 gaps 落在指定集合的递增整数序列，van der Waerden 定理的自然推广
-- [[variational-autoencoder]] — 变分自编码器（VAE），基于 ELBO 优化的潜变量生成模型
-- [[score-function]] — 分数函数 ∇_x log p(x)，对数概率密度的梯度
+- [[rstib]] — Robust Spatial-Temporal Information Bottleneck, IB generalization for dual-noise STF (ICML 2025)
 - [[scaling-factor-sqrt-dk]] — 缩放因子 1/√dₖ，注意力机制的数值稳定性条件
-- [[score-based-generative-modeling]] — 基于分数的生成建模，通过估计数据分布的对数密度梯度来生成样本
-- [[edm-design-space]] — EDM 统一设计空间，将 VP/VE/DDIM 等框架正交化
-- [[perceptual-compression]] — 感知压缩，将生成建模分为感知压缩和语义压缩两个层次
-- [[precipitation-nowcasting]] — 降水临近预报，0-6h 短时高分辨率降水预测，从 ConvLSTM 到 QCGS 无雷达方法的演进 (ICLR 2026)
-- [[tropical-cyclone-precipitation-forecasting]] — TC 降水预测，随 TC 中心移动的动态窗口预测，与常规降水预测的差异与方法论
-- [[environment-conditioned-nowcasting]] — 环境条件化临近预报，将 2D 雷达外推扩展为 3D 垂直耦合+环境门控的对流动力学建模 (ICML 2026)
-- [[physics-informed-neural-network]] — PINN，损失约束型 vs 架构嵌入型 vs 编码知情型三大范式
-- [[continuous-normalizing-flow]] — 连续归一化流 (CNF)，基于 Neural ODE 的可逆生成模型
-- [[algorithm-unrolling]] — algorithm unrolling, converting iterative optimization into neural network layers
-- [[mcr2]] — MCR², Maximal Coding Rate Reduction for learning compact structured representations
-- [[coding-rate]] — Coding Rate, information-theoretic measure for data distribution compactness
-- [[union-of-subspaces-model]] — Union of Subspaces Model, data assumption underlying MCR² and CBSA
-- [[large-scale-spatial-temporal-graph]] — 大规模时空图预测的计算复杂度与解决方案
-- [[spatio-temporal-foundation-model]] — 时空基础模型，跨城市零样本预测范式
-- [[event-driven-reasoning]] — 事件驱动推理，利用 LLM 从外生文本中提取预测信号 (ICLR 2026)
-- [[non-fusion-guidance]] — TiMi 方法标签：文本支路 + MoE 路由，无表示融合
-- [[gaussian-process-prior-flow-matching]] — GP 先验流匹配，在 CFM 中使用非各向同性高斯过程先验
-- [[rectified-flow-for-time-series]] — Rectified Flow 在时间序列生成中的应用范式 (FlowTS, 2025)
-- [[multi-level-alignment]] — 多级对齐，在表示级和预测级融合文本与时间序列模态 (ICLR 2026)
-- [[multi-scale-linear-prediction]] — 多尺度线性预测，下采样 + 自上而下混合提取多粒度趋势模式 (DST-Mamba, AAAI 2025)
-- [[multi-scale-attention]] — Multi-scale window attention with dynamic relative position for hierarchical TS patterns (MANF)
-- [[mixed-scale-conditioning]] — 混合尺度条件控制，intra-scale mix token + hybrid-scale prompt 捕获跨尺度气候交互 (ClimateAR, ICML 2026)
-- [[generative-time-series-forecasting]] — 生成式时间序列预测，通过概率建模实现不确定性量化的预测范式
-- [[ar-vs-nar-decoding]] — AR vs NAR multi-step decoding schemes and their horizon/seasonality trade-offs (ProbTS)
-- [[non-gaussianity]] — window-level non-Gaussianity (JS vs Gaussian) as distribution complexity for forecasting (ProbTS)
-- [[chronological-textual-resonance]] — CTR，时间序列配对文本与数值序列的周期性共振现象 (ICLR 2026)
-- [[spatio-temporal-reasoning]] — 时空推理：结合图结构、时序动态和文本语义的回答式推理范式 (Ni et al., 2026)
-- [[language-as-reference-framework]] — LaRF, 以语言为参考框架的多模态统一原理 (Shao et al., 2024)
-- [[lstf]] — Long Sequence Time-Series Forecasting, the problem setting formalized by Informer
-- [[cross-city-traffic-flow-generation]] — 跨城市交通流生成，无需目标城市历史数据的零样本流量合成 (NeurIPS 2025)
-- [[model-reprogramming]] — 模型重编程，冻结预训练模型通过输入变换+输出投影跨域重用的范式
-- [[texts-as-auxiliary-variables]] — 文本作为辅助变量，TaTS 的核心设计概念 (ICLR 2026)
-- [[extreme-weather-forecasting]] — 极端天气预测，对罕见非线性大气极端事件的预报 (arXiv 2025)
-- [[flood-forecasting]] — 洪水预报，从物理模型（GloFAS）到深度学习（RiverMamba）的演进，含洪水重现期度量
-- [[autoregressive-consistency-models]] — 自回归一致性模型，将单步 CM 扩展到序列自回归预测 (arXiv 2025)
-- [[signal-to-noise-ratio-modality-selection]] — SNR-based adaptive modality weighting for multi-modal prediction
-- [[mutual-information]] — 互信息，衡量两个随机变量之间共享信息量的信息论度量
-- [[mutual-information-disentanglement]] — MI minimax 解耦：最小化共享/独有互信息 + 最大化跨模态共享互信息 (MIDAS)
-- [[energy-based-model]] — EBM, energy-based model with unnormalized probability via energy function
-- [[tweedies-formula]] — Tweedie 公式，加噪数据分数函数与干净数据后验期望的关系
-- [[score-based-generative-models]] — 基于分数的生成模型，通过估计对数密度梯度生成样本
-- [[node-embedding-regularization]] — 节点嵌入正则化，抑制自适应图学习中节点嵌入的过参数化
-- [[linear-attention-unified-framework]] — Mamba ↔ Linear Attention unified formulation with 6 differences identified
-- [[frequency-based-noise-control]] — 频域噪声控制，通过操控噪声频谱分布显式设置扩散模型归纳偏置 (ICLR 2025 Workshop → SAGD 完整版)
-- [[freqflow]] — FreqFlow, frequency-aware flow matching with dual-branch architecture (arXiv 2026)
-- [[frequency-aware-conditioning]] — 频率感知条件化，显式利用频域信息作为生成模型条件信号的范式
-- [[inductive-bias-shaping]] — 归纳偏置塑造，显式引导模型学习数据分布特定方面
-- [[spectral-bias-training-dynamics]] — 扩散模型训练谱偏置理论，数据协方差驱动学习顺序的反比方差谱定律 (NeurIPS 2025, Harvard)
-- [[snr-t-bias]] — SNR-t Bias，扩散模型推理阶段的信噪比-时间步错配偏置 (CVPR 2026)
-- [[frequency-hierarchy-in-diffusion]] — 扩散模型中由傅里叶功率律与白噪声共同诱导的低频到高频生成层级
-- [[flow-grpo]] — Flow-GRPO，首个将在线 GRPO 强化学习引入 Flow Matching 模型的方法，通过 ODE-to-SDE 转换和 Denoising Reduction 实现高效 T2I 对齐 (NeurIPS 2025)
-- [[flux-matching]] — Flux Matching，通量匹配生成范式，推广 score matching 到任意分布保持向量场 (Pao-Huang et al., Stanford, 2026)
-- [[generative-vector-field]] — 生成向量场，驱动扩散过程以目标分布为平稳分布的向量场，不限于得分函数
-- [[graph-frequency-decomposition]] — 图频率分解，通过层次图粗化分离低频和高频图信号分量 (AAAI 2026)
-- [[diffusion-models]] — 扩散模型 (Diffusion Models)，包含 DDPM、SMLD、SDE 统一框架与应用
-- [[fokker-planck-equation]] — 福克-普朗克方程 (Fokker-Planck Equation)，描述随机过程概率密度演化的 PDE
-- [[score-matching]] — 得分匹配 (Score Matching)，通过匹配分数函数估计数据分布
-- [[self-supervised-imputation-training]] — 自监督插补训练：从观测值中人工构造伪缺失目标形成自监督信号，BERT 掩码语言建模启发的训练范式 (CSDI, NeurIPS 2021)
-- [[stochastic-interpolant]] — Stochastic Interpolant: 任意端点密度上的有限时间随机插值与二次概率流速度目标 (ICLR 2023)
-- [[smld]] — Score-Matching Langevin Dynamics，基于分数匹配和朗之万采样的生成模型
-- [[multivariate-correlation-attention]] — 多变量相关性注意力，iTransformer 中 attention 作用于 variate token 维度 (ICLR 2024)
-- [[mixed-channel-dependency]] — CD encoding + CI denoising hybrid for diffusion TS, inspired by MiDDiR (ICLR 2026 under review)
-- [[over-smoothing-in-gnns]] — GNN 过平滑问题，层级消息传递导致节点表示不可区分的根本限制 (AAAI 2026)
-- [[cellular-sheaf]] — 胞腔层 (Cellular Sheaf)，代数拓扑中为图节点和边赋予向量空间与限制映射的结构 (ICLR 2026 under review)
-- [[location-scale-noise-model]] — LSNM，将条件分布的均值和方差同时建模的位置-尺度噪声模型，使扩散模型能感知数据异质性
-- [[partial-blackout]] — 部分停电缺失模式，多特征在连续时间步同时缺失的统一框架 (SADI, AAAI 2025)
 - [[schrodinger-bridge]] — Schrödinger bridge, entropy-regularized optimal transport in path space unifying diffusion, score, and flow models
-- [[gaussian-schrodinger-bridge]] — Gaussian SB, closed-form solution via Bures-Wasserstein geometry for Gaussian marginals
-- [[fractional-schrodinger-bridge]] — Fractional SB, long-range temporal dependencies via fractional Brownian motion and OU approximation
-- [[entropic-optimal-transport]] — 熵正则最优传输，经典 OMT 的 KL-正则化推广，等价于静态 SB
-- [[discrete-schrodinger-bridge]] — 离散 SB，将 SB 扩展到 CTMC 有限状态空间，用转移速率矩阵替代 drift
-- [[multi-marginal-schrodinger-bridge]] — 多边际 SB，K 个中间时间点约束的 SB 扩展
-- [[unbalanced-schrodinger-bridge]] — 非平衡 SB，允许质量沿轨迹产生/消灭的变体
-- [[generalized-schrodinger-bridge]] — 广义 SB，含 mean-field 交互项的 SB 扩展
-- [[branched-schrodinger-bridge]] — 分支 SB，处理多模态终端分布的轨迹分叉模型
-- [[building-schrodinger-bridges]] — 六种 SB 构造方法综述：条件桥、时间反演、FBSDE、h-变换、IMF、随机插值
-- [[circular-dependency-in-multimodal-fusion]] — 多模态融合中的循环依赖问题：依赖分类器置信度检测错误形成自我指涉
-- [[transport-based-reliability-assessment]] — 基于传输的可靠性评估：通过潜在空间传输几何而非分类器输出来度量可靠性
-- [[mixed-graph-spatiotemporal-modeling]] — 混合图时空建模，无向图（空间）+ 有向图（时间）统一表示框架
-- [[graph-learning-as-self-attention]] — 图学习即自注意力，图学习模块数学等价于 Transformer 自注意力但参数远少于 Q/K/V
-
-## Techniques
-- [[reflective-stepwise-reward]] — 反思式逐步奖励：LLM evaluator 回看完整轨迹逐步打分改善 credit assignment，折扣聚合后入记忆 (JitRL, ICML 2026)
-- [[predictive-contrastive-learning]] — PCL，正样本按预测区间 MSE 而非回溯窗口相似度选择的对比学习策略 (PFRP, AAAI 2026)
-- [[global-memory-bank]] — GMB，固定大小历史模式记忆库，PCL 编码 + K-medoids 聚类 + 特征余弦相似度检索 (PFRP, AAAI 2026)
-- [[k-medoids-clustering]] — K-medoids 聚类，以真实样本为簇中心的划分式聚类，用于构建可解释的历史模式记忆库 (PFRP, AAAI 2026)
-- [[time-aligned-retrieval-enhancement]] — 时间对齐检索增强，在形态相似度上叠加多粒度时间对齐奖励 (SARAF, KDD 2026)
-- [[diversity-based-retrieval-selection]] — 平稳性控制的随机 MMR 多样性检索选择，从 Top-M 候选池选择 Top-K 多样化子集 (SARAF, KDD 2026)
-- [[fenchel-young-loss]] — FY loss, convex surrogate for Bregman divergence enabling end-to-end training through combinatorial layers
-- [[spatial-tokenizer-adjacency-patches]] — STUNet spatial tokenizer: adjacency-matrix ViT-style patches, AE pretrain + node permutation, frozen at backbone stage (KDD 2026)
-- [[query-aggregate-attention]] — STUNet two-stage fusion: query upstream/downstream via spatial tokens, then aggregate causal sensor info with dual RoPE (KDD 2026)
-- [[almost-linear-rnn]] — AL-RNN，近乎线性 RNN（P<<M ReLU），拓扑简约+可解释 DSR 架构（NeurIPS 2024）
-- [[benamou-brenier-algorithm]] — OT 的动态公式化，转化为时空凸优化问题并以增广拉格朗日方法求解
-- [[hopf-cole-transform]] — Hopf-Cole 变换，将非线性 HJB-FP 系统线性化为 Kolmogorov PDE 对
-- [[girsanov-theorem]] — Girsanov 定理，路径空间测度变换的基石，连接控制漂移与 path-space KL
-- [[granger-causality]] — Granger causality, predictive causality via lagged VAR F-tests, used for causal graph supervision and covariate selection
-- [[sinkhorn-algorithm]] — Sinkhorn/IPF 算法，交替优化对偶 Schrödinger potentials 求解静态 SB
-- [[doob-h-transform]] — Doob's h-变换，通过 h-函数倾斜参考测度构造条件随机过程
-- [[do-calculus]] — Pearl's do-calculus for interventional reasoning, operationalized as feature-level perturbation score for causal graph learning
-- [[iterative-markovian-fitting]] — IMF，交替 Markovian/reciprocal KL 投影求解动态 SB
-- [[stochastic-optimal-control-sb]] — SB 的 SOC 视角，HJB 方程、值函数及三种损失族
-- [[diffusion-schrodinger-bridge-matching]] — DSBM，参数化 IMF：forward/reverse Markov drift matching + consistency loss
-- [[adjoint-matching]] — Adjoint matching，通过 adjoint state + corrector matching 学习 SB 控制
-- [[adjoint-schrodinger-bridge-sampler]] — Adjoint SB sampler，从 Boltzmann 分布采样的交替半桥优化
-- [[conditional-score-flow-matching]] — [SF]²M，给定 entropic OT coupling 的免仿真 SB 学习
-- [[geometric-barrier-principle]] — 几何屏障原理，语义冲突下跨模态传输代价 (δ-2ε)² 正下界，指数抑制冲突模态 (GMF, Theorem 4.5)
-- [[geographic-feature-alignment]] — GFA, cross-city geographic representation alignment via traffic flow alignment + optimal transport (CRAFT, NeurIPS 2025)
-- [[retrieval-based-condition-augmentation]] — RCA, RAG-style condition enrichment for cross-city diffusion generation (CRAFT, NeurIPS 2025)
-- [[noise-impact-indicator]] — per-series noise quantification via teacher model predictions for dynamic IB regularization (RSTIB-MLP, ICML 2025)
-- [[memory-augmented-gating]] — memory-based MoE routing with meta-node bank and dual classification losses for regression (TESTAM, ICLR 2024)
-- [[timedit-masking]] — TimeDiT's unified masking mechanism: random/block/stride/reconstruction masks for multi-task time series SSL
-- [[timedit-physics-informed]] — TimeDiT's finetuning-free PDE-guided Langevin dynamics sampling for physics-informed generation
-- [[time-enhanced-attention]] — non-autoregressive attention transferring domain from source to target time steps (TESTAM, ICLR 2024)
-- [[adaptive-graph-learner]] — AGL, plug-and-play dynamic graph generation module with gated self-attention and weak connection suppression (DPGNet, ICLR 2026 under review)
-- [[adjacent-residual-prediction]] — ARP，预测相邻时间步降水变化而非绝对值，赋予扩散模型变化感知能力，减少累积误差 (TCP-Diffusion, ICML 2025)
-- [[adaptive-season-learner]] — ASL, multi-scale temporal decomposition + pattern-specific graph construction for seasonal/trend modeling (DPGNet, ICLR 2026 under review)
-- [[sandglass-attention]] — SGA, precoder-decoder 注意力模块，聚合区域 token 捕获高阶时空相关性 + 降开销 (AAAI 2025)
-- [[sheaf-laplacian]] — 层拉普拉斯算子 (Sheaf Laplacian)，推广图拉普拉斯以编码边特定的变换语义，用于谱域滤波 (ICLR 2026 under review)
-- [[space-filling-curves]] — 空间填充曲线，双射 Φ:Z³→N 将高维时空点序列化为 1D 序列，Gilbert/Sweep/Zigzag 交替扫描用于 Mamba 时空建模 (RiverMamba, NeurIPS 2025)
-- [[ssdl]] — Self-Supervised Deviation Learning，历史锚点 + 原型离散化 + 对比损失 + 偏差损失，无标签建模时空偏差 (ST-SSDL, NeurIPS 2025)
-- [[dlga-dual-stream-linear-graph-attention]] — DLGA, dual-stream linear graph attention with random feature mapping + prompt-based key stream reducing $O(N^2)$ to $O(N)$ (STBP, ICLR 2026)
-- [[frenet-frequency-domain-network]] — FreNet, frequency-domain network using FFT + learnable frequency embedding to extract stable low-frequency components resilient to distribution drift (STBP, ICLR 2026)
-- [[sparse-teacher-forcing]] — STF，间歇性数据推断状态重校准的 DSR 训练方法，控制梯度爆炸同时探索长期动力学
-- [[multi-token-prediction]] — Multi-token prediction, shared trunk + n heads predicting n future tokens as LM pretraining objective (Gloeckle et al., ICML 2024)
-- [[self-speculative-decoding]] — Self-speculative decoding, same-model multi-head draft + verify for faster autoregressive generation (Stern/Medusa; strengthened by multi-token pretraining)
-- [[spatial-temporal-tokenizer]] — 空间+时间双维度 token 生成，激活 PLM 对时空数据的理解 (AAAI 2025)
-- [[spatio-temporal-retrieval-store]] — 基于 FAISS 的双维度向量记忆库 + 动量 EMA 管理 (RAST, AAAI 2026)
-- [[topology-aware-node-embedding]] — 基于拉普拉斯特征向量的归纳式节点嵌入，支持跨图结构迁移 (AAAI 2025)
-- [[conditional-prior-sampling]] — 条件先验采样，Langevin 动力学 + 引导实现无条件模型的条件化预测 (TSFlow, ICLR 2025)
-- [[dual-dimension-feature-disentanglement]] — 时间/空间双流解耦编码，为检索增强提供低秩分解基础 (RAST, AAAI 2026)
-- [[dsw-embedding]] — DSW Embedding, dimension-segment-wise embedding producing 2D vector array for MTS (ICLR 2023)
-- [[mae]] — MAE, masked autoencoder for vision pretraining (75% mask ratio + asymmetric encoder-decoder) (CVPR 2022)
-- [[videomae]] — VideoMAE, video masked autoencoder with tube masking + 90-95% mask ratio (NeurIPS 2022)
-- [[two-stage-attention]] — TSA Layer, cross-time then cross-dimension attention for 2D MTS arrays (ICLR 2023)
-- [[router-mechanism-for-cross-dimension]] — Router mechanism reducing cross-dimension attention from O(D²L) to O(DL) (ICLR 2023)
-- [[hierarchical-encoder-decoder-ts]] — HED, hierarchical encoder-decoder for multi-scale time series forecasting (ICLR 2023)
-- [[mpgru]] — MPGRU, message passing GRU unit replacing gating with MPNN for spatial aggregation (ICLR 2022)
-- [[modality-augmentation]] — Modality Augmentation, converting numerical time series into visual and textual modalities via frequency-domain transforms (AAAI 2026)
-- [[hierarchical-contrastive-fusion]] — hierarchical contrastive learning for multimodal fusion: supervised + InfoNCE + JS divergence (AAAI 2026)
-- [[irregular-spatial-patching]] — leaf KDTree → BFS → cosine-similarity padding → subtree backtracking for balanced, non-overlapping patches on irregular traffic points (PatchSTG, KDD 2025)
-- [[leaf-kdtree]] — variant of KDTree ensuring all points in leaf nodes for spatial partitioning + BFS-based spatial locality (PatchSTG, KDD 2025)
-- [[patch-reprogramming]] — Patch Reprogramming，通过 cross-attention to text prototypes 将时序 patch 对齐到 LLM 词嵌入空间 (ICLR 2024)
-- [[spatial-imputation-decoder]] — Spatial Imputation Decoder, neighbor-only two-stage message-passing imputation (ICLR 2022)
-- [[projected-fisher-divergence]] — 投影 Fisher 散度，Flux Matching 中用于学习分布保持向量场的统计散度
-- [[adaptive-sampling-flow-matching]] — FlowTS 的自适应采样策略，探索-利用权衡驱动的时间步缩放
-- [[prompt-as-prefix]] — Prompt-as-Prefix (PaP)，通过自然语言提示引导冻结 LLM 对时间序列的推理变换 (ICLR 2024)
-- [[plug-and-play-prefix-tuning]] — 即插即用前缀微调，P-tuning-v2 式领域前缀注入冻结 PLM 每层，<100KB 可逆 (NuwaTS, arXiv 2024)
-- [[channel-head-binding]] — CHead Attention，CNN 通道与注意力头一对一绑定实现特征级跨变量选择性传递 (T1, ICLR 2026)
-- [[pattern-recognizer-guidance]] — 模式识别器引导，判别器近似 p(M|X) + EM + 扩散反向引导，处理 MNAR (PRDIM, arXiv 2026)
-- [[spectral-graph-wavelet-transform]] — SGWT，谱图小波变换用于图信号的多尺度分解
-- [[frequency-enhanced-attention]] — FEA, Fourier/Wavelet-domain cross-attention substituing standard attention in FEDformer (ICML 2022)
-- [[frequency-enhanced-block]] — FEB, frequency-domain self-attention substiution in FEDformer via Fourier or Wavelet (ICML 2022)
-- [[spectral-trajectory-scheduler]] — STS, adaptive noise schedule learning via frequency-domain regularized PGD for diffusion TS forecasting (StaTS, arXiv 2026)
-- [[frequency-guided-denoiser]] — FGD, schedule-induced spectral distortion estimation for modulating denoising strength (StaTS, arXiv 2026)
-- [[moe-decomposition]] — MOEDecomp, input-adaptive mixture-of-experts average filters for seasonal-trend decomposition (ICML 2022)
-- [[mmoe]] — Multimodal Mixture-of-Experts, TMoE+SMoE 双路门控即插即用模块，文本因果知识引导时序预测 (TiMi, ICML 2026)
-- [[newton-schulz-iteration]] — Newton-Schulz iteration for matrix orthogonalization
-- [[glu-gated-linear-unit]] — Gated Linear Unit, activation-modulated linear transformation
-- [[gaussian-splatting]] — 3D/2D Gaussian Splatting，各向异性高斯原语渲染，与传统高斯加权插值等价，QCGS 首次应用于降水场生成
-- [[gated-residual-network]] — GRN: residual + GLU-gated nonlinear block with optional context (TFT building block)
-- [[variable-selection-network]] — instance-wise Softmax variable selection for static/past/future inputs (TFT)
-- [[interpretable-multi-head-attention]] — multi-head attention with shared values and averaged attention maps for temporal interpretability (TFT)
-- [[implicit-neural-representation]] — INR 隐式神经表示，连续坐标到值的映射，分辨率无关但密集查询低效，QCGS 用于高斯参数估计
-- [[gpt-st]] — GPT-ST, plug-and-play MAE pre-training framework for spatio-temporal GNNs (NeurIPS 2023)
-- [[muffin-mae]] — Muffin-MAE, multifaceted masked autoencoder with temporal/spatial/global masking for inter-correlated urban dynamics (UrbanMind, KDD 2025)
-- [[multi-source-causal-constraints]] — multi-source causal constraints framework: Granger + do-calculus + TDMI + VAE jointly supervise causal graph learning (CausalX, ICML 2026)
-- [[test-time-adaptation-st]] — test-time adaptation for spatio-temporal domain shift via masked reconstruction (UrbanMind, KDD 2025)
-- [[urbangpt]] — UrbanGPT, spatio-temporal large language model with instruction-tuning paradigm (KDD 2024)
-- [[urbanpg]] — UrbanPG, efficient framework with personalized context prompts + general backbone for large-scale/few-shot/continual ST learning (AAAI 2026)
-- [[unist]] — UniST, one-for-all spatio-temporal foundation model with MAE pre-training and memory-based prompt learning (KDD 2024)
-- [[bigcity]] — BIGCity, first MTMD spatio-temporal model unifying trajectory + traffic state via GPT-2+LoRA+prompt (arXiv 2024)
-- [[heterogeneous-moe-routing]] — 异质性感知 MoE 路由，FaST 的动态 expert 路由机制
-- [[heterogeneous-spatial-attention]] — HSA: low-rank pattern library + gated fusion for node-specific spatial attention (HEPHAESTUS, ICLR 2026 under review)
-- [[probsparse-self-attention]] — Informer's efficient O(L log L) attention via query sparsity measurement (AAAI 2021)
-- [[generative-style-decoder]] — non-autoregressive one-forward-pass decoding from Informer (AAAI 2021)
-- [[frequency-aware-residual-representation]] — Fourier-based signal decomposition into periodic and residual components
-- [[fine-grained-time-text-semantic-alignment]] — MindTS's cross-view text fusion and contrastive alignment (ICLR 2026)
-- [[spatial-temporal-attentive-encoder]] — dual-pathway encoder for short-term and long-term periodicity
-- [[dual-view-alignment-loss]] — regularization loss aligning representations across periodicity views
-- [[demlp-decoder]] — two-stage coarse-to-fine decoder with explicit trend removal
-- [[guided-layer-normalization]] — conditional normalization with dynamic affine parameters for accident-aware modeling
-- [[covariate-homogenization]] — UniCA's technique for converting heterogeneous covariates into unified representations (ICLR 2026)
-- [[covariate-fusion-module]] — UniCA's dual-stage attention-based fusion module for covariate integration (ICLR 2026)
-- [[masked-diffusion-pre-training]] — task-oriented spatio-temporal masking + diffusion for multi-task mobile traffic forecasting (UoMo, KDD 2025)
-- [[contrastive-diffusion-alignment]] — InfoNCE-equivalent contrastive fine-tuning aligning mobile traffic with urban context features (UoMo, KDD 2025)
-- [[bellman-equation]] — 贝尔曼方程，强化学习中值函数的递归关系
-- [[temporal-difference-learning]] — 时序差分学习，包括 Sarsa、Q-learning 等算法
-- [[policy-evaluation]] — 给定策略下求解状态值函数的过程
-- [[sarsa-algorithm]] — on-policy TD 控制算法
-- [[expected-sarsa]] — 基于期望目标的 Sarsa 变体
-- [[n-step-sarsa]] — 连接 TD 与 MC 的多步 Sarsa 方法
-- [[q-learning-algorithm]] — off-policy TD 控制算法
-- [[qcgs]] — Query-Conditioned Gaussian Splatting (Station2Radar)，AWS-卫星融合 + INR 高斯参数估计 + 降雨感知采样，无雷达降水场生成 (ICLR 2026)
-- [[bellman-optimality-equation]] — 最优值函数与最优策略的不动点方程
-- [[value-iteration]] — 直接迭代求解最优方程的动态规划算法
-- [[policy-iteration]] — 策略评估与改进交替的动态规划算法
-- [[truncated-policy-iteration]] — 值迭代与策略迭代��间的截断折中
-- [[monte-carlo-methods-rl]] — 基于轨迹回报的无模型策略优化方法
-- [[epsilon-greedy]] — 经典探索策略
-- [[error-based-uncertainty-estimation]] — 误差代理不确定性估计，两层 FC 以逐实例 MSE 为代理预测误差以识别失效实例（PIR, NeurIPS 2025）
-- [[temporal-query-technique]] — periodically shifted learnable vectors as queries for global correlation
-- [[cross-period-sparse-forecasting]] — cross-period downsampling for extreme model compression
-- [[radial-basis-function-interpolation]] — RBF 插值，Multiquadric 核从离散站点构建连续污染物场
-- [[ramsey-theory]] — Ramsey 理论（拉姆齐理论），组合数学核心分支：足够大的结构中必然存在秩序子结构的哲学及其在数论/图论中的应用
-- [[reparameterization-trick]] — 重参数化技巧，将随机采样重构为可微确定性变换+固定噪声
-- [[residual-cycle-forecasting]] — RCF technique using learnable recurrent cycles for explicit periodicity modeling
-- [[retrieval-guidance]] — inference-time retrieval of similar history to analytically tilt diffusion score estimation (MiDDiR, ICLR 2026 under review)
-- [[learnable-recurrent-cycles]] — trainable cycle parameters Q ∈ ℝ^(W×D) for periodicity representation
-- [[instance-normalization]] — RevIN strategy for handling distributional shifts in time series
-- [[location-aware-adaptive-normalization]] — LOAN，位置感知自适应归一化，通过静态地理属性注入空间偏置条件化特征 (RiverMamba)
-- [[linear-attention-bias]] — ALiBi's core mechanism: adding distance-proportional penalty to attention scores
-- [[position-extrapolation]] — Transformer model's ability to handle longer sequences at inference than training
-- [[geometric-slope-schedule]] — ALiBi's slope assignment method for multi-head attention
-- [[ntk-aware-interpolation]] — RoPE interpolation by changing base parameter to preserve high-frequency info
-- [[rope]] — Rotary Position Embedding, 乘法型相对位置编码，现代 LLM 的标准方案
-- [[wire]] — WIRE，图 Laplacian 谱坐标驱动的旋转位置编码，RoPE 的图推广，兼容线性注意力 (ICML 2026)
-- [[ntk-by-parts-interpolation]] — wavelength-based piecewise RoPE interpolation
-- [[attention-temperature-scaling]] — YaRN's technique to control attention entropy via temperature
-- [[dynamic-scaling]] — inference-time technique to dynamically adjust RoPE scaling factor
-- [[attention-dilution]] — theoretical mechanism explaining LLM performance degradation under long context (2026)
-- [[decoy-injection]] — benchmark technique injecting fake PII to increase privacy reasoning difficulty
-- [[convergent-normalization]] — softmax denominator convergence for infinite sequences
-- [[entropy-boundedness]] — finite Shannon entropy of attention distribution
-- [[long-distance-correlation-preservation]] — maintaining meaningful attention for distant tokens
-- [[gradient-positional-sensitivity]] — gradient dependence on relative position
-- [[dual-branch-siren]] — dual-branch SIREN-DNN architecture for temporal rotation
-- [[temporal-rotation]] — mapping continuous timestamps to RoPE rotation angles
-- [[ordinal-temporal-fusion]] — fusing temporal and ordinal signals with learnable gate
-- [[learnable-frequency-scaling]] — learnable per-dimension frequency scaling in RoPE
-- [[normalization-independence]] — SimDiff's diffusion-specific technique for handling distribution drift
-- [[median-of-means-ensemble]] — MoM estimator for aggregating probabilistic samples into point predictions
-- [[patch-based-tokenization]] — converting time series into overlapping patch tokens for transformer input
-- [[periodic-temporal-attention]] — PTA: time-aware cross-attention with learnable daily/weekly periodic embedding queries (HEPHAESTUS, ICLR 2026 under review)
-- [[channel-independence]] — processing each channel separately to enhance efficiency and distribution learning
-- [[temporal-decoder]] — TiDE per-horizon residual fusion of decoded vectors with projected future covariates
-- [[key-normalization]] — ℓ2 normalization of keys to prevent attention hijacking
-- [[attention-logit-explosion]] — training instability from unbounded attention scores
-- [[attention-entropy-collapse]] — attention distribution becoming one-hot during training
-- [[spurious-patterns]] — model learning shortcut features instead of semantic features
-- [[annealed-langevin-dynamics]] — 退火朗之万动力学，多噪声水平逐步采样的方法
-- [[ddpm-simplified-training-objective]] — DDPM's L_simple, simplified noise prediction loss for diffusion models
-- [[ddim]] — DDIM, 概率流 ODE 的一阶 Euler 离散化 (ICLR 2021)
-- [[dit]] — DiT (Diffusion Transformer), ViT-based diffusion backbone with adaLN-Zero conditioning (ICCV 2023)
-- [[predictor-corrector-sampling]] — PC sampling, combining SDE solvers with score-based MCMC
-- [[probability-flow-ode]] — deterministic neural ODE sampling with exact likelihood computation
-- [[classifier-guidance]] — 分类器引导利用分类器梯度引导扩散模型条件生成
-- [[classifier-free-guidance]] — 无分类器引导联合训练条件与无条件扩散模型实现条件控制
-- [[cluster-aware-guidance]] — 聚类感知引导，利用空间注意力聚类为每个节点组定制扩散引导尺度 (AAAI 2026)
-- [[dynamic-graph-qualification]] — DGQ, qualifying edge reliability via cross-time-step similarity for adjacency matrix refinement (AAAI 2026)
-- [[feedback-diffusion-guidance]] — FBG 反馈扩散引导，加性误差假设导出的状态/时间相关动态引导尺度 + 马尔可夫后验追踪 (NeurIPS 2025)；FENCE 将其引入时空插补 (AAAI 2026)
-- [[feature-dependency-encoder]] — FDE，SADI 中显式建模时间感知特征间依赖的编码器 (AAAI 2025)
-- [[gated-temporal-attention]] — GTA，SADI 中用自注意力替代膨胀卷积的门控时序注意力 (AAAI 2025)
-- [[two-stage-imputation]] — 双阶段插补，第一阶段初始插补 + 第二阶段精炼 + 可学习加权组合 (SADI, AAAI 2025)
-- [[mixed-partial-blackout-training]] — MPB 训练策略，RM 预训练 + RM/PB 混合微调 (SADI, AAAI 2025)
-- [[fence]] — FENCE，面向时空交通数据的动态反馈扩散引导插补方法 (AAAI 2026)
-- [[heun-sampler]] — Heun 二阶 ODE 求解器，EDM 采样加速方法
-- [[edm-preconditioning]] — EDM 网络预处理技术 (cskip/cout/cin)
-- [[edm-stochastic-sampler]] — EDM 随机采样器，带 churn 参数
-- [[edm-noise-distribution]] — 对数正态噪声分布，EDM 训练策略
-- [[non-leaking-augmentation]] — 非泄漏数据增强，防止增强痕迹泄漏到生成图像
-- [[cross-attention-conditioning]] — 跨注意力条件化，LDM 的通用条件生成机制
-- [[adjoint-sensitivity-method]] — 伴随灵敏度方法，Neural ODE 的反向传播技术
-- [[contract-and-broadcast-mechanism]] — CBSA's core two-stage operation: contraction + broadcast
-- [[representative-token-extraction]] — extracting representative tokens via cross-attention for efficient compression
-- [[adaptive-graph-agent-attention]] — AGA-Att: using learnable agent tokens to reduce spatial complexity from O(N²) to O(Na)
-- [[ams-moe]] — AMS-MoE: Adaptive Multi-Scale Mixture of Experts with noise-injected Top-K routing for input-adaptive temporal scale selection (HEPHAESTUS, ICLR 2026 under review)
-- [[gated-linear-units]] — GLU: gated linear units as efficient MoE experts with parallel computation
-- [[conditional-attention-pooling]] — CAP: UniCA's conditional attention mechanism for covariate fusion (ICLR 2026)
-- [[content-condenser-reconstruction]] — MindTS's IB-based redundancy filtering and cross-modal reconstruction (ICLR 2026)
-- [[retrieval-augmented-statistical-channel]] — RAGC: retrieval-augmented statistical channel for高铁 channel prediction (KDD 2026)
-- [[incident-context-spatial-fusion]] — ICSF: incident-context spatial fusion via attention + spatial tensor (KDD 2026)
-- [[temporal-incident-impact-decay]] — TIID: temporal incident impact decay via Gaussian function (KDD 2026)
-- [[multi-modality-refinement]] — SNR-based modality selection for multi-modality ST prediction (KDD 2026)
-- [[multi-modality-guided-spatial-expert]] — multi-modality-guided spatial expert mechanism with MoE routing (KDD 2026)
-- [[historical-in-context-learning]] — HIC, retrieve corrected historical reasoning examples as error-informed guidance (ICLR 2026)
-- [[endogenous-text-alignment]] — ETA, decomposed pattern extraction and contrastive learning for text-TS alignment (ICLR 2026)
-- [[adaptive-frequency-fusion]] — AFF, frequency-domain fusion with learnable per-band weights (ICLR 2026)
-- [[modality-guided-self-attention]] — Aurora's attention mechanism injecting multimodal domain knowledge into temporal representations (ICLR 2026)
-- [[prototype-guided-flow-matching]] — Aurora's generative probabilistic forecasting via prototype-conditioned flow matching (ICLR 2026)
-- [[tt-wasserstein]] — TT-Wasserstein metric for quantifying CTR alignment quality (ICLR 2026)
-- [[topology-aware-graph-transformer]] — TGT, learnable blend of global self-attention and local graph topology (AAAI 2026)
-- [[adaptive-frequency-modulation]] — AFM, learnable Beta-distribution spectral filters + band aggregation for normal-extreme weather discrimination (arXiv 2025)
-- [[event-prior-augmentation]] — EPA, categorized extreme event memory pool + dual-level attention fusion for hierarchical extreme modeling (arXiv 2025)
-- [[cross-view-text-fusion]] — MindTS's cross-view attention fusing endogenous and exogenous text views (ICLR 2026)
-- [[contrastive-learning]] — representation learning via positive/negative pair similarity optimization
-- [[cross-modal-misalignment]] — formal selection/perturbation bias; what contrastive multimodal encoders retain (NeurIPS 2025)
-- [[information-bottleneck-principle]] — IB, compressed representations retaining maximal task-relevant information
-- [[efficient-cosine-operator]] — ECO, linear-complexity graph convolution via cosine similarity decomposition (arXiv 2026)
-- [[stochastic-shared-embedding]] — SSE, stochastic shared embedding regularization for graph node embeddings (NeurIPS 2019, adapted 2026)
-- [[residual-difference-mechanism]] — RDM, subtractive residual that suppresses SSE noise via adaptive graph convolution weights
-- [[directed-graph-laplacian-regularizer]] — DGLR，ℓ₂ 范数有向图 Laplacian 正则项，对称化后 PSD 提供频率解释
-- [[directed-graph-total-variation]] — DGTV，ℓ₁ 范数有向图总变差，软阈值高通衰减提供两通道滤波器组解释
-- [[fast-spectral-graph-convolution]] — Fast Spectral GC, O(KN) Chebyshev graph convolution for Fourier-domain inputs (arXiv 2024)
-- [[spectral-recurrent-encoder]] — SG-GRU, spectral-domain Graph GRU encoder for STG diffusion conditioning (arXiv 2024)
-- [[dual-stream-temporal-frequency-processing]] — 双流时频处理，TCN+GCN 时域与 DCT 频域的并行处理与 Cross-Attention 融合 (arXiv 2025)
-- [[forget-gate-in-sequential-models]] — forget gate as multiplicative decay on past hidden states, replaceable by positional encoding
-- [[mamba-block-design]] — Mamba's modified block design with swapped sub-blocks and unified normalization
-- [[interleaved-gat-mamba]] — 交错式 GAT-Mamba 架构，沿时空双轴交替堆叠 GAT 和 Mamba 形成闭环信息流 (GAMMA-Net, arXiv 2026)
-- [[temporal-folding-graph]] — TFG，将时序快照序列折叠为单图表示以消除跨步信息传递 (VisiFold, arXiv 2026)
-- [[node-visibility]] — 节点可见性，节点级掩码 + 子图采样的正则化与加速机制 (VisiFold, arXiv 2026)
-- [[two-band-mixture-noise]] — 两频段混合噪声，频域扩散中低频+高频噪声的线性组合方案 (ICLR 2025 Workshop)
-- [[frequency-diffusion]] — 频域扩散，在傅里叶频域中执行扩散过程的生成方法
-- [[langevin-dynamics]] — 朗之万动力学 (Langevin Dynamics)，基于分数函数的 MCMC 采样方法
-- [[uncertainty-aware-noise-schedule]] — UANS，将数据感知的时变方差注入扩散过程以建模非平稳不确定性
-- [[unified-prompt-learning]] — UrbanDiT 的三个 memory pool（时域/频域/空域）+任务掩码 prompt 的自适应引导机制
-- [[csdi]] — CSDI, conditional score-based diffusion model for probabilistic time series imputation (NeurIPS 2021)
-- [[observation-self-guidance]] — Observation self-guidance: inference-time conditioning of unconditional TS diffusion without auxiliary nets (TSDiff, NeurIPS 2023)
-- [[post-hoc-forecast-revision]] — 预测后修订：骨干预测完成后独立模块修正输出，误差估计识别 + 局部/全局上下文加权融合（PIR, NeurIPS 2025）
-- [[prediction-refinement]] — Prediction Refinement: post-hoc refinement of base forecaster predictions using diffusion model as energy-based prior (TSDiff, NeurIPS 2023)
-- [[linear-predictive-score]] — LPS: train-on-synthetic ridge CRPS for evaluating generative time-series samples (TSDiff, NeurIPS 2023)
-- [[bam]] — BAM, Bidirectional Attention Mamba for intra-channel dependency in diffusion denoising (KDD 2025)
-- [[cmb]] — CMB, Channel Mamba Block for inter-channel dependency in diffusion denoising (KDD 2025)
-- [[pristi]] — PriSTI, prior-guided conditional diffusion framework for spatiotemporal imputation (ICDE 2023)
-- [[physics-informed-position-encoding]] — physics-informed position encoding, embedding physical metadata (timestamps, geo-coordinates) into transformer position encodings (PIPE, NeurIPS 2025)
-- [[variant-frequency-positional-encoding]] — variant-frequency sinusoidal encoding with per-physical-variable wavelengths (PIPE, NeurIPS 2025)
-
-## Techniques (continued)
-- [[node-scale-graph-structure-learning]] — 节点尺度图结构学习，为每个特征独立学习全局元图以解决特征异质性 (AAAI 2025)
-- [[feature-scale-graph-structure-learning]] — 特征尺度图结构学习，学习跨特征的共同空间相关性元图 (AAAI 2025)
-- [[prominence-modeling-gsl]] — 显著度建模，在图结构学习中为节点/特征分配重要性权重 (AAAI 2025)
-
-## Techniques (continued)
-- [[one-step-flow-generation]] — 一步流生成，学习区间平均速度 + JVP 修正实现单步函数求值的高效流匹配生成 (CoGenCast, ICML 2026)
-- [[average-velocity-modeling]] — 平均速度建模，预测区间条件化平均速度替代瞬时速度 + JVP 修正优化目标 (CoGenCast, ICML 2026)
-- [[factost]] — FactoST, factorized ST foundation model with UTP+STA two-stage design, linear complexity (NeurIPS 2025 / arXiv 2026)
-- [[dcw]] — DCW，小波域差分校正，缓解扩散模型 SNR-t Bias 的即插即用方法 (CVPR 2026)
-
-## Techniques
-- [[spectral-consistency-loss]] — $L_{\text{SCons}}$，频谱一致性损失，强制插补信号与观测信号频谱对齐
-
-## Techniques (continued)
-- [[cold-sampling]] — Cold Sampling, DDIM推广到广义扩散模型的采样算法，与 Euler 方法求解 ODE 等价
-- [[crps-autoregressive-finetuning]] — CRPS 自回归微调，在多步 rollout 上以 CRPS 损失微调为集合校准 (Swift, arXiv 2025)
-- [[projected-attention]] — low-rank temporal projected attention for linear-complexity time series imputation (KDD 2024)
-- [[embedded-attention]] — low-rank spatial embedded attention using node embedding agents (KDD 2024)
-- [[fourier-imputation-loss]] — Fourier sparsity regularization for signal-noise balanced imputation (KDD 2024)
-- [[equal-snr]] — EqualSNR，通过 $\Sigma_{ii}=cC_i$ 让所有傅里叶频率等 SNR 加噪的扩散前向过程
-- [[ode-to-sde-conversion]] — ODE-to-SDE 转换，将确定性流匹配 ODE 转换为等边缘分布的 SDE 以实现随机 RL 探索 (NeurIPS 2025)
-- [[denoising-reduction]] — Denoising Reduction 去噪步数缩减策略，训练时用 10 步推理时用 40 步以加速在线 RL (NeurIPS 2025)
-- [[flow-opd]] — Flow-OPD: On-Policy Distillation for Flow Matching，通过多教师在线蒸馏解决多任务 seesaw effect (arXiv 2026)
-- [[manifold-anchor-regularization]] — MAR，通过审美教师 KL 惩罚锚定生成过程在高品质流形的正则化方法 (arXiv 2026)
-- [[router-attention-for-cvpe]] — 两步聚合-分发注意力机制，CVPE 中用于跨变量信息注入 (arXiv 2025)
-- [[learnable-patch-position-encoding]] — 可学习 patch 位置编码，编码时间和变量维度相对位置 (arXiv 2025)
-- [[variate-token-embedding]] — Variate Token Embedding，将整条变量序列嵌入为单个 token (ICLR 2024)
-- [[inverted-transformer-architecture]] — Inverted Transformer Architecture，反转 attention/FFN 应用维度而不修改组件 (ICLR 2024)
-- [[dual-stream-attention-time-series]] — Dual-Stream Attention for Time Series, orthogonal Time + Variate attention as low-rank decomposition (arXiv 2026)
-- [[continuous-prompt-parameter-pool]] — node-level dynamically expandable learnable parameters for CSTF, expand (heterogeneity) + compress (low-rank), from EAC (ICLR 2025)
-- [[contextual-pattern-bank]] — incrementally expandable parametric memory with prompt-based gating and dual-stream attention keys for CSTF (STBP, ICLR 2026)
-
-- [[joint-distribution-wasserstein-alignment]] — DistDF 的联合分布 Wasserstein 对齐技术，对齐预测与标签的条件分布 (ICLR 2026)
-- [[bures-wasserstein]] — Bures-Wasserstein discrepancy，高斯分布下 W₂ 的闭式解，均值+协方差对齐 (DistDF, ICLR 2026)
-## Concepts (continued)
-- [[hybrid-llm-flow-matching-forecasting]] — 混合 LLM-流匹配预测，耦合预训练 LLM 语义理解与 FM 连续随机建模的生成式预测范式 (ICML 2026)
-- [[lomb-scargle-periodogram]] — Lomb–Scargle 周期图，非均匀采样数据的频谱估计方法
-- [[continuous-diffusion-language-model]] — 连续扩散语言模型，在连续 embedding/simplex/latent 空间中做 diffusion 的语言模型类别
-
-## Entities
-- [[cogencast]] — CoGenCast，首个混合 LLM + Flow Matching 编码器-解码器时间序列预测模型，一步生成 (ICML 2026)
-- [[dits]] — DiTS, MM-DiT dual-stream flow matching forecaster for covariate-aware time series (arXiv 2026)
-- [[sundial]] — Sundial，首个原生 Flow Matching TS 基础模型系列，TimeFlow Loss + TimeBench (ICML 2025)
-- [[elf]] — ELF (Embedded Language Flows), continuous diffusion LM via Flow Matching (MIT, 2026)
-- [[jit]] — JiT (Just image Transformers), x-prediction pixel-space diffusion on plain ViT (Li & He, MIT, 2025)
-- [[rectified-flow]] — Rectified Flow, ODE-based generative model learning straight trajectories for few-step generation (arXiv 2022)
-- [[interflow]] — InterFlow: stochastic-interpolant CNF with quadratic simulation-free velocity objective (ICLR 2023)
-- [[muon-optimizer]] — Muon, neural network optimizer using Newton-Schulz orthogonalization (2024)
-- [[opencity]] — OpenCity, spatio-temporal traffic foundation model with TimeShift Transformer + instance norm for zero-shot prediction (arXiv 2024)
-- [[staeformer]] — STAEFormer, previous SOTA transformer for traffic forecasting
-- [[uomo]] — UoMo, first universal model for mobile traffic forecasting, diffusion+transformer, deployed at China Mobile (KDD 2025)
-- [[jiutian-platform]] — Jiutian Platform, China Mobile's AI platform for network simulation and optimization, hosts UoMo
-- [[pn-train]] — PN-Train, neuron-level training method with perturbation-based pattern neuron detection + fine-tuning for UTSMs (ICLR 2025)
-- [[sifusion]] — SIFusion，统一多粒度北极海冰预测 Transformer，Swin V2 + granularity variate attention (NeurIPS 2025)
-## Concepts
-- [[mm-dit-for-time-series]] — MM-DiT for Time Series, adapting multimodal diffusion transformer to treat covariates as distinct modality streams (arXiv 2026)
-- [[flow-matching-forecasting]] — Flow Matching for time series forecasting, rectified flow with 5-step sampling for probabilistic TS prediction
-- [[x-prediction]] — x-prediction，扩散模型中直接预测干净数据的参数化方式，基于流形假设在高维空间中优于 ε-/v-prediction
-- [[gradient-orthogonalization]] — orthogonalizing gradient updates to improve optimization
-- [[mixture-of-experts]] — MoE, mixture of experts architecture with dynamic expert routing
-- [[token-level-specialization]] — Token 级专业化，MoE 驱动的数据驱动式时间序列 token 粒度模型专业化范式，替代频率级人工分组 (Moirai-MoE, ICML 2025)
-- [[on-policy-vs-off-policy]] — on-policy 与 off-policy 学习范式对比
-- [[periodicity-modeling-in-time-series]] — analysis of periodic modeling approaches across time-series forecasting architectures
-- [[rl-learning-path-mfrl]] — 基于《Mathematical Foundations of Reinforcement Learning》的系统性 RL 学习路径
-- [[spatiotemporal-mirage]] — 时空幻象，短输入窗口导致模型无法区分不同→相似或相似→不同的预测困境
-- [[pattern-neuron]] — Pattern Neuron, UTSM 中与低频时序模式（节假日、极端天气）稳定关联的神经元，集中在注意力 query/key 组件中 (ICLR 2025)
-- [[mobile-traffic-forecasting]] — mobile traffic forecasting for wireless network optimization, distinct from vehicle traffic forecasting
-- [[zero-initialized-adaptation]] — 零初始化适配，LoRA/DiT/CoRA 跨领域的设计原则，确保适配起点与预训练模型等价
-
-## Analyses
-- multimodal-exogenous-guided-long-term-st-forecasting — 多模态外生信息引导长期时空预测的研究路线：中心缺口（四拼图无人拼合）、消歧重构、统一架构论点、分层研究方向与优先级议程
-- [[multimodal-semantic-understanding]] — 多模态数据语义理解的对齐范式、融合策略与冗余过滤综合分析
-- [[spatio-temporal-foundation-model-landscape]] — 时空基础模型全景：设计哲学三重分裂、架构范式六条路线、预训练策略四象限、泛化机制深度比较
-- [[traffic-forecasting-architecture-trends]] — 交通预测架构趋势：图卷积→Transformer→SSM→基础模型→生成式→检索增强→效率→LLM 融合九时代演化 + 六条跨时代趋势
-- [[diffusion-frequency-domain-theory]] — 扩散模型为什么先学低频——频域理论的统一视角：谱偏置→频率层级→频域噪声控制→EqualSNR→SNR-t Bias→范式转移
-- [[tsfm-covariate-adaptation-comparison]] — TSFM 协变量适配方法全景对比：CoRA vs UniCA vs DiTS vs ChronosX vs AdaPTS vs Gen-P-Tuning 六种路线的系统比较
-- [[spectral-kernel-linear-attention]] — WIRE 旋转读作核的随机特征后落地为线性注意力：内容×有效电阻核、O(N)、旋转/精确两条实现路线
-- [[patchstg-sparse-attention-form]] — PatchSTG dual attention 的显式稀疏注意力形式：块对角（depth）× 位置对齐（breadth）双固定掩码的 softmax 复合，O(max(P,R)Md)
-- [[graph-node-clustering]] — 图节点聚类方案全景：拓扑驱动（Louvain/METIS/KD-Tree）× 特征驱动（k-means/k-medoids/DTW）× 可学习聚类（胶囊路由/对比聚类/记忆向量锚点/注意力分数），静态 vs 动态取舍
-
-
-## Sources (continued)
-- [[source-stop]] — STOP: Robust Spatio-Temporal Centralized Interaction for OOD Learning (ICML 2025)
-- [[source-fstllm]] — FSTLLM: Spatio-Temporal LLM for Few Shot Time Series Forecasting, plug-and-play LLM augmentation (ICML 2025)
-- [[source-st-ttc]] — ST-TTC: Learning with Calibration, test-time computing of spatio-temporal forecasting via spectral-domain calibration (NeurIPS 2025 Spotlight)
-- [[source-s2dbm]] — S²DBM: Series-to-Series Diffusion Bridge Model, Brownian bridge pins both endpoints for deterministic point forecasting (arXiv 2024)
-- [[source-ratd]] — RATD: Retrieval-Augmented Diffusion Models for Time Series Forecasting, k-NN references guide denoising via RMA (NeurIPS 2024)
-- [[source-armd]] — ARMD: Auto-Regressive Moving Diffusion Models for Time Series Forecasting, ARMA-inspired sliding-window diffusion (AAAI 2025)
-- [[source-doflow]] — DoFlow: Flow-based Generative Models for Interventional and Counterfactual Forecasting on Time Series (ICLR 2026)
-- [[source-k2vae]] — K²VAE: Koopman-Kalman Enhanced VAE for Probabilistic Time Series Forecasting (ICML 2025 Spotlight)
-- [[source-weathergfm]] — WeatherGFM: Learning A Weather Generalist Foundation Model via In-context Learning (ICLR 2025)
-- [[source-weatherpeft]] — WeatherPEFT: Task-Adaptive Parameter-Efficient Fine-Tuning for Weather Foundation Models (ICLR 2026)
-- [[source-maginet]] — MagiNet: Mask-Aware Graph Imputation Network for Incomplete Traffic Data, learnable missing encoding without pre-filling (arXiv 2024 / ACM TKDD 2025)
-- [[source-stamimputer]] — STAMImputer: Spatio-Temporal Attention MoE for Traffic Data Imputation (arXiv 2025 / IJCAI 2025)
-- [[source-st-vision-llm]] — ST-Vision-LLM: Vision-LLMs for Spatiotemporal Traffic Forecasting, TS-as-image + GRPO for mobile traffic (arXiv 2025)
-- [[source-motm]] — MoTM: Towards a Foundation Model for Time Series Imputation based on Continuous Modeling，连续时间 INR 插补基础模型 (AALTD/ECML 2025 口头报告)
-
-- [[source-diffusionblocks]] — DiffusionBlocks: Block-wise Neural Network Training via Diffusion Interpretation (Sakana AI, ICLR 2026)
-
-## Entities (continued)
-- [[stop]] — STOP (Spatio-Temporal OOD Processor), centralized ConAU messaging + GenPU perturbation + DRO for OOD traffic forecasting, +17.01% (ICML 2025)
-- [[fstllm]] — FSTLLM, LLM-augmented few-shot ST forecaster: LLM graph construction + STGNN backbone + QLoRA domain-knowledge injection, plug-and-play (ICML 2025)
-- [[st-ttc]] — ST-TTC, inference-time test-time computing for STF via plug-and-play spectral calibrator on a frozen backbone (NeurIPS 2025 Spotlight)
-- [[s2dbm]] — S²DBM, Brownian-bridge diffusion model pinning both endpoints (y0 and prior h) to reduce reverse-process stochasticity for point/probabilistic TS forecasting (arXiv 2024)
-- [[ratd]] — RATD, first retrieval-augmented time series diffusion model; embedding-based k-NN retrieval + Reference Modulated Attention (RMA) guides denoising (NeurIPS 2024)
-- [[armd]] — ARMD, first continuous sequential diffusion TSF model; sliding-window evolution + linear distance-based devolution, unconditional, >10x faster (AAAI 2025)
-- [[doflow]] — DoFlow, flow-based generative model on a causal DAG with per-node time-conditioned CNFs unifying observational/interventional/counterfactual forecasting + likelihood anomaly detection (ICLR 2026)
-- [[k2vae]] — K²VAE, VAE-based one-step generative model linearizing TS via KoopmanNet + refining uncertainty via KalmanNet for long-term probabilistic forecasting (ICML 2025)
-- [[weathergfm]] — WeatherGFM, paper-proposed first weather generalist foundation model unifying 10+ weather understanding tasks via visual in-context learning on a plain ViT (ICLR 2025)
-- [[maginet]] — MagiNet, mask-aware graph imputation network replacing pre-filling with learnable missing encoding + mask-weighted Chebyshev graph convolution (arXiv 2024)
-- [[stamimputer]] — STAMImputer, outer-layer MoE with temporal (MSAT) + spatial (LrSGAT) attention experts + observation-expert routing for traffic data imputation under block missing (arXiv 2025)
-- [[st-vision-llm]] — ST-Vision-LLM, vision-language fusion framework rendering 2D traffic grids as images for a Vision-LLM with single-token numerical encoding + SFT/GRPO (arXiv 2025)
-
-- [[diffusionblocks]] — DiffusionBlocks, principled block-wise training framework via diffusion interpretation, 3× memory reduction with competitive performance (Sakana AI, ICLR 2026)
-
-## Concepts (continued)
-- [[ood-generalization]] — out-of-distribution generalization: maintaining accuracy under temporal (T-OOD) and structural (S-OOD) distribution shift beyond the IID assumption
+- [[score-based-generative-modeling]] — 基于分数的生成建模，通过估计数据分布的对数密度梯度来生成样本
+- [[score-based-generative-models]] — 基于分数的生成模型，通过估计对数密度梯度生成样本
+- [[score-function]] — 分数函数 ∇_x log p(x)，对数概率密度的梯度
+- [[score-matching]] — 得分匹配 (Score Matching)，通过匹配分数函数估计数据分布
+- [[sea-ice-concentration-forecasting]] — 海冰密集度预测，从数值模型到深度学习的领域概览
+- [[selective-representation-space]] — Selective Representation Space (SRS)，自适应选择/重排 patch 以替代固定 adjacent patching 的表示空间 (NeurIPS 2025)
+- [[self-supervised-imputation-training]] — 自监督插补训练：从观测值中人工构造伪缺失目标形成自监督信号，BERT 掩码语言建模启发的训练范式 (CSDI, NeurIPS 2021)
+- [[signal-to-noise-ratio-modality-selection]] — SNR-based adaptive modality weighting for multi-modal prediction
+- [[smld]] — Score-Matching Langevin Dynamics，基于分数匹配和朗之万采样的生成模型
+- [[snr-t-bias]] — SNR-t Bias，扩散模型推理阶段的信噪比-时间步错配偏置 (CVPR 2026)
+- [[spatio-temporal-decomposition]] — 时空分解，将时空序列分解为趋势+季节成分分治建模 (DST-Mamba, AAAI 2025)
+- [[spatio-temporal-decoupling]] — 时空解耦在在线共形预测中的最优权衡
+- [[spatio-temporal-foundation-model]] — 时空基础模型，跨城市零样本预测范式
 - [[spatio-temporal-ood-learning]] — ST-OOD learning: systematic landscape of solutions (causal/centralized messaging/information bottleneck/continual/test-time) for spatio-temporal distribution shift beyond IID
-- [[distributionally-robust-optimization]] — DRO, worst-case optimization over an uncertainty set of distributions; equivalent to ERM + variance regularization for OOD robustness
-- [[few-shot-traffic-forecasting]] — few-shot / data-scarce spatio-temporal forecasting, where STGNNs and TSFMs fail and contextual/transfer methods help (ICML 2025)
+- [[spatio-temporal-reasoning]] — 时空推理：结合图结构、时序动态和文本语义的回答式推理范式 (Ni et al., 2026)
+- [[spatiotemporal-deviation]] — 时空偏差，输入与历史/标签的不一致现象 (BiST PVLDB 2025; ST-SSDL NeurIPS 2025)
+- [[spatiotemporal-mirage]] — 时空幻象，短输入窗口导致模型无法区分不同相似或相似不同的预测困境
+- [[spectral-bias-training-dynamics]] — 扩散模型训练谱偏置理论，数据协方差驱动学习顺序的反比方差谱定律 (NeurIPS 2025, Harvard)
+- [[spectral-graph-conditional-exchangeability]] — SGCE，谱图条件可交换性 (ICML 2026)
+- [[spherical-geometry-inductive-bias]] — 球面几何归纳偏置，显式编码地球球面几何以消除平面投影失真的设计理念
+- [[st-traffic-imputation-benchmark]] — 交通插补统一评测基准（Guo et al.）：评测协议（4 数据集 × 4 缺失模式 × 5 缺失率、官方代码复现 + 网格搜索、RMSE/MAE/MAPE 仅缺失位置、效率与挑战/稳定期分组）、主要排名结论（评测复现口径，与各方法原文数字分立）、模型选择建议、覆盖范围警示
+- [[st-unification]] — ST-isolated vs ST-unification spectrum for spatio-temporal modeling
+- [[stationarity-aware-retrieval]] — 平稳性感知检索，根据数据集平稳性自适应调节检索多样性和聚合锐度 (SARAF, KDD 2026)
+- [[stochastic-interpolant]] — Stochastic Interpolant: 任意端点密度上的有限时间随机插值与二次概率流速度目标 (ICLR 2023)
+- [[stochastic-optimal-control-sb]] — SB 的 SOC 视角，HJB 方程、值函数及三种损失族
+- [[structural-entropy]] — 结构熵与编码树，图的层次化社区抽象与最优编码（Li & Pan 2016 理论；MultiSPANS 自述首次用于优化空间注意力）
+- [[subseasonal-to-seasonal-forecasting]] — S2S 次季节到季节预测，2-6 周"可预测性荒漠"的概念与方法论
+- [[temporal-rotation]] — mapping continuous timestamps to RoPE rotation angles
 - [[test-time-computing-st]] — test-time computing paradigm for STF: online calibration of a frozen backbone exploiting label autocorrelation (NeurIPS 2025)
-- [[arma-inspired-diffusion]] — ARMA-Inspired Diffusion, using ARMA theory (AR + MA) as the design principle for continuous-sequential diffusion forecasting (AAAI 2025)
-- [[causal-time-series-forecasting]] — 因果时间序列预测，超越观测的干预与反事实查询范式 (ICLR 2026)
-- [[koopman-linearization-for-forecasting]] — Koopman 线性化预测范式，把非线性 TS 提升到测量空间用线性算子 (DMD/eDMD/神经网络) 建模 (K²VAE/MMCKM)
-- [[kalman-filter]] — Kalman 滤波，线性动力系统状态估计的递归 Predict/Update 算法 + 不确定性建模
-- [[weather-foundation-model]] — 天气基础模型，在大规模气象数据上预训练、服务多种天气/气候任务的通用模型范式
-- [[weatherpeft]] — WeatherPEFT，论文自称首个 WFM 参数高效微调框架，TADP + SFAS 双阶段任务自适应（ICLR 2026）
-- [[mask-aware-imputation-no-prefilling]] — 无预填充的掩码感知填补，用可学习缺失嵌入直接表征缺失值而非零初始化 (MagiNet, arXiv 2024)
-- [[vision-language-traffic-forecasting]] — reframing 2D grid traffic forecasting as a vision-language fusion problem via traffic-matrix-as-image (arXiv 2025)
-- [[in-context-learning]] — ICL，冻结基础模型仅凭上下文演示适配新任务的范式；WeatherGFM 视觉 ICL 的基础 (2026)
-- [[primary-auxiliary-patterns]] — 主-辅模式分类框架，将时空模式按信息源（内部/外部）划分为主模式和辅助模式，对齐不同缺失类型 (PAST, arXiv 2025)
-
-- [[block-wise-training]] — 块级训练，将网络分割为独立可训练组件以减少内存消耗的训练范式 (ICLR 2026)
-- [[residual-connections-as-diffusion]] — 残差连接作为逆扩散的欧拉步，理论桥接残差网络与连续时间扩散模型 (ICLR 2026)
-- [[memory-efficient-training]] — 内存高效训练，对比激活检查点、块级训练、混合精度等内存优化技术 (ICLR 2026)
-
-## Techniques (continued)
-- [[centralized-message-passing]] — centralized message passing: nodes interact only with K shared Context-Aware Units via O(KN) low-rank attention, blocking node-to-node messages (STOP, ICML 2025)
-- [[context-aware-units]] — ConAU, K≪N learnable shared context vectors forming STOP's centralized interaction hub for OOD robustness + inductive learning (ICML 2025)
-- [[generalized-perturbation-unit]] — GenPU, multinomial-mask message perturbation generating variant environments, optimized via worst-case DRO selection (STOP, ICML 2025)
-- [[alpha-entmax]] — α-Entmax, sparsity-controllable softmax generalization (α=1 softmax, α=2 sparsemax) for sparse graph-attention adjacency (ICML 2025)
-- [[spectral-domain-calibration]] — SD-Calibrator, per-node rFFT + group-wise amplitude/phase modulation correcting periodic non-stationarity at test time (ST-TTC, NeurIPS 2025)
-- [[flash-gradient-update]] — single-sample single-step calibrator update on the dequeued FIFO-queue sample to avoid information leakage (ST-TTC, NeurIPS 2025)
-- [[brownian-bridge-diffusion]] — 布朗桥扩散，钉住数据与先验两端的扩散桥 + 后验方差缩放(s)切换确定性/概率采样 (S²DBM, arXiv 2024)
-- [[sliding-window-diffusion]] — Sliding-Window Diffusion, ARMD's deterministic intermediate-state generation that slides the series window instead of adding noise (AAAI 2025)
-- [[distance-based-devolution]] — Distance-Based Devolution, ARMD's linear-backbone denoising predicting intermediate-to-target distance with step-adaptive weighting (AAAI 2025)
-- [[causal-counterfactual-recovery]] — abduction-action-prediction via CNF encode-decode with DoFlow's pointwise counterfactual recovery theorem under monotone SCMs (ICLR 2026)
-- [[kalmannet-uncertainty-modeling]] — KalmanNet, neuralized Kalman Predict/Update refining KoopmanNet's biased linear system and defining the VAE variational posterior (K²VAE, ICML 2025)
-- [[weather-prompt]] — Weather Prompt, three visual prompt formats (single/multi/temporal modal) for in-context weather task specification (WeatherGFM, ICLR 2025)
-- [[mixed-modal-masked-image-modeling]] — MMIM, VQA-style masked-target reconstruction (75% block-wise) unifying weather tasks; target full-masking at inference (WeatherGFM, ICLR 2025)
-- [[lrsgat]] — LrSGAT, low-rank guided sampling graph attention: significance-scored hybrid node sampling + low-rank re-attention + semi-adaptive dynamic graph (STAMImputer, arXiv 2025)
-- [[direct-numerical-encoding]] — Direct Numerical Encoding, single-token float vocabulary ⟨|FP m/b|⟩ + two-stage numerical alignment fine-tuning (ST-Vision-LLM, arXiv 2025)
-- [[grpo-for-forecasting]] — GRPO for forecasting, NRMSE-reward RL stage with length/decode penalties for traffic-accuracy optimization (ST-Vision-LLM, arXiv 2025)
-- [[motm-ridge-orchestrator]] — MoTM 在 TimeFlow 调制 INR 基的隐藏表示上逐序列拟合 ridge 回归的零样本编排机制
-
-## Sources (continued)
-- [[source-bigst]] — BigST: Linear Complexity Spatio-Temporal GNN for Traffic Forecasting on Large-Scale Road Networks (PVLDB 2024)
-- [[source-past]] — PAST: Primary-Auxiliary Spatio-Temporal Network for Traffic Time Series Imputation, primary+auxiliary pattern disentanglement with GIM+CGM (PVLDB, arXiv 2025)
-- [[source-pn-train]] — PN-Train: perturbation-based pattern neuron detector + optimizer for urban time series forecasting, identifies and fine-tunes <10% neurons to boost low-frequency pattern accuracy, ICLR 2025
-
-## Entities (continued)
-- [[bigst]] — BigST, linear-complexity STGNN scaling to ~100K nodes via PRF-kernel linearized spatial conv + cached long-sequence features (PVLDB 2024)
-- [[past]] — PAST, primary-auxiliary spatio-temporal network for traffic imputation, GIM+CGM dual-module architecture (PVLDB, SJTU, 2025)
-
-## Techniques (continued)
-- [[linearized-spatial-convolution]] — LSC, O(N) graph message passing via PRF-kernel adjacency factorization, avoids materializing the N×N matrix (BigST, PVLDB 2024)
-- [[llm-enhanced-graph-construction]] — LLM-Enhanced Graph Construction, using frozen LLM + α-Entmax to build semantically meaningful adjacency matrices from node text (FSTLLM, ICML 2025)
-- [[domain-knowledge-injection]] — Domain Knowledge Injection, six-component prompt + QLoRA fine-tuning for LLM-based calibration of numerical predictions (FSTLLM, ICML 2025)
-- [[long-sequence-feature-extractor]] — LSFE, BigST cached pre-processing: linearized Transformer (PRF) + periodic feature sampling for long-history encoding (PVLDB 2024)
-- [[interval-aware-dropout]] — 基于时间距离的图边 dropout 策略，近邻边更高概率丢弃，迫使模型学习更广范围依赖 (PAST, arXiv 2025)
-- [[cross-gated-mechanism]] — 交叉门控机制，双向 sigmoid+tanh 门控实现时空嵌入的跨域特征选择与交互 (PAST, arXiv 2025)
-
-- [[equi-probability-noise-partitioning]] — 均概率噪声划分，基于累积概率质量的扩散模型噪声水平划分策略，确保块间学习难度均衡 (ICLR 2026)
-- [[activation-checkpointing]] — 激活检查点，通过选择性存储与重计算以内存换计算的训练优化技术 (ICLR 2026)
-
-## Sources (continued)
-- [[source-2510-25760]] — Multimodal Spatial Reasoning in the Large Model Era: A Survey and Benchmarks, Zheng et al. (arXiv 2025)
-- [[source-stllm]] — STLLM: Spatio-Temporal LLM for reasoning about environments and actions, point cloud + video + text fusion (arXiv 2025)
-
-## Entities (continued)
-- [[multimodal-large-language-model]] — MLLM, 多模态大语言模型的标准三段式架构与空间推理增强策略 (Zheng et al., 2025)
-
-## Concepts (continued)
-- [[multimodal-spatial-reasoning]] — 多模态空间推理，从异构输入推断空间关系、位置与动作的能力框架 (Zheng et al., 2025)
+- [[test-time-policy-optimization]] — 测试时策略优化：不更新参数、于部署阶段持续改进 LLM agent 策略的方法类（梯度 RL / ICL / logit 调制三路线）
+- [[texts-as-auxiliary-variables]] — 文本作为辅助变量，TaTS 的核心设计概念 (ICLR 2026)
+- [[time-indexed-foundation-model]] — 时间索引基础模型，每时间戳学 H(t)x(t) 的连续时间零样本插补范式 (TabPFN-TS/MoTM, TMLR 2026)
+- [[token-level-specialization]] — Token 级专业化，MoE 驱动的数据驱动式时间序列 token 粒度模型专业化范式，替代频率级人工分组 (Moirai-MoE, ICML 2025)
+- [[traffic-forecasting]] — predicting future traffic states from historical sensor data
+- [[traffic-missing-patterns]] — 交通缺失模式四分类 SRTR/SRTC/SCTR/SCTC：空间/时间维度 × 随机/连续位置，各类掩码构造协议与现实成因；与 Rubin 缺失机制分类（MCAR/MAR/MNAR）维度不同、分立记录
+- [[tropical-cyclone-precipitation-forecasting]] — TC 降水预测，随 TC 中心移动的动态窗口预测，与常规降水预测的差异与方法论
+- [[tweedies-formula]] — Tweedie 公式，加噪数据分数函数与干净数据后验期望的关系
+- [[unbalanced-schrodinger-bridge]] — 非平衡 SB，允许质量沿轨迹产生/消灭的变体
+- [[unified-covariate-adaptation]] — UniCA, unified covariate adaptation framework for TSFMs (ICLR 2026)
+- [[union-of-subspaces-model]] — Union of Subspaces Model, data assumption underlying MCR² and CBSA
+- [[unobserved-region-forecasting]] — 无观测区域交通预测：克里金外推连续无观测区的任务谱系，掩码自监督、物理约束、外部动态信号、局部特征解耦四条路线
+- [[variable-wise-partitioning]] — 变量维度划分基准，沿变量而非时间切分 train/val/test 以检验跨变量/跨域插补泛化 (NuwaTS, arXiv 2024)
+- [[variational-autoencoder]] — 变分自编码器（VAE），基于 ELBO 优化的潜变量生成模型
+- [[vehicle-centric-graph-traffic-pde]] — Lagrangian discretization of LWR traffic PDE on dynamic vehicle graphs with skew-symmetric advection + PSD diffusion (ICLR 2026)
 - [[vision-language-action]] — VLA, 视觉-语言-动作模型，从多模态输入生成可执行动作的具身 AI 核心范式 (Zheng et al., 2025)
 - [[vision-language-navigation]] — VLN, 视觉-语言导航，在 3D 环境中遵循语言指令进行导航的协作式多模态任务 (Zheng et al., 2025)
-- [[embodied-question-answering]] — EQA, 具身问答，agent 主动探索环境收集视觉证据并回答问题的基准任务 (Zheng et al., 2025)
-- [[birkhoff-polytope]] — $n \times n$ 双随机矩阵构成的 Birkhoff 多面体，mHC 的残差映射流形
-- [[identity-mapping-property]] — 残差连接中浅层信号直通深层的恒等映射性质
-- [[autocorrelation-bias]] — MSE 作为时序预测学习目标时的自相关偏差，源于标签序列的条件自相关被忽略 (DistDF, ICLR 2026; 问题由 FreDF 先系统提出)
-- [[label-autocorrelation]] — 多步标签序列在给定历史条件下的时间步依赖，破坏 DF 的条件独立假设 (FreDF)
-- [[direct-forecast]] — Direct Forecast 多输出多步预测范式，与 iterative forecast 相对 (FreDF)
-- [[heterogeneous-task-weights]] — 多步预测中对未来各步赋予非均匀任务权重（QDF 用 Σ^{-1} 对角元建模）
+- [[vision-language-traffic-forecasting]] — reframing 2D grid traffic forecasting as a vision-language fusion problem via traffic-matrix-as-image (arXiv 2025)
+- [[wardrop-equilibrium]] — generalized Wardrop equilibrium with non-decomposable latency functions, convex characterization via potential functions
+- [[weather-foundation-model]] — 天气基础模型，在大规模气象数据上预训练、服务多种天气/气候任务的通用模型范式
+- [[world-model]] — 世界模型的职责、三类待解问题、七种不确定性分类、表征空间预测、键值可写记忆跟踪世界状态与五种数据获取方式
+- [[x-prediction]] — x-prediction，扩散模型中直接预测干净数据的参数化方式，基于流形假设在高维空间中优于 ε-/v-prediction
+- [[zero-initialized-adaptation]] — 零初始化适配，LoRA/DiT/CoRA 跨领域的设计原则，确保适配起点与预训练模型等价
 
-## Techniques (continued)
+## Techniques
+
 - [[3d-visual-grounding]] — 3D 视觉定位，从自然语言描述在 3D 场景中定位目标物体的三类方法（3D/多视图/混合）(Zheng et al., 2025)
-- [[hyper-connections]] — 可学习的多流残差连接设计，扩展残差流宽度以提升拓扑复杂度
-- [[manifold-constrained-hyper-connections]] — 将 Hyper-Connections 的残差映射投影到 Birkhoff 多面体以恢复恒等映射稳定性
-
-## Sources (continued)
-- [[source-kite]] — KITE: Knowledge-Guided Probabilistic Modeling for Time Series Forecasting with Exogenous Variables（HCM + KGC + CFG，ICML 2026）
-
-## Entities (continued)
-- [[kite]] — KITE，外生条件概率时序预测框架：历史条件流形源 + 知识引导条件化 + CFG
-
-## Techniques (continued)
-- [[history-conditional-manifold]] — History-Conditional Manifold，用历史内生构造可学 Flow Matching 源分布
-- [[knowledge-guided-conditioning]] — Knowledge-Guided Conditioning，统计先验双线性调制内生–外生注意力
-
-## Analysis (continued)
-- [[kite-manifold-guidance-chain]] — KITE 三件套串联：流形改起点、知识改条件、CFG 拧剂量
-- [[patchstg-mage-stop-shared-skeleton]] — PatchSTG/MAGE/STOP 同构分析：共享低维中介混合 + 个性化项 + 静态 support 的三种参数化（可分离满秩 / 静态图库标量路由 / K 秩瓶颈）；内容动态 support 为共同空白
-- [[gwnet-longevity]] — GWNet 为何在 2026 年仍是主力基线：LargeST 精度证据（STGformer Table I/II）+ 2026 新方法仍以其为骨干（SCALE/USTD/IGSTGNN）+ 四条修补轴 + 机制分析与失效边界
-
-## Sources (continued)
-- [[source-dag]] — DAG: A Dual Correlation Network for TS Forecasting with Exogenous Variables（时间+通道双相关发现—注入，IJCAI 2026）
-
-## Entities (continued)
-- [[dag]] — DAG，确定性外生预测框架：双相关发现—注入，gating 融合
-
-## Techniques (continued)
-- [[dual-correlation-injection]] — Dual Correlation Injection，跨模块提取 Wq',Wk' 并注入内生预测注意力
-- [[frequency-enhanced-direct-forecast]] — FreDF 训练技术：时域 MSE + 频域模长损失混合，模型无关的 DF 升级 (FreDF)
-- [[patch-low-frequency-forecasting]] — PLFM 技术：重叠 patch 频谱 + 低通监督 + FALoss 的低频趋势学习 (LoFT-LLM)
-- [[quadratic-form-weighted-objective]] — QDF 二次型加权目标 L_Σ 与双层学习 Σ 的训练技术 (ICLR 2026)
-
-## Sources (continued)
-- [[source-gcgnet]] — GCGNet: Graph-Consistent Generative Network for TS forecasting with exogenous variables (joint graph alignment + VAE generator + Graph Refiner, ICLR 2026)
-- [[source-srsnet]] — SRSNet / SRS: Selective Representation Space, adaptive patch selection + reassembly plugin for LTSF (NeurIPS 2025, arXiv:2510.14510)
-- [[source-crosslinear]] — CrossLinear: plug-and-play cross-correlation embedding for TS forecasting with exogenous variables (KDD 2025, arXiv:2505.23116)
-- [[source-cirt]] — CirT: Geometry-Inspired Spherical Transformer for S2S Climate Forecasting, 圆形分块 + 傅里叶域自注意力，超越 ECMWF/PanguWeather/GraphCast，ICLR 2025
-- [[source-omnicast]] — OmniCast: 掩码潜扩散模型统一跨时间尺度天气预测，VAE + 掩码生成 Transformer + per-token 扩散头，S2S SOTA，10–20× 快于 GenCast，NeurIPS 2025
-- [[source-mage]] — MAGE: Less but More — Linear Adaptive Graph Learning with sparse-balanced MoE, NeurIPS 2025 (USTC)
-- [[source-moirai-moe]] — Moirai-MoE: 首个 Sparse MoE 时间序列基础模型，token 级专业化替代频率级数据分组，cluster-based gating + next-token prediction，39 数据集 SOTA，ICML 2025（Salesforce）
-
-## Entities (continued)
-- [[gcgnet]] — GCGNet, graph-consistent generative network for exogenous TS forecasting (ICLR 2026, ECNU)
-- [[srsnet]] — SRSNet, SRS + MLP for long-term MTS forecasting via adaptive patch representation spaces (NeurIPS 2025, ECNU)
-- [[crosslinear]] — CrossLinear, Linear many-to-one exogenous forecaster with O(T) cross-correlation embedding (KDD 2025, USTC)
-- [[cirt]] — CirT (Circular Transformer)，几何感知 S2S 气候预测 Transformer，圆形分块 + 傅里叶域自注意力，ICLR 2025 (HKUST + Alibaba DAMO)
-- [[omnicast]] — OmniCast，掩码潜扩散天气预测模型，VAE + 掩码生成 Transformer + 扩散头，S2S SOTA，NeurIPS 2025 (UCLA/Argonne)
-- [[mage]] — MAGE, Mixture of Adaptive Graph Experts, linear complexity adaptive graph learning for ST forecasting, NeurIPS 2025 (USTC)
-- [[moirai-moe]] — Moirai-MoE, 首个稀疏 MoE 时间序列基础模型，token 级专业化 + cluster-based gating，超越 Moirai/Chronos/Time-MoE，ICML 2025（Salesforce）
-
-## Concepts (continued)
-- [[joint-temporal-channel-correlation]] — 联合时间–通道相关建模，反对外生预测中的两步串行相关学习 (GCGNet)
-- [[selective-representation-space]] — Selective Representation Space (SRS)，自适应选择/重排 patch 以替代固定 adjacent patching 的表示空间 (NeurIPS 2025)
-- [[subseasonal-to-seasonal-forecasting]] — S2S 次季节到季节预测，2-6 周"可预测性荒漠"的概念与方法论
-- [[masked-generative-modeling]] — 掩码生成建模，随机掩码 token 后通过迭代并行解码的生成范式，应用于天气预测等连续科学数据（OmniCast, NeurIPS 2025）
-- [[spherical-geometry-inductive-bias]] — 球面几何归纳偏置，显式编码地球球面几何以消除平面投影失真的设计理念
-- [[edge-noise-amplification]] — 边噪声放大，ReLU 在自适应图学习中放大负边权为正的伪空间依赖缺陷 (MAGE, NeurIPS 2025)
-
-## Techniques (continued)
-- [[graph-structure-aligner]] — Graph Structure Aligner：patch 图 VAE + L1 结构对齐约束生成器 (GCGNet)
-- [[graph-refiner]] — Graph Refiner：top-k 稀疏邻接 + GCN 精炼并防止 Graph VAE 退化 (GCGNet)
-- [[variational-generator-exogenous]] — Variational Generator：VAE 粗预测 + 可选未来外生替换 (GCGNet)
-- [[selective-patching]] — Selective Patching：stride-1 候选上可微 Argmax 选 patch（可重复采样）(SRS, NeurIPS 2025)
-- [[dynamic-reassembly]] — Dynamic Reassembly：对选中 patch 可微 Argsort 学习顺序 (SRS, NeurIPS 2025)
+- [[activation-checkpointing]] — 激活检查点，通过选择性存储与重计算以内存换计算的训练优化技术 (ICLR 2026)
+- [[adaptive-frequency-fusion]] — AFF, frequency-domain fusion with learnable per-band weights (ICLR 2026)
+- [[adaptive-frequency-modulation]] — AFM, learnable Beta-distribution spectral filters + band aggregation for normal-extreme weather discrimination (arXiv 2025)
 - [[adaptive-fusion]] — Adaptive Fusion (SRS)：常规 adjacent 与 selective patch 嵌入的凸组合 (NeurIPS 2025)
-- [[cross-correlation-embedding]] — CrossLinear 即插即用 1D conv 外生交叉相关残差嵌入，CI 骨干友好 (KDD 2025)
-- [[circular-patching]] — CirT 的纬度线圆形分块策略，消除固定角度 grid patching 的高纬度面积失真
-- [[fourier-self-attention]] — 傅里叶域自注意力，DFT→频域多头注意力→IDFT 显式编码空间周期性，与 FEDformer FEB 不同
-- [[linear-adaptive-graph-learning]] — 线性自适应图学习，kernel 近似将图卷积从 O(N²) 降为 O(N)，线性于节点数 (MAGE, NeurIPS 2025)
-- [[sparse-balanced-mixture-of-experts-st]] — 稀疏平衡混合专家，每节点 Top-K 激活 + 符号 SGD 负载均衡，克服线性图学习的低秩瓶颈 (MAGE, NeurIPS 2025)
-- [[cluster-based-gating]] — 簇基门控，利用预训练 dense 模型 token 嵌入 k-means 聚类中心引导 MoE 专家分配的创新门控函数 (Moirai-MoE, ICML 2025)
-
-## Sources (continued)
-- [[source-minitraffic]] — MiniTraffic: mini-sized contrastive learning pre-trained model for fine-grained traffic tasks, ICML 2026
-- [[source-module-embedding-theorem-towers-algebras]] — Module Embedding Theorem via Towers of Algebras: Markov towers 进路推广 Jones-Penneys 嵌入定理至任意循环模，arXiv 2018
-
-## Entities (continued)
-- [[minitraffic]] — MiniTraffic, first lightweight (~119K) pre-trained model for fine-grained (road+lane) traffic prediction, ICML 2026
-- [[mcgvae]] — McgVAE, first road-lane joint modeling VAE for fine-grained traffic prediction, CIKM 2024
-- [[omnifield]] — OmniField, encoder-processor-decoder CNF unifying reconstruction/interpolation/forecasting/cross-modal prediction, ICLR 2026
-- [[subfactor-planar-algebra]] — 子因子平面代数，II₁ 子因子标准不变量的公理化，与 unitary 2×2 multitensor category 等价
-- [[metnet]] — MetNet 系列（Google），SOTA 概率降水预报模型（1/2/3），交叉熵 + 时效条件化 + 227M 参数，仅限美国
-- [[rainpro]] — RainPro 系列，高效多源融合概率降水预报（RainPro-8/8R/2R），有序一致性损失 + 单次预测，ICLR 2026
-
-
-## Concepts (continued)
-- [[fine-grained-traffic-prediction]] — fine-grained traffic prediction unifying road-level and lane-level forecasting
-- [[pde-driven-spatio-temporal-forecasting]] — PDE-driven ST forecasting paradigm, reformulating ST dynamics as continuous PDE evolution vs discrete graph inference (STPDE, ICML 2026)
-- [[module-embedding-theorem-subfactor]] — 模嵌入定理（子因子），有限深子因子平面代数嵌入其任意循环模融合图的二部图平面代数中
-- [[arctic-amplification]] — 北极放大效应，北极升温速度 2-4 倍于全球平均的气候现象
-- [[multi-granularity-sea-ice-forecasting]] — 多粒度海冰预测，联合日/周/月 SIC 跨粒度建模新范式
-- [[sea-ice-concentration-forecasting]] — 海冰密集度预测，从数值模型到深度学习的领域概览
-## Techniques (continued)
-- [[frequency-domain-stability-augmentation]] — FDA, frequency-domain perturbation with spectral constraints for road→lane transfer in MiniTraffic
-- [[invariant-diffusion-operator]] — Invariant Diffusion Operator, Green-function attention as linear-complexity global diffusion for ST PDE evolution (STPDE, ICML 2026)
-- [[environment-basis-manifold]] — Environment Basis Manifold, K learnable bases + sparse Top-K routing + stochastic perturbation for heterogeneity modeling (STPDE, ICML 2026)
-- [[multimodal-crosstalk]] — MCT block, concatenated per-modality CNF tokens with global feature z injection for cross-modal exchange (OmniField, ICLR 2026)
-- [[iterative-cross-modal-refinement]] — ICMR, multi-round MCT with pooled global feature bridge for progressive multimodal signal alignment (OmniField, ICLR 2026)
-- [[fleximodal-fusion]] — presence-mask gating at encoder/attention/loss levels enabling one model for arbitrary input modality subsets (OmniField, ICLR 2026)
-- [[ordinal-consistent-loss]] — 有序一致性损失，条件概率公式强制降水强度单调性，BCE + 有序掩码保证概率一致性
-- [[granularity-variates]] — 粒度 variate 建模，iTransformer variate 思路跨粒度迁移 (SIFusion)
-- [[independent-spatial-tokenization]] — 独立空间 tokenization，解耦空间编码与序列建模 (SIFusion)
-- [[task-adaptive-dynamic-prompting]] — TADP，从 WFM 编码器嵌入权重内生生成任务自适应软提示的 PEFT 技术（WeatherPEFT, ICLR 2026）
-- [[stochastic-fisher-guided-adaptive-selection]] — SFAS，Fisher 信息 + 退火随机性选择 Top-k 关键参数更新的 PEFT 技术（WeatherPEFT, ICLR 2026）
-
-
-## Sources (continued)
-- [[source-omnifield]] — OmniField: continuity-aware multimodal conditioned neural field for robust spatiotemporal learning, MCT + ICMR + fleximodal fusion, ICLR 2026 (BNL/UCLA/Columbia)
-- [[source-rainpro]] — RainPro-8: 高效 8h 概率降水预报模型，多源融合（雷达/卫星/NWP/地形）+ 有序一致性损失 + 单次前向预测，ICLR 2026
-- [[source-sifusion]] — SIFusion: 统一多粒度北极海冰预测框架，Swin V2 空间编码 + granularity variate 跨粒度融合 (NeurIPS 2025)
-- [[source-wardropnet]] — WardropNet: COAML pipeline embedding Wardrop equilibrium as differentiable layer for traffic flow prediction, Fenchel-Young loss + perturbation regularization, ICLR 2025
-
-## Sources (continued)
-- [[source-cheng-2025-cora-correlation-aware-adapter]] — CoRA (Correlation-aware Adapter): TSFM 下游通道相关插件，DCE 低秩时变/时不变 + HPCL 异质-部分对比，推理 O(N)（Cheng et al., ICLR 2026）
-
-## Entities (continued)
-- [[cora-correlation-aware-adapter]] — CoRA 通道相关适配器实体（≠ 协变量 [[cora-tsfm]]）
-
-## Techniques (continued)
-- [[dynamic-correlation-estimation]] — DCE：Pearson + Qt V Qtᵀ 低秩动态相关估计（CoRA）
-- [[heterogeneous-partial-contrastive-learning]] — HPCL：正/负空间掩码对比学习 HCorr+PCorr（仅训练）
-- [[time-aware-polynomial-correlation]] — 可学习时间多项式拟合时变相关因子 Qt
-
-## Sources (continued)
-- [[source-chronosx]] — ChronosX: IIB past + OIB future modular covariate adapters for pretrained TS models; 32 synthetic benchmark; TimesFMX/MOMENTX (AISTATS 2025, arXiv:2503.12107)
-- [[source-time-mmd]] — Time-MMD: 9-domain multimodal numeric–text TS dataset + MM-TSFlib; fine-grained alignment & contamination control (NeurIPS 2024 D&B, arXiv:2406.08627v4)
-- [[source-time-vlm]] — Time-VLM: RAL/VAL/TAL + frozen ViLT/CLIP/BLIP-2 for augmented TSF (ICML 2025, arXiv:2502.04395v2)
-- [[source-ts-vl-alignment]] — TS–VL Alignment source: 34 configs, ID saturation, image-as-intermediary (arXiv:2602.19367v1)
-- [[source-constrained-text-fusion]] — CFA source: >20K Time-MMD settings, Gating/FiLM/Orthogonal/CFA (arXiv:2603.22372)
-- [[source-cross-modal-misalignment]] — Cross-modal misalignment LVM: selection/perturbation; MMCL retains unbiased semantics (NeurIPS 2025, arXiv:2504.10143v7)
-- [[source-tess]] — TESS: 离散原语 + 门控 + PatchTST prefix（arXiv:2603.12664v2）
-
-## Entities (continued)
-- [[chronosx]] — ChronosX 实体：past/future Injection Blocks + 跨骨干扩展
-- [[time-mmd]] — Time-MMD 实体：9 域数值–文本数据集 + MM-TSFlib（NeurIPS 2024 D&B）
-- [[time-vlm]] — Time-VLM 实体：检索记忆 + 时序成图/成文 + VLM 融合
-- [[ts-vl-alignment]] — TS–VL Alignment 实体：近正交 / 后验投影上限 / 外生多模态含义
-- [[constrained-text-fusion]] — Constrained Text Fusion / CFA：naive vs 受控文本注入
-- [[cross-modal-misalignment]] — Cross-modal misalignment 概念：缓解 vs 利用；block-id 无偏语义
-- [[fusionbench]] — FusionBench：深度模型融合统一库与基准（JMLR 2025）
-- [[tess]] — TESS 实体：离散时序原语 + 置信门控 + prefix 条件化 PatchTST（ICLR 2026）
-
-## Concepts (continued)
-- [[deep-model-fusion]] — 深度模型融合：ensemble / merging / mixing 三分法与 learn-from-model 定位
-
-## Techniques (continued)
-- [[model-merging]] — 同构参数合并：Soup / Fisher / RegMean / Ties / AdaMerging 等
-- [[task-arithmetic]] — 任务向量算术：微调位移的加减组合与编辑
-- [[temporal-semantic-primitives]] — 时间演化原语：mean shift/volatility/shape/lag-decay 四类离散语义，数值可验证 + 置信门控
-
-## Sources (continued)
-- [[source-jmlr-25-1243]] — FusionBench: unified library + benchmark for deep model fusion (JMLR 26, 2025; PDF raw/jmlr-25-1243.pdf)
-
-## Sources (continued)
-- [[source-2607-01918]] — Zeus: Towards Tuning-Free Foundation Model for Time Series Analysis，U 形多尺度 encoder-only + MOTM 掩码预训练，五任务 tuning-free（ICML 2026; PDF raw/2607.01918.pdf）
-
-## Entities (continued)
-- [[zeus]] — Zeus，unified tuning-free TSFM，point tokenization + U 形多尺度 encoder + MOTM，五任务零微调（ICML 2026）
-- [[trace]] — TRACE, first multimodal time-series retriever with channel-level alignment + dual-level hard negative mining (NeurIPS 2025)
-
-## Techniques (continued)
-- [[multi-objective-temporal-masking]] — MOTM：掩码比例→时序范围→掩码策略三级采样，多目标掩码预训练（Zeus, ICML 2026）
-- [[channel-identity-token]] — CIT, per-channel learnable token for channel-level semantic anchoring (TRACE, NeurIPS 2025)
-- [[channel-biased-attention]] — CbA, channel-disentangled attention mask allowing limited cross-channel interaction (TRACE, NeurIPS 2025)
-- [[dual-level-hard-negative-mining]] — Dual-level hard negative mining at sample + channel granularity for cross-modal TS-text alignment (TRACE, NeurIPS 2025)
-
-## Sources (continued)
-- [[source-quizsf-zero-shot-forecasting-www26]] — QuiZSF: RAG for zero-shot TSF, ChronoRAG Base + HHTR + MSIL + MCC, 75%/87.5% Top1 (WWW 2026)
-
-## Techniques (continued)
-- [[quizsf]] — QuiZSF, retrieval-augmented zero-shot TSF framework, ChronoRAG Base + MSIL + MCC dual-branch adapter (WWW 2026)
-
-## Concepts (continued)
-- [[chronorag-base]] — ChronoRAG Base, hierarchical tree-structured TS database for RAG-augmented zero-shot forecasting (WWW 2026)
-
-## Entities (continued)
-- [[ts-memory]] — TS-Memory, plug-and-play memory adapter for frozen TSFMs, parametric memory distillation from offline kNN teacher, retrieval-free O(1) inference (KDD 2026)
-
-## Concepts (continued)
-- [[parametric-memory-distillation]] — 参数化记忆蒸馏，将在线检索的预测分布知识离线蒸馏为轻量参数模块，推理时无需检索 (TS-Memory, KDD 2026)
-
-## Techniques (continued)
-- [[confidence-gated-distillation]] — 置信门控蒸馏，advantage gate + 置信加权选择性蒸馏检索教师分布校正 (TS-Memory, KDD 2026)
-
-## Sources (continued)
-- [[source-loft]] — LOFT: Low-Rank Prior-Induced Consistency Flow Matching for Efficient Traffic Imputation, 低秩先验 + 速度一致性 + 不确定性矫正，2 NFE 推理 (KDD 2026)
-
-## Entities (continued)
-- [[loft]] — LOFT，低秩信息先验 + 轨迹一致性 CFM 交通插补，2 NFE 推理超越 50 NFE 扩散基线 (KDD 2026)
-
-## Techniques (continued)
-- [[low-rank-prior-estimation]] — 掩码低秩分解神经参数化构造流匹配信息先验，单次前向、线性复杂度 (LOFT, KDD 2026)
-- [[uncertainty-aware-rectification]] — 不确定性感知矫正，按样本不确定性与训练进度动态仲裁 CFM 精度与轨迹线性化的梯度冲突 (LOFT, KDD 2026)
-- [[trajectory-consistency-flow-matching]] — 轨迹一致性流匹配，在 CFM 之外约束速度场沿轨迹恒定并给出少步积分误差界 (LOFT, KDD 2026)
-
-## Sources (continued)
-- [[source-giflow]] — GiFlow: Spatiotemporal Imputation with Graph-Informed Flow Matching, 时空图滤波图信息先验 + 混合向量场 CFM 插补，传输代价定理 + 确定性少步推理 (ICML 2026, EPFL)
-
-## Entities (continued)
-- [[giflow]] — GiFlow，图信息先验流匹配时空插补，推理时间远低于扩散基线 PriSTI（作者报告：Air-36 0.28 vs 9.30 min）(ICML 2026)
-
-## Techniques (continued)
-- [[graph-informed-prior]] — 图信息先验，时空图滤波构造流匹配源分布，滤波因子自适应控制感受野并证明传输代价不高于高斯先验 (GiFlow, ICML 2026)
-
-## Sources (continued)
-- [[source-yang-consistency-fm-arxiv24]] — Consistency-FM: Defining Straight Flows with Velocity Consistency, 速度一致性直线流少步 FM，LOFT $L_{CT}$ 的方法来源 (arXiv 2024 preprint, v1)
-
-## Entities (continued)
-- [[consistency-fm]] — Consistency-FM，速度一致性约束直线化 FM 轨迹（f 项 + α 加权速度项、EMA 目标、多段线性化），LOFT $L_{CT}$ 的方法来源 (arXiv 2024)
-
-## Sources (continued)
-- [[source-alphaflow]] — AlphaFlow: Understanding and Improving MeanFlow Models, MeanFlow 损失分解为轨迹流匹配 + 轨迹一致性、梯度冲突实证、α 统一目标族与课程退火 (arXiv 2025, Snap Research)
-
-## Techniques (continued)
-- [[meanflow]] — MeanFlow，预测区间平均速度的少步生成框架：MeanFlow Identity（JVP 全导数修正）+ CFG 内建目标场，ImageNet-256 从头训练 1-NFE FID 3.43（作者报告）(arXiv 2025)
+- [[adaptive-graph-agent-attention]] — AGA-Att: using learnable agent tokens to reduce spatial complexity from O(N²) to O(Na)
+- [[adaptive-graph-learner]] — AGL, plug-and-play dynamic graph generation module with gated self-attention and weak connection suppression (DPGNet, ICLR 2026 under review)
+- [[adaptive-sampling-flow-matching]] — FlowTS 的自适应采样策略，探索-利用权衡驱动的时间步缩放
+- [[adaptive-season-learner]] — ASL, multi-scale temporal decomposition + pattern-specific graph construction for seasonal/trend modeling (DPGNet, ICLR 2026 under review)
+- [[adjacent-residual-prediction]] — ARP，预测相邻时间步降水变化而非绝对值，赋予扩散模型变化感知能力，减少累积误差 (TCP-Diffusion, ICML 2025)
+- [[adjoint-matching]] — Adjoint matching，通过 adjoint state + corrector matching 学习 SB 控制
+- [[adjoint-schrodinger-bridge-sampler]] — Adjoint SB sampler，从 Boltzmann 分布采样的交替半桥优化
+- [[adjoint-sensitivity-method]] — 伴随灵敏度方法，Neural ODE 的反向传播技术
+- [[almost-linear-rnn]] — AL-RNN，近乎线性 RNN（P<<M ReLU），拓扑简约+可解释 DSR 架构（NeurIPS 2024）
+- [[alpha-entmax]] — α-Entmax, sparsity-controllable softmax generalization (α=1 softmax, α=2 sparsemax) for sparse graph-attention adjacency (ICML 2025)
 - [[alphaflow]] — α-Flow，带一致性步长比 α 的统一少步目标族（涵盖轨迹流匹配/Shortcut/MeanFlow/CT）+ 课程退火分离梯度冲突 (arXiv 2025, Snap Research)
-
-## Sources (continued)
-- [[source-meanflow]] — MeanFlow: Mean Flows for One-step Generative Modeling, 平均速度场 + MeanFlow Identity（JVP）一步生成，无预训练/蒸馏/课程（Geng, Deng, Bai, Kolter, He; CMU/MIT, arXiv 2025 v1）
-
-## Sources (continued)
-- [[source-improved-meanflows]] — Improved Mean Flows (iMF): On the Challenges of Fastforward Generative Models, MeanFlow 同团队后续：目标等价改写为 v-loss 再参数化并修正 JVP 输入、CFG 尺度改为条件变量、in-context conditioning，ImageNet-256 从头训练 1-NFE FID 1.72（Geng, Lu, Wu, Shechtman, Kolter, He; CMU/MIT/Adobe/THU, arXiv 2025 v2）
-
-## Techniques (continued)
-- [[improved-meanflows]] — iMF，MeanFlow 后续改进：MeanFlow 目标等价改写为 v-loss 再参数化（JVP 切向量改取网络预测边缘速度）+ 引导尺度/区间条件化 + 多 token in-context conditioning（去 adaLN-zero），1-NFE FID 1.72（作者报告）(arXiv 2025)
-
-## Sources (continued)
-- [[source-diffputer]] — DiffPuter: Empowering Diffusion Models for Missing Data Imputation, EM 交替式扩散插补（M 步扩散密度估计 / E 步前向-反向混合条件采样），9 个表格数据集 MCAR 30% 相对最强基线平均提升 6.94% MAE / 4.78% RMSE（ICLR 2025）
-
-## Techniques (continued)
-- [[diffputer]] — DiffPuter，论文自述首个把扩散生成模型整合进 EM 框架的插补方法，表格数据；TabCSDI/MissDiff 为其一步式扩散基线 (ICLR 2025)
-- [[em-diffusion-interleaving]] — EM 交替式扩散插补，M 步扩散训练=密度 MLE（score matching 为负对数似然上界）、E 步前向/反向混合采样=EAP 估计 (DiffPuter, ICLR 2025)
-
-## Techniques (continued)
-- [[forward-process-conditioning]] — 前向过程条件化：把观测值写入扩散前向转移（而非仅在反向去噪网络输入注入条件），RDPI 据此推导含前向条件的 ELBO；与 CSDI/PriSTI 的仅反向条件化对照 (RDPI, arXiv 2024)
-- [[rdpi]] — RDPI，两阶段时空插补框架：确定性初始模型（GRIN）+ 以"初值−真值"残差为扩散目标的条件扩散，观测值入前向过程、保留随机项的 DDIM 式加速；四时空数据集 MAE/MSE 作者报告最优 (arXiv 2024, AAAI 2025 著录)
-
-## Sources (continued)
-- [[source-rdpi]] — RDPI: A Refine Diffusion Probability Generation Method for Spatiotemporal Data Imputation, 确定性初值 + 残差条件扩散、观测值纳入前向过程并推导新 ELBO，Table 3/4 作者报告 MAE/MSE 最优（Liu, Zhao, Song; 北航, arXiv 2412.12642 v1, AAAI 2025 著录）
-
-## Sources (continued)
-- [[source-lets-group]] — Let's Group: A Plug-and-Play SubGraph Learning Method for Memory-Efficient Spatio-Temporal Graph Modeling, SGPM 记忆向量锚点 top-K 子图划分 + SGFAM 跨子图特征平均聚合，O(N²)→O(N+K²)，平均 GPU 内存最高降 56.4%（作者报告），IJCAI-25 官方 proceedings（Weng et al., pp. 3471–3479）
-
-## Techniques (continued)
-- [[lets-group]] — SGL, 即插即用子图学习：可学习记忆向量按特征相似度划分可重叠子图 + 跨子图平均聚合，降低 STGNN 空间特征提取的 GPU 内存开销 (IJCAI 2025)
-
-## Sources (continued)
-- [[source-costi]] — CoSTI: Consistency models for (a faster) spatio-temporal imputation, 一致性训练直接适配 MTSI，1–2 步采样替代扩散插补 50–100 步去噪，作者报告插补时间最多降低 98%（KBS 327 (2025) 114117, Elsevier 正式排版）
-
-## Techniques (continued)
-- [[costi]] — CoSTI，Consistency Training 用于多变量时间序列插补：PriSTI 式条件信息 + 双分支 U-Net（NEM 引入双向 Mamba）+ 线性课程，论文自述首个 CM→MTSI 适配 (KBS 2025)
-
-## Sources (continued)
-- [[source-mts-imputation-survey]] — Deep Learning for Multivariate Time Series Imputation: A Survey, 预测式/生成式（插补不确定性）× 架构（RNN/CNN/GNN/Attention/VAE/GAN/Diffusion + 大模型单列）双视角分类 + PyPOTS 生态与 TSI-Bench + 未来方向（MNAR/下游集成/可扩展性/LLM），arXiv:2402.04059v3（IJCAI 2025 著录来自用户，未在 PDF 内核实）
-
-## Entities (continued)
-- [[pypots]] — PyPOTS，部分观测时序端到端建模工具箱（综述统计含 37 个插补模型）与 TSI-Bench 基准生态（172 数据集、28 算法、34,804 实验）(KDD 2023 workshop / MTSI 综述 §6)
-
-## Concepts (continued)
-- [[mts-imputation-taxonomy]] — MTSI 综述的双视角分类框架：插补不确定性（预测式/生成式）× 网络架构，附 wiki 各插补方法（CSDI/PriSTI/GRIN/ImputeFormer/SADI/NuwaTS/TimesNet 等）的综述归类定位与二手口径警示 (arXiv 2024/2025 survey)
-
-## Sources (continued)
-- [[source-mtsci]] — MTSCI: A Conditional Diffusion Model for Multivariate Time Series Consistent Imputation, 插补一致性（intra/inter）条件扩散插补：互补掩码双视图对比损失 + mixup 相邻窗口条件，ETT/Weather/METR-LA point/block 缺失 9 组设置作者报告数值最低（CIKM 2024, DOI 10.1145/3627673.3679532, PDF 内核实）
-
-## Techniques (continued)
-- [[mtsci]] — MTSCI，条件扩散插补：complementary mask 双视图 intra contrastive loss + mixup inter-consistency 条件网络 + vanilla/inverted transformer 双块编码器，ε-预测（CIKM 2024）
-
-## Concepts (continued)
-- [[imputation-consistency]] — 插补一致性，intra（插补值与观测值互相可重构）+ inter（相邻窗口时序一致），MTSCI 提出并以 CRPS 度量；与 Consistency Models 的少步自一致性不同义 (CIKM 2024)
-
-## Sources (continued)
-- [[source-lcr]] — LCR: Laplacian Convolutional Representation for Traffic Time Series Imputation, circulant matrix nuclear norm 低秩 + Laplacian 核时域正则的凸优化插补，FFT 频域 ADMM，arXiv:2212.01529v3（TKDE 2024 著录来自用户，未在 PDF 内核实）
-
-## Techniques (continued)
-- [[lcr]] — LCR，非深度低秩 + Laplacian 正则凸优化插补：全局 circulant nuclear norm + 局部 Laplacian 核 circular convolution 正则，O(T log T) FFT 求解，PeMS-4W（11160×8064、约 9000 万观测）大规模验证 (arXiv 2022/2024)
-- [[laplacian-kernel-temporal-regularization]] — Laplacian 核时域正则：度 2τ 无向 circulant 图 Laplacian 第一列 + circular convolution，Parseval 频域等价，QV 正则为其有向度 2 特例 (LCR, arXiv 2022/2024)
-
-## Sources (continued)
-- [[source-fgti]] — FGTI: Frequency-aware Generative Models for Multivariate Time Series Imputation, 高频/主频双频域条件 + time/attribute-frequency 跨域表示学习 + DDPM 条件扩散插补，命题 3.1 条件熵论证，KDD/Guangzhou/PhysioNet MCAR 10-40% 作者报告最优（NeurIPS 2024 官方 proceedings，PDF 内核实）
-
-## Techniques (continued)
-- [[fgti]] — FGTI，频率感知生成式插补：high-frequency filter（引导残差项）+ dominant-frequency filter（趋势/季节项背景结构）+ 双 cross-attention（Q/K 来自频域、V 来自时域）融入条件扩散去噪网络 (NeurIPS 2024)
-
-## Sources (continued)
-- [[source-guo-imputation-evaluation]] — Guo et al., A Survey and Benchmarking of Spatial-Temporal Traffic Data Imputation Models（arXiv:2412.04733v2，PDF 内核实；v1 题名 An Experimental Evaluation of Imputation Models for Spatial-Temporal Traffic Data 见 FENCE 参考文献著录），practice-oriented 缺失模式四分类 + 模型双分类 + 11 模型 × 4 交通数据集 × 20 缺失场景统一评测管线，评测复现口径结论与模型选择建议
-
-## Concepts (continued)
-- [[st-traffic-imputation-benchmark]] — 交通插补统一评测基准（Guo et al.）：评测协议（4 数据集 × 4 缺失模式 × 5 缺失率、官方代码复现 + 网格搜索、RMSE/MAE/MAPE 仅缺失位置、效率与挑战/稳定期分组）、主要排名结论（评测复现口径，与各方法原文数字分立）、模型选择建议、覆盖范围警示
-- [[traffic-missing-patterns]] — 交通缺失模式四分类 SRTR/SRTC/SCTR/SCTC：空间/时间维度 × 随机/连续位置，各类掩码构造协议与现实成因；与 Rubin 缺失机制分类（MCAR/MAR/MNAR）维度不同、分立记录
-
-## Sources (continued)
-- [[source-flow-matching-guide]] — Flow Matching Guide and Code（Lipman et al., arXiv:2412.06264v1，2024-12，83 页 PDF 内核实）：FM 长篇教程（含代码指南），设计选择体系（路径/耦合/参数化/引导）+ Marginalization Trick 与 Bregman 散度损失框架 + Riemannian/离散/Generator Matching 扩展 + 与扩散关系的精确口径，配 flow_matching PyTorch 库
-
-## Concepts (continued)
-- [[flow-matching-design-space]] — FM 指南的设计选择体系：路径设计（affine/Gaussian、conditional OT 的 kinetic energy 刻画、geodesic/premetric、mixture）× 数据耦合（independent/paired/multisample）× 速度参数化（velocity/x1/x0/score 转换表与 scheduler 等价）× 条件化（X1/X0/双侧）与引导，以 Marginalization Trick + Bregman 散度为数学主干 (arXiv 2024)
-- [[generator-matching]] — Generator Matching，FM 指南第 8-9 章的 CTMP 统一框架：generator 与 KFE、universal characterization（$\mathbb{R}^d$ 上 generator = flow + diffusion + jump 之和）、GM 损失（Bregman）、组合模型（Markov superposition / divergence-free / predictor-corrector）与多模态 (arXiv 2024)
-
-## Sources (continued)
-- [[source-stgformer]] — STGformer: Efficient Spatiotemporal Graph Transformer for Traffic Forecasting（Wang et al., arXiv:2410.00385v2，PDF 内核实；IEEE 期刊模板排版、未见接收 venue），SGC 式图传播保留 0..k 阶 + 空间/时间共享 QKV 转置复用 + 分解内积线性化（O(N+T)）+ 递归门控交互的单层架构，8600 节点 CA 图批量推理较 STAEformer 100× 加速 / 99.8% GPU 内存降，LargeST SD/BA/LA 与 PEMS03/04/07/08 及跨年 2019→2020 均报告优于 STAEformer
-
-## Entities (continued)
-- [[stgformer]] — STGformer，单层图传播 × 统一时空线性注意力的高效交通 Transformer，效率锚点与同图跨年泛化证据 (arXiv 2024)
-
-## Techniques (continued)
-- [[stg-attention]] — STG-Attention，图传播 0..k 阶输出 × 共享 QKV 的线性化时空注意力 + 递归门控 1×1 卷积交互，单层完成高阶时空交互 (STGformer, arXiv 2024)
-
-## Sources (continued)
-- [[source-graphgps]] — GraphGPS: Recipe for a General, Powerful, Scalable Graph Transformer（Rampášek et al., NeurIPS 2022，会议标识 PDF 内核实），PE/SE + local MPNN + global attention 三要素模块化框架，论文自述首个 O(N+E) 图 Transformer，16 benchmark 消融与对比（arXiv v4）
-
-## Techniques (continued)
-- [[graphgps]] — GraphGPS，三要素（PE/SE + local MPNN + global attention）模块化图 Transformer 配方：local MPNN 分支（含边特征）与 global attention 分支逐层并行求和，线性注意力下 O(N+E)（NeurIPS 2022）
-- [[rwse]] — RWSE（Random-Walk Structural Encoding），m 步随机游走矩阵对角线作节点 local SE，机制归因 Dwivedi et al.（LSPE），GraphGPS 消融中增益一致且对分子数据尤佳（NeurIPS 2022）
-
-## Sources (continued)
-- [[source-detr]] — DETR: End-to-End Object Detection with Transformers（Carion et al., Facebook AI, arXiv:2005.12872v3，venue 未在 PDF 内核实），direct set prediction + Hungarian 二部匹配损失 + Transformer encoder-decoder + learned object queries 并行解码，COCO AP 42.0 与强化 Faster R-CNN 相当、APL 优 APS 弱，panoptic PQ 45.1（R101, COCO val）
-
-## Techniques (continued)
-- [[detr]] — DETR，目标检测建模为直接集合预测：二部匹配 Hungarian loss + CNN/Transformer encoder-decoder，免 anchors/NMS（arXiv 2020）
-- [[object-queries]] — DETR 的 N 个 learned positional embeddings 输入 decoder 逐 query 并行解码，slot 区域/尺寸特化且无强类别特化（arXiv 2020）
-
-## Sources (continued)
-- [[source-virtual-nodes]] — Virtual Nodes Improve Long-term Traffic Prediction（Zhuang et al., MIT/清华/UF，arXiv:2501.10048v1，venue 未在 PDF 内核实），将 Virtual Nodes 图改写引入 ST-GNN 长期交通预测：semi-adaptive 邻接矩阵（距离图 + MTGNN 式反对称自适应权重）缓解 over-squashing，LargeST SD 上作者报告 Semi-10 V.N. 在 12 种邻接配置中全部指标最低
-
-## Techniques (continued)
-- [[virtual-nodes-traffic]] — Virtual Nodes，连接全部真实节点的辅助节点在单层内完成全图聚合，以半自适应邻接矩阵学习接入权重、缓解 over-squashing 的长期交通预测机制 (arXiv 2025)
-
-## Sources (continued)
-- [[source-over-squashing]] — On the Bottleneck of Graph Neural Networks and its Practical Implications（Alon & Yahav, Technion, ICLR 2021，会议标识 PDF 内核实），提出 over-squashing 概念解释 GNN 长程传播受限，给出隐藏维度组合下界（计数论证口径），FA 层干预实验（作者报告 QM9 六种 GNN 误差平均相对降 42%）（arXiv:2006.05205v4）
-
-## Concepts (continued)
-- [[over-squashing]] — Over-Squashing，长程任务下指数增长的感受野信息被压进固定长度向量的消息传递瓶颈；与 over-smoothing 分立、不可混用（ICLR 2021）
-
-## Techniques (continued)
-- [[fully-adjacent-layer]] — 全邻接层：仅把最后一层邻接改为全连接以打破 over-squashing 瓶颈的演示性方案，零新增权重，附维度/层位/部分边消融（ICLR 2021）
-
-## Sources (continued)
-- [[source-performer]] — Rethinking Attention with Performers（Choromanski et al., Google/Cambridge/DeepMind/Alan Turing Institute, ICLR 2021，会议标识 PDF 内核实；arXiv:2009.14794v4），FAVOR+：正随机特征无偏估计 softmax 核 + 正交化降方差，线性时空复杂度近似全秩 softmax 注意力（论文自述首个此类架构），MSE/尾界/一致收敛定理与 TrEMBL/ImageNet64/PG-19/LRA 实验
-
-## Techniques (continued)
-- [[performer]] — Performer，FAVOR+ 线性注意力 Transformer：核化注意力按 Q′((K′)ᵀV) 结合律计算，O(Lrd) 时间/O(Lr+Ld+rd) 空间，不依赖稀疏/低秩先验（ICLR 2021）
-- [[positive-random-features]] — PRF，softmax 核的正随机特征无偏估计：trig 特征在核值趋 0 时 MSE 发散、PRF 趋 0，ORF 正交化对任意维度 d 降方差（ICLR 2021）
-
-## Sources (continued)
-- [[source-graphcast]] — GraphCast: Learning skillful medium-range global weather forecasting（Lam、Sanchez-Gonzalez、Willson 等 7 人共同一作，Google DeepMind + Google Research，arXiv:2212.12794v2，Science 著录未在 PDF 内核实），encode-process-decode GNN（36.7M 参数）+ 多分辨率 icosahedron multi-mesh + 6h 步长自回归滚动，2018 年 1380 验证目标 90.3% RMSE 优于 HRES（显著检验 89.9%），10 天 0.25° 预报单 TPU v4 不足 60 秒，含极端事件与训练数据时效实验
-
-## Techniques (continued)
-- [[graphcast]] — GraphCast，ERA5 端到端训练的全球中期 MLWP：编码-处理-解码 GNN、multi-mesh 长短边混合消息传递、层加权 MSE 多步课程训练（AR 步数 1→12）、自回归滚动 10 天 0.25° 预报（arXiv 2022 v2）
-- [[multi-mesh-representation]] — Multi-mesh，icosahedron 6 次细分（M0 12 节点→M6 40,962 节点）+ M0–M6 全层级边叠加的球面均匀多分辨率图，低层级节点作长程通信 hub；消融显示多级边为位势短时效优势的必要结构（arXiv 2022 v2）
-
-## Sources (continued)
-- [[source-lagllm-icml2026]] — LagLLM: LLM-empowered lead–lag dependency learning for spatial-temporal time series forecasting，frozen LLM 判 lead–lag 语义掩码 + token 按图排序 + GPT-2 LoRA 骨干，8 数据集 27 例 22 例最优（ICML 2026, 浙大）
-
-## Entities (continued)
-- [[lagllm]] — LagLLM，论文自称首个显式建模 lead–lag 依赖的 LLM 时空预测框架：HLLG 图构建 + STS token 排序 + GPT-2 微调 (ICML 2026)
-
-## Concepts (continued)
-- [[lead-lag-dependency]] — lead–lag 依赖：跨空间-时间的延迟依赖 $\tau_{ij}=|t_1-t_2|$，空间/时间依赖为其一维退化形式；统计/领域/深度三类建模谱系
-
-## Techniques (continued)
-- [[hybrid-lead-lag-graph]] — HLLG，数据驱动图 $A_D$ × 空间掩码 $M_S$ × frozen LLM 语义掩码 $M_K$ 的 lead–lag 图构建 (LagLLM, ICML 2026)
-- [[structural-token-sorting]] — STS，lead–lag 图上消息传递求 patch 重要性并重排 token，把图结构转译为自回归序列顺序 (LagLLM, ICML 2026)
-
-## Sources (continued)
-- [[source-2412-18730]] — Elucidating Flow Matching ODE Dynamics via Data Geometry and Denoisers, denoiser 吸引/吸收元定理 + FM ODE 三阶段轨迹 + 终端收敛（首个覆盖低维子流形支撑）+ 记忆几何理论 (Wan, Wang, Mishne, Wang, ICML 2025 Poster, arXiv:2412.18730 v4)
-
-## Concepts (continued)
-- [[fm-ode-trajectory-stages]] — FM ODE 三阶段轨迹动力学：denoiser 是向量场唯一数据依赖成分，noise-to-signal 统一坐标下吸引/吸收框架给出均值吸引→局部簇吸收→终端收敛
-- [[fm-ode-terminal-convergence]] — FM ODE 终端收敛：正 reach + 密度下界下流映射 Ψ₁ 对 a.e. x 存在（首个覆盖低维子流形），medial axis 奇异性、denoiser→投影收敛与流映射等变性
-- [[diffusion-memorization-geometry]] — 记忆现象的几何理论：Voronoi 单元吸收强度 σ₀（重复样本抬权重）、渐近最优 denoiser 必然重现训练点、泛化要求终端 denoiser 逼近真实流形投影
-
-## Sources (continued)
-- [[source-time-gated-multi-scale-flow-matching]] — TG-MSFM: Time-Gated Multi-Scale Flow Matching for Time-Series Imputation, 数据条件 FM ODE + visibility-masked attention + 时间门控多尺度速度头 + Heun/每步 DC 确定性插补，MSE 十基准全列最低 (ICLR 2026)
-
-## Entities (continued)
-- [[tg-msfm]] — TG-MSFM, 确定性 flow matching 多元时间序列插补：结构化端点 + gap-only supervision + 时间门控多尺度速度 + Heun+DC (ICLR 2026)
-
-## Techniques (continued)
+- [[ams-moe]] — AMS-MoE: Adaptive Multi-Scale Mixture of Experts with noise-injected Top-K routing for input-adaptive temporal scale selection (HEPHAESTUS, ICLR 2026 under review)
+- [[annealed-langevin-dynamics]] — 退火朗之万动力学，多噪声水平逐步采样的方法
+- [[attention-dilution]] — theoretical mechanism explaining LLM performance degradation under long context (2026)
+- [[attention-entropy-collapse]] — attention distribution becoming one-hot during training
+- [[attention-logit-explosion]] — training instability from unbounded attention scores
+- [[attention-temperature-scaling]] — YaRN's technique to control attention entropy via temperature
+- [[average-velocity-modeling]] — 平均速度建模，预测区间条件化平均速度替代瞬时速度 + JVP 修正优化目标 (CoGenCast, ICML 2026)
+- [[bam]] — BAM, Bidirectional Attention Mamba for intra-channel dependency in diffusion denoising (KDD 2025)
+- [[band-limited-temporal-decomposition]] — 按 DFT 有效频带切带、带外置零后 IFFT 回时域，得到 $P$ 条 band-limited 时域视图
+- [[bellman-equation]] — 贝尔曼方程，强化学习中值函数的递归关系
+- [[bellman-optimality-equation]] — 最优值函数与最优策略的不动点方程
+- [[benamou-brenier-algorithm]] — OT 的动态公式化，转化为时空凸优化问题并以增广拉格朗日方法求解
+- [[bigcity]] — BIGCity, first MTMD spatio-temporal model unifying trajectory + traffic state via GPT-2+LoRA+prompt (arXiv 2024)
+- [[brownian-bridge-diffusion]] — 布朗桥扩散，钉住数据与先验两端的扩散桥 + 后验方差缩放(s)切换确定性/概率采样 (S²DBM, arXiv 2024)
+- [[building-schrodinger-bridges]] — 六种 SB 构造方法综述：条件桥、时间反演、FBSDE、h-变换、IMF、随机插值
+- [[bures-wasserstein]] — Bures-Wasserstein discrepancy，高斯分布下 W₂ 的闭式解，均值+协方差对齐 (DistDF, ICLR 2026)
+- [[causal-counterfactual-recovery]] — abduction-action-prediction via CNF encode-decode with DoFlow's pointwise counterfactual recovery theorem under monotone SCMs (ICLR 2026)
+- [[centralized-message-passing]] — centralized message passing: nodes interact only with K shared Context-Aware Units via O(KN) low-rank attention, blocking node-to-node messages (STOP, ICML 2025)
+- [[channel-biased-attention]] — CbA, channel-disentangled attention mask allowing limited cross-channel interaction (TRACE, NeurIPS 2025)
+- [[channel-head-binding]] — CHead Attention，CNN 通道与注意力头一对一绑定实现特征级跨变量选择性传递 (T1, ICLR 2026)
+- [[channel-identity-token]] — CIT, per-channel learnable token for channel-level semantic anchoring (TRACE, NeurIPS 2025)
+- [[channel-independence]] — processing each channel separately to enhance efficiency and distribution learning
+- [[circular-patching]] — CirT 的纬度线圆形分块策略，消除固定角度 grid patching 的高纬度面积失真
+- [[classifier-free-guidance]] — 无分类器引导联合训练条件与无条件扩散模型实现条件控制
+- [[classifier-guidance]] — 分类器引导利用分类器梯度引导扩散模型条件生成
+- [[cluster-aware-guidance]] — 聚类感知引导，利用空间注意力聚类为每个节点组定制扩散引导尺度 (AAAI 2026)
+- [[cluster-based-gating]] — 簇基门控，利用预训练 dense 模型 token 嵌入 k-means 聚类中心引导 MoE 专家分配的创新门控函数 (Moirai-MoE, ICML 2025)
+- [[cmb]] — CMB, Channel Mamba Block for inter-channel dependency in diffusion denoising (KDD 2025)
+- [[cold-sampling]] — Cold Sampling, DDIM推广到广义扩散模型的采样算法，与 Euler 方法求解 ODE 等价
+- [[conditional-attention-pooling]] — CAP: UniCA's conditional attention mechanism for covariate fusion (ICLR 2026)
+- [[conditional-prior-sampling]] — 条件先验采样，Langevin 动力学 + 引导实现无条件模型的条件化预测 (TSFlow, ICLR 2025)
+- [[conditional-score-flow-matching]] — [SF]²M，给定 entropic OT coupling 的免仿真 SB 学习
+- [[confidence-gated-distillation]] — 置信门控蒸馏，advantage gate + 置信加权选择性蒸馏检索教师分布校正 (TS-Memory, KDD 2026)
+- [[content-condenser-reconstruction]] — MindTS's IB-based redundancy filtering and cross-modal reconstruction (ICLR 2026)
+- [[context-aware-units]] — ConAU, K≪N learnable shared context vectors forming STOP's centralized interaction hub for OOD robustness + inductive learning (ICML 2025)
+- [[contextual-pattern-bank]] — incrementally expandable parametric memory with prompt-based gating and dual-stream attention keys for CSTF (STBP, ICLR 2026)
+- [[continuous-prompt-parameter-pool]] — node-level dynamically expandable learnable parameters for CSTF, expand (heterogeneity) + compress (low-rank), from EAC (ICLR 2025)
+- [[contract-and-broadcast-mechanism]] — CBSA's core two-stage operation: contraction + broadcast
+- [[contrastive-diffusion-alignment]] — InfoNCE-equivalent contrastive fine-tuning aligning mobile traffic with urban context features (UoMo, KDD 2025)
+- [[contrastive-learning]] — representation learning via positive/negative pair similarity optimization
+- [[convergent-normalization]] — softmax denominator convergence for infinite sequences
+- [[costi]] — CoSTI，Consistency Training 用于多变量时间序列插补：PriSTI 式条件信息 + 双分支 U-Net（NEM 引入双向 Mamba）+ 线性课程，论文自述首个 CMMTSI 适配 (KBS 2025)
+- [[covariate-fusion-module]] — UniCA's dual-stage attention-based fusion module for covariate integration (ICLR 2026)
+- [[covariate-homogenization]] — UniCA's technique for converting heterogeneous covariates into unified representations (ICLR 2026)
+- [[cross-attention-conditioning]] — 跨注意力条件化，LDM 的通用条件生成机制
+- [[cross-correlation-embedding]] — CrossLinear 即插即用 1D conv 外生交叉相关残差嵌入，CI 骨干友好 (KDD 2025)
+- [[cross-gated-mechanism]] — 交叉门控机制，双向 sigmoid+tanh 门控实现时空嵌入的跨域特征选择与交互 (PAST, arXiv 2025)
+- [[cross-period-sparse-forecasting]] — cross-period downsampling for extreme model compression
+- [[cross-view-text-fusion]] — MindTS's cross-view attention fusing endogenous and exogenous text views (ICLR 2026)
+- [[crps-autoregressive-finetuning]] — CRPS 自回归微调，在多步 rollout 上以 CRPS 损失微调为集合校准 (Swift, arXiv 2025)
+- [[csdi]] — CSDI, conditional score-based diffusion model for probabilistic time series imputation (NeurIPS 2021)
+- [[d3vae]] — D³VAE (GCRDD), generative time series forecasting with coupled diffusion, denoising score matching, and latent disentanglement (NeurIPS 2022)
 - [[data-consistency-projection]] — 每步数据一致性投影：Heun 积分后把观测坐标钳回 linear bridge，正交投影非扩张 (TG-MSFM, ICLR 2026)
+- [[dcw]] — DCW，小波域差分校正，缓解扩散模型 SNR-t Bias 的即插即用方法 (CVPR 2026)
+- [[ddim]] — DDIM, 概率流 ODE 的一阶 Euler 离散化 (ICLR 2021)
+- [[ddpm-simplified-training-objective]] — DDPM's L_simple, simplified noise prediction loss for diffusion models
+- [[decoy-injection]] — benchmark technique injecting fake PII to increase privacy reasoning difficulty
+- [[demlp-decoder]] — two-stage coarse-to-fine decoder with explicit trend removal
+- [[denoising-reduction]] — Denoising Reduction 去噪步数缩减策略，训练时用 10 步推理时用 40 步以加速在线 RL (NeurIPS 2025)
+- [[detr]] — DETR，目标检测建模为直接集合预测：二部匹配 Hungarian loss + CNN/Transformer encoder-decoder，免 anchors/NMS（arXiv 2020）
+- [[differentiable-spatial-embedding]] — 可微空间嵌入 SE-L（冻结 LLaMA3 文本描述）与 SE-H（GeoHash + 字符 BERT，训练中更新），以及两者在不同数据集上的实证差异
+- [[diffputer]] — DiffPuter，论文自述首个把扩散生成模型整合进 EM 框架的插补方法，表格数据；TabCSDI/MissDiff 为其一步式扩散基线 (ICLR 2025)
+- [[diffusion-schrodinger-bridge-matching]] — DSBM，参数化 IMF：forward/reverse Markov drift matching + consistency loss
+- [[dilated-inception-layer]] — TODO
+- [[direct-numerical-encoding]] — Direct Numerical Encoding, single-token float vocabulary ⟨|FP m/b|⟩ + two-stage numerical alignment fine-tuning (ST-Vision-LLM, arXiv 2025)
+- [[directed-graph-laplacian-regularizer]] — DGLR，ℓ₂ 范数有向图 Laplacian 正则项，对称化后 PSD 提供频率解释
+- [[directed-graph-total-variation]] — DGTV，ℓ₁ 范数有向图总变差，软阈值高通衰减提供两通道滤波器组解释
+- [[distance-based-devolution]] — Distance-Based Devolution, ARMD's linear-backbone denoising predicting intermediate-to-target distance with step-adaptive weighting (AAAI 2025)
+- [[dit]] — DiT (Diffusion Transformer), ViT-based diffusion backbone with adaLN-Zero conditioning (ICCV 2023)
+- [[diversity-based-retrieval-selection]] — 平稳性控制的随机 MMR 多样性检索选择，从 Top-M 候选池选择 Top-K 多样化子集 (SARAF, KDD 2026)
+- [[dlga-dual-stream-linear-graph-attention]] — DLGA, dual-stream linear graph attention with random feature mapping + prompt-based key stream reducing $O(N^2)$ to $O(N)$ (STBP, ICLR 2026)
+- [[do-calculus]] — Pearl's do-calculus for interventional reasoning, operationalized as feature-level perturbation score for causal graph learning
+- [[domain-knowledge-injection]] — Domain Knowledge Injection, six-component prompt + QLoRA fine-tuning for LLM-based calibration of numerical predictions (FSTLLM, ICML 2025)
+- [[doob-h-transform]] — Doob's h-变换，通过 h-函数倾斜参考测度构造条件随机过程
+- [[dsw-embedding]] — DSW Embedding, dimension-segment-wise embedding producing 2D vector array for MTS (ICLR 2023)
+- [[dual-branch-siren]] — dual-branch SIREN-DNN architecture for temporal rotation
+- [[dual-correlation-injection]] — Dual Correlation Injection，跨模块提取 Wq',Wk' 并注入内生预测注意力
+- [[dual-dimension-feature-disentanglement]] — 时间/空间双流解耦编码，为检索增强提供低秩分解基础 (RAST, AAAI 2026)
+- [[dual-level-hard-negative-mining]] — Dual-level hard negative mining at sample + channel granularity for cross-modal TS-text alignment (TRACE, NeurIPS 2025)
+- [[dual-stream-attention-time-series]] — Dual-Stream Attention for Time Series, orthogonal Time + Variate attention as low-rank decomposition (arXiv 2026)
+- [[dual-stream-temporal-frequency-processing]] — 双流时频处理，TCN+GCN 时域与 DCT 频域的并行处理与 Cross-Attention 融合 (arXiv 2025)
+- [[dual-view-alignment-loss]] — regularization loss aligning representations across periodicity views
+- [[dynamic-correlation-estimation]] — DCE：Pearson + Qt V Qtᵀ 低秩动态相关估计（CoRA）
+- [[dynamic-graph-qualification]] — DGQ, qualifying edge reliability via cross-time-step similarity for adjacency matrix refinement (AAAI 2026)
+- [[dynamic-reassembly]] — Dynamic Reassembly：对选中 patch 可微 Argsort 学习顺序 (SRS, NeurIPS 2025)
+- [[dynamic-scaling]] — inference-time technique to dynamically adjust RoPE scaling factor
+- [[edm-noise-distribution]] — 对数正态噪声分布，EDM 训练策略
+- [[edm-preconditioning]] — EDM 网络预处理技术 (cskip/cout/cin)
+- [[edm-stochastic-sampler]] — EDM 随机采样器，带 churn 参数
+- [[efficient-cosine-operator]] — ECO, linear-complexity graph convolution via cosine similarity decomposition (arXiv 2026)
+- [[em-diffusion-interleaving]] — EM 交替式扩散插补，M 步扩散训练=密度 MLE（score matching 为负对数似然上界）、E 步前向/反向混合采样=EAP 估计 (DiffPuter, ICLR 2025)
+- [[embedded-attention]] — low-rank spatial embedded attention using node embedding agents (KDD 2024)
+- [[endogenous-text-alignment]] — ETA, decomposed pattern extraction and contrastive learning for text-TS alignment (ICLR 2026)
+- [[entropy-boundedness]] — finite Shannon entropy of attention distribution
+- [[environment-basis-manifold]] — Environment Basis Manifold, K learnable bases + sparse Top-K routing + stochastic perturbation for heterogeneity modeling (STPDE, ICML 2026)
+- [[epsilon-greedy]] — 经典探索策略
+- [[equal-snr]] — EqualSNR，通过 $\Sigma_{ii}=cC_i$ 让所有傅里叶频率等 SNR 加噪的扩散前向过程
+- [[equi-probability-noise-partitioning]] — 均概率噪声划分，基于累积概率质量的扩散模型噪声水平划分策略，确保块间学习难度均衡 (ICLR 2026)
+- [[erdm]] — ERDM, EDM + 滚动扩散统一框架，渐进噪声 + 混合 3D 架构用于复杂动力学概率预测 (NeurIPS 2025)
+- [[error-based-uncertainty-estimation]] — 误差代理不确定性估计，两层 FC 以逐实例 MSE 为代理预测误差以识别失效实例（PIR, NeurIPS 2025）
+- [[event-prior-augmentation]] — EPA, categorized extreme event memory pool + dual-level attention fusion for hierarchical extreme modeling (arXiv 2025)
+- [[expected-sarsa]] — 基于期望目标的 Sarsa 变体
+- [[factost]] — FactoST, factorized ST foundation model with UTP+STA two-stage design, linear complexity (NeurIPS 2025 / arXiv 2026)
+- [[fast-spectral-graph-convolution]] — Fast Spectral GC, O(KN) Chebyshev graph convolution for Fourier-domain inputs (arXiv 2024)
+- [[feature-dependency-encoder]] — FDE，SADI 中显式建模时间感知特征间依赖的编码器 (AAAI 2025)
+- [[feature-scale-graph-structure-learning]] — 特征尺度图结构学习，学习跨特征的共同空间相关性元图 (AAAI 2025)
+- [[feedback-diffusion-guidance]] — FBG 反馈扩散引导，加性误差假设导出的状态/时间相关动态引导尺度 + 马尔可夫后验追踪 (NeurIPS 2025)；FENCE 将其引入时空插补 (AAAI 2026)
+- [[fence]] — FENCE, spatial-temporal feedback diffusion guidance for controlled traffic imputation (AAAI 2026)
+- [[fenchel-young-loss]] — FY loss, convex surrogate for Bregman divergence enabling end-to-end training through combinatorial layers
+- [[fgti]] — FGTI，频率感知生成式插补：high-frequency filter（引导残差项）+ dominant-frequency filter（趋势/季节项背景结构）+ 双 cross-attention（Q/K 来自频域、V 来自时域）融入条件扩散去噪网络 (NeurIPS 2024)
+- [[fine-grained-time-text-semantic-alignment]] — MindTS's cross-view text fusion and contrastive alignment (ICLR 2026)
+- [[flash-gradient-update]] — single-sample single-step calibrator update on the dequeued FIFO-queue sample to avoid information leakage (ST-TTC, NeurIPS 2025)
+- [[fleximodal-fusion]] — presence-mask gating at encoder/attention/loss levels enabling one model for arbitrary input modality subsets (OmniField, ICLR 2026)
+- [[flow-opd]] — Flow-OPD: On-Policy Distillation for Flow Matching，通过多教师在线蒸馏解决多任务 seesaw effect (arXiv 2026)
+- [[forget-gate-in-sequential-models]] — forget gate as multiplicative decay on past hidden states, replaceable by positional encoding
+- [[forward-process-conditioning]] — 前向过程条件化：把观测值写入扩散前向转移（而非仅在反向去噪网络输入注入条件），RDPI 据此推导含前向条件的 ELBO；与 CSDI/PriSTI 的仅反向条件化对照 (RDPI, arXiv 2024)
+- [[fourier-imputation-loss]] — Fourier sparsity regularization for signal-noise balanced imputation (KDD 2024)
+- [[fourier-self-attention]] — 傅里叶域自注意力，DFT频域多头注意力IDFT 显式编码空间周期性，与 FEDformer FEB 不同
+- [[frenet-frequency-domain-network]] — FreNet, frequency-domain network using FFT + learnable frequency embedding to extract stable low-frequency components resilient to distribution drift (STBP, ICLR 2026)
+- [[freqflow]] — FreqFlow, frequency-aware flow matching with dual-branch architecture (arXiv 2026)
+- [[frequency-aware-residual-representation]] — Fourier-based signal decomposition into periodic and residual components
+- [[frequency-balance-loss]] — 惩罚各频率在 mini-batch 上的平均选择概率偏离 $1/P$ 的均衡正则
+- [[frequency-diffusion]] — 频域扩散，在傅里叶频域中执行扩散过程的生成方法
+- [[frequency-domain-stability-augmentation]] — FDA, frequency-domain perturbation with spectral constraints for roadlane transfer in MiniTraffic
+- [[frequency-enhanced-attention]] — FEA, Fourier/Wavelet-domain cross-attention substituing standard attention in FEDformer (ICML 2022)
+- [[frequency-enhanced-block]] — FEB, frequency-domain self-attention substiution in FEDformer via Fourier or Wavelet (ICML 2022)
+- [[frequency-enhanced-direct-forecast]] — FreDF 训练技术：时域 MSE + 频域模长损失混合，模型无关的 DF 升级 (FreDF)
+- [[frequency-guided-denoiser]] — FGD, schedule-induced spectral distortion estimation for modulating denoising strength (StaTS, arXiv 2026)
+- [[frequency-pathway-routing]] — 频率维上的节点级温度 softmax + top-$K$ 选择，再按 softmax 权重融合分支输出
+- [[frequency-specific-spatial-embedding]] — 拉普拉斯特征向量按特征值等量切成 $P$ 组，与时间频带一一配对
+- [[fully-adjacent-layer]] — 全邻接层：仅把最后一层邻接改为全连接以打破 over-squashing 瓶颈的演示性方案，零新增权重，附维度/层位/部分边消融（ICLR 2021）
+- [[gated-linear-units]] — GLU: gated linear units as efficient MoE experts with parallel computation
+- [[gated-residual-network]] — GRN: residual + GLU-gated nonlinear block with optional context (TFT building block)
+- [[gated-temporal-attention]] — GTA，SADI 中用自注意力替代膨胀卷积的门控时序注意力 (AAAI 2025)
+- [[gaussian-splatting]] — 3D/2D Gaussian Splatting，各向异性高斯原语渲染，与传统高斯加权插值等价，QCGS 首次应用于降水场生成
+- [[generalized-perturbation-unit]] — GenPU, multinomial-mask message perturbation generating variant environments, optimized via worst-case DRO selection (STOP, ICML 2025)
+- [[generative-style-decoder]] — non-autoregressive one-forward-pass decoding from Informer (AAAI 2021)
+- [[geographic-feature-alignment]] — GFA, cross-city geographic representation alignment via traffic flow alignment + optimal transport (CRAFT, NeurIPS 2025)
+- [[geometric-barrier-principle]] — 几何屏障原理，语义冲突下跨模态传输代价 (δ-2ε)² 正下界，指数抑制冲突模态 (GMF, Theorem 4.5)
+- [[geometric-slope-schedule]] — ALiBi's slope assignment method for multi-head attention
+- [[girsanov-theorem]] — Girsanov 定理，路径空间测度变换的基石，连接控制漂移与 path-space KL
+- [[global-memory-bank]] — GMB，固定大小历史模式记忆库，PCL 编码 + K-medoids 聚类 + 特征余弦相似度检索 (PFRP, AAAI 2026)
+- [[glu-gated-linear-unit]] — Gated Linear Unit, activation-modulated linear transformation
+- [[gpt-st]] — GPT-ST, plug-and-play MAE pre-training framework for spatio-temporal GNNs (NeurIPS 2023)
+- [[gradient-positional-sensitivity]] — gradient dependence on relative position
+- [[granger-causality]] — Granger causality, predictive causality via lagged VAR F-tests, used for causal graph supervision and covariate selection
+- [[granularity-variates]] — 粒度 variate 建模，iTransformer variate 思路跨粒度迁移 (SIFusion)
+- [[graph-informed-prior]] — 图信息先验，时空图滤波构造流匹配源分布，滤波因子自适应控制感受野并证明传输代价不高于高斯先验 (GiFlow, ICML 2026)
+- [[graph-learning-layer]] — TODO
+- [[graph-refiner]] — Graph Refiner：top-k 稀疏邻接 + GCN 精炼并防止 Graph VAE 退化 (GCGNet)
+- [[graph-structure-aligner]] — Graph Structure Aligner：patch 图 VAE + L1 结构对齐约束生成器 (GCGNet)
+- [[graphcast]] — GraphCast，ERA5 端到端训练的全球中期 MLWP：编码-处理-解码 GNN、multi-mesh 长短边混合消息传递、层加权 MSE 多步课程训练（AR 步数 112）、自回归滚动 10 天 0.25° 预报（arXiv 2022 v2）
+- [[graphgps]] — GraphGPS，三要素（PE/SE + local MPNN + global attention）模块化图 Transformer 配方：local MPNN 分支（含边特征）与 global attention 分支逐层并行求和，线性注意力下 O(N+E)（NeurIPS 2022）
+- [[grpo-for-forecasting]] — GRPO for forecasting, NRMSE-reward RL stage with length/decode penalties for traffic-accuracy optimization (ST-Vision-LLM, arXiv 2025)
+- [[guided-layer-normalization]] — conditional normalization with dynamic affine parameters for accident-aware modeling
+- [[gwnet]] — GWNet, Graph WaveNet: self-adaptive adjacency matrix + dilated causal convolutions for STG forecasting (IJCAI 2019)
+- [[heterogeneous-moe-routing]] — 异质性感知 MoE 路由，FaST 的动态 expert 路由机制
+- [[heterogeneous-partial-contrastive-learning]] — HPCL：正/负空间掩码对比学习 HCorr+PCorr（仅训练）
+- [[heterogeneous-spatial-attention]] — HSA: low-rank pattern library + gated fusion for node-specific spatial attention (HEPHAESTUS, ICLR 2026 under review)
+- [[heun-sampler]] — Heun 二阶 ODE 求解器，EDM 采样加速方法
+- [[hierarchical-contrastive-fusion]] — hierarchical contrastive learning for multimodal fusion: supervised + InfoNCE + JS divergence (AAAI 2026)
+- [[hierarchical-encoder-decoder-ts]] — HED, hierarchical encoder-decoder for multi-scale time series forecasting (ICLR 2023)
+- [[hierarchical-jepa]] — H-JEPA，JEPA 的多层级多时间尺度堆叠与不确定下的分层 Mode-2 规划：高层"动作"即低层状态须满足的条件，$k^t$ 条轨迹需剪枝
+- [[historical-in-context-learning]] — HIC, retrieve corrected historical reasoning examples as error-informed guidance (ICLR 2026)
+- [[history-conditional-manifold]] — History-Conditional Manifold，用历史内生构造可学 Flow Matching 源分布
+- [[hopf-cole-transform]] — Hopf-Cole 变换，将非线性 HJB-FP 系统线性化为 Kolmogorov PDE 对
+- [[hybrid-lead-lag-graph]] — HLLG，数据驱动图 $A_D$ × 空间掩码 $M_S$ × frozen LLM 语义掩码 $M_K$ 的 lead–lag 图构建 (LagLLM, ICML 2026)
+- [[hyper-connections]] — 可学习的多流残差连接设计，扩展残差流宽度以提升拓扑复杂度
+- [[implicit-neural-representation]] — INR 隐式神经表示，连续坐标到值的映射，分辨率无关但密集查询低效，QCGS 用于高斯参数估计
+- [[improved-meanflows]] — iMF，MeanFlow 后续改进：MeanFlow 目标等价改写为 v-loss 再参数化（JVP 切向量改取网络预测边缘速度）+ 引导尺度/区间条件化 + 多 token in-context conditioning（去 adaLN-zero），1-NFE FID 1.72（作者报告）(arXiv 2025)
+- [[incident-context-spatial-fusion]] — ICSF: incident-context spatial fusion via attention + spatial tensor (KDD 2026)
+- [[independent-spatial-tokenization]] — 独立空间 tokenization，解耦空间编码与序列建模 (SIFusion)
+- [[instaflow]] — InstaFlow, reflow+distill pipeline for one-step SD text-to-image (ICLR 2024)
+- [[instance-normalization]] — RevIN strategy for handling distributional shifts in time series
+- [[intent-discriminator-koopman]] — TODO
+- [[interflow]] — InterFlow: stochastic-interpolant CNF with quadratic simulation-free velocity objective (ICLR 2023)
+- [[interleaved-gat-mamba]] — 交错式 GAT-Mamba 架构，沿时空双轴交替堆叠 GAT 和 Mamba 形成闭环信息流 (GAMMA-Net, arXiv 2026)
+- [[interpretable-multi-head-attention]] — multi-head attention with shared values and averaged attention maps for temporal interpretability (TFT)
+- [[interval-aware-dropout]] — 基于时间距离的图边 dropout 策略，近邻边更高概率丢弃，迫使模型学习更广范围依赖 (PAST, arXiv 2025)
+- [[invariant-diffusion-operator]] — Invariant Diffusion Operator, Green-function attention as linear-complexity global diffusion for ST PDE evolution (STPDE, ICML 2026)
+- [[inverted-transformer-architecture]] — Inverted Transformer Architecture，反转 attention/FFN 应用维度而不修改组件 (ICLR 2024)
+- [[irregular-spatial-patching]] — leaf KDTree BFS cosine-similarity padding subtree backtracking for balanced, non-overlapping patches on irregular traffic points (PatchSTG, KDD 2025)
+- [[iterative-cross-modal-refinement]] — ICMR, multi-round MCT with pooled global feature bridge for progressive multimodal signal alignment (OmniField, ICLR 2026)
+- [[iterative-markovian-fitting]] — IMF，交替 Markovian/reciprocal KL 投影求解动态 SB
+- [[jepa]] — JEPA，非生成式预测世界模型：两分支编码 + predictor 在表征空间预测，能量为 $D(s_y,\mathrm{Pred}(s_x,z))$，四条非对比判据；含固定干扰噪声下聚焦慢特征的失效证据（Sobal et al. 2022）
+- [[joint-distribution-wasserstein-alignment]] — DistDF 的联合分布 Wasserstein 对齐技术，对齐预测与标签的条件分布 (ICLR 2026)
+- [[k-medoids-clustering]] — K-medoids 聚类，以真实样本为簇中心的划分式聚类，用于构建可解释的历史模式记忆库 (PFRP, AAAI 2026)
+- [[kalmannet-uncertainty-modeling]] — KalmanNet, neuralized Kalman Predict/Update refining KoopmanNet's biased linear system and defining the VAE variational posterior (K²VAE, ICML 2025)
+- [[key-normalization]] — ℓ2 normalization of keys to prevent attention hijacking
+- [[knowledge-guided-conditioning]] — Knowledge-Guided Conditioning，统计先验双线性调制内生–外生注意力
+- [[langevin-dynamics]] — 朗之万动力学 (Langevin Dynamics)，基于分数函数的 MCMC 采样方法
+- [[laplacian-kernel-temporal-regularization]] — Laplacian 核时域正则：度 2τ 无向 circulant 图 Laplacian 第一列 + circular convolution，Parseval 频域等价，QV 正则为其有向度 2 特例 (LCR, arXiv 2022/2024)
+- [[latent-space-future-state-prediction]] — 潜空间未来状态预测：编码真值未来观测作预测目标 + stop-gradient state matching（L1+cosine）+ 防塌缩正则，两阶段解耦动力学学习与解码（TimeAlign/LatentTSF/WorldTS）
+- [[lcr]] — LCR，非深度低秩 + Laplacian 正则凸优化插补：全局 circulant nuclear norm + 局部 Laplacian 核 circular convolution 正则，O(T log T) FFT 求解，PeMS-4W（11160×8064、约 9000 万观测）大规模验证 (arXiv 2022/2024)
+- [[leaf-kdtree]] — variant of KDTree ensuring all points in leaf nodes for spatial partitioning + BFS-based spatial locality (PatchSTG, KDD 2025)
+- [[learnable-frequency-scaling]] — learnable per-dimension frequency scaling in RoPE
+- [[learnable-patch-position-encoding]] — 可学习 patch 位置编码，编码时间和变量维度相对位置 (arXiv 2025)
+- [[learnable-recurrent-cycles]] — trainable cycle parameters Q ∈ ℝ^(W×D) for periodicity representation
+- [[lejepa]] — LeJEPA，JEPA 预测损失 + SIGReg 各向同性高斯正则的单超参凸组合：无 stop-gradient/teacher-student/调度器，超参扫描无塌缩，训练损失与下游准确率 Spearman 94–99% 支持无标签模型选择，Galaxy10 域内预训练超 DINOv2/v3 迁移，1.8B ViT-g 平稳训练（arXiv:2511.08544）
+- [[lets-group]] — SGL, 即插即用子图学习：可学习记忆向量按特征相似度划分可重叠子图 + 跨子图平均聚合，降低 STGNN 空间特征提取的 GPU 内存开销 (IJCAI 2025)
+- [[linear-adaptive-graph-learning]] — 线性自适应图学习，kernel 近似将图卷积从 O(N²) 降为 O(N)，线性于节点数 (MAGE, NeurIPS 2025)
+- [[linear-attention-bias]] — ALiBi's core mechanism: adding distance-proportional penalty to attention scores
+- [[linear-predictive-score]] — LPS: train-on-synthetic ridge CRPS for evaluating generative time-series samples (TSDiff, NeurIPS 2023)
+- [[linearized-spatial-convolution]] — LSC, O(N) graph message passing via PRF-kernel adjacency factorization, avoids materializing the N×N matrix (BigST, PVLDB 2024)
+- [[llm-enhanced-graph-construction]] — LLM-Enhanced Graph Construction, using frozen LLM + α-Entmax to build semantically meaningful adjacency matrices from node text (FSTLLM, ICML 2025)
+- [[location-aware-adaptive-normalization]] — LOAN，位置感知自适应归一化，通过静态地理属性注入空间偏置条件化特征 (RiverMamba)
+- [[logsparse-self-attention]] — TODO
+- [[long-distance-correlation-preservation]] — maintaining meaningful attention for distant tokens
+- [[long-sequence-feature-extractor]] — LSFE, BigST cached pre-processing: linearized Transformer (PRF) + periodic feature sampling for long-history encoding (PVLDB 2024)
+- [[low-rank-prior-estimation]] — 掩码低秩分解神经参数化构造流匹配信息先验，单次前向、线性复杂度 (LOFT, KDD 2026)
+- [[lrsgat]] — LrSGAT, low-rank guided sampling graph attention: significance-scored hybrid node sampling + low-rank re-attention + semi-adaptive dynamic graph (STAMImputer, arXiv 2025)
+- [[lscd]] — LSCD, Lomb–Scargle conditioned diffusion for time series imputation (ICML 2025)
+- [[lwr-traffic-pde]] — LWR 运动波守恒律：Greenshields 速度-密度关系导出速度形式残差；软约束（自动微分残差损失）与硬约束（图上平流-扩散算子离散）两种用法
+- [[mae]] — MAE, masked autoencoder for vision pretraining (75% mask ratio + asymmetric encoder-decoder) (CVPR 2022)
+- [[mamba-block-design]] — Mamba's modified block design with swapped sub-blocks and unified normalization
+- [[manifold-anchor-regularization]] — MAR，通过审美教师 KL 惩罚锚定生成过程在高品质流形的正则化方法 (arXiv 2026)
+- [[manifold-constrained-hyper-connections]] — 将 Hyper-Connections 的残差映射投影到 Birkhoff 多面体以恢复恒等映射稳定性
+- [[masked-diffusion-pre-training]] — task-oriented spatio-temporal masking + diffusion for multi-task mobile traffic forecasting (UoMo, KDD 2025)
+- [[meanflow]] — MeanFlow，预测区间平均速度的少步生成框架：MeanFlow Identity（JVP 全导数修正）+ CFG 内建目标场，ImageNet-256 从头训练 1-NFE FID 3.43（作者报告）(arXiv 2025)
+- [[median-of-means-ensemble]] — MoM estimator for aggregating probabilistic samples into point predictions
+- [[memory-augmented-gating]] — memory-based MoE routing with meta-node bank and dual classification losses for regression (TESTAM, ICLR 2024)
+- [[mix-hop-propagation-layer]] — TODO
+- [[mixed-modal-masked-image-modeling]] — MMIM, VQA-style masked-target reconstruction (75% block-wise) unifying weather tasks; target full-masking at inference (WeatherGFM, ICLR 2025)
+- [[mixed-partial-blackout-training]] — MPB 训练策略，RM 预训练 + RM/PB 混合微调 (SADI, AAAI 2025)
+- [[mixed-scale-conditioning]] — 混合尺度条件控制，intra-scale mix token + hybrid-scale prompt 捕获跨尺度气候交互 (ClimateAR, ICML 2026)
+- [[mmoe]] — Multimodal Mixture-of-Experts, TMoE+SMoE 双路门控即插即用模块，文本因果知识引导时序预测 (TiMi, ICML 2026)
+- [[moba-attention]] — MoBA，把 MoE top-k 门控用于 attention：KV 块即专家、query 与块内 key 均值内积选块、当前块强制加 causal mask（Moonshot AI / Kimi，arXiv:2502.13189）
+- [[modality-augmentation]] — Modality Augmentation, converting numerical time series into visual and textual modalities via frequency-domain transforms (AAAI 2026)
+- [[modality-guided-self-attention]] — Aurora's attention mechanism injecting multimodal domain knowledge into temporal representations (ICLR 2026)
+- [[model-merging]] — 同构参数合并：Soup / Fisher / RegMean / Ties / AdaMerging 等
+- [[moe-decomposition]] — MOEDecomp, input-adaptive mixture-of-experts average filters for seasonal-trend decomposition (ICML 2022)
+- [[momentum-updated-probabilistic-graph]] — 动量更新的逐边 Bernoulli 图原型，训练 ST Gumbel-Softmax 稀疏采样、推理阈值化
+- [[monte-carlo-methods-rl]] — 基于轨迹回报的无模型策略优化方法
+- [[motion-moe]] — Motion MoE：类型/信号 indicator experts 查表选择 + 8 个运动趋势 route experts 质心亲和度 top-K_r 路由（TrajAR）
+- [[motm-ridge-orchestrator]] — MoTM 在 TimeFlow 调制 INR 基的隐藏表示上逐序列拟合 ridge 回归的零样本编排机制
+- [[mpgru]] — MPGRU, message passing GRU unit replacing gating with MPNN for spatial aggregation (ICLR 2022)
+- [[mtsci]] — MTSCI，条件扩散插补：complementary mask 双视图 intra contrastive loss + mixup inter-consistency 条件网络 + vanilla/inverted transformer 双块编码器，ε-预测（CIKM 2024）
+- [[muffin-mae]] — Muffin-MAE, multifaceted masked autoencoder with temporal/spatial/global masking for inter-correlated urban dynamics (UrbanMind, KDD 2025)
+- [[multi-mesh-representation]] — Multi-mesh，icosahedron 6 次细分（M0 12 节点M6 40,962 节点）+ M0–M6 全层级边叠加的球面均匀多分辨率图，低层级节点作长程通信 hub；消融显示多级边为位势短时效优势的必要结构（arXiv 2022 v2）
+- [[multi-modality-guided-spatial-expert]] — multi-modality-guided spatial expert mechanism with MoE routing (KDD 2026)
+- [[multi-modality-refinement]] — SNR-based modality selection for multi-modality ST prediction (KDD 2026)
+- [[multi-objective-temporal-masking]] — MOTM：掩码比例时序范围掩码策略三级采样，多目标掩码预训练（Zeus, ICML 2026）
+- [[multi-scale-attention]] — Multi-scale window attention with dynamic relative position for hierarchical TS patterns (MANF)
+- [[multi-scale-linear-prediction]] — 多尺度线性预测，下采样 + 自上而下混合提取多粒度趋势模式 (DST-Mamba, AAAI 2025)
+- [[multi-source-causal-constraints]] — multi-source causal constraints framework: Granger + do-calculus + TDMI + VAE jointly supervise causal graph learning (CausalX, ICML 2026)
+- [[multi-token-prediction]] — Multi-token prediction, shared trunk + n heads predicting n future tokens as LM pretraining objective (Gloeckle et al., ICML 2024)
+- [[multimodal-crosstalk]] — MCT block, concatenated per-modality CNF tokens with global feature z injection for cross-modal exchange (OmniField, ICLR 2026)
+- [[multispans]] — MultiSPANS, multi-range ST Transformer with structural-entropy-optimized spatial attention (WSDM 2024)
+- [[mutual-information-disentanglement]] — MI minimax 解耦：最小化共享/独有互信息 + 最大化跨模态共享互信息 (MIDAS)
+- [[n-step-sarsa]] — 连接 TD 与 MC 的多步 Sarsa 方法
+- [[newton-schulz-iteration]] — Newton-Schulz iteration for matrix orthogonalization
+- [[node-heterogeneous-invariant-learning]] — 邻域环境集采样 + 节点条件 FiLM 调制 + InfoNCE/IRM 双辅助损失
+- [[node-scale-graph-structure-learning]] — 节点尺度图结构学习，为每个特征独立学习全局元图以解决特征异质性 (AAAI 2025)
+- [[node-visibility]] — 节点可见性，节点级掩码 + 子图采样的正则化与加速机制 (VisiFold, arXiv 2026)
+- [[noise-impact-indicator]] — per-series noise quantification via teacher model predictions for dynamic IB regularization (RSTIB-MLP, ICML 2025)
+- [[non-contrastive-ssl]] — 非对比自监督：按架构分型的能量塌缩（生成式隐变量/自编码器/联合嵌入可塌缩）、对比 vs 正则化两条路线、VICReg 的方差/协方差项与隐变量信息量控制手段
+- [[non-leaking-augmentation]] — 非泄漏数据增强，防止增强痕迹泄漏到生成图像
+- [[normalization-independence]] — SimDiff's diffusion-specific technique for handling distribution drift
+- [[ntk-aware-interpolation]] — RoPE interpolation by changing base parameter to preserve high-frequency info
+- [[ntk-by-parts-interpolation]] — wavelength-based piecewise RoPE interpolation
+- [[object-queries]] — DETR 的 N 个 learned positional embeddings 输入 decoder 逐 query 并行解码，slot 区域/尺寸特化且无强类别特化（arXiv 2020）
+- [[observation-self-guidance]] — Observation self-guidance: inference-time conditioning of unconditional TS diffusion without auxiliary nets (TSDiff, NeurIPS 2023)
+- [[ode-to-sde-conversion]] — ODE-to-SDE 转换，将确定性流匹配 ODE 转换为等边缘分布的 SDE 以实现随机 RL 探索 (NeurIPS 2025)
+- [[one-step-flow-generation]] — 一步流生成，学习区间平均速度 + JVP 修正实现单步函数求值的高效流匹配生成 (CoGenCast, ICML 2026)
+- [[opencity]] — OpenCity, spatio-temporal traffic foundation model with TimeShift Transformer + instance norm for zero-shot prediction (arXiv 2024)
+- [[ordinal-consistent-loss]] — 有序一致性损失，条件概率公式强制降水强度单调性，BCE + 有序掩码保证概率一致性
+- [[ordinal-temporal-fusion]] — fusing temporal and ordinal signals with learnable gate
+- [[patch-based-tokenization]] — converting time series into overlapping patch tokens for transformer input
+- [[patch-low-frequency-forecasting]] — PLFM 技术：重叠 patch 频谱 + 低通监督 + FALoss 的低频趋势学习 (LoFT-LLM)
+- [[patch-reprogramming]] — Patch Reprogramming，通过 cross-attention to text prototypes 将时序 patch 对齐到 LLM 词嵌入空间 (ICLR 2024)
+- [[pattern-recognizer-guidance]] — 模式识别器引导，判别器近似 p(M|X) + EM + 扩散反向引导，处理 MNAR (PRDIM, arXiv 2026)
+- [[pdformer]] — PDFormer, propagation delay-aware dynamic long-range Transformer for traffic flow prediction (AAAI 2023)
+- [[performer]] — Performer，FAVOR+ 线性注意力 Transformer：核化注意力按 Q′((K′)ᵀV) 结合律计算，O(Lrd) 时间/O(Lr+Ld+rd) 空间，不依赖稀疏/低秩先验（ICLR 2021）
+- [[periodic-temporal-attention]] — PTA: time-aware cross-attention with learnable daily/weekly periodic embedding queries (HEPHAESTUS, ICLR 2026 under review)
+- [[personalized-aggregation-strategy]] — 个性化聚合 PAS：按模块职责划分共享/私有参数，只聚合全局信息相关参数
+- [[physics-informed-position-encoding]] — physics-informed position encoding, embedding physical metadata (timestamps, geo-coordinates) into transformer position encodings (PIPE, NeurIPS 2025)
+- [[plug-and-play-prefix-tuning]] — 即插即用前缀微调，P-tuning-v2 式领域前缀注入冻结 PLM 每层，<100KB 可逆 (NuwaTS, arXiv 2024)
+- [[policy-evaluation]] — 给定策略下求解状态值函数的过程
+- [[policy-iteration]] — 策略评估与改进交替的动态规划算法
+- [[position-extrapolation]] — Transformer model's ability to handle longer sequences at inference than training
+- [[positive-random-features]] — PRF，softmax 核的正随机特征无偏估计：trig 特征在核值趋 0 时 MSE 发散、PRF 趋 0，ORF 正交化对任意维度 d 降方差（ICLR 2021）
+- [[post-hoc-forecast-revision]] — 预测后修订：骨干预测完成后独立模块修正输出，误差估计识别 + 局部/全局上下文加权融合（PIR, NeurIPS 2025）
+- [[prediction-refinement]] — Prediction Refinement: post-hoc refinement of base forecaster predictions using diffusion model as energy-based prior (TSDiff, NeurIPS 2023)
+- [[predictive-contrastive-learning]] — PCL，正样本按预测区间 MSE 而非回溯窗口相似度选择的对比学习策略 (PFRP, AAAI 2026)
+- [[predictor-corrector-sampling]] — PC sampling, combining SDE solvers with score-based MCMC
+- [[pristi]] — PriSTI, prior-guided conditional diffusion framework for spatiotemporal imputation (ICDE 2023)
+- [[probability-flow-ode]] — deterministic neural ODE sampling with exact likelihood computation
+- [[probsparse-self-attention]] — Informer's efficient O(L log L) attention via query sparsity measurement (AAAI 2021)
+- [[projected-attention]] — low-rank temporal projected attention for linear-complexity time series imputation (KDD 2024)
+- [[projected-fisher-divergence]] — 投影 Fisher 散度，Flux Matching 中用于学习分布保持向量场的统计散度
+- [[prominence-modeling-gsl]] — 显著度建模，在图结构学习中为节点/特征分配重要性权重 (AAAI 2025)
+- [[prompt-as-prefix]] — Prompt-as-Prefix (PaP)，通过自然语言提示引导冻结 LLM 对时间序列的推理变换 (ICLR 2024)
+- [[prototype-guided-flow-matching]] — Aurora's generative probabilistic forecasting via prototype-conditioned flow matching (ICLR 2026)
+- [[proxy-node-generation]] — 代理节点生成 GPN：共享 global queries + 时移滤波注意力在本地生成代表全局信息的节点，再经双掩码编码器恢复跨客户端依赖
+- [[q-learning-algorithm]] — off-policy TD 控制算法
+- [[qcgs]] — Query-Conditioned Gaussian Splatting (Station2Radar)，AWS-卫星融合 + INR 高斯参数估计 + 降雨感知采样，无雷达降水场生成 (ICLR 2026)
+- [[quadratic-form-weighted-objective]] — QDF 二次型加权目标 L_Σ 与双层学习 Σ 的训练技术 (ICLR 2026)
+- [[query-aggregate-attention]] — STUNet two-stage fusion: query upstream/downstream via spatial tokens, then aggregate causal sensor info with dual RoPE (KDD 2026)
+- [[quizsf]] — QuiZSF, retrieval-augmented zero-shot TSF framework, ChronoRAG Base + MSIL + MCC dual-branch adapter (WWW 2026)
+- [[radial-basis-function-interpolation]] — RBF 插值，Multiquadric 核从离散站点构建连续污染物场
+- [[rdpi]] — RDPI，两阶段时空插补框架：确定性初始模型（GRIN）+ 以"初值−真值"残差为扩散目标的条件扩散，观测值入前向过程、保留随机项的 DDIM 式加速；四时空数据集 MAE/MSE 作者报告最优 (arXiv 2024, AAAI 2025 著录)
+- [[rectified-flow]] — Rectified Flow, ODE-based generative model learning straight trajectories for few-step generation (arXiv 2022)
+- [[reflective-stepwise-reward]] — 反思式逐步奖励：LLM evaluator 回看完整轨迹逐步打分改善 credit assignment，折扣聚合后入记忆 (JitRL, ICML 2026)
+- [[reparameterization-trick]] — 重参数化技巧，将随机采样重构为可微确定性变换+固定噪声
+- [[representative-token-extraction]] — extracting representative tokens via cross-attention for efficient compression
+- [[residual-cycle-forecasting]] — RCF technique using learnable recurrent cycles for explicit periodicity modeling
+- [[residual-difference-mechanism]] — RDM, subtractive residual that suppresses SSE noise via adaptive graph convolution weights
+- [[retrieval-augmented-statistical-channel]] — RAGC: retrieval-augmented statistical channel for高铁 channel prediction (KDD 2026)
+- [[retrieval-based-condition-augmentation]] — RCA, RAG-style condition enrichment for cross-city diffusion generation (CRAFT, NeurIPS 2025)
+- [[retrieval-guidance]] — inference-time retrieval of similar history to analytically tilt diffusion score estimation (MiDDiR, ICLR 2026 under review)
+- [[road-impedance]] — BPR 道路阻抗 + 流量变异因子 + 相邻路段阻抗差动态图
+- [[rope]] — Rotary Position Embedding, 乘法型相对位置编码，现代 LLM 的标准方案
+- [[router-attention-for-cvpe]] — 两步聚合-分发注意力机制，CVPE 中用于跨变量信息注入 (arXiv 2025)
+- [[router-mechanism-for-cross-dimension]] — Router mechanism reducing cross-dimension attention from O(D²L) to O(DL) (ICLR 2023)
+- [[rwse]] — RWSE（Random-Walk Structural Encoding），m 步随机游走矩阵对角线作节点 local SE，机制归因 Dwivedi et al.（LSPE），GraphGPS 消融中增益一致且对分子数据尤佳（NeurIPS 2022）
+- [[sandglass-attention]] — SGA, precoder-decoder 注意力模块，聚合区域 token 捕获高阶时空相关性 + 降开销 (AAAI 2025)
+- [[sarsa-algorithm]] — on-policy TD 控制算法
+- [[scale-wise-autoregressive-decoding]] — 尺度级自回归轨迹解码：把自回归步从「下一步」换成「下一个尺度」，三次插值构造细尺度起点 + block-wise causal mask + 全尺度 RMSE（TrajAR）
+- [[selective-patching]] — Selective Patching：stride-1 候选上可微 Argmax 选 patch（可重复采样）(SRS, NeurIPS 2025)
+- [[self-speculative-decoding]] — Self-speculative decoding, same-model multi-head draft + verify for faster autoregressive generation (Stern/Medusa; strengthened by multi-token pretraining)
+- [[sheaf-laplacian]] — 层拉普拉斯算子 (Sheaf Laplacian)，推广图拉普拉斯以编码边特定的变换语义，用于谱域滤波 (ICLR 2026 under review)
+- [[shortcut-models]] — Shortcut Models, one-step diffusion via step-size conditioning and self-consistency (arXiv 2025)
+- [[sigreg]] — SIGReg，1D 随机投影 + Epps-Pulley 特征函数检验的各向同性高斯分布匹配正则：方向检验充分性（Cramér-Wold）、损失/梯度/曲率有界、O(N) 复杂度；矩检验退化极限恢复 VICReg（arXiv:2511.08544）
+- [[sinkhorn-algorithm]] — Sinkhorn/IPF 算法，交替优化对偶 Schrödinger potentials 求解静态 SB
+- [[sliced-wasserstein-distance]] — SWD：Cramér-Wold 定理保证随机 1D 投影对齐决定全分布，1D W2 闭式解为排序后逐点 Lp 距离
+- [[sliding-window-diffusion]] — Sliding-Window Diffusion, ARMD's deterministic intermediate-state generation that slides the series window instead of adding noise (AAAI 2025)
+- [[space-filling-curves]] — 空间填充曲线，双射 Φ:Z³N 将高维时空点序列化为 1D 序列，Gilbert/Sweep/Zigzag 交替扫描用于 Mamba 时空建模 (RiverMamba, NeurIPS 2025)
+- [[sparse-balanced-mixture-of-experts-st]] — 稀疏平衡混合专家，每节点 Top-K 激活 + 符号 SGD 负载均衡，克服线性图学习的低秩瓶颈 (MAGE, NeurIPS 2025)
+- [[sparse-teacher-forcing]] — STF，间歇性数据推断状态重校准的 DSR 训练方法，控制梯度爆炸同时探索长期动力学
+- [[spatial-imputation-decoder]] — Spatial Imputation Decoder, neighbor-only two-stage message-passing imputation (ICLR 2022)
+- [[spatial-temporal-attentive-encoder]] — dual-pathway encoder for short-term and long-term periodicity
+- [[spatial-temporal-tokenizer]] — 空间+时间双维度 token 生成，激活 PLM 对时空数据的理解 (AAAI 2025)
+- [[spatial-tokenizer-adjacency-patches]] — STUNet spatial tokenizer: adjacency-matrix ViT-style patches, AE pretrain + node permutation, frozen at backbone stage (KDD 2026)
+- [[spatio-temporal-retrieval-store]] — 基于 FAISS 的双维度向量记忆库 + 动量 EMA 管理 (RAST, AAAI 2026)
+- [[spatiotemporal-principal-component]] — 直接预测未来流量的时空协方差主成分，单次前向构造概率样本
+- [[spectral-consistency-loss]] — $L_{\text{SCons}}$，频谱一致性损失，强制插补信号与观测信号频谱对齐
+- [[spectral-domain-calibration]] — SD-Calibrator, per-node rFFT + group-wise amplitude/phase modulation correcting periodic non-stationarity at test time (ST-TTC, NeurIPS 2025)
+- [[spectral-graph-wavelet-transform]] — SGWT，谱图小波变换用于图信号的多尺度分解
+- [[spectral-recurrent-encoder]] — SG-GRU, spectral-domain Graph GRU encoder for STG diffusion conditioning (arXiv 2024)
+- [[spectral-trajectory-scheduler]] — STS, adaptive noise schedule learning via frequency-domain regularized PGD for diffusion TS forecasting (StaTS, arXiv 2026)
+- [[spurious-patterns]] — model learning shortcut features instead of semantic features
+- [[ssdl]] — Self-Supervised Deviation Learning，历史锚点 + 原型离散化 + 对比损失 + 偏差损失，无标签建模时空偏差 (ST-SSDL, NeurIPS 2025)
+- [[std-mae]] — STD-MAE, spatial-temporal-decoupled masked autoencoder for spatiotemporal pre-training (IJCAI-2024)
+- [[stg-attention]] — STG-Attention，图传播 0..k 阶输出 × 共享 QKV 的线性化时空注意力 + 递归门控 1×1 卷积交互，单层完成高阶时空交互 (STGformer, arXiv 2024)
+- [[stgcl]] — STGCL：时空图对比学习系统实证框架，联合学习 + 图级对比 + 时空多域增强 + 时域负样本过滤（SIGSPATIAL 2022）
+- [[stgcn]] — STGCN, pure convolutional spatial-temporal graph network, "sandwich" ST-Conv Block (IJCAI 2018)
+- [[stochastic-fisher-guided-adaptive-selection]] — SFAS，Fisher 信息 + 退火随机性选择 Top-k 关键参数更新的 PEFT 技术（WeatherPEFT, ICLR 2026）
+- [[stochastic-optimal-control]] — TODO
+- [[stochastic-shared-embedding]] — SSE, stochastic shared embedding regularization for graph node embeddings (NeurIPS 2019, adapted 2026)
+- [[structural-token-sorting]] — STS，lead–lag 图上消息传递求 patch 重要性并重排 token，把图结构转译为自回归序列顺序 (LagLLM, ICML 2026)
+- [[task-adaptive-dynamic-prompting]] — TADP，从 WFM 编码器嵌入权重内生生成任务自适应软提示的 PEFT 技术（WeatherPEFT, ICLR 2026）
+- [[task-arithmetic]] — 任务向量算术：微调位移的加减组合与编辑
+- [[temporal-decoder]] — TiDE per-horizon residual fusion of decoded vectors with projected future covariates
+- [[temporal-difference-learning]] — 时序差分学习，包括 Sarsa、Q-learning 等算法
+- [[temporal-folding-graph]] — TFG，将时序快照序列折叠为单图表示以消除跨步信息传递 (VisiFold, arXiv 2026)
+- [[temporal-incident-impact-decay]] — TIID: temporal incident impact decay via Gaussian function (KDD 2026)
+- [[temporal-query-technique]] — periodically shifted learnable vectors as queries for global correlation
+- [[temporal-semantic-primitives]] — 时间演化原语：mean shift/volatility/shape/lag-decay 四类离散语义，数值可验证 + 置信门控
+- [[test-time-adaptation-st]] — test-time adaptation for spatio-temporal domain shift via masked reconstruction (UrbanMind, KDD 2025)
+- [[time-aligned-retrieval-enhancement]] — 时间对齐检索增强，在形态相似度上叠加多粒度时间对齐奖励 (SARAF, KDD 2026)
+- [[time-aware-polynomial-correlation]] — 可学习时间多项式拟合时变相关因子 Qt
+- [[time-enhanced-attention]] — non-autoregressive attention transferring domain from source to target time steps (TESTAM, ICLR 2024)
 - [[time-gated-multi-scale-velocity]] — 时间门控多尺度速度头：1D 金字塔尺度专用头 + softmax(MLP(t)) 门控凸组合，谱强调沿轨迹演化 (TG-MSFM, ICLR 2026)
-
-## Sources (continued)
-- [[source-core-context-repetition]] — CoRe：重复上下文以包含所需文档顺序的有序子序列；与 Trace as State 的位置干预区别（Findings NAACL 2025）
-- [[source-graphwalks-dataset]] — OpenAI GraphWalks 数据集卡：BFS/Parents 定义、公开评分示例与版本修复范围
-- [[source-mrcr-dataset]] — OpenAI MRCR 数据集卡：多实例绑定、随机前缀与 SequenceMatcher；与论文 MRCRv2 命名的对应缺口
-- [[source-nub-1m-benchmark]] — NUB-1M 一手仓库：小说理解、Season 2 二十题、单次排行榜与当季答案公开策略
-- [[source-re-reading-improves-reasoning]] — Re2：在单条 prompt 中重复任务输入，与思维激发提示组合（EMNLP 2024）
-- [[source-recontext]] — ReContext：内部相关性选择原文证据，递归回放后生成；白盒接口与完整上下文保留（arXiv 2026）
-- [[source-state-over-tokens]] — State over Tokens：把 reasoning prefix 理解为外化计算状态的概念框架，不等同忠实解释（arXiv 2025）
-- [[source-trace-as-state]] — Trace as State：Xu Zou、Jie Tang；同题推理轨迹前置后重读，21 页正文与附录 A–F（arXiv:2609.02702v1）
-
-## Concepts (continued)
-- [[conditional-state-update]] — 条件状态更新：残差映射计数与条件先后顺序的最坏情况内存差；完整构造、证明及 KV cache 适用范围
-
-## Techniques (continued)
+- [[time-shifted-filters]] — 时移滤波器 TSF：按 $j=t\bmod L$ 选取频域滤波器，作用于 attention 的 key/value
+- [[timedit-masking]] — TimeDiT's unified masking mechanism: random/block/stride/reconstruction masks for multi-task time series SSL
+- [[timedit-physics-informed]] — TimeDiT's finetuning-free PDE-guided Langevin dynamics sampling for physics-informed generation
+- [[timeflow-loss]] — TimeFlow Loss，Sundial 基于 Flow Matching 的生成式训练目标 (ICML 2025)
+- [[topology-aware-graph-transformer]] — TGT, learnable blend of global self-attention and local graph topology (AAAI 2026)
+- [[topology-aware-node-embedding]] — 基于拉普拉斯特征向量的归纳式节点嵌入，支持跨图结构迁移 (AAAI 2025)
 - [[trace-as-state]] — Trace as State 主入口：问题例子、同轨迹前后置机制、主要实证与不能外推的结论
+- [[trajectory-consistency-flow-matching]] — 轨迹一致性流匹配，在 CFM 之外约束速度场沿轨迹恒定并给出少步积分误差界 (LOFT, KDD 2026)
+- [[transport-based-reliability-assessment]] — 基于传输的可靠性评估：通过潜在空间传输几何而非分类器输出来度量可靠性
+- [[truncated-policy-iteration]] — 值迭代与策略迭代��间的截断折中
+- [[tt-wasserstein]] — TT-Wasserstein metric for quantifying CTR alignment quality (ICLR 2026)
+- [[two-band-mixture-noise]] — 两频段混合噪声，频域扩散中低频+高频噪声的线性组合方案 (ICLR 2025 Workshop)
+- [[two-stage-attention]] — TSA Layer, cross-time then cross-dimension attention for 2D MTS arrays (ICLR 2023)
+- [[two-stage-imputation]] — 双阶段插补，第一阶段初始插补 + 第二阶段精炼 + 可学习加权组合 (SADI, AAAI 2025)
+- [[uncertainty-aware-noise-schedule]] — UANS，将数据感知的时变方差注入扩散过程以建模非平稳不确定性
+- [[uncertainty-aware-rectification]] — 不确定性感知矫正，按样本不确定性与训练进度动态仲裁 CFM 精度与轨迹线性化的梯度冲突 (LOFT, KDD 2026)
+- [[unified-prompt-learning]] — UrbanDiT 的三个 memory pool（时域/频域/空域）+任务掩码 prompt 的自适应引导机制
+- [[uniflow]] — UniFlow, foundation model for unified grid+graph urban spatio-temporal flow prediction (arXiv 2024)
+- [[unist]] — UniST, one-for-all spatio-temporal foundation model with MAE pre-training and memory-based prompt learning (KDD 2024)
+- [[urbangpt]] — UrbanGPT, spatio-temporal large language model with instruction-tuning paradigm (KDD 2024)
+- [[urbanmind]] — UrbanMind, multifaceted ST-LLM with Muffin-MAE and test-time adaptation for urban dynamics (KDD 2025)
+- [[urbanpg]] — UrbanPG, efficient framework with personalized context prompts + general backbone for large-scale/few-shot/continual ST learning (AAAI 2026)
+- [[urbanverse]] — UrbanVerse, cross-city/cross-task urban region representation learning foundation model (arXiv 2026)
+- [[value-iteration]] — 直接迭代求解最优方程的动态规划算法
+- [[variable-selection-network]] — instance-wise Softmax variable selection for static/past/future inputs (TFT)
+- [[variant-frequency-positional-encoding]] — variant-frequency sinusoidal encoding with per-physical-variable wavelengths (PIPE, NeurIPS 2025)
+- [[variate-token-embedding]] — Variate Token Embedding，将整条变量序列嵌入为单个 token (ICLR 2024)
+- [[variational-generator-exogenous]] — Variational Generator：VAE 粗预测 + 可选未来外生替换 (GCGNet)
+- [[vicreg]] — VICReg（ICLR 2022）：不变 MSE + 方差 hinge + 协方差去相关三项损失，分支可用不同权重/架构/模态；线性 73.2%，DW/DA 配置与多模态检索优于 Barlow Twins；VR 使 predictor 冗余、揭示 BYOL/SimSiam 缓慢塌缩
+- [[videomae]] — VideoMAE, video masked autoencoder with tube masking + 90-95% mask ratio (NeurIPS 2022)
+- [[virtual-nodes-traffic]] — Virtual Nodes，连接全部真实节点的辅助节点在单层内完成全图聚合，以半自适应邻接矩阵学习接入权重、缓解 over-squashing 的长期交通预测机制 (arXiv 2025)
+- [[visreg]] — VISReg：方差 + SWD sketching + center 三项解耦正则的 JEPA 训练方法，stop-gradient 归一化隔离 scale/shape，塌缩区梯度有界，O(NDK)（arXiv:2606.02572）
+- [[weather-prompt]] — Weather Prompt, three visual prompt formats (single/multi/temporal modal) for in-context weather task specification (WeatherGFM, ICLR 2025)
+- [[wire]] — WIRE，图 Laplacian 谱坐标驱动的旋转位置编码，RoPE 的图推广，兼容线性注意力 (ICML 2026)
 
-## Analysis (continued)
+## Analyses
+
+- [[diffusion-frequency-domain-theory]] — 扩散模型为什么先学低频——频域理论的统一视角：谱偏置频率层级频域噪声控制EqualSNRSNR-t Bias范式转移
+- [[graph-node-clustering]] — 图节点聚类方案全景：拓扑驱动（Louvain/METIS/KD-Tree）× 特征驱动（k-means/k-medoids/DTW）× 可学习聚类（胶囊路由/对比聚类/记忆向量锚点/注意力分数），静态 vs 动态取舍
+- [[gwnet-longevity]] — GWNet 为何在 2026 年仍是主力基线：LargeST 精度证据（STGformer Table I/II）+ 2026 新方法仍以其为骨干（SCALE/USTD/IGSTGNN）+ 四条修补轴 + 机制分析与失效边界
+- [[kite-manifold-guidance-chain]] — KITE 三件套串联：流形改起点、知识改条件、CFG 拧剂量
+- [[moe-in-time-series-and-spatio-temporal]] — MoE 在时序/时空的机制谱系：四类动机、七类插入位置、门控/稀疏/均衡/专家形态四维对照，含 Zotero 库中未建页工作的机制与量级，并单列与 MoE 易混的边界机制
+- [[multimodal-semantic-understanding]] — 多模态数据语义理解的对齐范式、融合策略与冗余过滤综合分析
+- [[on-policy-vs-off-policy]] — on-policy 与 off-policy 学习范式对比
+- [[patchstg-mage-stop-shared-skeleton]] — PatchSTG/MAGE/STOP 同构分析：共享低维中介混合 + 个性化项 + 静态 support 的三种参数化（可分离满秩 / 静态图库标量路由 / K 秩瓶颈）；内容动态 support 为共同空白
+- [[patchstg-sparse-attention-form]] — PatchSTG dual attention 的显式稀疏注意力形式：块对角（depth）× 位置对齐（breadth）双固定掩码的 softmax 复合，O(max(P,R)Md)
+- [[periodicity-modeling-in-time-series]] — analysis of periodic modeling approaches across time-series forecasting architectures
+- [[rl-learning-path-mfrl]] — 基于《Mathematical Foundations of Reinforcement Learning》的系统性 RL 学习路径
+- [[spatio-temporal-foundation-model-landscape]] — 时空基础模型全景：设计哲学三重分裂、架构范式六条路线、预训练策略四象限、泛化机制深度比较
+- [[spectral-kernel-linear-attention]] — WIRE 旋转读作核的随机特征后落地为线性注意力：内容×有效电阻核、O(N)、旋转/精确两条实现路线
 - [[trace-as-state-evidence]] — 全部主结果、对照消融、24 格配对区间、轨迹数与难度分箱；区分均值优势、统计支持与机制解释
 - [[trace-as-state-positioning]] — Trace as State 与 Re2、CoRe、State over Tokens、ReContext 的原始论文对照；避免跨设置排名
 - [[trace-as-state-reproduction]] — 模型版本、完整已公开提示、评分、36 行 token 统计、增量成本核算与公开材料缺口
-
-## Techniques (continued)
-- [[stgcl]] — STGCL：时空图对比学习系统实证框架，联合学习 + 图级对比 + 时空多域增强 + 时域负样本过滤（SIGSPATIAL 2022）
-
-## Sources (continued)
-- [[source-gencast]] — GenCast：无观测区域交通预测，掩码子图对比骨干 + LWR 速度残差物理损失 + ERA5 天气交叉注意力门控融合 + 空间分组熵正则（Su et al., AAAI 2026）
-
-## Concepts (continued)
-- [[unobserved-region-forecasting]] — 无观测区域交通预测：克里金→外推→连续无观测区的任务谱系，掩码自监督、物理约束、外部动态信号、局部特征解耦四条路线
-
-## Techniques (continued)
-- [[lwr-traffic-pde]] — LWR 运动波守恒律：Greenshields 速度-密度关系导出速度形式残差；软约束（自动微分残差损失）与硬约束（图上平流-扩散算子离散）两种用法
-- [[differentiable-spatial-embedding]] — 可微空间嵌入 SE-L（冻结 LLaMA3 文本描述）与 SE-H（GeoHash + 字符 BERT，训练中更新），以及两者在不同数据集上的实证差异
-
-## Sources (continued)
-- [[source-fedhint]] — FedHINT：联邦交通预测中从本地数据抽取隐藏全局成分生成代理节点以恢复跨客户端依赖，只上传模型参数；METIS 切 6 客户端，PEMS03/04/07/08（Zhou et al., AAAI 2026）
-
-## Concepts (continued)
-- [[federated-traffic-prediction]] — 联邦交通预测：局部子图 + 参数聚合的设定、METIS 六客户端评估协议与四类方法谱系
-- [[inter-client-dependency]] — 跨客户端依赖：数据隔离切断的跨区域节点相关性，恢复路线对照与效果检验方式
-- [[hidden-global-components]] — 隐藏全局成分：局部数据中含反映跨区域交通变化的成分这一假设、提取机制与三条证据
-
-## Techniques (continued)
-- [[proxy-node-generation]] — 代理节点生成 GPN：共享 global queries + 时移滤波注意力在本地生成代表全局信息的节点，再经双掩码编码器恢复跨客户端依赖
-- [[time-shifted-filters]] — 时移滤波器 TSF：按 $j=t\bmod L$ 选取频域滤波器，作用于 attention 的 key/value
-- [[personalized-aggregation-strategy]] — 个性化聚合 PAS：按模块职责划分共享/私有参数，只聚合全局信息相关参数
-
-## Sources (continued)
-- [[source-adafre]] — AdaFre: Adaptive Frequency Pathways for Spatiotemporal Forecasting（Qin et al., AAAI 2026），DFT 有效频带均匀切分 + 频率特异谱嵌入 + 节点级 top-2 频带路由 + 频率均衡损失，PeMSD3/4/7/8 MAE 14.27/17.89/18.58/12.99 全最优
-
-## Entities (continued)
-- [[adafre]] — AdaFre 模型页：时间分带、空间谱分组与稀疏频率路由的三段结构
-- [[stid]] — STID，仅用时空身份嵌入的轻量基线，常作效率参照、prompt 来源或频率分支 backbone
-
-## Techniques (continued)
-- [[band-limited-temporal-decomposition]] — 按 DFT 有效频带切带、带外置零后 IFFT 回时域，得到 $P$ 条 band-limited 时域视图
-- [[frequency-specific-spatial-embedding]] — 拉普拉斯特征向量按特征值等量切成 $P$ 组，与时间频带一一配对
-- [[frequency-pathway-routing]] — 频率维上的节点级温度 softmax + top-$K$ 选择，再按 softmax 权重融合分支输出
-- [[frequency-balance-loss]] — 惩罚各频率在 mini-batch 上的平均选择概率偏离 $1/P$ 的均衡正则
-
-## Sources (continued)
-- [[source-dynastar]] — DynaSTar: Dynamic Graph Invariant Learning for Reliable Out-of-Time Spatio-Temporal Prediction (IJCAI 2026)
-
-## Concepts (continued)
-- [[out-of-time-generalization]] — OOT 泛化：按 temporal phase 划分部署后时间线，信号分布与图结构同时在相位间演化的长期部署设定（DynaSTar 提出）
-
-## Entities (continued)
-- [[dynastar]] — DynaSTar：动量更新概率图 + 节点异质不变学习的 OOT 交通预测模型（IJCAI 2026）
-
-## Techniques (continued)
-- [[momentum-updated-probabilistic-graph]] — 动量更新的逐边 Bernoulli 图原型，训练 ST Gumbel-Softmax 稀疏采样、推理阈值化
-- [[node-heterogeneous-invariant-learning]] — 邻域环境集采样 + 节点条件 FiLM 调制 + InfoNCE/IRM 双辅助损失
-
-## Sources (continued)
-- [[source-ripcn]] — RIPCN: Road Impedance Principal Component Network for Probabilistic Traffic Flow Forecasting (KDD 2026)
-
-## Entities (continued)
-- [[ripcn]] — RIPCN：阻抗演化 + 时空主成分网络的概率交通流预测模型（KDD 2026）
-
-## Techniques (continued)
-- [[road-impedance]] — BPR 道路阻抗 + 流量变异因子 + 相邻路段阻抗差动态图
-- [[spatiotemporal-principal-component]] — 直接预测未来流量的时空协方差主成分，单次前向构造概率样本
-
-## Analyses (continued)
-- [[moe-in-time-series-and-spatio-temporal]] — MoE 在时序/时空的机制谱系：四类动机、七类插入位置、门控/稀疏/均衡/专家形态四维对照，含 Zotero 库中未建页工作的机制与量级，并单列与 MoE 易混的边界机制
-
-## Sources (continued)
-- [[source-soft-shape]] — SoftShape: Learning Soft Sparse Shapes for Efficient Time-Series Classification（ICML 2025），shape 级 MoE（k=1、专家数=类别数）+ Inception 共享专家 + 变异系数负载均衡
-- [[source-interpgn]] — InterpGN: Shedding Light on Time Series Classification Using Interpretability Gated Networks（ICLR 2025），2 专家混合，门控来自可解释模型自身的 Gini 置信度
-- [[source-tfps]] — TFPS: Learning Pattern-Specific Experts for Time Series Forecasting Under Patch-level Distribution Shift（NeurIPS 2025），子空间聚类亲和度当路由输入的 patch 级 MoE
-- [[source-dutytte]] — DutyTTE: Deciphering Uncertainty in Origin-Destination Travel Time Estimation，noisy top-k MoE（C=8/k=4）驱动的 OD 通行时间区间预测
-- [[source-transfertraj]] — TransferTraj: A Vehicle Trajectory Learning Model for Region and Task Transferability，每层 TRIE 之后的 Spatial Context MoE（C=8/k=4）
-- [[source-adaptraj]] — AdapTraj: A Multi-Source Domain Generalization Framework for Multi-Agent Trajectory Prediction，借用专家集合思想的逐域 extractor + 域标签聚合（无门控网络）
-- [[source-tsrag]] — TS-RAG: Retrieval-Augmented Generation based Time Series Foundation Models are Stronger Zero-Shot Forecasters，把检索嵌入当专家的 MoE 增强模块（稠密 softmax）
-- [[source-flownet]] — FlowNet: Modeling Dynamic Spatio-Temporal Systems via Flow Propagation（NeurIPS 2025），M-MLP 内的 Mixture of Linears（16 个线性专家）
-- [[source-smartraj2]] — SMARTraj2: A Stable Multi-City Adaptive Method for Multi-View Spatio-Temporal Trajectory Representation（NeurIPS 2025），城市/轨迹级 sigmoid 特征门控，正文无专家集合
-- [[source-graph-mixture-density-networks]] — Graph Mixture Density Networks（ICML 2021），走 MDN 而非 MoE，论文自述的取舍作为两者边界
-
-## Techniques (continued)
-- [[moba-attention]] — MoBA，把 MoE top-k 门控用于 attention：KV 块即专家、query 与块内 key 均值内积选块、当前块强制加 causal mask（Moonshot AI / Kimi，arXiv:2502.13189）
-
-## Sources (continued)
-- [[source-moba-mixture-of-block-attention]] — MoBA: Mixture of Block Attention for Long-Context LLMs（Moonshot AI，arXiv:2502.13189），块稀疏 MoE attention：8K 缩放验证 loss 差 1e-3 内、Llama-8B-1M RULER 0.7818 vs 0.7849、attention 层 1M prefill 6.5× / 10M 16× 加速，自述部署于 Kimi
-
-## Techniques (continued)
-- [[jepa]] — JEPA，非生成式预测世界模型：两分支编码 + predictor 在表征空间预测，能量为 $D(s_y,\mathrm{Pred}(s_x,z))$，四条非对比判据；含固定干扰噪声下聚焦慢特征的失效证据（Sobal et al. 2022）
-- [[hierarchical-jepa]] — H-JEPA，JEPA 的多层级多时间尺度堆叠与不确定下的分层 Mode-2 规划：高层"动作"即低层状态须满足的条件，$k^t$ 条轨迹需剪枝
-- [[non-contrastive-ssl]] — 非对比自监督：按架构分型的能量塌缩（生成式隐变量/自编码器/联合嵌入可塌缩）、对比 vs 正则化两条路线、VICReg 的方差/协方差项与隐变量信息量控制手段
-- [[vicreg]] — VICReg（ICLR 2022）：不变 MSE + 方差 hinge + 协方差去相关三项损失，分支可用不同权重/架构/模态；线性 73.2%，DW/DA 配置与多模态检索优于 Barlow Twins；VR 使 predictor 冗余、揭示 BYOL/SimSiam 缓慢塌缩
-
-## Concepts (continued)
-- [[autonomous-agent-architecture]] — LeCun 2022 的可配置认知架构：configurator/perception/world model/cost/short-term memory/actor 六模块全可微，configurator 调制参数与连接图
-- [[intrinsic-cost-and-critic]] — 代价模块：$C=IC+TC$，不可训练的 intrinsic cost 定行为驱力，critic 由短期记忆中的 (τ, s_τ, IC) 三元组训练以预判长期能量
-- [[mode-1-mode-2-planning]] — Mode-1 反应式策略 vs Mode-2 用世界模型做滚动时域 MPC（七步流程），Mode-2 结果可编译成 Mode-1 策略；推理即能量最小化
-- [[world-model]] — 世界模型的职责、三类待解问题、七种不确定性分类、表征空间预测、键值可写记忆跟踪世界状态与五种数据获取方式
-
-## Sources (continued)
-- [[source-autonomous-machine-intelligence]] — LeCun《A Path Towards Autonomous Machine Intelligence》v0.9.2（2022-06-27，62 页）立场论文：可配置认知架构 + JEPA/H-JEPA + 非对比 SSL 四项自述贡献与 8.1 节自述缺口（证据源为 PDF 全文，不在 raw/）
-- [[source-jepa-focus-on-slow-features]] — JEPA Focus on Slow Features（Sobal et al., NeurIPS 2022 SSL workshop，arXiv:2211.10831，4 页）：移动点 toy 环境、无奖励全离线，JEPA+VICReg/SimCLR 在噪声逐帧变化时持平或更好、在固定噪声下失败并给出平凡解解释
-- [[source-vicreg-variance-invariance-covariance-regularization]] — VICReg（Bardes, Ponce & LeCun，ICLR 2022）：三项防塌缩损失（不变/方差/协方差），分支独立正则带来权重、架构与模态自由度，含 BYOL/SimSiam 缓慢塌缩证据
-
-## Entities (continued)
-- [[worldts]] — WorldTS：多模态协变量条件化的潜空间未来状态预测框架，两阶段训练（arXiv:2609.31162）
-
-## Techniques (continued)
-- [[latent-space-future-state-prediction]] — 潜空间未来状态预测：编码真值未来观测作预测目标 + stop-gradient state matching（L1+cosine）+ 防塌缩正则，两阶段解耦动力学学习与解码（TimeAlign/LatentTSF/WorldTS）
-
-## Sources (continued)
-- [[source-worldts]] — WorldTS（Zhu et al., arXiv:2609.31162v1，2026-09-25）：多模态协变量直接条件化潜空间未来状态预测，两阶段训练；21 数据集上数值协变量 12/12 平均最优、Time-MMD 14/16 第一、MMSP 最低
-
-## Techniques (continued)
-- [[visreg]] — VISReg：方差 + SWD sketching + center 三项解耦正则的 JEPA 训练方法，stop-gradient 归一化隔离 scale/shape，塌缩区梯度有界，O(NDK)（arXiv:2606.02572）
-- [[sliced-wasserstein-distance]] — SWD：Cramér-Wold 定理保证随机 1D 投影对齐决定全分布，1D W2 闭式解为排序后逐点 Lp 距离
-
-## Sources (continued)
-- [[source-visreg]] — VISReg（Wu, Balestriero & Levine，Altos Labs/Brown，arXiv:2606.02572v1，2026-06-01 preprint）：以 SWD sketching 替换 VICReg 协方差项的 JEPA 训练正则化；OOD 六数据集平均最高、ImageNet-22K 训练后与 10 倍数据 DINOv2 相当
-
-## Techniques (continued)
-- [[lejepa]] — LeJEPA，JEPA 预测损失 + SIGReg 各向同性高斯正则的单超参凸组合：无 stop-gradient/teacher-student/调度器，超参扫描无塌缩，训练损失与下游准确率 Spearman 94–99% 支持无标签模型选择，Galaxy10 域内预训练超 DINOv2/v3 迁移，1.8B ViT-g 平稳训练（arXiv:2511.08544）
-- [[sigreg]] — SIGReg，1D 随机投影 + Epps-Pulley 特征函数检验的各向同性高斯分布匹配正则：方向检验充分性（Cramér-Wold）、损失/梯度/曲率有界、O(N) 复杂度；矩检验退化极限恢复 VICReg（arXiv:2511.08544）
-
-## Concepts (continued)
-- [[isotropic-gaussian-embeddings]] — 各向同性高斯嵌入分布：协方差受标量约束的分布族内唯一最小化 worst-case 下游预测风险（线性探针偏差/方差两引理 + k-NN/kernel 积分平方偏差定理）（arXiv:2511.08544）
-
-## Sources (continued)
-- [[source-lejepa]] — LeJEPA: Provable and Scalable Self-Supervised Learning Without the Heuristics（Balestriero & LeCun，arXiv:2511.08544v3，2025-11 preprint）：各向同性高斯最优性 + SIGReg + 单超参 JEPA 训练；10+ 数据集、60+ 架构验证
+- [[traffic-forecasting-architecture-trends]] — 交通预测架构趋势：图卷积TransformerSSM基础模型生成式检索增强效率LLM 融合九时代演化 + 六条跨时代趋势
+- [[tsfm-covariate-adaptation-comparison]] — TSFM 协变量适配方法全景对比：CoRA vs UniCA vs DiTS vs ChronosX vs AdaPTS vs Gen-P-Tuning 六种路线的系统比较
+- [[urbandit-paper-river]] — TODO

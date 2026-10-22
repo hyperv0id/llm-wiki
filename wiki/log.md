@@ -3982,3 +3982,13 @@ ingest 报告：[[ingest-reports/2026-10-13-visreg|WHY 报告]]
 创建的页面：[[lejepa]], [[sigreg]], [[isotropic-gaussian-embeddings]], [[source-lejepa]]
 更新的页面：[[jepa]]（训练节补 LeJEPA 分布目标段，source_count 4→5）, [[vicreg]]（谱系位置补矩检验退化极限与 Thm 3 批评，source_count 4→5）, [[non-contrastive-ssl]]（新增 LeJEPA 分布目标节，source_count 3→4）, [[index]], [[log]]
 ingest 报告：[[ingest-reports/2026-10-13-lejepa|WHY 报告]]
+
+## [2026-10-20] ingest | TrajAR: Long-Term Trajectory Prediction at Urban Intersections via Multi-scale Interaction Perception (IJCAI-26, pp. 2635–2643)
+路口多道路使用者轨迹预测。论文把任务难点定位为隐式交互与长时预测：隐式交互由运动趋势、使用者类型、信号状态与路权规则共同决定（近距离不等于交互）；长时预测上逐步自回归累积误差、非自回归整体偏置。解法是把自回归单位从 next-step 换成 next-scale（VAR 思路），配三次插值构造细尺度起点、block-wise causal mask、全尺度 RMSE；编码器为运动趋势层 + Motion MoE（类型/信号 indicator experts + 8 个趋势 route experts）+ 高斯核边权 GAT + Transformer 情境感知。
+创建的页面：[[source-trajar]], [[trajar]], [[scale-wise-autoregressive-decoding]], [[motion-moe]], [[intersection-trajectory-prediction]]
+更新的页面：[[mixture-of-experts]]（新增「在轨迹预测中的应用（Motion MoE）」节 + 相关技术链接，source_count 10→11）, [[moe-in-time-series-and-spatio-temporal]]（1.1 异质性补 TrajAR 动机条、门控表补「学得质心 + Sigmoid 亲和度」、专家形态表补「属性查表 + 质心路由 FFN」、相关页面，source_count 31→32）, [[climatear]]（相关页面补 [[scale-wise-autoregressive-decoding]] 交叉链接）, [[index]], [[log]]
+ingest 报告：[[ingest-reports/2026-10-20-trajar|WHY 报告]]
+数值备注：表 1/2 的 Imp.(Δ%) 行以逐列最优基线为参照、分母取本方法自身（28 格逐列复算与 Imp 行的差均在 0.1pp 内，均值 19.2%）；摘要「平均提升 23.8%」按 KI-GAN 参照、ADE/FDE 八格同口径复算为 23.9%，换成基线分母为 19.1%，正文未声明该约定。表 3 四列为 Motion MoE｜GAT & ESA｜Fully Connection｜Decoder（PDF 里是两行表头），正文 +118.1%/+105.8% 与 +115.6%/+103.1% 分别对应只移除 Motion MoE、只移除 GAT & ESA 的行，与表格自洽（初版把表头读成「Motion GAT & MoE｜ESA」三列而误判，已修正）。
+
+## [2026-10-20] maintenance | TrajAR ingest 复核修正 + index 重建
+复核指出三处需改：（1）表 3 表头为两行排版，四列是 Motion MoE｜GAT & ESA｜Fully Connection｜Decoder，初版读成三列后推出的「正文归因与表格不符」不成立，已删并按正确列逐行重算（去掉 MoE +118.1%/+105.8%、去掉 GAT & ESA +115.6%/+103.1%，均与正文一致）；（2）摘要 23.8% 的待查项收口：Imp 行在 28 格上与「逐列最优基线为参照、本方法为分母」复算的差均在 0.1pp 内，23.9% 的 KI-GAN ADE/FDE 八格口径是唯一落在 0.1pp 内的候选，换成基线分母为 19.1%；（3）InD-Frankenburg 的 ADE 最优基线是 STDAN 0.572（不是 FJMP 0.583），已改正。核算细节收归 [[trajar]] 的待查节，其余文件只留一句 + 指向。另：[[intersection-trajectory-prediction]] 补 [[source-adaptraj]] 同任务不同轴向的链接与区分说明，[[motion-moe]] 同步补链；按复核要求重建 [[index]]（按 frontmatter type 分五段、字母序、每页一条）。另补做 Gemini 润色：5 页输出均整页可用性不达标（扩写 22–57%，4 页结构校验不通过，其中 [[trajar]] 丢掉了「28 格复算差 ≤0.1pp」的证据），整页不采用，只取 3 处归属补写（[[motion-moe]]、[[intersection-trajectory-prediction]]、[[source-trajar]]）。

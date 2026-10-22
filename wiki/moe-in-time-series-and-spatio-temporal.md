@@ -9,8 +9,8 @@ tags:
   - spatio-temporal
   - survey
 created: 2026-09-17
-last_updated: 2026-09-17
-source_count: 31
+last_updated: 2026-10-20
+source_count: 32
 confidence: medium
 status: active
 ---
@@ -40,6 +40,7 @@ status: active
 - AdaFre 的出发点是**频率重要性随上下文变化**：低频通勤模式在高峰主导、高频事故在平峰更重要，而既有模型对所有频率固定权重融合[^src-adafre]。
 - TFPS 的出发点是**patch 级分布偏移**：同一序列内部不同 patch 的模式不同，作者用子空间聚类得到每个 patch 的 pattern affinity，再据此路由专家[^src-tfps]。
 - MAGE 的出发点是**线性自适应图学习的低秩瓶颈**：单个核的秩被 $d_G$ 限制，用 $K$ 个专家各自生成一张差分图可把秩上限提到 $\min\{d,K\cdot d_G\}$[^src-mage]。
+- TrajAR 的出发点是**路口道路使用者的属性异质性**：机动车/自行车/行人的运动学与行为不同，且同一轨迹在不同信号状态下含义不同；它把类型与信号两个 one-hot 指标直接接到 indicator experts（查表选择），运动趋势交给 route experts 做 top-$K_r$ 路由[^src-trajar]。
 
 ### 1.2 容量—算力：用稀疏激活换参数规模
 
@@ -114,6 +115,7 @@ FusionBench 把 WE-MoE、SMILE 归为 model mixing：输入是多个已微调的
 | 加噪 top-k | $\mathrm{Softmax}(xW_r+\epsilon\cdot\mathrm{Softplus}(xW_{noise}))$ | AMS-MoE[^src-hephestus]、TransferTraj[^src-transfertraj]、DutyTTE[^src-dutytte] |
 | 原始序列 + 自适应 bias | $\mathrm{softmax}(g(X_t)\oplus R_S\oplus R_T\oplus R_W)$ | FaST[^src-fast-long-horizon-forecasting] |
 | 预训练表示的簇中心距离 | $\mathrm{Softmax}(\mathrm{TopK}(\mathrm{Euclidean}(\tilde{x}^l,C^l)))$ | Moirai-MoE[^src-moirai-moe] |
+| 学得质心与表征的 Sigmoid 亲和度 | $p_{n,t}=\mathrm{Sigmoid}(z^{\top} c_n)$，再 top-$K_r$ 归一 | TrajAR 的 route experts[^src-trajar] |
 | 多模态/外生文本嵌入 | $\mathrm{Softmax}(W\bar{H})$、$\mathrm{Softmax}(W[h_1..h_N])$ | TiMi[^src-timi]、MoST[^src-most] |
 | 记忆库检索 | 元节点库相似度 + 路由分类损失 | TESTAM[^src-testam] |
 | 观测稀疏度特征 | O-Expert 路由 | STAMImputer[^src-stamimputer] |
@@ -166,6 +168,7 @@ FusionBench 把 WE-MoE、SMILE 归为 model mixing：输入是多个已微调的
 | 检索序列 | TS-RAG（检索到的历史序列）[^src-tsrag] |
 | 可学习滤波器组 | xCPD（低/中/高三个频率专属滤波器）[^src-xcpd]、AdaFre（频带 + 空间谱嵌入配对）[^src-adafre] |
 | 域特定网络 | AdapTraj（每源域一个 extractor）[^src-adaptraj] |
+| 属性查表专家 + 质心路由 FFN | TrajAR 的 Motion MoE（类型/信号 indicator experts 无门控 + 8 个 route experts）[^src-trajar] |
 
 ## 六、共识、缺口与共同弱点
 
@@ -212,6 +215,7 @@ Zotero 一侧新增工作给出的数字（作者报告，口径与表号注明�
 - [[heterogeneous-moe-routing|异质性感知 MoE 路由]]、[[cluster-based-gating|簇基门控]]、[[memory-augmented-gating|记忆增强门控]]、[[sparse-balanced-mixture-of-experts-st|稀疏平衡 MoE]]、[[multi-modality-guided-spatial-expert|多模态引导空间专家]]、[[frequency-pathway-routing|频率通路路由]]、[[ams-moe|AMS-MoE]]、[[token-level-specialization|Token 级专业化]]
 - [[time-moe|Time-MoE]]、[[moirai-moe|Moirai-MoE]]、[[timi|TiMi]]、[[mmoe|MMoE]]、[[source-fast-long-horizon-forecasting|FaST]]、[[most|MoST]]、[[mage|MAGE]]、[[testam|TESTAM]]、[[stamimputer|STAMImputer]]、[[hephestus|HEPHAESTUS]]、[[adafre|AdaFre]]、[[xcpd|xCPD]]、[[dynamix|DynaMix]]、[[mmckm|MMCKM]]、[[source-exost|ExoST]]、[[fedformer|FEDformer]]
 - [[traffic-forecasting-architecture-trends|交通预测架构趋势]]、[[spatio-temporal-foundation-model-landscape|时空基础模型全景]]
+- [[motion-moe]]、[[trajar]] — 路口轨迹预测侧的 MoE（属性专家 + 趋势路由）
 
 [^src-fast-long-horizon-forecasting]: [[source-fast-long-horizon-forecasting]]
 [^src-time-moe]: [[source-time-moe]]
@@ -244,3 +248,4 @@ Zotero 一侧新增工作给出的数字（作者报告，口径与表号注明�
 [^src-flownet]: [[source-flownet]]
 [^src-smartraj2]: [[source-smartraj2]]
 [^src-graph-mixture-density-networks]: [[source-graph-mixture-density-networks]]
+[^src-trajar]: [[source-trajar]]

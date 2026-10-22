@@ -6,8 +6,8 @@ tags:
   - architecture
   - scalability
 created: 2026-04-29
-last_updated: 2026-10-08
-source_count: 10
+last_updated: 2026-10-20
+source_count: 11
 references:
   - [[source-fast-long-horizon-forecasting]]
 confidence: high
@@ -104,6 +104,12 @@ FaST 首次将 MoE 应用于大规模长视野时空图预测：
 - **动力学专业化**：不同专家自然专业化到不同的动力学模式（如混沌区域的不同部分），专家使用权重可构建动力学相似度度量
 - **关键发现**：J ≥ 5 个专家即足够，更多收益递减——实际 J=10 已达到性能平台期[^src-dynamix]
 
+## 在轨迹预测中的应用（Motion MoE）
+
+[[trajar|TrajAR]] 在路口多使用者轨迹预测编码器里把专家拆成两类：**indicator experts** 按使用者类型、信号状态的 one-hot 指标直接选中（无门控），**route experts**（8 个）按运动趋势表征与专家质心的 Sigmoid 亲和度做 top-$K_r$ 路由，输出为趋势表征上的残差叠加[^src-trajar]。论文给出的分工理由是：前者处理离散属性，后者建模连续运动趋势[^src-trajar]。消融表（SinD-Tianjin ADE/FDE）里只去掉 Motion MoE 后从 0.409/0.798 升到 0.892/1.642，去掉 GAT & ESA 为 0.882/1.621，编码器整体换全连接为 1.231/2.542，打乱 route 路由为 0.736/1.436[^src-trajar]。机制与证据详见 [[motion-moe]]。
+
+这一形态与上文几个时序/时空 MoE 的区别在于：专家不是在时间 patch、频率或空间拓扑上分工，而是绑定「离散语义属性」与「连续运动模式」两种输入类型[^src-trajar]。
+
 ## 相关工作
 - [[mage|MAGE]] (NeurIPS 2025) 在**图结构生成层面**引入 sparse-balanced MoE——每个专家对应一种独特的空间拓扑假设（自适应图），每节点 Top-K 稀疏激活 + 符号 SGD 负载均衡 βk。与标准 MoE（如 Mixtral 的 FFN 级路由）不同，MAGE 的 MoE 作用于图学习而非特征变换，用差分图 A(k)=Softmax(E₁)Softmax(E₂ᵀ)−λ Softmax(E₃)Softmax(E₄ᵀ) 增强多样性[^src-mage]。参见 [[sparse-balanced-mixture-of-experts-st]] 了解其稀疏平衡机制的技术细节。
 
@@ -142,6 +148,7 @@ MoBA（Moonshot AI，2025）把 top-k 门控的对象从 FFN 专家换成 KV 上
 - [[time-300b|Time-300B]]
 - [[fusionbench|FusionBench]] · [[deep-model-fusion]] · [[model-merging]]
 - [[moba-attention]] — MoE top-k 门控用于 attention（KV 块即专家，LLM 长上下文）
+- [[motion-moe]] — 轨迹预测的 indicator / route 双类专家（TrajAR）
 
 ## 相关分析
 
@@ -157,3 +164,4 @@ MoBA（Moonshot AI，2025）把 top-k 门控的对象从 FFN 专家换成 KV 上
 [^src-timi]: [[source-timi]]
 [^src-moba-mixture-of-block-attention]: [[source-moba-mixture-of-block-attention]]
 [^src-jmlr-25-1243]: [[source-jmlr-25-1243]]
+[^src-trajar]: [[source-trajar]]
