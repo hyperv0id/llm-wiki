@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-10-20
+last_updated: 2026-10-23
 tags:
   - meta
 source_count: 0
@@ -18,6 +18,8 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-2312-00516-std-mae]] — STD-MAE: Spatial-Temporal-Decoupled Masked Pre-training for Spatiotemporal Forecasting (IJCAI-2024)
 - [[source-2312-01728]] — ImputeFormer: Low Rankness-Induced Transformers for Generalizable Spatiotemporal Imputation (KDD 2024)
 - [[source-2401-08119-specstg]] — SpecSTG: A Fast Spectral Diffusion Framework for Probabilistic Spatio-Temporal Traffic Forecasting (arXiv 2024)
+- [[source-2404-02905-var]] — VAR: Visual Autoregressive Modeling，next-scale prediction（多尺度 VQVAE 粗到细逐尺度自回归、尺度内并行），ImageNet 256 FID 1.73 + LLM 式 power-law scaling（Pearson ≈ −0.998）+ 零样本 in/out-painting 与编辑（Keyu Tian et al., PKU/ByteDance, arXiv:2404.02905v2；PDF raw/2404.02905-var.pdf）
+- [[source-2406-11838-mar]] — MAR: Autoregressive Image Generation without Vector Quantization，per-token 扩散头（Diffusion Loss）+ 广义自回归（随机顺序双向 MAR），ImageNet 256 w/CFG FID 1.55（Tianhong Li, Yonglong Tian, Kaiming He et al., NeurIPS 2024；PDF raw/2406.11838-mar.pdf）
 - [[source-2412-18730]] — Elucidating Flow Matching ODE Dynamics via Data Geometry and Denoisers, denoiser 吸引/吸收元定理 + FM ODE 三阶段轨迹 + 终端收敛（首个覆盖低维子流形支撑）+ 记忆几何理论 (Wan, Wang, Mishne, Wang, ICML 2025 Poster, arXiv:2412.18730 v4)
 - [[source-2502-10236]] — Shaping Inductive Bias in Diffusion Models through Frequency-Based Noise Control (ICLR 2025 Workshop) superseded by [[source-sagd]]
 - [[source-2509-22259]] — Rotary Position Encodings for Graphs (WIRE): 用 Laplacian 谱坐标对 query/key 施加旋转，RoPE 的图推广 (ICML 2026)
@@ -943,6 +945,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[detr]] — DETR，目标检测建模为直接集合预测：二部匹配 Hungarian loss + CNN/Transformer encoder-decoder，免 anchors/NMS（arXiv 2020）
 - [[differentiable-spatial-embedding]] — 可微空间嵌入 SE-L（冻结 LLaMA3 文本描述）与 SE-H（GeoHash + 字符 BERT，训练中更新），以及两者在不同数据集上的实证差异
 - [[diffputer]] — DiffPuter，论文自述首个把扩散生成模型整合进 EM 框架的插补方法，表格数据；TabCSDI/MissDiff 为其一步式扩散基线 (ICLR 2025)
+- [[diffusion-loss]] — Diffusion Loss，小 MLP 去噪扩散头建模 per-token 连续分布 p(x|z) 使 AR 摆脱 VQ，含温度采样与 100 步推理（MAR, NeurIPS 2024）
 - [[diffusion-schrodinger-bridge-matching]] — DSBM，参数化 IMF：forward/reverse Markov drift matching + consistency loss
 - [[dilated-inception-layer]] — TODO
 - [[direct-numerical-encoding]] — Direct Numerical Encoding, single-token float vocabulary ⟨|FP m/b|⟩ + two-stage numerical alignment fine-tuning (ST-Vision-LLM, arXiv 2025)
@@ -1098,6 +1101,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[mamba-block-design]] — Mamba's modified block design with swapped sub-blocks and unified normalization
 - [[manifold-anchor-regularization]] — MAR，通过审美教师 KL 惩罚锚定生成过程在高品质流形的正则化方法 (arXiv 2026)
 - [[manifold-constrained-hyper-connections]] — 将 Hyper-Connections 的残差映射投影到 Birkhoff 多面体以恢复恒等映射稳定性
+- [[masked-autoregressive-model]] — MAR，广义自回归：随机顺序 + MAE 式双向注意力 + 每步预测 token 子集（next set-of-tokens），MAR-H 943M FID 1.55（NeurIPS 2024）
 - [[masked-diffusion-pre-training]] — task-oriented spatio-temporal masking + diffusion for multi-task mobile traffic forecasting (UoMo, KDD 2025)
 - [[meanflow]] — MeanFlow，预测区间平均速度的少步生成框架：MeanFlow Identity（JVP 全导数修正）+ CFG 内建目标场，ImageNet-256 从头训练 1-NFE FID 3.43（作者报告）(arXiv 2025)
 - [[median-of-means-ensemble]] — MoM estimator for aggregating probabilistic samples into point predictions
@@ -1132,6 +1136,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[mutual-information-disentanglement]] — MI minimax 解耦：最小化共享/独有互信息 + 最大化跨模态共享互信息 (MIDAS)
 - [[n-step-sarsa]] — 连接 TD 与 MC 的多步 Sarsa 方法
 - [[newton-schulz-iteration]] — Newton-Schulz iteration for matrix orthogonalization
+- [[next-scale-prediction]] — Next-Scale Prediction（VAR），多尺度 VQVAE token map 由粗到细自回归、尺度内并行，O(n⁴) 生成 + scaling law + 零样本编辑（arXiv 2024）
 - [[node-heterogeneous-invariant-learning]] — 邻域环境集采样 + 节点条件 FiLM 调制 + InfoNCE/IRM 双辅助损失
 - [[node-scale-graph-structure-learning]] — 节点尺度图结构学习，为每个特征独立学习全局元图以解决特征异质性 (AAAI 2025)
 - [[node-visibility]] — 节点可见性，节点级掩码 + 子图采样的正则化与加速机制 (VisiFold, arXiv 2026)
