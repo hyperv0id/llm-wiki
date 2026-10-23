@@ -7,6 +7,7 @@ description: >-
   relationship issues. Use when user says "关系分析", "分析关系",
   "relationship", "人际关系", or describes a specific relationship problem
   they want to understand.
+disable-model-invocation: true
 ---
 
 ## Usage

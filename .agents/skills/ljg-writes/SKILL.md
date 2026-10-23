@@ -1,6 +1,7 @@
 ---
 name: ljg-writes
 description: "写作引擎。像手术刀剖开一个观点，一层层剥到底。1000-1500 字。"
+disable-model-invocation: true
 user_invocable: true
 version: "6.3.0"
 ---

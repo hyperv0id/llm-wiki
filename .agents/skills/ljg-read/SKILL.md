@@ -1,6 +1,7 @@
 ---
 name: ljg-read
 description: "Reading companion agent. Accompanies user through any text (books, articles, essays, papers, news) with translation, structural annotation, deep questioning, and cross-domain insights. Detects language, translates English to Chinese (faithfulness-expressiveness-elegance), guides reader to understand the author and encounter real questions. Use when user says '伴读', '陪我读', '读这篇', 'read with me', 'companion read', or shares a text/URL wanting guided reading."
+disable-model-invocation: true
 user_invocable: true
 version: "1.0.0"
 ---

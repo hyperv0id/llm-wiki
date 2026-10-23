@@ -1,6 +1,7 @@
 ---
 name: ljg-plain
 description: "Cognitive atom: Plain (白). Rewrites any content so a smart 12-year-old groks it. Structure-free — form follows content. Use when user says '白话说', '说人话', '解释一下', 'plain', 'grok'."
+disable-model-invocation: true
 user_invocable: true
 version: "5.0.0"
 ---
