@@ -8,8 +8,8 @@ tags:
   - flow-matching
   - diffusion-models
 created: 2026-05-03
-last_updated: 2026-09-16
-source_count: 20
+last_updated: 2026-10-23
+source_count: 21
 confidence: high
 status: active
 ---
@@ -83,7 +83,7 @@ status: active
 
 ### 自回归生成式方法（VAR）
 
-**[[climatear|ClimateAR]]** (ICML 2026) 是首个将视觉自回归（VAR）引入概率气候预测的模型。通过 VQ + 分段码本对齐 CMIP6-ERA5 跨域异构数据，以混合尺度条件控制（intra-scale mix token + hybrid-scale prompt）在自回归 token 预测中同时捕获尺度内与跨尺度气候交互。在 1–10 月 lead time 上平均 ACC 提升 37.56% vs Pangu/[[graphcast|GraphCast]]/ClimaX，ENSO 概率预测校准优良[^src-climatear]。
+**[[climatear|ClimateAR]]** (ICML 2026) 是首个将视觉自回归（VAR）[^src-2404-02905-var]引入概率气候预测的模型。通过 VQ + 分段码本对齐 CMIP6-ERA5 跨域异构数据，以混合尺度条件控制（intra-scale mix token + hybrid-scale prompt）在自回归 token 预测中同时捕获尺度内与跨尺度气候交互。在 1–10 月 lead time 上平均 ACC 提升 37.56% vs Pangu/[[graphcast|GraphCast]]/ClimaX，ENSO 概率预测校准优良[^src-climatear]。
 
 ### 方法对比
 
@@ -131,6 +131,7 @@ status: active
 - [[freqflow-ts|FrèqFlow/SpectFlow]] — 频域流匹配确定性预测（NeurIPS 2025）
 - [[ustd]] — USTD，解耦预训练的统一时空扩散预测与插值框架（SIGSPATIAL 2024）
 - [[climatear]] — ClimateAR，VAR 自回归概率气候预测（ICML 2026）
+- [[next-scale-prediction]] — VAR next-scale 范式原始论文（图像生成）
 - [[mixed-scale-conditioning]] — 混合尺度条件控制
 - [[dyffusion]] — DYffusion，动力学信息扩散模型（NeurIPS 2023）
 - [[dits|DiTS]] — DiTS，MM-DiT 双流架构 + Rectified Flow 用于协变量感知概率预测 (arXiv 2026)
@@ -187,3 +188,4 @@ status: active
 [^src-deepar]: [[source-deepar]]
 [^src-climatear]: [[source-climatear]]
 [^src-ripcn]: [[source-ripcn]]
+[^src-2404-02905-var]: [[source-2404-02905-var]]

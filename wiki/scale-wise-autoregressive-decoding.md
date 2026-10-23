@@ -8,15 +8,15 @@ tags:
   - next-scale-prediction
   - interpolation
 created: 2026-10-20
-last_updated: 2026-10-20
-source_count: 2
+last_updated: 2026-10-23
+source_count: 3
 confidence: medium
 status: active
 ---
 
 # Next-Scale Autoregressive Trajectory Decoding（尺度级自回归轨迹解码）
 
-**尺度级自回归解码**是 [[trajar|TrajAR]] 论文提出的轨迹解码策略：把自回归的单位从「下一个时间步」换成「下一个更细的尺度」，每个自回归步并行输出该尺度上的全部未来位置，并借三次插值从上一尺度构造更细尺度的起点[^src-trajar]。论文把这一改动定位为其贡献 1，来源是图像生成中的 visual autoregressive（VAR）思路[^src-trajar]。
+**尺度级自回归解码**是 [[trajar|TrajAR]] 论文提出的轨迹解码策略：把自回归的单位从「下一个时间步」换成「下一个更细的尺度」，每个自回归步并行输出该尺度上的全部未来位置，并借三次插值从上一尺度构造更细尺度的起点[^src-trajar]。论文把这一改动定位为其贡献 1，来源是图像生成中的 visual autoregressive（VAR）思路[^src-trajar]；VAR 原始范式见 [[next-scale-prediction]]（多尺度 VQVAE token map 由粗到细自回归、尺度内并行）[^src-2404-02905-var]。
 
 ## 动机：两种输出框架各自的问题
 
@@ -58,6 +58,7 @@ $$
 ## 与 VAR 及其它移植的关系
 
 - 论文说明该结构「inspired by VAR [Tian et al., 2024]」（图像生成的 next-scale 预测）[^src-trajar]。
+- VAR 原文对 raster-scan next-token 图像 AR 的四点批评（单向假设违反 VQVAE 双向相关性、零样本双向任务受限、flatten 破坏空间局部性、O(n⁶) 计算低效）是这一移植路线的问题动机[^src-2404-02905-var]。
 - 同仓库中 [[climatear]] 也把 VAR 用于概率预测，但它先在 VQ 分词器里把连续场量化成多尺度离散 token、再用分类交叉熵逐尺度生成[^src-climatear]。TrajAR 的方法描述里没有量化或码本环节：尺度间靠三次插值上采样、目标是连续坐标的 RMSE（上式），并行生成的是一个尺度上的全部位置[^src-trajar]。两者的共同点是「逐尺度而非逐 token 自回归」，差别在连续/离散表示与监督方式。
 
 ## 适用范围与未覆盖项
@@ -71,7 +72,10 @@ $$
 - [[trajar]] — 模型页
 - [[source-trajar]] — 论文源摘要
 - [[climatear]] — VAR 在概率气候预测中的另一条移植路线
+- [[next-scale-prediction]] — VAR 原始范式（图像生成）
+- [[source-2404-02905-var]] — VAR 论文源摘要
 - [[intersection-trajectory-prediction]] — 任务页（三种输出框架对照）
 
 [^src-trajar]: [[source-trajar]]
 [^src-climatear]: [[source-climatear]]
+[^src-2404-02905-var]: [[source-2404-02905-var]]

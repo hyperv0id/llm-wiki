@@ -8,8 +8,8 @@ tags:
   - mit
   - x-prediction
 created: 2026-05-13
-last_updated: 2026-05-30
-source_count: 1
+last_updated: 2026-10-23
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -63,5 +63,7 @@ JiT 的核心贡献不是新架构，而是揭示了一个被忽视的根本问�
 2. **计算效率**：计算成本几乎不随分辨率增长（仅 patch embedding 变化），JiT-G/32 在 512² 上仅需 384 Gflops
 3. **通用性**：设计思路可推广到其他 tokenizer 难以设计的领域（蛋白质、分子、天气）
 4. **与 [[elf|ELF]] 的呼应**：同实验室的连续 DLM 也采用 x-prediction，验证了跨模态普适性
+5. **与 [[masked-autoregressive-model|MAR]] 的谱系**：同作者（Tianhong Li、Kaiming He）2024 年的前作已在连续潜空间用 per-token 扩散头做自回归生成（依赖 tokenizer），JiT 则进一步去掉 tokenizer 回到像素空间[^src-2406-11838-mar]
 
+[^src-2406-11838-mar]: [[source-2406-11838-mar]]
 [^src-back-to-basics-let-denoising-generative-models-denoise]: [[source-back-to-basics-let-denoising-generative-models-denoise]]

@@ -8,8 +8,8 @@ tags:
   - representation-learning
   - pretraining
 created: 2026-05-31
-last_updated: 2026-08-08
-source_count: 1
+last_updated: 2026-10-23
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -100,10 +100,15 @@ MAE 的特征在非线性变换下更强大——这暗示人类视觉更接近 
 
 检测和分割这类需要空间理解的任务上，自监督 MAE 大幅超越有标签的分类预训练——说明 MAE 的"从部分重建整体"与密集预测任务在认知上同构[^src-mae]。
 
+## 架构形式在生成模型中的复用
+
+MAR（NeurIPS 2024）把 MAE 式非对称 encoder/decoder 直接用作生成骨干：encoder 只处理已知 token，decoder 拼接带位置嵌入的 mask token 并只在未知位置计损失，使双向注意力可以执行自回归生成——掩码重建的形式从预训练任务变成了生成式解码器[^src-2406-11838-mar]。
+
 ## 相关页面
 
 - [[source-mae]] — MAE 论文摘要
 - [[masked-generative-modeling]] — 掩码生成建模，MAE 掩码思想向生成任务的延伸（OmniCast 天气预测应用）
+- [[masked-autoregressive-model]] — MAR，MAE 式 encoder/decoder 用作双向注意力自回归生成（NeurIPS 2024）
 - [[std-mae]] — STD-MAE，时空解耦掩码自编码器（时空预测应用）
 - [[videomae]] — VideoMAE，视频掩码自编码器（MAE 的视频扩展）
 - [[dit]] — DiT，继承 ViT/MAE patchify + Transformer 设计的扩散模型架构
@@ -111,4 +116,5 @@ MAE 的特征在非线性变换下更强大——这暗示人类视觉更接近 
 - [[contrastive-learning]] — 对比学习范式
 - [[spatiotemporal-mirage]] — 时空幻象问题（STD-MAE 上下文）
 
+[^src-2406-11838-mar]: [[source-2406-11838-mar]]
 [^src-mae]: [[source-mae]]

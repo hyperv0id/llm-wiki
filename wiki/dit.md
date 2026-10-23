@@ -8,8 +8,8 @@ tags:
   - scaling-law
   - iccv-2023
 created: 2026-05-31
-last_updated: 2026-06-16
-source_count: 4
+last_updated: 2026-10-23
+source_count: 6
 confidence: high
 status: active
 ---
@@ -132,6 +132,8 @@ Training is extremely stable: all 12 variants show no loss spikes, attributed to
 - **[[dits|DiTS]] (arXiv 2026)**: Adapts MM-DiT dual-stream architecture to time series, treating exogenous/endogenous variates as distinct modalities with joint variate attention[^src-dits]
 - **[[diffusionblocks|DiffusionBlocks]] (ICLR 2026)**: Enables block-wise training of DiT with 3× memory reduction while maintaining performance; demonstrates DiT as ideal testbed for residual-connection-based block training[^src-diffusionblocks]
 - **Rectified Flow + DiT**: Orthogonal combination -- Rectified Flow compresses sampling steps, DiT improves per-step precision -- becoming the standard recipe for SD3/Flux[^src-dit]
+- **[[masked-autoregressive-model|MAR]] (NeurIPS 2024)**: Continuous-token autoregressive generation with a per-token diffusion head (Diffusion Loss); MAR-H (943M) reaches FID 1.55 vs DiT-XL/2's 2.27 on ImageNet 256, trains faster on the same cluster (2.6 vs 4.6 days for 400 epochs), and runs diffusion only on a small MLP instead of the full Transformer at every denoising step[^src-2406-11838-mar]
+- **[[next-scale-prediction|VAR]] (arXiv 2024)**: Coarse-to-fine next-scale prediction over multi-scale VQVAE token maps; VAR-d30 (2B, 10 steps) reaches FID 1.73 (with rejection sampling) vs DiT-XL/2's 2.27, with ~45x faster inference, 350 vs 1400 training epochs, and power-law scaling (Pearson ~ -0.998) from 18M to 2B parameters[^src-2404-02905-var]
 
 ## Limitations
 
@@ -151,8 +153,12 @@ Training is extremely stable: all 12 variants show no loss spikes, attributed to
 - [[timedit]] -- TimeDiT, DiT backbone adapted for time series foundation model (KDD 2025)
 - [[dits]] -- DiTS, MM-DiT dual-stream adaptation for time series forecasting (arXiv 2026)
 - [[diffusionblocks]] -- DiffusionBlocks, block-wise training framework demonstrated on DiT (ICLR 2026)
+- [[masked-autoregressive-model]] -- MAR, continuous-token autoregressive rival that beats DiT-XL/2 on ImageNet 256 with less compute (NeurIPS 2024)
+- [[next-scale-prediction]] -- VAR, next-scale autoregressive family that beats DiT-XL/2 with ~45x faster inference (arXiv 2024)
 
 [^src-dit]: [[source-dit]]
 [^src-timedit]: [[source-timedit]]
 [^src-dits]: [[source-dits]]
 [^src-diffusionblocks]: [[source-diffusionblocks]]
+[^src-2406-11838-mar]: [[source-2406-11838-mar]]
+[^src-2404-02905-var]: [[source-2404-02905-var]]

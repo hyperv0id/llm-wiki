@@ -7,8 +7,8 @@ tags:
   - text-to-image
   - cvpr-2022
 created: 2026-04-28
-last_updated: 2026-08-08
-source_count: 2
+last_updated: 2026-10-23
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -61,6 +61,10 @@ LDM 的潜空间压缩策略已在气象预测中得到成功应用。[[omnicast
 - **连续 vs 离散潜空间**：天气数据（69+ 变量）的高度多通道特性使 VQ-VAE 面临 ~3938:1 的极端压缩比，导致重建误差比连续 VAE 高 2–3×[^src-omnicast]
 - **掩码生成 vs 完整扩散**：OmniCast 仅需一次 Transformer 前向传播 + 轻量 MLP 扩散头，而非每扩散步都走完整 UNet，显著降低推理成本[^src-omnicast]
 
+## 在自回归生成中的复用
+
+MAR（NeurIPS 2024）直接使用 LDM 公开的 tokenizer 做连续 token 自回归生成：同一损失（Diffusion Loss）下，KL-16（KL 正则、无量化）与 VQ-16（VQ-GAN）对比，重建 rFID 1.43 vs 5.87，生成 FID 3.50 vs 7.82（w/o CFG，ImageNet 256×256）[^src-2406-11838-mar]。LDM 的第一阶段产物由此成为序列生成模型可直接复用的连续前端。
+
 ## 链接
 
 - [[source-rombach-ldm-2022]] — 论文摘要
@@ -70,7 +74,9 @@ LDM 的潜空间压缩策略已在气象预测中得到成功应用。[[omnicast
 - [[dit]] — DiT，复用 LDM 预训练 VAE 的 Transformer 扩散模型
 - [[variational-autoencoder]] — 变分自编码器
 - [[omnicast]] — 天气预测中的 LDM 应用（NeurIPS 2025）
+- [[masked-autoregressive-model]] — MAR，用 LDM tokenizer 做连续 token 自回归生成（NeurIPS 2024）
 
 [^src-rombach-ldm-2022]: [[source-rombach-ldm-2022]]
 [^src-omnicast]: [[source-omnicast]]
+[^src-2406-11838-mar]: [[source-2406-11838-mar]]
 

@@ -8,19 +8,19 @@ tags:
   - image-generation
   - video-generation
 created: 2026-07-21
-last_updated: 2026-08-30
-source_count: 1
-confidence: low
+last_updated: 2026-10-23
+source_count: 2
+confidence: medium
 status: active
 ---
 
 # Masked Generative Modeling
 
-**掩码生成建模（Masked Generative Modeling）** 是一种通过随机掩码部分 token 并训练模型从可见 token 重建掩码 token 的生成范式，最早由 MaskGIT（Chang et al., CVPR 2022）和 MAGVIT（Yu et al., CVPR 2023）在计算机视觉中提出，后被 [[omnicast|OmniCast]] 成功应用于天气预测[^src-omnicast]。
+**掩码生成建模（Masked Generative Modeling）** 是一种通过随机掩码部分 token 并训练模型从可见 token 重建掩码 token 的生成范式，最早由 MaskGIT（Chang et al., CVPR 2022）和 MAGVIT（Yu et al., CVPR 2023）在计算机视觉中提出，后被 [[omnicast|OmniCast]] 成功应用于天气预测[^src-omnicast]。[[masked-autoregressive-model|MAR]]（NeurIPS 2024）进一步把这一范式纳入广义自回归：按随机顺序每步预测一个 token 子集，即 next set-of-tokens prediction——掩码生成与逐 token 自回归是同一概率分解的两种粒度[^src-2406-11838-mar]。
 
 ## 核心原理
 
-与自回归生成（逐 token 串行解码）不同，掩码生成建模采用**迭代并行解码**[^src-omnicast]：
+与逐 token 串行解码的自回归相对，掩码生成建模采用**迭代并行解码**[^src-omnicast]；在 MAR 的统一视角下，两者的差别收敛为"每步预测一个 token"还是"每步预测一组 token"：
 
 1. **训练**：随机掩码 50–100% 的 token，训练模型预测被掩码 token 的分布（在连续空间中用扩散头，在离散空间中用 softmax）
 2. **推理**：从全掩码序列开始，按预定义 schedule 每轮并行解码随机子集的掩码 token，直到全部揭示
@@ -42,6 +42,8 @@ status: active
 
 在天气数据上，连续 VAE 的压缩比为 ~100:1，而 VQ-VAE 需 ~3938:1（100 变量 × 32 bit / 13 bit），后者重建误差高 2–3×[^src-omnicast]。这使连续掩码生成成为气象预测的关键技术选择。
 
+图像 tokenizer 上有同向证据：同一损失（Diffusion Loss）下，LDM 的 VQ-16 重建 rFID 为 5.87，无量化的 KL-16 为 1.43，对应生成 FID 7.82 vs 3.50（w/o CFG，ImageNet 256×256）[^src-2406-11838-mar]。
+
 ## 与其他生成范式的对比
 
 | 范式 | 解码方式 | 典型代表 | 天气预测适用性 |
@@ -55,8 +57,12 @@ status: active
 
 - [[omnicast]] — 掩码生成 + 扩散头在天气预测的应用
 - [[source-omnicast]] — OmniCast 论文摘要
+- [[masked-autoregressive-model]] — MAR：把掩码生成纳入广义自回归（NeurIPS 2024）
+- [[diffusion-loss]] — per-token 扩散分布建模损失（MAR 的另一半）
+- [[source-2406-11838-mar]] — MAR 论文摘要
 - [[mae]] — 掩码自编码器（掩码生成的前序预训练范式）
 - [[latent-diffusion-models]] — 潜扩散模型
 - [[ddpm]] — 扩散建模基础
 
 [^src-omnicast]: [[source-omnicast]]
+[^src-2406-11838-mar]: [[source-2406-11838-mar]]

@@ -10,15 +10,15 @@ tags:
   - visual-autoregressive
   - multi-scale
 created: 2026-07-16
-last_updated: 2026-10-20
-source_count: 1
+last_updated: 2026-10-23
+source_count: 2
 confidence: medium
 status: active
 ---
 
 # ClimateAR
 
-**ClimateAR** 是首个将视觉自回归（Visual Autoregressive, VAR）范式引入概率气候预测的生成模型，由浙大、阿里达摩院、中科院大气所在 ICML 2026 提出[^src-climatear]。
+**ClimateAR** 是首个将视觉自回归（Visual Autoregressive, VAR）范式[^src-2404-02905-var]引入概率气候预测的生成模型，由浙大、阿里达摩院、中科院大气所在 ICML 2026 提出[^src-climatear]。
 
 ## 架构
 
@@ -46,9 +46,12 @@ ClimateAR 由两大组件构成：
 
 - [[source-climatear]] — 论文源摘要
 - [[scale-wise-autoregressive-decoding]] — VAR 的 next-scale 解码在交通轨迹预测中的移植（[[trajar]]）
+- [[next-scale-prediction]] — VAR 原始范式（图像生成，多尺度 VQVAE + 逐尺度自回归）
+- [[source-2404-02905-var]] — VAR 论文源摘要
 - [[mixed-scale-conditioning]] — 混合尺度条件控制机制
 - [[weather-foundation-model]] — 天气基础模型
 - [[generative-time-series-forecasting]] — 生成式时间序列预测
 - [[subseasonal-to-seasonal-forecasting]] — S2S 预测
 
 [^src-climatear]: [[source-climatear]]
+[^src-2404-02905-var]: [[source-2404-02905-var]]
