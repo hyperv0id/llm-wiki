@@ -7,8 +7,8 @@ tags:
   - long-sequence
   - transformer
 created: 2026-05-04
-last_updated: 2026-07-13
-source_count: 5
+last_updated: 2026-10-24
+source_count: 6
 confidence: high
 status: active
 ---
@@ -65,6 +65,8 @@ Zeng et al. (2022) fundamentally challenged the Transformer-based LSTF paradigm 
 
 **TiDE 的并行路线**：[[tide|TiDE]] (Das et al., arXiv 2023/2024) 不走 attention，而以 residual MLP 编码器–解码器在保持线性计算缩放的同时处理静态/动态协变量；全局线性残差使 DLinear 成为其子类，Traffic 长视界上相对 PatchTST 有约 10% MSE 优势，训练/推理快 5–10×[^src-tide]。
 
+**回看长度的重估**：[[searchcast]]（arXiv:2606.27282）在 Ridge + 预处理搜索下测得最优 lookback 与 horizon 的幂律指数从 $+0.46$（ETTm2）到 $-0.19$（Exchange、Traffic）——最优回看强烈依赖序列且常对 horizon 非单调；$L=96$ 的默认值对 Weather/Electricity 少给约一个数量级历史、对 Exchange/Traffic 长 horizon 过量[^src-2606-27282-ltsf-linear-models]。仅变 $L$ 时 strong regime（ETTh1/ETTh2/Weather）从 96 到 2000 的总降幅达 36%–53%，且固定短 $L$ 重跑其余搜索无法找回该收益[^src-2606-27282-ltsf-linear-models]。详见 [[lookback-horizon-scaling]]。
+
 ## Relationship to Other Forecasting Settings
 
 - **Short-term forecasting**: Usually ≤48 steps; can use simpler models (ARIMA, LSTMs, vanilla MLPs).
@@ -75,4 +77,5 @@ Zeng et al. (2022) fundamentally challenged the Transformer-based LSTF paradigm 
 [^src-zeng-2022-are-transformers-effective]: [[source-zeng-2022-are-transformers-effective]]
 [^src-itransformer]: [[source-itransformer]]
 [^src-patchtst]: [[source-patchtst]]
+[^src-2606-27282-ltsf-linear-models]: [[source-2606-27282-ltsf-linear-models]]
 [^src-tide]: [[source-tide]]

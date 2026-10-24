@@ -4070,3 +4070,17 @@ ingest 报告：[[ingest-reports/2026-10-24-decody|WHY 报告]]
 
 ## [2026-10-24] maintenance | DeCoDy 五页文案压实（polisher 不可用）
 Polisher 子 agent 三次调用全部失败：两次 `MALFORMED_FUNCTION_CALL`（google/gemini-3.8-flash，重试 10 次耗尽），一次 `ECONNRESET` 等待 29 分钟，另一次子 agent 无文件读取工具。改用主 agent 手工压缩 + 一轮外部编辑意见。字符数降幅 2.0%–3.8%，未达技能建议的 10%–20%：五页正文以公式块、表格与维度注解为主，可删字面集中在已改写过的过渡句，继续压缩只能删事实或限定语，故停止。复核结果：数字、`[^src-*]` 唯一集、wikilink、表格与公式行逐项不变（合并相邻同源句使重复引用标记由 2 减为 1，段落级引用仍在）。备份在 `.scratch/*.before.md`。
+
+## [2026-10-24] ingest | How Good Can Linear Models Be for Time-Series Forecasting?（SearchCast）
+arXiv:2606.27282v2（PDF 标注 Preprint，ICLR 2027 投稿著录来自用户）主张长程预测的精度差距主要由预处理欠调而非模型容量造成：固定闭式 Ridge（channel-independent），把预算花在 context length / 局部归一化 / 正则 / 增广四轴的 $(g_h, g_s)$ 分组搜索上。8 个 benchmark 中线性类 7/8 平均最优（ETTh2 与 FITS 打平 0.334 vs 0.333，对 OLS 降幅最高 Exchange 14.8%）、6/8 胜非线性基线，两负均输 PatchTST 且都在最大两个数据集。三个诊断发现：最优 lookback 幂律指数 +0.46（ETTm2）至 −0.19（Exchange/Traffic），L=96 默认双向错误；局部归一化 62–100% 被选中且最优尾部分数 0.3%–30%；跨序列超参共享粒度是数据集属性。BDS 残差检验显示 PatchTST 优势并非来自非线性结构捕获。证据缺口：非线性基线取原论文数字非联合重调、计算成本无量化数字、SearchCast 链接为占位符。
+创建的页面：[[source-2606-27282-ltsf-linear-models]], [[searchcast]], [[lookback-horizon-scaling]], [[trailing-fraction-local-normalization]], [[grouped-hyperparameter-search]]
+更新的页面：[[ltsf-linear]]（补 Toner & Darlow 统一 → SearchCast 重估，source_count 3→4）, [[instance-normalization]]（补全窗口统计被搜索证据挑战，source_count 9→10）, [[lstf]]（补 lookback 幂律与 L=96 双向错误，source_count 5→6）, [[channel-independence]]（补 CI 超参共享粒度测量，source_count 15→16）, [[index]]
+ingest 报告：[[ingest-reports/2026-10-24-2606.27282-ltsf-linear-models|WHY 报告]]
+数值备注：PDF 表格加粗/下划线格式丢失（次优标记不可见）；Fig. 2 图内数值与单元格对应不可靠、Fig. 8 行序不可辨，均未入页；正文与 Fig. 3(b) 的 ETTm1 指数口径差异已在页面并列注明
+
+## [2026-10-24] maintenance | 2606.27282 五页文案压实（polisher）
+Polisher 子 agent 压缩 5 个新页正文后字符数约降 6%–10%（数字、表/图/节编号、LaTeX、wikilink、表格逐字保留）。回退项：polisher 输出删除了全部段内 [^src-*] 行内引用标记，违反引用义务约束，主 agent 在段落级逐一恢复后落盘；其余改动原样采纳。
+
+## [2026-10-24] lint | 2606.27282 ingest 后复跑
+本轮 11 个涉及页面 0 严重 0 警告；发现并修复初版 slug 含点号问题（`source-2606.27282-*` → `source-2606-27282-*`，按 MiTA 先例）。全库存量 severe 139（136 项 confidence/source_count 冲突为主）维持上午报告口径，未动。
+报告：[[lint-reports/2026-10-24|lint 报告]]

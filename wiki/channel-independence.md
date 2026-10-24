@@ -7,8 +7,8 @@ tags:
   - channel-processing
   - multivariate
 created: 2026-04-28
-last_updated: 2026-08-19
-source_count: 15
+last_updated: 2026-10-24
+source_count: 16
 confidence: high
 status: active
 ---
@@ -88,6 +88,10 @@ CPiRi 的通道打乱测试暴露了一个关键问题：大多数 CD 模型在�
 
 [[trace|TRACE]]（NeurIPS 2025）提出 [[channel-identity-token|Channel Identity Tokens (CITs)]] + [[channel-biased-attention|Channel-biased Attention (CbA)]] 作为 CI 与 CD 的折中方案。CIT 是每通道唯一的可学习 token，充当通道级摘要锚点；CbA 通过偏置注意力掩码使 CIT 仅关注本通道 token，但非 CIT token 可自由跨通道交互[^src-trace-neurips2025]。这与 [[cvpe|CVPE]] 的"仅 patch 层注入 CD"和 [[cpiri|CPiRi]] 的"通道打乱 + 空间模块"不同——TRACE 在注意力掩码级别实现通道解耦而非特征注入或排列不变正则化。消融显示移除 CIT 导致 Avg MSE 0.670->0.713，CbA->Full Attn 导致 0.670->0.713[^src-trace-neurips2025]。
 
+## CI 内部的共享粒度：超参维度
+
+CI 只规定逐序列处理，不规定超参在序列间共享多少。[[searchcast]]（arXiv:2606.27282）用 $(g_h, g_s)$ 分组搜索测量了这一谱系：跨序列超参共享的最优程度是数据集属性——ETTh1/ETTh2 全共享最好（per-series 搜索退化 0.5–4%，论文推测物理相关序列互相正则），Weather 全 per-series 最好（全共享 $g_s = 21$ 时退化 10%，21 个通道量纲互不兼容），Electricity 偏好中间粒度 $g_s = 32$；且 Weather 的 per-series 收益来自 local ratio 与正则强度 $\alpha$ 的通道间分歧而非 lookback[^src-2606-27282-ltsf-linear-models]。论文同时发现 horizon 维度的分组几乎不敏感（退化 $\leq 0.4\%$），故默认 $g_h = 48$、把预算留给序列轴。详见 [[grouped-hyperparameter-search]]。
+
 ## 与其他方法对比
 
 - **Channel-mixing**：传统方法，将所有通道拼接后一起处理
@@ -119,6 +123,7 @@ CPiRi 的通道打乱测试暴露了一个关键问题：大多数 CD 模型在�
 - 相关：[[cora-correlation-aware-adapter|CoRA (Correlation-aware)]] — 在 CI 主导 TSFM 上用 DCE+HPCL 下游插件补 DCorr/HCorr/PCorr；推理 O(N)（ICLR 2026）[^src-cheng-2025-cora-correlation-aware-adapter]
 - 相关：[[zeus]] — CI + point tokenization + RevIN 的 tuning-free TSFM（ICML 2026）[^src-2607-01918]
 - 相关：[[trace]] — CIT + CbA 通道折中方案（NeurIPS 2025）[^src-trace-neurips2025]
+- 相关：[[grouped-hyperparameter-search]] — CI 内超参共享粒度的测量（全共享 ↔ per-series 谱系）[^src-2606-27282-ltsf-linear-models]
 
 [^src-simdiff]: [[source-simdiff]]
 [^src-patchtst]: [[source-patchtst]]
@@ -134,4 +139,5 @@ CPiRi 的通道打乱测试暴露了一个关键问题：大多数 CD 模型在�
 [^src-cheng-2025-cora-correlation-aware-adapter]: [[source-cheng-2025-cora-correlation-aware-adapter]]
 [^src-pir]: [[source-pir]]
 [^src-2607-01918]: [[source-2607-01918]]
+[^src-2606-27282-ltsf-linear-models]: [[source-2606-27282-ltsf-linear-models]]
 [^src-trace-neurips2025]: [[source-trace-neurips2025]]

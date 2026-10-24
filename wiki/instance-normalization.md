@@ -5,9 +5,8 @@ tags:
   - time-series-forecasting
   - normalization
   - distribution-shift
-created: 2026-04-28
-last_updated: 2026-08-06
-source_count: 9
+last_updated: 2026-10-24
+source_count: 10
 confidence: high
 status: active
 ---
@@ -73,6 +72,10 @@ RevIN 已被多种主流模型采用：iTransformer、PatchTST、SparseTSF 等[^
 - **短程概率**：RevIN 对 CSDI / TimeGrad / GRU-NVP 等不稳定占优；**均值缩放更可靠**。完全不做实例级归一化有时可行，但在 Wikipedia/Solar （TimeGrad）、Electricity（GRU-NVP）上会导致严重失败[^src-probts]。
 - **NAR 概率**：RevIN 与 CSDI 类 NAR 不总是好搭档（如 Weather 上 CSDI+RevIN 差于 CSDI+Scaling），NAR 概率模型的有效归一化仍是开放问题[^src-probts]。
 
+### 全窗口统计几乎从不是最优：尾部比例局部归一化
+
+[[searchcast|SearchCast]]（arXiv:2606.27282）在 Ridge 测试床上对归一化轴做联合搜索，发现 local normalization 在 ETTh1/ETTm2/Weather/Exchange 的 62–100% dataset–horizon 单元被选中，且最优作用域是窗口尾部 0.3%–30% 的分数（$\log_{10} r \in [-2.5, -0.5]$）——**full-window 归一化（即 RevIN 的整窗统计）几乎从不被选中**；ETTm2 与 Exchange 上最优尾部分数低至百分之几，论文归因于全窗口统计模糊了非平稳序列的 regime 边界[^src-2606-27282-ltsf-linear-models]。该结论口径为超参选择频率（Ridge + 四轴搜索、四数据集），非跨模型对照实验；机制详见 [[trailing-fraction-local-normalization]]。
+
 ## 相关页面
 
 - [[unica|UniCA]] — 统一的协变量适应框架，被设计为RevIN的广义扩展，可处理异构协变量（分类/图像/文本）而不仅是数值序列的分布漂移[^src-unica]
@@ -94,4 +97,5 @@ RevIN 已被多种主流模型采用：iTransformer、PatchTST、SparseTSF 等[^
 [^src-tide]: [[source-tide]]
 [^src-srsnet]: [[source-srsnet]]
 [^src-pir]: [[source-pir]]
+[^src-2606-27282-ltsf-linear-models]: [[source-2606-27282-ltsf-linear-models]]
 [^src-2607-01918]: [[source-2607-01918]]

@@ -30,6 +30,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-2511-16426]] — FrèqFlow/SpectFlow: Long-term forecasting using lightweight flow matching (NeurIPS 2025)
 - [[source-2602-01219-mita]] — MiTA: Mixture of Top-k Attention，把 attention 读成宽度 N 的 fast-weight MLP，按压缩/路由两条路缩放，用 landmark query 取 top-k KV 作形变专家 + 窄共享专家（BUPT，arXiv 2026；PDF 转换全文 raw/2602.01219-mita.md）
 - [[source-2605-07319]] — Generative Modeling with Flux Matching：全新生成建模范式，推广得分函数为任意生成向量场 (Pao-Huang et al., Stanford, arXiv 2026)
+- [[source-2606-27282-ltsf-linear-models]] — How Good Can Linear Models Be for Time-Series Forecasting?（SearchCast）：闭式 Ridge + 四轴预处理分组搜索，7/8 线性类最优、6/8 胜非线性基线；lookback–horizon 幂律 +0.46 至 −0.19（arXiv:2606.27282v2, PDF 标注 Preprint, ICLR 2027 投稿著录来自用户）
 - [[source-2607-01918]] — Zeus: Towards Tuning-Free Foundation Model for Time Series Analysis，U 形多尺度 encoder-only + MOTM 掩码预训练，五任务 tuning-free（ICML 2026; PDF raw/2607.01918.pdf）
 - [[source-adafre]] — AdaFre: Adaptive Frequency Pathways for Spatiotemporal Forecasting（Qin et al., AAAI 2026），DFT 有效频带均匀切分 + 频率特异谱嵌入 + 节点级 top-2 频带路由 + 频率均衡损失，PeMSD3/4/7/8 MAE 14.27/17.89/18.58/12.99 全最优
 - [[source-adaptraj]] — AdapTraj: A Multi-Source Domain Generalization Framework for Multi-Agent Trajectory Prediction，借用专家集合思想的逐域 extractor + 域标签聚合（无门控网络）
@@ -561,6 +562,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[saraf]] — SARAF, stationarity-aware retrieval-augmented forecasting with time-aligned enhancement + diversity MMR + adaptive Gaussian aggregation (KDD 2026)
 - [[scale]] — SCALE, spectral conformal prediction via wavelet transform (ICML 2026)
 - [[score-based-sde]] — Score-Based SDE, unified SMLD+DDPM framework (ICLR 2021)
+- [[searchcast]] — SearchCast，Ridge + 预处理超参 $(g_h, g_s)$ 分组搜索管线：线性类 7/8 最优、6/8 胜非线性，BDS 残差诊断显示 PatchTST 优势非来自非线性结构（arXiv:2606.27282）
 - [[shiyu-zhao]] — 赵世钰，强化学习教材作者，西湖大学教授
 - [[sifusion]] — SIFusion，统一多粒度北极海冰预测 Transformer，Swin V2 + granularity variate attention (NeurIPS 2025)
 - [[simdiff]] — SimDiff, end-to-end diffusion model for time series point forecasting (AAAI 2026)
@@ -759,6 +761,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[location-scale-noise-model]] — LSNM，将条件分布的均值和方差同时建模的位置-尺度噪声模型，使扩散模型能感知数据异质性
 - [[lomb-scargle-periodogram]] — Lomb–Scargle 周期图，非均匀采样数据的频谱估计方法
 - [[long-context-personalization]] — personalization under long context (1K-256K tokens) with constraint satisfaction
+- [[lookback-horizon-scaling]] — 最优回看长度与预测长度的幂律关系 $L^*=aH^b$，指数 +0.46 至 −0.19 挑战"长 horizon 需长历史"；仅变 $L$ 即有 36%–53% 降幅的 strong regime（arXiv:2606.27282）
 - [[low-dimensional-graph-adjacency]] — 低维图邻接建模，将 N×N 邻接矩阵的学习迁移到 C×C 压缩空间 (GSNet, PVLDB 2025)
 - [[lstf]] — Long Sequence Time-Series Forecasting, the problem setting formalized by Informer
 - [[mask-aware-imputation-no-prefilling]] — 无预填充的掩码感知填补，用可学习缺失嵌入直接表征缺失值而非零初始化 (MagiNet, arXiv 2024)
@@ -1049,6 +1052,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[graph-structure-aligner]] — Graph Structure Aligner：patch 图 VAE + L1 结构对齐约束生成器 (GCGNet)
 - [[graphcast]] — GraphCast，ERA5 端到端训练的全球中期 MLWP：编码-处理-解码 GNN、multi-mesh 长短边混合消息传递、层加权 MSE 多步课程训练（AR 步数 112）、自回归滚动 10 天 0.25° 预报（arXiv 2022 v2）
 - [[graphgps]] — GraphGPS，三要素（PE/SE + local MPNN + global attention）模块化图 Transformer 配方：local MPNN 分支（含边特征）与 global attention 分支逐层并行求和，线性注意力下 O(N+E)（NeurIPS 2022）
+- [[grouped-hyperparameter-search]] — $(g_h, g_s)$ 分组超参搜索，在全局共享与逐 horizon × 逐序列间连续移动；horizon 轴不敏感（≤0.4%）、序列轴共享粒度是数据集属性（arXiv:2606.27282）
 - [[grpo-for-forecasting]] — GRPO for forecasting, NRMSE-reward RL stage with length/decode penalties for traffic-accuracy optimization (ST-Vision-LLM, arXiv 2025)
 - [[guided-layer-normalization]] — conditional normalization with dynamic affine parameters for accident-aware modeling
 - [[gwnet]] — GWNet, Graph WaveNet: self-adaptive adjacency matrix + dilated causal convolutions for STG forecasting (IJCAI 2019)
@@ -1272,6 +1276,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[topology-aware-graph-transformer]] — TGT, learnable blend of global self-attention and local graph topology (AAAI 2026)
 - [[topology-aware-node-embedding]] — 基于拉普拉斯特征向量的归纳式节点嵌入，支持跨图结构迁移 (AAAI 2025)
 - [[trace-as-state]] — Trace as State 主入口：问题例子、同轨迹前后置机制、主要实证与不能外推的结论
+- [[trailing-fraction-local-normalization]] — 尾部比例局部归一化，统计量取窗口尾部 $r\cdot L$ 步；搜索显示尾部分数 0.3%–30% 最优、full-window 几乎从不被选中（arXiv:2606.27282）
 - [[trajectory-consistency-flow-matching]] — 轨迹一致性流匹配，在 CFM 之外约束速度场沿轨迹恒定并给出少步积分误差界 (LOFT, KDD 2026)
 - [[transport-based-reliability-assessment]] — 基于传输的可靠性评估：通过潜在空间传输几何而非分类器输出来度量可靠性
 - [[truncated-policy-iteration]] — 值迭代与策略迭代��间的截断折中

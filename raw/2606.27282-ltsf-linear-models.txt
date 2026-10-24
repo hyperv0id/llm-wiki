@@ -1,0 +1,1910 @@
+
+===== PAGE 1 =====
+How Good Can Linear Models Be
+for Time-Series Forecasting?
+Lang Huang1,2
+Jinglue Xu1
+Luke Darlow1
+1Sakana AI, Tokyo, Japan
+2National Institute of Informatics, Japan
+{langhuang, jingluexu, luke}@sakana.ai
+Abstract
+Time-series forecasting research has been moving steadily toward larger architec-
+tures, from specialized transformers to general-purpose foundation models, on the
+assumption that capacity is what unlocks accuracy. We take the opposite position:
+most of the gap can be closed at far lower cost by tuning preprocessing rather
+than scaling models. We use Ridge regression [10] as the testbed, since it has
+a closed-form solution and interpretable weights, which let the optimal hyper-
+parameters be read off the search directly. We search over context length, local
+normalization, regularization, and augmentation on eight standard benchmarks
+and find three patterns. (1) Optimal lookback is strongly series-specific and often
+non-monotonic in forecast horizon, with fitted power-law exponents ranging from
++0.46 on ETTm2 to −0.19 on Exchange and Traffic, challenging the convention
+that longer horizons need longer history. (2) Normalizing over a learned trailing
+fraction of the context, rather than its entirety, is almost universally preferred. (3)
+Series within the same dataset often disagree on hyperparameters; the optimal
+degree of cross-series sharing varies from fully shared to fully per-series. The
+resulting models beat prior linear forecasters on most dataset-horizon entries and
+exceed Transformer, MLP, and CNN baselines on six of eight benchmarks. The
+optimized hyperparameters also serve as a diagnostic on the data itself, revealing
+structures that larger models absorb silently into their learned parameters. We
+provide an accompanying interactive online demonstration and the codebase.
+0
+-241
+-649
+720
+ETTh1
+Hourly
+0
+-2027
+720
+Weather
+10-min
+0
+-269
+720
+Exchange Rate
+Daily
+0
+-520
+-2047
+720
+Electricity
+Hourly
+L=608
+L=412
+    Past 
+ 0 
+ Future
+Context Window Length
+L=1468 L=1173
+    Past 
+ 0 
+ Future
+Context Window Length
+Figure 1: Per-horizon optimal context-horizon relationships for four time series. The context lengths
+were obtained via hyperparameter search and are shown as color-matched bars.
+Preprint.
+arXiv:2606.27282v2  [cs.LG]  29 Jun 2026
+
+===== PAGE 2 =====
+1
+Introduction
+The long-term time series forecasting literature has followed a familiar arc over the past several
+years. Transformers [21] were adapted to the task with progressively more sophisticated attention
+and patching mechanisms [25, 27, 16, 15], Multi-Layer Perceptron (MLP) and Convolutional Neural
+Network (CNN) alternatives demonstrated that comparable accuracy could be achieved with simpler
+inductive biases [24, 22, 6, 9], and linear models entered the conversation when [26] showed that a
+single linear layer, applied after trend-seasonal decomposition, could outperform several modern
+transformers. The resulting proliferation of linear variants, e.g., DLinear, NLinear [26], RLinear[13],
+SparseTSF [14], gave the impression of a rich design space, until [20] proved that these models are
+functionally equivalent to unconstrained linear regression over suitably augmented features, and that
+closed-form ordinary least squares solutions can match or exceed their SGD-trained counterparts.
+This collapse of seemingly architectural diversity into a single model class raises a natural question:
+if the model is effectively fixed, where should the remaining degrees of freedom be spent?
+We argue that the answer is preprocessing. The standard evaluation protocol in time series forecasting
+fixes context length, normalization strategy, and data augmentation to a single setting per benchmark
+and then compares architectures. This convention makes sense when the goal is to isolate the
+effect of model design, but it systematically disadvantages models whose capacity is too limited to
+absorb suboptimal input representations through learned parameters. Transformers with millions
+of parameters can partially compensate for a poorly chosen lookback window or an uninformative
+normalization scheme; a linear model cannot. The result is that linear methods appear weaker than
+they are, not because they lack expressive power for the task, but because they are more sensitive
+to choices that are rarely tuned. We test this hypothesis with Ridge regression [10], applied to a
+systematic search over context length, local normalization windows, regularization strength, and
+augmentation in both time and frequency domains across eight standard benchmarks at per-horizon
+and per-series granularity. Ridge has a closed-form solution, no hidden nonlinearity, runs a trial
+in a few milliseconds on a GPU, and produces weights that can be inspected directly. The same
+transparency that makes it a competitive forecaster also makes it a diagnostic instrument: the structure
+of the optimal hyperparameters reveals properties of the data that deeper models would absorb silently
+into their learned representations.
+The search reveals three intriguing observations. First, the relationship between optimal lookback and
+forecast horizon is strongly dataset-specific (Figures 1&2) and often non-monotonic (Figure 3). When
+fitting a power-law L∗= a · Hb for the searched optimal lookback L∗and the prediction horizon H,
+the exponent b ranges from +0.46 on ETTm2 to −0.19 on Exchange and Traffic, contradicting the
+common assumption that longer horizons demand longer history [17, 5]. Second, normalizing over a
+learned trailing fraction of the context, rather than its entirety as in prior work, consistently improves
+accuracy, indicating that recent local statistics carry more signal than global ones (Figure 7). Third,
+series within the same dataset often prefer different hyperparameters (Figure 4), and the optimal
+degree of cross-series sharing varies from fully shared on ETTh1 to fully per-series on Weather,
+suggesting the heterogeneity across channels as an underexplored axis in forecasting.
+Our contributions are as follows. First, we show that carefully tuned Ridge regression outperforms
+prior linear forecasters across most datasets and time horizons, and matches or exceeds Transformer-
+and MLP-based architectures on six of eight benchmarks, while being orders of magnitude cheaper
+to train. Second, we demonstrate that the optimal hyperparameter landscape of a transparent linear
+model encodes structural properties of time series data (scaling behavior, normalization preferences,
+series heterogeneity) that are informative beyond the model itself and can guide the design of more
+complex forecasters. Third, we release SearchCast (URL), a reproducible pipeline that supports
+per-horizon and per-series search with configurable ablation controls, facilitating future studies to
+diagnose their own datasets with the same methodology.
+H=96
+H=192
+H=336
+H=720
+Forecast Horizon
+ETTh1 / OT
+Weather / OT
+Exchange / 5
+Electr. / 104
+1719
+445
+1607
+1315
+1880
+893
+2040
+1259
+318
+284
+51
+34
+202
+33
+56
+697
+1.5
+2.0
+2.5
+3.0
+Lookback (log)
+0
+2
+4
+6
+8
+10
+12
+14
+16
+MSE Improvement over Global Baseline (%)
+Exchange
+ETTh1
+Weather
+Electricity
++5%
++16%
++2%
++7%
++3%
++13%
++11%
++4%
++9%
++16%
++7%
++5%
++2%
+Horizon
+H=96
+H=192
+H=336
+H=720
+Figure 2: Left: Median optimal lookback per (series, horizon) varies. Right: Adapting context per
+horizon yields up to +16% MSE improvement over a global baseline across these four datasets.
+2
+
+===== PAGE 3 =====
+2
+Related Work
+Transformer-based forecasters. Attention-based architectures dominated long-term forecasting for
+several years. Autoformer [25] and FEDformer [27] replaced standard self-attention with frequency-
+domain operators to capture seasonal structure. PatchTST [16] segmented inputs into patches and
+processed each channel independently, and remains the strongest transformer baseline on long-term
+benchmarks. iTransformer [15] inverted the attention axis to model cross-channel dependencies.
+Recent benchmarks [18, 20] find that no single transformer wins across datasets and horizons, which
+raises the question of where the remaining gains should come from.
+MLP and CNN alternatives. A parallel line of work explored simpler architectures. TimesNet [24]
+reshapes 1D series into 2D tensors and applies convolutions. TiDE [9] and TimeMixer [22] are
+encoder-decoder MLPs, the latter mixing across temporal resolutions. TSMixer [6] reaches competi-
+tive accuracy with an attention-free MLP mixer.
+Linear models. DLinear [26] showed that a trend-seasonal decomposition followed by two linear
+layers could outperform mordern transformers; NLinear, RLinear [13], and SparseTSF [14] extended
+the recipe with last-value normalization, reversible instance normalization [12], and parameter-sparse
+forecasting, respectively. Toner and Darlow [20] then proved that DLinear, NLinear, and several
+related variants are functionally equivalent to unconstrained linear regression over augmented features,
+and that closed-form ordinary least squares (OLS) solutions match or beat the same models trained
+with SGD. This collapses the diverse linear forecasters into a single model class.
+Foundation models for time series. A more recent line proposes general-purpose forecasters trained
+on large corpora and applied zero-shot, including Chronos [3], TimesFM [1], Moirai [23], and
+DAM [8]. These models target broad coverage rather than per-dataset accuracy, and on standard
+supervised benchmarks. However, reaching this generality requires large pretraining corpora and sub-
+stantially more compute than per-dataset fitting, while accuracy on standard supervised benchmarks
+is often comparable to tuned per-dataset baselines, a small marginal return on the added cost.
+Positioning. We build on the unification of [20]. Instead of proposing another linear variant, we
+fix the model to Ridge regression [10] and spend the remaining budget on preprocessing: context
+length, local normalization, regularization, and augmentation, searched per-horizon and per-series
+across eight benchmarks. This closes most of the gap to deeper baselines and turns the optimized
+hyperparameters into a diagnostic: how optimal context scales with horizon, whether a trailing
+fraction of the window beats the full window for normalization, and how much variates within a
+dataset disagree, all readable off the search and mostly invisible in the parameters of deeper models.
+3
+Method
+3.1
+Preliminary: Ridge Regression
+Toner and Darlow [20] showed that recent linear forecasting variants are functionally equivalent to
+unconstrained linear regression over appropriately augmented feature sets. We take this unification as
+our starting point and build on the simple and efficient setup: Ridge regression [10] with a closed-form
+solution. Given a context window x ∈RL of L past observations for a single variate and a forecast
+horizon H, the model predicts ˆy = Wx + b where W ∈RH×L and b ∈RH. The weight matrix is
+obtained by solving
+W∗= arg min
+W ∥Y −WX∥2
+F + α∥W∥2
+F
+(1)
+where X ∈RL×N and Y ∈RH×N are the training context and target matrices assembled
+from N sliding windows, respectively; and α is the regularization strength. The solution W∗=
+YX⊤(XX⊤+ αI)−1 is computed in closed form without iterative optimization, making training
+effectively instantaneous on a single GPU and highly amenable to large-scale hyperparameter search.
+Each variate is modeled independently following the channel-independent paradigm that has proven
+effective across both linear [26] and Transformer-based [16] forecasters.
+3.2
+Preprocessing Pipeline
+The preprocessing applied before the simple Ridge regression is where most of the modeling flexibility
+resides. We parameterize it along four axes.
+3
+
+===== PAGE 4 =====
+Normalization. We consider two normalization scopes. Global normalization computes statistics
+over the entire training set for each variate; local normalization computes them over the most recent
+r · L time steps of each input window, where r ∈(0, 1] is the local ratio. In either case we support
+two methods: standardization (subtract mean, divide by standard deviation) and robust normalization
+(subtract median, divide by interquartile range [0.25, 0.75]). Local normalization with r = 1 recovers
+full-window instance normalization as used in prior work [20]; values r < 1 restrict the statistics
+to a trailing fraction of the context, allowing the model to adapt to the most recent distributional
+regime. The local ratio is searched on a log scale between 0.001 and 1.0. Following [20], under
+local normalization we append the per-window scale σ as an additional feature in place of the
+intercept (which is uninformative once the context has zero local mean), letting the regression learn a
+volatility-dependent shift; a zero coefficient on σ recovers pure instance normalization.
+Context length. The lookback L determines how much history the model sees and directly controls
+the dimensionality of the regression problem. We search L ∈[32, 2048] on a log scale, with upper
+bounds capped by the data size and forecast horizon.
+Augmentation. We optionally perturb training windows with additive noise scaled by σ in either the
+time (Gaussian noise) or the frequency domain (Gaussian perturbation of Fourier coefficients), where
+σ is searched on a log scale between 0.001 and 0.5. A third option applies no augmentation at all.
+Regularization. Rather than selecting a single α, we evaluate a grid of 21 logarithmically spaced
+values (in range [10−6, 103]) and retain the one that minimizes validation loss, effectively treating
+regularization as an inner optimization loop that imposes no additional search cost.
+3.3
+Grouped Hyperparameter Search
+Prior work almost always fixes a single set of preprocessing hyperparameters across every benchmark,
+horizon step, and variate. This is computationally convenient but assumes a degree of homogeneity
+within the datasets that rarely holds in practice: different horizons/variates can demand different
+context lengths. The opposite extreme, an independent search per horizon step and per variate, would
+capture this heterogeneity but is rarely attempted because the search budget grows combinatorially.
+We introduce a grouped search scheme that moves continuously between these two endpoints.
+Horizon grouping. We partition the H forecast steps into contiguous blocks of size gh and share
+hyperparameters within each block. Setting gh = 1 recovers fully per-step tuning; setting gh = H
+recovers the global baseline. Intermediate values allow hyperparameters to vary smoothly across the
+forecast horizon without requiring a separate search per step.
+Series grouping. Similarly, the C variates are partitioned into groups of size gs. Setting gs = 1
+yields a fully per-series search that can capture heterogeneous dynamics across channels; setting
+gs = C shares weights and hyperparameters across all variates.
+Unified view. The pair (gh, gs) defines a grid of hyperparameter search cells over the horizon×series
+space. Each cell runs an independent Optuna search with a Tree-structured Parzen Estimator [2]
+over the joint preprocessing space: lookback L, normalization scope and method, local ratio r,
+augmentation type and intensity σ, with α selected by inner grid search for each trial. The global
+model (gh = H, gs = C) and fully local model (gh = 1, gs = 1) are special cases of this framework.
+Cross-validation. Each Optuna trial evaluates candidate hyperparameters using k-fold expanding-
+window cross-validation on the training set, with folds constructed chronologically to respect temporal
+ordering. We use k = 3 in all main experiments. The best hyperparameters are then applied to the
+held-out test set, which is never used during the search.
+4
+Experiments
+4.1
+Experimental Setup
+Datasets We evaluate on eight widely used multivariate forecasting benchmarks spanning diverse
+domains and temporal granularities: ETTh1 and ETTh2 (electricity transformer temperature, hourly),
+ETTm1 and ETTm2 (same source, 15-minute intervals), Weather (21 meteorological indicators,
+10-minute), Electricity (321 clients, hourly), Traffic (862 road sensors, hourly), and Exchange
+4
+
+===== PAGE 5 =====
+Table 1: Long-term multivariate forecasting results (MSE). Left panel: linear models; right panel:
+nonlinear models. OLS, FITS, and DLinear report the results with instance normalization from [20].
+Bold : best per row. Underline : second best.
+Linear Models
+Nonlinear Models
+Dataset
+H
+SearchCast
+OLS
+FITS
+DLinear
+PatchTST
+iTransformer
+TimeMixer
+TimesNet
+Autoformer
+ETTm1
+96
+0.297
+0.307
+0.309
+0.312
+0.329
+0.334
+0.320
+0.338
+0.505
+192
+0.332
+0.336
+0.338
+0.341
+0.367
+0.377
+0.361
+0.374
+0.553
+336
+0.357
+0.365
+0.367
+0.372
+0.401
+0.426
+0.408
+0.410
+0.621
+720
+0.396
+0.415
+0.417
+0.422
+0.456
+0.491
+0.469
+0.478
+0.671
+Avg
+0.346
+0.356
+0.358
+0.362
+0.388
+0.407
+0.389
+0.400
+0.588
+ETTm2
+96
+0.160
+0.162
+0.162
+0.163
+0.175
+0.180
+0.175
+0.187
+0.255
+192
+0.212
+0.216
+0.217
+0.217
+0.241
+0.250
+0.241
+0.249
+0.281
+336
+0.256
+0.268
+0.269
+0.269
+0.305
+0.311
+0.305
+0.321
+0.339
+720
+0.323
+0.349
+0.350
+0.354
+0.402
+0.412
+0.378
+0.408
+0.433
+Avg
+0.237
+0.249
+0.250
+0.251
+0.281
+0.288
+0.275
+0.291
+0.327
+ETTh1
+96
+0.369
+0.375
+0.377
+0.379
+0.414
+0.386
+0.375
+0.384
+0.449
+192
+0.400
+0.413
+0.413
+0.419
+0.460
+0.441
+0.405
+0.436
+0.500
+336
+0.423
+0.445
+0.432
+0.451
+0.501
+0.487
+0.439
+0.491
+0.521
+720
+0.430
+0.460
+0.428
+0.470
+0.507
+0.503
+0.469
+0.521
+0.514
+Avg
+0.405
+0.423
+0.412
+0.430
+0.471
+0.454
+0.422
+0.458
+0.496
+ETTh2
+96
+0.268
+0.270
+0.270
+0.275
+0.302
+0.297
+0.289
+0.340
+0.346
+192
+0.330
+0.331
+0.331
+0.342
+0.388
+0.380
+0.333
+0.402
+0.456
+336
+0.354
+0.354
+0.354
+0.359
+0.426
+0.428
+0.374
+0.452
+0.482
+720
+0.383
+0.380
+0.377
+0.384
+0.431
+0.427
+0.416
+0.462
+0.515
+Avg
+0.334
+0.334
+0.333
+0.340
+0.387
+0.383
+0.353
+0.414
+0.450
+Electricity
+96
+0.130
+0.133
+0.133
+0.134
+0.129
+0.148
+0.150
+0.168
+0.201
+192
+0.145
+0.148
+0.148
+0.149
+0.147
+0.162
+0.163
+0.184
+0.222
+336
+0.161
+0.164
+0.164
+0.165
+0.163
+0.178
+0.178
+0.198
+0.231
+720
+0.199
+0.203
+0.203
+0.205
+0.197
+0.225
+0.220
+0.220
+0.254
+Avg
+0.159
+0.162
+0.162
+0.163
+0.159
+0.178
+0.178
+0.192
+0.227
+Traffic
+96
+0.379
+0.385
+0.386
+0.387
+0.360
+0.395
+0.392
+0.593
+0.613
+192
+0.391
+0.397
+0.398
+0.399
+0.379
+0.417
+0.408
+0.617
+0.616
+336
+0.404
+0.410
+0.411
+0.412
+0.392
+0.433
+0.422
+0.629
+0.622
+720
+0.441
+0.448
+0.449
+0.450
+0.432
+0.467
+0.459
+0.640
+0.660
+Avg
+0.404
+0.410
+0.411
+0.412
+0.391
+0.428
+0.420
+0.620
+0.628
+Weather
+96
+0.141
+0.141
+0.142
+0.142
+0.149
+0.174
+0.164
+0.172
+0.266
+192
+0.184
+0.184
+0.185
+0.185
+0.194
+0.221
+0.215
+0.219
+0.307
+336
+0.234
+0.234
+0.236
+0.235
+0.245
+0.278
+0.272
+0.280
+0.359
+720
+0.304
+0.307
+0.307
+0.310
+0.314
+0.358
+0.351
+0.365
+0.419
+Avg
+0.215
+0.217
+0.218
+0.218
+0.225
+0.258
+0.250
+0.259
+0.338
+Exchange
+96
+0.081
+0.086
+0.087
+0.085
+0.088
+0.086
+0.086
+0.107
+0.197
+192
+0.167
+0.180
+0.183
+0.178
+0.176
+0.177
+0.177
+0.226
+0.300
+336
+0.305
+0.343
+0.344
+0.335
+0.301
+0.331
+0.338
+0.367
+0.509
+720
+0.811
+0.992
+0.965
+0.920
+0.901
+0.901
+0.920
+0.964
+1.447
+Avg
+0.341
+0.400
+0.395
+0.380
+0.366
+0.374
+0.380
+0.416
+0.613
+(daily exchange rates of 8 countries). Following standard protocol [25, 26, 20], each dataset is split
+chronologically into training, validation, and test sets at a 6:2:2 ratio for ETT and 7:1:2 for the others.
+Evaluation Protocol. We report MSE at horizons H ∈{96, 192, 336, 720} and per-dataset averages.
+Search uses 20 Optuna trials per cell, and 3-fold cross-validation. Because our method searches the
+context length L, each validation fold includes the additional pre-validation history needed to form
+the input window, but keeps the number of validation target points fixed across all candidate L. Thus
+longer contexts do not receive more validation samples nor a different validation interval.
+Baselines.
+Linear: OLS, FITS (with instance normalization, from [20]), and DLinear [26].
+These isolate the gain attributable to preprocessing search rather than model capacity. Nonlin-
+ear: PatchTST [16], iTransformer [15], TimeMixer [22], TimesNet [24], and Autoformer [25],
+spanning Transformer, MLP, and CNN families. Nonlinear baselines use the best lookback L as
+published; linear baselines from [20] use L = 720. Our method searches over L (while keeping the
+validation samples fixed for fair comparisons), a degree of freedom we argue is underexplored.
+5
+
+===== PAGE 6 =====
+0
+100
+200
+300
+400
+500
+600
+700
+Forecast Horizon
+102
+103
+Optimal Lookback
+(a)  Lookback vs Horizon
+ETTh1
+ETTh2
+ETTm1
+ETTm2
+Weather
+Exchange
+Electricity
+Traffic
+0.2
+0.0
+0.2
+0.4
+Exponent b
+ETTh1
+ETTh2
+ETTm1
+ETTm2
+Weather
+Exchange
+Electricity
+Traffic
+(b)  L *
+H b
+0.09
+0.11
+0.23
+0.46
+0.05
+-0.19
+0.02
+-0.19
+ETTh1
+ETTh2
+ETTm1
+ETTm2
+Weather
+Exchange
+Electricity
+Traffic
+0.5
+0.0
+0.5
+1.0
+Per-series exponent b
+(c)  Intra-dataset lookback scaling heterogeneity
+Figure 3: Optimal lookback L∗vs. forecast horizon H across 8 datasets. (a) Median lookback (log-
+log) with IQR bands and power-law fits L∗∝Hb. (b) Fitted exponent b per dataset. (c) Per-series
+exponent distribution within each dataset.
+4.2
+Main Results
+Table 1 reports MSE across the eight benchmarks. Within the linear class, our pipeline SearchCast
+achieves the best average MSE on seven of eight datasets and ties FITS on ETTh2 (0.334 vs. 0.333).
+Reductions over OLS reach 4.8% on ETTm2, 4.3% on ETTh1, and 14.8% on Exchange. The
+gap is consistent across H rather than driven by a single horizon, indicating the gain comes from
+preprocessing choices that generalize. Against nonlinear baselines, ours wins the average on six of
+eight benchmarks despite having no nonlinearity and no learned representation. Both losses are to
+PatchTST: Electricity (tied at 0.159) and Traffic (0.404 vs. 0.391), the two largest datasets (321 and
+862 channels), where shared representations across similar series plausibly help Transformers more
+than simple Ridge. This is consistent with Figure 4, where moderate series grouping is favorable
+for these two datasets. On the remaining six datasets, the margin over PatchTST ranges from 4%
+(Weather) to 16% (ETTm2). The linear comparison isolates the contribution of preprocessing search;
+the nonlinear comparison shows it is large enough to close the gap on most benchmarks.
+5
+Analysis
+We use the search output as a diagnostic of the data. We first study how optimal lookback changes with
+horizon and series (§5.1), then how much hyperparameter sharing is safe across series and horizons
+(§5.2). Forecasts and refit Ridge weights connect these choices to model behavior (§5.3). The
+remaining subsections isolate the main preprocessing choices: local normalization (§5.4), series-level
+variation in r and α (§5.5), and augmentation type/intensity (§5.6).
+5.1
+Lookback v.s. Horizon Across Datasets
+Figure 3(a,b) fits L∗= a · Hb to the searched optimal context at each horizon group per dataset.
+Exponents span both signs and an order of magnitude: from b = +0.46 on ETTm2 down to
+b = −0.19 on Exchange and Traffic. ETTm2 is the only dataset where the conventional intuition
+holds strongly, there longer horizons ask for more history, though sublinearly. ETTm1 and ETTh2 sit
+in a mild positive regime (b ≈0.1–0.2); Weather and Electricity are nearly flat (|b| < 0.1), settling
+on ∼103 steps regardless of horizon. The negative exponents on Exchange and Traffic are the most
+informative: longer horizons prefer shorter context, consistent with non-stationarity where distant
+history actively misleads the model. The standard L = 96 default is therefore wrong in two opposite
+6
+
+===== PAGE 7 =====
+1
+3
+7
+Series group size (log)
+0.0
+0.5
+MSE degrad. (%)
+ETTh1
+1
+3
+7
+Series group size (log)
+0.0
+2.5
+5.0
+ETTm2
+1
+3
+7
+11
+21
+Series group size (log)
+0
+5
+10
+Weather
+1
+8
+32
+321
+Series group size (log)
+0
+1
+2
+Electricity
+1
+2
+6
+24
+48
+Horizon group size (log)
+0.0
+0.2
+0.4
+MSE degrad. (%)
+ETTh1
+1
+2
+6
+24
+48
+Horizon group size (log)
+0.0
+0.2
+0.4
+ETTm2
+1
+2
+6
+24
+48
+Horizon group size (log)
+0.0
+0.2
+0.4
+Weather
+6
+12
+24
+48
+Horizon group size (log)
+0.0
+0.2
+0.4
+Electricity
+Figure 4: Effect of series (Top) and horizon (Bottom) grouping on forecasting accuracy across 4
+datasets. Each panel shows MSE degradation (%) relative to the best group size (marked with ⋆) as a
+function of group size, from per-series/horizon to fully shared.
+directions at once: it underserves Weather and Electricity by roughly an order of magnitude, and
+overserves Exchange and Traffic at long horizons, where the optimum drops below 96.
+Figure 3(c) repeats the fit per variate. Dataset-level exponents are aggregates over considerable
+intra-dataset spread. Weather is the only benchmark whose per-series exponents cluster tightly around
+the median; ETTh2, Electricity, and Traffic straddle zero, meaning some channels prefer growing
+context with horizon while others prefer shrinking it. This highlights that a single shared lookback is
+insufficient even within one dataset, which motivates the series/horizon grouping analysis below.
+5.2
+Series and Horizon Grouping
+Figure 4 (top) sweeps the series group size gs from per-series (gs = 1) to fully shared (gs = S),
+reporting MSE degradation relative to the per-dataset best. The picture is non-monotone. Fully
+shared is best on both ETT benchmarks, where per-series search degrades MSE by 0.5–4%, sug-
+gesting physically related variates regularize each other. Fully per-series is best on Weather, where
+degradation grows monotonically with gs to 10% at gs = 21, suggesting its 21 channels (pressure,
+humidity, wind, rainfall) live on incompatible scales. Electricity prefers intermediate sizes (gs = 32).
+The result indicates that the optimal degree of cross-series sharing is a property of the dataset.
+The bottom row sweeps gh ∈{1, 2, 3, 4, 6, 8, 12, 16, 24, 48}. gh groups consecutive horizons into
+bins of width gh that share one HP setting: at gh = 1, horizons H = 95 and H = 96 are tuned
+separately; at gh = 48, all of H = 49, . . . , 96 share a single setting. The four evaluation cutoffs
+{96, 192, 336, 720} are far enough apart that they land in different bins for every valid gh. So as gh
+grows, the four reported cutoffs keep their own tuned HPs; only the horizons near each cutoff are
+progressively absorbed into its bin. The curves are flat (≤0.4% degradation), with optima at gh = 48
+on ETTm2 and Electricity, and gh = 6 on ETTh1 and Weather. This says HPs vary smoothly with
+H within a ∼48-step neighborhood, consistent with the smooth L∗(H) trends in §5.1. We adopt
+gh = 48 by default for its efficiency and spend the trial budget on searching gs instead.
+5.3
+Forecasts and Learned Weights Visualization
+Figure 5 shows the visible effect of the search. With fixed dataset-level defaults, Ridge drifts
+toward the mean as the horizon grows, especially on Weather and Exchange. The tuned model keeps
+following the slow drift because these datasets select short effective context, small local-normalization
+windows, or both (Figures 3b and 7).
+Figure 6 shows what the selected lookbacks are used for. Exchange puts almost all weight on recent
+lags, matching its short-memory behavior. Traffic and ETTh2 use calendar lags: Traffic has strong
+weekly bands near 168, 336, . . ., while ETTh2 shows a shorter daily comb. Electricity mixes lag-0/1
+dependence with remote anchors. Weather and ETTm datasets often place their largest weights
+hundreds of steps back. Thus a long L∗mainly gives the model access to a few phase-matched
+7
+
+===== PAGE 8 =====
+0
+200
+400
+600
+Forecast Horizon
+0.0
+0.5
+1.0
+ETTh1: OT
+GT
+Ours
+Global
+0
+200
+400
+600
+Forecast Horizon
+ETTm2: HUFL
+0
+200
+400
+600
+Forecast Horizon
+Weather: p (mbar)
+0
+200
+400
+600
+Forecast Horizon
+Exchange: 5
+Figure 5: Forecast comparison. Our method (blue) closely tracks the ground truth (black), while the
+global baseline (red) reverts to the mean, particularly on non-stationary series (Weather, Exchange).
+The choppiness in Weather and especially Exchange is an artifact of switching hyperparameters
+across forecast settings, which can create discontinuities between segments.
+0
+200
+400
+600
+Lag from present
+ETTh1
+0
+100
+200
+300
+400
+500
+ETTh2
+0
+500
+1000
+1500
+ETTm1
+0
+500
+1000
+1500
+2000
+ETTm2
+0
+200
+400
+600
+Horizon
+0
+500
+1000
+1500
+2000
+Lag from present
+Weather
+0
+200
+400
+600
+Horizon
+0
+500
+1000
+1500
+2000
+Electricity
+0
+200
+400
+600
+Horizon
+0
+500
+1000
+1500
+2000
+Traffic
+0
+200
+400
+600
+Horizon
+0
+20
+40
+60
+80
+Exchange rate
+0.00
+0.01
+0.02
+0.03
+0.04
+0.00
+0.01
+0.02
+0.03
+0.04
+0.05
+0.0000
+0.0025
+0.0050
+0.0075
+0.0100
+0.0125
+0.0000
+0.0025
+0.0050
+0.0075
+0.0100
+0.0125
+0.0150
+0.000
+0.002
+0.004
+0.006
+0.008
+0.010
+0.000
+0.005
+0.010
+0.015
+0.020
+0.025
+0.000
+0.005
+0.010
+0.015
+0.020
+0.0000
+0.0025
+0.0050
+0.0075
+0.0100
+0.0125
+Figure 6: Weight magnitude |w| over lag and forecast horizon. Lighter shades indicate larger
+magnitudes. Lag is measured from the most recent input (bottom row); white regions lie beyond each
+model’s chosen lookback.
+observations, not to the whole history. The jumps at gh=48 bin boundaries show the tradeoff: horizon
+grouping barely changes MSE (≤0.4%; §5.2), but it can change the weights abruptly.
+5.4
+Global v.s. Local Normalization
+Prior linear forecasters normalize either globally (training-set statistics) or locally (full input win-
+dow) [20, 26]. We relax the local case to a learned trailing fraction r ∈(0, 1]: r = 1 recovers
+full-window normalization, r < 1 restricts statistics to the last r · L steps. Across ETTh1, ETTm2,
+Weather, and Exchange, we found that local is selected in 62–100% of dataset–horizon cells; the
+local-ratio column of Figure 7 shows that the optimal log10 r is almost always strictly negative,
+clustered in [−2.5, −0.5] — trailing fractions between 0.3% and 30% of the window. Full-window
+normalization is essentially never selected. The effect is strongest on ETTm2 and Exchange,
+where many cells sit near log10 r = −2: only the final few percent of the lookback set the scale.
+These series are nonstationary on the scale of L, and full-window statistics blur regimes the model is
+better off keeping distinct. We also tested a robust median/IQR variant of local normalization, but
+it underperformed mean/std in all tested settings, suggesting that tail variation and large deviations
+carry useful scale information in these benchmarks. We therefore use local standardization in Table 1
+and search only the trailing fraction r.
+5.5
+Hyperparameter Variations Across Series
+Figures 3 and 7 identify which hyperparameters drive the Weather vs. ETTh1 contrast. Lookback
+is uniform across series on ETTh1 and dispersed on Weather (Figure 3c). The local-ratio and α
+heatmaps in Figure 7 sharpen the picture. ETTh1: both rows are visibly uniform across the four
+variates and vary more with horizon than with series, consistent with variates from one physical
+system. Weather: the two rows diverge — local ratio varies widely (OT at log10 r ≈−2 vs. LULL
+near 0), and α shows a large gap between OT (log10 α ≈1–2) and the other channels (near 4). The
+per-series gain on Weather (Figure 4) therefore comes from local ratio and α, not lookback. ETTm2
+8
+
+===== PAGE 9 =====
+OT
+LULL
+HUFL
+LUFL
+Local Ratio (log10)
+-0.6
+-0.5
+-0.8
+-0.4
+-1.1
+-1.6
+-1.3
+-1.9
+-0.7
+-1.0
+-2.0
+-0.3
+-2.0
+-0.4
+-1.4
+-0.4
+ETTh1
+-0.8
+-1.5
+-1.4
+-0.6
+-1.7
+-1.7
+-2.3
+-1.7
+-1.1
+-1.1
+-2.3
+-1.4
+-2.4
+-2.7
+-2.7
+-0.6
+ETTm2
+-2.3
+-1.6
+-1.6
+-1.4
+-0.2
+-0.1
+-0.0
+-0.0
+-1.2
+-3.0
+-1.6
+-1.5
+-0.3
+-0.5
+-1.3
+-0.5
+Weather
+-0.4
+-2.1
+-0.5
+-0.9
+-2.0
+-1.8
+-1.7
+-1.7
+-2.3
+-2.0
+-1.2
+-1.9
+-2.8
+-2.0
+-2.3
+-1.2
+Exchange
+96
+192
+336
+720
+Horizon
+OT
+LULL
+HUFL
+LUFL
+ (log10)
+3.7
+4.0
+4.0
+4.0
+2.3
+3.7
+3.8
+3.9
+3.3
+3.3
+3.4
+3.4
+2.2
+3.3
+3.5
+4.0
+96
+192
+336
+720
+Horizon
+1.8
+1.7
+2.4
+2.5
+3.0
+3.5
+4.0
+3.7
+4.0
+4.0
+4.0
+3.9
+2.0
+4.0
+4.0
+4.0
+96
+192
+336
+720
+Horizon
+1.7
+-0.2
+0.8
+2.0
+4.0
+4.0
+4.0
+4.0
+3.7
+4.0
+4.0
+4.0
+3.8
+4.0
+4.0
+4.0
+96
+192
+336
+720
+Horizon
+0.2
+2.2
+2.6
+3.5
+4.0
+4.0
+4.0
+4.0
+4.0
+4.0
+4.0
+4.0
+4.0
+4.0
+4.0
+3.8
+Figure 7: Per-series hyperparameter (local ratio r and regularization α) heatmaps, with gh = 48.
+ETTh1
+ETTh2
+ETTm1
+ETTm2
+Weather
+Exchange
+Electricity
+Traffic
+0
+20
+40
+60
+80
+100
+Selection (%)
+34
+28
+36
+39
+34
+32
+28
+29
+33
+33
+27
+30
+33
+38
+32
+33
+32
+39
+37
+31
+33
+31
+40
+39
+Freq
+Time
+None
+ETTh1
+ETTh2
+ETTm1
+ETTm2
+Weather
+Exchange
+Electricity
+Traffic
+10 3
+10 2
+10 1
+Optimal 
+Figure 8: Augmentation analysis. Left: Proportion of trials selecting frequency-domain noise, time-
+domain noise, or no augmentation. Right: Distribution of optimal σ conditional on augmentation
+being selected, broken down by domain.
+and Exchange sit between these extremes; grouping by measurement type or a few clusters would
+likely capture most of the heterogeneity at a fraction of full per-series cost.
+5.6
+Augmentation Selection and Intensity
+Figure 8(a): augmentation is selected in 60–70% of horizon groups on every benchmark, with time-
+and frequency-domain noise split roughly evenly (time slightly more common). Figure 8(b) displays
+how they are selected. The within-dataset spread of optimal σ is itself dataset-dependent: Weather
+and Exchange are widest (near- and far-horizon groups demand different noise levels); ETTm1,
+Electricity, and Traffic are tighter.
+6
+Conclusion
+The reputation of linear models as uncompetitive baselines in long-term forecasting reflects under-
+tuned preprocessing, not limited model capacity. A Ridge regression searched over context length,
+local normalization, regularization, and augmentation matches or exceeds prior linear baselines
+as well as Transformer, MLP, and CNN baselines on most standard benchmarks, at a fraction of
+the training cost. Beyond accuracy, the optimized hyperparameters serve as a diagnostic lens on
+the data: optimal lookback can grow, plateau, or shrink with the forecast horizon depending on
+dataset stationarity; normalization is almost always local, restricted to a trailing fraction of the
+window; cross-series sharing is dataset-specific, ranging from fully shared to fully per-series, and
+the heterogeneity is driven by normalization and regularization rather than lookback; and the same
+locality and seasonality the search recovers in the hyperparameters are visible directly in the trained
+weights. These preprocessing choices transfer to any model class, and the released SearchCast
+pipeline makes the same diagnostic cheap to run on new datasets.
+9
+
+===== PAGE 10 =====
+References
+[1] D. Abhimanyu. A decoder-only foundation model for time-series forecasting. In International Conference
+on Machine Learning, 2024.
+[2] T. Akiba, S. Sano, T. Yanase, T. Ohta, and M. Koyama. Optuna: A next-generation hyperparameter
+optimization framework. In Proceedings of the 25th ACM SIGKDD international conference on knowledge
+discovery & data mining, pages 2623–2631, 2019.
+[3] A. F. Ansari, L. Stella, A. C. Turkmen, X. Zhang, P. Mercado, H. Shen, O. Shchur, S. S. Rangapuram,
+S. P. Arango, S. Kapoor, et al. Chronos: Learning the language of time series. Transactions on Machine
+Learning Research, 2024.
+[4] W. A. Brock, W. D. Dechert, J. A. Scheinkman, and B. LeBaron. A test for independence based on the
+correlation dimension. Econometric Reviews, 15(3):197–235, 1996.
+[5] C. Challu, K. G. Olivares, B. N. Oreshkin, F. G. Ramirez, M. M. Canseco, and A. Dubrawski. Nhits:
+Neural hierarchical interpolation for time series forecasting. In Proceedings of the AAAI conference on
+artificial intelligence, volume 37, pages 6989–6997, 2023.
+[6] S.-A. Chen, C.-L. Li, N. Yoder, S. O. Arik, and T. Pfister. Tsmixer: An all-mlp architecture for time series
+forecasting. arXiv preprint arXiv:2303.06053, 2023.
+[7] R. B. Cleveland, W. S. Cleveland, J. E. McRae, and I. Terpenning. STL: A seasonal-trend decomposition
+procedure based on loess. Journal of Official Statistics, 6(1):3–73, 1990.
+[8] L. Darlow, Q. Deng, A. Hassan, M. Asenov, R. Singh, A. Joosen, A. Barker, and A. Storkey. Dam: Towards
+a foundation model for forecasting. In International Conference on Learning Representations, 2025.
+[9] A. Das, W. Kong, A. Leach, S. Mathur, R. Sen, and R. Yu. Long-term forecasting with tide: Time-series
+dense encoder. arXiv preprint arXiv:2304.08424, 2023.
+[10] A. E. Hoerl and R. W. Kennard. Ridge regression: Biased estimation for nonorthogonal problems.
+Technometrics, 12:55–67, 1970.
+[11] R. J. Hyndman and G. Athanasopoulos. Forecasting: Principles and Practice. OTexts, Melbourne,
+Australia, 3rd edition, 2021.
+[12] T. Kim, J. Kim, Y. Tae, C. Park, J.-H. Choi, and J. Choo. Reversible instance normalization for accurate
+time-series forecasting against distribution shift. In International Conference on Learning Representations,
+2022.
+[13] Z. Li, S. Qi, Y. Li, and Z. Xu. Revisiting long-term time series forecasting: An investigation on linear
+mapping. arXiv preprint arXiv:2305.10721, 2023.
+[14] S. Lin, W. Lin, W. Wu, H. Chen, and J. Yang. Sparsetsf: Modeling long-term time series forecasting with
+1k parameters. arXiv preprint arXiv:2405.00946, 2024.
+[15] Y. Liu, T. Hu, H. Zhang, H. Wu, S. Wang, L. Ma, and M. Long. itransformer: Inverted transformers are
+effective for time series forecasting. arXiv preprint arXiv:2310.06625, 2023.
+[16] Y. Nie, N. H. Nguyen, P. Sinthong, and J. Kalagnanam. A time series is worth 64 words: Long-term
+forecasting with transformers. arXiv preprint arXiv:2211.14730, 2022.
+[17] B. N. Oreshkin, D. Carpov, N. Chapados, and Y. Bengio. N-beats: Neural basis expansion analysis for
+interpretable time series forecasting. In International Conference on Learning Representations, 2020.
+[18] X. Qiu, J. Hu, L. Zhou, X. Wu, J. Du, B. Zhang, C. Guo, A. Zhou, C. S. Jensen, Z. Sheng, et al.
+Tfb: Towards comprehensive and fair benchmarking of time series forecasting methods. arXiv preprint
+arXiv:2403.20150, 2024.
+[19] S. Seabold and J. Perktold. statsmodels: Econometric and statistical modeling with python. In Proceedings
+of the 9th Python in Science Conference (SciPy), pages 92–96, 2010.
+[20] W. Toner and L. Darlow. An analysis of linear time series forecasting models. In Proceedings of the 41st
+International Conference on Machine Learning, pages 48404–48427, 2024.
+[21] A. Vaswani, N. Shazeer, N. Parmar, J. Uszkoreit, L. Jones, A. N. Gomez, Ł. Kaiser, and I. Polosukhin.
+Attention is all you need. Advances in neural information processing systems, 30, 2017.
+10
+
+===== PAGE 11 =====
+[22] S. Wang, H. Wu, X. Shi, T. Hu, H. Luo, L. Ma, J. Y. Zhang, and J. Zhou. Timemixer: Decomposable
+multiscale mixing for time series forecasting. arXiv preprint arXiv:2405.14616, 2024.
+[23] G. Woo, C. Liu, A. Kumar, C. Xiong, S. Savarese, and D. Sahoo. Unified training of universal time series
+forecasting transformers. In International Conference on Machine Learning, 2024.
+[24] H. Wu, T. Hu, Y. Liu, H. Zhou, J. Wang, and M. Long. Timesnet: Temporal 2d-variation modeling for
+general time series analysis. arXiv preprint arXiv:2210.02186, 2022.
+[25] H. Wu, J. Xu, J. Wang, and M. Long. Autoformer: Decomposition transformers with auto-correlation for
+long-term series forecasting. Advances in neural information processing systems, 34:22419–22430, 2021.
+[26] A. Zeng, M. Chen, L. Zhang, and Q. Xu. Are transformers effective for time series forecasting? In
+Proceedings of the AAAI conference on artificial intelligence, volume 37, pages 11121–11128, 2023.
+[27] T. Zhou, Z. Ma, Q. Wen, X. Wang, L. Sun, and R. Jin. Fedformer: Frequency enhanced decomposed
+transformer for long-term series forecasting. In International conference on machine learning, pages
+27268–27286. PMLR, 2022.
+11
+
+===== PAGE 12 =====
+A
+Long-range linear autocorrelation in the benchmark series
+The per-dataset search of Section 5.1 selects context lengths that differ by two orders of magnitude,
+from a few dozen steps on Exchange to roughly a thousand on Weather and Electricity (Figure 3).
+This appendix examines a basic question behind that result. When the search assigns the model a long
+context, is there genuinely useful information that far in the past, or is the model only re-representing
+an obvious daily or weekly cycle that a much simpler seasonal method [26, 27] could capture without
+a long context? We address it by measuring how strongly each series is linearly related to its own past,
+both on the raw series and after deseasonalization. Deseasonalization here means removing a series’
+known periodic cycles (for instance the daily and weekly ones), so that any remaining correlation
+cannot be attributed to those cycles alone. We apply four deseasonalization methods of increasing
+strength (defined below) and check whether the long-range correlation survives all of them.
+The autocorrelation at lag k is the Pearson correlation between the series at time t and the same
+series k steps earlier, ρ(yt, yt−k), computed over all t and then averaged across the channels of a
+dataset [11]. It ranges from −1 to 1. A value near 0 means the value k steps ago carries essentially
+no linear information about the present, while a large magnitude means it carries substantial such
+information. Because we focus on the linear relationship, autocorrelation is precisely the kind of
+structure our forecaster can exploit. Before measuring, each series is z-scored using training-set
+statistics only, that is, shifted and scaled to mean 0 and variance 1 using quantities computed on the
+training portion alone, so that the measurement is comparable across series and does not use test data.
+From weakest to strongest, we apply four deseasonalization methods. The raw variant removes
+nothing. The per-position-in-period variant subtracts the average value at each position of the
+dominant cycle (for example the mean for each hour-of-day). The harmonic variant subtracts fitted
+sine and cosine waves at all known periods such as daily and weekly. The STL variant applies a
+standard procedure that splits a series into a trend, a seasonal part, and a remainder, keeping only
+the remainder [7]. The rationale for trying all four is that if a long-lag correlation were entirely a
+periodic cycle, a model that explicitly represents cycles, such as the trend-seasonal decomposition
+inside DLinear [26] or the frequency-domain operators of Autoformer and FEDformer [25, 27],
+could reproduce it at low cost, and a long context would offer a purely linear model no genuine
+advantage. Each reported correlation comes with a 95% confidence interval from a pair-resampling
+bootstrap. We resample the observed (yt, yt−k) pairs with replacement (B = 200 times), recompute
+the correlation each time, and report the middle 95% of those values. A narrow interval means the
+estimate is statistically reliable.
+Figure 9 traces the autocorrelation across all measured lags for the four variants, and Table 2 reports
+the slice at lag k = 720, the longest forecast horizon evaluated in Section 4. All six datasets retain a
+substantial correlation at k = 720, between 0.39 and 0.73, with confidence intervals far above 0. The
+four removal methods agree closely at long lags, so the surviving correlation is not an artifact of any
+single deseasonalization choice. On ETTm1 and ETTm2 the deseasonalized correlation is in fact
+higher than the raw one, because removing the strong daily cycle uncovers slower structure that the
+cycle had been masking.
+Table 2: Long-range linear autocorrelation in the six standard benchmarks, computed at lag k = 720
+after harmonic deseasonalization at all configured periods. Values are channel-averaged Pearson
+correlations on the z-scored concatenation of the train, validation and test splits. Confidence intervals
+are 95% pair-resampling bootstraps with B = 200.
+Dataset
+ˆρ(yt, yt−720)
+95% CI
+ETTh1
+0.387
+[0.381, 0.394]
+ETTh2
+0.526
+[0.521, 0.531]
+ETTm1
+0.435
+[0.433, 0.438]
+ETTm2
+0.725
+[0.723, 0.728]
+Weather
+0.428
+[0.400, 0.451]
+Exchange
+0.532
+[0.527, 0.538]
+Even after the obvious daily and weekly cycles are removed, a value from 720 steps in the past still
+carries a real and moderately strong linear association with the current value (correlation 0.39 to
+0.73). Therefore, when the search provides the linear model with a long context on these datasets,
+12
+
+===== PAGE 13 =====
+101
+102
+103
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+(yt, yt
+k)
+ETTh1
+101
+102
+103
+ETTh2
+101
+102
+103
+ETTm1
+101
+102
+103
+lag k
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+(yt, yt
+k)
+ETTm2
+101
+102
+103
+lag k
+Weather
+101
+102
+103
+lag k
+Exchange
+raw
+per-position
+harmonic
+STL
+Figure 9: Channel-averaged Pearson autocorrelation ˆρ(yt, yt−k) as a function of lag k, for the six
+standard benchmarks under four deseasonalization schemes. Dotted vertical line marks k = 720. The
+confidence intervals are narrow (typical 95% bootstrap half-width below 0.01, given in Table 2 for
+k = 720). The four schemes agree at long lags, with all six datasets retaining ˆρ ≥0.39 at k = 720
+after harmonic deseasonalization.
+the model is genuinely exploiting long-range information rather than re-representing a cycle that a
+simpler seasonal method could capture.
+B
+How much accuracy comes from context length alone
+Section 5.1 shows which context length the full search prefers on each dataset. This appendix isolates
+a narrower question. Of the accuracy our method gains, how much is due to the context length L by
+itself, as opposed to the other preprocessing choices (normalization, regularization, augmentation)?
+To answer it we hold every other preprocessing setting fixed and vary only L.
+We use a single fixed preprocessing configuration everywhere, which we call the universal default.
+This default uses local mean normalization, the standard regularization grid described in Section 3,
+and no augmentation. Keeping this configuration identical across datasets means that any change in
+error can be attributed to L alone. We sweep L ∈{24, 48, 96, 192, 336, 480, 720, 1000, 1500, 2000},
+forecast at the longest horizon H = 720, and report the test mean squared error (MSE, the held-out
+squared prediction error used throughout our evaluation in Section 4, where lower is better). For each
+L we report the median MSE across channels and random seeds, the median being robust to a few
+unusually hard channels.
+Figure 10 plots the full error-versus-L curves and Table 3 lists the endpoints. The datasets fall into
+three clear regimes. In the strong regime (ETTh1, ETTh2, Weather) the error continues to decrease as
+L grows to 2000, for a total reduction between 36% and 53%. In the plateau regime (ETTm2) most
+of the reduction is achieved by L ≈192–336, after which the curve saturates, for a 16% reduction. In
+the flat regime (ETTm1) additional context yields almost no improvement. Exchange is shown only
+partially because its test split is too short to form windows with both L = 2000 and H = 720. Two
+points follow. First, on the strong-regime datasets a fixed short default such as L = 96 forfeits most
+of the attainable accuracy before any other preprocessing setting is tuned. Second, which regime a
+dataset falls into cannot be predicted from its metadata in advance and must instead be measured,
+which is why our method (Section 3) searches L per dataset rather than fixing it. We also note that
+re-running the full preprocessing search while holding L fixed at a short value does not recover the
+long-context gain, which indicates that context length itself, rather than the other settings, is the
+source of the improvement.
+To confirm that the model performs substantive forecasting rather than merely repeating recent values,
+we compare it against a persistence forecast, the naive rule that predicts the future to equal the last
+observed value, ˆyt+h = yt (also called a no-change or random-walk forecast) [11]. Table 4 reports
+13
+
+===== PAGE 14 =====
+24
+96
+336
+720
+2000
+lookback L
+0.25
+0.50
+0.75
+1.00
+1.25
+1.50
+1.75
+2.00
+2.25
+median test MSE at H = 720
+ETTh1 (strong)
+ETTh2 (strong)
+ETTm1 (flat)
+ETTm2 (plateau)
+Weather (strong)
+Exchange (flat)
+Figure 10: Median per-channel test MSE on Ridge with universal-default preprocessing at H = 720
+as a function of the lookback L. Lines are color-coded by regime. Strong (blue) continues to improve
+up to L = 2000, plateau (orange) saturates around L = 192–336, and flat (gray) is essentially
+insensitive to L.
+Table 3: Median per-channel test MSE on Ridge with universal-default preprocessing at H = 720 on
+the six standard benchmarks, as a function of the lookback L. The total-drop column is the percent
+change between L = 96 and L = 2000, with negative values indicating improvement. Exchange is
+flagged because its test split has insufficient samples to form L = 2000, H = 720 windows.
+Dataset
+L = 96
+L = 720
+L = 2000
+Total drop
+ETTh1
+0.91
+0.75
+0.55
+−39%
+ETTh2
+0.47
+0.38
+0.22
+−53%
+Weather
+0.45
+0.37
+0.29
+−36%
+ETTm2
+0.31
+0.25
+0.26
+−16%
+ETTm1
+0.66
+0.63
+0.66
+flat
+Exchange
+1.75
+1.33
+–
+partial
+the ratio of the persistence error to the Ridge error at H = 720. Ridge is between 1.4 and 5.9 times
+more accurate on every dataset.
+Table 4: Persistence (last-value) baseline at H = 720. The persistence forecast predicts ˆyt+h = yt.
+Ridge MSE is the universal-default Ridge from Table 3 at the per-dataset best L ∈{24, . . . , 2000}.
+The ratio is how many times smaller the Ridge error is.
+Dataset
+Persistence MSE
+Ridge MSE
+Ratio (Persistence / Ridge)
+ETTh1
+1.10
+0.43
+2.56
+ETTh2
+0.60
+0.38
+1.56
+ETTm1
+2.33
+0.40
+5.87
+ETTm2
+0.46
+0.32
+1.44
+Weather
+0.55
+0.30
+1.81
+Exchange
+1.42
+0.81
+1.75
+For some datasets (ETTh1, ETTh2, Weather), extending the linear model’s context, with no other
+change, reduces its error by 36 to 53%. For others (ETTm1) it yields almost no improvement. No
+single context length is best for every dataset, so the only reliable way to identify each dataset’s
+optimal value is to search for it (Section 3). The persistence comparison confirms that the model
+performs genuine forecasting rather than reproducing the most recent value.
+14
+
+===== PAGE 15 =====
+C
+Does a nonlinear model capture structure the linear model misses?
+Our main results (Section 4, Table 1) show that the tuned linear model matches or beats the strongest
+nonlinear baseline, PatchTST, on six of the eight benchmarks. A natural concern is that MSE may fail
+to reflect everything a model captures. Perhaps a nonlinear model captures genuine structure that does
+not register in the error value, so that the linear model would only appear competitive. This appendix
+addresses that concern directly by examining the prediction errors that each model produces.
+The residuals of a model are its prediction errors at the forecast step, ytrue −ˆy. If a model has captured
+everything predictable in a series, its residuals should resemble random noise with no remaining
+pattern. A linear model can only represent linear relationships (weighted sums of past values), so
+any nonlinear structure (a pattern in which the influence of the past is not a fixed linear weight)
+remains in its residuals. We therefore assess how closely each model’s residuals resemble pure
+noise, using the Brock–Dechert–Scheinkman (BDS) test [4], a standard statistical test of whether
+a sequence is independent random noise or still contains residual dependence, as implemented in
+statsmodels [19]. We apply it at embedding dimension two, meaning it inspects how often pairs of
+points fall close together relative to the frequency expected under pure randomness. A larger BDS
+statistic indicates more residual non-random structure. We compare the statistic itself rather than its
+p-value, because with this many points every p-value is driven to 0 and can no longer distinguish the
+models.
+For each model we form the per-cell difference ∆= BDSarch −BDSRidge, matched on the same
+(dataset, context length, horizon, seed, channel). A negative ∆means that model’s residuals are
+closer to noise than the linear model’s, that is, it captured nonlinear structure that the linear model
+did not. As in Appendix A, each comparison carries a 95% confidence interval from resampling,
+and we call a cell significant when that interval excludes 0 (for example, [−3.0, −1.2] does, whereas
+[−1.5, +0.8] does not). Table 5 aggregates the comparison over the six standard benchmarks (ETTh1,
+ETTh2, ETTm1, ETTm2, Weather, Exchange) and, separately, over the two large many-channel
+datasets (Electricity with 321 channels and Traffic with 862), where Section 4 reports that PatchTST
+tends to achieve lower error (Table 1). DLinear, itself a linear model, lies near ∆≈0, as expected,
+and serves as a control confirming that the test does not report differences where none exist.
+Table 5: Paired BDS comparison against Ridge. ∆= BDSarch −BDSRidge is the per-cell difference
+of the BDS statistic at embedding dimension 2, paired by (dataset, L, H, seed, channel) and boot-
+strapped with B = 5,000 resamples. A cell is significant when its paired 95% confidence interval
+excludes zero, and a negative mean ∆means the architecture leaves less non-random structure than
+Ridge. The standard group is the six benchmarks ETTh1, ETTh2, ETTm1, ETTm2, Weather and
+Exchange. The large group is Electricity and Traffic.
+Comparison
+Group
+n cells
+Mean ∆
+Significant cells
+Mean fraction ∆< 0
+DLinear −Ridge
+standard
+24
+−0.56
+13/24
+0.59
+DLinear −Ridge
+large
+16
+−0.77
+9/16
+0.61
+Transformer −Ridge
+standard
+24
+−2.86
+10/24
+0.55
+Transformer −Ridge
+large
+16
++0.18
+9/16
+0.38
+iTransformer −Ridge
+standard
+24
++2.40
+14/24
+0.44
+iTransformer −Ridge
+large
+16
+−0.31
+9/16
+0.45
+PatchTST −Ridge
+standard
+24
+−7.83
+18/24
+0.70
+PatchTST −Ridge
+large
+8
+−0.63
+1/8
+0.62
+On the six standard benchmarks PatchTST shows a clear negative difference (mean ∆= −7.83,
+significant in 18 of 24 cells). It does leave less non-random structure in its residuals than the linear
+model, indicating that it captures nonlinear patterns the linear model cannot. However, on those same
+six datasets this additional structure does not change the accuracy ranking, on which the tuned linear
+model still matches or outperforms PatchTST in Table 1. Two further observations qualify a simple
+“more capacity captures more structure” interpretation. On Weather the difference is positive and
+significant at three of four horizons, indicating that PatchTST’s residuals are more structured than the
+linear model’s on that dataset. On the two large datasets, where PatchTST does achieve lower error,
+only one of eight comparisons is significant, so its advantage there is not explained by the capture of
+nonlinear structure.
+15
+
+===== PAGE 16 =====
+In summary, the strongest nonlinear model does extract some patterns that the linear model does
+not capture, and the test detects them clearly on the six standard datasets. However, on those same
+datasets this additional structure does not translate into lower error. The tuned linear model still
+matches or outperforms the nonlinear one (Table 1). In other words, most of what determines accuracy
+on these benchmarks is the long-range linear signal documented in Appendix A, exploited through an
+appropriate context length as documented in Appendix B. The additional nonlinear structure that a
+higher-capacity model captures is real but yields little or no accuracy benefit here. On the two large
+datasets, where a higher-capacity model does achieve lower error, this test indicates that its advantage
+arises from a source other than the capture of nonlinear structure.
+D
+Limitations
+Our study is limited to standard numeric long-horizon forecasting benchmarks, so the lookback-
+scaling, locality, and heterogeneity patterns we report should be read as findings for this regime rather
+than universal claims. We follow prior work in reporting point-estimate MSE; very small margins
+should therefore be treated as ties. Nonlinear baselines are quoted from their original publications, so
+comparisons reflect published configurations rather than a jointly retuned preprocessing protocol [18].
+Per-series search scales with channel count, which motivates our practical choice of gh=48 and
+moderate gs; finer-grained search may yield further gains. Finally, our claims are specific to
+Ridge with searched preprocessing. Applying the same preprocessing search to deeper models,
+and comparing all model classes under jointly tuned preprocessing, remains future work.
+E
+Broader Impact
+This work is methodological and is evaluated entirely on public numeric time-series benchmarks. It
+does not use human-subject data, target individual users, or study deployment in a real operational
+system. Its most direct positive impact is practical: closed-form Ridge models with searched
+preprocessing provide a strong, reproducible baseline at substantially lower compute cost than
+many nonlinear forecasters, making rigorous long-horizon forecasting comparisons more accessible
+in settings without large GPU budgets. The transparency of the resulting models also supports
+diagnostics: selected context length, locality, and per-series disagreement can be inspected directly
+and may inform the design of larger forecasters.
+The main potential negative impacts are generic to forecasting research. More accurate long-horizon
+forecasts can be applied to sensitive operational signals, including energy, traffic, and financial time
+series, where misuse could affect privacy, resource allocation, infrastructure operation, or markets.
+We do not study such deployments, and the released pipeline is a reusable forecasting method rather
+than a system targeted at individuals or groups. We therefore see no additional risks specific to this
+work beyond these general dual-use concerns.
+F
+Licenses and Terms of Use for Existing Assets
+We use existing public benchmark datasets, baseline numbers, and standard scientific software, and
+credit the original creators below. All assets are used unmodified and within their stated terms of use.
+Where we have verified the license against the asset’s distribution channel, we name it; otherwise we
+point to the canonical repository, whose terms govern use.
+Benchmark datasets. The eight multivariate forecasting benchmarks used in Table 1 are ob-
+tained from the public benchmark distribution accompanying [25] (https://github.com/thuml/
+Autoformer, MIT License). Their original sources and terms are:
+• ETTh1, ETTh2, ETTm1, ETTm2 (Electricity Transformer Temperature). Originally
+released by the authors of Informer at https://github.com/zhouhaoyi/ETDataset.
+Refer to the repository for the dataset’s terms of use.
+• Electricity
+(ElectricityLoadDiagrams20112014).
+UCI
+Machine
+Learn-
+ing
+Repository,
+https://archive.ics.uci.edu/dataset/321/
+electricityloaddiagrams20112014,
+distributed under the Creative Commons
+Attribution 4.0 International (CC BY 4.0) license.
+16
+
+===== PAGE 17 =====
+• Traffic (Caltrans PeMS road-occupancy data). California Department of Transportation,
+https://pems.dot.ca.gov/, made publicly available by Caltrans for research and oper-
+ational use.
+• Weather. Max Planck Institute for Biogeochemistry, https://www.bgc-jena.mpg.de/
+wetter/, publicly distributed by the institute.
+• Exchange Rate.
+Released by the authors of LSTNet at https://github.com/
+laiguokun/multivariate-time-series-data under the MIT License.
+Baseline numbers and reference implementations. The linear baseline numbers (OLS, FITS,
+DLinear) in Table 1 are quoted from [20]. The nonlinear baseline numbers (PatchTST, iTransformer,
+TimeMixer, TimesNet, Autoformer) are quoted from the corresponding original publications. The
+reference implementations released by their authors are:
+• DLinear / NLinear [26]: https://github.com/cure-lab/LTSF-Linear (Apache Li-
+cense 2.0).
+• PatchTST [16]: https://github.com/yuqinie98/PatchTST (Apache License 2.0).
+• iTransformer [15]: https://github.com/thuml/iTransformer (MIT License).
+• TimeMixer [22]: https://github.com/kwuking/TimeMixer (Apache License 2.0).
+• TimesNet
+[24]
+via
+the
+Time-Series-Library:
+https://github.com/thuml/
+Time-Series-Library (MIT License).
+• Autoformer [25]: https://github.com/thuml/Autoformer (MIT License).
+• TFB [18]: https://github.com/decisionintelligence/TFB (Apache License 2.0).
+Software libraries. The pipeline is built on standard open-source scientific Python: PyTorch
+(BSD-3-Clause), NumPy (BSD-3-Clause), Pandas (BSD-3-Clause), SciPy (BSD-3-Clause), scikit-
+learn (BSD-3-Clause), statsmodels [19] (BSD-3-Clause), Matplotlib (PSF-style Matplotlib license),
+Seaborn (BSD-3-Clause), and Optuna [2] (MIT License). All libraries are used unmodified and
+within their respective licenses.
+17

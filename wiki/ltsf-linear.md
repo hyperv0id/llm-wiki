@@ -9,8 +9,8 @@ tags:
   - LTSF
   - transformer-critique
 created: 2026-05-30
-last_updated: 2026-07-13
-source_count: 3
+last_updated: 2026-10-24
+source_count: 4
 confidence: medium
 status: active
 ---
@@ -77,7 +77,9 @@ The paper argues that long-term forecasting depends primarily on capturing **tre
 - Supports the value of [[frequency-enhanced-block|domain-specific inductive bias]] (FEDformer's competitiveness on ETTh1)
 - Related to [[rstib-mlp|RSTIB-MLP]]: both demonstrate MLP viability for time series prediction. LTSF-Linear shows MLPs beat Transformers on clean data; RSTIB-MLP extends this lineage by making MLPs robust to noise via [[rstib|information bottleneck-guided regularization]][^src-rstib]
 - Superseded in capacity (not replaced) by [[tide|TiDE]]: TiDE keeps a global linear residual so DLinear-style maps remain a subclass, while residual MLPs and a [[temporal-decoder|temporal decoder]] add non-linearity and first-class covariates that pure LTSF-Linear cannot model[^src-tide]
+- 后续统一与重估：Toner & Darlow 证明 DLinear、NLinear 及相关变体功能上等价于增强特征上的无约束线性回归，闭式 OLS 可匹敌或超过 SGD 训练的同款模型；[[searchcast]]（arXiv:2606.27282）沿此把模型固定为 Ridge、把预算花在预处理搜索上，8 个 benchmark 中 7 个取得线性类最优平均 MSE（ETTh2 与 FITS 打平 0.334 vs 0.333），并在 6/8 上超过非线性基线，论文据此主张线性基线的弱势反映预处理欠调而非容量不足[^src-2606-27282-ltsf-linear-models]
 
 [^src-zeng-2022-are-transformers-effective]: [[source-zeng-2022-are-transformers-effective]]
 [^src-rstib]: [[source-rstib-mlp]]
 [^src-tide]: [[source-tide]]
+[^src-2606-27282-ltsf-linear-models]: [[source-2606-27282-ltsf-linear-models]]
