@@ -7,8 +7,8 @@ tags:
   - long-horizon-forecasting
   - kdd-2026
 created: 2026-04-29
-last_updated: 2026-05-30
-source_count: 1
+last_updated: 2026-10-24
+source_count: 2
 references:
   - [[source-hyperd-hybrid-periodicity-decoupling]]
 confidence: medium
@@ -44,6 +44,7 @@ FaST 是一个针对大规模时空图（STG）长视野预测的高效且有效
 - 继承自 [[source-hyperd-hybrid-periodicity-decoupling|HyperD]] 的周期性建模思路但扩展到大规划图
 - 与 [[traffic-forecasting]] 领域的 STGCN、DCRNN 等传统方法对比
 - 作为 [[mixture-of-experts]] 在时空图预测中的具体应用[^src-fast-long-horizon-forecasting]
+- 在 [[decody|DeCoDy]] 的 Table 1 中，FaST 是 PEMS04 1 d / 7 d 与 PEMS08 1 d / 3 d / 7 d 上 MAE 最强的基线（PEMS04 27.16 / 29.38，PEMS08 23.34 / 24.99 / 25.50），DeCoDy 在这些 setting 上 MAE 均低于 FaST[^src-decody-iclr2027]
 
 ## 局限性
 
@@ -51,3 +52,4 @@ FaST 是一个针对大规模时空图（STG）长视野预测的高效且有效
 - 代理 token 数量 a 需要调优（a 太小可能丢失空间冗余信息）
 - 在极小规模图（<100 节点）上优势不明显
 [^src-fast-long-horizon-forecasting]: [[source-fast-long-horizon-forecasting]]
+[^src-decody-iclr2027]: [[source-decody-iclr2027]]

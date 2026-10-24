@@ -7,8 +7,8 @@ tags:
   - mlp
   - spatial-embedding
 created: 2026-09-16
-last_updated: 2026-09-16
-source_count: 6
+last_updated: 2026-10-24
+source_count: 7
 confidence: medium
 status: active
 ---
@@ -35,6 +35,7 @@ status: active
 | Crowd（南京） | 3.85 MAE | UniST 3.00 | [^src-unist] |
 | TrafficSH | 0.742 | UniST 0.665 | [^src-unist] |
 | EvalST 长时传感器预测 | MAPE 19.9 | UrbanFM 17.0，D2STGNN 20.5 | [^src-urbanfm] |
+| SD 8 h / Seattle 8 h–7 d（DeCoDy 主表） | SD 8 h MAE 26.25 / RMSE 40.11；Seattle 8 h–7 d MAE 9.05–10.68 | DeCoDy 22.09 / 34.52；8.33–9.63 | [^src-decody-iclr2027] |
 
 这些数字来自不同论文各自的数据切分与实验协议，不能横向拼成统一排名。
 
@@ -55,3 +56,4 @@ status: active
 [^src-st-ood]: [[source-st-ood]]
 [^src-unist]: [[source-unist]]
 [^src-urbanfm]: [[source-urbanfm]]
+[^src-decody-iclr2027]: [[source-decody-iclr2027]]

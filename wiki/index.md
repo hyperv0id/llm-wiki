@@ -93,6 +93,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-ddim]] — DDIM: Denoising Diffusion Implicit Models (ICLR 2021), 确定性 ODE 加速采样
 - [[source-ddim-ode-spaces-ac-cn]] — 生成扩散模型漫谈（六）：一般框架之 ODE 篇 (苏剑林, 2022), F-P 方程视角下的概率流 ODE 与 DDIM
 - [[source-ddpm]] — DDPM: Denoising Diffusion Probabilistic Models (NeurIPS 2020)
+- [[source-decody-iclr2027]] — Learning Weekly Urban Evolution: Delay-Coupled Neural Dynamics（DeCoDy，匿名 ICLR 2027 投稿）：收缩周期背景 + 多延迟耦合递推 + 全 horizon 并行不动点求解器，四数据集四 horizon 共 16 setting 中 MAE 最低 14 个
 - [[source-deep-time-series-survey]] — Deep Time Series Models: comprehensive survey and benchmark (TSLib)
 - [[source-deepar]] — DeepAR: Probabilistic Forecasting with Autoregressive Recurrent Networks, global shared LSTM + Gaussian/negbin likelihood + MC sample paths (Salinas et al., Amazon, arXiv:1704.04110)
 - [[source-deepfec]] — DeepFEC: Energy Consumption Prediction under Real-World Driving Conditions for Smart Cities
@@ -923,6 +924,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[conditional-prior-sampling]] — 条件先验采样，Langevin 动力学 + 引导实现无条件模型的条件化预测 (TSFlow, ICLR 2025)
 - [[conditional-score-flow-matching]] — [SF]²M，给定 entropic OT coupling 的免仿真 SB 学习
 - [[confidence-gated-distillation]] — 置信门控蒸馏，advantage gate + 置信加权选择性蒸馏检索教师分布校正 (TS-Memory, KDD 2026)
+- [[constrained-full-horizon-response-solver]] — 受约束的全 horizon 响应求解器：正延迟使传播算子幂零、增益有界使收缩，并行不动点迭代 + 后验误差界
 - [[content-condenser-reconstruction]] — MindTS's IB-based redundancy filtering and cross-modal reconstruction (ICLR 2026)
 - [[context-aware-units]] — ConAU, K≪N learnable shared context vectors forming STOP's centralized interaction hub for OOD robustness + inductive learning (ICML 2025)
 - [[contextual-pattern-bank]] — incrementally expandable parametric memory with prompt-based gating and dual-stream attention keys for CSTF (STBP, ICLR 2026)
@@ -948,6 +950,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[ddpm-simplified-training-objective]] — DDPM's L_simple, simplified noise prediction loss for diffusion models
 - [[deepseek-sparse-attention]] — DSA：FP8 lightning indexer 打分 + 逐 query 取 top-k 个 MLA latent，主注意力 $O(L^2)\to O(Lk)$、indexer 仍 $O(L^2)$，两阶段继续预训练（DeepSeek-V3.2）
 - [[deformable-fast-weight-experts]] — 形变 fast-weight 专家：专家组成由内容决定而非位置切块，MiTA 用 landmark query 对全 KV 打分取 top-k，$N$-to-$m$ 路由后可复用
+- [[decody]] — Delay-Coupled Neural Dynamics：残差递推的延迟耦合 + 增益约束 + 全 horizon 求解器，8 h–7 d 多日交通演化预测
 - [[decoy-injection]] — benchmark technique injecting fake PII to increase privacy reasoning difficulty
 - [[demlp-decoder]] — two-stage coarse-to-fine decoder with explicit trend removal
 - [[denoising-reduction]] — Denoising Reduction 去噪步数缩减策略，训练时用 10 步推理时用 40 步以加速在线 RL (NeurIPS 2025)
@@ -1133,6 +1136,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[mpgru]] — MPGRU, message passing GRU unit replacing gating with MPNN for spatial aggregation (ICLR 2022)
 - [[mtsci]] — MTSCI，条件扩散插补：complementary mask 双视图 intra contrastive loss + mixup inter-consistency 条件网络 + vanilla/inverted transformer 双块编码器，ε-预测（CIKM 2024）
 - [[muffin-mae]] — Muffin-MAE, multifaceted masked autoencoder with temporal/spatial/global masking for inter-correlated urban dynamics (UrbanMind, KDD 2025)
+- [[multi-delay-coupled-accumulation]] — 多延迟耦合与累积：自状态持续 + 局部驱动 + 五个延迟档（5–60 min）的邻居影响三项合成残差递推
 - [[multi-mesh-representation]] — Multi-mesh，icosahedron 6 次细分（M0 12 节点M6 40,962 节点）+ M0–M6 全层级边叠加的球面均匀多分辨率图，低层级节点作长程通信 hub；消融显示多级边为位势短时效优势的必要结构（arXiv 2022 v2）
 - [[multi-modality-guided-spatial-expert]] — multi-modality-guided spatial expert mechanism with MoE routing (KDD 2026)
 - [[multi-modality-refinement]] — SNR-based modality selection for multi-modality ST prediction (KDD 2026)
@@ -1219,6 +1223,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[self-speculative-decoding]] — Self-speculative decoding, same-model multi-head draft + verify for faster autoregressive generation (Stern/Medusa; strengthened by multi-token pretraining)
 - [[sheaf-laplacian]] — 层拉普拉斯算子 (Sheaf Laplacian)，推广图拉普拉斯以编码边特定的变换语义，用于谱域滤波 (ICLR 2026 under review)
 - [[shortcut-models]] — Shortcut Models, one-step diffusion via step-size conditioning and self-consistency (arXiv 2025)
+- [[shrinkage-periodic-background]] — 收缩估计的周周期背景：周槽与日槽训练均值按有效观测数收缩混合，历史与未来以残差表示
 - [[sigreg]] — SIGReg，1D 随机投影 + Epps-Pulley 特征函数检验的各向同性高斯分布匹配正则：方向检验充分性（Cramér-Wold）、损失/梯度/曲率有界、O(N) 复杂度；矩检验退化极限恢复 VICReg（arXiv:2511.08544）
 - [[sinkhorn-algorithm]] — Sinkhorn/IPF 算法，交替优化对偶 Schrödinger potentials 求解静态 SB
 - [[sliced-wasserstein-distance]] — SWD：Cramér-Wold 定理保证随机 1D 投影对齐决定全分布，1D W2 闭式解为排序后逐点 Lp 距离

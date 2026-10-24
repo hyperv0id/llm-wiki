@@ -9,8 +9,8 @@ tags:
   - decomposition
   - survey
 created: 2026-04-28
-last_updated: 2026-05-31
-source_count: 17
+last_updated: 2026-10-24
+source_count: 18
 confidence: medium
 status: active
 ---
@@ -161,6 +161,12 @@ status: active
 - **核心贡献**：首次系统论证显式建模全局周期模式的有效性；RCF 可作为即插即用模块提升 PatchTST、iTransformer 等模型性能；参数减少 90%+[^src-cyclenet]
 - **局限**：在具有显著时空特性和极端值的 Traffic 数据集上性能略逊于 iTransformer；当前版本仅考虑单通道关系建模[^src-cyclenet]
 
+### DeCoDy 的收缩背景（ICLR 2027 在审）
+
+[[shrinkage-periodic-background|DeCoDy]] 把周期项做成不参与训练的统计量：对每个节点、每个周内槽位 $\tau$，用周槽训练均值 $\mu^{week}_{i,\tau}$ 与日槽均值 $\mu^{day}_{i,\tau\bmod 288}$ 按有效观测数收缩混合，$\alpha_{i,\tau}=n_{i,\tau}/(n_{i,\tau}+\lambda)$，默认 $\lambda=5$[^src-decody-iclr2027]。历史与未来都以相对该背景的残差表示，再由带延迟的图动力学外推残差[^src-decody-iclr2027]。去掉背景的消融在 12 个 setting 上误差全部上升，7 天预测 MAE 上升 4.65%–6.78%[^src-decody-iclr2027]。
+
+与 CycleNet 的差别在参数归属：CycleNet 的循环项 $Q$ 由梯度更新，DeCoDy 的背景固定于训练集统计，容量集中在残差模型上，代价是无法外推训练段未覆盖的形态[^src-cyclenet][^src-decody-iclr2027]。
+
 ## 路线六：周期异质性感知（PHAT）
 
 这类方法**不再假设所有变量共享同一周期**——而是检测各变量独立的周期长度，按周期分组建模，是周期建模范式的一次关键升级。
@@ -262,3 +268,4 @@ TPLib 调查的结论——"没有单一架构在所有任务上通用"——对
 [^src-sparsetsf]: [[source-sparsetsf]]
 [^src-cyclenet]: [[source-cyclenet]]
 [^src-phat]: [[source-phat]]
+[^src-decody-iclr2027]: [[source-decody-iclr2027]]

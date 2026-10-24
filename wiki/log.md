@@ -4053,3 +4053,20 @@ Agent attention 把注意力从 $(Q,K,V)$ 扩成四元组 $(Q,A,K,V)$：$n$ 个 
 更新的页面：[[mita-attention]]（共享专家即 aggregation + broadcast 两段，source_count 1→2）, [[fast-weight-scaling-taxonomy]]（Agent attention 行补一手佐证，澄清 Agent-ViT 出处，2→3）, [[cbsa]]（「无收缩」一行补一手形式，2→3）, [[representative-token-extraction]]（第 4 类补 Table 17 取法证据并修正「可学习 token」表述，2→3）, [[linear-attention-unified-framework]]（新增「核函数的另一类取法：中介 token」一节，4→5）, [[index]], [[log]]
 ingest 报告：[[ingest-reports/2026-10-24-2312-08874-agent-attention|WHY 报告]]
 数值备注：pymupdf 转储把上标压平（2242=224²、10242=1024²、72/562=7²/56²），式 2–7 的 LaTeX 被换行打散；Fig. 4/5/6a/7/9/10/11 为曲线或可视化，无数值可读，CPU 1.7–2.1 倍、GPU 1.4–1.7 倍与 75% 只取正文；正文 §5.1 的「30% 参数量」与 Table 1 复算 33.6% 不符（FLOPs 40.8% 相符），§5.4 的「同速 FID 低 0.9」只能由同 $r=0.2$ 的 28.68→27.77 复现而两行并不等速；COCO 训练用 80k/35k 子集（§D.2），与正文 §5.2 的 118K/5K 口径不同；Table 7 首行 Diff. 印作 `-0.0`；任务书所要求的 DeiT-III 与 Agent-ViT 对照在源文中不存在，Agent-ViT 数字出自 MiTA Table 2/3。
+
+
+## [2026-10-24] ingest | Learning Weekly Urban Evolution（DeCoDy，ICLR 2027 投稿）
+从真实交通数据的三项观测（邻接节点偏差起始错开并重叠累积、偏差跨午夜且滞后相关随相位变化、日 profile 共享但局部峰谷不同）推出三项建模要求。解法把预测写成相对收缩周期背景 $P_i(\tau)=\alpha\mu^{week}+(1-\alpha)\mu^{day}$（$\alpha=n/(n+\lambda)$，$\lambda=5$）的残差，由历史表示与已知未来日历逐时步生成节点持续性 $d_i$、驱动 $s_i[k]$ 与五个延迟档（1/2/3/6/12 步 = 5–60 min）的耦合 $A_{ij\ell}[k]$；耦合经尺度化归一使行增益低于 $\rho=0.8$，由此得到与 horizon 无关的响应上界。因 $d_i$ 在 horizon 内固定，递推的自回归项折叠为指数核卷积（$a_i=e^{-d_i}$、$b_i=(1-e^{-d_i})/d_i$），其余跨节点延迟耦合构成 $(I-\mathcal{K})r=r^{base}$，用零填充 FFT + 图消息的并行不动点迭代求解；正延迟使 $\mathcal{K}$ 幂零（精确解为 $Q=H$ 项 Neumann 级数），收缩性只用于每 4 次迭代检查一次的后验误差界（原始单位 ≤0.05，上限 64 次）。Table 1 的 16 个 setting 中 MAE 最低 14 个（SD 的 1 d 与 7 d 落后），7 天在四数据集 RMSE 全最低；Table 2 五个消融变体在 12 个 setting 全劣于完整模型但多数差距 0.1–1%；PEMS08 上 $H=2016$ 时并行 32.54 ms 对串行 1136.20 ms。边界：PEMS04/08 用节点子集不可与已发表全节点结果比数、模型中混入天气与事件因而无法分离归因、单种子、无参数量与端到端时延、未与 PDFormer 等延迟建模方法对比。
+创建的页面：[[source-decody-iclr2027]], [[decody]], [[multi-delay-coupled-accumulation]], [[constrained-full-horizon-response-solver]], [[shrinkage-periodic-background]]
+更新的页面：[[periodicity-modeling-in-time-series]]（路线五补收缩背景小节，source_count 17→18）, [[stid]]（报告数字表补 DeCoDy 主表一行，6→7）, [[source-fast-long-horizon-forecasting]]（补作为 DeCoDy 强基线的落点，1→2）, [[index]]
+ingest 报告：[[ingest-reports/2026-10-24-decody|WHY 报告]]
+数值备注：§4.2 正文写「lowest RMSE in 9 settings」，按 Table 1 逐格计数为 10 个，两处并列报告并以表格为准；Table 1 的粗体/下划线在 pymupdf 抽取中丢失，次优标记不可读；Fig. 4（$\rho$、$\lambda$ 敏感性）与 Fig. 5 案例只有曲线，数值只取正文与附录 B.4；全文未报告 MAPE、参数量、训练时长、端到端推理时延与显存实测；式 (5) 中 $P_i[k-1]$ 在 $k=1$ 的取值原文未给；$\eta$、$\phi$、$\epsilon$、$\sigma$ 的具体形式原文未定义。
+
+
+## [2026-10-24] lint | 全库 Lint（1298 页）
+严重 139 / 警告 46 / 信息 1219。严重项集中为 `confidence: high` 与 `source_count` 冲突（121 页 source_count=1、15 页 source_count=0）；警告项为 44 页 `source_count` 与正文唯一引用数不一致（少报 38、多报 6）、2 项语义问题；信息项 1219 条几乎全为 `last_updated` 超 30 天。`log.md` 的 3 项严重与 1 项警告是把追加式日志当页面解析的脚本误报，建议在 `scripts/lint.py` 加白名单。本轮 ingest 的 8 个页面无问题，按技能要求先报告、未改库。
+报告：[[lint-reports/2026-10-24|lint 报告]]
+
+
+## [2026-10-24] maintenance | DeCoDy 五页文案压实（polisher 不可用）
+Polisher 子 agent 三次调用全部失败：两次 `MALFORMED_FUNCTION_CALL`（google/gemini-3.8-flash，重试 10 次耗尽），一次 `ECONNRESET` 等待 29 分钟，另一次子 agent 无文件读取工具。改用主 agent 手工压缩 + 一轮外部编辑意见。字符数降幅 2.0%–3.8%，未达技能建议的 10%–20%：五页正文以公式块、表格与维度注解为主，可删字面集中在已改写过的过渡句，继续压缩只能删事实或限定语，故停止。复核结果：数字、`[^src-*]` 唯一集、wikilink、表格与公式行逐项不变（合并相邻同源句使重复引用标记由 2 减为 1，段落级引用仍在）。备份在 `.scratch/*.before.md`。

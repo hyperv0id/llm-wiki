@@ -1,0 +1,3105 @@
+
+===== PAGE 1 =====
+000
+001
+002
+003
+004
+005
+006
+007
+008
+009
+010
+011
+012
+013
+014
+015
+016
+017
+018
+019
+020
+021
+022
+023
+024
+025
+026
+027
+028
+029
+030
+031
+032
+033
+034
+035
+036
+037
+038
+039
+040
+041
+042
+043
+044
+045
+046
+047
+048
+049
+050
+051
+052
+053
+Under review as a conference paper at ICLR 2027
+LEARNING WEEKLY URBAN EVOLUTION:
+DELAY-
+COUPLED
+NEURAL
+DYNAMICS
+FOR
+EXTREMELY
+LONG-HORIZON SPATIOTEMPORAL FORECASTING
+Anonymous authors
+Paper under double-blind review
+ABSTRACT
+Understanding how cities evolve over long horizons is essential for capacity al-
+location, operational scheduling, and emergency management. As horizons ex-
+tend from hours to days, city-wide traffic states evolve continuously across tem-
+poral phases, giving rise to complex spatiotemporal dynamics. Our analysis of
+real-world traffic data identifies three interrelated challenges: delayed interactions
+among nodes and their temporal accumulation, changing dependencies across
+phases and days, and the joint representation of long-term periodicity and lo-
+cal peak and trough variations. To address these challenges, we propose Delay-
+Coupled Neural Dynamics (DeCoDy), a graph dynamics framework with time
+delays for modeling extremely long-horizon urban evolution. DeCoDy addresses
+them through Multi-Delay Interaction and Accumulation, Phase Evolution and
+Adaptive Coupling, and Global and Local Residual Representation, while generat-
+ing continuous future trajectories with a constrained full-horizon response solver.
+We evaluate DeCoDy on four real-world urban traffic datasets with horizons from
+8 hours to 7 days. DeCoDy achieves the lowest MAE in 14 of 16 dataset–horizon
+settings and the lowest RMSE on all four datasets for 7-day forecasting, demon-
+strating its effectiveness in modeling extremely long-horizon urban evolution.
+1
+INTRODUCTION
+Spatiotemporal forecasting supports resource allocation, operational scheduling, and advance
+decision-making by anticipating how urban systems evolve over time. As the prediction horizon
+extendsZhang et al. (2024), the task increasingly requires modeling the continuous evolution of spa-
+tially distributed states rather than only mapping historical observations to future values. Existing
+approaches improve long-horizon forecasting through direct predictionShao et al. (2022a); Zeng
+et al. (2023), periodic modeling, attention-based temporal dependency learningZhou et al. (2021);
+Wu et al. (2021); Zhou et al. (2022); Liu et al. (2021); Nie et al. (2022); Zhang & Yan (2023); Lin
+et al. (2024), or graph-based spatial interaction modelingShao et al. (2022b); Liu et al. (2023a);
+Hu et al. (2025); Li et al. (2017); Song et al. (2020); Gao et al. (2023). However, from hours to
+daysZhang et al. (2024); He et al. (2025), city-wide traffic states evolve continuously across loca-
+tions, phases, and day boundaries, while recurring patterns coexist with local peak and trough vari-
+ations. Capturing such multiscale and interconnected evolution remains challenging for extremely
+long-horizon urban forecastingFang et al. (2025).
+To better understand the challenges of modeling multi-day urban traffic evolution, we analyze real-
+world traffic data, as shown in Figure 1. First, Figure 1(a) shows that neighboring nodes exhibit
+different deviation onset times and durations within the same episode. Deviations at multiple nodes
+overlap in time, while the target node also changes throughout this ongoing evolution. These ob-
+servations indicate delayed interactions among nodes together with accumulation over time, as de-
+viations remain active and overlap in subsequent periods. Second, Figure 1(b) shows continuous
+traffic evolution across intraday periods and a day boundary: deviations persist across midnight,
+while local lagged correlation patterns between nodes change over time. This indicates that traffic
+states evolve continuously across phases and days, while inter-node dependencies vary with tempo-
+ral conditions. Finally, Figure 1(c) shows that traffic flows on different dates share similar overall
+daily profiles but differ markedly in local peak magnitudes, indicating that fixed periodic patterns
+1
+Reviewers: please read the Reviewer Guidelines (iclr.cc/Conferences/2027/ReviewerGuidelines) and the AI Policy for Reviewers (iclr.cc/Conferences/2027/AIPolicyForReviewers).
+If you used AI to expand, edit, or polish your review, please provide the input text to the LLM. Better still, consider skipping the LLM and submitting your original text: we,
+and the authors, are much more interested in your unedited thoughts than in what an LLM has to say. AI-assisted or not, you are putting your name and reputation behind
+your review: LLM-generated falsehoods, hallucinations or misrepresentations are subject to disciplinary action, which may include desk-rejecting all papers you have authored.
+
+===== PAGE 2 =====
+054
+055
+056
+057
+058
+059
+060
+061
+062
+063
+064
+065
+066
+067
+068
+069
+070
+071
+072
+073
+074
+075
+076
+077
+078
+079
+080
+081
+082
+083
+084
+085
+086
+087
+088
+089
+090
+091
+092
+093
+094
+095
+096
+097
+098
+099
+100
+101
+102
+103
+104
+105
+106
+107
+Under review as a conference paper at ICLR 2027
+cannot fully characterize date-specific local variations. Overall, these observations reveal three key
+characteristics of multi-day traffic evolution: delayed interactions among nodes and their accumula-
+tion over time; continuous evolution across phases and days with changing inter-node dependencies;
+and shared overall patterns coexisting with date-specific peak and trough variations. Details of the
+references, case selection, and local correlation calculations are provided in Appendix B.
+-50
+0
+50
+Neighbors (%)
+D 08:00
+C 08:05
+A 08:30
+7
+8
+9
+10
+11
+Feb. 18, 2021 (hour)
+-50
+0
+50
+Target (%)
+Overlap
+Target B
+-40
+-20
+0
+20
+Deviation (%)
+Persists across midnight
+C
+B
+01/25
+12:00
+18:00
+01/26
+00:00
+06:00
+12:00
+0
+30
+60
+Lag (min)
+3-h corr.
+Night
+Morning
+0
+6
+12
+18
+24
+Hour of day
+0
+300
+600
+Traffic flow
+6
+8
+300
+600
+Peak variation
+02-15
+02-22
+03-01
+03-08
+P
+10-16
+16-20
+20-06
+06-10
+-1
+0
+1
+(a)
+(b)
+(c)
+Corr.
+Figure 1: Analysis of real-world traffic data. (a) Staggered and overlapping deviations across neigh-
+boring nodes. (b) Persistent deviations across phases and days with time-varying lagged correla-
+tions. (c) Shared daily patterns with date-specific local peak variations.
+These observations motivate three interrelated modeling challenges in learning multi-day urban traf-
+fic evolution. (1) Delayed interactions and temporal accumulation. Neighboring nodes may change
+asynchronously, while deviations persist into subsequent periods. Models therefore need to capture
+interactions at different delays and their accumulated effects over time. (2) Evolving relationships
+and state continuity across phases and days. Multi-day evolution spans different intraday phases
+and day boundaries, where inter-node dependencies may change while earlier states continue to
+influence subsequent evolution. Models must therefore adapt interactions to changing temporal
+conditions while preserving state continuity. (3) Joint representation of global periodic patterns and
+local peak and trough variations. Different dates often share similar overall profiles but differ sub-
+stantially in local peaks and troughs. Models must preserve stable periodic structure while retaining
+sufficient flexibility for date-specific local variations. Addressing these challenges within a unified
+framework is essential for modeling urban evolution over extended horizons.
+In this work, we propose DeCoDy (Delay-Coupled Neural Dynamics), a graph dynamics frame-
+work with time delays for modeling multi-day urban traffic evolution. To capture delayed interac-
+tions among nodes and their temporal accumulation, we introduce the Multi-Delay Interaction and
+Accumulation module, which integrates state persistence with neighboring responses at multiple
+delays to model future evolution. To accommodate evolving relationships across phases and days,
+we introduce the Phase Evolution and Adaptive Coupling module, which combines historical con-
+ditions, future calendar information, and background profiles to generate time-varying local driving
+inputs and node couplings. To jointly represent global periodic patterns and local peak and trough
+variations, we design the Global and Local Residual Representation module, which uses a periodic
+background as a long-term reference and models dynamic deviations from it. Finally, a constrained
+full-horizon response solver generates continuous multi-day trajectories while controlling numerical
+solution error. Our main contributions are summarized as follows:
+1. We analyze real-world urban traffic data and identify three key characteristics of multi-day
+urban traffic evolution: delayed interactions among nodes and their temporal accumulation,
+evolving relationships and state continuity across phases and days, and the coexistence of
+global periodic patterns with local peak and trough variations.
+2. We propose DeCoDy, a graph dynamics framework with time delays for modeling multi-
+day urban traffic evolution:
+(a) Multi-Delay Interaction and Accumulation models delayed interactions among nodes
+and their temporal accumulation;
+2
+
+===== PAGE 3 =====
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+Under review as a conference paper at ICLR 2027
+(b) Phase Evolution and Adaptive Coupling captures evolving relationships while pre-
+serving state continuity across phases and days;
+(c) Global and Local Residual Representation jointly represents global periodic patterns
+and local peak and trough variations.
+3. We conduct extensive evaluations on four real-world urban traffic datasets with forecast
+horizons ranging from 8 hours to 7 days. DeCoDy achieves the lowest MAE in 14 of 16
+dataset–horizon settings and the lowest RMSE on all four datasets for 7-day forecasting.
+2
+RELATED WORK
+2.1
+DELAYED INTERACTIONS AND TEMPORAL ACCUMULATION
+Existing spatiotemporal forecasting methods widely use graph structures to characterize dependen-
+cies among spatial nodesLi et al. (2017). A common line of work learns spatial relationships from
+data and combines them with temporal modeling to capture interactions among nodesJiang et al.
+(2023b). More fine-grained approaches further construct localized spatiotemporal relations to dis-
+tinguish dependencies that vary across temporal contextsHu et al. (2025). From a dynamical per-
+spective, delayed neighboring states can also be incorporated into continuous state evolutionLong
+et al. (2024), allowing interactions to occur at different temporal offsetsJiang et al. (2023a).
+These studies suggest that spatial dependencies involve not only whether nodes are related, but also
+when neighboring states influence one another. For multi-day forecasting, however, a single spatial
+relationship or local delay alone is insufficient to describe how interactions at multiple delays and
+a node’s own persistent response jointly accumulate in future trajectories. Integrating multi-delay
+interactions among nodes with state persistence therefore remains an important problem in modeling
+long-horizon urban traffic evolution.
+2.2
+EVOLVING INTERACTIONS AND STATE CONTINUITY ACROSS PHASES AND DAYS
+Traffic relationships do not remain constant throughout the forecast horizon. Existing approaches
+have explored adaptive spatial relationshipsJiang et al. (2023b); Wu et al. (2019); Bai et al. (2020),
+time-dependent interaction structuresJiang et al. (2023a); Hu et al. (2025), and condition-specific
+dependencies to account for changes in traffic dynamics over timeLiu et al. (2023a). Such studies
+indicate that interactions among nodes may vary with temporal conditions rather than remaining
+fixed throughout the forecasting process.
+Multi-day evolution further spans multiple intraday phases and day boundaries, requiring models
+to adapt inter-node relationships to changing temporal conditions while preserving the influence of
+preceding states. A key question is therefore how to adjust local driving inputs and node interactions
+over time without treating different phases as independent segments, thereby maintaining continuous
+evolution across phases and days.
+2.3
+GLOBAL PERIODIC PATTERNS AND LOCAL VARIATIONS
+Long-term traffic sequences typically contain recurring periodic structure alongside substantial date-
+specific local deviationsWu et al. (2022). Existing studies have addressed this property through tem-
+poral decompositionZhou et al. (2021; 2022); He et al. (2025), explicit periodic modelingWu et al.
+(2022); Liu et al. (2021); Lin et al. (2024), and residual learning. These approaches generally sep-
+arate relatively stable recurring patterns from time-varying components so that long-term regularity
+and local changes can be modeled with different representations.
+Such studies suggest that separating recurring structure from local variations benefits long-horizon
+forecasting. However, decomposition alone does not specify how future local deviations evolve
+continuously over time. Multi-day urban traffic evolution therefore requires a unified representation
+that preserves a stable periodic reference while retaining sufficient flexibility for date-specific peak
+and trough variations, allowing global recurring structure and local deviations to jointly shape future
+trajectories.
+3
+
+===== PAGE 4 =====
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+Under review as a conference paper at ICLR 2027
+3
+METHOD
+(a) Overall framework
+Periodic background  Phist  
+Pf, ΔPf
+Pf
+1:H
+Historical inputs
+• Traffic Flow 
+• Calendar + graph
+• Weather + events
+!
+xhist
+−
+rhist
+Global and Local 
+Residual Representation
+hi
+Phase Evolution and 
+Adaptive Coupling
+Forecast lead Time
+d, s, A
+Multi-Delay Interaction 
+and Accumulation
+r1:H +
+Prediction
+Ŷ
+(b) Global and Local Residual Representation
+Residual construction
+Flow
+xhist
+Background
+Phist
+Residual
+rhist
+−
+=
+×
+σ(βw)
+σ(βa)
+hi
+Masked encoder
+Weather
+Events
+!
++
+LN
+chist
+xhist
+rhist
+mhist
+Joint patch encoding
+Neighbor aggregation
+(d) Multi-Delay Interaction and Accumulation
+Multi-delay interaction (node i)
+k − 6
+k − 3
+k − 1
+k
+0
+⋯
+j
+j′
+i
+ℓ = 6
+ℓ = 3
+ℓ = 1
+ri[k]
+History
+Future iterate
+Target  ri[k]
+Self-state
+Delayed
+neighbor
+Full-Horizon Response Solver
+Delayed messages
+r*
+1:H
+Parallel response update
+Initial response
+Posterior bound ＞ tolerance
+All future k updated in parallel
+(c) Phase Evolution and Adaptive Coupling
+Historical state  hi
+hi ∈ ℝd
+Calendar + lead
+c[k],  k/H
+Background  Pf, ΔPf
+Pf[k], ΔPf[k]
+Future temporal conditions
+Morning (p1)
+Midday (p2)
+Evening (p3) Next day (d + 1)
+k (future)
+A[k1]
+A[k2]
+A[k3]
+A[k4]
+Adaptive
+coupling A[k]
+stronger
+coupling
+weaker
+coupling
+State  hi[k]
+continuous state evolution
+across phases and days
+k (future)
+Local driving
+si[k]
+phase-conditioned
+driving signal
+k (future)
+Node persistence di
+(fixed over horizon)
+k (future)
+Outputs:  phase-conditioned driving  si[1:H],  adaptive coupling  A[1:H]
+Figure 2: Overview of DeCoDy, comprising Global and Local Residual Representation, Phase Evo-
+lution and Adaptive Coupling, and Multi-Delay Interaction and Accumulation.
+We consider a road graph G = (V, E) with N nodes. Given historical traffic X ∈RL×N, historical
+calendar features Ch, external conditions Eh, observation masks Mh, and known future calendar
+information Cf, DeCoDy predicts ˆY ∈RH×N over a multi-day horizon. It consists of Global and
+Local Residual Representation, Phase Evolution and Adaptive Coupling, and Multi-Delay Interac-
+tion and Accumulation.
+3.1
+GLOBAL AND LOCAL RESIDUAL REPRESENTATION
+This module separates stable periodic structure from date-specific deviations. For node i at weekly
+slot τ, the periodic background is
+Pi(τ) = αi,τµweek
+i,τ
++ (1 −αi,τ)µday
+i,τ mod 288,
+αi,τ =
+ni,τ
+ni,τ + λ,
+(1)
+where ni,τ is the number of valid training observations and λ controls shrinkage toward the daily
+profile. The background is computed only from training data and remains fixed.
+Historical traffic is represented relative to this background:
+ri[t] = xi[t] −Pi(τ(t)),
+t = 1 −L, . . . , 0,
+(2)
+providing both date-specific deviations and the historical boundary for subsequent dynamics.
+For each node, historical flow, residuals, masks, and calendar features are patched and encoded into
+ei. Road-neighbor information is aggregated as
+gi = LN
+
+ei + ϕ
+
+Wg
+
+ei,
+X
+j∈Ni
+¯wjiej
+
++ bg
+
+
+
+,
+(3)
+where ¯wji is the normalized road weight. Historical weather and event encoders then yield
+hi = LN (gi + σ(βw)ew
+i + σ(βa)ea
+i ) ,
+(4)
+which summarizes historical traffic and operating conditions.
+3.2
+PHASE EVOLUTION AND ADAPTIVE COUPLING
+This module generates future local driving and node interactions conditioned on historical state and
+future temporal conditions. For future step k,
+qi[k] = ϕ(Whhi + Wc[c[k], k/H] + Wp[Pi[k], Pi[k] −Pi[k −1]] + bq) ,
+(5)
+4
+
+===== PAGE 5 =====
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+Under review as a conference paper at ICLR 2027
+where c[k] contains known daily and weekly calendar features.
+Node persistence and time-varying local driving are defined by
+di = softplus(w⊤
+d hi + bd) + ϵ,
+si[k] = di(w⊤
+s qi[k] + bs),
+where di > 0 is fixed within a forecast horizon while si[k] varies over time.
+For road edge j →i and delay ℓ∈D, the raw adaptive coupling is
+eAijℓ[k] = Bijℓ+ η tanh (Wrqi[k] + Wsqj[k] + Wewji + be)ℓ,
+(6)
+where Bijℓis an edge–delay baseline initialized from training-set lagged correlations.
+We bound the total coupling gain using
+γi = ρdiσ(w⊤
+γ hi + bγ),
+Aijℓ[k] =
+γi eAijℓ[k]
+1 + P
+j′∈Ni
+P
+ℓ′∈D | eAij′ℓ′[k]|
+,
+which guarantees
+1
+di
+X
+j∈Ni
+X
+ℓ∈D
+|Aijℓ[k]| < ρ < 1.
+(7)
+Proposition 1. Horizon-Uniform Boundedness. Let
+R0 = max
+i,t≤0 |ri[t]|,
+U =
+max
+i,1≤k≤H
+
+si[k]
+di
+ .
+Under Equation (7),
+max
+i,1≤k≤H |ri[k]| ≤max
+
+R0,
+U
+1 −ρ
+
+.
+(8)
+Thus, response magnitude remains bounded without explicit growth with H. The proof is given in
+Appendix C.1.
+3.3
+MULTI-DELAY INTERACTION AND ACCUMULATION
+Given di, si[k], and Aijℓ[k], future residual dynamics are
+ri[k] = airi[k −1] + bi
+
+si[k] +
+X
+j∈Ni
+X
+ℓ∈D
+Aijℓ[k]rj[k −ℓ]
+
+,
+(9)
+where
+ai = e−di,
+bi = 1 −e−di
+di
+.
+(10)
+The terms respectively describe self-state persistence, local driving, and delayed neighboring influ-
+ence. We use D = {1, 2, 3, 6, 12}, corresponding to 5–60 minutes.
+Because di is fixed within a horizon, define the causal local response operator
+(Hifi)[k] =
+k
+X
+u=1
+biak−u
+i
+fi[u],
+and the base trajectory
+rbase
+i
+[k] = ak
+i ri[0] + Hi(si + mhist
+i
+)[k].
+Let M denote delayed interactions among future trajectories. Then
+r = rbase + K(r),
+K = H ◦M.
+(11)
+Starting from r(0) = rbase, we update
+r(m+1) = rbase + K(r(m)),
+(12)
+5
+
+===== PAGE 6 =====
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+Under review as a conference paper at ICLR 2027
+simultaneously over all future positions. Local responses are computed with zero-padded FFTs.
+Proposition 2. Finite-Horizon Expansion and Error Control. With positive minimum delay ℓmin,
+KQ = 0,
+Q =
+ H
+ℓmin
+
+,
+and the exact response is
+r⋆=
+Q−1
+X
+p=0
+Kprbase.
+(13)
+For
+q = max
+i,k
+1
+di
+X
+j∈Ni
+X
+ℓ∈D
+|Aijℓ[k]| < ρ,
+the m-th update satisfies
+r(m) −r⋆
+∞≤
+q
+1 −q
+r(m) −r(m−1)
+∞.
+(14)
+Hence, positive delays yield finite propagation depth and the gain constraint provides an a posteriori
+error certificate. The proof is given in Appendix C.2.
+The bound in Equation (14) is checked every four iterations after at least four updates. We stop
+when the error in original flow units is at most 0.05, with a default maximum of 64 updates.
+3.4
+PREDICTION AND TRAINING OBJECTIVE
+The final forecast is
+ˆyi[k] = max {0, σx(Pi[k] + ri[k]) + µx} ,
+(15)
+where µx and σx are training-set statistics.
+The model is optimized end to end using masked MAE:
+L =
+P
+n,i,k Mn,i,k|ˆyn,i[k] −yn,i[k]|
+P
+n,i,k Mn,i,k
+.
+(16)
+Gradients propagate through the executed full-horizon updates, while the periodic background and
+normalization statistics remain fixed.
+Table 1: Traffic flow forecasting results on four real-world traffic datasets. Forecast horizons H ∈
+{96, 288, 864, 2016} correspond to 8 hours, 1 day, 3 days, and 7 days, respectively. MAE and
+RMSE are reported for each setting. The best results are boldfaced and the second-best results are
+underlined.
+Dataset Pred.
+DeCoDy
+Extralonger
+VisiFold
+DST-Mamba
+TimeFilter
+iTransformer
+FaST
+CycleNet
+STID
+steps MAE RMSE MAE RMSE MAE RMSE MAE RMSE MAE RMSE MAE RMSE MAE RMSE MAE RMSE MAE RMSE
+PEMS04266
+96
+25.11
+40.52 25.36
+40.43 29.02
+45.03 33.48
+48.99 34.84
+50.94 37.96
+56.11 34.13
+51.66 36.78
+54.40 27.40
+42.75
+288
+26.71
+44.27 27.29
+45.63 28.73
+45.34 28.09
+44.32 31.00
+48.45 30.79
+50.15 27.16
+43.89 34.08
+52.85 27.88
+44.19
+864
+27.20
+45.45 28.11
+45.26 30.71
+48.10 31.51
+48.73 34.44
+52.65 35.40
+54.76 28.36
+45.82 37.61
+56.31 29.50
+46.53
+2016 26.77
+44.16 29.77
+47.41 31.62
+49.35 34.60
+54.39 36.31
+55.84 35.15
+54.20 29.38
+47.06 35.82
+55.07 29.88
+47.31
+PEMS08112
+96
+22.42
+35.06 22.78
+35.40 25.24
+38.14 32.16
+47.39 37.60
+56.21 33.00
+48.06 29.95
+44.87 34.17
+49.25 24.00
+36.43
+288
+23.15
+36.22 23.52
+36.32 24.43
+36.92 24.82
+37.81 27.11
+41.73 26.60
+40.73 23.34
+36.01 29.80
+44.06 23.55
+35.85
+864
+24.74
+38.46 27.13
+40.87 26.76
+39.93 30.78
+46.81 31.18
+46.20 31.08
+46.58 24.99
+38.29 34.06
+49.98 25.88
+39.02
+2016 23.94
+37.70 29.66
+44.77 28.27
+41.92 29.22
+44.01 32.07
+47.02 30.88
+46.54 25.50
+39.28 32.60
+48.14 26.53
+40.11
+SD673
+96
+22.09
+34.52 27.75
+42.11 30.43
+47.42 33.32
+50.18 38.35
+58.48 37.01
+57.20 35.62
+53.81 39.61
+58.25 26.25
+40.11
+288
+23.05
+35.92 22.87
+36.65 25.18
+39.23 28.90
+44.38 32.64
+50.91 29.88
+48.61 24.77
+38.71 23.23
+35.73 23.16
+35.97
+864
+24.23
+37.72 26.10
+40.34 27.55
+42.64 38.03
+57.75 37.47
+55.94 34.93
+54.19 26.65
+41.51 24.64
+38.41 26.11
+40.22
+2016 24.96
+38.62 30.72
+46.85 28.04
+43.51 33.25
+52.25 34.77
+52.16 33.81
+53.17 26.63
+41.81 24.60
+38.77 25.96
+40.33
+Seattle196
+96
+8.33
+13.67
+9.14
+14.25
+9.69
+15.04 11.27
+16.37 11.91
+17.55 16.92
+22.90 12.25
+18.42 11.34
+16.34
+9.05
+14.00
+288
+8.89
+14.90
+9.12
+14.99
+9.49
+15.01 10.51
+16.46 10.27
+16.33 14.75
+20.77
+9.47
+15.33 11.02
+16.78
+9.23
+14.56
+864
+9.33
+15.76 10.33
+16.50 10.62
+16.80 12.16
+18.83 12.00
+18.95 11.95
+18.41 10.72
+17.39 12.57
+19.31 10.23
+16.25
+2016
+9.63
+16.46 11.76
+18.40 11.05
+17.62 12.63
+20.00 12.33
+19.68 12.15
+19.01 10.89
+17.90 12.54
+19.44 10.68
+17.04
+6
+
+===== PAGE 7 =====
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+Under review as a conference paper at ICLR 2027
+4
+EXPERIMENTS
+4.1
+DATASETS AND EXPERIMENTAL SETTINGS
+Datasets. We evaluate DeCoDy on four real-world traffic datasets: PEMS04 and PEMS08 Guo et al.
+(2019), SD Liu et al. (2023b), and Seattle Cui et al. (2019). All datasets are sampled at 5-minute
+intervals and chronologically split into training, validation, and test sets in a 6:2:2 ratio.
+Baselines and Experimental Settings. We compare DeCoDy with eight representative methods:
+iTransformer Liu et al. (2024), Extralonger Zhang et al. (2024), TimeFilter Hu et al. (2025), Visi-
+Fold Zhang et al. (2026), CycleNet Lin et al. (2024), STID Shao et al. (2022a), DST-Mamba He
+et al. (2025), and FaST Fang et al. (2025). Forecast horizons are H ∈{96, 288, 864, 2016}, corre-
+sponding to 8 hours, 1 day, 3 days, and 7 days. The 8-hour task uses L = 96, while the remaining
+tasks use L = 288. A separate model is trained for each horizon. All methods use the same data
+splits, node sets, and test windows while retaining their native input configurations. Models are
+selected by validation MAE and evaluated using MAE and RMSE, with random seed 42. Further
+details are provided in Appendix A.
+4.2
+MAIN RESULTS
+Overall Forecasting Performance. Table 1 compares DeCoDy with eight baselines across four
+datasets and four horizons. DeCoDy achieves the lowest MAE in 14 of 16 settings and the lowest
+RMSE in 9 settings. For 7-day forecasting, it obtains the lowest RMSE on all four datasets and the
+lowest MAE on three. On these three datasets, DeCoDy reduces MAE over the strongest baseline
+by 8.90%, 6.10%, and 9.77% on PEMS04, PEMS08, and Seattle, respectively, demonstrating strong
+performance over extremely long horizons.
+Performance Across Consecutive Forecast Days. Figure 3 divides each 7-day forecast into con-
+secutive 24-hour intervals. DeCoDy achieves the lowest MAE in 22 of 28 dataset–day combinations,
+including days 2–7 on PEMS04, days 1–6 on PEMS08, days 3–5 on SD, and all seven days on Seat-
+tle. Its advantage therefore extends beyond the early forecast period and persists across multiple
+future days.
+1
+2
+3
+4
+5
+6
+7
+Forecast day
+28
+32
+36
+40
+MAE
+(a) PEMS04
+1
+2
+3
+4
+5
+6
+7
+Forecast day
+24
+27
+30
+33
+36
+MAE
+(b) PEMS08
+1
+2
+3
+4
+5
+6
+7
+Forecast day
+24
+27
+30
+33
+MAE
+(c) SD
+1
+2
+3
+4
+5
+6
+7
+Forecast day
+9
+10
+11
+12
+13
+14
+MAE
+(d) Seattle
+DeCoDy (Ours)
+FaST
+STID
+CycleNet
+Extralonger
+VisiFold
+Figure 3: Daily MAE for 7-day forecasting. Each point aggregates valid targets across all nodes and
+forecast origins within the corresponding 24-hour interval. Lower values are better. FaST and STID
+use a maximum of 15 training rounds; CycleNet uses 10 on SD and 40 on the other datasets. All
+results use validation-selected checkpoints.
+4.3
+ABLATION STUDY
+Ablation Study. We evaluate five variants on PEMS04, PEMS08, and Seattle: C-PB removes the
+periodic background and its associated conditions; C-SC fixes future coupling; C-FGC removes fu-
+ture cross-node coupling; C-SD retains only a single five-minute delay; and C-EI removes historical
+weather and event encoding. As shown in Table 2, DeCoDy achieves the lowest MAE and RMSE in
+all 12 dataset–horizon settings. The degradation of C-FGC and C-SD supports the effectiveness of
+cross-node interactions and multi-delay modeling, with C-SD increasing seven-day MAE on Seattle
+by 9.86%. The increased errors of C-SC support adapting coupling relationships to future tempo-
+ral conditions for cross-phase forecasting. Removing the periodic background increases seven-day
+MAE by 6.78%, 4.65%, and 6.18% on the three datasets, respectively, while removing external in-
+7
+
+===== PAGE 8 =====
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+426
+427
+428
+429
+430
+431
+Under review as a conference paper at ICLR 2027
+formation increases seven-day MAE on Seattle by 9.48%, demonstrating the contributions of the
+periodic reference and historical external conditions.
+Table 2: Performance comparisons on ablative variants.
+Datasets
+PEMS04
+PEMS08
+Seattle
+Predict Length
+96
+288
+864
+2016
+96
+288
+864
+2016
+96
+288
+864
+2016
+C-PB
+MAE
+26.180 27.212 28.313 28.584 22.667 23.780 25.482 25.059
+8.637
+9.224
+9.979
+10.229
+RMSE 41.854 44.485 46.197 46.567 35.171 36.516 39.014 38.963 13.806 14.908 16.097 16.862
+C-SC
+MAE
+26.069 27.335 27.893 27.563 23.183 23.152 24.862 24.030
+8.411
+8.962
+9.386
+9.657
+RMSE 40.651 44.614 45.607 45.104 35.314 36.254 38.797 38.550 13.806 14.970 15.940 16.641
+C-FGC
+MAE
+25.953 26.799 27.278 26.936 23.127 23.906 25.294 24.222
+8.974
+8.940
+9.344
+9.732
+RMSE 40.570 44.320 45.738 44.429 35.487 36.838 38.670 37.743 14.301 15.746 16.649 17.430
+C-SD
+MAE
+25.131 26.755 27.787 26.846 22.429 23.214 24.823 23.973
+8.485
+9.051
+9.427
+10.584
+RMSE 40.803 44.927 45.982 44.418 35.329 36.238 38.521 37.724 13.873 14.963 15.833 17.425
+C-EI
+MAE
+25.119 26.959 27.281 27.218 22.469 23.888 24.943 24.119
+9.059
+9.452
+10.102 10.547
+RMSE 40.569 44.658 45.683 44.239 35.553 37.033 38.832 37.993 14.189 15.271 16.588 16.499
+DeCoDy
+MAE
+25.109 26.707 27.198 26.769 22.424 23.151 24.736 23.945
+8.329
+8.885
+9.329
+9.634
+RMSE 40.518 44.266 45.447 44.164 35.062 36.220 38.460 37.703 13.666 14.903 15.756 16.462
+4.4
+HYPERPARAMETER ANALYSIS
+Hyperparameter Analysis. We study two structural parameters for 7-day forecasting: the coupling
+gain bound ρ and periodic-background shrinkage strength λ, using the complete validation sets of
+PEMS08 and Seattle. We vary ρ ∈{0.2, 0.4, 0.6, 0.8, 0.9} and λ ∈{1, 2.5, 5, 7.5, 10}.
+As shown in Figure 4, PEMS08 errors generally decrease as ρ increases to 0.8 and rise at 0.9,
+illustrating the trade-off between coupling strength and stability margin. For λ, the default value
+of 5 performs best on PEMS08, while both smaller and larger values increase error. Seattle is
+comparatively insensitive to both parameters. Overall, DeCoDy remains stable over the examined
+ranges.
+0.2
+0.4
+0.6
+0.8
+0.9
+ρ
+39.4
+39.8
+40.2
+40.6
+PEMS08
+23.5
+24.0
+24.5
+25.0
+0.2
+0.4
+0.6
+0.8
+0.9
+ρ
+14.7
+14.8
+14.9
+15.0
+15.1
+15.2
+Seattle
+8.04
+8.06
+8.08
+8.10
+8.12
+8.14
+1
+2.5
+5
+7.5
+10
+λ
+39.4
+39.8
+40.2
+40.6
+PEMS08
+23.5
+24.0
+24.5
+25.0
+1
+2.5
+5
+7.5
+10
+λ
+14.7
+14.8
+14.9
+15.0
+15.1
+15.2
+Seattle
+8.04
+8.06
+8.08
+8.10
+8.12
+8.14
+(a)
+(b)
+(c)
+(d)
+RMSE (left axis)
+MAE (right axis)
+RMSE (left axis)
+MAE (right axis)
+Figure 4: Hyperparameter sensitivity on PEMS08 and Seattle with L = 288, H = 2016. (a), (b)
+Varying ρ with λ = 5. (c), (d) Varying λ with ρ = 0.8. RMSE (left axis) and MAE (right axis) are
+evaluated on the complete validation set. Bold ticks mark defaults; the vertical axes are truncated.
+The solver iteration cap is 128 for ρ = 0.9 and 64 otherwise, with an error tolerance of 0.05.
+8
+
+===== PAGE 9 =====
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441
+442
+443
+444
+445
+446
+447
+448
+449
+450
+451
+452
+453
+454
+455
+456
+457
+458
+459
+460
+461
+462
+463
+464
+465
+466
+467
+468
+469
+470
+471
+472
+473
+474
+475
+476
+477
+478
+479
+480
+481
+482
+483
+484
+485
+Under review as a conference paper at ICLR 2027
+4.5
+CASE STUDY
+0
+3
+6
+Rainfall
+(mm)
+11/09
+11/10
+11/11
+11/12
+11/13
+11/14
+11/15
+0
+50
+100
+150
+Traffic flow
+Forecast origin: Nov. 8, 04:00
+Nov. 13, 06:00-20:00
+122-136 h ahead
+0
+6
+12
+18
+24
+Hour of day
+0
+50
+100
+150
+Traffic flow
+06:00-20:00 departure
+Observed -17.2% / DeCoDy -14.8%
+(b) Event-day forecast (Nov. 13)
+Previous four Fridays (median)
+06-10
+10-16
+16-20
+Time period (h)
+0
+-10
+-20
+Deviation from
+periodic background (%)
+-13.5
+-18.1
+-20.5
+-12.7
+-15.9
+-15.4
+(c) Cumulative deviations
+(a) Seven-day forecast and rainfall
+Observed
+DeCoDy
+Periodic background P
+Figure 5: Seven-day forecasting case on I-405 in
+Seattle. (a) Full forecast and rainfall context. (b)
+Event-day trajectories.
+(c) Cumulative deviations
+from the periodic background in three periods.
+To examine local deviations at long forecast
+lead times, we analyze a 7-day forecast for
+an I-405 node in Seattle. The forecast orig-
+inates at 04:00 on November 8, 2015.
+On
+November 13, traffic retains the overall peri-
+odic profile but shows persistent negative de-
+viations from 06:00 to 20:00. DeCoDy cap-
+tures these deviations at lead times of approx-
+imately 122–136 hours.
+Predicted cumula-
+tive flow is 14.8% below the periodic back-
+ground, compared with an observed reduc-
+tion of 17.2%, a difference of 2.4 percentage
+points. The predicted decreases are also con-
+sistent with observations across three consec-
+utive periods. This case shows that DeCoDy
+can preserve global periodic structure while
+capturing date-specific deviations far into the
+forecast horizon. Statistical details are pro-
+vided in Appendix B.4.
+5
+CONCLUSION
+This work studies extremely long-horizon urban traffic evolution and analyzes three key charac-
+teristics of real-world traffic data, including delayed interactions among nodes and their temporal
+accumulation, evolving relationships and state continuity across phases and days, and the coexis-
+tence of global periodic patterns with local peak and trough variations. To address these challenges,
+we propose DeCoDy, whose Multi-Delay Interaction and Accumulation, Phase Evolution and Adap-
+tive Coupling, and Global and Local Residual Representation modules respectively model delayed
+interactions over time, evolving inter-node dependencies across temporal phases, and global peri-
+odic structure together with local variations. Constrained coupling parameterization and full-horizon
+solution further support stable response evolution and controlled numerical solution error over ex-
+tended horizons. Experiments on four real-world urban traffic datasets demonstrate strong perfor-
+mance from 8 hours to 7 days, with DeCoDy achieving the lowest MAE in 14 of 16 dataset–horizon
+settings and the lowest RMSE on all four datasets for 7-day forecasting.
+AI USE STATEMENT
+In this work, we used generative AI tools to assist with language polishing, grammatical correc-
+tion, and improving the clarity and presentation of the manuscript, as well as limited assistance
+in code debugging and figure refinement. We did not use generative AI to generate experimental
+data, fabricate results, or independently determine the scientific conclusions of this work. All AI-
+assisted content was carefully reviewed, revised, and verified by the authors. Technical descriptions
+and claims were checked against our implementation and experimental results, and references were
+manually verified against the original publications. The authors take full responsibility for the final
+content of this work, including all text, claims, code, figures, and experimental results produced with
+the aid of generative AI.
+REFERENCES
+Lei Bai, Lina Yao, Can Li, Xianzhi Wang, and Can Wang. Adaptive graph convolutional recurrent
+network for traffic forecasting. Advances in neural information processing systems, 33:17804–
+17815, 2020.
+Zhiyong Cui, Kristian Henrickson, Ruimin Ke, and Yinhai Wang. Traffic graph convolutional recur-
+rent neural network: A deep learning framework for network-scale traffic learning and forecast-
+ing. IEEE Transactions on Intelligent Transportation Systems, 21(11):4883–4894, 2019.
+9
+
+===== PAGE 10 =====
+486
+487
+488
+489
+490
+491
+492
+493
+494
+495
+496
+497
+498
+499
+500
+501
+502
+503
+504
+505
+506
+507
+508
+509
+510
+511
+512
+513
+514
+515
+516
+517
+518
+519
+520
+521
+522
+523
+524
+525
+526
+527
+528
+529
+530
+531
+532
+533
+534
+535
+536
+537
+538
+539
+Under review as a conference paper at ICLR 2027
+Yuchen Fang, Yuxuan Liang, Bo Hui, Zezhi Shao, Liwei Deng, Xu Liu, Xinke Jiang, and Kai Zheng.
+Efficient large-scale traffic forecasting with transformers: A spatial data management perspective.
+In Proceedings of the 31st ACM SIGKDD conference on knowledge discovery and data mining v.
+1, pp. 307–317, 2025.
+Haotian Gao, Renhe Jiang, Zheng Dong, Jinliang Deng, Yuxin Ma, and Xuan Song.
+Spatial-
+temporal-decoupled masked pre-training for spatiotemporal forecasting.
+arXiv preprint
+arXiv:2312.00516, 2023.
+Shengnan Guo, Youfang Lin, Ning Feng, Chao Song, and Huaiyu Wan. Attention based spatial-
+temporal graph convolutional networks for traffic flow forecasting. In Proceedings of the AAAI
+conference on artificial intelligence, volume 33, pp. 922–929, 2019.
+Sicheng He, Junzhong Ji, and Minglong Lei. Decomposed spatio-temporal mamba for long-term
+traffic prediction. In Proceedings of the AAAI Conference on Artificial Intelligence, volume 39,
+pp. 11772–11780, 2025.
+Yifan Hu, Guibin Zhang, Peiyuan Liu, Disen Lan, Naiqi Li, Dawei Cheng, Tao Dai, Shu-Tao Xia,
+and Shirui Pan. Timefilter: Patch-specific spatial-temporal graph filtration for time series fore-
+casting. arXiv preprint arXiv:2501.13041, 2025.
+Jiawei Jiang, Chengkai Han, Wayne Xin Zhao, and Jingyuan Wang. Pdformer: Propagation delay-
+aware dynamic long-range transformer for traffic flow prediction. In Proceedings of the AAAI
+conference on artificial intelligence, volume 37, pp. 4365–4373, 2023a.
+Renhe Jiang, Zhaonan Wang, Jiawei Yong, Puneet Jeph, Quanjun Chen, Yasumasa Kobayashi, Xuan
+Song, Shintaro Fukushima, and Toyotaro Suzumura. Spatio-temporal meta-graph learning for
+traffic forecasting. In Proceedings of the AAAI conference on artificial intelligence, volume 37,
+pp. 8078–8086, 2023b.
+Yaguang Li, Rose Yu, Cyrus Shahabi, and Yan Liu. Diffusion convolutional recurrent neural net-
+work: Data-driven traffic forecasting. arXiv preprint arXiv:1707.01926, 2017.
+Shengsheng Lin, Weiwei Lin, Xinyi Hu, Wentai Wu, Ruichao Mo, and Haocheng Zhong. Cyclenet:
+Enhancing time series forecasting through modeling periodic patterns. Advances in Neural Infor-
+mation Processing Systems, 37:106315–106345, 2024.
+Hangchen Liu, Zheng Dong, Renhe Jiang, Jiewen Deng, Jinliang Deng, Quanjun Chen, and Xuan
+Song. Spatio-temporal adaptive embedding makes vanilla transformer sota for traffic forecast-
+ing. In Proceedings of the 32nd ACM international conference on information and knowledge
+management, pp. 4125–4129, 2023a.
+Shizhan Liu, Hang Yu, Cong Liao, Jianguo Li, Weiyao Lin, Alex X Liu, and Schahram Dustdar.
+Pyraformer: Low-complexity pyramidal attention for long-range time series modeling and fore-
+casting. In International conference on learning representations, 2021.
+Xu Liu, Yutong Xia, Yuxuan Liang, Junfeng Hu, Yiwei Wang, Lei Bai, Chao Huang, Zhenguang
+Liu, Bryan Hooi, and Roger Zimmermann. Largest: A benchmark dataset for large-scale traffic
+forecasting. Advances in neural information processing systems, 36:75354–75371, 2023b.
+Yong Liu, Tengge Hu, Haoran Zhang, Haixu Wu, Shiyu Wang, Lintao Ma, and Mingsheng Long.
+itransformer: Inverted transformers are effective for time series forecasting.
+In International
+conference on learning representations, volume 2024, pp. 11116–11140, 2024.
+Qingqing Long, Zheng Fang, Chen Fang, Chong Chen, Pengfei Wang, and Yuanchun Zhou. Un-
+veiling delay effects in traffic forecasting: a perspective from spatial-temporal delay differential
+equations. In Proceedings of the ACM web conference 2024, pp. 1035–1044, 2024.
+Yuqi Nie, Nam H Nguyen, Phanwadee Sinthong, and Jayant Kalagnanam. A time series is worth 64
+words: Long-term forecasting with transformers. arXiv preprint arXiv:2211.14730, 2022.
+Zezhi Shao, Zhao Zhang, Fei Wang, Wei Wei, and Yongjun Xu. Spatial-temporal identity: A simple
+yet effective baseline for multivariate time series forecasting. In Proceedings of the 31st ACM
+international conference on information & knowledge management, pp. 4454–4458, 2022a.
+10
+
+===== PAGE 11 =====
+540
+541
+542
+543
+544
+545
+546
+547
+548
+549
+550
+551
+552
+553
+554
+555
+556
+557
+558
+559
+560
+561
+562
+563
+564
+565
+566
+567
+568
+569
+570
+571
+572
+573
+574
+575
+576
+577
+578
+579
+580
+581
+582
+583
+584
+585
+586
+587
+588
+589
+590
+591
+592
+593
+Under review as a conference paper at ICLR 2027
+Zezhi Shao, Zhao Zhang, Fei Wang, and Yongjun Xu. Pre-training enhanced spatial-temporal graph
+neural network for multivariate time series forecasting. In Proceedings of the 28th ACM SIGKDD
+conference on knowledge discovery and data mining, pp. 1567–1577, 2022b.
+Chao Song, Youfang Lin, Shengnan Guo, and Huaiyu Wan. Spatial-temporal synchronous graph
+convolutional networks: A new framework for spatial-temporal network data forecasting.
+In
+Proceedings of the AAAI conference on artificial intelligence, volume 34, pp. 914–921, 2020.
+Haixu Wu, Jiehui Xu, Jianmin Wang, and Mingsheng Long. Autoformer: Decomposition trans-
+formers with auto-correlation for long-term series forecasting. Advances in neural information
+processing systems, 34:22419–22430, 2021.
+Haixu Wu, Tengge Hu, Yong Liu, Hang Zhou, Jianmin Wang, and Mingsheng Long. Timesnet:
+Temporal 2d-variation modeling for general time series analysis. arxiv 2022.
+arXiv preprint
+arXiv:2210.02186, 2022.
+Zonghan Wu, Shirui Pan, Guodong Long, Jing Jiang, and Chengqi Zhang. Graph wavenet for deep
+spatial-temporal graph modeling. arXiv preprint arXiv:1906.00121, 2019.
+Ailing Zeng, Muxi Chen, Lei Zhang, and Qiang Xu. Are transformers effective for time series
+forecasting?
+In Proceedings of the AAAI conference on artificial intelligence, volume 37, pp.
+11121–11128, 2023.
+Yunhao Zhang and Junchi Yan. Crossformer: Transformer utilizing cross-dimension dependency
+for multivariate time series forecasting. In The eleventh international conference on learning
+representations, 2023.
+Zhiwei Zhang, Fandong Meng, Jie Zhou, Wenjuan Han, et al.
+Extralonger: Toward a unified
+perspective of spatial-temporal factors for extra-long-term traffic forecasting.
+arXiv preprint
+arXiv:2411.00844, 2024.
+Zhiwei Zhang, Xinyi Du, Weihao Wang, Xuanchi Guo, and Wenjuan Han. Visifold: Long-term traf-
+fic forecasting via temporal folding graph and node visibility. arXiv preprint arXiv:2603.11816,
+2026.
+Haoyi Zhou, Shanghang Zhang, Jieqi Peng, Shuai Zhang, Jianxin Li, Hui Xiong, and Wancai Zhang.
+Informer: Beyond efficient transformer for long sequence time-series forecasting. In Proceedings
+of the AAAI conference on artificial intelligence, volume 35, pp. 11106–11115, 2021.
+Tian Zhou, Ziqing Ma, Qingsong Wen, Xue Wang, Liang Sun, and Rong Jin. Fedformer: Frequency
+enhanced decomposed transformer for long-term series forecasting. In International conference
+on machine learning, pp. 27268–27286. PMLR, 2022.
+11
+
+===== PAGE 12 =====
+594
+595
+596
+597
+598
+599
+600
+601
+602
+603
+604
+605
+606
+607
+608
+609
+610
+611
+612
+613
+614
+615
+616
+617
+618
+619
+620
+621
+622
+623
+624
+625
+626
+627
+628
+629
+630
+631
+632
+633
+634
+635
+636
+637
+638
+639
+640
+641
+642
+643
+644
+645
+646
+647
+Under review as a conference paper at ICLR 2027
+A
+EXPERIMENTAL DETAILS
+A.1
+DATASETS
+We evaluate the proposed method on four real-world traffic datasets: PEMS04, PEMS08, SD, and
+Seattle. All datasets are sampled at five-minute intervals, with traffic flow as the forecasting target.
+Table 3 summarizes the data actually used for training and evaluation in this study.
+Table 3: Statistics of the datasets used in this study.
+Dataset
+Nodes used
+Time steps
+Sampling interval
+PEMS04
+266
+16,992
+5 minutes
+PEMS08
+112
+17,856
+5 minutes
+SD
+673
+34,560
+5 minutes
+Seattle
+196
+105,120
+5 minutes
+PEMS04 and PEMS08. To associate traffic nodes with historical external conditions, we retain 266
+and 112 nodes, respectively, whose station identities, geographic locations, and road attributes can be
+verified. Node selection applies consistently to historical inputs, road graphs, normalization statis-
+tics, training losses, and evaluation targets. The road graphs retain existing connections among se-
+lected nodes and reindex their endpoints, without adding substitute connections for excluded nodes.
+Our results therefore correspond to these node subsets and cannot be compared numerically with
+published results on the full-node versions directly.
+SD. This dataset contains traffic observations from January to April 2021, and we use all 673 nodes.
+External conditions are aligned under a fixed PST (UTC−8) traffic-clock assumption. This inter-
+pretation is part of our data-processing protocol and has not been independently confirmed by the
+traffic data provider.
+Seattle. We use observations from the full year of 2015 and retain 196 nodes based on the availabil-
+ity of original observations within the training interval. Forecasting targets use the original released
+flow values without lane-count scaling. External data are aligned using local civil time in Amer-
+ica/Los Angeles, supported by analyses of daily patterns and daylight-saving consistency within the
+training interval. Traffic targets are retained at daylight-saving time slots that cannot be uniquely
+mapped to physical time, while the corresponding external conditions are marked as missing.
+All datasets are split chronologically into training, validation, and test sets in a 6 : 2 : 2 ratio. Target
+windows do not cross their respective split boundaries. Traffic normalization statistics, periodic
+backgrounds, and lagged correlation statistics for coupling initialization are computed exclusively
+from the training interval.
+A.2
+HISTORICAL EXTERNAL CONDITIONS
+DeCoDy uses historical weather and incident records to supplement traffic representations. Weather
+inputs include temperature, humidity, wind speed, wind direction, precipitation, visibility, and pres-
+sure, together with observation age and validity information. Incident inputs summarize the number
+of matched incidents within a historical interval and the time since the most recent matched incident.
+Node-level external conditions are constructed according to the data sources and spatial matching
+protocols of each dataset.
+All external inputs are restricted to the historical window before the forecast origin. Future inputs
+contain only known calendar information, without actual weather or incidents from the forecast
+interval. Missing external observations are handled using explicit masks, and their normalization
+parameters are estimated only from valid observations in the training interval.
+Incident data come from retrospectively compiled records, with historical conditions constructed
+according to occurrence times. This setting is therefore a retrospective forecasting experiment based
+on historical occurrence times, rather than a complete reconstruction of incident reports actually
+received at the time of forecasting. In Seattle, incident matching represents event context within 500
+meters of a node, without implying verified incidents on the same road and in the same direction.
+12
+
+===== PAGE 13 =====
+648
+649
+650
+651
+652
+653
+654
+655
+656
+657
+658
+659
+660
+661
+662
+663
+664
+665
+666
+667
+668
+669
+670
+671
+672
+673
+674
+675
+676
+677
+678
+679
+680
+681
+682
+683
+684
+685
+686
+687
+688
+689
+690
+691
+692
+693
+694
+695
+696
+697
+698
+699
+700
+701
+Under review as a conference paper at ICLR 2027
+A.3
+BASELINE METHODS
+We select eight comparison methods covering general multivariate forecasting, periodic modeling,
+lightweight spatiotemporal representations, and long-horizon traffic forecasting.
+1. iTransformer represents variable sequences as tokens and learns relationships among vari-
+ables through attention.
+2. Extralonger jointly models spatial and temporal factors for extra-long-term traffic fore-
+casting.
+3. TimeFilter constructs spatiotemporal relationships at the temporal-patch level and filters
+fine-grained dependencies relevant to forecasting.
+4. VisiFold organizes cross-time relationships through a temporal folding graph and uses node
+visibility to handle larger traffic networks.
+5. CycleNet explicitly learns recurring periodic patterns and predicts residuals after removing
+them.
+6. STID incorporates spatial and temporal identity embeddings into multilayer perceptrons to
+construct a lightweight forecasting model.
+7. DST-Mamba decomposes time series into seasonal and trend components and combines
+Mamba with linear mappings to model long-range dependencies.
+8. FaST uses a mixture-of-experts mechanism for long-horizon forecasting on large-scale
+spatiotemporal graphs.
+All baselines are trained and evaluated using our data splits, node sets, and forecasting tasks, while
+retaining their native input configurations and corresponding training objectives. DeCoDy addition-
+ally uses historical weather and incident conditions. The main comparison therefore reflects overall
+forecasting performance under the current input configurations and cannot by itself attribute gains
+separately to external information and model architecture.
+A.4
+IMPLEMENTATION AND TRAINING SETTINGS
+For eight-hour forecasting, both the look-back window and forecast horizon are set to 96. For one-
+day, three-day, and seven-day forecasting, the look-back window is 288 and the forecast horizons
+are 288, 864, and 2016, respectively. An independent model is trained for each dataset–horizon
+combination, with the random seed fixed at 42. The main DeCoDy settings are listed in Table 4.
+A training round is defined by a fixed sample-presentation budget rather than a complete pass
+through the training set. Training uses a predetermined stream of sampled windows, with progress
+monitored on a fixed sparse set of validation windows. The first four rounds are excluded from
+early-stopping patience accounting, and at least five rounds are completed. After training, candidate
+checkpoints are compared using MAE on the complete validation set, and the selected checkpoint is
+evaluated on the complete test set.
+DeCoDy uses FP32 computation. Larger tasks use microbatches and gradient accumulation to con-
+trol memory consumption while preserving the effective batch size. Background statistics remain
+fixed during training, while the remaining forecasting parameters are jointly optimized using masked
+MAE in original flow units.
+A.5
+EVALUATION METRICS
+Let Ωdenote the set of all valid sample, forecast-step, and node triples in the evaluation set. We
+compute the following metrics in original flow units:
+MAE = 1
+|Ω|
+X
+(n,k,i)∈Ω
+|ˆyn,i[k] −yn,i[k]| ,
+(17)
+RMSE =
+v
+u
+u
+t 1
+|Ω|
+X
+(n,k,i)∈Ω
+(ˆyn,i[k] −yn,i[k])2.
+(18)
+13
+
+===== PAGE 14 =====
+702
+703
+704
+705
+706
+707
+708
+709
+710
+711
+712
+713
+714
+715
+716
+717
+718
+719
+720
+721
+722
+723
+724
+725
+726
+727
+728
+729
+730
+731
+732
+733
+734
+735
+736
+737
+738
+739
+740
+741
+742
+743
+744
+745
+746
+747
+748
+749
+750
+751
+752
+753
+754
+755
+Under review as a conference paper at ICLR 2027
+Table 4: Default implementation and training settings of DeCoDy.
+Setting
+Value
+Historical condition dimension
+48
+Future conditional query dimension
+16
+Historical patch length
+6 time steps
+Fixed periodic background length
+2016 time steps
+Periodic-background shrinkage λ
+5
+Delay set D
+{1, 2, 3, 6, 12}
+Coupling gain bound ρ
+0.8
+Optimizer
+Adam
+Maximum OneCycle learning rate
+0.002
+Weight decay
+0
+Gradient clipping threshold
+5
+Effective training batch size
+16
+Sample presentations per round
+2048
+Optimizer updates per round
+128
+Default maximum training rounds
+40
+Early-stopping patience
+5
+Relative improvement threshold
+0.001
+Minimum solver updates
+4
+Solver error-check interval
+4 updates
+Default maximum solver updates
+64
+Solver error tolerance in original flow units
+0.05
+Overall metrics aggregate valid targets over the complete forecast horizon. Daily metrics for seven-
+day forecasting instead divide the same seven-day forecast into seven consecutive 24-hour intervals
+and aggregate errors separately within each interval; these results do not correspond to seven inde-
+pendently trained forecasting tasks.
+Hyperparameter analyses report metrics on the complete validation set. Current results use a single
+random seed and do not support estimating statistical significance across seeds.
+B
+DETAILS OF DATA OBSERVATIONS AND CASE ANALYSIS
+B.1
+TEMPORALLY STAGGERED AND PERSISTENT NODE DEVIATIONS
+Figure 1(a) uses observations from 07:00 to 11:00 on February 18, 2021, in SD. Target node B
+has station ID 1108441; its three graph neighbors D, C, and A have IDs 1122928, 1126553, and
+1125457, respectively.
+For each node, the median flow at corresponding times on other dates with the same day of the week
+provides a descriptive reference. The figure displays percentage deviations of observed flow from
+this reference. A persistent-drop onset is defined as the first point in a sequence of three consecutive
+five-minute observations below 75% of the reference. The onsets for D, C, B, and A are 08:00,
+08:05, 08:10, and 08:30, respectively.
+Shading illustrates the temporal overlap among earlier deviations, target changes, and subsequent
+neighbor changes. This analysis describes the ordering and persistence of observed changes; dif-
+ferences between threshold-defined onset times are not interpreted as physical propagation times or
+used to determine causal directions between nodes. This median reference differs from the training-
+set shrinkage-based weekly background used by the model.
+B.2
+EVOLVING INTER-NODE ASSOCIATIONS ACROSS INTRADAY PERIODS AND DAYS
+Figure 1(b) uses the fixed node pair C/B and displays continuous observations from 12:00 on January
+25 to 12:00 on January 26, 2021. Deviations are obtained by subtracting the periodic background
+constructed exclusively from the training interval from observed flows.
+The case is selected before comparing local correlations. We examine midnight boundaries within
+the training interval, requiring both nodes to maintain deviations of the same sign in all four con-
+14
+
+===== PAGE 15 =====
+756
+757
+758
+759
+760
+761
+762
+763
+764
+765
+766
+767
+768
+769
+770
+771
+772
+773
+774
+775
+776
+777
+778
+779
+780
+781
+782
+783
+784
+785
+786
+787
+788
+789
+790
+791
+792
+793
+794
+795
+796
+797
+798
+799
+800
+801
+802
+803
+804
+805
+806
+807
+808
+809
+Under review as a conference paper at ICLR 2027
+secutive half-hour intervals spanning one hour before and after midnight, with absolute deviations
+of at least 10% relative to the background. Negative deviations are prioritized, and cases are ranked
+by the minimum deviation magnitude across both nodes and these intervals. The resulting display
+window is an exploratory case rather than a randomly sampled observation of the population.
+Local lagged correlations are computed as
+Corr(eC(t −ℓ), eB(t)) ,
+(19)
+where eC, eB are observed deviations in original flow units and ℓranges from 0 to 60 minutes in
+five-minute increments. Each correlation uses a three-hour window centered at the displayed time,
+with centers advancing every 15 minutes. Each window requires at least 24 valid observation pairs
+and a standard deviation of at least 2 original flow units for both deviation sequences.
+Centered windows may contain observations on both sides of an intraday transition or day bound-
+ary. The heatmap therefore describes local association changes retrospectively; it is neither an online
+input available at the forecast origin nor evidence of an instantaneous relationship switch at a bound-
+ary.
+B.3
+SHARED PERIODIC PROFILES AND LOCAL PEAK AND TROUGH VARIATIONS
+Figure 1(c) uses traffic observations at SD station 1118020 on February 15, February 22, March 1,
+and March 8, 2021. All four dates are Mondays within the training interval.
+The reference curve is the median flow at corresponding five-minute positions over six Mondays
+preceding the displayed dates, with no overlap between reference and displayed dates. Curves use
+nonoverlapping 15-minute means, and the local peak interval from 05:30 to 09:00 is enlarged. The
+figure compares overall daily profiles and peak differences across dates and contains no model pre-
+dictions.
+B.4
+STATISTICAL PROTOCOL FOR THE SEATTLE CASE
+The main-text case uses Seattle I-405 node d405es01612, with a seven-day forecast originating at
+04:00 on November 8, 2015. The analysis focuses on 06:00–20:00 on November 13, corresponding
+to forecast lead times of approximately 122–136 hours.
+Displayed curves use 30-minute means, whereas cumulative flow deviations are calculated from the
+original five-minute data. For an analysis interval I, the cumulative deviation relative to the periodic
+background is defined as
+D(I) =
+P
+k∈I z[k] −P
+k∈I P raw[k]
+P
+k∈I P raw[k]
+× 100%,
+(20)
+where z[k] denotes either the observed or predicted flow, and P raw[k] is the model’s periodic back-
+ground restored to original flow units.
+The historical Friday median curve uses corresponding times on the four Fridays preceding the
+forecast origin and is displayed separately from the model’s periodic background. Rainfall comes
+from retrospective observations at BFI station and is used only to describe the case context. Reports
+contain precipitation accumulated since the hourly reset; multiple reports within the same hour
+are not summed. This case illustrates correspondence between predicted trajectories and observed
+deviations, rather than establishing a causal relationship between rainfall and flow changes.
+C
+THEORETICAL PROOFS
+C.1
+PROOF OF PROPOSITION 1
+Consider the multi-delay response in Equation (9). Since di > 0, the coefficients in Equation (10)
+satisfy 0 < ai = e−di < 1 and bi = (1 −ai)/di > 0. Let
+B = max
+
+R0,
+U
+1 −ρ
+
+.
+15
+
+===== PAGE 16 =====
+810
+811
+812
+813
+814
+815
+816
+817
+818
+819
+820
+821
+822
+823
+824
+825
+826
+827
+828
+829
+830
+831
+832
+833
+834
+835
+836
+837
+838
+839
+840
+841
+842
+843
+844
+845
+846
+847
+848
+849
+850
+851
+852
+853
+854
+855
+856
+857
+858
+859
+860
+861
+862
+863
+Under review as a conference paper at ICLR 2027
+The residual magnitudes on the historical boundary are bounded by R0 ≤B. We proceed by
+induction over future time steps. Suppose that all response magnitudes before time k are at most
+B. Because every delay ℓ∈D is a positive integer, each rj[k −ℓ] belongs either to the historical
+boundary or to a future response covered by the induction hypothesis. By the triangle inequality and
+Equation (7),
+|ri[k]| ≤ai|ri[k −1]| + bi
+
+|si[k]| +
+X
+j∈Ni
+X
+ℓ∈D
+|Aijℓ[k]| |rj[k −ℓ]|
+
+
+≤aiB + 1 −ai
+di
+(diU + ρdiB)
+= aiB + (1 −ai)(U + ρB)
+≤aiB + (1 −ai)B = B,
+where the final inequality uses U ≤(1 −ρ)B. Induction therefore bounds all node response magni-
+tudes by B over any finite forecast horizon, proving Equation (8). The proof requires only a bound
+on the absolute coupling row sums; it does not require nonnegative or time-invariant coupling coef-
+ficients.
+Here, R0 need only cover the historical boundary accessed by the solver. For a given horizon, the
+response bound depends on the normalized driving bound U over that horizon. If driving inputs
+across different horizons share a common finite bound, the response bound also holds uniformly
+across those horizons. This proposition concerns the exact response of the dynamical equations;
+numerical error from finitely many parallel iterations is controlled separately by Equation (14).
+C.2
+PROOF OF PROPOSITION 2
+Finite delay-path expansion. Coupling coefficients are generated before solving and remain given
+during a single solve, so both M and K are linear operators on future responses. For any future
+trajectory z, future neighboring influences are
+(Mz)i[u] =
+X
+j∈Ni
+X
+ℓ∈D
+u−ℓ≥1
+Aijℓ[u]zj[u −ℓ].
+Historical boundary contributions are already included in rbase and are not part of this linear opera-
+tor. By the definition of the causal convolution,
+(Kz)i[k] =
+k
+X
+u=1
+biak−u
+i
+X
+j∈Ni
+X
+ℓ∈D
+u−ℓ≥1
+Aijℓ[u]zj[u −ℓ].
+The input time index of every nonzero term satisfies u −ℓ≤k −ℓmin. Thus, each application of K
+advances the time index from input to output by at least ℓmin: Kp can map an input at time t only to
+outputs at times no earlier than t + pℓmin. For p = Q = ⌈H/ℓmin⌉, we have t + Qℓmin ≥1 + H,
+which lies beyond the future interval 1, . . . , H. Hence KQ = 0.
+It follows that
+(I −K)
+Q−1
+X
+p=0
+Kp = I −KQ = I,
+so I −K is invertible and Equation (11) has the unique solution
+r⋆= (I −K)−1rbase =
+Q−1
+X
+p=0
+Kprbase.
+This finite expansion follows from positive delays and a finite forecast horizon and does not itself
+require a contraction condition.
+Computable contraction bound. To obtain an error guarantee for early stopping, define
+q =
+max
+i,1≤k≤H
+1
+di
+X
+j∈Ni
+X
+ℓ∈D
+|Aijℓ[k]| < ρ < 1.
+(21)
+16
+
+===== PAGE 17 =====
+864
+865
+866
+867
+868
+869
+870
+871
+872
+873
+874
+875
+876
+877
+878
+879
+880
+881
+882
+883
+884
+885
+886
+887
+888
+889
+890
+891
+892
+893
+894
+895
+896
+897
+898
+899
+900
+901
+902
+903
+904
+905
+906
+907
+908
+909
+910
+911
+912
+913
+914
+915
+916
+917
+Under review as a conference paper at ICLR 2027
+Using bi = (1 −ai)/di, any trajectory z satisfies
+|(Kz)i[k]| ≤
+k
+X
+u=1
+biak−u
+i
+qdi∥z∥∞
+= q(1 −ak
+i )∥z∥∞≤q∥z∥∞.
+Therefore, ∥K∥∞≤q < 1, so the full-horizon fixed-point mapping is a contraction.
+A posteriori error certificate. Let δ(m) = r(m) −r(m−1) for m ≥1. The fixed-point update gives
+δ(m+1) = Kδ(m), and hence
+∥δ(m+t)∥∞≤qt∥δ(m)∥∞,
+t ≥1.
+Summing subsequent iteration differences yields
+∥r⋆−r(m)∥∞≤
+∞
+X
+t=1
+∥δ(m+t)∥∞
+≤
+∞
+X
+t=1
+qt∥δ(m)∥∞=
+q
+1 −q ∥r(m) −r(m−1)∥∞.
+This proves Equation (14). The bound applies to fixed-point iteration with the exact operator for
+given parameters; it does not include rounding errors from finite-precision FFT computations.
+D
+SOLVER COMPLEXITY ANALYSIS
+Let N denote the number of nodes, E the number of effective directed edges, K = |D| the number
+of delays, H the forecast horizon, and J the number of full-horizon updates actually executed. The
+following analysis concerns a single sample and treats conditional parameter generation separately
+from response solution.
+Graph message computation. Each update computes neighboring influences for every effective
+edge, delay, and future time position, with computational complexity
+O(EKH).
+(22)
+Local response computation. Node-local exponential responses are computed using zero-padded
+FFTs. Across all nodes, the computational complexity per update is
+O(NH log H).
+(23)
+Thus, after future driving inputs and coupling parameters have been generated, the response solver
+executes J full-horizon updates at a computational cost of
+O(J(EKH + NH log H)) .
+(24)
+This expression explicitly retains the iteration count J. The actual count depends jointly on the error
+tolerance and coupling strength; finite-horizon solvability alone does not imply that it is a constant
+independent of the forecast horizon.
+Explicitly storing edge–delay coupling coefficients over the entire forecast horizon requires
+O(EKH) memory, while node responses and FFT work arrays require O(NH) memory. Training
+additionally stores conditional encodings and intermediate quantities for backpropagation through
+the iterations.
+Actual memory consumption depends on batch size, iteration count, and the
+activation-checkpointing strategy.
+Full-horizon updates jointly compute future positions through graph messages and convolutions,
+but their theoretical operation count does not directly establish a wall-clock advantage. Appendix E
+reports solver timings and numerical errors for the same response equation under fixed hardware,
+precision, and batch size; these measurements do not constitute end-to-end speed comparisons be-
+tween different forecasting models.
+17
+
+===== PAGE 18 =====
+918
+919
+920
+921
+922
+923
+924
+925
+926
+927
+928
+929
+930
+931
+932
+933
+934
+935
+936
+937
+938
+939
+940
+941
+942
+943
+944
+945
+946
+947
+948
+949
+950
+951
+952
+953
+954
+955
+956
+957
+958
+959
+960
+961
+962
+963
+964
+965
+966
+967
+968
+969
+970
+971
+Under review as a conference paper at ICLR 2027
+E
+NUMERICAL VALIDATION AND COMPUTATIONAL EFFICIENCY OF THE
+SOLVER
+To examine the computational cost and numerical accuracy of full-horizon parallel solution, we use
+the 112-node PEMS08 subset, fix the trained seven-day forecasting model and its parameters, and
+compare parallel solution with sequential time-step recurrence for the same response equation.
+Measurements are performed on an NVIDIA GeForce RTX 4060 Laptop GPU with a batch size of
+4 and FP32 computation. Inputs are fixed windows from the training interval, with no additional pa-
+rameter training. Future driving inputs and coupling coefficients are generated beforehand. Timing
+covers only response solution, excluding data preprocessing, CPU-to-GPU transfer, and coefficient
+generation. Reported times are medians of five repeated measurements after warmup.
+E.1
+SOLVER EFFICIENCY AT DIFFERENT HORIZON LENGTHS
+We use the first 288, 864, and 2016 steps of coefficients generated by the fixed seven-day model to
+compare the two solution methods. Shorter intervals measure solver scaling and do not correspond
+to separately trained one-day or three-day forecasting models. Results are reported in Table 5.
+Under the measured configurations, parallel solution substantially reduces response computation
+Table 5: Solver efficiency for the same response equation. Maximum output differences are in
+original flow units.
+Horizon
+Parallel / ms
+Sequential / ms
+Time ratio
+Max. difference
+288
+13.50
+163.15
+12.09
+0.01260
+864
+13.70
+492.86
+35.98
+0.01257
+2016
+32.54
+1136.20
+34.92
+0.01262
+time while maintaining small numerical differences from sequential recurrence. The time ratios
+(sequential divided by parallel) concern the current hardware and the two solver implementations;
+they are not end-to-end speedup factors of the complete forecasting model over other models.
+E.2
+SOLVER TOLERANCE AND MEASURED NUMERICAL ERROR
+To further examine the stopping condition, we fix the same checkpoint and seven-day response co-
+efficients and set the tolerance in original flow units to 0.01, 0.05, and 0.2. The numerical reference
+uses FP64 sequential recurrence to reduce rounding error in the reference computation itself. Results
+are reported in Table 6. On this fixed batch, tightening the tolerance increases the update count and
+Table 6: Update counts, numerical errors, and times for different solver tolerances. Maximum errors
+are measured against the FP64 reference.
+Tolerance
+Updates
+Posterior bound
+Max. error
+Time / ms
+0.01
+16
+0.001423
+0.000491
+42.07
+0.05
+12
+0.033589
+0.012615
+32.46
+0.20
+12
+0.033589
+0.012615
+32.39
+reduces measured numerical error. Tolerances of 0.05 and 0.2 both stop at update 12 and therefore
+produce the same response. Since the stopping condition is checked every four updates, different
+tolerances need not yield different iteration counts.
+These results evaluate numerical accuracy for a given response equation. They do not guarantee fore-
+casting error relative to actual traffic flow or establish universal timing conclusions across datasets.
+18
+
+===== PAGE 19 =====
+972
+973
+974
+975
+976
+977
+978
+979
+980
+981
+982
+983
+984
+985
+986
+987
+988
+989
+990
+991
+992
+993
+994
+995
+996
+997
+998
+999
+1000
+1001
+1002
+1003
+1004
+1005
+1006
+1007
+1008
+1009
+1010
+1011
+1012
+1013
+1014
+1015
+1016
+1017
+1018
+1019
+1020
+1021
+1022
+1023
+1024
+1025
+Under review as a conference paper at ICLR 2027
+F
+ROBUSTNESS CHECKS FOR OBSERVATIONAL ANALYSIS
+To examine whether the observed local lagged associations depend on a particular statistical window,
+we use existing observations to analyze window length, date grouping, and temporal splits. All
+analyses use data from the training interval.
+F.1
+LOCAL WINDOW LENGTH
+Keeping the node pair, observations, and periodic background of Figure 1(b) unchanged, we com-
+pute local lagged correlations using centered windows of two, three, and four hours. Table 7 averages
+correlations over positive lags of 5–60 minutes and the specified time intervals. All three settings
+Table 7: Mean lagged correlations under different local windows.
+Window
+Jan. 25, 17:30–18:30
+Jan. 25, 21:30–Jan. 26, 04:30
+2 hours
+−0.0133
+0.1670
+3 hours
+−0.0298
+0.2846
+4 hours
+−0.0059
+0.3790
+yield a higher average lagged correlation at night than in the preceding interval, indicating that this
+direction of difference is not specific to the three-hour window. Correlation magnitudes vary with
+window length, so we use them to describe local association patterns rather than interpreting them
+as a unique interaction strength.
+F.2
+DATE TYPES AND INTRADAY PERIODS
+Beyond the continuous case in the main text, we group observations for the same fixed node pair
+over the complete training prefix. The analysis interval contains 72 days: 51 Mondays through
+Fridays and 21 weekend days. Intraday periods are consistently defined as morning (06:00–10:00),
+midday (10:00–16:00), and evening (16:00–20:00).
+We first construct lagged observation pairs on the complete timeline and then group them by the
+date type and period of the target timestamp, avoiding artificial lag correspondences caused by
+concatenating different dates. Each group’s association profile is summarized by the mean of 13
+correlations at lags from 0 to 60 minutes in five-minute increments. We perform 2000 resampling
+iterations using calendar weeks as blocks. Results are reported in Table 8. The directions of these
+Table 8: Mean correlation differences between date types and periods, with week-block resampling
+intervals.
+Comparison
+Mean difference
+95% interval
+Mon.–Fri. morning −weekend morning
+−0.3278
+[−0.4249, −0.1626]
+Weekend morning −weekend midday
+0.1832
+[0.1026, 0.3456]
+Weekend morning −weekend evening
+0.0919
+[0.0484, 0.1190]
+Weekend midday −weekend evening
+−0.0914
+[−0.2103, −0.0173]
+differences remain consistent in the first and second 36-day segments and in leave-one-week-out
+checks, supporting the observation that residual associations for the fixed node pair vary with date
+type and intraday period. Other group comparisons do not show equally stable directions, so we do
+not generalize this conclusion to stable differences between all periods.
+These intervals are exploratory descriptions of uncertainty conditional on a fixed periodic back-
+ground, without multiple-comparison correction. The analysis concerns a fixed node pair and a
+limited observation interval. Statistical associations are not interpreted as causal propagation or
+used to infer population-level conclusions for the entire road network.
+19
+
+===== PAGE 20 =====
+1026
+1027
+1028
+1029
+1030
+1031
+1032
+1033
+1034
+1035
+1036
+1037
+1038
+1039
+1040
+1041
+1042
+1043
+1044
+1045
+1046
+1047
+1048
+1049
+1050
+1051
+1052
+1053
+1054
+1055
+1056
+1057
+1058
+1059
+1060
+1061
+1062
+1063
+1064
+1065
+1066
+1067
+1068
+1069
+1070
+1071
+1072
+1073
+1074
+1075
+1076
+1077
+1078
+1079
+Under review as a conference paper at ICLR 2027
+G
+ALGORITHM AND SUPPLEMENTARY IMPLEMENTATION DETAILS
+Algorithm 1 presents the complete DeCoDy prediction procedure. Driving and coupling coefficients
+for all future positions are generated once and held fixed during response solving. We omit the batch
+dimension; E is the number of effective directed edges and K = |D| is the number of delays.
+Table 9: Main symbols in the algorithm.
+Symbol
+Meaning or shape
+L, H, N
+History length, forecast horizon, and number of nodes
+P
+Training-estimated periodic background, 2016 × N
+rh
+Historical residuals, L × N
+hi, qi[k]
+Historical representation R48, future query R16
+di, si[k]
+Positive decay rate and node driving term
+Aijℓ[k]
+Sparse edge–delay coupling, E × K × H
+H, M
+Causal response convolution and future multi-delay messaging
+K = H ◦M
+Full-horizon linear coupling operator
+q ∈[0, 1)
+Upper bound on the contraction factor
+r(m)
+Future residuals at iteration m, H × N
+εraw
+Solver tolerance in raw flow units, default 0.05
+Algorithm 1: DeCoDy Full-Horizon Prediction
+Input: Historical traffic X and mask M h; historical external information Eh and masks; historical and future
+calendars Ch, Cf; graph G; training statistics P, µx, σx; parameters θ; horizon H; εraw, Jmin, Jmax, Jcheck.
+Output: Forecast bY ∈RH×N.
+1
+Standardize historical traffic; fill missing entries with standardized zeros and retain masks.
+2
+Retrieve historical background P h and future background P f; compute ri[t] = xi[t] −P h
+i [t].
+3
+Encode historical traffic, residuals, masks, and calendars, and aggregate graph-neighborhood, weather,
+and incident information into hi.
+4
+Combine hi, future calendars, k/H, P f
+i [k], and its differences to construct qi[k].
+5
+Generate all di, si[k], Aijℓ[k] once and hold them fixed during solving.
+6
+Compute ai = e−di and bi = (1 −ai)/di; construct causal response convolution Hi using zero-padded
+FFTs.
+7
+Compute historical messages mhist
+i
+[k] = P
+j
+P
+ℓ∈D:k−ℓ≤0 Aijℓ[k]rj[k −ℓ].
+8
+Compute rbase
+i
+[k] = ak
+i ri[0] + Hi(si + mhist
+i
+)[k].
+9
+Define (Mz)i[k] = P
+j
+P
+ℓ∈D:k−ℓ≥1 Aijℓ[k]zj[k −ℓ] and K = H ◦M.
+10
+Compute q = maxi,k d−1
+i
+P
+j,ℓ|Aijℓ[k]|.
+11
+Initialize r(0) = rbase and converged = false.
+12
+for m = 1, . . . , Jmax do
+13
+r(m) = rbase + K(r(m−1)).
+14
+if m ≥Jmin and ((m −Jmin) mod Jcheck = 0 or m = Jmax) then
+15
+Em = σx
+q
+1−q ∥r(m) −r(m−1)∥∞.
+16
+if Em ≤εraw then
+17
+converged = true; break.
+18
+end if
+19
+end if
+20
+end for
+21
+If converged = false, report nonconvergence and terminate.
+22
+Restore the flow scale: bY = max{0, σx(P f + r(m)) + µx}.
+23
+return bY .
+20
+
+===== PAGE 21 =====
+1080
+1081
+1082
+1083
+1084
+1085
+1086
+1087
+1088
+1089
+1090
+1091
+1092
+1093
+1094
+1095
+1096
+1097
+1098
+1099
+1100
+1101
+1102
+1103
+1104
+1105
+1106
+1107
+1108
+1109
+1110
+1111
+1112
+1113
+1114
+1115
+1116
+1117
+1118
+1119
+1120
+1121
+1122
+1123
+1124
+1125
+1126
+1127
+1128
+1129
+1130
+1131
+1132
+1133
+Under review as a conference paper at ICLR 2027
+G.1
+GRAPH CONSTRUCTION AND COUPLING INITIALIZATION
+After removing self-loops, we form an undirected union by taking the maximum weight across the
+two directions, then expand each connection into two effective directions. These directions do not
+represent verified road travel directions. Coupling is initialized as
+B(0)
+ijℓ= 0.1wji Corr(rj[t −ℓ], ri[t]).
+Correlations use valid pairs from the training interval only; entries with fewer than three valid pairs
+or a near-zero correlation denominator are set to zero. Couplings are learnable after initialization,
+and these correlations do not establish causality.
+G.2
+MISSING VALUES AND PERIODIC BACKGROUND
+Missing traffic is filled with the training mean, becoming zero after standardization, and masks dis-
+tinguish it from observed zero flow. Historical boundary residuals subtract the periodic background
+from filled values and are not treated as observed data. The periodic background is estimated en-
+tirely from training data. Missing weekly-slot statistics fall back successively to the corresponding
+daily slot, the node mean, and the global mean.
+G.3
+TEMPORAL ENCODING AND RESPONSE SOLVING
+Historical calendars use sine and cosine encodings of daily and weekly phases, giving four dimen-
+sions. Future calendars use eight daily and three weekly Fourier harmonics, together with normal-
+ized lead time k/H and the periodic-background shape to construct future queries. The FFT length
+is the smallest power of two no smaller than 2H −1, yielding linear causal convolution.
+Defaults are Jmin = 4, Jmax = 64, Jcheck = 4, and εraw = 0.05. Training backpropagates through
+the updates actually executed; the periodic background and standardization statistics remain fixed.
+21
