@@ -9,7 +9,7 @@ tags:
   - fast-weights
 created: 2026-10-24
 last_updated: 2026-10-24
-source_count: 3
+source_count: 4
 confidence: medium
 status: active
 ---
