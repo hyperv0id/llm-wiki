@@ -59,6 +59,8 @@ flowchart LR
 
 **替换位置**：直接替代 Transformer 块内 self-attention 算子，$Q,K,V$ 沿用原层线性投影；无额外路由网络，未引入辅助损失或负载均衡损失（§3.2、§4 全文未提）[^src-2602-01219-mita]。
 
+**共享专家的来源**：landmark value 的取法与共享专家的调用形式与 Agent attention 的两段同型。Agent attention 的 agent aggregation 为 $\sigma(AK^{\top}+B_1)V$、agent broadcast 为 $\sigma(QA^{\top}+B_2)V^{A}$，agent token 取 $A=\operatorname{Pooling}(Q)$（arXiv:2312.08874 式 3、式 6）[^src-2312-08874-agent-attention]；MiTA 的 $\tilde V=V\operatorname{softmax}(K^{\top}\tilde Q/\sqrt d)$ 与 $O^{\rm share}=\operatorname{FlashAttention}(Q,\tilde Q,\tilde V)$ 是同一对式子（Algorithm 1 第 9、11 行），差别在 $\tilde Q=\operatorname{AdaptiveAvgPool}(Q,m)$ 用固定段数的池化、且 MiTA 另建 top-$k$ 形变专家与路由[^src-2602-01219-mita]。MiTA 的分类表把 Agent attention 与其自身同记为 landmark testing，区别落在专家数量（1 vs $m$）与路由拓扑（all-to-one vs $N$-to-$m$）两维（Table 1）[^src-2602-01219-mita]。
+
 ## 数据流与维度
 
 形状记作 $[\text{行}, \text{列}]$，与论文记号一致。**维度符号**：$N$ 为序列长度（token 数）；$d$ 为单头通道维；$m$ 为 landmark query 数（默认 25）；$k$ 为每个专家选中的 KV 数（默认 25）；$s$ 为每 query 路由的专家数（默认 1）；$n_i$ 为归入专家 $i$ 的 query 数，满足 $\sum_i n_i=N$。论文按单头形式书写，多头在 batch 维展开为本页推断[^src-2602-01219-mita][INFERENCE]。
@@ -167,6 +169,8 @@ MiTA 与 [[native-sparse-attention|NSA]] 都把压缩与路由放进同一个 at
 
 MiTA 在该表中未取得单列最优：Tiny 列最优为 DeiT-T$^{\triangle}$ 75.8、MiTA 74.8 列第三；Small 列最优为 Agent-DeiT-S$^{49,\triangle,\text{Bias}}$ 80.5、MiTA 79.3 列第四。同配置下 MiTA 高于 Agent-ViT（T 68.9→72.9，S 76.0→78.5），相比 ViT 在 ±1 范围内浮动（−0.2 / +0.6），论文表述为与 ViT 持平（on par）。参数量与 ViT 一致，MACs 减少 0.1G / 0.2G[^src-2602-01219-mita]。
 
+Agent-ViT 行（含 Table 3 的 $^{49}$ / $^{64}$ 两档）是 MiTA 论文把 agent attention 套到 plain ViT 后重训的结果。Agent attention 原论文不含 ViT 行，其一手表覆盖 DeiT、PVT、Swin、CSwin 四个骨干，其中 Agent-DeiT-T 为 74.9、Agent-DeiT-S 为 80.5，与本表引用值逐项一致（arXiv:2312.08874 Table 1、Table 13）[^src-2312-08874-agent-attention]。
+
 ### ImageNet-21K 预训练权重微调（Table 3）
 
 仅替换 attention、微调 50 epoch 的 top-1 精度（Table 3）[^src-2602-01219-mita]：
@@ -243,7 +247,9 @@ MiTA 在 ListOps、Image、Pathfinder 取得最高分，在 Text（−1.78）与
 - [[moba-attention]] — 刚性块路由的对照
 - [[native-sparse-attention]] — 三分支 + sigmoid 门控的合并口径对照
 - [[cbsa]] · [[representative-token-extraction]] — 压缩支的同族机制（Agent attention）
+- [[agent-attention]] — 共享专家的直接来源：agent aggregation + broadcast 两段
 - [[mixture-of-experts]] — MoE 原则用于 attention
 
 [^src-2602-01219-mita]: [[source-2602-01219-mita]]
 [^src-2502-11089-nsa]: [[source-2502-11089-nsa]]
+[^src-2312-08874-agent-attention]: [[source-2312-08874-agent-attention]]

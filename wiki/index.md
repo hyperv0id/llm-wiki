@@ -17,6 +17,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-2108-00298]] — GRIN: Filling the G_ap_s — Multivariate Time Series Imputation by Graph Neural Networks (ICLR 2022)
 - [[source-2312-00516-std-mae]] — STD-MAE: Spatial-Temporal-Decoupled Masked Pre-training for Spatiotemporal Forecasting (IJCAI-2024)
 - [[source-2312-01728]] — ImputeFormer: Low Rankness-Induced Transformers for Generalizable Spatiotemporal Imputation (KDD 2024)
+- [[source-2312-08874-agent-attention]] — Agent attention: 在 (Q, A, K, V) 中加入 n 个 agent token，先聚合再广播，两次 softmax 等价于核化线性注意力（复杂度 O(N²)→O(Nnd)），视觉四骨干 + Stable Diffusion 加速（Han et al., 清华自动化系 + 快手, ECCV 2024, arXiv:2312.08874）
 - [[source-2401-08119-specstg]] — SpecSTG: A Fast Spectral Diffusion Framework for Probabilistic Spatio-Temporal Traffic Forecasting (arXiv 2024)
 - [[source-2404-02905-var]] — VAR: Visual Autoregressive Modeling，next-scale prediction（多尺度 VQVAE 粗到细逐尺度自回归、尺度内并行），ImageNet 256 FID 1.73 + LLM 式 power-law scaling（Pearson ≈ −0.998）+ 零样本 in/out-painting 与编辑（Keyu Tian et al., PKU/ByteDance, arXiv:2404.02905v2；PDF raw/2404.02905-var.pdf）
 - [[source-2406-11838-mar]] — MAR: Autoregressive Image Generation without Vector Quantization，per-token 扩散头（Diffusion Loss）+ 广义自回归（随机顺序双向 MAR），ImageNet 256 w/CFG FID 1.55（Tianhong Li, Yonglong Tian, Kaiming He et al., NeurIPS 2024；PDF raw/2406.11838-mar.pdf）
@@ -885,6 +886,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[adjoint-matching]] — Adjoint matching，通过 adjoint state + corrector matching 学习 SB 控制
 - [[adjoint-schrodinger-bridge-sampler]] — Adjoint SB sampler，从 Boltzmann 分布采样的交替半桥优化
 - [[adjoint-sensitivity-method]] — 伴随灵敏度方法，Neural ODE 的反向传播技术
+- [[agent-attention]] — (Q, A, K, V) 四元组注意力：n 个 agent token 先作 query 聚合、再作 key 广播，两段 softmax 等价于核化线性注意力，复杂度 O(N²)→O(Nnd)（ECCV 2024）
 - [[almost-linear-rnn]] — AL-RNN，近乎线性 RNN（P<<M ReLU），拓扑简约+可解释 DSR 架构（NeurIPS 2024）
 - [[alpha-entmax]] — α-Entmax, sparsity-controllable softmax generalization (α=1 softmax, α=2 sparsemax) for sparse graph-attention adjacency (ICML 2025)
 - [[alphaflow]] — α-Flow，带一致性步长比 α 的统一少步目标族（涵盖轨迹流匹配/Shortcut/MeanFlow/CT）+ 课程退火分离梯度冲突 (arXiv 2025, Snap Research)

@@ -11,7 +11,7 @@ tags:
   - neurips-2025
 created: 2026-04-29
 last_updated: 2026-10-24
-source_count: 2
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -58,6 +58,8 @@ CBSA 通过改变代表性 token 的选择，可以实例化为多种不同的�
 | **Linear Attention** | 正交代表：通过对 $U_k^\top Z$ 执行 SVD 得到主方向 | 沿主方向动态压缩，因式分解注意力矩阵实现线性复杂度[^src-cbsa] |
 | **Channel Attention (TSSA)** | 固定正交代表：$L_k = I_p$ | 沿固定轴压缩，特征通道按二阶矩自适应缩放[^src-cbsa] |
 | **Agent Attention** | 无收缩步骤 | 移除 contraction 步骤，等效于 Agent Attention[^src-cbsa] |
+
+Agent Attention 一手源的形式是 $\operatorname{Attn}^{\rm S}(Q,A,\operatorname{Attn}^{\rm S}(A,K,V))$：agent token $A=\operatorname{Pooling}(Q)$ 先作 query 从 $K,V$ 聚合出 agent feature，再作 key 广播回全部 query，两段都是 softmax（arXiv:2312.08874 式 3、式 6）[^src-2312-08874-agent-attention]。对应本表的划分，被移除的 contraction 是代表之间的自注意力：Agent attention 不以编码率项定义压缩，代表直接由无参数的池化给出，不经一层自注意力 refine，因此记作「无收缩」[^src-2312-08874-agent-attention]。其代数读法是以 $\phi_q(Q)=\sigma(QA^{\top})$、$\phi_k(K)=\sigma(AK^{\top})^{\top}$ 为映射的核化线性注意力（式 4）[^src-2312-08874-agent-attention]。
 
 ## 压缩支的下游：landmark query 与路由（MiTA）
 
@@ -127,3 +129,4 @@ CBT decoder 以 Segmenter 20% 的 FLOPs 实现 +1.5% mIoU 提升[^src-cbsa]。
 
 [^src-cbsa]: [[source-cbsa]]
 [^src-2602-01219-mita]: [[source-2602-01219-mita]]
+[^src-2312-08874-agent-attention]: [[source-2312-08874-agent-attention]]

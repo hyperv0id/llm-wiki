@@ -8,7 +8,7 @@ tags:
   - architecture-analysis
 created: 2026-05-08
 last_updated: 2026-10-24
-source_count: 4
+source_count: 5
 confidence: medium
 status: active
 ---
@@ -75,6 +75,10 @@ $$y_i = C_i \sum_{j=1}^i (\prod_{k=j+1}^i \widetilde{A}_k) B_j (\Delta_j \odot x
 
 两者不冲突、也不互相蕴含：本页回答「两个方法差在哪几项」，五维分类回答「各方法把 $N$ 宽度降在哪里」。引用时按问题选口径，不要把「线性注意力在分类表里占一格」误读成对 Mamba 等价性结论的削弱。
 
+## 核函数的另一类取法：中介 token
+
+本页的对应关系以「已给定的 $\phi$ 之间如何互换」为对象。Agent attention（arXiv:2312.08874）给的是 $\phi$ 本身的参数化：把核映射定义为 $\phi_q(Q)=\sigma(QA^{\top})$、$\phi_k(K)=\sigma(AK^{\top})^{\top}$，其中 $A\in\mathbb{R}^{n\times C}$ 是 agent token，于是 $\sigma(QA^{\top})\sigma(AK^{\top})V$ 既是两段 softmax 的复合，也是核化线性注意力（式 4）[^src-2312-08874-agent-attention]。按结合律先算 $\phi_k(K)^{\top}V$ 得到 $[n,C]$ 的中间量，正是该方法的 agent aggregation 一步，随后左乘 $\phi_q(Q)$ 完成 broadcast；$n$ 即核映射维数，中介宽度 $n\ll N$ 时复杂度为 $\mathcal{O}(Nnd)$。与 Mamba 一侧的对应关系不同，此处没有遗忘门一类的递推修正项，全部差异集中在 $\phi$ 由何种 token 定义[^src-2312-08874-agent-attention]。
+
 ## 相关页面
 
 - [[mamba|Mamba]] — 选择性状态空间模型
@@ -86,6 +90,7 @@ $$y_i = C_i \sum_{j=1}^i (\prod_{k=j+1}^i \widetilde{A}_k) B_j (\Delta_j \odot x
 - [[stg-attention|STG-Attention]] — STGformer 的统一时空线性注意力模块：分解内积 + 图传播多阶输出 (arXiv 2024)
 - [[fast-weight-mlp-view-of-attention|fast-weight MLP 视角]] — 另一条注意力统一路线：结构级坐标而非等价公式
 - [[fast-weight-scaling-taxonomy|fast-weight scaling 分类法]] — 五维坐标，线性注意力在其中占「压缩 + all-to-one」一格
+- [[agent-attention|Agent Attention]] — 以 agent token 参数化核函数的线性注意力实例，两段 softmax 与 aggregate/broadcast 同序
 - [[performer|Performer]] — 核随机特征路线的代表机制：softmax 核的正随机特征无偏估计 + 正交化降方差，线性注意力时间 O(Lrd)（ICLR 2021）[^src-performer]
 - [[positive-random-features|PRF]] — Performer 论文中 softmax 核估计的数学核心：trig 特征在小核值区 MSE 发散、正特征收敛
 
@@ -93,3 +98,4 @@ $$y_i = C_i \sum_{j=1}^i (\prod_{k=j+1}^i \widetilde{A}_k) B_j (\Delta_j \odot x
 [^src-stgformer]: [[source-stgformer]]
 [^src-performer]: [[source-performer]]
 [^src-2602-01219-mita]: [[source-2602-01219-mita]]
+[^src-2312-08874-agent-attention]: [[source-2312-08874-agent-attention]]

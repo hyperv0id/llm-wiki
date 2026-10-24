@@ -9,7 +9,7 @@ tags:
   - landmark
 created: 2026-04-29
 last_updated: 2026-10-24
-source_count: 2
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -120,6 +120,8 @@ $$U_k^\top Z = L_k \Sigma_k R_k$$
 - 等效于仅使用初始化（平均池化）进行信息聚合
 - 对应 Agent Attention 的设计[^src-cbsa]
 
+Agent attention 的取法：agent token 由 $A=\operatorname{Pooling}(Q)$ 给出，无 cross-attention 形式的提取步，也没有编码率约束（arXiv:2312.08874 §4.2 式 6）[^src-2312-08874-agent-attention]。取法可替换，ImageNet-1K（Agent-Swin-T，Swin-T 基线 81.3）上池化为 82.6，可学习参数（Static）为 82.2，深度卷积 82.6，DAT 的 deformed points 82.7，token merging 82.6 但 FLOPs 从 4.5G 升到 4.6G（Table 17）[^src-2312-08874-agent-attention]。取法依赖输入时记作 Dynamic，Pooling 属这一类；可学习参数与输入无关，记作 Static。
+
 ## 与其他"代表"概念对比
 
 | 方法 | 代表选择 | 用途 | 与 CBSA 的关系 |
@@ -127,7 +129,7 @@ $$U_k^\top Z = L_k \Sigma_k R_k$$
 | **CBSA 代表** | 通过 cross-attention 从输入提取 | 压缩目标 | 核心组件 |
 | **全局 token** | 额外添加的 cls token | 全局信息 | CBSA 的 Q_ini 包含平均池化 |
 | **Landmarks** | 随机/学习选择的 token 子集 | 稀疏注意力 | 相似但 CBSA 的代表可学习 |
-| **Agent tokens** | 额外添加的可学习 token | 线性 attention | CBSA 的无收缩变体 |
+| **Agent tokens** | 由该层 $Q$ 池化得到的动态 token（可学习参数是变体，Static 取 82.2 < Pooling 82.6） | 线性 attention 形式下的全局聚合 | CBSA 的无收缩变体 |
 
 上表的 Landmarks 一行指随机或学习选择的 token 子集。MiTA（arXiv:2602.01219）另给一种取法：landmark query 由该层 $Q$ 做均匀分段的平均池化得到（$m\ll N$ 个），landmark value 由这些 query 对全 KV 做一次 cross-attention 得到，二者构成对全体 query 常开的共享专家；同一批 landmark 再各取 top-$k$ KV 立成专家组，query 侧只做一次 argmax 路由[^src-2602-01219-mita]。在 MiTA 的五维分类里，这种构造与 Agent attention 同记为 landmark testing，差别在路由拓扑。见 [[mita-attention]]、[[fast-weight-scaling-taxonomy]]。
 
@@ -142,3 +144,4 @@ $$U_k^\top Z = L_k \Sigma_k R_k$$
 
 [^src-cbsa]: [[source-cbsa]]
 [^src-2602-01219-mita]: [[source-2602-01219-mita]]
+[^src-2312-08874-agent-attention]: [[source-2312-08874-agent-attention]]
