@@ -10,7 +10,7 @@ tags:
   - vision
 created: 2026-10-24
 last_updated: 2026-10-24
-source_count: 1
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -126,6 +126,20 @@ $m=k=25$、$s=1$ 时，单 query 计算 50 对 KV，$K^{\mathrm{expt}},V^{\mathr
 
 式（10）本身是 $\mathcal{O}\!\left(N(m+ks)\right)$，相对 full attention 的 $\mathcal{O}(N^2)$，前提是 $N\gg m+ks$（§3.2）[^src-2602-01219-mita]。上界只覆盖这一步：$\mathcal{O}(Nm)$ 打分、$\mathcal{O}(Nm)$ landmark value 提取与 gather 访存均未计入，且未给出空间复杂度。论文将 gather 随机访存列为潜在显存带宽瓶颈，所引 DSA 缓解方案未经验证[^src-2602-01219-mita]。
 
+## 与 NSA 的合并口径对照
+
+MiTA 与 [[native-sparse-attention|NSA]] 都把压缩与路由放进同一个 attention，合并方式不同：
+
+| 项目 | MiTA | NSA |
+|---|---|---|
+| 合并 | $[\tilde Q,\,K^{(e_1)}]$、$[\tilde V,\,V^{(e_1)}]$ 拼接后单次 softmax，全局与局部在同一分母下竞争（式 10）[^src-2602-01219-mita] | 压缩、块选择、滑动窗口三支路各自 softmax，再按 sigmoid 门控加权求和，门控三个值互不归一（式 5）[^src-2502-11089-nsa] |
+| 支路数 | 2（常开共享专家 + 1 个路由专家） | 3（压缩 + 块选择 + 滑动窗口）[^src-2502-11089-nsa] |
+| 打分来源 | landmark query 的 $S^{kv}=K^{\top}\tilde Q$ 同时供 top-$k$ 与路由 | 压缩支路的注意力分数 $p^{cmp}_t=\operatorname{Softmax}(q_t^{\top}\tilde K^{cmp}_t)$ 供 top-$n$ 选块（式 8）[^src-2502-11089-nsa] |
+| 单 query 的 KV 量 | $m+k=50$ 对（$25+25$）[^src-2602-01219-mita] | $\lfloor (s-l)/d\rfloor+nl'+w$，$s=64$k 时为 5632 个等价 token（Table 4）[^src-2502-11089-nsa] |
+| 验证域 | ImageNet-1K/21K、ADE20K、LRA，均为视觉任务[^src-2602-01219-mita] | 27B 语言模型预训练、LongBench、AIME 24（§4）[^src-2502-11089-nsa] |
+
+两项机制之间没有同台实验：NSA 的稀疏基线是 H2O、InfLLM、Quest、Exact-Top，质量基线是 Full Attention（§4.2）；MiTA 的基线是 ViT、Agent-ViT、Linear-ViT（Table 3）[^src-2502-11089-nsa][^src-2602-01219-mita]。
+
 ## 证据
 
 ### ImageNet-1K 从头训练（Table 2）
@@ -227,7 +241,9 @@ MiTA 在 ListOps、Image、Pathfinder 取得最高分，在 Text（−1.78）与
 - [[fast-weight-scaling-taxonomy]] — 五维分类与 MiTA 所在格
 - [[deformable-fast-weight-experts]] — 形变专家与「可复用 top-$k$ 集合」
 - [[moba-attention]] — 刚性块路由的对照
+- [[native-sparse-attention]] — 三分支 + sigmoid 门控的合并口径对照
 - [[cbsa]] · [[representative-token-extraction]] — 压缩支的同族机制（Agent attention）
 - [[mixture-of-experts]] — MoE 原则用于 attention
 
 [^src-2602-01219-mita]: [[source-2602-01219-mita]]
+[^src-2502-11089-nsa]: [[source-2502-11089-nsa]]

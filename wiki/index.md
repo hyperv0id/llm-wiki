@@ -22,6 +22,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-2406-11838-mar]] — MAR: Autoregressive Image Generation without Vector Quantization，per-token 扩散头（Diffusion Loss）+ 广义自回归（随机顺序双向 MAR），ImageNet 256 w/CFG FID 1.55（Tianhong Li, Yonglong Tian, Kaiming He et al., NeurIPS 2024；PDF raw/2406.11838-mar.pdf）
 - [[source-2412-18730]] — Elucidating Flow Matching ODE Dynamics via Data Geometry and Denoisers, denoiser 吸引/吸收元定理 + FM ODE 三阶段轨迹 + 终端收敛（首个覆盖低维子流形支撑）+ 记忆几何理论 (Wan, Wang, Mishne, Wang, ICML 2025 Poster, arXiv:2412.18730 v4)
 - [[source-2502-10236]] — Shaping Inductive Bias in Diffusion Models through Frequency-Based Noise Control (ICLR 2025 Workshop) superseded by [[source-sagd]]
+- [[source-2502-11089-nsa]] — NSA: Native Sparse Attention，压缩 / 块选择 / 滑动窗口三支路各自 softmax + sigmoid 门控合并，GQA 组内共用选块，27B/3B 激活模型 270B token 预训练，LongBench 平均 0.469 vs 0.437、64k forward 9.0× / backward 6.0× / decode 11.6×（DeepSeek-AI, arXiv:2502.11089）
 - [[source-2509-22259]] — Rotary Position Encodings for Graphs (WIRE): 用 Laplacian 谱坐标对 query/key 施加旋转，RoPE 的图推广 (ICML 2026)
 - [[source-2510-25760]] — Multimodal Spatial Reasoning in the Large Model Era: A Survey and Benchmarks, Zheng et al. (arXiv 2025)
 - [[source-2512-02556-deepseek-v3-2]] — DeepSeek-V3.2 技术报告：DSA（FP8 lightning indexer + 逐 query 取 top-k 个 MLA latent，MQA 模式实例化）、GRPO 四项工程改动、8.5 万条 agentic 任务合成（DeepSeek-AI, arXiv:2512.02556, 2025-12）
@@ -1142,6 +1143,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[multispans]] — MultiSPANS, multi-range ST Transformer with structural-entropy-optimized spatial attention (WSDM 2024)
 - [[mutual-information-disentanglement]] — MI minimax 解耦：最小化共享/独有互信息 + 最大化跨模态共享互信息 (MIDAS)
 - [[n-step-sarsa]] — 连接 TD 与 MC 的多步 Sarsa 方法
+- [[native-sparse-attention]] — NSA：compression / selection / sliding window 三支路各自 softmax 后按 sigmoid 门控加权，选择分复用压缩支路注意力分数，按 GQA 组装入 SRAM 的 Triton kernel
 - [[newton-schulz-iteration]] — Newton-Schulz iteration for matrix orthogonalization
 - [[next-scale-prediction]] — Next-Scale Prediction（VAR），多尺度 VQVAE token map 由粗到细自回归、尺度内并行，O(n⁴) 生成 + scaling law + 零样本编辑（arXiv 2024）
 - [[node-heterogeneous-invariant-learning]] — 邻域环境集采样 + 节点条件 FiLM 调制 + InfoNCE/IRM 双辅助损失

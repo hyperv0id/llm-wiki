@@ -7,7 +7,7 @@ tags:
   - scalability
 created: 2026-04-29
 last_updated: 2026-10-24
-source_count: 12
+source_count: 13
 references:
   - [[source-fast-long-horizon-forecasting]]
   - [[source-2602-01219-mita]]
@@ -137,6 +137,8 @@ MoBA（Moonshot AI，2025）把 top-k 门控的对象从 FFN 专家换成 KV 上
 
 与慢权重 MoE 的关键差别在专家是什么：这里的专家是 key-value 对的一个子集，随输入生成，属 fast weights；MoE attention 因此被读成「把宽度为 $N$ 的 fast-weight MLP 拆成专家再路由」[^src-2602-01219-mita]。MiTA 在这一点上再改一步：专家不再是连续定长块，而是由 landmark query 对全 KV 打分后取 top-$k$ 聚成的形变专家，$m$ 个专家组 $N$-to-$m$ 路由，另加一个常开的共享专家承担全局概括[^src-2602-01219-mita]。完整谱系见 [[fast-weight-scaling-taxonomy]]，机制与数值见 [[mita-attention]]、[[deformable-fast-weight-experts]]。
 
+[[native-sparse-attention|NSA]] 则把门控放在支路合并处：压缩、块选择、滑动窗口三条支路各自 softmax，再由 sigmoid 门控加权求和，三个门控值互不归一（式 5）；块选择本身在支路内部按复用自压缩支路的注意力分数取 top-$n$，不引入独立打分网络（式 8、§3.3）[^src-2502-11089-nsa]。
+
 ## 相关技术
 
 - [[glu-gated-linear-unit|Gated Linear Units (GLU)]]
@@ -152,6 +154,7 @@ MoBA（Moonshot AI，2025）把 top-k 门控的对象从 FFN 专家换成 KV 上
 - [[time-300b|Time-300B]]
 - [[fusionbench|FusionBench]] · [[deep-model-fusion]] · [[model-merging]]
 - [[moba-attention]] — MoE top-k 门控用于 attention（KV 块即专家，LLM 长上下文）
+- [[native-sparse-attention]] — 三分支各自 softmax + sigmoid 门控合并（压缩 / 块选择 / 滑动窗口）
 - [[mita-attention]] — 形变 fast-weight 专家 + 共享专家（landmark query 取 top-k，压缩与路由并用）
 - [[fast-weight-scaling-taxonomy]] — 从 fast-weight 缩放视角给 MoE/top-k 注意力定位的五维分类
 - [[motion-moe]] — 轨迹预测的 indicator / route 双类专家（TrajAR）
@@ -172,3 +175,4 @@ MoBA（Moonshot AI，2025）把 top-k 门控的对象从 FFN 专家换成 KV 上
 [^src-jmlr-25-1243]: [[source-jmlr-25-1243]]
 [^src-trajar]: [[source-trajar]]
 [^src-2602-01219-mita]: [[source-2602-01219-mita]]
+[^src-2502-11089-nsa]: [[source-2502-11089-nsa]]

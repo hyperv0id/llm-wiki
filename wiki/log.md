@@ -4037,3 +4037,11 @@ DSA 用 FP8 lightning indexer 给每个前序 token 打分，每个 query 只对
 更新的页面：[[fast-weight-scaling-taxonomy]] 1→2, [[deformable-fast-weight-experts]] 1→2, [[kv-cache-compression]] 3→4, [[moba-attention]] 2→3, [[index]]
 ingest 报告：[[ingest-reports/2026-10-24-deepseek-v3-2|WHY 报告]]
 数值备注：源按 arXiv HTML v1 新建 `raw/2512.02556-deepseek-v3-2.md`；Figure 3、Figure 7、Table 4 的 ICPC 行在转换中残缺。
+
+
+## [2026-10-24] ingest | Native Sparse Attention（NSA，arXiv:2502.11089）
+论文把稀疏注意力拆成推理加速与训练可微两个约束，指出推理期插入的方法至少有一个阶段拿不到加速、逐 head 独立选块在 GQA 下访存量退化为组内并集，ClusterKV 的聚类与 HashAttention 的逐 token 读取则破坏计算图连续性与块访存。NSA 的解法是把每个 query 的前序 KV 重映射成三条支路：块压缩（$l=32$、步长 $d=16$ 的带块内位置编码 MLP）、块选择（$l'=64$、top-$n=16$，重要性分直接复用压缩支路的注意力分数，GQA 组内各 head 求和后共用一份选块）、滑动窗口（$w=512$）；三支路各自 softmax，再由 sigmoid 门控加权求和，$N_t=\lfloor (s-l)/d\rfloor+nl'+w\ll t$。kernel 侧按 GQA 组把组内全部 query head 装入 SRAM、共享同一组块索引，解码期每步只读 $N_t$ 个 token。证据：27B 总参 / 3B 激活模型在 8k 上预训练 270B token（§1 写 260B，两处不一致），Table 1 平均 0.456 vs 0.443（9 项中 7 项更高），Table 2 LongBench 平均 0.469 vs Full 0.437 / Exact-Top 0.423，Table 3 AIME 24 在 16k 生成限制下 0.146 vs 0.092，Figure 6 在 64k 上 forward 9.0× / backward 6.0×，Table 4 解码 11.6×（5632 vs 65536 等价 token）。边界：单一模型规模、$l,d,l',n,w$ 无消融、对照全为推理期稀疏方法、未与 MoBA 一类训练期稀疏同台、加速比来自 Triton 实现与按访存量推算的期望值。
+创建的页面：[[source-2502-11089-nsa]], [[native-sparse-attention]]
+更新的页面：[[fast-weight-scaling-taxonomy]]（Table 1 补 NSA 行三维并标注来源，source_count 2→3）, [[mita-attention]]（补拼接单次 softmax vs 三分支门控的对照表，1→2）, [[deepseek-sparse-attention]]（补四处结构差异，1→2）, [[moba-attention]]（补谱系定位，3→4）, [[mixture-of-experts]]（补门控合并与选块打分来源，12→13）, [[kv-cache-compression]]（补训练期块稀疏一段，4→5）, [[index]], [[log]]
+ingest 报告：[[ingest-reports/2026-10-24-2502-11089-nsa|WHY 报告]]
+数值备注：Table 2 有一列表头在 PDF 文本层缺失（位置在 GovRptDur 与 PassR-en 之间，数值完整、计入 Avg，未代填子集名）；token 数 260B（§1）/270B（§4.1）并列报告；§4.3 的 2560 token 预算与 Table 4 在 32768 下的 3584 并列（2560 等于 Table 4 中 16384 的值）；Table 4 的 5632 与 §5.2 的 $\lfloor (s-l)/d\rfloor$ 差 2 个 token（取整）；Figure 6 backward 面板有一处残留的「9.0 ×」标注，按正文 6.0× 取值；Figure 4、Figure 5、Figure 7 无数值可抄；式 (9) 的求和下标 $m,n$ 与 top-$n$ 冲突，页内改用 $a,b$ 并注明。

@@ -9,7 +9,7 @@ tags:
   - llm
 created: 2026-10-08
 last_updated: 2026-10-24
-source_count: 3
+source_count: 4
 confidence: medium
 status: active
 ---
@@ -92,6 +92,15 @@ MoBA 是 full attention 的 drop-in 替代：参数量不变，top-k 覆盖全�
 - 选择粒度与 [[deepseek-sparse-attention|DSA]] 不同：MoBA 以块为单位（$N/n$ 个专家），DSA 以单个 MLA KV latent 为单位（$N$ 个宽 $k$ 的专家），代价是 DSA 的打分步骤仍为 $\mathcal{O}(L^2)$（§2.3）[^src-2512-02556-deepseek-v3-2]。
 - Quest 可视为更小块加 min/max pooling 块表示的 MoBA，LongHeads 可视为 top-1 MoBA（出自该 related work）；H2O、StreamingLLM、TOVA、FastGen 属 decode 侧 KV 压缩，与 MoBA 的训练期架构稀疏正交（见 [[kv-cache-compression]]）[^src-moba-mixture-of-block-attention]。
 
+## 与 NSA 的对照
+
+两者都把 KV 切片后再选，支路数与合并方式不同：
+
+- **支路数**：MoBA 单支路，门控在块集合上取 top-k，选中块与当前块直接做 attention，top-k 覆盖全部块时退化为 full attention[^src-moba-mixture-of-block-attention]；[[native-sparse-attention|NSA]] 用压缩、块选择、滑动窗口三支路，各自 softmax 后按 sigmoid 门控加权，并以重映射后的 KV 替换原始 KV（式 3–5），不存在退化到 full attention 的开关（§3.2）[^src-2502-11089-nsa]。
+- **块打分**：MoBA 用 query 与块内 key 均值的内积，不引入新参数[^src-moba-mixture-of-block-attention]；NSA 把块重要性分直接从压缩支路的注意力分数里取出（式 8）[^src-2502-11089-nsa]。
+- **规模与阶段**：MoBA 的缩放实验到 2.1B、下游到 Llama-8B 的 1M 上下文，评测期只用于 prefill[^src-moba-mixture-of-block-attention]；NSA 在 27B 总参 / 3B 激活的模型上预训练，并报告 prefill、decode、backward 三档加速[^src-2502-11089-nsa]。
+- 两者之间没有同台实验：NSA 的稀疏基线是 H2O、InfLLM、Quest、Exact-Top，质量基线是 Full Attention（§4.2）[^src-2502-11089-nsa]。
+
 ## 相关页面
 
 - [[mixture-of-experts]] — MoBA 直接借用的 top-k 门控原则
@@ -101,8 +110,10 @@ MoBA 是 full attention 的 drop-in 替代：参数量不变，top-k 覆盖全�
 - [[mita-attention]] — 形变 expert 替代定长块，$N$-to-$m$ 路由（论文自述动机）
 - [[deformable-fast-weight-experts]] — 刚性块与形变专家的对照
 - [[fast-weight-scaling-taxonomy]] — MoBA 在五维分类中的格位
+- [[native-sparse-attention]] — 三支路 + 门控合并的块稀疏对照
 - [[deepseek-sparse-attention]] — token 粒度的 top-$k$ 对照
 
 [^src-moba-mixture-of-block-attention]: [[source-moba-mixture-of-block-attention]]
 [^src-2602-01219-mita]: [[source-2602-01219-mita]]
 [^src-2512-02556-deepseek-v3-2]: [[source-2512-02556-deepseek-v3-2]]
+[^src-2502-11089-nsa]: [[source-2502-11089-nsa]]
