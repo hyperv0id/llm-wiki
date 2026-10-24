@@ -7,8 +7,8 @@ tags:
   - efficient-inference
   - attention
 created: 2026-08-30
-last_updated: 2026-10-08
-source_count: 3
+last_updated: 2026-10-24
+source_count: 4
 confidence: medium
 status: active
 ---
@@ -42,6 +42,8 @@ KV 压缩与 [[context-window-extension]]（扩展位置编码以支持更长输
 
 正交的一条是训练期架构稀疏：[[moba-attention]] 用 top-k 门控选 KV 块，改 attention 计算结构而非推理期缓存淘汰；H2O、StreamingLLM、TOVA、FastGen、Quest 等属 decode 侧，与它互补[^src-moba-mixture-of-block-attention]。
 
+[[deepseek-sparse-attention|DSA]] 同属训练期架构稀疏，但不淘汰任何 KV：每个 query 在注意力时只读取 top-$k$ 个 MLA latent，主注意力复杂度由 $\mathcal{O}(L^2)$ 降到 $\mathcal{O}(Lk)$；代价是产生选择分数的 indexer 仍要对全部前序位置打分，保持 $\mathcal{O}(L^2)$（§2.3）[^src-2512-02556-deepseek-v3-2]。
+
 [[trace-as-state|Trace as State]] 处理的是另一个约束：后出现的任务状态不能改变同一遍中已经形成的早期 token 表示。它把推理轨迹放在原文之前重新读取，不执行 KV 淘汰或压缩。论文 Appendix A 把位置、全部逐层 KV 条目及其他持久输入相关缓冲一并算入工作状态；“有限状态”并不等于“只保留一个固定大小向量”。[^src-trace-as-state]
 
 作者在 Limitations 指出，轨迹前置可能降低多轮场景的 KV cache 复用；Appendix F 分别报告 cached input、missed input 与 output，不能据理论中的最坏情况内存差距宣称实际显存指数下降。完整开销口径见 [[trace-as-state-reproduction]]。[^src-trace-as-state]
@@ -53,9 +55,11 @@ KV 压缩与 [[context-window-extension]]（扩展位置编码以支持更长输
 - [[attention-sink]] — sink token 现象
 - [[rope]] — pre-RoPE/post-RoPE 区分的来源
 - [[moba-attention]] — 训练期块稀疏架构（正交路线）
+- [[deepseek-sparse-attention]] — 训练期 token 粒稀疏，不淘汰 KV
 - [[source-triattention]] — 源摘要
 - [[trace-as-state]] / [[conditional-state-update]] — 条件可用时机与缓存容量的区别
 
 [^src-triattention]: [[source-triattention]]
 [^src-moba-mixture-of-block-attention]: [[source-moba-mixture-of-block-attention]]
 [^src-trace-as-state]: [[source-trace-as-state]]
+[^src-2512-02556-deepseek-v3-2]: [[source-2512-02556-deepseek-v3-2]]

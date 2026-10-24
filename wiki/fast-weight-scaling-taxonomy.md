@@ -9,7 +9,7 @@ tags:
   - fast-weights
 created: 2026-10-24
 last_updated: 2026-10-24
-source_count: 1
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -45,12 +45,12 @@ MiTA 论文（arXiv:2602.01219，§3.1、Table 1）基于 [[fast-weight-mlp-view
 | Spark attention (2025) / DSA (2025) | Routing | $N$ 个 MLP | 轻量 skim（部分特征 / FP8） | $N$ 次 one-to-one |
 | **MiTA** | **Compression & Routing** | **$m$ 个 MLP** | **landmark testing** | **$N$-to-$m$** |
 
-表依原表顺序排列。转换丢失的 PVT、ViT3、DSA 与 DAT 策略列按上一行合并单元格补齐[^src-2602-01219-mita]。
+表依原表顺序排列。转换丢失的 PVT、ViT3、DSA 与 DAT 策略列按上一行合并单元格补齐[^src-2602-01219-mita]。DSA 一行的机制：**逐 query 选单个 MLA KV latent 的 top-$k$**，$k$ 在稀疏训练阶段取 2048，indexer 用 FP8 且头数很少；其选择对象是 latent，不是块，也不是原始 hidden（§2.1、§2.1.1）[^src-2512-02556-deepseek-v3-2]。
 
 ## 这套坐标给出的读法
 
 - **压缩与路由对应不同的失效模式**。论文指出：单纯压缩会损失对原始 KV 的精确访问，单纯路由则缺少全局上下文概括（§1）[^src-2602-01219-mita]。MiTA 与 NSA 为表中兼具两者的少数方法。
-- **专家数量与硬件友好性挂钩**。逐 query 生成 $N$ 个 top-$k$ 专家（Spark、DSA）时每 query 的专家形状都不同；固定 $m$ 个专家则可以块式批量计算，代价是多一次 $N$-to-$m$ 路由[^src-2602-01219-mita]。
+- **专家数量与硬件友好性挂钩**。逐 query 生成 $N$ 个 top-$k$ 专家（Spark、DSA）时每 query 的专家形状都不同；固定 $m$ 个专家则可以块式批量计算，代价是多一次 $N$-to-$m$ 路由[^src-2602-01219-mita]。DSA 的代价：主注意力降到 $\mathcal{O}(Lk)$，但产生路由分数的 indexer 仍要对全部前序 token 打分，复杂度保持 $\mathcal{O}(L^2)$（§2.3）[^src-2512-02556-deepseek-v3-2]。
 - **「专家构造」界定形变与刚性**。MoBA 依据位置划分块，MiTA 依据 $Q^{\top}\tilde Q$ 的 top-$k$ 聚合 KV，详见 [[deformable-fast-weight-experts]]。
 
 ## 与 wiki 中既有分类的关系
@@ -78,9 +78,11 @@ wiki 已有三套局部划分，覆盖范围与这套五维不同，引用时按
 ## 相关页面
 
 - [[mita-attention]] — 表中最后一行的机制与证据
+- [[deepseek-sparse-attention]] — 表中 DSA 行的机制细节
 - [[fast-weight-mlp-view-of-attention]] — 该表所依赖的形式化
 - [[deformable-fast-weight-experts]] — 专家构造维的展开
 - [[moba-attention]] · [[mixture-of-experts]] — 路由支的代表机制与 MoE 原则
 - [[cbsa]] · [[representative-token-extraction]] · [[linear-attention-unified-framework]] — 局部统一框架
 
 [^src-2602-01219-mita]: [[source-2602-01219-mita]]
+[^src-2512-02556-deepseek-v3-2]: [[source-2512-02556-deepseek-v3-2]]

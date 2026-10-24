@@ -9,7 +9,7 @@ tags:
   - routing
 created: 2026-10-24
 last_updated: 2026-10-24
-source_count: 1
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -36,6 +36,8 @@ status: active
 
 Spark attention 通过部分特征轻量 skim、DSA 采用 FP8 低精度打分，二者均由**各个 query 独立**选取 top-$k$ 个 KV，导致专家数达到 $N$，单专家宽度为 $k$。论文指出该设计将隐藏宽度 $N$ 转化为专家数量 $N$（§1）[^src-2602-01219-mita]。
 
+DSA 的实现即此形态：indexer 对**每个前序 token** 打分（各头 ReLU 内积的加权和，式 1），每个 query 只保留分数最高的 $k$ 个 MLA KV latent 做注意力（式 2），稀疏训练阶段 $k=2048$（§2.1、§2.1.1）[^src-2512-02556-deepseek-v3-2]。选择这一步要遍历全部前序位置，indexer 的复杂度保持 $\mathcal{O}(L^2)$，只有主注意力降到 $\mathcal{O}(Lk)$（§2.3）[^src-2512-02556-deepseek-v3-2]。
+
 MiTA 改用**少量 landmark query** 各自选取 top-$k$，构建 $m$ 个可复用专家组，query 侧执行单次 top-1 路由。单 query 计算形状得以固定，代价为引入一次 $N$-to-$m$ 的 argmax 检索[^src-2602-01219-mita]。
 
 ## MiTA 里的具体形态
@@ -59,7 +61,9 @@ MiTA 改用**少量 landmark query** 各自选取 top-$k$，构建 $m$ 个可复
 - [[mita-attention]] — 该机制的完整实例
 - [[fast-weight-scaling-taxonomy]] — 「专家构造」维在分类法中的位置
 - [[moba-attention]] — 刚性块专家的对照
+- [[deepseek-sparse-attention]] — 逐 query top-$k$ 的一手实例
 - [[mixture-of-experts]] — 慢权重 MoE 与 fast-weight 专家的差别
 - [[kv-cache-compression]] — 推理期逐 token KV 选择，属另一个问题
 
 [^src-2602-01219-mita]: [[source-2602-01219-mita]]
+[^src-2512-02556-deepseek-v3-2]: [[source-2512-02556-deepseek-v3-2]]

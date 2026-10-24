@@ -4030,3 +4030,10 @@ ingest 报告：[[ingest-reports/2026-10-24-mita|WHY 报告]]
 ## [2026-10-24] maintenance | mita-attention 数据流节改为分阶段计算图块
 按用户要求撤掉「张量清单」与「逐步形状变化」两张表（线性罗列无法体现并行支路与矩阵乘法消维），改为 Stage 1–4 的 `aligned` 块：Stage 1 池化、Stage 2 打分 + Top-$k$ + gather、Stage 3 分两支路（A 共享专家、B 形变专家）并行、Stage 4 拼接收敛。每行按「公式 & 维度推导」对齐，矩阵乘法用 `\bcancel{}` 标出被消去的维度，规约/采样用 `\xrightarrow{\text{沿某维 …}}` 标注方向，gather/ArgSort 标明索引张量形状如何作用于原张量。补记 $Q^{(i)}\in[d,n_i]$ 的定义，$\arg\max$ 记号改为 $\operatorname{ArgMax}_{m}$ 以消除维度歧义。散文部分（维度符号、支路定义、实现说明、结构要点、配置换算）送 `omp --model google/gemini-3.8-flash:high -p`（`--no-tools --no-session`）润色，逐段校验行内 `$...$` 序列与原稿逐字节一致后应用，改动仅措辞。
 更新的页面：[[mita-attention]]
+
+## [2026-10-24] ingest | DeepSeek-V3.2：DSA（arXiv:2512.02556）
+DSA 用 FP8 lightning indexer 给每个前序 token 打分，每个 query 只对 top-$k$ 个 MLA latent 做注意力：主注意力 $\mathcal{O}(L^2)\to\mathcal{O}(Lk)$，indexer 仍 $\mathcal{O}(L^2)$。继续预训练两阶段，warm-up 2.1B token（冻结除 indexer 外参数）、sparse 943.7B token（$k=2048$，indexer 输入 detach）。质量 parity 只有定性表述（唯一数字 AA-LCR +4），成本只有 Figure 3 曲线；无 $k$ 敏感性、无 indexer 消融、无 NSA/MoBA 同台对比、评测止于 128K。
+创建的页面：[[source-2512-02556-deepseek-v3-2]], [[deepseek-sparse-attention]], [[deepseek-v3-2]]
+更新的页面：[[fast-weight-scaling-taxonomy]] 1→2, [[deformable-fast-weight-experts]] 1→2, [[kv-cache-compression]] 3→4, [[moba-attention]] 2→3, [[index]]
+ingest 报告：[[ingest-reports/2026-10-24-deepseek-v3-2|WHY 报告]]
+数值备注：源按 arXiv HTML v1 新建 `raw/2512.02556-deepseek-v3-2.md`；Figure 3、Figure 7、Table 4 的 ICPC 行在转换中残缺。

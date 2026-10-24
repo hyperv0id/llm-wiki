@@ -196,6 +196,8 @@ superseded_by: [[页面]]   # 仅当 status=superseded 时
 
 操作类型：`ingest`、`query`、`lint`、`contradiction`、`maintenance`。
 
+条目只记结论与落点：一到两句写清源解决了什么问题、机制与关键数字、证据缺口，再加页面清单。不记操作过程、不逐文件复述改动、不写「先读了…然后改了…」的流水账。
+
 ---
 
 ## Ingest

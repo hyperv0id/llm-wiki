@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-10-23
+last_updated: 2026-10-24
 tags:
   - meta
 source_count: 0
@@ -24,6 +24,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-2502-10236]] — Shaping Inductive Bias in Diffusion Models through Frequency-Based Noise Control (ICLR 2025 Workshop) superseded by [[source-sagd]]
 - [[source-2509-22259]] — Rotary Position Encodings for Graphs (WIRE): 用 Laplacian 谱坐标对 query/key 施加旋转，RoPE 的图推广 (ICML 2026)
 - [[source-2510-25760]] — Multimodal Spatial Reasoning in the Large Model Era: A Survey and Benchmarks, Zheng et al. (arXiv 2025)
+- [[source-2512-02556-deepseek-v3-2]] — DeepSeek-V3.2 技术报告：DSA（FP8 lightning indexer + 逐 query 取 top-k 个 MLA latent，MQA 模式实例化）、GRPO 四项工程改动、8.5 万条 agentic 任务合成（DeepSeek-AI, arXiv:2512.02556, 2025-12）
 - [[source-2511-16426]] — FrèqFlow/SpectFlow: Long-term forecasting using lightweight flow matching (NeurIPS 2025)
 - [[source-2602-01219-mita]] — MiTA: Mixture of Top-k Attention，把 attention 读成宽度 N 的 fast-weight MLP，按压缩/路由两条路缩放，用 landmark query 取 top-k KV 作形变专家 + 窄共享专家（BUPT，arXiv 2026；PDF 转换全文 raw/2602.01219-mita.md）
 - [[source-2605-07319]] — Generative Modeling with Flux Matching：全新生成建模范式，推广得分函数为任意生成向量场 (Pao-Huang et al., Stanford, arXiv 2026)
@@ -442,6 +443,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[ddpm]] — DDPM, denoising diffusion probabilistic models (NeurIPS 2020)
 - [[deepar]] — DeepAR, global shared autoregressive LSTM probabilistic forecaster with scale handling (Amazon, arXiv:1704.04110)
 - [[deepstate]] — DeepState, RNN-parametrized linear Gaussian SSM with Kalman likelihood/prediction (NeurIPS 2018, Amazon)
+- [[deepseek-v3-2]] — DeepSeek-V3.2：唯一架构改动为 DSA，128K 上下文；specialist distillation + mixed RL + agentic 任务合成，Speciale 变体在 IMO/IOI 取得金牌
 - [[diffstg]] — DiffSTG, probabilistic spatio-temporal graph forecasting with denoising diffusion (AAAI 2023)
 - [[diffusionblocks]] — DiffusionBlocks, principled block-wise training framework via diffusion interpretation, 3× memory reduction with competitive performance (Sakana AI, ICLR 2026)
 - [[digital-typhoon-dataset]] — Digital Typhoon, largest open-source typhoon satellite image dataset (1978-2023)
@@ -941,6 +943,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[dcw]] — DCW，小波域差分校正，缓解扩散模型 SNR-t Bias 的即插即用方法 (CVPR 2026)
 - [[ddim]] — DDIM, 概率流 ODE 的一阶 Euler 离散化 (ICLR 2021)
 - [[ddpm-simplified-training-objective]] — DDPM's L_simple, simplified noise prediction loss for diffusion models
+- [[deepseek-sparse-attention]] — DSA：FP8 lightning indexer 打分 + 逐 query 取 top-k 个 MLA latent，主注意力 $O(L^2)\to O(Lk)$、indexer 仍 $O(L^2)$，两阶段继续预训练（DeepSeek-V3.2）
 - [[deformable-fast-weight-experts]] — 形变 fast-weight 专家：专家组成由内容决定而非位置切块，MiTA 用 landmark query 对全 KV 打分取 top-k，$N$-to-$m$ 路由后可复用
 - [[decoy-injection]] — benchmark technique injecting fake PII to increase privacy reasoning difficulty
 - [[demlp-decoder]] — two-stage coarse-to-fine decoder with explicit trend removal
