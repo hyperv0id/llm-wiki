@@ -16,38 +16,38 @@ status: active
 
 # Native Sparse Attention (NSA)
 
-DeepSeek-AI、北京大学与华盛顿大学（arXiv:2502.11089v2，2025-02）的稀疏注意力架构：把每个 query 的前序 KV 集合替换为三支路重映射结果——块压缩（compression）、块选择（selection）、滑动窗口（sliding window）——三支路各自 softmax 后按 sigmoid 门控加权求和，并把稀疏模式放进预训练而非推理期插入（式 3–5、§3.3）[^src-2502-11089-nsa]。
+DeepSeek-AI、北京大学与华盛顿大学（arXiv:2502.11089v2，2025-02）的稀疏注意力架构：每个 query 的前序 KV 替换为三支路重映射结果——块压缩（compression）、块选择（selection）、滑动窗口（sliding window）——各自 softmax 后按 sigmoid 门控加权求和，稀疏模式放进预训练而非推理期插入（式 3–5、§3.3）[^src-2502-11089-nsa]。
 
 ## 问题定位
 
-论文把既有做法的失效归到四个具体机制上（§2.1、§2.2）[^src-2502-11089-nsa]：
+既有做法的失效归为四点（§2.1、§2.2）[^src-2502-11089-nsa]：
 
-- **阶段受限**：H2O 在解码期稀疏，但 prefill 需要算注意力图与建索引；MInference 只在 prefill 稀疏。至少有一个阶段的开销与 full attention 相当，于是书摘、代码补全这类 prefill 为主的工作负载与长思维链这类 decode 为主的工作负载各自拿不到加速（§2.1）。
-- **与 GQA/MQA 不兼容**：Quest 一类方法逐 head 独立选 KV 子集，在 MHA 下计算与访存同时稀疏；GQA 下 KV cache 的访存量由组内所有 query head 选中集合的**并集**决定，因而计算量下降但访存量不降（§2.1）。
-- **事后稀疏的质量损失**：推理期插入稀疏迫使模型偏离预训练的优化轨迹，论文转引 Chen et al. 2024b 的结论——top 20% 注意力只覆盖总注意力分数的 70%（§2.2）。
-- **训练期插入的障碍**：ClusterKV 的 k-means、MagicPIG 的 SimHash 在计算图中造成不连续；HashAttention 一类逐 token 选择需要对 KV cache 做非连续读取，与 FlashAttention 依赖连续块访存的前提冲突，实现退化到低硬件利用率（§2.2）。
+- **阶段受限**：H2O 只在解码期稀疏，prefill 仍需算注意力图与建索引；MInference 只在 prefill 稀疏。至少一个阶段的开销与 full attention 相当，prefill 为主的负载（书摘、代码补全）与 decode 为主的负载（长思维链）各自拿不到加速（§2.1）。
+- **与 GQA/MQA 不兼容**：Quest 一类方法逐 head 独立选 KV 子集，MHA 下计算与访存同时稀疏；GQA 下 KV cache 访存量由组内各 query head 选中集合的**并集**决定，计算量降而访存量不降（§2.1）。
+- **事后稀疏的质量损失**：推理期插入稀疏迫使模型偏离预训练的优化轨迹；论文转引 Chen et al. 2024b：top 20% 注意力只覆盖总注意力分数的 70%（§2.2）。
+- **训练期插入的障碍**：ClusterKV 的 k-means、MagicPIG 的 SimHash 在计算图中造成不连续；HashAttention 一类逐 token 选择需非连续读取 KV cache，与 FlashAttention 依赖连续块访存冲突，退化为低硬件利用率（§2.2）。
 
 ## 框架
 
-给定 query $q_t$ 与前序 $\mathbf{k}_{:t},\mathbf{v}_{:t}$，先做重映射再在重映射后的集合上做注意力（式 3–5）[^src-2502-11089-nsa]：
+给定 query $q_t$ 与前序 $\mathbf{k}_{:t},\mathbf{v}_{:t}$，先重映射、再在重映射后的集合上做注意力（式 3–5）[^src-2502-11089-nsa]：
 
 $$\tilde K_t=f_K(q_t,\mathbf{k}_{:t},\mathbf{v}_{:t}),\qquad \tilde V_t=f_V(q_t,\mathbf{k}_{:t},\mathbf{v}_{:t}),\qquad o^*_t=\operatorname{Attn}\!\left(q_t,\tilde K_t,\tilde V_t\right)$$
 
 $$o^*_t=\sum_{c\in\{cmp,slc,win\}} g^c_t\cdot\operatorname{Attn}\!\left(q_t,\tilde K^c_t,\tilde V^c_t\right),\qquad N_t=\sum_{c}\operatorname{size}\!\left[\tilde K^c_t\right]\ll t$$
 
-$g^c_t\in[0,1]$ 由输入特征经 MLP 与 sigmoid 得到，三个支路的门控互相独立，式（5）未对三者和做归一化（§3.2）[^src-2502-11089-nsa]。$N_t$ 是重映射后的 key 总数，稀疏性由 $N_t\ll t$ 保证。
+$g^c_t\in[0,1]$ 由输入特征经 MLP 与 sigmoid 得到，三支路门控互相独立，式（5）未对三者和归一化（§3.2）[^src-2502-11089-nsa]。$N_t$ 是重映射后的 key 总数，稀疏性由 $N_t\ll t$ 保证。
 
 ## 三分支机制
 
-**Compression（§3.3.1）**：对 $l$ 个连续 key 用一个带块内位置编码的可学习 MLP $\varphi$ 归约为一个块级 key，相邻块按步长 $d$ 滑动，取 $d<l$ 以减轻信息碎片化。默认 $l=32$、$d=16$（式 7、§4.1）[^src-2502-11089-nsa]。
+**Compression（§3.3.1）**：每 $l$ 个连续 key 由带块内位置编码的可学习 MLP $\varphi$ 归约为一个块级 key，相邻块按步长 $d$ 滑动，取 $d<l$ 减轻信息碎片化。默认 $l=32$、$d=16$（式 7、§4.1）[^src-2502-11089-nsa]。
 
-**Selection（§3.3.2）**：以空间连续块为单位选择，理由两条——GPU 对连续块访存的吞吐远高于按随机下标读取，且块式访问才能用满 Tensor Core；注意力分数本身呈现空间连续性（§6.2 的 Figure 8 给出 full attention 注意力图的块聚类形态）。关键设计是**重要性分直接复用压缩支路的注意力分数** $p^{cmp}_t=\operatorname{Softmax}(q_t^{\top}\tilde K^{cmp}_t)$（式 8），不引入独立打分网络与辅助损失；压缩块与选择块分块不一致时按空间关系累加（式 9），GQA 组内各 head 的分数求和以保证全组选同一批块（式 10），再按降序 rank 取前 $n$ 块（式 11–12）。默认 $l'=64$、$n=16$，其中固定激活首块与 2 个局部块（§4.1）[^src-2502-11089-nsa]。
+**Selection（§3.3.2）**：按空间连续块选择，两条理由——GPU 对连续块访存的吞吐远高于随机下标读取，块式访问才能用满 Tensor Core；注意力分数本身有空间连续性（Figure 8 给出 full attention 注意力图的块聚类形态，§6.2）。**重要性分直接复用压缩支路的注意力分数** $p^{cmp}_t=\operatorname{Softmax}(q_t^{\top}\tilde K^{cmp}_t)$（式 8），不引入独立打分网络与辅助损失；压缩块与选择块不对齐时按空间关系累加（式 9），GQA 组内各 head 分数求和以保证全组选同一批块（式 10），再按降序 rank 取前 $n$ 块（式 11–12）。默认 $l'=64$、$n=16$，固定激活首块与 2 个局部块（§4.1）[^src-2502-11089-nsa]。
 
-**Sliding Window（§3.3.3）**：保留最近 $w=512$ 个 token 的独立 K/V。设置该支路的目的是把局部模式隔离出去：局部模式学得更快，若不单列会抢占压缩与选择两支路的梯度。三支路各自持有独立 K/V，论文给出的理由是防止局部与长程模式之间发生梯度干扰与 shortcut（§3.3.3）[^src-2502-11089-nsa]。
+**Sliding Window（§3.3.3）**：保留最近 $w=512$ 个 token 的独立 K/V，把局部模式隔离出去：局部模式学得更快，不单列会抢占另两支路的梯度；三支路各持独立 K/V，以防局部与长程模式间的梯度干扰与 shortcut（§3.3.3）[^src-2502-11089-nsa]。
 
 ## 数据流与维度变换
 
-**维度符号**：$s$ 已缓存序列长度，$t$ 当前 query 位置（解码时 $s=t$）；$l=32$ 压缩块长；$d=16$ 压缩块滑动步长；$l'=64$ 选择块长；$n=16$ 选中块数；$w=512$ 窗口；$d_k=d_q=192$、$d_v=128$；$H=16$ 为每个 GQA 组的 query head 数，组数 4（§4.1、§5）[^src-2502-11089-nsa]。形状记作 $[\text{行},\text{列}]$，与论文记号一致；论文按单 query 书写，本页的组内批量展开标 [INFERENCE]。
+**维度符号**：$s$ 已缓存序列长度，$t$ 当前 query 位置（解码时 $s=t$）；$l=32$ 压缩块长；$d=16$ 压缩块滑动步长；$l'=64$ 选择块长；$n=16$ 选中块数；$w=512$ 窗口；$d_k=d_q=192$、$d_v=128$；$H=16$ 为每个 GQA 组的 query head 数，组数 4（§4.1、§5）[^src-2502-11089-nsa]。形状记作 $[\text{行},\text{列}]$，与论文记号一致；论文按单 query 书写，组内批量展开标 [INFERENCE]。
 
 ### Stage 1 · 压缩前序 KV
 
@@ -56,7 +56,7 @@ $$\begin{aligned}
 \tilde V^{cmp}_t &= \left\{\psi\!\left(v_{id+1:\,id+l}\right)\right\}_{0\le i\le\left\lfloor (t-l)/d\right\rfloor} && \text{// } [d_v, \bcancel{l}]\to[d_v, \lfloor (t-l)/d\rfloor]\ \text{——value 侧同构，} \psi \text{ 为另一组 MLP}
 \end{aligned}$$
 
-$\varphi$ 含块内位置编码，因此压缩块摘要保留块内顺序信息（§3.3.1）[^src-2502-11089-nsa]。块数在原文有两处口径：式（7）的索引上界为 $\lfloor (t-l)/d\rfloor$、其张量维写作 $\lfloor (t-l)/d\rfloor$，式（8）的分数向量长度为 $\lfloor (t-l)/d\rfloor+1$；本页按 $+1$ 计块数。
+$\varphi$ 含块内位置编码，压缩块摘要保留块内顺序信息（§3.3.1）[^src-2502-11089-nsa]。块数在原文有两处口径：式（7）的索引上界为 $\lfloor (t-l)/d\rfloor$、其张量维写作 $\lfloor (t-l)/d\rfloor$，式（8）的分数向量长度为 $\lfloor (t-l)/d\rfloor+1$；本页按 $+1$ 计块数。
 
 ### Stage 2 · 压缩支路打分（同时充当块重要性分）
 
@@ -74,7 +74,7 @@ p'^{slc}_t &= \sum_{h=1}^{H}p^{slc,(h)}_t && \text{// } [\lfloor t/l'\rfloor]\ti
 \tilde K^{slc}_t &= \operatorname{Cat}\!\left\{k_{il'+1:\,(i+1)l'}\ \middle|\ i\in\mathcal{I}_t\right\} && \text{// } [d_k,\lfloor t/l'\rfloor l']\xrightarrow{\text{按 } \mathcal I_t \text{ 索引块}}[d_k,nl']\ \text{——式(12)，}16\times64=1024 \text{ 个 key}
 \end{aligned}$$
 
-式（9）原文用 $m,n$ 作求和下标，本页改用 $a,b$ 以免与选中块数 $n$ 冲突[^src-2502-11089-nsa]。$\mathcal I_t$ 是逐 query（组内逐位置）变化的离散集合，块下标本身不参与梯度；被选中块的 K/V 以普通 KV 参与 softmax，其梯度按常规路径回传 [INFERENCE]。
+式（9）原文用 $m,n$ 作求和下标，本页改用 $a,b$ 以免与选中块数 $n$ 冲突[^src-2502-11089-nsa]。$\mathcal I_t$ 是逐 query（组内逐位置）变化的离散集合，块下标不参与梯度；被选中块的 K/V 以普通 KV 参与 softmax，梯度按常规路径回传 [INFERENCE]。
 
 ### Stage 4 · 滑动窗口支路
 
@@ -94,15 +94,15 @@ o^*_t &= \sum_{c}g^{c}_t\,O^{c}_t && \text{// } [d_v,1]\times 3\xrightarrow{\tex
 
 ## 与 full attention 的差别
 
-式（3）（4）用重映射后的 $\tilde K_t,\tilde V_t$ 替换原始 KV，并要求 $N_t\ll t$，因此 NSA 的输出不是 full attention 的输出，也不存在「选满即退化」的开关（§3.2）[^src-2502-11089-nsa]。三支路各自 softmax、再由 sigmoid 门控加权，与把不同来源的 KV 拼进同一个 softmax 分母是两种权重口径：前者每个支路的权重只在本支路内部竞争，后者全部候选在同一分母下竞争。[[mita-attention]] 属后者（拼接后单次 softmax）[^src-2602-01219-mita]。
+式（3）（4）用重映射后的 $\tilde K_t,\tilde V_t$ 替换原始 KV 并要求 $N_t\ll t$，故 NSA 的输出不是 full attention 的输出，也不存在「选满即退化」的开关（§3.2）[^src-2502-11089-nsa]。三支路各自 softmax 后经 sigmoid 门控加权，与把不同来源的 KV 拼进同一 softmax 分母是两种权重口径：前者各支路权重只在本支路内竞争，后者全部候选在同一分母下竞争。[[mita-attention]] 属后者（拼接后单次 softmax）[^src-2602-01219-mita]。
 
-论文对「与 full attention 可比」的处理是实验层面的：通用评测中多数样本长度落在各稀疏基线的局部窗口内，这些方法在该设置下等价于 full attention，故只比较 NSA 与 Full Attention（§4.2）[^src-2502-11089-nsa]。短序列下 NSA 自身的形态（$t\le w$ 时压缩支路与选择支路仍照常输出）论文未讨论。
+「与 full attention 可比」只在实验层面处理：通用评测中多数样本长度落在各稀疏基线的局部窗口内，这些方法在该设置下等价于 full attention，故只比较 NSA 与 Full Attention（§4.2）[^src-2502-11089-nsa]。短序列下 NSA 自身的形态（$t\le w$ 时压缩与选择两支路仍照常输出）论文未讨论。
 
 ## 硬件对齐与 kernel（§3.4、§5）
 
-**优化目标的分野**（§3.1）：训练与 prefill 的批量矩阵乘算术强度高、是 compute-bound，目标是减计算；自回归解码每步生成一个 token 却要读整个 KV cache、算术强度低，是 memory-bound，目标是减访存。§1 引用的理论估计：64k 上下文解码时 softmax 注意力占总延迟的 70–80%[^src-2502-11089-nsa]。
+**优化目标的分野**（§3.1）：训练与 prefill 的批量矩阵乘算术强度高，compute-bound，目标是减计算；自回归解码每步生成一个 token 却要读整个 KV cache，算术强度低，memory-bound，目标是减访存。§1 引用的理论估计：64k 上下文解码时 softmax 注意力占总延迟的 70–80%[^src-2502-11089-nsa]。
 
-**kernel 结构**（§3.4、Figure 3）：压缩与窗口两支路的计算与 FlashAttention-2 兼容，需专门实现的是选择支路。若沿用 FlashAttention 把时间上连续的 query 块装入 SRAM，同块内各 query 的选中 KV 块不相交，访存低效。NSA 改为**按位置装组内全部 query head**：外层在 Triton grid 上跑 query/output 循环，内层对位置 $t$ 载入 $Q\in\mathbb{R}^{[H,d_k]}$ 与全组共享的块索引 $\mathcal I_t$，再顺序载入 $K\in\mathbb{R}^{[B_k,d_k]}$、$V\in\mathbb{R}^{[B_k,d_v]}$ 到 SRAM，$B_k\mid l'$。收益两条：组内共享消除重复 KV 传输；内层长度（正比于 $n$）在 query 块间几乎相同，因而适合放进 grid 调度器做负载均衡[^src-2502-11089-nsa]。
+**kernel 结构**（§3.4、Figure 3）：压缩与窗口两支路与 FlashAttention-2 兼容，需专门实现的是选择支路。按 FlashAttention 把时间上连续的 query 块装进 SRAM 时，块内各 query 的选中 KV 块不相交，访存低效。NSA 改为**按位置装组内全部 query head**：外层在 Triton grid 上跑 query/output 循环，内层对位置 $t$ 载入 $Q\in\mathbb{R}^{[H,d_k]}$ 与全组共享的块索引 $\mathcal I_t$，再顺序载入 $K\in\mathbb{R}^{[B_k,d_k]}$、$V\in\mathbb{R}^{[B_k,d_v]}$ 进 SRAM，$B_k\mid l'$。收益两条：组内共享免去重复 KV 传输；内层长度（正比于 $n$）在 query 块间几乎相同，适合交给 grid 调度器做负载均衡[^src-2502-11089-nsa]。
 
 **解码访存量**（Table 4，8×A100，$g=4$、$H=16$、$d_k=192$、$d_v=128$）：表以「等价 token 数」记每次注意力操作的访存量，预期加速比与访存量近似成反比[^src-2502-11089-nsa]。
 
@@ -117,11 +117,11 @@ o^*_t &= \sum_{c}g^{c}_t\,O^{c}_t && \text{// } [d_v,1]\times 3\xrightarrow{\tex
 
 ## 训练
 
-**可训练性的设计选择**（§2.2、§6.1）：块选择的重要性分取自压缩支路的注意力分数（式 8），不需要额外的打分网络，也不需要辅助损失；块下标离散、不接收梯度，但没有独立的不可微模块挡在梯度路径上。论文另在 3B 模型上对照了两种替代选块方案（Figure 7）：辅助损失方案为每个 token 加额外 query、每块加代表 key，用块内注意力均值池化的分布做 KL 监督（与 SeerAttention 同路）；无参数启发式方案按 Quest 的做法用 query 与 key chunk 逐坐标 min-max 之积直接选块，并试了先用 full attention 跑 1000 步再切换的 cold start。两者损失均高于 NSA 与 Full Attention，曲线无具体数值[^src-2502-11089-nsa]。ClusterKV 一类聚类方案被排除的三条理由是：动态聚类的计算开销、聚类间不均衡在 MoE 专家并行下的负载失衡、强制周期性重聚类与分块顺序训练的实现约束（§6.1）[^src-2502-11089-nsa]。
+**可训练性的设计选择**（§2.2、§6.1）：选择分取自压缩支路的注意力分数（式 8），不需额外打分网络与辅助损失；块下标离散、不接收梯度，也没有独立的不可微模块挡在梯度路径上。论文另在 3B 模型上对照两种替代选块方案（Figure 7）：辅助损失方案为每 token 加额外 query、每块加代表 key，以块内注意力均值池化分布的 KL 监督（同 SeerAttention 思路）；无参数启发式按 Quest 用 query 与 key chunk 逐坐标 min-max 之积选块，另试过先跑 1000 步 full attention 再切换的 cold start。两者损失均高于 NSA 与 Full Attention，曲线无具体数值[^src-2502-11089-nsa]。ClusterKV 一类聚类方案被排除：动态聚类的计算开销、聚类间不均衡在 MoE 专家并行下的负载失衡、强制周期性重聚类与分块顺序训练的实现约束（§6.1）[^src-2502-11089-nsa]。
 
-**单一训练阶段**：NSA 与 Full Attention 基线同配方从头训练，没有 dense warm-up 或 dense→sparse 的切换步骤，稀疏选块从第 0 步就生效（§4.1）；§6.1 中先用 full attention 跑 1000 步再切换的 cold start 只用于无参数启发式选块这一替代方案。
+**单一训练阶段**：NSA 与 Full Attention 基线同配方从头训练，无 dense warm-up 或 dense→sparse 切换，稀疏选块从第 0 步生效（§4.1）；1000 步 full attention 的 cold start 只服务于上述启发式方案。
 
-**预训练配置**（§4.1）：GQA + MoE 骨干，27B 总参数、3B 激活参数，30 层，hidden 2560，GQA 4 组共 64 个 head，$d_q=d_k=192$、$d_v=128$；MoE 采用 DeepSeekMoE，72 个 routed expert 加 2 个 shared expert，top-k 取 6，首层 MoE 换成 SwiGLU MLP 以稳定训练。两个模型均在 8k 文本上预训练 $270$B token，随后在 32k 文本上继续训练并用 YaRN 做长上下文适配，再经监督微调；论文声明两者训练到完全收敛[^src-2502-11089-nsa]。摘要与 §1 写的是 260B token，§4.1 写 270B，两处不一致，见 [[source-2502-11089-nsa]][^src-2502-11089-nsa]。
+**预训练配置**（§4.1）：GQA + MoE 骨干，27B 总参数、3B 激活，30 层，hidden 2560，GQA 4 组共 64 个 head，$d_q=d_k=192$、$d_v=128$；DeepSeekMoE 含 72 个 routed expert 加 2 个 shared expert，top-k 取 6，首层 MoE 换成 SwiGLU MLP 以稳定训练。两个模型均在 8k 文本上预训练 $270$B token，再在 32k 文本上继续训练并用 YaRN 适配长上下文，经监督微调；论文声明两者训练到完全收敛[^src-2502-11089-nsa]。摘要与 §1 写 260B token，§4.1 写 270B，两处不一致，见 [[source-2502-11089-nsa]][^src-2502-11089-nsa]。
 
 **推理能力后训练**（§4.3）：从 R1 蒸馏，用 10B token 的 32k 数学推理轨迹做 SFT，得到 Full Attention-R 与 NSA-R 两个对照模型；AIME 24 上采样温度 0.7、top-$p$ 0.95、每题 16 条回答取均值[^src-2502-11089-nsa]。
 
@@ -138,7 +138,7 @@ NSA 在 9 项中 7 项更高，平均 +0.013；两项更低的是 MMLU（−0.00
 
 ### 长上下文（Table 2，LongBench）
 
-所有稀疏基线每个 query 的激活 token 预算统一设为 2560，§4.3 记为 NSA 在 32k 序列长度下的平均激活量，其中含前 128 个 token 与 512 个局部 token[^src-2502-11089-nsa]。Table 4 在 32768 长度下记 NSA 的访存量为 3584 个等价 token，与 §4.3 的 2560 不同（2560 与 Table 4 中 16384 长度下的数值相同）；两处并列，不取其一。
+所有稀疏基线的每 query 激活 token 预算统一设为 2560，§4.3 记为 NSA 在 32k 序列长度下的平均激活量，含前 128 个 token 与 512 个局部 token[^src-2502-11089-nsa]。Table 4 在 32768 长度下记 NSA 的访存量为 3584 个等价 token，与 §4.3 的 2560 不同（2560 与 Table 4 中 16384 长度下的数值相同）；两处并列，不取其一。
 
 | 模型 | MFQA-en | MFQA-zh | Qasper | HPQ | 2Wiki | GovRptDur | （列名缺失） | PassR-en | PassR-zh | LCC | Avg. |
 |---|---|---|---|---|---|---|---|---|---|---|---|
@@ -149,7 +149,7 @@ NSA 在 9 项中 7 项更高，平均 +0.013；两项更低的是 MMLU（−0.00
 | Full Attn | 0.512 | 0.623 | 0.409 | 0.350 | 0.305 | 0.324 | 0.294 | 0.830 | 0.560 | 0.163 | 0.437 |
 | NSA | 0.503 | 0.624 | 0.432 | 0.437 | 0.356 | 0.307 | 0.341 | 0.905 | 0.550 | 0.232 | 0.469 |
 
-平均分 NSA 0.469，比 Full Attention 高 0.032、比 Exact-Top 高 0.046（§4.3）[^src-2502-11089-nsa]。逐项差值与 Full Attention 相比：HPQ +0.087、2Wiki +0.051、PassR-en +0.075、LCC +0.069、未标名的一列 +0.047、Qasper +0.023、MFQA-zh +0.001、MFQA-en −0.009、PassR-zh −0.010、GovRptDur −0.017。表中「列名缺失」一列的表头在 PDF 文本层缺失，数值列位在 GovRptDur 与 PassR-en 之间，逐词坐标核对见 [[ingest-reports/2026-10-24-2502-11089-nsa|WHY 报告]] 的数值备注[^src-2502-11089-nsa]。
+平均分 NSA 0.469，比 Full Attention 高 0.032、比 Exact-Top 高 0.046（§4.3）[^src-2502-11089-nsa]。逐项差值（对 Full Attention）：HPQ +0.087、2Wiki +0.051、PassR-en +0.075、LCC +0.069、未标名的一列 +0.047、Qasper +0.023、MFQA-zh +0.001、MFQA-en −0.009、PassR-zh −0.010、GovRptDur −0.017。「列名缺失」一列的表头在 PDF 文本层缺失，数值列位在 GovRptDur 与 PassR-en 之间，逐词坐标核对见 [[ingest-reports/2026-10-24-2502-11089-nsa|WHY 报告]] 的数值备注[^src-2502-11089-nsa]。
 
 ### 检索与推理
 
@@ -169,11 +169,11 @@ NSA 在 9 项中 7 项更高，平均 +0.013；两项更低的是 MMLU（−0.00
 
 ## 范围与边界
 
-- 单一规模：只有 27B 总参 / 3B 激活一个模型，没有更小或更大规模的 scaling 曲线（§4.1）[^src-2502-11089-nsa]。
-- 无结构消融：$l=32$、$d=16$、$l'=64$、$n=16$、$w=512$ 全部按一组固定值使用，未给压缩率、块长、窗口长度的敏感性（§4.1、§5）[^src-2502-11089-nsa]。
-- 未与同为训练期稀疏的方法同台：LongBench 的对照是 H2O、InfLLM、Quest、Exact-Top 四种推理期方法，Table 1、Table 3 的对照只有 Full Attention；MoBA 一类训练期块稀疏方法未出现在实验中[^src-2502-11089-nsa]。
-- 加速比来自 Triton 实现而非生产 kernel，基线是同后端 FlashAttention-2；Table 4 的加速比是按访存量推算的期望值，与 Figure 6 的实测值不是同一口径（Table 4 只覆盖解码，Figure 6 覆盖 forward/backward）[^src-2502-11089-nsa]。
-- 门控是 sigmoid 输出、三支路和为 1 与否未约束，论文未分析三个门控值的分布（§3.2）[^src-2502-11089-nsa]。
+- 单一规模：只有 27B 总参 / 3B 激活一个模型，无更小或更大规模的 scaling 曲线（§4.1）[^src-2502-11089-nsa]。
+- 无结构消融：$l=32$、$d=16$、$l'=64$、$n=16$、$w=512$ 全按一组固定值使用，未给压缩率、块长、窗口长度的敏感性（§4.1、§5）[^src-2502-11089-nsa]。
+- 未与同为训练期稀疏的方法同台：LongBench 的对照是 H2O、InfLLM、Quest、Exact-Top 四种推理期方法，Table 1、Table 3 只有 Full Attention；MoBA 一类训练期块稀疏方法未出现在实验中[^src-2502-11089-nsa]。
+- 加速比出自 Triton 实现而非生产 kernel，基线是同后端 FlashAttention-2；Table 4 按访存量推算期望值，与 Figure 6 实测不是同一口径（Table 4 只覆盖解码，Figure 6 覆盖 forward/backward）[^src-2502-11089-nsa]。
+- 门控是 sigmoid 输出、三支路和为 1 与否未约束，论文未分析门控值分布（§3.2）[^src-2502-11089-nsa]。
 
 ## 相关页面
 
