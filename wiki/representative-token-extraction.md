@@ -8,8 +8,8 @@ tags:
   - compression
   - landmark
 created: 2026-04-29
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-10-24
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -22,13 +22,13 @@ status: active
 
 ### 问题
 
-MCR² 目标的压缩项 R(U_kᵀZ) 需要计算所有 N 个 token 的编码率：
-- 时间复杂度：O(N²) 来自 Gram 矩阵
-- 空间复杂度：O(N²) 存储注意力矩阵
+MCR² 目标的压缩项 $R(U_k^{\top}Z)$ 需要计算所有 $N$ 个 token 的编码率：
+- 时间复杂度：$O(N^2)$ 来自 Gram 矩阵
+- 空间复杂度：$O(N^2)$ 存储注意力矩阵
 
 ### 解决方案
 
-用 m << N 个代表性 token Q 替代所有 N 个 token：
+用 $m \ll N$ 个代表性 token $Q$ 替代所有 $N$ 个 token：
 
 $$Q = q(Z), \quad q: \mathbb{R}^{d \times N} \to \mathbb{R}^{d \times m}$$
 
@@ -129,6 +129,8 @@ $$U_k^\top Z = L_k \Sigma_k R_k$$
 | **Landmarks** | 随机/学习选择的 token 子集 | 稀疏注意力 | 相似但 CBSA 的代表可学习 |
 | **Agent tokens** | 额外添加的可学习 token | 线性 attention | CBSA 的无收缩变体 |
 
+上表的 Landmarks 一行指随机或学习选择的 token 子集。MiTA（arXiv:2602.01219）另给一种取法：landmark query 由该层 $Q$ 做均匀分段的平均池化得到（$m\ll N$ 个），landmark value 由这些 query 对全 KV 做一次 cross-attention 得到，二者构成对全体 query 常开的共享专家；同一批 landmark 再各取 top-$k$ KV 立成专家组，query 侧只做一次 argmax 路由[^src-2602-01219-mita]。在 MiTA 的五维分类里，这种构造与 Agent attention 同记为 landmark testing，差别在路由拓扑。见 [[mita-attention]]、[[fast-weight-scaling-taxonomy]]。
+
 ## 优势
 
 1. **显著压缩**：m << N，大幅降低计算量
@@ -139,3 +141,4 @@ $$U_k^\top Z = L_k \Sigma_k R_k$$
 ## 引用
 
 [^src-cbsa]: [[source-cbsa]]
+[^src-2602-01219-mita]: [[source-2602-01219-mita]]

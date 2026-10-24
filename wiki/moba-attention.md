@@ -8,8 +8,8 @@ tags:
   - long-context
   - llm
 created: 2026-10-08
-last_updated: 2026-10-08
-source_count: 1
+last_updated: 2026-10-24
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -88,6 +88,7 @@ MoBA 是 full attention 的 drop-in 替代：参数量不变，top-k 覆盖全�
 - Kimi 部署仅论文一条来源，无细节与线上指标[^src-moba-mixture-of-block-attention]。
 - 下游评测中 MoBA 仅用于 prefill，decode 用 full attention——稀疏 attention 在生成期的质量未在论文中单独评估[^src-moba-mixture-of-block-attention]。
 - 纯 MoBA 训练存在 trailing loss 缺口，需混合策略修复；混合配比（90/10 两阶段、末 3 层 full）是其实验设置下的选择[^src-moba-mixture-of-block-attention]。
+- MiTA 论文把块路由的专家构造判为「仅位置驱动」的刚性划分，主张专家本身也应随内容形变；该判断是分析论证，未与 MoBA 同台评测[^src-2602-01219-mita]。
 - Quest 可视为更小块加 min/max pooling 块表示的 MoBA，LongHeads 可视为 top-1 MoBA（出自该 related work）；H2O、StreamingLLM、TOVA、FastGen 属 decode 侧 KV 压缩，与 MoBA 的训练期架构稀疏正交（见 [[kv-cache-compression]]）[^src-moba-mixture-of-block-attention]。
 
 ## 相关页面
@@ -96,5 +97,9 @@ MoBA 是 full attention 的 drop-in 替代：参数量不变，top-k 覆盖全�
 - [[attention-sink]] — 被 MoBA 论文归为静态稀疏特例之一的现象
 - [[kv-cache-compression]] — 推理期 KV 压缩路线，与 MoBA 训练期稀疏正交
 - [[source-moba-mixture-of-block-attention]] — 源摘要
+- [[mita-attention]] — 形变 expert 替代定长块，$N$-to-$m$ 路由（论文自述动机）
+- [[deformable-fast-weight-experts]] — 刚性块与形变专家的对照
+- [[fast-weight-scaling-taxonomy]] — MoBA 在五维分类中的格位
 
 [^src-moba-mixture-of-block-attention]: [[source-moba-mixture-of-block-attention]]
+[^src-2602-01219-mita]: [[source-2602-01219-mita]]

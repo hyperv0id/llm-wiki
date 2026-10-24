@@ -8,6 +8,7 @@ tags:
   - large-scale
 created: 2026-08-30
 last_updated: 2026-09-04
+source_count: 1
 confidence: medium
 status: active
 ---

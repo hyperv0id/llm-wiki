@@ -7,8 +7,8 @@ tags:
   - unified-framework
   - architecture-analysis
 created: 2026-05-08
-last_updated: 2026-08-30
-source_count: 3
+last_updated: 2026-10-24
+source_count: 4
 confidence: medium
 status: active
 ---
@@ -69,6 +69,12 @@ $$y_i = C_i \sum_{j=1}^i (\prod_{k=j+1}^i \widetilde{A}_k) B_j (\Delta_j \odot x
 
 在交通预测中，[[stgformer|STGformer]]（arXiv:2410.00385，2024）将此类分解内积线性注意力与 SGC 式图传播的多阶输出组合为统一时空注意力模块，论文给出该模块 O(N+T) 的时间/内存复杂度，并以单层结构替代堆叠时空注意力，见 [[stg-attention|STG-Attention]][^src-stgformer]。
 
+## 与 fast-weight scaling 视角的分工
+
+本页是公式级统一：Mamba 的选择性 SSM 与线性注意力被对齐成同一递推，差别落在六项可消融组件上[^src-demystify-mamba-linear-attention-2024]。另一条统一路线（MiTA，arXiv:2602.01219）不写等价公式，而是把 full attention 读成宽度等于序列长度的两层 fast-weight MLP，再按「压缩／路由」两条轴给各方法坐标；在这个坐标系里线性注意力只是「压缩成 1 个共享线性层、all-to-one」的一格[^src-2602-01219-mita]。
+
+两者不冲突、也不互相蕴含：本页回答「两个方法差在哪几项」，五维分类回答「各方法把 $N$ 宽度降在哪里」。引用时按问题选口径，不要把「线性注意力在分类表里占一格」误读成对 Mamba 等价性结论的削弱。
+
 ## 相关页面
 
 - [[mamba|Mamba]] — 选择性状态空间模型
@@ -78,9 +84,12 @@ $$y_i = C_i \sum_{j=1}^i (\prod_{k=j+1}^i \widetilde{A}_k) B_j (\Delta_j \odot x
 - [[linear-attention-bias|线性注意力偏置（ALiBi）]]
 - [[urbanpg|UrbanPG]] — STCA 模块直接使用 Performers 随机特征映射线性注意力，是该框架在 STGNN 领域的最新实例 (AAAI 2026)
 - [[stg-attention|STG-Attention]] — STGformer 的统一时空线性注意力模块：分解内积 + 图传播多阶输出 (arXiv 2024)
+- [[fast-weight-mlp-view-of-attention|fast-weight MLP 视角]] — 另一条注意力统一路线：结构级坐标而非等价公式
+- [[fast-weight-scaling-taxonomy|fast-weight scaling 分类法]] — 五维坐标，线性注意力在其中占「压缩 + all-to-one」一格
 - [[performer|Performer]] — 核随机特征路线的代表机制：softmax 核的正随机特征无偏估计 + 正交化降方差，线性注意力时间 O(Lrd)（ICLR 2021）[^src-performer]
 - [[positive-random-features|PRF]] — Performer 论文中 softmax 核估计的数学核心：trig 特征在小核值区 MSE 发散、正特征收敛
 
 [^src-demystify-mamba-linear-attention-2024]: [[source-demystify-mamba-linear-attention-2024]]
 [^src-stgformer]: [[source-stgformer]]
 [^src-performer]: [[source-performer]]
+[^src-2602-01219-mita]: [[source-2602-01219-mita]]

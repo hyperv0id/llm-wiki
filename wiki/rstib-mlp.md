@@ -78,6 +78,6 @@ KD module significantly boosts feature variance (diversity of learned representa
 - **[[ltsf-linear]]**: Both demonstrate MLPs' viability for time series; RSTIB-MLP adds robustness via IB-guided regularization[^src-rstib]
 - **[[timemixer]]**: Both are MLP-based time series models; RSTIB-MLP trades TimeMixer's multi-scale mixing focus for explicit noise robustness[^src-rstib]
 - **[[information-bottleneck]]**: Extends IB/[[dvib|DVIB]]/[[gib|GIB]]/RGIB lineage to spatial-temporal forecasting with dual-noise handling[^src-rstib]
-- **[[frets|FreTS]]**: FreTS uses frequency-domain MLPs for energy compaction (implicit noise filtering); RSTIB-MLP uses information theory for explicit noise regularization. RSTIB-MLP outperforms FreTS under most noise conditions[^src-rstib]
+- **[[source-frets|FreTS]]**: FreTS uses frequency-domain MLPs for energy compaction (implicit noise filtering); RSTIB-MLP uses information theory for explicit noise regularization. RSTIB-MLP outperforms FreTS under most noise conditions[^src-rstib]
 
 [^src-rstib]: [[source-rstib-mlp]]

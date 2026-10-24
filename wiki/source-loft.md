@@ -43,3 +43,5 @@ PEMS03/04/08，SR-TC 与 SC-TC 两种缺失模式、80% 缺失率，另测 PeMS0
 
 [[loft]] · [[low-rank-prior-estimation]] · [[uncertainty-aware-rectification]]
 [[tg-msfm]] — TG-MSFM (ICLR 2026)，本文基线 MSFM 的原文页面（时间门控多尺度速度场 + Heun+DC）
+
+[^src-loft]: [[source-loft]]

@@ -10,8 +10,8 @@ tags:
   - linear-attention
   - neurips-2025
 created: 2026-04-29
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-10-24
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -59,6 +59,12 @@ CBSA 通过改变代表性 token 的选择，可以实例化为多种不同的�
 | **Channel Attention (TSSA)** | 固定正交代表：$L_k = I_p$ | 沿固定轴压缩，特征通道按二阶矩自适应缩放[^src-cbsa] |
 | **Agent Attention** | 无收缩步骤 | 移除 contraction 步骤，等效于 Agent Attention[^src-cbsa] |
 
+## 压缩支的下游：landmark query 与路由（MiTA）
+
+MiTA（arXiv:2602.01219）从本表的「无收缩」这一支继续外推[^src-2602-01219-mita]：landmark query 取该层 $Q$ 的均匀分段平均池化结果，landmark value 由这些 query 对全 KV 做一次 cross-attention，$\tilde V=V\operatorname{softmax}(K^{\top}\tilde Q/\sqrt d)$，共享专家即 $\operatorname{SDPA}(q,\tilde Q,\tilde V)$。与 CBSA 的代表相比，差别在代表是否可学：CBSA 走 SVD 主方向、固定正交基或可学习初始化，MiTA 的 landmark query 固定为池化，不参与训练[^src-2602-01219-mita]。
+
+在 MiTA 给出的五维分类里，Agent attention 与 MiTA 的专家构造同记为 landmark testing，区别落在专家数量（1 vs $m$）与路由拓扑（all-to-one vs $N$-to-$m$）两维[^src-2602-01219-mita]。压缩算子因此基本相同，增量在于让同一批 landmark 兼作 router、并把每个 landmark 的 top-$k$ KV 立成专家。机制见 [[mita-attention]]，坐标见 [[fast-weight-scaling-taxonomy]]。
+
 ## 计算复杂度
 
 | 机制 | 复杂度 |
@@ -87,7 +93,7 @@ CBSA 通过改变代表性 token 的选择，可以实例化为多种不同的�
 |------|------|-------|
 | 目标 | 可解释性 + 效率（通过压缩目标） | 训练稳定性 + 鲁棒性（通过键归一化） |
 | 方法 | 算法展开（优化目标 → 网络架构） | 键 ℓ2 归一化 |
-| 复杂度 | 线性 O(N)（固定 m） | 二次 O(N²) |
+| 复杂度 | 线性 $O(N)$（固定 $m$） | 二次 $O(N^2)$ |
 | 解释性 | 白盒（梯度步骤可解释） | 黑盒（归一化效果事后解释） |
 
 ## 实验结果
@@ -120,3 +126,4 @@ CBT decoder 以 Segmenter 20% 的 FLOPs 实现 +1.5% mIoU 提升[^src-cbsa]。
 ## 引用
 
 [^src-cbsa]: [[source-cbsa]]
+[^src-2602-01219-mita]: [[source-2602-01219-mita]]

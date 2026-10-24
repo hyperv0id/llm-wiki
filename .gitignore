@@ -28,3 +28,5 @@ mcp-server/__pycache__/
 .omp/
 
 *.pdf
+.scratch
+.tmp

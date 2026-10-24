@@ -59,6 +59,6 @@ L 个 Forecast 块（L=7，对应 1-7 天 lead time），结构与 Hindcast 相�
 - [[flood-forecasting|洪水预报]] — AI 驱动的洪水预报领域
 - [[s-mamba|S-Mamba]] — 首个 Mamba-based MTSF baseline
 - [[dst-mamba|DST-Mamba]] — 分解式时空 Mamba
-- [[stg-mamba|STG-Mamba]] — 首个 Mamba STG 预测
+- [[source-stg-mamba|STG-Mamba]] — 首个 Mamba STG 预测
 
 [^src-rivermamba]: [[source-rivermamba]]

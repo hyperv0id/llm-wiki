@@ -92,5 +92,5 @@ $$\tilde{E}_t = [E_t; \tilde{C}_t]$$
 
 ## 引用
 
-[^sec4.2.2]: [[source-sec4.2.2]]
+[^sec4.2.2]: [[source-channelmts]]
 [^src-retrieval-augmented-statistical-channel]: [[source-retrieval-augmented-statistical-channel]]

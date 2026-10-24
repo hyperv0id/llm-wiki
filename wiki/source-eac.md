@@ -19,7 +19,7 @@ status: active
 
 # EAC: Expand and Compress
 
-**Source**: Wei Chen, Yuxuan Liang. *Expand and Compress: Exploring Tuning Principles for Continual Spatio-Temporal Graph Forecasting.* ICLR 2025. [[eac-expand-and-compress-continual-stg-forecasting-iclr2025.pdf|PDF]]
+**Source**: Wei Chen, Yuxuan Liang. *Expand and Compress: Exploring Tuning Principles for Continual Spatio-Temporal Graph Forecasting.* ICLR 2025. 原 PDF wikilink 指向的 `eac-expand-and-compress-continual-stg-forecasting-iclr2025.pdf` 不在 `raw/` 下，失效链接已移除。
 
 ## Core Contribution
 

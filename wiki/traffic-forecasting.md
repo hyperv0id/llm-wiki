@@ -29,7 +29,7 @@ Two main dependencies must be modeled simultaneously[^src-hyperd-hybrid-periodic
 ARIMA, VAR, and SVR fail to capture non-linear spatial correlations[^src-hyperd-hybrid-periodicity-decoupling].
 
 ### Deep Graph-Based
-The dominant paradigm since [[dcrnn|DCRNN]] (2018): Graph Neural Networks (GNNs) combined with temporal models (TCN, RNN, attention). Key milestones include [[dcrnn|DCRNN]], [[stgcn|STGCN]] (2018), [[astgcn|ASTGCN]] (2019), [[gwnet|GWNet]] (2019), STSGCN (2020), STFGNN (2020), D2STGNN (2022), and STGODE (2021)[^src-hyperd-hybrid-periodicity-decoupling].
+The dominant paradigm since [[dcrnn|DCRNN]] (2018): Graph Neural Networks (GNNs) combined with temporal models (TCN, RNN, attention). Key milestones include [[dcrnn|DCRNN]], [[stgcn|STGCN]] (2018), [[source-astgcn|ASTGCN]] (2019), [[gwnet|GWNet]] (2019), STSGCN (2020), STFGNN (2020), D2STGNN (2022), and STGODE (2021)[^src-hyperd-hybrid-periodicity-decoupling].
 
 ### Transformer-Based
 STTN (2020), GMAN (2020), [[pdformer|PDFormer]] (2023)[^src-pdformer-jiang-2023], and [[staeformer|STAEformer]] (2024) use attention mechanisms to model global spatial-temporal dependencies[^src-hyperd-hybrid-periodicity-decoupling].

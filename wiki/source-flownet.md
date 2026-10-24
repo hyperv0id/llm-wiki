@@ -7,6 +7,7 @@ tags:
   - mixture-of-experts
   - flow-propagation
   - neurips-2025
+created: 2026-09-17
 last_updated: 2026-09-17
 source_count: 1
 confidence: medium

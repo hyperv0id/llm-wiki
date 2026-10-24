@@ -9,6 +9,7 @@ tags:
   - graph-neural-networks
   - air-quality
   - traffic
+created: 2026-05-31
 last_updated: 2026-08-29
 source_count: 11
 confidence: medium

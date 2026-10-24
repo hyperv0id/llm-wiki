@@ -264,3 +264,4 @@ MoST 的解法是 SNR 门控：估计每个模态的"信噪比"——高质量�
 [^src-2312-00516-std-mae]: [[source-2312-00516-std-mae]]
 [^src-urbanpg]: [[source-urbanpg]]
 [^src-aurora]: [[source-aurora]]
+[^src-gpt-st]: [[source-gpt-st]]

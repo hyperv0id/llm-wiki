@@ -39,7 +39,7 @@ status: active
 
 ### 不对称编码器-解码器
 
-编码器仅处理可见 token（90% mask → 仅 ~10% token），浅层解码器（4 层 384-d vs MAE 的 8 层 512-d）处理全量 token + 可学习 [[mask]] token。重建目标：per-cube 归一化像素值的 MSE loss，仅在被 mask 的 cube 上计算[^src-videomae]。
+编码器仅处理可见 token（90% mask → 仅 ~10% token），浅层解码器（4 层 384-d vs MAE 的 8 层 512-d）处理全量 token + 可学习 mask token。重建目标：per-cube 归一化像素值的 MSE loss，仅在被 mask 的 cube 上计算[^src-videomae]。
 
 ## 关键实验结果
 

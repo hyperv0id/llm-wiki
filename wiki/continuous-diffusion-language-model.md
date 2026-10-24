@@ -42,11 +42,11 @@ status: active
 - **LangFlow**（Chen et al., 2026）：连续 diffusion 语言模型，用 Bregman divergence
 - **DFM / CFM**（Potaptchik et al., 2026; Roos et al., 2026）：离散/连续 flow maps
 
-这些方法与 [[ELF]] 是并发工作，但它们仍然在轨迹中每步使用 token 级 cross-entropy 监督[^src-elf-embedded-language-flows]。
+这些方法与 [[elf|ELF]] 是并发工作，但它们仍然在轨迹中每步使用 token 级 cross-entropy 监督[^src-elf-embedded-language-flows]。
 
 ### ELF 的定位
 
-[[ELF]] 在这些方法中占据独特位置——它是唯一一个：
+[[elf|ELF]] 在这些方法中占据独特位置——它是唯一一个：
 - 训练时不做每步离散化
 - 推理时不做每步离散化
 - 不需要单独 decoder

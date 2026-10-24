@@ -117,3 +117,4 @@ Before the emergence of true foundation models, **[[gpt-st|GPT-ST]]** (NeurIPS 2
 [^src-craft]: [[source-craft]]
 [^src-stbp]: [[source-stbp]]
 [^src-weathergfm]: [[source-weathergfm]]
+[^src-urbangpt]: [[source-urbangpt]]

@@ -156,7 +156,7 @@ As of 2026, DCRNN has accumulated 3,000+ citations and remains a standard baseli
 
 ## Related Pages
 
-- [[raw|DCRNN source paper]] — ICLR 2018, Li et al.
+- [[source-dcrnn|DCRNN source paper]] — ICLR 2018, Li et al.
 - [[diffusion-convolution]] — The diffusion convolution operator in detail
 - [[traffic-forecasting]] — Overview of traffic forecasting methods
 - [[graph-neural-networks]] — Foundation of spatial modeling in STG

@@ -25,6 +25,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-2509-22259]] — Rotary Position Encodings for Graphs (WIRE): 用 Laplacian 谱坐标对 query/key 施加旋转，RoPE 的图推广 (ICML 2026)
 - [[source-2510-25760]] — Multimodal Spatial Reasoning in the Large Model Era: A Survey and Benchmarks, Zheng et al. (arXiv 2025)
 - [[source-2511-16426]] — FrèqFlow/SpectFlow: Long-term forecasting using lightweight flow matching (NeurIPS 2025)
+- [[source-2602-01219-mita]] — MiTA: Mixture of Top-k Attention，把 attention 读成宽度 N 的 fast-weight MLP，按压缩/路由两条路缩放，用 landmark query 取 top-k KV 作形变专家 + 窄共享专家（BUPT，arXiv 2026；PDF 转换全文 raw/2602.01219-mita.md）
 - [[source-2605-07319]] — Generative Modeling with Flux Matching：全新生成建模范式，推广得分函数为任意生成向量场 (Pao-Huang et al., Stanford, arXiv 2026)
 - [[source-2607-01918]] — Zeus: Towards Tuning-Free Foundation Model for Time Series Analysis，U 形多尺度 encoder-only + MOTM 掩码预训练，五任务 tuning-free（ICML 2026; PDF raw/2607.01918.pdf）
 - [[source-adafre]] — AdaFre: Adaptive Frequency Pathways for Spatiotemporal Forecasting（Qin et al., AAAI 2026），DFT 有效频带均匀切分 + 频率特异谱嵌入 + 节点级 top-2 频带路由 + 频率均衡损失，PeMSD3/4/7/8 MAE 14.27/17.89/18.58/12.99 全最优
@@ -698,6 +699,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[evolving-rn-traffic-forecasting]] — 演化道路网络交通预测，拓扑持续变化下的增量预测问题 (TEAM, PVLDB 2024)
 - [[exploration-vs-exploitation]] — 强化学习中的探索与利用权衡
 - [[extreme-weather-forecasting]] — 极端天气预测，对罕见非线性大气极端事件的预报 (arXiv 2025)
+- [[fast-weight-mlp-view-of-attention]] — fast-weight MLP 视角：full attention ≡ 宽度等于序列长度的两层 fast-weight MLP，二次复杂度被重述为 unbounded fast-weight scaling
 - [[federated-traffic-prediction]] — 联邦交通预测：局部子图 + 参数聚合的设定、METIS 六客户端评估协议与四类方法谱系
 - [[few-shot-traffic-forecasting]] — few-shot / data-scarce spatio-temporal forecasting, where STGNNs and TSFMs fail and contextual/transfer methods help (ICML 2025)
 - [[fine-grained-traffic-prediction]] — fine-grained traffic prediction unifying road-level and lane-level forecasting
@@ -939,6 +941,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[dcw]] — DCW，小波域差分校正，缓解扩散模型 SNR-t Bias 的即插即用方法 (CVPR 2026)
 - [[ddim]] — DDIM, 概率流 ODE 的一阶 Euler 离散化 (ICLR 2021)
 - [[ddpm-simplified-training-objective]] — DDPM's L_simple, simplified noise prediction loss for diffusion models
+- [[deformable-fast-weight-experts]] — 形变 fast-weight 专家：专家组成由内容决定而非位置切块，MiTA 用 landmark query 对全 KV 打分取 top-k，$N$-to-$m$ 路由后可复用
 - [[decoy-injection]] — benchmark technique injecting fake PII to increase privacy reasoning difficulty
 - [[demlp-decoder]] — two-stage coarse-to-fine decoder with explicit trend removal
 - [[denoising-reduction]] — Denoising Reduction 去噪步数缩减策略，训练时用 10 步推理时用 40 步以加速在线 RL (NeurIPS 2025)
@@ -1106,6 +1109,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[meanflow]] — MeanFlow，预测区间平均速度的少步生成框架：MeanFlow Identity（JVP 全导数修正）+ CFG 内建目标场，ImageNet-256 从头训练 1-NFE FID 3.43（作者报告）(arXiv 2025)
 - [[median-of-means-ensemble]] — MoM estimator for aggregating probabilistic samples into point predictions
 - [[memory-augmented-gating]] — memory-based MoE routing with meta-node bank and dual classification losses for regression (TESTAM, ICLR 2024)
+- [[mita-attention]] — MiTA attention：landmark query 分段平均池化 → 取 top-k KV 作形变专家 + 常开共享专家，top-1 路由后拼接，每 query 看 m+k 对 KV
 - [[mix-hop-propagation-layer]] — TODO
 - [[mixed-modal-masked-image-modeling]] — MMIM, VQA-style masked-target reconstruction (75% block-wise) unifying weather tasks; target full-masking at inference (WeatherGFM, ICLR 2025)
 - [[mixed-partial-blackout-training]] — MPB 训练策略，RM 预训练 + RM/PB 混合微调 (SADI, AAAI 2025)
@@ -1287,6 +1291,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 ## Analyses
 
 - [[diffusion-frequency-domain-theory]] — 扩散模型为什么先学低频——频域理论的统一视角：谱偏置频率层级频域噪声控制EqualSNRSNR-t Bias范式转移
+- [[fast-weight-scaling-taxonomy]] — 高效注意力的五维坐标（缩放策略／专家数量／专家类型／专家构造／路由拓扑）+ 14 个方法的格位映射，含 MiTA 对只压缩方法的增量收益
 - [[graph-node-clustering]] — 图节点聚类方案全景：拓扑驱动（Louvain/METIS/KD-Tree）× 特征驱动（k-means/k-medoids/DTW）× 可学习聚类（胶囊路由/对比聚类/记忆向量锚点/注意力分数），静态 vs 动态取舍
 - [[gwnet-longevity]] — GWNet 为何在 2026 年仍是主力基线：LargeST 精度证据（STGformer Table I/II）+ 2026 新方法仍以其为骨干（SCALE/USTD/IGSTGNN）+ 四条修补轴 + 机制分析与失效边界
 - [[kite-manifold-guidance-chain]] — KITE 三件套串联：流形改起点、知识改条件、CFG 拧剂量

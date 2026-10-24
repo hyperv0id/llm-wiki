@@ -78,7 +78,7 @@ The gated fusion between common and specific values is essential — removing it
 |--------|---------------|
 | [[gwnet|GWNet]] | Self-adaptive adjacency (E1·E2^T) — uniform transformation, no per-node specificity |
 | [[dgcrn|DGCRN]] | Dynamic adjacency per timestep — high parameter cost |
-| [[astgcn|ASTGCN]] | Spatial attention + temporal attention, but uniform spatial transformation |
+| [[source-astgcn|ASTGCN]] | Spatial attention + temporal attention, but uniform spatial transformation |
 | [[hephestus|HSA]] | Low-rank pattern library + gated fusion — explicit per-node with low cost |
 
 [^src-hephestus]: [[source-hephestus]]

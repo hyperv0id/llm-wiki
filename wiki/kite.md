@@ -56,7 +56,7 @@ p_\theta(Y_{\text{endo}} \mid X_{\text{endo}}, X_{\text{exo}}, Y_{\text{exo}}).
 
 ## 与邻近工作的位置
 
-- 相对 [[timexer|TimeXer]] / [[source-exotst|ExoTST]]：从确定性外生融合推进到概率生成 + 可控条件强度。[^src-kite]
+- 相对 [[source-timexer|TimeXer]] / [[source-exotst|ExoTST]]：从确定性外生融合推进到概率生成 + 可控条件强度。[^src-kite]
 - 相对 [[tsflow|TSFlow]]：同样用信息源替代各向同性高斯，但 KITE 的源是**可学习历史条件流形**，不是固定 GP 核规则；并原生接未来外生与统计知识注意力。[^src-kite]
 - 相对 [[timegrad|TimeGrad]] / [[csdi|CSDI]]：骨干从扩散换成直线路径流匹配，且条件通路按内生/外生语义分离并受先验门控。[^src-kite]
 

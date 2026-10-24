@@ -1,0 +1,170 @@
+---
+title: "MiTA Attention（Mixture of Top-k Activations）"
+type: technique
+tags:
+  - attention
+  - efficient-attention
+  - sparse-attention
+  - mixture-of-experts
+  - fast-weights
+  - vision
+created: 2026-10-24
+last_updated: 2026-10-24
+source_count: 1
+confidence: medium
+status: active
+---
+
+# MiTA Attention
+
+MiTA（Mixture of Top-$k$ Activations）结合 [[fast-weight-mlp-view-of-attention|fast-weight 视角]]下的压缩与路由路径：通过少量 landmark query 将 $N$ 宽 MLP 压缩为紧凑的共享专家，同时为每个 landmark query 聚合 top-$k$ 个 key-value 对构建[[deformable-fast-weight-experts|形变专家]]（arXiv:2602.01219，§3.2）[^src-2602-01219-mita]。
+
+## 问题定位
+
+full attention 等价于宽度为 $N$ 的两层 fast-weight MLP，上下文增长引起宽度线性扩展，单 query 开销随 $N$ 线性增加、全序列复杂度为 $\mathcal{O}(N^2)$（§3.1）[^src-2602-01219-mita]。现有方案各存局限：单纯压缩（Agent attention、Linformer、线性注意力）丧失对原始 KV 的精确访问，单纯路由（MoBA、Deformable DETR、Spark、DSA）缺乏全局上下文概括（§1）[^src-2602-01219-mita]。
+
+## 机制
+
+记 $Q,K,V\in\mathbb{R}^{d\times N}$，landmark query 数 $m\ll N$，专家宽度 $k$，每 query 路由的专家数 $s$。
+
+**一步打分，三处复用**：$S^{kv}=K^{\top}\tilde Q/\sqrt d$（Algorithm 1 第 2 行）同时用于 top-$k$ 选取、共享专家分母计算及路由 logits（式 7–9 合并说明）[^src-2602-01219-mita]。
+
+| 部件 | 公式 | 作用 |
+|---|---|---|
+| landmark query | $\tilde Q=\operatorname{AdaptiveAvgPool}(Q,m)$ | 对 $Q$ 做均匀分段的平均池化，$m$ 个探测向量 |
+| 形变专家 | $\mathcal{E}_i(q)=\operatorname{SDPA}(q,K^{(i)},V^{(i)})$，$K^{(i)}=K_{:,\mathcal{I}_i}$，$\mathcal{I}_i=\operatorname{Top}_k(K^{\top}\tilde q_i)$ | $m$ 个宽度恒为 $k$ 的专家组 |
+| landmark value | $\tilde V=V\operatorname{softmax}(S^{kv})$ | 共享专家的 value |
+| 共享专家 | $\tilde{\mathcal E}(q)=\operatorname{SDPA}(q,\tilde Q,\tilde V)$ | 常开的全局概括，$m$ 宽 |
+| 路由 | $e_1(q)=\arg\max_i (q^{\top}\tilde q_i)$ | 每个 query 选 1 个专家 |
+| 合并 | $K^{\star}=[\,\tilde Q,\;K^{(e_1(q))}\,]$，$V^{\star}=[\,\tilde V,\;V^{(e_1(q))}\,]$，$\operatorname{MiTA}(q)=V^{\star}\operatorname{softmax}({K^{\star}}^{\top}q/\sqrt d)$ | 一次 attention，$m+ks$ 对 KV |
+
+默认设置 $m=k=25$、$s=1$，各 query 仅计算 50 对 KV；全部专家覆盖的不同 KV 上限为 $m\times k=625$（§4.1）[^src-2602-01219-mita]。
+
+```mermaid
+flowchart LR
+  Q["该层 Q"] --> P["分段平均池化 → landmark queries"]
+  K["该层 K"] --> S["landmark 打分矩阵"]
+  P --> S
+  S --> T["每个 landmark query 取 top-k 个 KV → 专家组"]
+  S --> Vt["归一化后取出 landmark values"]
+  P --> R["按打分 argmax 选 1 个专家"]
+  T --> A2["稀疏 attention：所路由专家"]
+  Vt --> A1["共享专家 attention"]
+  R --> A2
+  A1 --> M["online softmax 合并"]
+  A2 --> M
+```
+
+实现要点：query 依据目标专家排序，将 $m$ 段长度为 $k$ 的 KV 视为独立序列，利用 `cu_seqlens_k = [0,k,2k,…,mk]` 通过变长 FlashAttention 单次完成计算，最后与共享专家输出按 online softmax 合并（Algorithm 1）[^src-2602-01219-mita]。
+
+**替换位置**：直接替代 Transformer 块内 self-attention 算子，$Q,K,V$ 沿用原层线性投影；无额外路由网络，未引入辅助损失或负载均衡损失（§3.2、§4 全文未提）[^src-2602-01219-mita]。
+
+## 复杂度
+
+式（10）本身是 $\mathcal{O}\!\left(N(m+ks)\right)$，相对 full attention 的 $\mathcal{O}(N^2)$，前提是 $N\gg m+ks$（§3.2）[^src-2602-01219-mita]。上界只覆盖这一步：$\mathcal{O}(Nm)$ 打分、$\mathcal{O}(Nm)$ landmark value 提取与 gather 访存均未计入，且未给出空间复杂度。论文将 gather 随机访存列为潜在显存带宽瓶颈，所引 DSA 缓解方案未经验证[^src-2602-01219-mita]。
+
+## 证据
+
+### ImageNet-1K 从头训练（Table 2）
+
+同配方重训与直接引自原论文的行在原文以颜色区分，转换后颜色丢失导致可比行无法核实。$25+25$ 表示 $m+k=25+25$；$\triangle$ 表示 depth-wise convolution，Bias 表示 Agent bias[^src-2602-01219-mita]。
+
+| 方法 | Acc. | MACs | #Params |
+|---|---|---|---|
+| DeiT-T (2021) | 72.2 | 1.2G | 5.7M |
+| FLatten-DeiT-T$^{\triangle}$ (2023) | 74.1 | 1.1G | 6.1M |
+| Agent-DeiT-T$^{49,\triangle,\text{Bias}}$ (2024) | 74.9 | 1.2G | 6.0M |
+| Agent-ViT-T$^{25}$ | 68.9 | 1.1G | 5.7M |
+| Agent-ViT-T$^{49}$ | 71.7 | 1.1G | 5.7M |
+| ViT-T | 73.1 | 1.2G | 5.7M |
+| DeiT-T$^{\triangle}$ | 75.8 | 1.2G | 5.7M |
+| MiTA-ViT-T$^{25+25}$ | 72.9 | 1.1G | 5.7M |
+| MiTA-ViT-T$^{25+25,\triangle}$ | 74.8 | 1.1G | 5.7M |
+| DeiT-S (2021) | 79.8 | 4.6G | 22.1M |
+| Agent-DeiT-S$^{49,\triangle,\text{Bias}}$ (2024) | 80.5 | 4.4G | 22.7M |
+| Agent-ViT-S$^{49}$ | 76.0 | 4.4G | 22.1M |
+| ViT-S | 77.9 | 4.6G | 22.1M |
+| ViT-S$^{\triangle}$ | 79.5 | 4.6G | 22.1M |
+| MiTA-ViT-S$^{25+25}$ | 78.5 | 4.4G | 22.1M |
+| MiTA-ViT-S$^{25+25,\triangle}$ | 79.3 | 4.4G | 22.1M |
+
+MiTA 在该表中未取得单列最优：Tiny 列最优为 DeiT-T$^{\triangle}$ 75.8、MiTA 74.8 列第三；Small 列最优为 Agent-DeiT-S$^{49,\triangle,\text{Bias}}$ 80.5、MiTA 79.3 列第四。同配置下 MiTA 高于 Agent-ViT（T 68.9→72.9，S 76.0→78.5），相比 ViT 在 ±1 范围内浮动（−0.2 / +0.6），论文表述为与 ViT 持平（on par）。参数量与 ViT 一致，MACs 减少 0.1G / 0.2G[^src-2602-01219-mita]。
+
+### ImageNet-21K 预训练权重微调（Table 3）
+
+仅替换 attention、微调 50 epoch 的 top-1 精度（Table 3）[^src-2602-01219-mita]：
+
+| 方法 | Tiny | Small | Base | Large |
+|---|---|---|---|---|
+| ViT | 76.9 | 81.2 | 84.4 | 85.9 |
+| Linear-ViT | 73.2 | 78.6 | 79.8 | 80.7 |
+| Agent-ViT$^{49}$ | 74.6 | 79.7 | 81.4 | 83.5 |
+| Agent-ViT$^{64}$ | 74.7 | 79.9 | 81.5 | 83.8 |
+| MiTA-ViT$^{25+25}$ | 75.6 | 80.9 | 82.8 | 85.5 |
+
+MiTA 在四个规格均列第二，落后 ViT 1.3 / 0.3 / 1.6 / 0.4，领先 Agent-ViT$^{64}$ 0.9 / 1.0 / 1.3 / 1.7。Agent-ViT 将 $m$ 从 49 增至 64 仅提升 0.1–0.3，论文据此推断压缩路径的收益已趋饱和[^src-2602-01219-mita]。
+
+### ADE20K 分割（Table 4）
+
+仅替换 Segmenter 解码器，编码器采用 ImageNet-21K 预训练 ViT，输入尺寸固定 $512\times512$、patch 16，序列长度 1024，MiTA 采用 $36+36$ 配置（Table 4）[^src-2602-01219-mita]：
+
+| 方法 | mIoU (ss/ms) | #Params |
+|---|---|---|
+| Seg-T-Mask (2021) | 38.1 / 38.8 | 7M |
+| Seg-T-MiTA$^{36+36}$ | 38.8 / 39.6 | 6M |
+| Seg-S-Mask | 45.3 / 46.9 | 27M |
+| Seg-S-MiTA$^{36+36}$ | 45.5 / 46.8 | 24M |
+| Seg-B-Mask | 48.8 / 50.0 | 106M |
+| Seg-B-MiTA$^{36+36}$ | 48.8 / 49.9 | 96M |
+
+Tiny 规格下 ss 与 ms 均更高（+0.7 / +0.8），Small 规格下 ss +0.2、ms −0.1，Base 规格下 ss 持平、ms −0.1；参数量分别减少 1M / 3M / 10M。这是全文唯一一张 MiTA 取得某列最优的表（Table 4）[^src-2602-01219-mita]。
+
+### Long Range Arena（Table 5）
+
+测试配置 $m=16$、$k=16$；Agent attention 采用 $m=32$；全部方法均不使用 DWC（Table 5）[^src-2602-01219-mita]：
+
+| 方法 | ListOps (2K) | Text (4K) | Retrieval (4K) | Image (1K) | Pathfinder (1K) | Avg |
+|---|---|---|---|---|---|---|
+| Standard (full attention) | 37.10 | 65.02 | 80.11 | 40.45 | 74.16 | 59.37 |
+| Reformer (2020) | 19.05 | 64.88 | 78.64 | 43.29 | 69.36 | 55.04 |
+| Linformer (2020) | 37.25 | 55.91 | 79.37 | 37.84 | 67.60 | 55.59 |
+| Performer (2021) | 18.80 | 63.81 | 78.62 | 37.07 | 69.87 | 53.63 |
+| Nyströmformer (2021) | 18.70 | 65.64 | 80.37 | 39.70 | 73.46 | 55.57 |
+| Agent attention (2024) | 37.15 | 64.41 | 79.75 | 38.17 | 72.57 | 58.40 |
+| MiTA attention | 37.20 | 63.24 | 79.37 | 42.19 | 74.32 | 59.26 |
+
+MiTA 在 ListOps、Image、Pathfinder 取得最高分，在 Text（−1.78）与 Retrieval（−0.74）落后于 full attention。平均分 59.26 较 full attention 低 0.11、较 Agent attention 高 0.86。核算五项均值：MiTA 为 59.264，full attention 为 59.368，与表中 Avg 数值吻合[^src-2602-01219-mita]。
+
+### 效率（Fig. 6）
+
+在 RTX 4090 24GB 硬件上评测至 $2^{20}$ 序列长度的推理吞吐（samples/s），对照基准为 PyTorch fused kernel 实现的 full attention；测试环境为三层 Transformer、模型维度 128、10K 合成样本；参数设置 $m\times k\approx N/4$，gather 操作未做自定义 CUDA 优化。图表曲线数值无法自本地文本读取（Fig. 6）[^src-2602-01219-mita]。
+
+### $m,k$ 与机制互换（Fig. 7–8）
+
+- **Fig. 7**：基于 $(m,k)=(25,25)$ 微调训练的 ViT-T@512 与 ViT-L@224 在推理期调整 $(m,k)$。结果显示增大 $m,k$ 的鲁棒性优于减小，作者建议先以较小的 $m,k$ 训练、推理时放大以换取精度。热图数值不可读[^src-2602-01219-mita]。
+- **Fig. 8**：机制互换测试显示，以 MiTA 训练的 checkpoint 迁回 full attention 掉点较小。热图数值不可读[^src-2602-01219-mita]。论文指出该性质属于跨 $(m,k)$ 与跨机制泛化，而非长度外推（§4.4）[^src-2602-01219-mita]。
+
+## 待查与口径备注
+
+1. 题名不一致：arXiv 页面与正文标题不同（见 [[source-2602-01219-mita]]）[^src-2602-01219-mita]。
+2. 式（7）的 top-$k$ 索引缺少缩放系数 $1/\sqrt d$，而式（3）与 Algorithm 1 第 2 行均包含缩放，小节内部定义了两种索引口径[^src-2602-01219-mita]。
+3. 式（3）等价性不严格：式（4）中 $\hat V$ 包含依赖 $q$ 的 softmax 归一化因子，权重并非独立于 query[^src-2602-01219-mita]。
+4. §4.1 声明对比 ViT、Agent-ViT、Linear-ViT，但 Table 2 未包含 Linear-ViT 行（仅出现在 Table 3）[^src-2602-01219-mita]。
+5. Table 2 行属性区分依赖原文印刷色彩，转换后颜色丢失，无法核实重训行与直接引用行的归属[^src-2602-01219-mita]。
+6. Fig. 6 中「访问最重要的 1/4 token」对应 $m\times k\approx N/4$ 并集，非单 query 实际计算量（单 query 仅计算 $m+k$ 对），原文未做区分[^src-2602-01219-mita]。
+7. 缺失实验配置：Table 2、4、5 未提供输入分辨率、patch 大小、训练 epoch 及优化器（Table 3 仅标注 50 epoch；Table 4 仅标注分辨率与 patch）；Table 4、5 未复述 $s$ 取值[^src-2602-01219-mita]。
+8. Fig. 7 的 ViT-T@512 在 Table 2 与 Table 3 中均无对应设置，两处分辨率口径不一致[^src-2602-01219-mita]。
+9. 论文摘要限定于 vision tasks，但正文 LRA 涵盖文本任务（ListOps、Text、Retrieval），Fig. 6 采用合成数据，摘要口径窄于实验证据[^src-2602-01219-mita]。
+10. 全文缺少 $m$、$k$、$s$ 在 MiTA 上的消融实验，未包含 MoBA / NSA / Spark / DSA 等 MoE 或 top-$k$ attention 基准，两项机制主张只有分析论证[^src-2602-01219-mita]。
+
+## 相关页面
+
+- [[source-2602-01219-mita]] — 源摘要
+- [[fast-weight-mlp-view-of-attention]] — 形式化基础
+- [[fast-weight-scaling-taxonomy]] — 五维分类与 MiTA 所在格
+- [[deformable-fast-weight-experts]] — 形变专家与「可复用 top-$k$ 集合」
+- [[moba-attention]] — 刚性块路由的对照
+- [[cbsa]] · [[representative-token-extraction]] — 压缩支的同族机制（Agent attention）
+- [[mixture-of-experts]] — MoE 原则用于 attention
+
+[^src-2602-01219-mita]: [[source-2602-01219-mita]]
