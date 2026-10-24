@@ -24,11 +24,11 @@ status: active
 
 ## 核心论点
 
-标准注意力在 $(Q,K,V)$ 之外加入 $n$ 个 agent token $A$，构成四元组 $(Q,A,K,V)$：$A$ 先作 query 从 $K,V$ 聚合，再作 key 广播给全部 query，两段都是 softmax（式 3）[^src-2312-08874-agent-attention]。$A$ 同时承担 query 与 key 两个角色，$Q$ 与 $K$ 之间不再有两两相似度，复杂度从 $\mathcal{O}(N^2)$ 降到 $\mathcal{O}(Nnd)$（式 7）。
+标准注意力在 $(Q,K,V)$ 之外加入 $n$ 个 agent token $A$，构成四元组 $(Q,A,K,V)$：$A$ 先作 query 从 $K,V$ 聚合，再作 key 广播给全部 query，两段均为 softmax（式 3）[^src-2312-08874-agent-attention]。$A$ 兼作 query 与 key，$Q$ 与 $K$ 之间不再有两两相似度，复杂度从 $\mathcal{O}(N^2)$ 降到 $\mathcal{O}(Nnd)$（式 7）。
 
-论文的主要论点是式 4：$\sigma(QA^{\top})\sigma(AK^{\top})V$ 等于以 $\phi_q(Q)=\sigma(QA^{\top})$、$\phi_k(K)=\sigma(AK^{\top})^{\top}$ 为映射函数的核化线性注意力，即「广义线性注意力」[^src-2312-08874-agent-attention]。该等式的意义在于 softmax 与 linear attention 被写成同一算子的两种读法，而非在两个范式之间取舍。$n$ 不改变等价关系，只改变 $\phi$ 的参数化与计算量。
+论文的主要论点是式 4：$\sigma(QA^{\top})\sigma(AK^{\top})V$ 等于以 $\phi_q(Q)=\sigma(QA^{\top})$、$\phi_k(K)=\sigma(AK^{\top})^{\top}$ 为映射函数的核化线性注意力，即「广义线性注意力」[^src-2312-08874-agent-attention]。该等式把 softmax 与 linear attention 写成同一算子的两种读法，而非在两个范式之间取舍；$n$ 不改变等价关系，只改变 $\phi$ 的参数化与计算量。
 
-模块层面另加两项（式 6）：agent bias $B_1\in\mathbb{R}^{n\times N}$、$B_2\in\mathbb{R}^{N\times n}$ 由列／行／块三个分量构成（Appendix B），以及沿用 Flatten Transformer 的 DWC 补特征多样性。默认 $A=\operatorname{Pooling}(Q)$。
+模块层面另加两项（式 6）：agent bias $B_1\in\mathbb{R}^{n\times N}$、$B_2\in\mathbb{R}^{N\times n}$，由列／行／块三个分量构成（Appendix B）；沿用 Flatten Transformer 的 DWC 补特征多样性。默认 $A=\operatorname{Pooling}(Q)$。
 
 ## 证据
 

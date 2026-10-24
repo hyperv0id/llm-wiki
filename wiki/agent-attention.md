@@ -16,13 +16,13 @@ status: active
 
 # Agent Attention
 
-Agent Attention（Han et al., ECCV 2024, arXiv:2312.08874）把注意力的三元组 $(Q,K,V)$ 扩成四元组 $(Q,A,K,V)$，加入 $n$ 个 agent token $A$：$A$ 先以 query 身份从 $K,V$ 聚合出 agent feature，再以 key 身份把 agent feature 广播回每个 query。两段都是标准 softmax 注意力，$Q$ 与 $K$ 之间不再直接两两配对（式 3，Fig. 3a）[^src-2312-08874-agent-attention]。
+Agent Attention（Han et al., ECCV 2024, arXiv:2312.08874）把三元组 $(Q,K,V)$ 扩成四元组 $(Q,A,K,V)$，加入 $n$ 个 agent token $A$：$A$ 先以 query 身份从 $K,V$ 聚合出 agent feature，再以 key 身份广播回每个 query。两段均为标准 softmax 注意力，$Q$ 与 $K$ 之间不再两两配对（式 3，Fig. 3a）[^src-2312-08874-agent-attention]。
 
 ## 问题与动机
 
-Softmax 注意力对每个 query-key 对算相似度，复杂度 $\mathcal{O}(N^2)$；把它用在全局感受野的视觉任务上计算量不可接受。既有做法分为两类：Swin 把注意力限制在局部窗口，PVT 在 $K,V$ 上做稀疏（§2）[^src-2312-08874-agent-attention]。两类的代价都是牺牲长程建模。线性注意力换掉 softmax、用映射函数 $\phi$ 分别作用于 $Q$ 与 $K$，按结合律改写计算顺序把复杂度降到 $\mathcal{O}(N)$，但 ReLU 一类简单 $\phi$ 掉点明显，复杂 $\phi$（Performer、Nyströmformer、SOFT）引入额外开销（§3.2）[^src-2312-08874-agent-attention]。
+Softmax 注意力逐 query-key 对算相似度，复杂度 $\mathcal{O}(N^2)$，在全局感受野的视觉任务上计算量不可接受。既有做法分两类：Swin 限制在局部窗口，PVT 在 $K,V$ 上做稀疏，代价均为牺牲长程建模（§2）[^src-2312-08874-agent-attention]。线性注意力换掉 softmax，用 $\phi$ 分别映射 $Q$ 与 $K$，按结合律改写计算顺序把复杂度降到 $\mathcal{O}(N)$；但 ReLU 一类简单 $\phi$ 掉点明显，复杂 $\phi$（Performer、Nyströmformer、SOFT）引入额外开销（§3.2）[^src-2312-08874-agent-attention]。
 
-Agent attention 的出发点是不削减感受野、也不近似 softmax，而是利用注意力权重之间的冗余：Fig. 1a 中语义相同的一批 query（例如天空区域）需要的信息几乎一致，可由少数 agent token 代收后代发[^src-2312-08874-agent-attention]。
+Agent attention 不削减感受野、不近似 softmax，而是利用注意力权重的冗余：Fig. 1a 中语义相同的一批 query（如天空区域）所需信息几乎一致，可由少数 agent token 代收代发[^src-2312-08874-agent-attention]。
 
 ## 两段 softmax 与广义线性注意力
 
@@ -37,15 +37,15 @@ O^{\rm A} &= \operatorname{Attn}^{\rm S}\!\Big(Q,\;A,\;\underbrace{\operatorname
 &= \sigma(QA^{\top})\,\sigma(AK^{\top})\,V \;=\; \phi_q(Q)\,\phi_k(K)^{\top}V && \text{// 令 } \phi_q(Q)=\sigma(QA^{\top}),\ \phi_k(K)=\sigma(AK^{\top})^{\top}
 \end{aligned}$$
 
-式 4 对任意 $n$ 成立，$n$ 不改变等价关系，只改变 $\phi$ 的参数化与计算量。因此 softmax 与 linear attention 在此不是两个可切换的算子，而是同一算子的两种读法：外部看是两段 softmax（式 3），代数上是以 $A$ 参数化的核函数线性注意力（式 4）[^src-2312-08874-agent-attention]。
+式 4 对任意 $n$ 成立，$n$ 不改变等价关系，只改变 $\phi$ 的参数化与计算量。softmax 与 linear attention 因此不是两个可切换的算子，而是同一算子的两种读法：外部看是两段 softmax（式 3），代数上是以 $A$ 参数化的核函数线性注意力（式 4）[^src-2312-08874-agent-attention]。
 
-两种读法在计算顺序上重合：线性注意力按结合律先算 $\phi_k(K)^{\top}V$（$[n,N]\times[N,C]\to[n,C]$）再左乘 $\phi_q(Q)$，这与式 3 的 aggregate → broadcast 是同一顺序，$n$ 就是这个核映射的维数。复杂度因此是 $\mathcal{O}(Nnd)$ 而不是 $\mathcal{O}(N^2)$，节省来自中间量只有 $n$ 个而不是 $N$ 个[^src-2312-08874-agent-attention]。
+两种读法的计算顺序重合：线性注意力按结合律先算 $\phi_k(K)^{\top}V$（$[n,N]\times[N,C]\to[n,C]$）再左乘 $\phi_q(Q)$，与式 3 的 aggregate → broadcast 同序，$n$ 即该核映射的维数。复杂度因此是 $\mathcal{O}(Nnd)$ 而非 $\mathcal{O}(N^2)$，节省来自中间量只有 $n$ 个而不是 $N$ 个[^src-2312-08874-agent-attention]。
 
 [INFERENCE] $\phi$ 是否依赖输入集合，由 agent token 的取法决定。取可学习参数（Table 17 的 Static 行，Acc. 82.2）时 $A$ 与输入无关，式 4 退化为固定核的线性注意力；取池化（Dynamic，82.6）时 $\phi_q$ 依赖整层 $Q$，超出「逐 token 映射」的线性注意力设定。这一步是代换的结果，论文未作此区分。
 
 ## 数据流与维度
 
-**维度符号**：$N$ 序列长度（token 数）；$C$ 模块通道维；$d$ 单头通道维；$n$ agent token 数；$k=3$ 为 DWC 的卷积核边长。形状按论文记法写作 $[\text{行}, \text{列}]$，$Q,K,V\in[N,C]$，$A\in[n,C]$，$B_1\in[n,N]$，$B_2\in[N,n]$（式 6）。论文按单头书写，$/\sqrt{d}$ 取自式 1 的相似度定义，多头在 batch 维展开为[INFERENCE]。
+**维度符号**：$N$ 序列长度（token 数）；$C$ 模块通道维；$d$ 单头通道维；$n$ agent token 数；$k=3$ 为 DWC 的卷积核边长。形状按论文记法写作 $[\text{行}, \text{列}]$，$Q,K,V\in[N,C]$，$A\in[n,C]$，$B_1\in[n,N]$，$B_2\in[N,n]$（式 6）。论文按单头书写，$/\sqrt{d}$ 取自式 1 的相似度定义，多头在 batch 维展开为 [INFERENCE]。
 
 ### Stage 1 · 池化取 agent token
 
@@ -69,7 +69,7 @@ S_2 &= \sigma\!\left(QA^{\top}/\sqrt{d}+B_2\right) && \text{// } [N, \bcancel{C}
 O^{A} &= S_2 V^{A} && \text{// } [N, \bcancel{n}]\times[\bcancel{n}, C]\to[N, C]\ \text{——每个 query 只读 } n \text{ 个 agent feature}
 \end{aligned}$$
 
-两段共用同一组 $A$：$A$ 在第一段作 query、第二段作 key，$V^{A}$ 只有一份，被全部 $N$ 个 query 读取（Fig. 3a）[^src-2312-08874-agent-attention]。
+两段共用同一组 $A$：第一段作 query、第二段作 key，$V^{A}$ 只有一份，被全部 $N$ 个 query 读取（Fig. 3a）[^src-2312-08874-agent-attention]。
 
 ### Stage 4 · 汇合：补特征多样性
 
@@ -77,11 +77,11 @@ $$\begin{aligned}
 O &= O^{A} + \operatorname{DWC}(V) && \text{// } [N, C]+[N, C]\to[N, C]\ \text{——逐通道深度卷积，按位置混合相邻 token}
 \end{aligned}$$
 
-DWC 沿用 Flatten Transformer 的 focused linear attention 做法，用于补回线性注意力丢失的特征多样性（§4.2）[^src-2312-08874-agent-attention]。Agent bias 与 DWC 一起写进模块式（式 6）：$O=\sigma(QA^{\top}+B_2)\,\sigma(AK^{\top}+B_1)\,V+\operatorname{DWC}(V)$。
+DWC 沿用 Flatten Transformer 的 focused linear attention 做法，补回线性注意力丢失的特征多样性（§4.2）[^src-2312-08874-agent-attention]。Agent bias 与 DWC 一并写进模块式（式 6）：$O=\sigma(QA^{\top}+B_2)\,\sigma(AK^{\top}+B_1)\,V+\operatorname{DWC}(V)$。
 
 ### Agent bias 的参数化
 
-$B_1,B_2$ 不直接作为 $[n,N]$ 与 $[N,n]$ 的可学习张量，而是各由三个分量构成：列偏置 $B_{1c}\in\mathbb{R}^{n\times 1\times w}$、行偏置 $B_{1r}\in\mathbb{R}^{n\times h\times 1}$、块偏置 $B_{1b}\in\mathbb{R}^{n\times h_0\times w_0}$，计算时各自 resize 到 $[n,h,w]$ 后相加并 reshape 成 $[n,N]$（Appendix B）[^src-2312-08874-agent-attention]。$h_0,w_0$ 远小于特征图高宽 $h,w$。
+$B_1,B_2$ 不作 $[n,N]$ 与 $[N,n]$ 的可学习张量，各由三个分量构成：列偏置 $B_{1c}\in\mathbb{R}^{n\times 1\times w}$、行偏置 $B_{1r}\in\mathbb{R}^{n\times h\times 1}$、块偏置 $B_{1b}\in\mathbb{R}^{n\times h_0\times w_0}$，计算时各自 resize 到 $[n,h,w]$ 后相加、reshape 成 $[n,N]$（Appendix B）[^src-2312-08874-agent-attention]。$h_0,w_0$ 远小于特征图高宽 $h,w$。
 
 ## 复杂度
 
@@ -89,7 +89,7 @@ $B_1,B_2$ 不直接作为 $[n,N]$ 与 $[N,n]$ 的可学习张量，而是各由�
 
 $$\Omega=\underbrace{4NC^2}_{\rm Proj}+\underbrace{NC}_{\rm Get\ agents}+\underbrace{2nNC+2NnC}_{\rm Agent\ Attention}+\underbrace{k^2NC}_{\rm DWC}$$
 
-$N$ 只以一次幂出现，注意力部分为 $\mathcal{O}(Nnd)$；两段 softmax 的矩阵乘法各为 $2nNC$ 与 $2NnC$，合计 $4NnC$。相对 softmax 注意力的 $\mathcal{O}(N^2)$，收益条件是 $n\ll N$。式中不含 softmax 归一化、池化与 gather 的访存成本，也未给空间复杂度，效率证据以 FLOPs 与实测 wall-clock 给出（Fig. 5、Fig. 7）[^src-2312-08874-agent-attention]。
+$N$ 只以一次幂出现，注意力部分为 $\mathcal{O}(Nnd)$；两段 softmax 的矩阵乘法各为 $2nNC$ 与 $2NnC$，合计 $4NnC$。相对 softmax 注意力的 $\mathcal{O}(N^2)$，收益条件是 $n\ll N$。式中不含 softmax 归一化、池化与 gather 的访存成本，也未给空间复杂度；效率证据以 FLOPs 与实测 wall-clock 给出（Fig. 5、Fig. 7）[^src-2312-08874-agent-attention]。
 
 ## 证据
 
@@ -114,7 +114,7 @@ $N$ 只以一次幂出现，注意力部分为 $\mathcal{O}(Nnd)$；两段 softm
 | CSwin-B → Agent-CSwin-B | $224^2$ | 78M → 73M | 15.0G → 14.9G | 84.2 → 84.7 (+0.5) |
 | CSwin-B↑$384^2$ → Agent-CSwin-B↑$384^2$ | $384^2$ | 78M → 73M | 47.0G → 46.3G | 85.4 → 85.8 (+0.4) |
 
-§5.1 的正文另称 Agent-PVT-S 以 30% 的参数量与 40% 的 FLOPs 超过 PVT-L（Top-1 82.2 vs 81.7）。按 Table 1 复算：参数量 20.6M / 61.4M = 33.6%，FLOPs 4.0G / 9.8G = 40.8%，FLOPs 一项与正文一致，参数量一项正文低于表值[^src-2312-08874-agent-attention]。
+§5.1 正文另称 Agent-PVT-S 以 30% 的参数量、40% 的 FLOPs 超过 PVT-L（Top-1 82.2 vs 81.7）。按 Table 1 复算：参数量 20.6M / 61.4M = 33.6%，FLOPs 4.0G / 9.8G = 40.8%，FLOPs 一项与正文一致，参数量一项正文低于表值[^src-2312-08874-agent-attention]。
 
 ### 检测与分割
 
@@ -126,7 +126,7 @@ ADE20K 分割（Table 3，FLOPs 按 $512\times2048$ 计）：SemanticFPN 下 Age
 
 $224^2$ 输入下的实测加速：i5 CPU 上 1.7–2.1 倍，RTX3090 与 A100 上 1.4–1.7 倍，同时 Top-1 更高（Fig. 5）[^src-2312-08874-agent-attention]。与其他线性注意力方法的同机对比见 Fig. 9，源文只给曲线，无数值表。
 
-$1024^2$ 输入下 Agent-DeiT 的 FLOPs 比 DeiT 少 75%（Fig. 7b）[^src-2312-08874-agent-attention]。从零训练的分辨率扩展（Table 5）：Agent-DeiT-B $224^2$ 82.0 vs DeiT-B 81.8；Agent-DeiT-S 在 $448^2$、17.7G FLOPs 下取 83.1，DeiT-S 在 $416^2$、18.8G 下取 82.9，前者参数量为 23.1M、后者 22.2M；Agent-PVT-M $256^2$ 83.8 (+2.1) vs PVT-M $256^2$ 82.2。Fig. 7c 另给出 $256^2$–$384^2$ 微调 30 epoch 的曲线。Table 13 中 Agent-Swin-S 在 $288^2$ 取 84.1、Agent-Swin-B 在 $384^2$ 取 84.9（同分辨率 Swin-B 为 84.5）。
+$1024^2$ 输入下 Agent-DeiT 的 FLOPs 比 DeiT 少 75%（Fig. 7b）[^src-2312-08874-agent-attention]。从零训练的分辨率扩展（Table 5）：Agent-DeiT-B $224^2$ 82.0 vs DeiT-B 81.8；Agent-DeiT-S 在 $448^2$、17.7G FLOPs 下取 83.1，DeiT-S 在 $416^2$、18.8G 下取 82.9，前者参数量 23.1M、后者 22.2M；Agent-PVT-M $256^2$ 83.8 (+2.1) vs PVT-M $256^2$ 82.2。Fig. 7c 另给出 $256^2$–$384^2$ 微调 30 epoch 的曲线。Table 13 中 Agent-Swin-S 在 $288^2$ 取 84.1、Agent-Swin-B 在 $384^2$ 取 84.9（同分辨率 Swin-B 为 84.5）。
 
 ### 消融
 
@@ -139,7 +139,7 @@ $1024^2$ 输入下 Agent-DeiT 的 FLOPs 比 DeiT 少 75%（Fig. 7b）[^src-2312-
 | + Agent Bias | 4.5G | 81.1 | −1.5 |
 | + DWC | 4.5G | 82.6 | — |
 
-同表另给出 Swin-T w/o PE 80.1（−2.5）、+RPE 81.3（−1.3）、+DWC 81.6（−1.0）。agent bias 承担 Swin 中 RPE 的位置：把 softmax 换成纯线性注意力先掉到 77.8（−3.5 于 Swin-T），再换 agent attention 到 79.0，加 bias 到 81.1，加 DWC 到 82.6；DWC 单独加到 Swin-T 只从 81.3 到 81.6（+0.3，§5.6）[^src-2312-08874-agent-attention]。
+同表另给出 Swin-T w/o PE 80.1（−2.5）、+RPE 81.3（−1.3）、+DWC 81.6（−1.0）。agent bias 承担 Swin 中 RPE 的位置：softmax 换成纯线性注意力先掉到 77.8（−3.5 于 Swin-T），换 agent attention 到 79.0，加 bias 到 81.1，加 DWC 到 82.6；DWC 单独加到 Swin-T 只从 81.3 到 81.6（+0.3，§5.6）[^src-2312-08874-agent-attention]。
 
 窗口大小（Table 4）：Agent-Swin-T 的窗口从 $7^2$ 放大到 $56^2$，Acc. 依次 82.0 / 82.2 / 82.4 / 82.6，FLOPs 恒为 4.5G；Swin-T 在 $7^2$ 为 81.3[^src-2312-08874-agent-attention]。
 
@@ -170,16 +170,16 @@ AgentSD 把 ToMeSD 中的 softmax 注意力换成 agent attention，agent token 
 
 ## 与 MiTA 共享专家的关系
 
-MiTA 的共享专家由两步组成（Algorithm 1 第 2、4、9、11 行）：$\tilde Q=\operatorname{AdaptiveAvgPool}(Q,\text{output\_size}=m)$、$\tilde V=V\operatorname{softmax}(K^{\top}\tilde Q/\sqrt d)$，再取 $O^{\rm share}=\operatorname{FlashAttention}(Q,\tilde Q,\tilde V)$[^src-2602-01219-mita]。这两步与 Agent attention 的 Stage 2（agent aggregation）与 Stage 3（agent broadcast）逐项同型：同一个 $A$ 先作 query 从全部 $K,V$ 收信息，再作 key 被全部 query 读取。差别在 $A$ 的取法与后续：Agent attention 取 $\operatorname{Pooling}(Q)$，广播后即结束（Table 17 把池化记为 Dynamic）；MiTA 取分段平均池化，并在共享专家之外再加 top-$k$ 形变专家与 $N$-to-$m$ 路由[^src-2312-08874-agent-attention][^src-2602-01219-mita]。
+MiTA 的共享专家由两步组成（Algorithm 1 第 2、4、9、11 行）：$\tilde Q=\operatorname{AdaptiveAvgPool}(Q,\text{output\_size}=m)$、$\tilde V=V\operatorname{softmax}(K^{\top}\tilde Q/\sqrt d)$，再取 $O^{\rm share}=\operatorname{FlashAttention}(Q,\tilde Q,\tilde V)$[^src-2602-01219-mita]。这两步与 Agent attention 的 Stage 2（agent aggregation）、Stage 3（agent broadcast）逐项同型：同一个 $A$ 先作 query 从全部 $K,V$ 收信息，再作 key 被全部 query 读取。差别在 $A$ 的取法与后续：Agent attention 取 $\operatorname{Pooling}(Q)$，广播后即结束（Table 17 把池化记为 Dynamic）；MiTA 取分段平均池化，并在共享专家之外再加 top-$k$ 形变专家与 $N$-to-$m$ 路由[^src-2312-08874-agent-attention][^src-2602-01219-mita]。
 
 MiTA 的分类表把 Agent attention 记为 Compression / 1 个共享 MLP / landmark testing / all-to-one；一手源对得上：agent token 直接取自 $Q$ 的池化、不训练，两段之外没有路由[^src-2312-08874-agent-attention][^src-2602-01219-mita]。上段「同源」判断是本 wiki 的对照分析，两篇源文均未互引为同一机制的来源。
 
 ## 边界
 
 - 实验限于视觉任务（ImageNet-1K、COCO、ADE20K、Stable Diffusion），无语言建模与长序列基准；$\mathcal{O}(Nnd)$ 相对 $\mathcal{O}(N^2)$ 的收益只在视觉分辨率（$224^2$–$1024^2$）下用 FLOPs 与 wall-clock 体现，未给出与 $N$ 成比例的序列长度扫描[^src-2312-08874-agent-attention]。
-- agent token 数只在 Agent-Swin-T 上做消融（Table 7），其他骨干沿用同一组 $[9,16,49,49]$，未给出跨骨干的最优 $n$。
+- agent token 数只在 Agent-Swin-T 上做消融（Table 7），其他骨干沿用同一组 $[9,16,49,49]$，未给跨骨干的最优 $n$。
 - 与 GPViT、GRL 的区别只有定性论证（Appendix A），无实验对照；源文对三者的差异归结为 agent token 是否取自 query space（$A=f(Q)$）以及能否免训练迁移[^src-2312-08874-agent-attention]。
-- COCO 训练用 80k 子集训练、35k 验证，不是完整的 118K/5K 划分（Appendix D.2）；Table 2 的表注按 $1280\times800$ 计 FLOPs，正文称 mAP 以 $(3,1333,800)$ 测试。
+- COCO 训练用 80k 子集、35k 验证，不是完整的 118K/5K 划分（Appendix D.2）；Table 2 的表注按 $1280\times800$ 计 FLOPs，正文称 mAP 以 $(3,1333,800)$ 测试。
 - 式 7 的复杂度只到 FLOPs 量级，softmax 归一化、池化、gather 的访存与 kernel 实现未计入，实测速度只有曲线（Fig. 5、Fig. 9）没有表格数值[^src-2312-08874-agent-attention]。
 
 ## 相关页面
