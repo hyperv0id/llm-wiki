@@ -1,7 +1,7 @@
 # Wiki Template (generic)
 
 > 此文件是创建新项目时复制到 `projects/<slug>/CLAUDE.md` 的起始模板。
-> 请根据项目的主题/领域自由修改。根目录 `CLAUDE.md` 的通用规则始终保留。
+> 请根据项目的主题/领域自由修改。仓库根 `AGENTS.md` 的通用规则始终保留。
 
 ## 项目背景
 
@@ -31,15 +31,11 @@ plans/
 
 ## Frontmatter 规则
 
-完全遵循根目录 `CLAUDE.md` 的 Frontmatter 规则。如需项目特定额外字段，请在此文件中说明。
+完全遵循仓库根 `AGENTS.md` 的 Frontmatter 规则。如需项目特定额外字段，请在此文件中说明。
 
-## Ingest 工作流
+## Ingest / Lint
 
-遵循根目录 `CLAUDE.md` 的 "Ingest 工作流"。
-
-## Lint 检查清单
-
-遵循根目录 `CLAUDE.md` 的 Lint 检查清单。
+流程见仓库根的 `.agents/skills/wiki-ingest/SKILL.md` 与 `.agents/skills/wiki-lint/SKILL.md`。本文件不再重复流程步骤。
 
 ## 项目特定风格指南
 

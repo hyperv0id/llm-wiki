@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Lint script for llm-wiki. Covers the AGENTS.md lint checklist."""
+"""Lint script for llm-wiki. Covers the .agents/skills/wiki-lint/SKILL.md checklist."""
 import os, re, json, datetime, sys
 from collections import defaultdict
 
@@ -98,7 +98,7 @@ for name, p in sorted(pages.items()):
 
 # footnote definitions point to [[source-slug]]; verify those targets exist
 for name, p in sorted(pages.items()):
-    for tgt in link_in_def.findall(p["body"]):
+    for tgt in link_in_def_re.findall(p["body"]):
         if tgt.strip() not in pages:
             add(severe, name, f"脚注定义指向不存在的 source-summary: {tgt.strip()}")
 

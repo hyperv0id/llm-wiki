@@ -59,6 +59,69 @@ flowchart LR
 
 **替换位置**：直接替代 Transformer 块内 self-attention 算子，$Q,K,V$ 沿用原层线性投影；无额外路由网络，未引入辅助损失或负载均衡损失（§3.2、§4 全文未提）[^src-2602-01219-mita]。
 
+## 数据流与维度
+
+形状记作 $[\text{行}, \text{列}]$，与论文记号一致。**维度符号**：$N$ 为序列长度（token 数）；$d$ 为单头通道维；$m$ 为 landmark query 数（默认 25）；$k$ 为每个专家选中的 KV 数（默认 25）；$s$ 为每 query 路由的专家数（默认 1）；$n_i$ 为归入专家 $i$ 的 query 数，满足 $\sum_i n_i=N$。论文按单头形式书写，多头在 batch 维展开为本页推断[^src-2602-01219-mita][INFERENCE]。
+
+### Stage 1 · 造 landmark query
+
+$$\begin{aligned}
+\tilde{Q} &= \operatorname{AdaptiveAvgPool}(Q,\ \text{output\_size}=m) && \text{// } [d, N] \xrightarrow{\text{沿 } N \text{ 维均分 } m \text{ 段取均值}} [d, m]\ \text{——} N \text{ 个 query 压成 } m \text{ 个探测向量}
+\end{aligned}$$
+
+### Stage 2 · 一次打分，造出两组 KV 视图
+
+$$\begin{aligned}
+S^{kv} &= K^{\top}\tilde{Q}/\sqrt{d} && \text{// } [N, \bcancel{d}]\times[\bcancel{d}, m]\to[N, m]\ \text{——消去 } d\text{，每列是一个 landmark 对全部 } N \text{ 个 key 的打分}\\
+\mathcal{I}_i &= \operatorname{Top}_k\!\left(K^{\top}\tilde{q}_i\right) && \text{// } [N, m] \xrightarrow{\text{沿 } N \text{ 维逐列 Top-}k} [k, m]\ \text{——每组 } k \text{ 个 key 下标（取值 } 1..N\text{）}\\
+K^{\mathrm{expt}}, V^{\mathrm{expt}} &= K[:,\mathcal{I}^{kv}],\ V[:,\mathcal{I}^{kv}] && \text{// } [d, N] \xrightarrow{\text{按 } \mathcal{I}^{kv}\in[mk] \text{ 索引列}} [d, mk]\ \text{——专家 } i \text{ 占槽位 } [ik,(i+1)k)
+\end{aligned}$$
+
+索引可重复且 $mk$ 可大于 $N$：同一个 key 能进入多个专家，并集上限为 $\min(mk, N)$。
+
+### Stage 3 · 两条支路并行
+
+**支路 A：共享专家（常开，宽 $m$）**
+
+$$\begin{aligned}
+\tilde{V} &= V\operatorname{softmax}\!\left(S^{kv}\right) && \text{// } [d, \bcancel{N}]\times[N, m] \xrightarrow{\text{softmax 沿 } N} [d, m]\ \text{——全部 value 加权成 } m \text{ 个摘要}\\
+A^{\mathrm{share}} &= \operatorname{softmax}\!\left(\tilde{Q}^{\top}Q/\sqrt{d}\right) && \text{// } [m, \bcancel{d}]\times[\bcancel{d}, N]\to[m, N] \xrightarrow{\text{softmax 沿 } m} [m, N]\\
+O^{\mathrm{share}} &= \tilde{V}A^{\mathrm{share}} && \text{// } [d, \bcancel{m}]\times[\bcancel{m}, N]\to[d, N]\ \text{——每 query 只对 } m \text{ 对 KV}
+\end{aligned}$$
+
+**支路 B：形变专家（稀疏，宽 $k$）**。记 $Q^{(i)}\in[d, n_i]$ 为按 $\mathcal{I}^{\mathrm{expt}}$ 归入专家 $i$ 的 query 列，$V^{(i)},K^{(i)}\in[d,k]$ 为其对应的 top-$k$ KV。
+
+$$\begin{aligned}
+R &= \tilde{Q}^{\top}Q && \text{// } [m, \bcancel{d}]\times[\bcancel{d}, N]\to[m, N]\ \text{——与 } S^{kv} \text{ 同型，只把 } K \text{ 换成 } Q\\
+e_1 &= \operatorname{ArgMax}_{m} R && \text{// } [m, N] \xrightarrow{\text{沿 } m \text{ 维 ArgMax}} [N]\ \text{——每 query 一个专家编号}\\
+\mathcal{I}^{\mathrm{expt}} &= \operatorname{ArgSort}(e_1) && \text{// } [N] \xrightarrow{\text{按编号排序}} [N]\ \text{——只重排 query 的列序，不改数值}\\
+A^{(i)} &= \operatorname{softmax}\!\left(K^{(i)\top}Q^{(i)}/\sqrt{d}\right) && \text{// } [k, \bcancel{d}]\times[\bcancel{d}, n_i]\to[k, n_i] \xrightarrow{\text{softmax 沿 } k} [k, n_i]\\
+O^{(i)} &= V^{(i)}A^{(i)} && \text{// } [d, \bcancel{k}]\times[\bcancel{k}, n_i]\to[d, n_i]\ \text{——只算路由到专家 } i \text{ 的 } n_i \text{ 个 query}
+\end{aligned}$$
+
+逐专家循环并非必需：将 $Q$ 按 $\mathcal{I}^{\mathrm{expt}}$ 重排后，以 $\mathrm{cu\_seqlens}_q=\operatorname{CumSum}(\operatorname{BinCount}(e_1))$ 与 $\mathrm{cu\_seqlens}_k=[0,k,2k,\dots,mk]$ 进行单次变长 FlashAttention 计算，第 $i$ 段即 $(Q^{(i)},K^{(i)},V^{(i)})$（Algorithm 1 第 13–14 行）[^src-2602-01219-mita]。
+
+### Stage 4 · 汇合为一次 softmax
+
+$$\begin{aligned}
+K^{\star} &= [\,\tilde{Q},\,K^{(e_1)}\,] && \text{// } [d, m]\oplus[d, k]\to[d, m+k]\quad(s>1:\ [d, m+ks])\\
+V^{\star} &= [\,\tilde{V},\,V^{(e_1)}\,] && \text{// } [d, m]\oplus[d, k]\to[d, m+k]\\
+\Lambda &= K^{\star\top}Q/\sqrt{d} && \text{// } [m{+}k, \bcancel{d}]\times[\bcancel{d}, N]\to[m{+}k, N]\ \text{——前 } m \text{ 行即 } R/\sqrt{d}\\
+O &= V^{\star}\operatorname{softmax}(\Lambda) && \text{// } [d, \bcancel{m{+}k}]\times[\bcancel{m{+}k}, N]\to[d, N]\ \text{——全局与局部在同一分母下竞争}
+\end{aligned}$$
+
+两条支路若各自归一化后再加权求和会得到不同的权重；式（10）要求拼接后进行单次 softmax。实际实现中，分专家计算后通过 online softmax（LSE）合并 $O^{\mathrm{share}}$ 与 $O^{\mathrm{expt}}$，与该式等值（§3.2）[^src-2602-01219-mita]。
+
+### 结构要点
+
+- **key 侧宽度与 $N$ 无关**：注意力计算中 key 侧固定为 $m+ks$；$N$ 只出现在 query 侧，以及池化、$S^{kv}/R$ 打分、gather 索引范围这三处对 $N$ 的读取中。
+- **路由是 $N\to m\to N$ 的往返**：$R$ 沿 $m$ 取 argmax 得到 $N$ 个编号（归类），再按编号将 $N$ 个 query 分发到 $m$ 段变长序列中（展开）；该过程只改变排列而不产生新表示，目的是把 $m$ 个专家合并为一次调用。
+- **路由分数就是共享专家的 logits**：$R$ 与 $S^{kv}$ 同型，只差 $K\leftrightarrow Q$ 与 $1/\sqrt{d}$；由于共享专家的 key 即 $\tilde{Q}$，$\Lambda$ 的前 $m$ 行恰为 $R_{:,q}/\sqrt{d}$，因此路由是本次 attention 的前缀而非独立模块（式 10）[^src-2602-01219-mita]。
+
+### 配置换算
+
+$m=k=25$、$s=1$ 时，单 query 计算 50 对 KV，$K^{\mathrm{expt}},V^{\mathrm{expt}}$ 为 $d\times 625$，并集上限 $m\times k=625$ 已超过 ImageNet-1K 的典型序列长度（§4.1）[^src-2602-01219-mita]。在 ADE20K 中，$512\times512$ 输入与 patch 16 对应 $N=1024$，$36+36$ 配置下单 query 计算 72 对 KV，并集上限 $36\times36=1296>N$（Table 4）[^src-2602-01219-mita]。
+
 ## 复杂度
 
 式（10）本身是 $\mathcal{O}\!\left(N(m+ks)\right)$，相对 full attention 的 $\mathcal{O}(N^2)$，前提是 $N\gg m+ks$（§3.2）[^src-2602-01219-mita]。上界只覆盖这一步：$\mathcal{O}(Nm)$ 打分、$\mathcal{O}(Nm)$ landmark value 提取与 gather 访存均未计入，且未给出空间复杂度。论文将 gather 随机访存列为潜在显存带宽瓶颈，所引 DSA 缓解方案未经验证[^src-2602-01219-mita]。

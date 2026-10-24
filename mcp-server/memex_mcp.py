@@ -120,6 +120,23 @@ def _rel_to_repo(p: Path) -> str:
         return str(p)
 
 
+def _resolve_schema(proj) -> "Path | None":
+    """CLAUDE.md is either a symlink to AGENTS.md or a one-line `@AGENTS.md` import.
+
+    On Windows checkouts (core.symlinks=false) a committed symlink lands as a
+    text file holding just the target name, so follow the import explicitly.
+    """
+    p = proj.claude_md
+    if not p.exists():
+        return None
+    text = p.read_text("utf-8").strip()
+    if text.startswith("@") and "\n" not in text:
+        target = (p.parent / text[1:].strip()).resolve()
+        if target.exists():
+            return target
+    return p
+
+
 def _safe_wiki_path(proj, filename: str) -> Path:
     """Resolve filename under wiki_dir and reject path traversal."""
     base = proj.wiki_dir.resolve()
@@ -180,19 +197,32 @@ def list_projects() -> dict:
 
 @mcp.tool()
 def get_instructions(project: str = "") -> dict:
-    """Return the project's CLAUDE.md (wiki schema, citation rules, ingest workflow).
+    """Return the project's CLAUDE.md (wiki schema, citation rules).
+
+    Workflow steps are not in the schema: read `.agents/skills/wiki-ingest/SKILL.md`
+    before ingesting and `.agents/skills/wiki-lint/SKILL.md` before linting.
 
     Read this once at session start so you follow the wiki conventions for
-    frontmatter, inline citations [^src-*], and contradiction resolution.
+    frontmatter, inline citations [^src-*], and contradiction handling.
     """
     proj = _resolve(project)
-    if not proj.claude_md.exists():
-        return {"project": proj.slug, "found": False, "content": ""}
+    skills = [
+        _rel_to_repo(p)
+        for p in (
+            REPO_ROOT / ".agents" / "skills" / "wiki-ingest" / "SKILL.md",
+            REPO_ROOT / ".agents" / "skills" / "wiki-lint" / "SKILL.md",
+        )
+        if p.exists()
+    ]
+    schema = _resolve_schema(proj)
+    if schema is None:
+        return {"project": proj.slug, "found": False, "content": "", "skills": skills}
     return {
         "project": proj.slug,
         "found": True,
-        "path": _rel_to_repo(proj.claude_md),
-        "content": proj.claude_md.read_text("utf-8"),
+        "path": _rel_to_repo(schema),
+        "content": schema.read_text("utf-8"),
+        "skills": skills,
     }
 
 
@@ -430,7 +460,7 @@ def add_raw_source(filename: str, content: str, project: str = "") -> dict:
     with the same name already exists, this returns an error rather than
     overwriting — raw/ is append-only.
 
-    After adding, follow the CLAUDE.md ingest workflow: read the source,
+    After adding, follow `.agents/skills/wiki-ingest/SKILL.md`: read the source,
     update or create wiki pages with inline [^src-*] citations, update
     wiki/index.md and wiki/log.md, and call `git_commit`.
     """

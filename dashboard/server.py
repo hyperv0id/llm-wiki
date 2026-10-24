@@ -42,6 +42,10 @@ CLAUDE_TIMEOUT = int(os.environ.get("CLAUDE_TIMEOUT", "600"))
 # 짧은 진단용 timeout
 CLAUDE_QUICK_TIMEOUT = int(os.environ.get("CLAUDE_QUICK_TIMEOUT", "30"))
 
+# 절차는 스키마 문서가 아니라 스킬에 있다 (AGENTS.md 는 상시 규칙만 담는다).
+SKILL_INGEST = PROJECT_ROOT / ".agents" / "skills" / "wiki-ingest" / "SKILL.md"
+SKILL_LINT = PROJECT_ROOT / ".agents" / "skills" / "wiki-lint" / "SKILL.md"
+
 # ─── 런타임 설정 (모델 등) ───
 
 SETTINGS_FILE = PROJECT_ROOT / ".dashboard-settings.json"
@@ -848,16 +852,20 @@ def _ensure_vault_scaffolding(vault_root: Path) -> dict:
             p.write_text(content, encoding="utf-8")
             created.append(fname)
 
-    # 3. CLAUDE.md (only when missing; copy from templates/CLAUDE.md if shipped with the vault)
+    # 3. CLAUDE.md — Claude Code 만 읽는 진입점. 규칙 본문은 AGENTS.md 에만 둔다.
     claude_md = vault_root / "CLAUDE.md"
     if not claude_md.exists():
-        tmpl = vault_root / "templates" / "CLAUDE.md"
-        if tmpl.is_file():
-            try:
-                claude_md.write_text(tmpl.read_text("utf-8"), encoding="utf-8")
-                created.append("CLAUDE.md")
-            except Exception:
-                pass
+        if (vault_root / "AGENTS.md").is_file():
+            claude_md.write_text("@AGENTS.md\n", encoding="utf-8")
+            created.append("CLAUDE.md")
+        else:
+            tmpl = vault_root / "templates" / "CLAUDE.md"
+            if tmpl.is_file():
+                try:
+                    claude_md.write_text(tmpl.read_text("utf-8"), encoding="utf-8")
+                    created.append("CLAUDE.md")
+                except Exception:
+                    pass
 
     # 4. .obsidian/app.json defaults — merge, never override existing keys
     obs_dir = vault_root / ".obsidian"
@@ -1039,7 +1047,7 @@ def do_ingest(title, content, folder="", project_slug=None):
 
     prompt = f"""{idx_inst}
 중요: raw/ 디렉토리의 파일을 절대 수정/삭제하지 마라. raw/는 불변이다. wiki/에만 쓰기.
-Ingest raw/{slug}.md — 이 소스를 읽고 CLAUDE.md 지침대로 wiki 페이지들을 생성/갱신해. 핵심 내용 논의는 생략하고 바로 실행해.{folder_inst}
+Ingest raw/{slug}.md — {SKILL_INGEST} 를 먼저 읽고 그 절차대로 wiki 페이지들을 생성/갱신해. 핵심 내용 논의는 생략하고 바로 실행해.{folder_inst}
 
 작업이 끝나면:
 1. 마지막에 왜 이런 판단을 했는지 3~5줄로 요약해 (REASONING: 으로 시작).
@@ -1327,9 +1335,7 @@ def do_lint(project_slug=None):
     today = datetime.now().strftime("%Y-%m-%d")
     idx_inst = get_index_instruction(proj.wiki_dir)
     prompt = f"""{idx_inst}
-CLAUDE.md의 "Lint 체크리스트" 섹션을 읽고 wiki 전체를 점검해.
-
-아래 체크리스트를 **모두** 수행:
+{SKILL_LINT} 를 읽고 wiki 전체를 점검해. 아래 체크리스트를 **모두** 수행:
 
 ### 구조 검사
 - frontmatter 없거나 type 필드가 허용 값이 아닌 페이지
@@ -1370,7 +1376,7 @@ CLAUDE.md의 "Lint 체크리스트" 섹션을 읽고 wiki 전체를 점검해.
 
 def do_lint_fix(project_slug=None):
     proj = project_registry.get_project(project_slug)
-    prompt = """방금 CLAUDE.md의 Lint 체크리스트로 점검을 했다. 발견된 모든 문제를 지금 수정해:
+    prompt = f"""{SKILL_LINT} 체크리스트로 점검을 했다. 발견된 모든 문제를 지금 수정해:
 
 - frontmatter 누락/불일치 → 올바른 frontmatter 추가/수정
 - inline citation 없는 claim → 적절한 [^src-*] 추가 (소스가 존재하는 경우에만)

@@ -4020,3 +4020,13 @@ ingest 报告：[[ingest-reports/2026-10-24-mita|WHY 报告]]
 - 修链接：astgcn（heterogeneous-spatial-attention、traffic-forecasting）、flashst（urbanpg ×2）、frets（rstib-mlp）、stg-mamba（rivermamba）、timexer（kite）补 `source-` 前缀；`[[raw|DCRNN source paper]]`→`[[source-dcrnn|…]]`；`[[mask]]` 改纯文本；`[[ELF]]`→`[[elf|ELF]]`；`[^sec4.2.2]` 定义由 `[[source-sec4.2.2]]` 改为 `[[source-channelmts]]`；source-trace-as-state 与 source-eac 的两处 PDF wikilink 改为代码路径（EAC 的 PDF 不在 `raw/` 下，已注明链接移除）。
 - 复核：64 页 frontmatter 必填字段缺口 0，`[^src-*]` 无定义 0（log.md 除外），悬空目标由 63 降为 52（余下全部是「提及但未建页的概念/作品」）。
 更新的页面：[[log]]
+
+
+## [2026-10-24] maintenance | mita-attention 补「数据流与维度」节
+新增一节，按 Algorithm 1 的形状注记逐行核对（`raw/2602.01219-mita.md` 的 `// [N, m]`、`// [m*k]`、`// [d, m]`、`cu_seqlens_q=CumSum(BinCount(...))`、`cu_seqlens_k=[0,k,…,mk]`）：张量清单 12 行、逐步形状变化 11 行、三处结构要点（key 侧宽度变常数、路由为 $N\to m\to N$ 往返、路由分数与共享专家 logits 同源）、单 query 路径与配置换算（$25+25$ 与 ADE20K $36+36$、$N=1024$）。文案经 `omp --model google/gemini-3.8-flash:high -p`（`--no-tools --no-session`）润色，公式/表格/脚注逐字比对通过，改动仅措辞；回退 1 处（$36\times36=1296$ 的「并集上限达到」改回「上限为」，避免读成实际覆盖全部 token）。
+更新的页面：[[mita-attention]]
+
+
+## [2026-10-24] maintenance | mita-attention 数据流节改为分阶段计算图块
+按用户要求撤掉「张量清单」与「逐步形状变化」两张表（线性罗列无法体现并行支路与矩阵乘法消维），改为 Stage 1–4 的 `aligned` 块：Stage 1 池化、Stage 2 打分 + Top-$k$ + gather、Stage 3 分两支路（A 共享专家、B 形变专家）并行、Stage 4 拼接收敛。每行按「公式 & 维度推导」对齐，矩阵乘法用 `\bcancel{}` 标出被消去的维度，规约/采样用 `\xrightarrow{\text{沿某维 …}}` 标注方向，gather/ArgSort 标明索引张量形状如何作用于原张量。补记 $Q^{(i)}\in[d,n_i]$ 的定义，$\arg\max$ 记号改为 $\operatorname{ArgMax}_{m}$ 以消除维度歧义。散文部分（维度符号、支路定义、实现说明、结构要点、配置换算）送 `omp --model google/gemini-3.8-flash:high -p`（`--no-tools --no-session`）润色，逐段校验行内 `$...$` 序列与原稿逐字节一致后应用，改动仅措辞。
+更新的页面：[[mita-attention]]

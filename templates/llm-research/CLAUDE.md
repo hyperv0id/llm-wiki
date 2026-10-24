@@ -29,4 +29,4 @@ wiki/
 
 ## Citation 规则
 
-遵循根目录 `CLAUDE.md`。论文 ingest 时如有 arxiv id，请在 source-summary 中注明。
+遵循仓库根 `AGENTS.md`。论文 ingest 时如有 arxiv id，请在 source-summary 中注明。

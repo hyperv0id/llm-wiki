@@ -11,7 +11,7 @@ maintain the wiki directly — no dashboard required.
 | Tool | Purpose |
 |---|---|
 | `list_projects` | Enumerate Memex projects (legacy + multi-project). |
-| `get_instructions` | Return the project's CLAUDE.md (schema + ingest workflow). |
+| `get_instructions` | Return the project's CLAUDE.md (schema) plus the skill paths for ingest / lint. |
 | `stats` | Page count, type distribution, raw source count. |
 | `list_pages` | List pages with frontmatter, optionally filtered by type/folder. |
 | `read_page` | Read frontmatter + body + outbound links. |
@@ -168,4 +168,5 @@ time.
 - `git_commit` does not run git hooks differently from a normal commit.
   If you have pre-commit hooks that need a TTY, run those manually.
 - Frontmatter parsing is the same loose YAML-ish parser used by the
-  dashboard. Stick to the documented schema in `CLAUDE.md`.
+  dashboard. Stick to the documented schema in `CLAUDE.md`; workflow steps live in
+  `.agents/skills/wiki-ingest/SKILL.md` and `.agents/skills/wiki-lint/SKILL.md`.
