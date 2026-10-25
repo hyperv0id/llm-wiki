@@ -9,7 +9,7 @@ tags:
   - periodicity
   - channel-dependence
 created: 2026-04-28
-last_updated: 2026-05-31
+last_updated: 2026-10-25
 source_count: 1
 confidence: medium
 status: active
@@ -20,48 +20,44 @@ status: active
 ## 论文信息
 
 - **标题**: Temporal Query Network for Efficient Multivariate Time Series Forecasting
-- **作者**: Shengsheng Lin, Haojun Chen, Haijie Wu, Chunyun Qiu, Weiwei Lin (华南理工大学)
-- **发表**: ICML 2025 (第 42 届国际机器学习会议)
+- **作者**: Shengsheng Lin, Haojun Chen, Haijie Wu, Chunyun Qiu, Weiwei Lin（华南理工大学）
+- **发表**: ICML 2025，PMLR 267（PDF 首页页脚：Proceedings of the 42nd International Conference on Machine Learning, Vancouver, Canada）
+- **arXiv**: 2505.12917v2（2025-09-11）
+- **raw**: `raw/2505.12917v2.md`
 - **代码**: https://github.com/ACAT-SCUT/TQNet
 
 ## 核心贡献
 
 ### Temporal Query (TQ) 技术
 
-TQ 技术的核心思想是：用**周期性偏移的可学习向量**作为注意力机制中的 Query，从而在注意力中融合全局和局部相关性[^src-tqn]。
+给定周期长度 $W$，初始化可学习参数 $\theta_{\mathrm{TQ}}\in\mathbb{R}^{C\times W}$。时刻 $t$ 样本自 $t \bmod W$ 循环截取长度 $L$ 片段 $\theta_{\mathrm{TQ}}^{t,L}$ 作注意力 Query，K、V 仍取自输入 $X_t$（式 1–3）：
 
-- **Query (Q)**：来自周期性偏移的可学习参数 θ_TQ ∈ R^{C×W}，捕捉变量间的全局相关性
-- **Key (K) & Value (V)**：来自原始输入序列 X_t，编码样本级别的局部相关性
-- **周期偏移机制**：每隔 W 个时间步，提取相同的 TQ 向量片段，实现参数复用和噪声平滑
+$$Q_h=\theta_{\mathrm{TQ}}^{t,L}W_h^{Q},\quad K_h=X_tW_h^{K},\quad V_h=X_tW_h^{V}$$
 
-### TQNet 架构
+由构造 $\theta_{\mathrm{TQ}}^{t,L}=\theta_{\mathrm{TQ}}^{t+iW,L}$（式 2）：相隔 $W$ 步样本共用 query，参数经多样本共同训练，等效对局部噪声取平均。论文以此区分两类相关性：Q 承载全局稳定的变量间模式，K/V 承载样本级局部信息[^src-tqn]。
 
-TQNet 仅由以下组件构成：
-1. **单层 TQ-MHA** (Temporal Query-enhanced Multi-Head Attention)
-2. **浅层 MLP** (两层 GeLU 激活)
-3. **可选的 Instance Normalization**
+### 模型
 
-这种极简架构在 12 个真实数据集上取得了 SOTA 性能，且计算效率与线性模型相当。
+TQNet 由单层 TQ-MHA、两层 GeLU MLP（均带残差）、输出线性层及可选 Instance Normalization 组成（Figure 2、Algorithm 1）。注意力在通道轴计算 $[C,C]$ 打分矩阵，$L$ 仅进入 Q/K/V 宽度[^src-tqn]。
 
-## 关键洞察
+## 实验与证据
 
-论文指出：真实世界数据中的非平稳干扰（极端值、缺失值、噪声）会导致**样本级相关性**与**全局相关性**产生显著差异。传统自注意力方法完全依赖样本级相关性，容易受到噪声干扰。TQ 技术通过将全局先验（可学习向量）注入注意力，使模型能够建立更稳定的变量间依赖关系。
-
-## 实验结果
-
-- 在 12 个数据集上取得 Top 2 性能（24/24 个预测指标）
-- 在高维多变量数据集（Electricity, PEMS）上优势明显
-- 推理效率与 DLinear 等线性模型相当
+- 12 个数据集（ETT×4、Electricity、Solar、Traffic、Weather、PEMS03/04/07/08），$L=96$：24 项误差指标中 22 项进前二，TimeXer 11 项、CycleNet 9 项（Table 2 Count 行）[^src-tqn]。
+- Table 3 Query/Key 组合对比：七个高维数据集中六个以 (Q=TQ, K=Raw) 最优，优于 (Q=Raw, K=Raw) 与 (Q=TQ, K=TQ)；Traffic 例外，MSE 略高于全自注意力（0.445 vs 0.426）[^src-tqn]。
+- 效率：单层注意力加浅层 MLP，参数量与训练时间均低于对比模型（Figure 7 左）；训练开销随通道数接近线性，$C<1000$ 时接近 DLinear（§5，Figure 7 右）[^src-tqn]。
+- $W$ 敏感性（Figure 6）：$W$ 对齐真实周期（Electricity 取 168）效果最好；$W=24$ 只能捕捉部分周期；$W=23$、$167$ 等不对齐取值引入语义不一致，性能下降[^src-tqn]。
 
 ## 与本 Wiki 已收录论文的关系
 
-- **与 CycleNet 的关联**：TQ 技术受 CycleNet 启发，采用可学习参数捕捉周期模式[^src-tqn]
-- **与 iTransformer 的对比**：iTransformer 完全依赖样本级自注意力，而 TQNet 通过 TQ 技术融合全局先验
-- **与 PENGUIN 的对比**：两者都将周期先验注入注意力，但 TQ 使用可学习向量作为 Query，PENGUIN 使用周期分组注意力偏置
+- **CycleNet**：周期参数思路源于 CycleNet 可学习循环周期；CycleNet 用参数预测残差，TQ 将参数放入注意力作 Query[^src-tqn]。
+- **iTransformer**：同为通道维注意力，但 iTransformer 的 Q/K/V 全部来自样本，TQ 仅替换 Query 来源[^src-tqn]。
+- **PENGUIN**：两者均向注意力注入周期先验；TQ 替换 Query 来源，PENGUIN 改 key 侧加性偏置。
 
 ## 局限性
 
-- 需要预先知道周期长度 W（通过 ACF 或先验知识确定）
-- 在非平稳数据集上性能弱于某些方法
+- 强依赖数据周期性：$W$ 需按稳定周期设定，缺乏明显周期的数据上泛化受限（§5）[^src-tqn]。
+- 变量间弱相关时，强制多变量建模可能引入多余复杂度并降低性能（§5）[^src-tqn]。
+- 回溯窗足够长时，多变量建模收益下降，长窗还会引入更多噪声（§5，Figure 8）[^src-tqn]。
+- 每个数据集只设单一 $W$，多周期耦合（如周与月）需退化为日周期或集成多模型；论文称多周期建模仍是开放问题（附录 A.3）[^src-tqn]。
 
 [^src-tqn]: [[source-tqn]]

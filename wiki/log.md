@@ -4111,3 +4111,10 @@ ingest 报告：[[ingest-reports/2026-10-25-penguin|WHY 报告]]
 删除的页面：[[demlp-decoder]]
 ingest 报告：[[ingest-reports/2026-10-25-hyperd-correction|WHY 报告]]
 数值备注：二手摘要与原文在作者、模块、基线数、消融与效率数字上系统性冲突（见更正页）；PEMS03 MAPE 非最优（DGCRN 15.42% vs HyperD 15.76%）；$T_1'$、Table 4 Reduction 基线与 $W_o$ 维度按上下文推断，已标 [INFERENCE]
+
+## [2026-10-25] ingest | TQNet 补数据流与数值回打
+同一源（arXiv:2505.12917v2，ICML 2025 / PMLR 267）的第二次 ingest。首轮缺前向数据流，且把 Table 2 Count 行的 22/24 误写成 24/24。本轮补 Stage 1–6 分阶段维度块：先按 $t \bmod W$ 从 $C\times W$ 参数表取 $[C,L]$ 片段作 Q，K/V 由输入投影，注意力在通道轴形成 $[C,C]$ 打分后消去通道维，多头拼回残差、压到 $d$、输出 $H$ 并反归一化；$W<L$ 时索引回绕、query 列按周期重复，式 3 的 $\sqrt{L}$ 与单头宽度不符，均标 [INFERENCE]。同时按原文补 §5 三条局限与附录 A.3 单周期假设，新增 Table 3 三配置实测（Traffic 上全自注意力 0.426 优于 Q=TQ 的 0.445）。polisher 输出相对草稿为 -1.9%/-2.0%/-4.4%；补相关页面与两处口径修正后终稿 -1.5%/-1.5%/+0.0%。未达 10%–20%：三页以数字、公式块与归因限定语为主，继续压缩只能删事实，故停止。
+创建的页面：无
+更新的页面：[[tqn]]（新增数据流、结构与复杂度、边界；性能 24/24→22/24）, [[source-tqn]]（补 arXiv/PMLR/raw 溯源，局限按 §5+A.3 重写，公式转 LaTeX，source_count 1）, [[temporal-query-technique]]（公式转 LaTeX，$W$ 表补 Solar/Weather 并修正 ETTm2，新增 Table 3 实测表）
+ingest 报告：[[ingest-reports/tqn-2026-10-25|WHY 报告]]
+数值备注：源 md 丢失 §5 第三条局限（Figure 8），按 PDF 补回；旧版 24/24 与 §4.2「22 out of 24」及 Count 行冲突已改；Table 3 Traffic 例外并列两值；$d$ 原文明示未给，不补
