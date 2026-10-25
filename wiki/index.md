@@ -22,6 +22,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-2404-02905-var]] — VAR: Visual Autoregressive Modeling，next-scale prediction（多尺度 VQVAE 粗到细逐尺度自回归、尺度内并行），ImageNet 256 FID 1.73 + LLM 式 power-law scaling（Pearson ≈ −0.998）+ 零样本 in/out-painting 与编辑（Keyu Tian et al., PKU/ByteDance, arXiv:2404.02905v2；PDF raw/2404.02905-var.pdf）
 - [[source-2406-11838-mar]] — MAR: Autoregressive Image Generation without Vector Quantization，per-token 扩散头（Diffusion Loss）+ 广义自回归（随机顺序双向 MAR），ImageNet 256 w/CFG FID 1.55（Tianhong Li, Yonglong Tian, Kaiming He et al., NeurIPS 2024；PDF raw/2406.11838-mar.pdf）
 - [[source-2412-18730]] — Elucidating Flow Matching ODE Dynamics via Data Geometry and Denoisers, denoiser 吸引/吸收元定理 + FM ODE 三阶段轨迹 + 终端收敛（首个覆盖低维子流形支撑）+ 记忆几何理论 (Wan, Wang, Mishne, Wang, ICML 2025 Poster, arXiv:2412.18730 v4)
+- [[source-2502-05171-recurrent-depth]] — Huginn：Recurrent Depth + Latent Reasoning（Geiping et al., ELLIS Tübingen/UMD/LLNL, arXiv:2502.05171v2）；prelude/core/coda 三段、core 4 层块迭代 $r$ 次且每轮重注入输入嵌入，3.5B/0.8T、$\bar r=32$、截断反传 $k=8$；$r=1$ 时 GSM8K CoT 0.00，$r=32$ 时 ARC-E 69.91、MMLU 31.38，FLOP 口径等价 50B 固定深度
 - [[source-2502-10236]] — Shaping Inductive Bias in Diffusion Models through Frequency-Based Noise Control (ICLR 2025 Workshop) superseded by [[source-sagd]]
 - [[source-2502-11089-nsa]] — NSA: Native Sparse Attention，压缩 / 块选择 / 滑动窗口三支路各自 softmax + sigmoid 门控合并，GQA 组内共用选块，27B/3B 激活模型 270B token 预训练，LongBench 平均 0.469 vs 0.437、64k forward 9.0× / backward 6.0× / decode 11.6×（DeepSeek-AI, arXiv:2502.11089）
 - [[source-2509-22259]] — Rotary Position Encodings for Graphs (WIRE): 用 Laplacian 谱坐标对 query/key 施加旋转，RoPE 的图推广 (ICML 2026)
@@ -363,6 +364,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-timexer]] — TimeXer: patch-wise self-attention + variate-wise cross-attention 融合内生 patch 与外生 variate token，NeurIPS 2024 (Tsinghua)
 - [[source-timi]] — TiMi: LLM + MMoE 路由引导时序预测（arXiv:2602.21693）
 - [[source-tips]] — TIPS: transformer with inductive prior synthesis for financial forecasting
+- [[source-tosea-looped-transformer]] — Tosea.ai 博客：looped transformer 科普 + Huginn 复述 + 2026-09 关于 OpenAI Astra 使用 recurrent depth 的报道与可监督性争论（二手，confidence low）
 - [[source-tpllm]] — TPLLM: A Traffic Prediction Framework Based on Pretrained Large Language Models (arXiv 2024), 冻结 GPT-2 + LoRA Q/K (0.95% 参数), PeMS04/08 few-shot 退化幅度最小
 - [[source-tqn]] — TQNet: Temporal Query Network for efficient multivariate forecasting (ICML 2025)
 - [[source-trace-as-state]] — Trace as State：Xu Zou、Jie Tang；同题推理轨迹前置后重读，21 页正文与附录 A–F（arXiv:2609.02702v1）
@@ -761,6 +763,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[label-autocorrelation]] — 多步标签序列在给定历史条件下的时间步依赖，破坏 DF 的条件独立假设 (FreDF)
 - [[language-as-reference-framework]] — LaRF, 以语言为参考框架的多模态统一原理 (Shao et al., 2024)
 - [[large-scale-spatial-temporal-graph]] — 大规模时空图预测的计算复杂度与解决方案
+- [[latent-reasoning]] — 隐空间推理：在连续隐状态里完成推理、不经 token 投影，与 verbalized CoT 构成两条 test-time compute 轴；Huginn 的 $r=1$ 无推理能力为主证据，代价是可监督性（arXiv:2502.05171）
 - [[lead-lag-dependency]] — lead–lag 依赖：跨空间-时间的延迟依赖 $\tau_{ij}=|t_1-t_2|$，空间/时间依赖为其一维退化形式；统计/领域/深度三类建模谱系
 - [[linear-attention-unified-framework]] — Mamba Linear Attention unified formulation with 6 differences identified
 - [[location-scale-noise-model]] — LSNM，将条件分布的均值和方差同时建模的位置-尺度噪声模型，使扩散模型能感知数据异质性
@@ -1213,6 +1216,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[radial-basis-function-interpolation]] — RBF 插值，Multiquadric 核从离散站点构建连续污染物场
 - [[rdpi]] — RDPI，两阶段时空插补框架：确定性初始模型（GRIN）+ 以"初值−真值"残差为扩散目标的条件扩散，观测值入前向过程、保留随机项的 DDIM 式加速；四时空数据集 MAE/MSE 作者报告最优 (arXiv 2024, AAAI 2025 著录)
 - [[recurrent-acceleration-network]] — RAN，反对角线 slice 并行：串行步数 $L\to R+C-1=O(\sqrt L)$、内存 $O(L)$，WITRAN 的通用递推加速框架（NeurIPS 2023）
+- [[recurrent-depth]] — 循环深度 / looped transformer：共享 4 层块迭代 $r$ 次，prelude/core/coda 三段 + 每轮输入注入 + 随机 $s_0$ 换 path independence，深度方向截断反传 $k=8$；$r$ 是推理期旋钮（arXiv:2502.05171）
 - [[rectified-flow]] — Rectified Flow, ODE-based generative model learning straight trajectories for few-step generation (arXiv 2022)
 - [[reflective-stepwise-reward]] — 反思式逐步奖励：LLM evaluator 回看完整轨迹逐步打分改善 credit assignment，折扣聚合后入记忆 (JitRL, ICML 2026)
 - [[reparameterization-trick]] — 重参数化技巧，将随机采样重构为可微确定性变换+固定噪声

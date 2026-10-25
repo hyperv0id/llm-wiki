@@ -7,7 +7,7 @@ tags:
   - scalability
 created: 2026-04-29
 last_updated: 2026-10-25
-source_count: 14
+source_count: 15
 references:
   - [[source-fast-long-horizon-forecasting]]
   - [[source-2602-01219-mita]]
@@ -150,6 +150,12 @@ MoBA（Moonshot AI，2025）把 top-k 门控的对象从 FFN 专家换成 KV 上
 
 机制与数值见 [[implicit-functional-routing]]、[[implicit-residual-experts]]、[[residual-interaction-decomposition]]。
 
+## 与循环深度的互补：参数重 vs 计算重
+
+MoE 把容量放在参数上、每次前向只激活一部分；[[recurrent-depth|循环深度]]是它的镜像——材料化参数多于实际参数，算力随推理时的循环次数增长[^src-2502-05171-recurrent-depth]。Geiping et al. 在 §9 写下这层对照并给出分工判断：「循环深度擅长学习推理模式，MoE 擅长有效存储与检索复杂信息」，并提出未来的 recurrent MoE 可以在多轮迭代里反复路由到同一个 expert，而不是每个 expert 每次前向最多激活一次[^src-2502-05171-recurrent-depth]。该判断是作者对架构互补性的推测（"We posit"），没有配置或消融验证[^src-2502-05171-recurrent-depth]。
+
+这两个方向在 3.5B/800B token 的 Huginn 上是分开做的：那篇论文没有用 MoE，MoE 只出现在 future work[^src-2502-05171-recurrent-depth]。
+
 ## 相关技术
 
 - [[glu-gated-linear-unit|Gated Linear Units (GLU)]]
@@ -190,3 +196,4 @@ MoBA（Moonshot AI，2025）把 top-k 门控的对象从 FFN 专家换成 KV 上
 [^src-2602-01219-mita]: [[source-2602-01219-mita]]
 [^src-2502-11089-nsa]: [[source-2502-11089-nsa]]
 [^src-resnets-route-without-routers]: [[source-resnets-route-without-routers]]
+[^src-2502-05171-recurrent-depth]: [[source-2502-05171-recurrent-depth]]

@@ -8,7 +8,7 @@ tags:
   - distribution-shift
   - online-learning
 created: 2026-06-08
-last_updated: 2026-08-06
+last_updated: 2026-10-25
 source_count: 2
 confidence: medium
 status: active
@@ -56,6 +56,7 @@ TTC is closely related to **test-time adaptation (TTA)**. The label-free, masked
 - [[traffic-forecasting]] — the primary application domain
 - [[continual-spatio-temporal-forecasting]] — the continual fine-tuning alternative
 - [[label-autocorrelation]] — the enabling property that makes supervised TTC possible
+- [[latent-reasoning]] — LLM 侧的 test-time compute：用循环深度在隐空间加算力，与该页的时空校准不是同一问题设定
 
 [^src-st-ttc]: [[source-st-ttc]]
 [^src-pir]: [[source-pir]]
