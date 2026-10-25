@@ -10,8 +10,8 @@ tags:
   - self-supervised
   - ICLR-2023
 created: 2026-05-30
-last_updated: 2026-08-06
-source_count: 7
+last_updated: 2026-10-25
+source_count: 8
 confidence: medium
 status: active
 ---
@@ -104,6 +104,7 @@ PatchTST 是 LSTF 领域的关键转折点 [^src-patchtst]：
 - **前驱/基线**：[[informer|Informer]], [[autoformer|Autoformer]], [[fedformer|FEDformer]], [[ltsf-linear|DLinear / LTSF-Linear]]
 - **同期/对照**：[[tide|TiDE]] — residual MLP + 协变量高速路，线性复杂度；在 Traffic 等大数据集上可超过 PatchTST，且训练/推理显著更快[^src-tide]
 - **后续/继承**：[[simdiff|SimDiff]]（patch + CI + diffusion）, [[cvpe|CVPE]]（CI + CD 折中）, [[sparsetsf|SparseTSF]]（patch + 极致压缩）, [[srsnet|SRSNet]] / [[selective-representation-space|SRS]]（自适应 patch 表示空间插件）
+- **RNN 迁移**：[[witran|WITRAN]]（NeurIPS 2023）引用 PatchTST（与 TimesNet 并列）作为"把信息传递切成 patch 分开处理可同时保留全局与局部语义"的证据，据此把 RNN 输入按周期拆成子序列分块递推[^src-witran-jia-2023]
 - **多模态改造**：[[tess|TESS]]（arXiv:2603.12664v2）直接以 PatchTST 为 backbone，输入前拼接 4 个离散时序原语（mean shift/volatility/shape/lag）类别 embedding 并附加门控 BCE 监督，四数据集全面超过原版 PatchTST（Bitcoin MSE 2.2726 vs 3.2456）；[[timi|TiMi]] 则用 MMoE 替换 FFN——两者同为 PatchTST 的多模态改造样板[^src-tess]
 - **后处理插件**：[[pir|PIR]]（Liu et al., NeurIPS 2025）以 PatchTST 为 channel-independent 骨干测试后处理修订，论文报告 48 个实验设置平均 MSE 降低 8.99%（Table 1）[^src-pir]
 - **与 [[zeus|Zeus]] 的对照**：点预测上 Zeus（ICML 2026）零样本在多数数据集上超过 full-shot PatchTST（Zeus 表 1）；异常检测（UCR Anomaly Archive，adjusted F1）PatchTST 0.877 vs Zeus 0.900（实证结果，Zeus 表 9）[^src-2607-01918]
@@ -117,3 +118,4 @@ PatchTST 是 LSTF 领域的关键转折点 [^src-patchtst]：
 [^src-tess]: [[source-tess]]
 [^src-pir]: [[source-pir]]
 [^src-2607-01918]: [[source-2607-01918]]
+[^src-witran-jia-2023]: [[source-witran-jia-2023]]

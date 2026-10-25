@@ -8,8 +8,8 @@ tags:
   - downsampling
   - time-series
 created: 2026-04-28
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-10-25
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -85,6 +85,10 @@ x' = x + Conv1D(x)  // kernel size = 2×⌊w/2⌋+1
 | CycleNet | 可学习周期向量 | ~10k |
 | **Cross-Period Sparse** | **跨周期下采样** | **<1k** |
 
+## 同形不同用的对照
+
+[[witran|WITRAN]]（NeurIPS 2023）同样把序列按周期 $C$ 重排成 $w\times n$ 网格，但方向相反：SparseTSF 沿周期维下采样做**参数压缩**，WITRAN 保留完整网格、在其上做水平/垂直双向递推做**信息传递**，并要求 $H\bmod C=0$（$C\in\{12,24,48\}$）[^src-witran-jia-2023]。
+
 ## 超参数
 
 - **w (周期长度)**：应与数据的内在周期对齐
@@ -95,4 +99,5 @@ x' = x + Conv1D(x)  // kernel size = 2×⌊w/2⌋+1
 
 ## 引用
 
+[^src-witran-jia-2023]: [[source-witran-jia-2023]]
 [^src-sparsetsf]: [[source-sparsetsf]]

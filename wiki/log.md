@@ -4084,3 +4084,10 @@ Polisher 子 agent 压缩 5 个新页正文后字符数约降 6%–10%（数字�
 ## [2026-10-24] lint | 2606.27282 ingest 后复跑
 本轮 11 个涉及页面 0 严重 0 警告；发现并修复初版 slug 含点号问题（`source-2606.27282-*` → `source-2606-27282-*`，按 MiTA 先例）。全库存量 severe 139（136 项 confidence/source_count 冲突为主）维持上午报告口径，未动。
 报告：[[lint-reports/2026-10-24|lint 报告]]
+
+## [2026-10-25] ingest | WITRAN: Water-wave Information Transmission and Recurrent Acceleration Network for Long-range Time Series Forecasting
+NeurIPS 2023（北交大）。主张 long-range 需同时捕获 global-local 相关与长短周期重复模式，RNN 因信息遗忘（ECL 实证：输入超阈值后 LSTM/GRU 误差不再降）不能直接用；解法是把 RNN 输入按人工自然周期（$C\in\{12,24,48\}$，非 TimesNet FFT 自适应）重排成 $R\times C$ 网格，水平/垂直双向 GSC 递推（主/副状态 + selection gate 逐通道凸组合），反对角线 slice 并行把串行步数降到 $R+C-1=O(\sqrt L)$、内存 $O(L)$（论文口径"time complexity"；总算术量仍 $O(L)$，已在页面辨析）。5 数据集单通道、1h 频率、40 任务中 35 个 MSE 最优，long/ultra 平均 MSE 降 5.803%/14.275%（数据集级等权平均，无法逐任务复现）；效率只有定性曲线（无加速倍数，TimesNet OOM 未入图）。边界：周期人工设定且 $H\bmod C=0$、全部单通道、消融 ETTh1 336-720 全变体反超 WITRAN、未给最终超参与参数量。
+创建的页面：[[witran]], [[recurrent-acceleration-network]], [[source-witran-jia-2023]]
+更新的页面：[[periodicity-modeling-in-time-series]]（路线二加 WITRAN 小节，source_count 18→19）, [[timesnet]]（Connections 加周期设定对照，source_count 4→5）, [[patchtst]]（补 patch 洞察迁移到 RNN，source_count 7→8）, [[cross-period-sparse-forecasting]]（加同形不同用对照，source_count 1→2）, [[channel-independence]]（补单通道评估实例，source_count 16→17）, [[index]]
+ingest 报告：[[ingest-reports/2026-10-25-witran-jia-2023|WHY 报告]]
+数值备注：PDF 转文本对勾/叉号成 (cid:33)/(cid:37)、Table 3/4/9 数据集与方法名镜像、公式下标断裂（已复原）；$L$ 一符多义、式 (2) 维度标注疑与式 (5) 互换；§4.1 百分比聚合公式未给出（复核为等权平均）；Table 10 norm 列跨行合并缺值

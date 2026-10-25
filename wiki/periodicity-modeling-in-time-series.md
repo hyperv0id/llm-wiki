@@ -9,8 +9,8 @@ tags:
   - decomposition
   - survey
 created: 2026-04-28
-last_updated: 2026-10-24
-source_count: 18
+last_updated: 2026-10-25
+source_count: 19
 confidence: medium
 status: active
 ---
@@ -82,6 +82,14 @@ status: active
 
 - **核心贡献**：1D→2D 变换，架接时间序列与计算机视觉；跨五大任务一致 SOTA
 - **局限**：FFT 周期发现假设数据有明显周期性；弱周期数据收益不明确
+
+
+### WITRAN（NeurIPS 2023）
+
+[[witran|WITRAN]] 把 TimesNet 式 1D→2D 周期重排从 CNN 搬进 RNN：按**人工设定的自然周期**（超参 $C\in\{12,24,48\}$，非 FFT 自适应）把序列折成 $R\times C$ 网格，水平方向传周期内语义、垂直方向传周期间语义，每格两个门控 cell（GSC）在门控输入处融合两向信息[^src-witran-jia-2023]。反对角线分片把串行递推步数降到 $R+C-1$（[[recurrent-acceleration-network|RAN]]）。在 ETTh1/ETTh2/ECL/Traffic/Weather（单通道、1h 频率）上 long-range 平均 MSE 降 5.803%、ultra-long-range 降 14.275%（§4.1，数据集级百分比等权平均；40 任务中 35 个 MSE 最优）[^src-witran-jia-2023]。
+
+- **核心贡献**：bi-granular 双向传递让"长/短周期重复模式"成为递推的两个正交方向；Table 1 中与 MICN、TimesNet 同为"专门设计捕获长期重复模式"的三个模型
+- **局限**：周期需人工设定且 $H\bmod C=0$；全部实验单通道、数据聚合到 1h；效率结论仅有定性曲线
 
 ### PRNet
 
@@ -230,6 +238,7 @@ TPLib 调查的结论——"没有单一架构在所有任务上通用"——对
 | [[source-fedformer|FEDformer]] | 2022 | **ICML** | 频域增强注意力 |
 | [[source-prnet|PRNet]] | 2022 | DeepSpatial (KDD Workshop) | 周期残差学习 |
 | [[source-timesnet|TimesNet]] | 2023 | **ICLR** | 1D→2D 多周期变换 |
+| [[source-witran-jia-2023|WITRAN]] | 2023 | **NeurIPS 2023** | 周期重排 + 双向 RNN（water-wave） |
 | [[source-frets|FreTS]] | 2023 | **NeurIPS** | 频域 MLP 高效学习 |
 | [[source-hyperd-hybrid-periodicity-decoupling|HyperD]] | 2025 | **AAAI 2026** | 短/长周期解耦 + 双路径编码器 ★ |
 | [[source-afe-tfnet|AFE-TFNet]] | 2025 | Ocean Engineering (期刊) | WT+FFT 联合自适应提取 |
@@ -267,5 +276,6 @@ TPLib 调查的结论——"没有单一架构在所有任务上通用"——对
 [^src-tqn]: [[source-tqn]]
 [^src-sparsetsf]: [[source-sparsetsf]]
 [^src-cyclenet]: [[source-cyclenet]]
+[^src-witran-jia-2023]: [[source-witran-jia-2023]]
 [^src-phat]: [[source-phat]]
 [^src-decody-iclr2027]: [[source-decody-iclr2027]]

@@ -7,8 +7,8 @@ tags:
   - channel-processing
   - multivariate
 created: 2026-04-28
-last_updated: 2026-10-24
-source_count: 16
+last_updated: 2026-10-25
+source_count: 17
 confidence: high
 status: active
 ---
@@ -84,6 +84,10 @@ CPiRi 的通道打乱测试暴露了一个关键问题：大多数 CD 模型在�
 
 [[zeus|Zeus]]（ICML 2026）以 channel-independent 策略处理多变量（论文自述引用 PatchTST），并与 point tokenization、[[instance-normalization|RevIN]] 组合：各通道独立送入逐点 token 化的多尺度 encoder，用 RevIN 去尺度变化 [^src-2607-01918]。论文自述其局限为"单变量聚焦"——CI 处理多变量但未显式建模变量间相关，建议未来可配合 CoRA 式适配 [^src-2607-01918]。
 
+## 在 WITRAN 中的应用
+
+[[witran|WITRAN]]（NeurIPS 2023）的全部主实验都在单通道上做（"experiments were conducted on a single channel"，§4.1），ECL 321 变量、Traffic 862 变量的多变量数据集实际退化为逐变量单变量预测，论文未报告任何多变量联合建模结果[^src-witran-jia-2023]。
+
 ## TRACE：CIT + CbA 的通道折中
 
 [[trace|TRACE]]（NeurIPS 2025）提出 [[channel-identity-token|Channel Identity Tokens (CITs)]] + [[channel-biased-attention|Channel-biased Attention (CbA)]] 作为 CI 与 CD 的折中方案。CIT 是每通道唯一的可学习 token，充当通道级摘要锚点；CbA 通过偏置注意力掩码使 CIT 仅关注本通道 token，但非 CIT token 可自由跨通道交互[^src-trace-neurips2025]。这与 [[cvpe|CVPE]] 的"仅 patch 层注入 CD"和 [[cpiri|CPiRi]] 的"通道打乱 + 空间模块"不同——TRACE 在注意力掩码级别实现通道解耦而非特征注入或排列不变正则化。消融显示移除 CIT 导致 Avg MSE 0.670->0.713，CbA->Full Attn 导致 0.670->0.713[^src-trace-neurips2025]。
@@ -124,6 +128,7 @@ CI 只规定逐序列处理，不规定超参在序列间共享多少。[[search
 - 相关：[[zeus]] — CI + point tokenization + RevIN 的 tuning-free TSFM（ICML 2026）[^src-2607-01918]
 - 相关：[[trace]] — CIT + CbA 通道折中方案（NeurIPS 2025）[^src-trace-neurips2025]
 - 相关：[[grouped-hyperparameter-search]] — CI 内超参共享粒度的测量（全共享 ↔ per-series 谱系）[^src-2606-27282-ltsf-linear-models]
+- 相关：[[witran]] — 单通道评估的 RNN 周期模型（NeurIPS 2023）[^src-witran-jia-2023]
 
 [^src-simdiff]: [[source-simdiff]]
 [^src-patchtst]: [[source-patchtst]]
@@ -141,3 +146,4 @@ CI 只规定逐序列处理，不规定超参在序列间共享多少。[[search
 [^src-2607-01918]: [[source-2607-01918]]
 [^src-2606-27282-ltsf-linear-models]: [[source-2606-27282-ltsf-linear-models]]
 [^src-trace-neurips2025]: [[source-trace-neurips2025]]
+[^src-witran-jia-2023]: [[source-witran-jia-2023]]

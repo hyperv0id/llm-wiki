@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-10-24
+last_updated: 2026-10-25
 tags:
   - meta
 source_count: 0
@@ -399,6 +399,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-weathergfm]] — WeatherGFM: Learning A Weather Generalist Foundation Model via In-context Learning (ICLR 2025)
 - [[source-weatherpeft]] — WeatherPEFT: Task-Adaptive Parameter-Efficient Fine-Tuning for Weather Foundation Models (ICLR 2026)
 - [[source-whatif-tsf]] — WIT: What If TSF benchmark, scenario-guided multimodal forecasting with expert-crafted plausible/counterfactual futures, 4 domains, 5,352 samples, arXiv 2026
+- [[source-witran-jia-2023]] — WITRAN: Water-wave Information Transmission and Recurrent Acceleration Network，周期重排 + 双向门控 RNN + 反对角线并行（O(√L) 串行步数），long/ultra-long-range MSE 降 5.803%/14.275%（Jia et al., BJTU, NeurIPS 2023；PDF raw/witran-jia-2023.pdf）
 - [[source-worldts]] — WorldTS（Zhu et al., arXiv:2609.31162v1，2026-09-25）：多模态协变量直接条件化潜空间未来状态预测，两阶段训练；21 数据集上数值协变量 12/12 平均最优、Time-MMD 14/16 第一、MMSP 最低
 - [[source-xcpd]] — xCPD: graph spectral decomposition for channel-patch dependency routing (ICLR 2026)
 - [[source-yang-consistency-fm-arxiv24]] — Consistency-FM: Defining Straight Flows with Velocity Consistency, 速度一致性直线流少步 FM，LOFT $L_{CT}$ 的方法来源 (arXiv 2024 preprint, v1)
@@ -638,6 +639,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[wardropnet]] — WardropNet, COAML pipeline combining neural network + Wardrop equilibrium layer for traffic flow prediction, ICLR 2025
 - [[weathergfm]] — WeatherGFM, paper-proposed first weather generalist foundation model unifying 10+ weather understanding tasks via visual in-context learning on a plain ViT (ICLR 2025)
 - [[weatherpeft]] — WeatherPEFT，论文自称首个 WFM 参数高效微调框架，TADP + SFAS 双阶段任务自适应（ICLR 2026）
+- [[witran]] — WITRAN，按自然周期重排 2D 网格的双向 GSC 递推模型 + RAN 加速（NeurIPS 2023）
 - [[worldts]] — WorldTS：多模态协变量条件化的潜空间未来状态预测框架，两阶段训练（arXiv:2609.31162）
 - [[xcpd]] — xCPD, model-agnostic plugin for spectral-domain channel-patch dependency routing (ICLR 2026)
 - [[yarn]] — YaRN, efficient context window extension for RoPE models (2023)
@@ -1206,6 +1208,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[quizsf]] — QuiZSF, retrieval-augmented zero-shot TSF framework, ChronoRAG Base + MSIL + MCC dual-branch adapter (WWW 2026)
 - [[radial-basis-function-interpolation]] — RBF 插值，Multiquadric 核从离散站点构建连续污染物场
 - [[rdpi]] — RDPI，两阶段时空插补框架：确定性初始模型（GRIN）+ 以"初值−真值"残差为扩散目标的条件扩散，观测值入前向过程、保留随机项的 DDIM 式加速；四时空数据集 MAE/MSE 作者报告最优 (arXiv 2024, AAAI 2025 著录)
+- [[recurrent-acceleration-network]] — RAN，反对角线 slice 并行：串行步数 $L\to R+C-1=O(\sqrt L)$、内存 $O(L)$，WITRAN 的通用递推加速框架（NeurIPS 2023）
 - [[rectified-flow]] — Rectified Flow, ODE-based generative model learning straight trajectories for few-step generation (arXiv 2022)
 - [[reflective-stepwise-reward]] — 反思式逐步奖励：LLM evaluator 回看完整轨迹逐步打分改善 credit assignment，折扣聚合后入记忆 (JitRL, ICML 2026)
 - [[reparameterization-trick]] — 重参数化技巧，将随机采样重构为可微确定性变换+固定噪声
