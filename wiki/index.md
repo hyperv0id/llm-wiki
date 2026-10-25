@@ -274,6 +274,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-re-reading-improves-reasoning]] — Re2：在单条 prompt 中重复任务输入，与思维激发提示组合（EMNLP 2024）
 - [[source-recontext]] — ReContext：内部相关性选择原文证据，递归回放后生成；白盒接口与完整上下文保留（arXiv 2026）
 - [[source-rectified-flow]] — Rectified Flow: Flow Straight and Fast, ODE-based generation with few-step sampling (arXiv 2022)
+- [[source-resnets-route-without-routers]] — Do ResNets Route? Sparse Interaction Experts in Residual Networks：Möbius 反演把 ResNet 输出精确拆成残差修正与高阶 interaction，阶谱峰在 $k=5/10$，Top-$K$ 支撑类内更相似但围绕共享核变化（arXiv:2610.02907，preprint）
 - [[source-retrieval-augmented-st-traffic]] — RAST: Retrieval-Augmented Spatio-Temporal Traffic Forecasting
 - [[source-retrieval-augmented-statistical-channel]] — TODO
 - [[source-ripcn]] — RIPCN: Road Impedance Principal Component Network for Probabilistic Traffic Flow Forecasting (KDD 2026)
@@ -741,6 +742,8 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[hybrid-llm-flow-matching-forecasting]] — 混合 LLM-流匹配预测，耦合预训练 LLM 语义理解与 FM 连续随机建模的生成式预测范式 (ICML 2026)
 - [[hybrid-periodicity-decoupling]] — decoupling a learnable daily/weekly periodic profile from the residual, then modeling the residual in the frequency domain
 - [[identity-mapping-property]] — 残差连接中浅层信号直通深层的恒等映射性质
+- [[implicit-functional-routing]] — 隐性功能路由：无 router 的 dense ResNet 在功能贡献层面按输入重新分配残差 interaction，类结构围绕共享全局核
+- [[implicit-residual-experts]] — 隐式残差专家：Möbius interaction 按幅值 Top-$K$ 作事后专家支撑，平方质量集中但决策重构留长尾，深层几乎不稀疏
 - [[imputation-consistency]] — 插补一致性，intra（插补值与观测值互相可重构）+ inter（相邻窗口时序一致），MTSCI 提出并以 CRPS 度量；与 Consistency Models 的少步自一致性不同义 (CIKM 2024)
 - [[in-context-learning]] — ICL，冻结基础模型仅凭上下文演示适配新任务的范式；WeatherGFM 视觉 ICL 的基础 (2026)
 - [[inductive-bias-shaping]] — 归纳偏置塑造，显式引导模型学习数据分布特定方面
@@ -1075,6 +1078,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[independent-spatial-tokenization]] — 独立空间 tokenization，解耦空间编码与序列建模 (SIFusion)
 - [[instaflow]] — InstaFlow, reflow+distill pipeline for one-step SD text-to-image (ICLR 2024)
 - [[instance-normalization]] — RevIN strategy for handling distributional shifts in time series
+- [[interaction-order-spectrum]] — interaction 阶谱：平方系数质量按阶的分布、有效阶 $\kappa$、每项均值 $M_k$，以及 Proposition 2.3 的 $\mathcal{O}(\lambda^k)$ 阶压制与缩放扫描
 - [[intent-discriminator-koopman]] — TODO
 - [[interflow]] — InterFlow: stochastic-interpolant CNF with quadratic simulation-free velocity objective (ICLR 2023)
 - [[interleaved-gat-mamba]] — 交错式 GAT-Mamba 架构，沿时空双轴交替堆叠 GAT 和 Mamba 形成闭环信息流 (GAMMA-Net, arXiv 2026)
@@ -1215,6 +1219,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[representative-token-extraction]] — extracting representative tokens via cross-attention for efficient compression
 - [[residual-cycle-forecasting]] — RCF technique using learnable recurrent cycles for explicit periodicity modeling
 - [[residual-difference-mechanism]] — RDM, subtractive residual that suppresses SSE noise via adaptive graph convolution weights
+- [[residual-interaction-decomposition]] — 残差 interaction 分解：残差掩码集合函数上的布尔格 Möbius 反演，精确加性拆解与朴素聚合失效（Table 1）
 - [[retrieval-augmented-statistical-channel]] — RAGC: retrieval-augmented statistical channel for高铁 channel prediction (KDD 2026)
 - [[retrieval-based-condition-augmentation]] — RCA, RAG-style condition enrichment for cross-city diffusion generation (CRAFT, NeurIPS 2025)
 - [[retrieval-guidance]] — inference-time retrieval of similar history to analytically tilt diffusion score estimation (MiDDiR, ICLR 2026 under review)

@@ -6,8 +6,8 @@ tags:
   - architecture
   - scalability
 created: 2026-04-29
-last_updated: 2026-10-24
-source_count: 13
+last_updated: 2026-10-25
+source_count: 14
 references:
   - [[source-fast-long-horizon-forecasting]]
   - [[source-2602-01219-mita]]
@@ -139,6 +139,17 @@ MoBA（Moonshot AI，2025）把 top-k 门控的对象从 FFN 专家换成 KV 上
 
 [[native-sparse-attention|NSA]] 则把门控放在支路合并处：压缩、块选择、滑动窗口三条支路各自 softmax，再由 sigmoid 门控加权求和，三个门控值互不归一（式 5）；块选择本身在支路内部按复用自压缩支路的注意力分数取 top-$n$，不引入独立打分网络（式 8、§3.3）[^src-2502-11089-nsa]。
 
+## 反向视角：dense ResNet 的功能层隐性路由
+
+上面所有条目都是**先造专家、再学 router**。Yan et al.（arXiv:2610.02907，2026）反过来问：已训练好的标准 ResNet 里是否已经存在隐式专家结构。做法是把残差支路开关当作博弈参与者，对 $2^L$ 个掩码做 Möbius 反演，得到 shortcut 基线 + 一阶修正 + 高阶 interaction 的精确加性分解；高阶项按幅值排序即为 per-input 专家集[^src-resnets-route-without-routers]。
+
+- **与稀疏 MoE 的差别**：没有 router、没有跳过计算，每个块都执行；「选择」只体现在功能贡献的重新分配上，论文称之为 implicit soft routing，并明确不与 sparse execution 混同[^src-resnets-route-without-routers]。
+- **量级**：ImageNet ResNet-18（$L=8$）与 ResNet-34（$L=16$）的平方系数质量峰值出现在 $k=5$ 与 $k=10$；ResNet-18 保留 25% 字典得 93.64% 向量质量但只有 30.48% top-1 一致率，即质量集中而决策不集中[^src-resnets-route-without-routers]。
+- **输入依赖**：不同输入的 Top-$K$ 支撑围绕共享全局核变化（约 13% 保留率时与全局集 Jaccard 0.871/0.892），类内重叠高于类间，困难度几乎不改变支撑规模[^src-resnets-route-without-routers]。
+- **不能当作加速依据**：Top-$K$ 是事后解析支撑，验证范围只有两个 ImageNet 检查点[^src-resnets-route-without-routers]。
+
+机制与数值见 [[implicit-functional-routing]]、[[implicit-residual-experts]]、[[residual-interaction-decomposition]]。
+
 ## 相关技术
 
 - [[glu-gated-linear-unit|Gated Linear Units (GLU)]]
@@ -158,6 +169,8 @@ MoBA（Moonshot AI，2025）把 top-k 门控的对象从 FFN 专家换成 KV 上
 - [[mita-attention]] — 形变 fast-weight 专家 + 共享专家（landmark query 取 top-k，压缩与路由并用）
 - [[fast-weight-scaling-taxonomy]] — 从 fast-weight 缩放视角给 MoE/top-k 注意力定位的五维分类
 - [[motion-moe]] — 轨迹预测的 indicator / route 双类专家（TrajAR）
+- [[implicit-functional-routing]] — dense ResNet 的隐形 router：执行全 dense，功能贡献按输入变化
+- [[implicit-residual-experts]] — Möbius interaction 作为事后专家支撑，质量集中但决策不稀疏
 
 ## 相关分析
 
@@ -176,3 +189,4 @@ MoBA（Moonshot AI，2025）把 top-k 门控的对象从 FFN 专家换成 KV 上
 [^src-trajar]: [[source-trajar]]
 [^src-2602-01219-mita]: [[source-2602-01219-mita]]
 [^src-2502-11089-nsa]: [[source-2502-11089-nsa]]
+[^src-resnets-route-without-routers]: [[source-resnets-route-without-routers]]

@@ -1,0 +1,1977 @@
+Preprint
+DORESNETSROUTE? SPARSEINTERACTIONEX-
+PERTS INRESIDUALNETWORKS
+Liang Yan1∗ Siying Chen2 Kaijie Chen3 Bo Li1 Jinghao Zhang4 Mu Miao5
+1Fudan University 2University of Washington 3Tongji University
+4Shandong University 5Datacanvas
+/gl⌢beProject Page/githubCode
+ABSTRACT
+Residual networks execute every block for every input, yet their functional con-
+tributions need not be input independent. We formulate a trained ResNet as a
+set function over binary residual-branch masks and apply M¨obius inversion to de-
+compose its output exactly into individual residual corrections and higher-order
+interactions. For smooth residual stacks, we show that each fixedk-way inter-
+action scales asO(λ k)under residual scaling. Exhaustive analysis of ImageNet-
+pretrained ResNet-18 and ResNet-34 reveals that interaction mass peaks at orders
+five and ten, respectively, rather than at low orders. Reducing the residual scale
+shifts both spectra toward lower orders, but also changes model predictions. The
+interaction coefficients are concentrated in magnitude but not hard sparse, and
+prediction-preserving sparsity weakens with depth. Crucially, the dominant inter-
+actions vary across inputs and predicted classes around a shared global core, while
+their overall complexity changes little with sample difficulty. These results show
+that dense ResNets implement an implicit form of soft routing: every block is ex-
+ecuted, but different inputs rely on different residual interaction experts. Routing
+can therefore emerge at the level of functional contribution without an explicit
+router or sparse execution.
+1 INTRODUCTION
+Standard ResNets execute every residual block for every input and contain no explicit router, yet we
+show that their functional contributions exhibit implicit input-dependent routing. Residual networks
+enable the reliable optimization of deep models through identity shortcuts and residual updates (He
+et al., 2016a). The influential path-ensemble view of Veit et al. (2016) interprets each block as
+offering a shortcut and a residual branch, yielding exponentially many structural paths of differ-
+ent lengths. This perspective helps explain network redundancy, robustness to block removal, and
+training methods such as stochastic depth (Huang et al., 2016).
+The path-ensemble view is structural rather than functional. A masked-network response is the cu-
+mulative output of a surviving nonlinear subnetwork, not the additive contribution of an isolated
+path. Path counting therefore does not reveal how residual branches individually or jointly support
+a prediction, or whether their dominant contributions vary across inputs. These questions connect
+ResNets to conditional computation. Dynamic residual models explicitly gate blocks (Wang et al.,
+2018; Wu et al., 2018), while sparse Mixture-of-Experts models activate selected experts for each in-
+put (Shazeer et al., 2017; Lepikhin et al., 2020; Fedus et al., 2022). Any routing in a standard ResNet
+must instead arise at the level of functional contribution. We therefore ask:Do standard ResNets
+exhibit implicit functional routing over residual interactions, despite having no explicit router?We
+characterize such routing by contribution concentration and systematic input dependence of the
+dominant interactions.
+To answer this question, we treat a trained ResNet as an input-conditioned set function over bi-
+nary residual-branch masks. Boolean M ¨obius inversion yields a unique, exact decomposition into
+a shortcut-only baseline, individual residual corrections, and higher-order interactions (Rota, 1964;
+Grabisch et al., 2000; Kang et al., 2024). We call high-contribution termsimplicit residual experts.
+Ranking these experts defines an input-dependent mapping fromxto a dominant interaction set
+∗Corresponding author:yanliangfdu@gmail.com
+1
+arXiv:2610.02907v1  [cs.LG]  2 Oct 2026
+Preprint
+AK(x), which acts as an implicit functional router. The gates are analytical interventions, so or-
+dinary execution remains dense. Figure 1 schematically summarizes this framework: the network
+remains densely executed, while M ¨obius inversion reveals an input-dependent distribution of func-
+tional contributions over residual interaction experts. For an idealized smooth residual stack, we
+further show that each fixedk-way interaction coefficient isO(λ k)as the residual scaleλ→0,
+predicting higher-order attenuation in the small-residual regime.
+We exhaustively analyze ImageNet-pretrained ResNet-18 and ResNet-34, whose eight and sixteen
+residual blocks induce255and65,535non-constant interaction terms. M ¨obius inversion recon-
+structs the full logits to numerical precision, whereas naive aggregation of masked responses fails.
+At the natural operating point, the squared-coefficient spectra peak at orders five and ten, showing
+that short structural paths do not imply low-order functional interactions. Residual scaling shifts
+both spectra toward lower orders but also substantially changes predictions.
+Our central finding is that dense execution does not imply a fixed functional pathway. In both
+models, each input induces a different allocation of contribution over a shared dictionary of resid-
+ual interactions. Dominant experts vary systematically across inputs, predicted-class signatures are
+strongly class-structured, and full-logit signatures retain a shared global core. This establishes im-
+plicit functional routing: ResNets reuse common interaction experts while changing which ones
+dominate each prediction. The routing is soft rather than hard because smaller interactions remain
+decision relevant, especially in ResNet-34, while expert complexity changes little with input dif-
+ficulty. Standard ResNets therefore route functional responsibility across inputs despite executing
+every residual block.
+Our contributions are: (1) an input-conditioned residual-mask framework that provides a unique and
+exact decomposition into individual corrections and higher-order interactions; (2) a coefficient-wise
+O(λk)connection between residual scale and interaction strength; and (3) empirical evidence that
+pretrained ResNets exhibit class-structured, readout-dependent implicit routing, organized around a
+shared global core and input-specific expert emphasis. Together, these results show that routing can
+emerge at the level of functional contribution without an explicit router or sparse execution.
+2 BACKGROUND ANDTHEORETICALFRAMEWORK
+To determine whether a trained ResNet exhibits input-dependent, routing-like specialization, we
+distinguish structural paths from functional contributions. The path-ensemble view identifies which
+computational paths exist, but not how residual branches jointly affect a particular prediction. For
+each input, we therefore treat the network as a set function over binary residual-branch masks and
+use M ¨obius inversion to decompose its output exactly into individual corrections and higher-order
+interactions. We then test whether a small subset faithfully preserves the output and whether the
+dominant interactions vary systematically across inputs. Evidence for both properties is required
+to support a limited routing interpretation at the level of functional contribution rather than sparse
+execution.
+2.1 RESIDUAL-MASKRESPONSES ANDM ¨OBIUSINTERACTIONSUPPORTS
+Residual-Mask Responses.Let[L] ={1, . . . , L}index the residual blocks. For a maskm∈
+{0,1} L, blocklcomputesx l+1(m) =ϕ l(sl(xl(m)) +m lFl(xl(m))), wheres l is the identity or
+projection shortcut andϕ l is the post-addition activation. Thus,m l = 0suppresses only the residual
+branch while preserving the shortcut. For a fixed inputx, these interventions define the residual-
+mask response functionh x :{0,1} L →R C, whereh x(m)is the resulting logit vector andCis the
+number of classes. For scalar analysis, we definev x(m) =ρ x(hx(m)), where the readout mapρ x
+is fixed across all masks and may, for example, select the class predicted by the full model.
+M¨obius Residual Interactions.For any subsetS⊆[L], let1 S ∈ {0,1}L denote the mask that
+activates exactly the residual branches inS. We apply the standard M¨obius transform on the Boolean
+lattice of residual-branch subsets (Rota, 1964; Grabisch et al., 2000; Kang et al., 2024). The resulting
+coefficient forSremoves, through inclusion–exclusion, the effects already present in its proper
+subsets. We refer to these coefficients as residual interaction coefficients.
+Definition 2.1(M ¨obius residual interaction coefficient).For a fixed inputxand scalar residual-mask
+response functionv x :{0,1} L →R, the M ¨obius residual interaction coefficient associated with a
+subsetS⊆[L]is defined as∆ Svx = PT⊆S (−1)|S|−|T| vx(1T ).
+2
+Preprint
+(a)  Dense Execution
+Residual BlocksInputs
+A
+B
+C
+Prediction
+Every Residual Block Executes, for Every Input
+1 2 3 4 5 6
+Analysis Only:
+2  Masksᴸ Möbius Inversion Exact Terms Δₛ
+(b)  Input-Dependent Contribution of Interaction Terms
+xA
+Class 1
+S = {1, 3, 4, 6}
+xB
+Class 1
+S = {1, 3, 4, 5}
+xC
+Class 2
+S = {2, 5, 6}
+Same
+Class:
+More
+Shared
+1 2 3 4 5 6
+Interaction Order |S| (Blocks Acting Jointly)
+Energy by Order
+PredictionSorted Contributions
+Implicit Routing
+No Router, No Sparse Execution
+Dot = One Interaction Term; Size = Contribution A B C Shared Weak
+Notation: x  Input S  Blocks Acting Jointly |S|  Order of S Δ   Contribution of Sₛ L  Number of Blocks 2   All Binary Masksᴸ
+Figure 1: From dense residual execution to input-dependent interaction experts. (a) A standard
+ResNet executes every residual block for every input and contains no explicit router. For analysis,
+we apply binary gates to itsLresidual branches, evaluate all2 L masks, and use M ¨obius inversion
+to decompose the output exactly into interaction coefficients∆ S, one for each branch subsetS.
+These gates are analytical interventions and do not alter ordinary dense inference. (b) Schematic
+of the resulting functional decomposition for different inputs. Each dot represents an interaction,
+positioned by its order|S|and sized by its predicted-class contribution|∆ Svx|; the callouts identify
+the branches participating in the strongest interactions. The dominant terms combine a shared global
+core with input-dependent, class-structured variation. We refer to this concentration and variation
+of functional contributions asimplicit soft routing, which is distinct from sparse execution or an
+explicit learned router.
+Intuitively,∆ Svx isolates the functional contribution that is uniquely attributable to the joint activa-
+tion of the residual branches inS, after all lower-order contributions from proper subsets ofShave
+been removed.
+Lemma 2.2(M ¨obius inverse relation).For every subsetU⊆[L], the scalar residual-mask response
+function satisfiesv x(1U ) = PS⊆U ∆Svx.
+The proof of Lemma 2.2 is provided in Appendix C. Lemma 2.2 shows that the coefficients in Defi-
+nition 2.1 form an exact inclusion–exclusion decomposition of the residual-mask response function.
+In particular, for the full network,v x(1[L]) = PS⊆[L] ∆Svx. Applying the same transform to each
+logit coordinate gives the vector coefficients∆Shx ∈R C, which satisfyh x(1[L]) = PS⊆[L] ∆Shx.
+We interpret first-order terms as residual corrections. For a single residual branchl,∆ {l}vx =
+vx(1{l})−v x(0), which measures the functional effect of activating branchlrelative to the shortcut-
+only baseline. Higher-order terms correspond toresidual interactions. For example, for two residual
+branchesiandj,∆ {i,j}vx =v x(1{i,j})−v x(1{i})−v x(1{j}) +vx(0). This quantity measures the
+non-additive effect produced by using branchesiandjtogether. If∆ {i,j}vx is large, then the joint
+effect of the two residual branches cannot be explained by the sum of their individual corrections.
+Sparse Residual Experts.LetR={S⊆[L] :S̸=∅}denote the dictionary of non-empty residual
+interactions. We define the scalar and vector contribution magnitudes of an interactionS∈ Ras
+avS(x) =|∆ Svx|anda hS(x) =∥∆ Shx∥2, and writea rS withr∈ {v, h}for either. A subsetSwith
+largea rS(x)acts as animplicit residual expertfor inputx: it is a residual correction or interaction that
+substantially affects the model’s output under the chosen readout. The effective expert set consists of
+the top-Kinteractions,A rK(x) = TopKS∈R arS(x). We say that the residual-mask response admits
+3
+Preprint
+a sparse M¨obius representation for inputxif a small set of residual interactions explains most of the
+contribution:
+vx(1[L])≈∆ ∅vx +
+X
+S∈AvK (x)
+∆Svx, K≪ |R|.(1)
+This sparsity is not execution sparsity. A standard ResNet still evaluates all residual blocks in the or-
+dinary forward pass. Rather, it is effective contribution sparsity: among exponentially many possible
+residual corrections and interactions, only a small subset may dominate the functional contribution
+for a particular input.
+Interaction-Order Statistics.For either readoutr∈ {v, h}, we define the squared coefficient
+mass at orderkasE rk(x) = PS∈R:|S|=k arS(x)2 and the total non-constant mass asZ r(x) =PL
+k=1 Erk(x). WhenZ r(x)>0, the normalized order spectrum is eErk(x) =E rk(x)/Zr(x), and
+the effective interaction order isκ r(x) = PLk=1 k eErk(x). These statistics summarize the concen-tration and order distribution of the M ¨obius coefficient mass. They do not by themselves measure
+reconstruction fidelity or establish input-dependent routing.
+Input-dependent Implicit Routing.In sparse MoE models, a router selects a small set of experts
+for each input. A standard ResNet has no explicit router. Nevertheless, the residual expert set
+ArK(x)is input-dependent because the residual-mask responses depend on the input representation
+at every block. Thus, two inputsx i andx j may have different effective expert sets:A rK(xi)̸=
+ArK(xj). This motivates an implicit routing interpretation: the input does not explicitly choose
+which residual experts to execute, but it induces which residual corrections and interactions are
+functionally active. We can measure this input dependence by comparing top-Kexpert sets across
+samples:J rK(xi, xj) =|A rK(xi)∩A rK(xj)|/|ArK(xi)∪A rK(xj)|. If samples from the same class or
+with similar visual structure have higher overlap than unrelated samples, then residual interactions
+exhibit a form of input-dependent specialization. This is the sense in which a trained ResNet may
+behave like an implicit soft MoE: not by sparse execution, but by sparse, input-dependent functional
+contribution.
+2.2 LOW-ORDERBIAS FROMRESIDUALSCALING
+We also note an interesting theoretical phenomenon: lower-order interactions may dominate as the
+residual scale decreases. Consider a scaled residual network
+x(λ)l+1(m) =x (λ)l (m) +λm lFl
+
+x(λ)l (m) , m∈[0,1] L,0< λ≤λ 0.(2)
+For smallλ, each residual branch acts as a small perturbation to the shortcut trajectory. An in-
+teraction amongkbranches arises from the joint effect ofksuch perturbations, suggesting that
+higher-order interactions become increasingly attenuated asλdecreases.
+Proposition 2.3(Residual scaling suppresses high-order interactions).Letv (λ)x (m)be the scalar
+residual-mask response function induced by the scaled network in Equation 2. Suppose that, for
+the fixed inputx, the residual mapsF l and the final scalar readout are sufficiently smooth in a
+neighborhood of the shortcut trajectory, and that their derivatives up to orderLare uniformly
+bounded for0< λ≤λ 0. Then for every subsetS⊆[L]with|S|=k, there exists a constant
+BS,x >0independent ofλsuch that
+∆Sv(λ)x  ≤B S,xλk. The proof is given in Appendix D.
+Proposition 2.3 suggests that residual networks are naturally biased toward low-order residual inter-
+actions when residual updates are small. Depth therefore does not merely create long computational
+chains; it creates a large dictionary of possible residual interactions, while the effective contribution
+may remain concentrated in a sparse, not high-order subset.
+3 FROMSTRUCTURALPATHS TOFUNCTIONALINTERACTIONS
+This section empirically tests functional interactions behind the structural path view. We first show
+that masked-subnetwork outputs are not additive path contributions, while their M¨obius coefficients
+exactly reconstruct the logits. We then measure interaction energy across residual-branch orders
+and find that pretrained ResNets concentrate mass at mid-to-high orders. Finally, we scale residual
+branches at inference time to test whether smaller residual updates lower interaction order and how
+much they change predictions.
+4
+Preprint
+Experimental Setup.We use ImageNet-pretrained ResNet-18 and ResNet-34 architectures (He
+et al., 2016a), treating their residual blocks as maskable residual branches. ResNet-18 hasL= 8
+such branches and is our main model; ResNet-34 hasL= 16branches and is used to verify that the
+masked-output reconstruction phenomenon is not specific to ResNet-18. Each branch receives an ex-
+ternally specified binary maskm l ∈ {0,1}, so blocklcomputesx l+1(m) =x l(m) +mlFl(xl(m)).
+The shortcut pathway, including projection shortcuts, is always preserved; thus,m l = 0removes
+only the residual branch. For ResNet-18, we evaluate a class-balanced subset of the ImageNet-2012
+validation set (Russakovsky et al., 2015) with10images per class (N= 10,000) under all2 8 = 256
+residual-branch masks. For ResNet-34, we evaluateN= 1,000images under all2 16 = 65,536
+masks for the reconstruction diagnostic. ForS⊆[L],1 S ∈ {0,1}L denotes the mask activating
+exactly the branches inS, andh x(1S)∈R 1000 denotes the corresponding pre-softmax logits. We
+writeh fullx =h x(1[L])andh ∅x =h x(0).
+Observation❶: Masked-subnetwork outputs are not additive path contributions.Enumerating
+structural paths does not imply that the corresponding masked-subnetwork outputs form an additive
+decomposition of the network prediction. If each masked output represented an independent path
+contribution, simple aggregations across masks should recover the full-network logits. We there-
+fore ask:Can direct summation, averaging, or shortcut-baseline centering of masked-subnetwork
+outputs reconstruct the full ResNet logits?We consider three naive aggregations: the raw subset
+sumA rawx = PS⊆[L] hx(1S), the mean subset outputA meanx = 2−LArawx , and the centered subset
+sumA ctrx =h ∅x + P∅̸=S⊆[L](hx(1S)−h ∅x). We compare them with the M ¨obius reconstruction
+AMobiusx = PS⊆[L] ∆Shx, which is computed from the same masked evaluations and equalsh fullx
+in exact arithmetic. The latter therefore also provides a numerical check of our implementation.
+We report the norm ratio, relativeℓ 2 error, optimally rescaled error using the least-squares scalar
+α⋆x(Ax) =⟨h fullx , Ax⟩/∥Ax∥22, cosine similarity, and top-1 agreement. Formal definitions are pro-
+vided in Appendix E.
+Table 1: Naive additive reconstructions versus exact M ¨obius re-
+construction on ResNet-18 and ResNet-34. Entries are means,
+rounded to three decimal places. ResNet-18 usesN= 10,000
+ImageNet validation images; ResNet-34 usesN= 1,000.
+Method Norm ratio Rel. error(↓)Scaled error(↓)Cosine(↑)Top-1 agree(↑)
+18
+Arawx 79.400 79.200 0.961 0.222 0.006
+Ameanx 0.310 0.977 0.961 0.222 0.006
+Actrx 77.400 77.200 0.959 0.229 0.006
+M¨obius1 1.000 0.000 0.000 1.000 1.000
+34
+Arawx 18,852.327 18,851.887 0.889 0.440 0.025
+Ameanx 0.288 0.910 0.889 0.440 0.025
+Actrx 17,750.219 17,749.760 0.879 0.459 0.024
+M¨obius2 1.000 0.000 0.000 1.000 1.000
+Results and Analysis.Table 1
+shows that all three naive ag-
+gregations fail to reconstruct the
+full-network logits. On ResNet-
+18, the raw and centered sums
+inflate the logit norm by factors
+of approximately79.4and77.4,
+yielding relative errors of79.2
+and77.2, respectively. Averag-
+ing prevents this magnitude ex-
+plosion but still produces a rel-
+ative error of0.977. Optimal rescaling does not resolve the discrepancy: the scaled errors remain
+between0.959and0.961, the cosine similarities are only0.222–0.229, and top-1 agreement is0.6%.
+ResNet-34 exhibits the same qualitative behavior, with even greater norm inflation for the raw and
+centered sums and no naive method exceeding2.5%top-1 agreement. In contrast, the M¨obius recon-
+struction recovers the full logits up to floating-point precision on both architectures. Thus, residual
+masks define meaningful interventions, but their outputs cannot be interpreted as disjoint additive
+path contributions. The exact additive units are the M ¨obius coefficients∆ Shx, which isolate the
+incremental contribution of each subset through inclusion–exclusion.
+Observation❷: Interaction mass concentrates at mid-to-high orders.Having established that
+exact additive contributions are given by the M¨obius coefficients, we next examine how their squared
+mass is distributed across interaction orders. ForS⊆[L], the order|S|counts the number of residual
+branches that contribute jointly after all lower-order effects have been removed through inclusion–
+exclusion. The diagnostic question is:At their pretrained operating point, are ResNets dominated
+by low-order residual interactions, or is their functional contribution concentrated at mid-to-high
+orders?We consider two readouts: the scalar predicted-class logitv x(m) =h x,ˆy(x)(m), where
+ˆy(x) = arg maxc hfullx,c is fixed across masks, and the full logit vectorh x(m). For notational com-
+pactness, we suppress the dependence onxbelow and writeZ r = PLj=1 Erj . For each readout
+5
+Preprint
+(a) (b) (c) (d)
+(e) (f) (g) (h)
+ResNet-18
+ResNet-34
+Figure 2: Residual interaction-order spectra for scalar predicted-class and vector-logit readouts. The
+top and bottom rows show ResNet-18 and ResNet-34, respectively. From left to right, the columns
+report normalized interaction energy eEk, cumulative low-order energyC ≤k, effective interaction
+orderκ, and mean per-interaction energyM k on a logarithmic scale.
+r∈ {v, h}, the order statistics are
+Erk = X
+|S|=k
+(arS)2, eErk = ErkZ r , C r≤q = Pqj=1 ErjZ r , κ r = PLj=1 jE rjZ r , M rk = Erk Lk .(3)
+Here, eErk measures the fraction of squared coefficient mass, which we callinteraction energy,
+assigned to orderk;C r≤q is its cumulative mass through orderq; andκ r summarizes the spectrum
+by its energy-weighted mean order. Because the M ¨obius coefficients are not generally orthogonal,
+these quantities describe the distribution of coefficient mass rather than the fraction of logit norm
+explained. The per-interaction statisticM rk controls for the  Lk possible subsets at each order. Allreported quantities are dataset means of these per-example statistics; standard errors and additional
+results are provided in Appendix F.
+(a) (b) (c)
+Figure 3: Inference-time residual-scaling sweep on pretrained
+ResNet-18 (N= 10,000) and ResNet-34 (N= 1,000), with-
+out retraining. Solid and dashed lines denote ResNet-18 and
+ResNet-34, respectively. (a) Effective interaction orderκfor
+the scalar and vector readouts. (b) Cumulative low-order en-
+ergyC ≤3. (c) Top-1 agreement of each scaled model with its
+prediction atλ= 1.
+Results and Analysis.Figure 2
+shows closely aligned scalar and
+vector spectra for both architec-
+tures. In ResNet-18, both peak at
+k= 5: orders4–6account for
+71.6%and74.7%of scalar and
+vector energy, whereas orders up to
+three contribute only14.17%and
+13.56%. The effective orders,κ v =
+5.001andκ h = 4.930, also exceed
+the midpointL/2 = 4. ResNet-
+34 shows the same pattern, with
+both spectra peaking atk= 10and
+effective ordersκ v = 9.887and
+κh = 9.884, above the midpoint
+L/2 = 8. For both architectures,
+Mk increases toward higher orders
+and is largest atk=L, showing that the mid-order peaks are not merely caused by subset counts.
+Thus, atλ= 1, pretrained ResNets operate in a mid-to-high-order interaction regime: short struc-
+tural paths do not imply low-order functional interactions.
+6
+Preprint
+(a) (b) (c) (d)
+ResNet-18
+(e) (f) (g) (h)
+ResNet-34
+Figure 4: Top-Kinteraction concentration and reconstruction. ResNet-18 results are shown on top
+and ResNet-34 results on the bottom. (a,e) Captured squared coefficient mass. (b,f) Relative logit
+error. (c,g) Agreement with the full-model predictions. (d,h) Order composition and enrichment of
+the vector Top-Ksupports. Most coefficient mass is concentrated in a sparse interaction core, while
+a long tail progressively refines the final prediction.
+Observation❸: Residual scaling lowers interaction order but changes predictions.The mid-
+to-high-order spectra above are measured at the natural operating pointλ= 1. Proposition 2.3
+predicts that ak-way interaction is attenuated asO(λ k)in the small-update regime, suggesting
+that decreasing the residual scale should shift interaction mass toward lower orders. We therefore
+ask:Does inference-time residual scaling causally lower functional interaction order, and can it
+do so without substantially changing the model’s predictions?Without retraining, we sweepλ∈
+{1.0,0.95,0.9,0.85,0.8,0.75,0.5,0.25,0.1}for both ResNet-18 and ResNet-34. At each scale, we
+recompute the effective orderκand cumulative low-order energyC ≤3, and measure top-1 agreement
+with each model’s prediction atλ= 1. The denser sampling overλ∈[0.8,1.0]tests whether
+interaction order decreases before prediction behavior changes.
+Results and Analysis.Reducingλshifts both scalar and vector interactions toward lower orders
+in both architectures (Figure 3a–b). For ResNet-18, asλdecreases from1to0.1,κ v falls from
+5.001to1.144andκ h from4.930to1.452, whileC v≤3 rises from0.142to0.997andC h≤3 from
+0.136to0.978. ResNet-34 shows the same trend: its effective orders fall from approximately9.9to
+below3.5, while its scalar and vector low-order mass rises to approximately0.80and0.72. These
+results support the qualitative prediction of Proposition 2.3. However, the shift also changes the
+model’s predictions (Figure 3c). For ResNet-18, top-1 agreement falls to0.938atλ= 0.95,0.731
+atλ= 0.8, and0.052atλ= 0.5; ResNet-34 follows a similar trajectory. Thus, residual scaling can
+lower interaction order, but it does not preserve model behavior. Together, Observations❷–❸show
+that pretrained ResNets are not dominated by low-order interactions atλ= 1. This does not exclude
+concentration on a small number of specific subsets, which we examine in Section 4.
+4 A RESIDUALNETWORKROUTESLIKE ANMOE,WITHOUT AROUTER
+The preceding section studies how interaction energy is distributed across orders; here we ask
+whether it is concentrated on a few input-specific residual subsets. We test whether a small num-
+ber of experts can reconstruct the network readouts, whether the selected experts vary across inputs
+and classes, and whether their complexity depends on sample difficulty. Together, these obser-
+vations support a sparse, input-dependent soft-routing interpretation of residual computation. All
+observations use ImageNet-pretrained ResNet-18 and ResNet-34 and report both scalar and vector
+readouts. Observation❹uses unlabeled ImageNet-1K test subsets withN= 10,000for ResNet-18
+andN= 1,000for ResNet-34. Observations❺–❻use a class-balanced ImageNet-1K validation
+subset containing10images per class (N= 10,000) for both architectures.
+7
+Preprint
+Observation❹: Residual interactions form a sparse but long-tailed expert representation.We
+ask whether a compact per-input subset of residual interactions can preserve the functional contri-
+bution and prediction of the full model. LetA vK(x)andA hK(x)denote theKinteractions with the
+largest scalar and vector magnitudes, respectively. Their truncated reconstructions are
+bvx,K = ∆∅vx +
+X
+S∈AvK (x)
+∆Svx, bhx,K = ∆∅hx + X
+S∈AhK (x)
+∆Shx.(4)
+Because selection uses the complete M¨obius decomposition, these are post-hoc oracle supports that
+measure representational rather than execution sparsity. We enumerate all masks for ResNet-18
+on10,000ImageNet test images and ResNet-34 on1,000images, producing255and65,535non-
+empty interaction experts, respectively. We evaluate captured coefficient mass, relative logit error,
+and agreement with the full-model prediction, and compare magnitude Top-Kwith random-K,
+order-matched, and low-order selection.
+Results and Analysis.Both models exhibit substantial interaction sparsity. For ResNet-18, Top-
+64 contains25.1%of the dictionary but captures93.64%of the vector coefficient mass. Top-128
+captures99.71%of the mass and preserves87.66%of the full-model predictions. For ResNet-
+34, whose16blocks induce2 16 −1 = 65,535experts, retaining25%of the dictionary captures
+95.28%of the scalar mass, while38.3%captures95%of the vector mass. Prediction reconstruction
+requires a broader support than mass recovery, revealing a decision-relevant long tail. For ResNet-
+34, retaining half of the dictionary captures97.90%of the vector mass, but smaller interactions
+remain important for accurate logits and decisions. Moreover, magnitude selection substantially
+outperforms random, order-matched, and low-order selection, showing that sparsity depends on the
+identities of specific mid- and high-order interactions rather than interaction order alone. These
+results establish the sparsity component of soft routing; the next experiment examines whether the
+dominant supports vary across inputs.
+Observation❺: Expert supports share a global core with class-dependent variation.We ask
+whether the dominant residual interactions are fixed across inputs or vary systematically with class.
+For each inputxand readoutr∈ {v, h}, we form the Top-Kinteraction supportA rK(x)among the
+M= 2 L−1non-empty interactions. For inputsx i, xj with labelsy i, yj, we compare binary supports
+using Jaccard similarityJ rK and vector mass-weighted supports using weighted JaccardJ wK. Class
+alignment is measured by∆ rclass(K) =E[J rK |y i =y j]−E[J rK |y i ̸=y j], defined analogously for
+J wK. To compare architectures, we report the retained fractionK/Mand use label-shuffled classes
+and the size-matched dataset-level Top-Ksupport as controls.
+Results and Analysis.For both models, same-class pairs are more similar than different-class
+pairs at every retained fraction, whereas label shuffling reduces the gap to nearly zero (Figure 5a,b).
+The effect is readout-dependent: the peak class gaps for predicted-class scalar supports are0.125
+and0.044for ResNet-18 and ResNet-34, compared with0.036and0.032for vector supports. At
+approximately13%retention, however, the vector supports remain close to the global support, with
+mean Jaccard similarities of0.871and0.892(Figure 5c,d). Thus, inputs do not select disjoint
+expert sets; they modify a largely shared interaction core. Consistently, even atK= 32, scalar
+binary signatures achieve24.2%and9.9%1-NN class retrieval, respectively, versus0.1%chance.
+These results support a soft, readout-dependent routing interpretation based on class-aware variation
+within a shared residual-expert pool.
+Observation❻: Interaction complexity is largely insensitive to input difficulty.We ask
+whether harder inputs require broader, higher-order, or less compressible residual interactions.
+We measure difficulty using negative confidence, negative predicted margin, and negative log-
+likelihood. For the vector readout, we consider support size, interaction order, and the Top-Kbud-
+gets required to reach specified coefficient-mass or reconstruction-error thresholds. In particular,
+N heff = (PS ahS)2/ PS(ahS)2 measures the effective number of contributing interactions. Associa-tions are evaluated using Spearman correlation.
+Results and Analysis.Interaction complexity is only weakly associated with difficulty. Across
+all metrics in Figure 5(e,f), the largest correlation is0.088for ResNet-18 and0.074for ResNet-34.
+Negative log-likelihood is also nearly uncorrelated withNheff, withρ= 0.031and0.027, respectively
+(Figure 5g,h). We therefore find little evidence that harder inputs systematically require broader,
+higher-order, or less compressible interaction structure. Together with the preceding experiment,
+8
+Preprint
+(a) ResNet-18 (b) ResNet-34 (c) ResNet-18 (d) ResNet-34
+(e) ResNet-18
+(f) ResNet-34
+(g) ResNet-18 (h) ResNet-34
+Figure 5: Input dependence and difficulty sensitivity of residual interaction supports. Results are
+shown for ResNet-18 and ResNet-34 on10,000ImageNet validation images. (a,b) Same-class mi-
+nus different-class similarity for scalar, vector, and weighted interaction signatures, with label shuf-
+fling as a null control. (c,d) Input-wise Jaccard similarity with the global vector interaction set at
+approximately13%retention. (e,f) Spearman correlations between label-free difficulty measures
+and vector interaction complexity. (g,h) Negative log-likelihood versus the vector effective inter-
+action countN heff. Dominant interactions exhibit class-dependent variation within a shared global
+core, while their overall complexity is only weakly associated with input difficulty.
+these results suggest that input dependence primarily changeswhichinteractions dominate, rather
+thanhow manyare engaged.
+5 RELATEDWORK
+Our work intersects four lines of research. (1)Residual learning and path-ensemble views.ResNets
+ease deep-network optimization via identity shortcuts (He et al., 2016a), and the unraveled view in-
+terprets them as ensembles of exponentially many paths with ensemble-like redundancy (Veit et al.,
+2016); related work studies stochastic depth (Huang et al., 2016), the effective depth of the virtual
+ensemble (Littwin & Wolf, 2016), and signal propagation (He et al., 2016b; De & Smith, 2020).
+These studies concern structure and optimization, not which residual interactions produce a particu-
+lar prediction. (2)Gating and dynamic routing.Highway networks (Srivastava et al., 2015), residual
+gates (Savarese et al., 2016), SkipNet (Wang et al., 2018) and BlockDrop (Wu et al., 2018) equip
+networks with explicit, learned gates or per-input block skipping. We instead analyze a standard
+trained ResNet without adding a router, using gates only as an analytical probe over residual-branch
+masks. (3)Mixture-of-Experts.Sparse MoE models scale capacity by routing each input to a few
+experts (Shazeer et al., 2017; Lepikhin et al., 2020; Fedus et al., 2022), with subsequent work on
+routing assignment (Lewis et al., 2021; Zhou et al., 2022; Dai et al., 2022) and cross-layer expert
+paths (Gu et al., 2026; Rajbhandari et al., 2022). We approach MoE from the opposite direction:
+rather than adding explicit experts, we ask whether a trained ResNet already induces implicit, input-
+dependent expert structure. (4)Attribution and interaction decompositions.Component importance
+has been estimated via Taylor criteria (Molchanov et al., 2019) and Shapley values (Lundberg &
+Lee, 2017; Ancona et al., 2020), recently extended to higher-order interactions (Chen et al., 2023;
+Muschalik et al., 2024; Kang et al., 2024). Our players are not input features, neurons, or filters but
+residual branches; treating branch on/off as the game defines residual corrections and their higher-
+order interactions as functional contribution units, bridging residual learning and implicit expert
+behavior.
+9
+Preprint
+6 CONCLUSION
+We use M¨obius inversion to decompose trained ResNets exactly into residual corrections and higher-
+order interactions. In ResNet-18 and ResNet-34, interaction mass peaks at intermediate orders,
+while residual scaling shifts it toward lower orders but also changes predictions. Crucially, dominant
+interactions vary across inputs and classes around a shared global core. Dense execution therefore
+does not imply fixed functional computation: every block executes, yet different inputs rely on
+different interaction experts. Standard ResNets thus exhibit implicit soft routing at the level of
+functional contribution, not explicit sparse execution. Extending this analysis to deeper networks
+requires efficient estimators of high-order interactions.
+10
+Preprint
+AI USESTATEMENT
+Generative AI tools were used solely to polish the language of the manuscript. All research ideas,
+theoretical results, experiments, and analyses are the authors’ own, and the authors take full respon-
+sibility for the content of this paper.
+REPRODUCIBILITYSTATEMENT
+We have taken several steps to ensure that our results can be reproduced. All theoretical claims
+are stated together with their assumptions in the main text, and complete proofs are provided in
+the appendices. The experimental protocol is fully specified in the main text and appendices: we
+use a publicly available ImageNet-pretrained ResNet-18 and ResNet-34, exhaustively enumerate
+all2 L residual-branch masks, and evaluate on the ImageNet validation images, with the M ¨obius-
+inversion reconstruction, the interaction-order spectrum, and the residual-scaling sweep described
+step by step. Because the analysis relies only on public pretrained weights and the public ImageNet
+validation set, no model training is required, and the exhaustive mask evaluation is deterministic
+given the pretrained weights. We provide all model, data, and analysis details needed to reproduce
+our results directly from these public resources.
+ETHICSSTATEMENT
+This work analyzes the internal computational structure of existing, publicly available image-
+classification networks. It involves no human subjects and no private or personally identifiable data,
+using only the standard public ImageNet validation set and publicly released pretrained weights, and
+it releases no new datasets or trained models. The study is interpretability-oriented: it characterizes
+how residual branches interact functionally and does not by itself measure the fairness, safety, or
+reliability of deployed systems, for which additional application-specific evaluation would be re-
+quired. The authors are aware of no ethical concerns raised by this work and confirm adherence to
+the ICLR Code of Ethics.
+REFERENCES
+Marco Ancona, Cengiz ¨Oztireli, and Markus Gross. Shapley value as principled metric for structured
+network pruning.arXiv preprint arXiv:2006.01795, 2020.
+Lu Chen, Siyu Lou, Keyan Zhang, Jin Huang, and Quanshi Zhang. Harsanyinet: Computing accu-
+rate shapley values in a single forward propagation.arXiv preprint arXiv:2304.01811, 2023.
+Damai Dai, Li Dong, Shuming Ma, Bo Zheng, Zhifang Sui, Baobao Chang, and Furu Wei. Stable-
+moe: Stable routing strategy for mixture of experts. InProceedings of the 60th Annual Meeting
+of the Association for Computational Linguistics (Volume 1: Long Papers), pp. 7085–7095, 2022.
+Soham De and Sam Smith. Batch normalization biases residual blocks towards the identity function
+in deep networks. InAdvances in Neural Information Processing Systems, volume 33, pp. 19964–
+19975, 2020.
+William Fedus, Barret Zoph, and Noam Shazeer. Switch transformers: Scaling to trillion parameter
+models with simple and efficient sparsity.Journal of Machine Learning Research, 23(120):1–39,
+2022.
+Michel Grabisch, Jean-Luc Marichal, and Marc Roubens. Equivalent representations of set func-
+tions.Mathematics of Operations Research, 25(2):157–178, 2000.
+Zijin Gu, Tatiana Likhomanenko, Vimal Thilak, Jason Ramapuram, and Navdeep Jaitly. Path-
+constrained mixture-of-experts.arXiv preprint arXiv:2603.18297, 2026.
+Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. Deep residual learning for image recog-
+nition. InProceedings of the IEEE conference on computer vision and pattern recognition, pp.
+770–778, 2016a.
+11
+Preprint
+Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. Identity mappings in deep residual
+networks. InEuropean conference on computer vision, pp. 630–645. Springer, 2016b.
+Gao Huang, Yu Sun, Zhuang Liu, Daniel Sedra, and Kilian Q Weinberger. Deep networks with
+stochastic depth. InEuropean conference on computer vision, pp. 646–661. Springer, 2016.
+Justin S Kang, Yigit E Erginbas, Landon Butler, Ramtin Pedarsani, and Kannan Ramchandran.
+Learning to understand: Identifying interactions via the m¨obius transform. InAdvances in Neural
+Information Processing Systems, volume 37, pp. 46160–46202, 2024.
+Dmitry Lepikhin, HyoukJoong Lee, Yuanzhong Xu, Dehao Chen, Orhan Firat, Yanping Huang,
+Maxim Krikun, Noam Shazeer, and Zhifeng Chen. Gshard: Scaling giant models with conditional
+computation and automatic sharding.arXiv preprint arXiv:2006.16668, 2020.
+Mike Lewis, Shruti Bhosale, Tim Dettmers, Naman Goyal, and Luke Zettlemoyer. Base layers:
+Simplifying training of large, sparse models. InInternational Conference on Machine Learning,
+pp. 6265–6274. PMLR, 2021.
+Etai Littwin and Lior Wolf. The loss surface of residual networks: Ensembles and the role of batch
+normalization.arXiv preprint arXiv:1611.02525, 2016.
+Scott M Lundberg and Su-In Lee. A unified approach to interpreting model predictions. InAdvances
+in neural information processing systems, volume 30, 2017.
+Pavlo Molchanov, Arun Mallya, Stephen Tyree, Iuri Frosio, and Jan Kautz. Importance estima-
+tion for neural network pruning. In2019 IEEE/CVF conference on computer vision and pattern
+recognition (CVPR), pp. 11256–11264. IEEE, 2019.
+Maximilian Muschalik, Hubert Baniecki, Fabian Fumagalli, Patrick Kolpaczki, Barbara Hammer,
+and Eyke H¨ullermeier. shapiq: Shapley interactions for machine learning. InAdvances in Neural
+Information Processing Systems, volume 37, pp. 130324–130357, 2024.
+Samyam Rajbhandari, Conglong Li, Zhewei Yao, Minjia Zhang, Reza Yazdani Aminabadi, Am-
+mar Ahmad Awan, Jeff Rasley, and Yuxiong He. Deepspeed-moe: Advancing mixture-of-experts
+inference and training to power next-generation ai scale. InInternational conference on machine
+learning, pp. 18332–18346. PMLR, 2022.
+Gian-Carlo Rota. On the foundations of combinatorial theory: I. theory of m ¨obius functions. In
+Classic Papers in Combinatorics, pp. 332–360. Springer, 1964.
+Olga Russakovsky, Jia Deng, Hao Su, Jonathan Krause, Sanjeev Satheesh, Sean Ma, Zhiheng
+Huang, Andrej Karpathy, Aditya Khosla, Michael Bernstein, et al. Imagenet large scale visual
+recognition challenge.International journal of computer vision, 115(3):211–252, 2015.
+Pedro HP Savarese, Leonardo O Mazza, and Daniel R Figueiredo. Learning identity mappings with
+residual gates.arXiv preprint arXiv:1611.01260, 2016.
+Noam Shazeer, Azalia Mirhoseini, Krzysztof Maziarz, Andy Davis, Quoc Le, Geoffrey Hinton,
+and Jeff Dean. Outrageously large neural networks: The sparsely-gated mixture-of-experts layer.
+arXiv preprint arXiv:1701.06538, 2017.
+Rupesh Kumar Srivastava, Klaus Greff, and J¨urgen Schmidhuber. Highway networks.arXiv preprint
+arXiv:1505.00387, 2015.
+Andreas Veit, Michael J Wilber, and Serge Belongie. Residual networks behave like ensembles of
+relatively shallow networks. InAdvances in neural information processing systems, volume 29,
+2016.
+Xin Wang, Fisher Yu, Zi-Yi Dou, Trevor Darrell, and Joseph E Gonzalez. Skipnet: Learning dy-
+namic routing in convolutional networks. InEuropean Conference on Computer Vision, pp. 420–
+436. Springer, 2018.
+Zuxuan Wu, Tushar Nagarajan, Abhishek Kumar, Steven Rennie, Larry S Davis, Kristen Grauman,
+and Rogerio Feris. Blockdrop: Dynamic inference paths in residual networks. In2018 IEEE/CVF
+Conference on Computer Vision and Pattern Recognition, pp. 8817–8826. IEEE, 2018.
+12
+Preprint
+Yanqi Zhou, Tao Lei, Hanxiao Liu, Nan Du, Yanping Huang, Vincent Zhao, Andrew M Dai, Quoc V
+Le, James Laudon, et al. Mixture-of-experts with expert choice routing. InAdvances in Neural
+Information Processing Systems, volume 35, pp. 7103–7114, 2022.
+13
+Preprint
+Appendix
+Table of Contents
+A Notation 15
+B Detailed Related Work 16
+C Proof of Lemma 2.2 18
+D Proof of Proposition 2.3 19
+E Naive Additive Reconstruction of Masked Responses 22
+E.1 Motivation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 22
+E.2 Experimental Setup and Evaluation Metrics . . . . . . . . . . . . . . . . . . . . 22
+E.3 Results and Analysis . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 23
+F Interaction-Order Spectrum 25
+F.1 Motivation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 25
+F.2 Experimental Setup and Evaluation Metrics . . . . . . . . . . . . . . . . . . . . 25
+F.3 Results and Analysis . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 27
+G Residual-Scaling Sweep 28
+G.1 Motivation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 28
+G.2 Experimental Setup and Evaluation Metrics . . . . . . . . . . . . . . . . . . . . 28
+G.3 Results and Analysis . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 29
+H Top-KResidual-Interaction Reconstruction 31
+H.1 Motivation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 31
+H.2 Experimental Setup and Evaluation Metrics . . . . . . . . . . . . . . . . . . . . 31
+H.3 Results and Analysis . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 32
+I Input-Dependent Residual Expert Sets 36
+I.1 Motivation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 36
+I.2 Experimental Setup and Evaluation Metrics . . . . . . . . . . . . . . . . . . . . 36
+I.3 Results and Analysis . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 37
+J Sample Difficulty and Residual Interaction Complexity 41
+J.1 Motivation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 41
+J.2 Experimental Setup and Evaluation Metrics . . . . . . . . . . . . . . . . . . . . 41
+J.3 Results and Analysis . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 42
+14
+Preprint
+A NOTATION
+Table 2 summarizes the notation used throughout the paper.
+Table 2: Notation. Superscriptr∈ {v, h}marks the scalar (predicted-class) or vector (full-logit)
+readout; per-input statistics are averaged over images. Masks are analytical interventions, not
+learned routing decisions. Symbols used within a single appendix are defined there.
+Symbol Meaning
+Residual network, masks, and readouts
+x, N, CInput image; number of images; number of classes.
+L,[L];l, i, j∈[L]Number and index set of residual blocks; block indices.
+Fl, sl, ϕl Residual branch, shortcut, and activation of blockl.
+xl(m)Hidden state at blocklunder maskm.
+m∈ {0,1}L Residual-branch mask;m l = 0disables branchlonly.
+0,1 S ,1 [L] Shortcut-only, subset-active, and full masks.
+1[·]Indicator function.
+hx(m)∈R C Logits under maskm(vector response).
+hfullx , h∅x Full-network and shortcut-only logits.
+ˆy(x)Full-model predicted class.
+ρx, vx(m)Scalar readout and scalar response (predicted-class logit).
+y, yi Ground-truth labels ofxandx i.
+M¨obius residual interactions
+S, T, U⊆[L]Subsets of residual branches.
+k=|S|Interaction order.
+∆S vx,∆ S hx Scalar and vector M¨obius coefficients ofS.
+∆∅vx Shortcut-only baseline (not counted inK).
+∆{l}vx,∆ {i,j} vx First-order correction; pairwise interaction.
+R, MDictionary of non-empty interactions; its size2 L −1.
+Residual experts and Top-Kreconstruction
+avS (x), ahS (x)Contribution magnitudes|∆ S vx|and∥∆ S hx∥2.
+K, K/MTop-Kbudget; retained fraction.
+ArK (x)Input-specific Top-Kexpert set.
+bvx,K , bhx,K Top-Kreconstructions.
+ΓrK (x)Retained fraction of squared coefficient mass.
+ErrrK ,Cos K Relative reconstruction error; cosine similarity.
+Kerrτ , Kmassη SmallestKwith error≤τor retained mass≥η.
+Interaction-order and breadth statistics
+Erk(x), Zr(x)Interaction energy at orderk; total overk≥1.eErk(x)Normalized order spectrum.
+Cr≤q(x), Tr>3(x)Energy fraction up to orderq; fraction above order3.
+κr(x)Effective interaction order.
+M rk (x)Mean energy per interaction at orderk.
+qrS (x), prS (x)Normalized magnitude and squared-magnitude weights.
+N reff (x), Nrent(x)Participation-ratio and entropy effective counts.¯kr(x)Magnitude-weighted mean order.
+Input dependence of expert sets
+J rK (xi, xj )Jaccard overlap of two Top-Ksets.
+whK,S (x), JwK Mass-weighted vector signature; weighted Jaccard.
+∆rclass(K)Same-class minus different-class overlap.
+GK Dataset-level global Top-Kset.
+Aggregation baselines and prediction agreement
+Arawx , Ameanx , Actrx Naive sum, mean, and centered aggregations.
+AMobx M¨obius reconstruction ofh fullx .
+α⋆x Least-squares rescaling factor.
+AgreeTop-1 agreement with the full model (not accuracy).
+Residual scaling
+λ, λ0 Residual scale and its upper bound.
+x(λ)l , h(λ)x , v(λ)x Hidden state, logits, and scalar response at scaleλ.
+ˆyλ(x)Predicted class of the scaled model.
+BS,x λ-independent constant in the interaction bound.
+1ResNet-18, before rounding: relative error8.51×10 −7, optimally scaled error8.55×10 −7.
+2ResNet-34, before rounding: relative error is0; optimally scaled error is1.76×10 −16.
+15
+Preprint
+B DETAILEDRELATEDWORK
+Residual learning and path-ensemble views.Residual networks were introduced to ease the op-
+timization of very deep neural networks by reformulating layers as residual functions with respect
+to their inputs (He et al., 2016a). A residual block has the formx l+1 =x l +F l(xl), where the
+identity shortcut provides a stable information and gradient pathway. A prominent interpretation
+of this architecture is the unraveled view of Veit et al. (2016), which shows that a ResNet can be
+represented as an exponential collection of computational paths of different lengths. Their lesion
+studies suggest that these paths exhibit ensemble-like redundancy, and their gradient analysis shows
+that relatively short paths dominate training. Stochastic depth (Huang et al., 2016) provides a related
+training mechanism: during training, residual layers are randomly dropped, effectively exposing the
+model to shorter subnetworks while retaining the full network at test time. Our work builds on this
+line of thought but asks a different question. Beyond the original path-ensemble analysis of path
+lengths, block-removal robustness, and gradient flow (Veit et al., 2016), subsequent work has exam-
+ined how the effective depth of the virtual ensemble evolves during training (Littwin & Wolf, 2016)
+and how identity shortcuts and residual-branch scaling affect signal propagation and trainability (He
+et al., 2016b; De & Smith, 2020). These studies illuminate network structure and optimization, but
+do not identify the residual interactions that contribute to a particular prediction. In contrast, we
+study the functional contribution structure induced by residual branches. Rather than treating paths
+as additive outputs, we introduce a residual-gate function view and ask whether residual corrections
+and their higher-order interactions form input-dependent, sparse, expert-like computational units.
+Thus, our focus is not merely that ResNets contain many paths, but whether their effective residual
+computations behave like implicit soft experts.
+Gating, dynamic routing, and residual branch selection.Highway networks (Srivastava et al.,
+2015) introduced input-dependent gates to regulate information flow between transformed and
+skipped representations. Residual gates (Savarese et al., 2016) further studied scalar gates on resid-
+ual architectures, showing that explicit gating can facilitate optimization and increase layer indepen-
+dence. Dynamic inference methods such as SkipNet (Wang et al., 2018) and BlockDrop (Wu et al.,
+2018) learn to skip convolutional or residual blocks on a per-input basis, thereby converting static
+residual networks into explicitly routed conditional-computation models. These methods introduce
+or learn explicit gating mechanisms. Our goal is different: we analyze a standard trained ResNet
+without adding a router. We use gates only as an analytical probe to define a function over residual
+branch masks. This allows us to measure how the model output changes as residual branches are
+activated or removed, and to characterize whether the induced contribution structure is sparse and
+input-dependent.
+Mixture-of-Experts and expert-path structure.Mixture-of-Experts (MoE) models use gating
+or routing functions to combine specialized expert modules (Shazeer et al., 2017). Sparse MoE
+architectures such as GShard (Lepikhin et al., 2020) and Switch Transformers (Fedus et al., 2022)
+scale model capacity by activating only a small number of experts for each input. Subsequent
+work studies load balancing and routing assignment, including BASE layers (Lewis et al., 2021),
+Expert Choice routing (Zhou et al., 2022), and stable routing strategies (Dai et al., 2022). More
+recent work has started to view MoE computation through the lens of cross-layer expert paths;
+for example, Path-Constrained MoE constrains the combinatorial space of expert paths by sharing
+router parameters across consecutive layers (Gu et al., 2026). Residual MoE architectures, such
+as PR-MoE in DeepSpeed-MoE (Rajbhandari et al., 2022), also suggest that dense/shared paths
+and sparse expert paths can be combined. Our work approaches MoE from the opposite direction.
+Instead of adding explicit sparse experts to a network, we ask whether a trained residual network
+already induces implicit expert-like structures. The analogy is not exact: a standard ResNet does not
+perform sparse execution and has no explicit router. Nevertheless, if only a small subset of residual
+corrections or interactions dominates the functional contribution for a given input, then the network
+exhibits an implicit, soft, input-dependent expert structure.
+Attribution, pruning, and interaction decompositions.A related line of work estimates the im-
+portance of neural network components for pruning or interpretation. Taylor-based pruning methods
+estimate the contribution of neurons or filters to the final loss (Molchanov et al., 2019), and Shapley-
+value approaches provide principled component importance measures for structured pruning (An-
+16
+Preprint
+cona et al., 2020). More broadly, Shapley values and related cooperative-game-theoretic tools have
+become common for explaining model predictions (Lundberg & Lee, 2017). Recent work extends
+these ideas to higher-order interactions: HarsanyiNet uses Harsanyi interactions to compute Shap-
+ley values in a single forward propagation (Chen et al., 2023), Shapiq provides tools for estimating
+Shapley interactions in machine learning (Muschalik et al., 2024), and the M ¨obius transform has
+been proposed as a way to identify sparse, low-degree interactions in learned functions (Kang et al.,
+2024). Our analysis is inspired by this interaction viewpoint, but the players in our setting are
+not input features, neurons, or filters. Instead, we treat residual branches as players and study the
+function induced by turning these branches on or off. This lets us define residual corrections and
+higher-order residual interactions as functional contribution units. The resulting framework provides
+a bridge between residual learning and implicit expert behavior.
+17
+Preprint
+C PROOF OFLEMMA2.2
+Proof of Lemma 2.2.For any subsetS⊆[L], define its M ¨obius coefficient by
+∆Svx =
+X
+T⊆S
+(−1)|S|−|T| vx(1T ),
+where1 T ∈ {0,1}L activates exactly the residual branches inT.
+Fix an arbitrary subsetU⊆[L]. Summing the coefficients over all subsets ofUgives
+X
+S⊆U
+∆Svx =
+X
+S⊆U
+X
+T⊆S
+(−1)|S|−|T| vx(1T )(5)
+=
+X
+T⊆U
+vx(1T )
+X
+S:T⊆S⊆U
+(−1)|S|−|T| ,(6)
+where the second equality follows by exchanging the order of the two finite sums.
+For a fixedT⊆U, every setSsatisfyingT⊆S⊆Ucan be written uniquely asS=T∪R, where
+R⊆U\T. Hence,
+X
+S:T⊆S⊆U
+(−1)|S|−|T| = X
+R⊆U\T
+(−1)|R| (7)
+=
+|U\T|X
+r=0
+|U\T|
+r
+
+(−1)r (8)
+= (1−1) |U\T| (9)
+=
+1, T=U,
+0, T⊊U. (10)
+Therefore, every term in the outer sum vanishes except the term withT=U. It follows that
+X
+S⊆U
+∆Svx =v x(1U ).
+SinceU⊆[L]was arbitrary, the identity holds for every subsetU⊆[L].
+18
+Preprint
+D PROOF OFPROPOSITION2.3
+We prove Proposition 2.3 in three steps. First, we state the finite-difference identity that connects
+M¨obius coefficients to mixed partial derivatives. Second, we show that mixed derivatives of the
+hidden states with respect to residual gates scale with the corresponding power ofλ. Third, we
+combine these two facts to obtain the desired bound.
+Notation.For a subsetA⊆[L], write
+∂A :=
+Y
+a∈A
+∂
+∂ma
+,(11)
+with the convention that∂ ∅ is the identity operator. Letx (λ)l (m)denote the hidden representation at
+blocklunder gate maskm∈[0,1] L and residual scaleλ. We write the final scalar readout as
+v(λ)x (m) =R x(λ)L+1(m) ,(12)
+whereRincludes the remaining network operations after the residual stack and the scalar readout
+ρx.
+We assume that, for the fixed inputx, all hidden states induced bym∈[0,1] L and0< λ≤λ 0
+remain in a compact setKcontaining the shortcut trajectory. We also assume that each residual map
+Fl and the scalar readoutRareC L onKand that all derivatives up to orderLare bounded onK.
+These are the smoothness and boundedness assumptions stated in Proposition 2.3.
+Lemma D.1(Finite-difference identity).Letg: [0,1] L →RbeC |S| in the coordinates indexed by
+S. Then X
+T⊆S
+(−1)|S|−|T| g(1T ) =
+Z
+[0,1]|S|
+∂Sg(uS,0 ¯S)du S,(13)
+where ¯S= [L]\S, and(u S,0 ¯S)denotes the point whose coordinates inSare given byu S and
+whose coordinates outsideSare set to0.
+Proof.The result follows by applying the fundamental theorem of calculus once for each coordinate
+inS. For a single coordinatei, we have
+g(1i,0 ¯{i})−g(0 i,0 ¯{i}) =
+Z 1
+0
+∂g
+∂mi
+(ui,0 ¯{i})du i.(14)
+Applying the same argument iteratively over all coordinates inSgives Equation 13. Equivalently,
+the left-hand side is the|S|-fold forward finite difference ofgover the coordinates inS, and the
+right-hand side is its integral representation.
+Lemma D.2(Gate derivatives of hidden states scale with residual order).Under the smoothness
+and boundedness assumptions above, for every block indexland every subsetA⊆[L], there exists
+a constantC l,A,x >0, independent ofλ, such that
+sup
+m∈[0,1]L
+∂Ax(λ)l (m) ≤C l,A,xλ|A| for all0< λ≤λ 0.(15)
+Proof.We prove the statement by induction over the residual block indexl.
+For the input representationx (λ)1 (m) =x, the claim is immediate. IfA=∅, the hidden state is
+bounded because it lies in the compact setK. IfA̸=∅, then∂ Ax(λ)1 (m) = 0, so Equation 15 holds.
+Now suppose the claim holds for blockl. We prove it for blockl+ 1. The scaled residual recursion
+is
+x(λ)l+1(m) =x (λ)l (m) +λm lFl
+
+x(λ)l (m) .(16)
+Applying∂ A gives
+∂Ax(λ)l+1(m) =∂ Ax(λ)l (m) +λ ∂A
+h
+mlFl
+
+x(λ)l (m)i .(17)
+We analyze the second term. There are two cases.
+19
+Preprint
+Case 1:l /∈A.Then no derivative falls directly on the factorm l. Hence,
+∂A
+h
+mlFl
+
+x(λ)l (m)i =m l∂AFlx(λ)l (m) .(18)
+By the multivariate chain rule,∂ AFl(x(λ)l (m))is a finite sum of terms of the form
+DrFl
+
+x(λ)l (m) h∂P1 x(λ)l (m), . . . , ∂Pr x(λ)l (m)i ,(19)
+where{P 1, . . . , Pr}ranges over partitions ofAinto nonempty disjoint subsets. Since the derivatives
+ofF l are uniformly bounded onK, and by the induction hypothesis∂Pj x(λ)l (m) ≤C l,Pj ,xλ|Pj |,(20)
+each term in Equation 19 is bounded by a constant times
+λ|P1|+···+|Pr| =λ |A|.(21)
+Therefore, ∂AFlx(λ)l (m) ≤Cλ |A|.(22)
+Multiplying by the explicit factorλin Equation 17 yields a term of orderλ |A|+1, which is bounded
+by a constant timesλ |A| for0< λ≤λ 0. Together with the induction bound on∂ Ax(λ)l (m), thisgives ∂Ax(λ)l+1(m) ≤C l+1,A,xλ|A|.(23)
+Case 2:l∈A.LetA ′ =A\ {l}. Since the statex (λ)l (m)depends only on gates from earlierresidual blocks, it does not depend onm l. Therefore,
+∂Ax(λ)l (m) = 0.(24)
+Moreover,
+∂A
+h
+mlFl
+
+x(λ)l (m)i =∂ A′Flx(λ)l (m) .(25)
+Using the same chain-rule argument as in Case 1, but now forA ′, gives∂A′Flx(λ)l (m) ≤Cλ |A′| =Cλ |A|−1.(26)
+Multiplying by the explicit factorλin Equation 17, we obtain∂Ax(λ)l+1(m) ≤C l+1,A,xλ|A|.(27)
+Both cases establish the induction step. Hence the result holds for all blocksland all subsets
+A⊆[L].
+Lemma D.3(Gate derivatives of the scalar readout scale with residual order).Under the same
+assumptions, for every subsetS⊆[L], there exists a constantB S,x >0, independent ofλ, such that
+sup
+m∈[0,1]L
+∂Sv(λ)x (m) ≤B S,xλ|S| for all0< λ≤λ 0.(28)
+Proof.Recall that
+v(λ)x (m) =R x(λ)L+1(m) .(29)
+Applying the multivariate chain rule,∂ Sv(λ)x (m)is a finite sum of terms of the form
+DrRx(λ)L+1(m) h∂P1 x(λ)L+1(m), . . . , ∂Pr x(λ)L+1(m)i ,(30)
+where{P 1, . . . , Pr}ranges over partitions ofSinto nonempty disjoint subsets. Since the derivatives
+ofRare uniformly bounded and Lemma D.2 gives∂Pj x(λ)L+1(m) ≤C L+1,Pj ,xλ|Pj |,(31)
+each term is bounded by a constant times
+λ|P1|+···+|Pr| =λ |S|.(32)
+Summing over the finitely many partitions ofSgives Equation 28.
+20
+Preprint
+Proof of Proposition 2.3.Fix a subsetS⊆[L]with|S|=k. By Definition 2.1, the M ¨obius residual
+interaction coefficient is
+∆Sv(λ)x = X
+T⊆S
+(−1)|S|−|T| v(λ)x (1T ).(33)
+Applying Lemma D.1 withg=v (λ)x gives
+∆Sv(λ)x =
+Z
+[0,1]k
+∂Sv(λ)x (uS,0 ¯S)du S.(34)
+Taking absolute values and using Lemma D.3, we obtain
+∆Sv(λ)x  ≤ Z
+[0,1]k
+∂Sv(λ)x (uS,0 ¯S) duS (35)
+≤
+Z
+[0,1]k
+BS,xλk duS (36)
+=B S,xλk.(37)
+This proves Proposition 2.3.
+21
+Preprint
+E NAIVEADDITIVERECONSTRUCTION OFMASKEDRESPONSES
+This appendix provides the complete experimental details for testing whether masked-subnetwork
+responses can be interpreted as independent additive contributions. We compare three naive ag-
+gregations of the same residual-mask evaluations with exact M ¨obius reconstruction on ImageNet-
+pretrained ResNet-18 and ResNet-34. Across both architectures, summation, averaging, and
+shortcut-baseline centering fail to recover the full-network logits, whereas M ¨obius inversion re-
+constructs them to numerical precision. The experiment therefore distinguishes masked responses,
+which are overlapping nonlinear interventions, from the additive interaction coefficients derived
+from them.
+E.1 MOTIVATION
+The path-ensemble view characterizes a ResNet as a collection of structural paths, but it does not
+assign independent additive outputs to those paths. In particular, the responseh x(1S)obtained by
+activating a subsetSof residual branches is the output of an entire surviving nonlinear subnetwork.
+It retains shared stem and shortcut computation, normalization, nonlinear activations, projection
+shortcuts, and the final classifier, and a single mask may itself contain multiple structural paths.
+Consequently, directly aggregating masked responses can repeatedly count shared and lower-order
+effects.
+We use naive aggregation as a diagnostic rather than as a claim about the classical path-ensemble lit-
+erature. The question is whether masked responses nevertheless behave approximately like additive
+contribution units:Can the logits of the full ResNet be reconstructed by directly summing, averag-
+ing, or baseline-centering its masked-subnetwork responses?A negative answer motivates the use
+of M¨obius coefficients, which remove repeated lower-order effects through inclusion–exclusion.
+E.2 EXPERIMENTALSETUP ANDEVALUATIONMETRICS
+Models and Data.We use the torchvision ImageNet-pretrained ResNet-18 and ResNet-34 check-
+points withIMAGENET1K V1weights in evaluation mode. ResNet-18 containsL= 8BasicBlocks
+and is evaluated onN= 10,000images sampled uniformly from the unlabeled ImageNet-1K test
+split with seed0. ResNet-34 containsL= 16BasicBlocks and is evaluated on a fixedN= 1,000-
+image subset of the same test pool. We apply the standard preprocessing associated with the
+pretrained checkpoints. Because the test images are unlabeled, no metric in this experiment uses
+ground-truth classes.
+Residual-branch Interventions.A binary gatem l ∈ {0,1}is placed on the residual branch of
+every BasicBlock:
+xl+1(m) =ϕ l(sl(xl(m)) +m lFl(xl(m))),(38)
+wheres l is the identity or projection shortcut andϕ l is the post-addition activation. Settingm l = 0
+suppresses only the residual update; the shortcut, including any projection used for downsampling
+or channel matching, remains active.
+For a subsetS⊆[L], let1 S ∈ {0,1}L activate exactly the residual branches inS, and leth x(1S)∈
+R1000 denote the corresponding pre-softmax logits. We exhaustively evaluate all2 8 = 256masks
+for each ResNet-18 input and all2 16 = 65,536masks for each ResNet-34 input. The full-network
+and shortcut-only logits are
+hfullx =h x(1[L]), h ∅x =h x(0).(39)
+Candidate Reconstructions.We compare three direct aggregations of the masked responses:
+Arawx = X
+S⊆[L]
+hx(1S),(40)
+Ameanx = 2−L X
+S⊆[L]
+hx(1S),(41)
+Actrx =h ∅x + X
+∅̸=S⊆[L]
+
+hx(1S)−h ∅x
+
+.(42)
+22
+Preprint
+The raw sum tests direct additivity, the mean tests an ensemble-style average, and the centered sum
+removes repeated inclusion of the shortcut-only baseline.
+As an exact control, we compute the vector-valued M¨obius coefficients component-wise:
+∆Shx =
+X
+T⊆S
+(−1)|S|−|T| hx(1T ),(43)
+and reconstruct the full logits as
+AMobx = X
+S⊆[L]
+∆Shx =h fullx .(44)
+The ResNet-18 transform is accumulated in FP32, while the larger ResNet-34 transform is accumu-
+lated in FP64 to control numerical cancellation.
+Evaluation Metrics.For any candidate reconstructionA x, we compute the norm ratio and relative
+reconstruction error
+Q(Ax) = ∥Ax∥2∥hfullx ∥2 +ϵ , R(A x) = ∥hfullx −A x∥2∥hfullx ∥2 +ϵ ,(45)
+where the target values are1and0, respectively. To determine whether a failure is caused only by
+global scale, we fit the per-image least-squares scalar
+α⋆x = ⟨hfullx , Ax⟩∥Ax∥22 +ϵ (46)
+and report the optimally scaled error
+Rscale(Ax) = ∥hfullx −α ⋆xAx∥2∥hfullx ∥2 +ϵ .(47)
+We additionally report the cosine similarity
+Cos(Ax, hfullx ) = ⟨Ax, hfullx ⟩∥Ax∥2∥hfullx ∥2 +ϵ (48)
+and agreement with the full model’s top-1 prediction,
+Agree(Ax) =1
+h
+arg max
+c
+Ax,c = arg maxc hfullx,c
+i
+.(49)
+Top-1 agreement is prediction agreement with the full model, not classification accuracy. We use
+ϵ= 10 −12 and report per-image means and standard errors.
+E.3 RESULTS ANDANALYSIS
+Table 3 reports the complete numerical results, and Figure 6 provides the corresponding visualiza-
+tion.
+All three naive reconstructions fail on both architectures. The raw and centered sums severely
+inflate the logit norm. Their mean norm ratios are79.4and77.4for ResNet-18, and approximately
+1.89×10 4 and1.78×10 4 for ResNet-34. The centered result shows that this failure cannot be
+explained solely by repeatedly including the shortcut-only baseline.
+Averaging prevents the magnitude explosion, but does not recover the full-model logits. The mean-
+output norm ratios are0.310and0.288, while the corresponding relative errors remain0.977and
+0.910for ResNet-18 and ResNet-34. Thus, an unweighted ensemble average of masked subnetworks
+is also not a faithful approximation.
+Optimal scalar rescaling does not resolve the discrepancy. The scaled errors remain between0.959
+and0.961for ResNet-18 and between0.879and0.889for ResNet-34. Cosine similarities remain
+low, ranging from0.222to0.229and from0.440to0.459, respectively. Correspondingly, the naive
+reconstructions preserve the full model’s top-1 prediction on only0.62–0.64%of ResNet-18 inputs
+23
+Preprint
+Table 3: Naive aggregation versus exact M ¨obius reconstruction. Entries are per-image means over
+fixed ImageNet-1K test subsets. ResNet-18 usesN= 10,000images and256masks per image;
+ResNet-34 usesN= 1,000images and65,536masks per image. Top-1 agreement is measured
+against the corresponding full-model prediction.
+Model Reconstruction Norm ratio(→1)Rel. error(↓)Scaled error(↓)Cosine(↑)Top-1 agree(↑)
+ResNet-18 Raw sum79.366 79.150 0.9606 0.2217 0.0064
+Mean output0.3100 0.9771 0.9606 0.2217 0.0064
+Centered sum77.412 77.190 0.9595 0.2288 0.0062
+M¨obius1.0000 8.506×10 −7 8.550×10−7 1.0000 1.0000
+ResNet-34 Raw sum18,852.3 18,851.9 0.8890 0.4400 0.0250
+Mean output0.2877 0.9104 0.8890 0.4400 0.0250
+Centered sum17,750.2 17,749.8 0.8787 0.4587 0.0240
+M¨obius1.0000 0 1.76×10 −16 1.0000 1.0000
+(a) (b) (c) (d) (e)
+ResNet-18
+(f) (g) (h) (i) (j)
+ResNet-34
+Figure 6: Naive masked-response aggregation fails, whereas M ¨obius inversion reconstructs the full
+logits. The top and bottom rows show ResNet-18 and ResNet-34, respectively. Columns report
+norm ratio, relative error, optimally scaled error, cosine similarity, and top-1 agreement with the full
+model. Bars and error bars denote per-image means and standard errors over the fixed ImageNet-1K
+test subsets.
+and2.4–2.5%of ResNet-34 inputs. The failure is therefore directional rather than merely a global
+scale mismatch.
+In contrast, M ¨obius inversion reconstructs the full logits up to numerical precision using exactly
+the same masked evaluations. For ResNet-18, the mean relative error is8.51×10 −7; for the FP64
+ResNet-34 transform, it is zero at the reported precision. Both reconstructions have unit norm ratio
+and cosine similarity and preserve the full-model prediction on every evaluated image.
+These results do not challenge the structural path-ensemble interpretation. Rather, they establish that
+a masked-subnetwork response is an overlapping nonlinear intervention, not an independent additive
+path contribution. Summation, averaging, baseline centering, and optimal rescaling cannot remove
+this overlap. The exact additive units of the residual-mask response are the M ¨obius coefficients
+∆Shx, whose inclusion–exclusion construction removes effects already represented by lower-order
+subsets. This distinction motivates the functional residual-interaction analysis used throughout the
+paper.
+24
+Preprint
+F INTERACTION-ORDERSPECTRUM
+This section provides the full protocol and numerical results for the interaction-order analysis sum-
+marized in Figure 2. We exhaustively evaluate all residual-branch masks of pretrained ResNet-18
+and ResNet-34 models and examine how their M¨obius squared coefficient mass is distributed across
+interaction orders. At the natural operating point,λ= 1, both models are dominated by mid-to-
+high-order interactions: their spectra peak at orders5and10, respectively, above the corresponding
+midpointsL/2 = 4andL/2 = 8.
+F.1 MOTIVATION
+The exact reconstruction experiment in Appendix E establishes that M ¨obius coefficients form an
+additive decomposition of the residual-mask response. We next ask how the magnitude of these
+coefficients is distributed across interaction orders. For a subsetS⊆[L], the order|S|counts the
+number of residual branches involved in the corresponding interaction. It should not be confused
+with structural path length: branches in a low-order interaction may be far apart in depth, while a
+short structural path need not induce a low-order functional interaction.
+Our diagnostic question is therefore whether a pretrained ResNet, at its natural operating point,
+is dominated by individual and low-order residual corrections or by interactions involving larger
+groups of branches. This experiment also establishes theλ= 1reference point for the residual
+scaling intervention. Proposition 2.3 characterizes the attenuation of each fixedk-way coefficient as
+λ→0; it does not require the unscaled network itself to be low-order dominated.
+F.2 EXPERIMENTALSETUP ANDEVALUATIONMETRICS
+Models and Data.We evaluate torchvision ResNet-18 and ResNet-34 checkpoints pretrained
+with theIMAGENET1K V1weights. Their residual stages contain[2,2,2,2]and[3,4,6,3]Ba-
+sicBlocks, givingL= 8andL= 16gated residual branches, respectively. Each block computes
+xl+1(m) =ϕ l(sl(xl(m)) +m lFl(xl(m))), so settingm l = 0suppresses only the residual branch
+while preserving the identity or projection shortcut.
+For ResNet-18, we use a fixed set ofN= 10,000images from the unlabeled ImageNet-1K test split
+and enumerate all2 8 = 256masks per image. For ResNet-34, we use a deterministicN= 1,000-
+image subset of the same test pool and enumerate all2 16 = 65,536masks. The smaller ResNet-34
+sample reflects the substantially higher cost of exhaustive mask enumeration. Both models are
+evaluated in inference mode using the preprocessing associated with their pretrained weights.
+Readouts and Interaction Coefficients.For each inputx, leth x(m)∈R 1000 denote the logit
+vector under maskm. The scalar readout is the logit of the class predicted by the unmasked model,
+vx(m) =h x,ˆy(x)(m),ˆy(x) = arg max c hx,c(1[L]),
+whereˆy(x)is fixed across all masks. We apply M ¨obius inversion component-wise to obtain the
+scalar coefficients∆ Svx and vector coefficients∆ Shx. Their magnitudes area vS(x) =|∆ Svx|and
+ahS(x) =∥∆ Shx∥2.
+Order Statistics.For either readoutr∈ {v, h}, the squared coefficient mass at orderkand the
+total non-constant mass are
+Erk(x) = X
+S⊆[L]
+|S|=k
+arS(x)2, Z r(x) =
+LX
+j=1
+Erj (x).
+We report the normalized spectrum, cumulative low-order mass, effective interaction order, and
+mean per-interaction mass:
+eErk(x) = Erk(x)Z r(x) , C r≤q(x) = Pqk=1 Erk(x)Z r(x) ,
+25
+Preprint
+(a) (b) (c) (d)
+(e) (f) (g) (h)
+ResNet-18
+ResNet-34
+Figure 7: Residual interaction-order spectra at the natural operating point. Results are shown for
+ResNet-18 (top;N= 10,000,L= 8) and ResNet-34 (bottom;N= 1,000,L= 16). From left
+to right, the columns show the normalized squared coefficient mass eEk, cumulative low-order mass
+C≤k, effective interaction orderκ, and mean per-interaction massM k. Scalar readouts use the class
+predicted by the full model, while vector readouts use all logits. Both models peak aboveL/2,
+and the large high-orderM k values show that this pattern is not explained solely by the number of
+subsets at each order.
+Table 4: Summary of the interaction-order spectra.C ≤L/2 includes the midpoint order, while
+ML/M1 compares the dataset-mean per-interaction masses at the highest and first orders. Values
+are rounded to approximately four significant digits.
+Model Readout Peakk( eEk)C ≤3 C≤L/2 κ M L/M1
+ResNet-18 Scalar5 (0.2721) 0.1417 0.3545 5.001 32.21
+Vector5 (0.2951) 0.1356 0.3675 4.929 22.31
+ResNet-34 Scalar10 (0.1951) 0.001153 0.2421 9.887 341.4
+Vector10 (0.1956) 0.001116 0.2419 9.884 296.4
+κr(x) =
+PL
+k=1 kE rk(x)
+Z r(x) , M rk (x) = Erk(x) Lk .
+The normalized spectrum, cumulative mass, and effective order exclude the zeroth-order shortcut-
+only coefficient. We includeM r0 =E r0 in the figure only as a baseline reference. The quantityM rk
+controls for the different numbers
+ L
+k
+
+of subsets available at each order.
+All quantities are first computed and normalized separately for each image and then averaged across
+images. We use “interaction energy” as shorthand for squared M¨obius coefficient mass. Because the
+coefficients are not generally orthogonal, eErk should not be interpreted as the fraction of the full-logit
+norm explained by orderk.
+26
+Preprint
+Table 5: Complete normalized interaction-order spectra. Entries report the dataset-mean normalized
+squared coefficient mass eEk. Six decimal places are retained so that the small low-order values of
+ResNet-34 are not rounded to zero.
+ResNet-18 ResNet-34
+kScalar Vector Scalar Vector
+10.008619 0.007611 0.000038 0.000036
+20.032546 0.027096 0.000212 0.000196
+30.100549 0.100901 0.000903 0.000884
+40.212804 0.231893 0.003625 0.003595
+50.272092 0.2950980.012134 0.012054
+60.231087 0.220151 0.032453 0.032361
+70.111121 0.096990 0.070109 0.070110
+80.031182 0.020260 0.122593 0.122682
+9 – –0.172787 0.172977
+10 – –0.195111 0.195567
+11 – –0.174654 0.175310
+12 – –0.121618 0.121884
+13 – –0.063775 0.063326
+14 – –0.023746 0.023134
+15 – –0.005600 0.005306
+16 – –0.000641 0.000577
+F.3 RESULTS ANDANALYSIS
+Mid-to-high-order interactions dominate.Figure 7(a,e) and Table 5 show that both readouts
+peak atk= 5for ResNet-18 and atk= 10for ResNet-34. For ResNet-18, orders4–6con-
+tain71.6%of the scalar mass and74.7%of the vector mass, whereas orders1–3contain only
+14.17%and13.56%. For ResNet-34, orders8–12account for78.68%and78.84%, while orders
+1–3contribute only approximately0.11%. The cumulative curves in Figure 7(b,f) further show that
+63.25%–64.55%of the ResNet-18 mass and approximately75.8%of the ResNet-34 mass lie above
+their respective midpoints. Consistently, the effective orders in Figure 7(c,g) and Table 4 are above
+L/2for both models.
+The Pattern is not purely combinatorial.The total massE k may be elevated near the middle
+orders because those orders contain more subsets. Figure 7(d,h) therefore reports the mean per-
+interaction massM k =E k/
+ L
+k
+
+. For ResNet-18,M k increases with order and reaches its maximum
+atk=L, withM L/M1 = 32.21for the scalar readout and22.31for the vector readout. For
+ResNet-34,M k decreases slightly over orders1–3but then rises sharply, reachingM L/M1 = 341.4
+and296.4, respectively. These ratios are summarized in Table 4. Thus, the mid-to-high-order con-
+centration cannot be explained solely by the combinatorial prevalence of middle-order subsets.
+Readout agreement and interpretation.Across both architectures, the scalar and vector curves
+in Figure 7 have closely aligned peak locations, cumulative profiles, and effective orders. The nu-
+merical comparison in Table 4 confirms this agreement, indicating that the conclusion is not specific
+to the predicted-class readout. Atλ= 1, both studied checkpoints therefore operate in a mid-
+to-high-order functional interaction regime. This observation does not contradict Proposition 2.3,
+which characterizes the attenuation of fixed-order coefficients asλ→0. The subsequent residual-
+scaling experiment tests whether reducingλcausally shifts the observed spectra toward lower orders.
+27
+Preprint
+G RESIDUAL-SCALINGSWEEP
+This section examines how uniform inference-time residual scaling changes the functional interac-
+tion spectrum. For both ResNet-18 and ResNet-34, decreasing the residual scaleλmonotonically
+reduces the effective interaction order and transfers squared coefficient mass toward orders1–3.
+However, substantial low-order concentration emerges only under strong scaling, where the model’s
+predictions differ almost completely from those atλ= 1. Residual scaling therefore provides causal
+control over the interaction spectrum, but the observed shift is not prediction preserving.
+G.1 MOTIVATION
+Appendix F shows that the unscaled ResNet-18 and ResNet-34 checkpoints operate in mid-to-high-
+order interaction regimes. Their normalized spectra peak atk= 5andk= 10, with effective orders
+near5and10, respectively. Proposition 2.3 predicts that, for a fixed readout, ak-way coefficient
+is attenuated asO(λ k)when residual updates are uniformly scaled byλ. Higher-order coefficients
+should therefore decay faster than lower-order coefficients asλdecreases.
+We test this prediction through an inference-time intervention, without retraining. The experiment
+asks two related questions: whether decreasingλcausally shifts the interaction spectrum toward
+lower orders, and whether such a shift can occur while preserving the predictions of the unscaled
+model.
+G.2 EXPERIMENTALSETUP ANDEVALUATIONMETRICS
+Models, Data, and Intervention.We use the same pretrained models, test images, residual gates,
+and exhaustive mask evaluations as in Appendix F: ResNet-18 withL= 8andN= 10,000, and
+ResNet-34 withL= 16andN= 1,000. For every binary maskm∈ {0,1} L, the scaled block
+computes
+x(λ)l+1(m) =ϕ l
+
+sl(x(λ)l (m)) +λm lFl(x(λ)l (m)) .
+Thus, an active residual branch is multiplied byλ, an inactive branch remains suppressed, and the
+shortcut is always preserved. We sweep
+λ∈ {1.00,0.95,0.90,0.85,0.80,0.75,0.50,0.25,0.10}
+without modifying the pretrained parameters.
+Readouts.Leth (λ)x (m)denote the logits under residual scaleλ. For the scalar spectrum, we select
+the class predicted by the scaled full-mask model,
+ˆyλ(x) = arg maxc h(λ)x,c (1[L]), v (λ)x (m) =h (λ)x,ˆyλ(x)(m).
+The classˆyλ(x)is fixed across all masks at a givenλ, but it may change across values ofλ. The
+vector readout uses the complete logit vector and is unaffected by this coordinate choice.
+Spectrum Metrics.For eachλ, we recompute the scalar and vector M ¨obius coefficients and the
+order-wise squared coefficient massesE r,(λ)k (x)forr∈ {v, h}. We summarize the spectrum using
+κr,(λ)(x) =
+PL
+k=1 kE r,(λ)k (x)PL
+k=1 Er,(λ)k (x) , C r,(λ)≤3 (x) =
+P3
+k=1 Er,(λ)k (x)PL
+k=1 Er,(λ)k (x) .
+A decrease inκand an increase inC ≤3 indicate a shift toward lower-order interactions. The com-
+plementary high-order mass isT >3 = 1−C ≤3 and is therefore omitted from the tables.
+Prediction Agreement.To quantify how much the intervention changes the model’s behavior, we
+compare the full-mask prediction at eachλwith the prediction atλ= 1:
+A(λ) = 1N Xx 1harg maxc h(λ)x,c (1[L]) = arg maxc h(1)x,c(1[L])i .
+This quantity is shared by the scalar and vector analyses. Because the ImageNet test images are
+unlabeled,A(λ)measures prediction agreement rather than classification accuracy. All reported
+quantities are computed per image and then averaged across images.
+28
+Preprint
+(a) (b) (c)
+Figure 8: Inference-time residual-scaling sweep. Results are shown for pretrained ResNet-18 (N=
+10,000) and ResNet-34 (N= 1,000), without retraining. Solid and dashed lines denote ResNet-
+18 and ResNet-34, respectively. Pink and blue denote scalar and vector readouts. (a) Effective
+interaction orderκ. (b) Cumulative low-order squared coefficient massC ≤3. (c) Top-1 agreement
+between the scaled full-mask prediction and the corresponding prediction atλ= 1. Decreasingλ
+shifts both models toward lower-order interactions, but large shifts coincide with substantial changes
+in prediction.
+Table 6: Residual-scaling sweep for ResNet-18. Entries are dataset means overN= 10,000images
+and are rounded to four decimal places. Agreement compares the full-mask prediction at eachλ
+with that atλ= 1.
+λ κ v κh C v≤3 C h≤3 Top-1 agreement
+1.00 5.0009 4.9295 0.1417 0.1356 1.0000
+0.95 4.9756 4.9002 0.1491 0.1447 0.9375
+0.90 4.9448 4.8706 0.1573 0.1541 0.8759
+0.85 4.9086 4.8389 0.1671 0.1640 0.8093
+0.80 4.8635 4.8022 0.1786 0.1751 0.7314
+0.75 4.8042 4.7572 0.1933 0.1882 0.6365
+0.50 4.3103 4.2689 0.3211 0.3254 0.0518
+0.25 2.0431 2.7209 0.8314 0.7268 0.0019
+0.10 1.1444 1.4517 0.9968 0.9777 0.0014
+G.3 RESULTS ANDANALYSIS
+Residual scaling shifts both spectra toward lower orders.Figure 8(a,b) and Tables 6–7 show
+thatκdecreases andC ≤3 increases monotonically asλdecreases. In ResNet-18, the scalar and
+vector effective orders fall from5.0009and4.9295atλ= 1to1.1444and1.4517atλ= 0.1.
+Over the same range,C ≤3 rises from0.1417and0.1356to0.9968and0.9777. ResNet-34 exhibits
+the same directional response: its effective orders decrease from9.8872and9.8835to2.7084and
+3.4369, whileC ≤3 increases from approximately0.001to0.8082and0.7219.
+The deeper model shifts more slowly.At a fixed residual scale, ResNet-34 retains substantially
+more high-order mass than ResNet-18. Atλ= 0.25, for example, the ResNet-18 low-order masses
+are0.8314and0.7268, whereas the corresponding ResNet-34 values are only0.1986and0.1267.
+ResNet-34 requires scaling toλ= 0.1before most of its squared coefficient mass moves into orders
+1–3. Thus, the direction of the intervention is consistent across architectures, but the scale required
+to reach a low-order regime depends strongly on network depth.
+Large spectral shifts do not preserve predictions.Figure 8(c) shows that prediction agreement
+decreases much faster than the effective interaction order. Atλ= 0.95, agreement is still0.9375
+for ResNet-18 and0.9200for ResNet-34, but the changes inκandC ≤3 remain small. Atλ= 0.8,
+approximately one quarter of the predictions have already changed, while both networks remain
+close to their original interaction orders. Byλ= 0.5, agreement has fallen to0.0518and0.0450,
+29
+Preprint
+Table 7: Residual-scaling sweep for ResNet-34. Entries are dataset means overN= 1,000images
+and are rounded to four decimal places. Agreement compares the full-mask prediction at eachλ
+with that atλ= 1.
+λ κ v κh C v≤3 C h≤3 Top-1 agreement
+1.00 9.8872 9.8835 0.0012 0.0011 1.0000
+0.95 9.8462 9.8390 0.0014 0.0013 0.9200
+0.90 9.8027 9.7938 0.0017 0.0016 0.8780
+0.85 9.7616 9.7474 0.0020 0.0020 0.8140
+0.80 9.7013 9.6957 0.0025 0.0024 0.7430
+0.75 9.6391 9.6373 0.0032 0.0030 0.6630
+0.50 9.2639 9.2544 0.0188 0.0118 0.0450
+0.25 7.6038 8.0708 0.1986 0.1267 0.0050
+0.10 2.7084 3.4369 0.8082 0.7219 0.0030
+yet ResNet-18 still hasκ≈4.3and ResNet-34 hasκ≈9.3. The strongest low-order concentration
+occurs only atλ∈ {0.25,0.1}, where agreement with the unscaled predictions is nearly zero.
+Interpretation.The monotonic decrease inκand increase inC ≤3 are consistent with the faster
+attenuation of high-order coefficients predicted by Proposition 2.3. The experiment should neverthe-
+less be interpreted as directional evidence rather than a direct verification of the asymptotic bound:
+the proposition is coefficient-wise, whereasκandC ≤3 are normalized aggregate statistics. More-
+over, the scalar coordinate may change acrossλbecause it follows the scaled model’s predicted
+class. The vector readout is unaffected by this choice and shows the same qualitative trend. Over-
+all, residual scaling causally moves the functional decomposition toward lower orders, but this shift
+does not occur without substantially changing the model’s predictions.
+30
+Preprint
+H TOP-KRESIDUAL-INTERACTIONRECONSTRUCTION
+This section tests whether the exact residual-interaction dictionary is compressible at the level of in-
+dividual terms. We rank the non-empty M¨obius coefficients separately for each input and reconstruct
+the scalar predicted-class readout or the full logit vector from the largestKterms. The results reveal
+a consistent distinction: squared coefficient mass is concentrated, but faithful output reconstruction
+can require a substantially larger support. This distinction is modest for ResNet-18 and pronounced
+for ResNet-34. The selected sets are post-hoc analytical supports and do not imply sparse execution.
+H.1 MOTIVATION
+The interaction-order spectrum in Appendix F describes how coefficient mass is distributed across
+orders|S|, but it does not determine how many individual terms carry that mass. A mid- or high-
+order spectrum may still be concentrated in relatively few subsets. We therefore ask:How many
+input-specific interaction terms are required to capture the coefficient mass, approximate the logits,
+and preserve the full model’s prediction?These are different criteria because signed scalar coeffi-
+cients can cancel and vector-valued coefficients are not generally orthogonal.
+H.2 EXPERIMENTALSETUP ANDEVALUATIONMETRICS
+Models and Residual-mask Evaluations.We analyze torchvision ResNet-18 and ResNet-34
+checkpoints pretrained on ImageNet-1K. ResNet-18 containsL= 8gateable residual branches
+and is evaluated on a fixed set ofN= 10,000unlabeled ImageNet-1K test images; ResNet-34
+containsL= 16branches and is evaluated on a fixed set ofN= 1,000test images. For every im-
+age, we exhaustively evaluate all2 L binary residual-branch masks while preserving the identity or
+projection shortcut. M ¨obius inversion then yieldsM= 2 L −1non-empty interaction coefficients:
+M= 255for ResNet-18 andM= 65,535for ResNet-34. The scalar readoutv x is the logit of the
+class predicted by the all-open model, with that class fixed across masks;h x denotes the complete
+logit vector.
+Per-input Magnitude Selection and Reconstruction.For each inputx, scalar and vector inter-
+actions are ranked independently bya vS(x) =|∆ Svx|anda hS(x) =∥∆ Shx∥2. LetA vK(x)and
+AhK(x)denote the correspondingKlargest non-empty subsets. The baseline coefficient is always
+retained, and the signed reconstructions are
+bvx,K = ∆∅vx +
+X
+S∈AvK (x)
+∆Svx,
+bhx,K = ∆∅hx + X
+S∈AhK (x)
+∆Shx.
+(50)
+Magnitude selection maximizes retained squared coefficient mass for a fixedK; it does not directly
+minimize reconstruction error or maximize prediction agreement. We therefore refer to it asper-
+input magnitude Top-K, not as an oracle reconstruction.
+Metrics.For either readoutr∈ {v, h}, the retained squared coefficient mass is
+ΓrK(x) =
+P
+S∈ArK (x) arS(x)2P
+S̸=∅ arS(x)2 +ϵ .(51)
+We measure scalar and vector relative errors byErr vK =|v x(1[L])−bvx,K |/(|vx(1[L])|+ϵ)and
+ErrhK =∥h x(1[L])− bhx,K ∥2/(∥hx(1[L])∥2 +ϵ). For vector reconstructions, we additionally report
+cosine similarityCos K and Top-1 agreement with the all-open model. The latter is prediction agree-
+ment, not ground-truth accuracy. We also plot the ratio between the reconstructed and full-model
+predicted-class margins, but do not use its mean as a primary statistic because the ratio is unstable
+when the full-model margin is close to zero.
+For thresholdsτ∈ {0.10,0.05}andη∈ {0.90,0.95,0.99}, we summarize the vector ranking by
+K errτ (x) = min{K: Err hK(x)≤τ}, K massη (x) = min{K: Γ hK(x)≥η}.(52)
+31
+Preprint
+(a) (b) (c) (d)
+(e) (f) (g) (h)
+ResNet-18
+Figure 9: Per-input magnitude Top-Kreconstruction for ResNet-18. (a) Retained squared coeffi-
+cient mass for scalar and vector rankings. (b–d) Vector relative error, cosine similarity, and agree-
+ment with the all-open model under magnitude, random, order-matched, and low-order selection. (e)
+Predicted-class margin ratio. (f) Order composition of the magnitude Top-Ksets; color denotes the
+selected fraction within each order and text denotes enrichment over combinatorial prevalence. (g,h)
+Mean per-image first-hit budgets and retained fractions for the stated error and mass thresholds.
+Because reconstruction error need not decrease monotonically withK,K errτ is a first-hit statistic. In
+contrast,Γ hK is monotone by construction.
+Baselines and Reporting Grids.We compare magnitude Top-Kwith three vector-readout con-
+trols: uniform random-Kselection, order-matched random selection that preserves the number
+of selected subsets at each order, and low-order truncation retaining every subset with|S| ≤
+r. All reconstructions include∆ ∅hx and sum the selected signed coefficients. Random-Kre-
+sults are averaged over five seeds. The order-matched result uses the stored sampling proto-
+col: one realization for ResNet-18 and five seeds for ResNet-34. ResNet-18 is reported at
+K∈ {1,2,4,8,16,32,64,128,255}and at retained fractions{1,5,10,25,50,100}%. ResNet-34
+uses the analogous absolute grid together with retained fractions{0.1,0.5,1,5,10,25,50,100}%,
+withK=⌈pM⌉.
+H.3 RESULTS ANDANALYSIS
+Squared coefficient mass is concentrated.Figures 9a and 10a, together with Table 8, show sub-
+stantial mass concentration in both models. For ResNet-18, retaining25%of the dictionary captures
+97.51%of scalar mass and93.64%of vector mass; at50%, these values rise to99.88%and99.71%.
+ResNet-34 is less concentrated but remains compressible in coefficient mass:25%of its terms cap-
+ture95.28%of scalar mass and88.10%of vector mass, while50%captures99.47%and97.90%.
+The effective budgets in Table 10 give the same picture:90%of vector mass requires, on average,
+21.87%of the ResNet-18 dictionary and27.75%of the ResNet-34 dictionary.
+Mass concentration does not imply faithful reconstruction.The reconstruction metrics separate
+sharply from the mass curves. In ResNet-18, retainingK= 64terms (25%) captures93.64%of
+vector mass, but yields relative error1.7686, cosine similarity0.4896, and only30.48%agreement
+with the full-model prediction. AtK= 128(50%), the error falls to0.2850and agreement rises to
+87.66%. The mean per-image first-hit budgets for10%and5%vector error are150.60and186.64
+32
+Preprint
+(a) (b) (c) (d)
+(e) (f) (g) (h)
+ResNet-34
+Figure 10: Per-input magnitude Top-Kinteraction reconstruction for ResNet-34. Results are av-
+eraged overN= 1,000unlabeled ImageNet-1K test images. The interaction dictionary contains
+M= 2 16 −1 = 65,535non-empty terms; the shortcut-only baseline is always included and is
+not counted inK. (a) Squared coefficient mass captured by independently ranked scalar predicted-
+class and vector-logit Top-Ksets. (b–d) Relative vector-logit error, cosine similarity, and agreement
+with the all-open model prediction under magnitude Top-K, random-K, order-matched random,
+and low-order selection. Agreement is measured against the full-model prediction rather than the
+ground-truth label. (e) Ratio of the reconstructed predicted-class margin to the full-model margin.
+(f) Order composition of the vector magnitude Top-Ksets across retained fractions; color denotes
+the selected fraction within each interaction order, and cell text gives its enrichment over combi-
+natorial prevalence. (g,h) Effective interaction counts and their fractions of the full dictionary for
+vector-error and coefficient-mass thresholds; markers summarize the mean and median distributions
+across inputs. Coefficient mass is concentrated, but faithful reconstruction is much less sparse: re-
+taining50%of the terms captures97.90%of the vector mass, yet yields relative error13.87and
+only0.60%prediction agreement.
+terms, or59.06%and73.19%of the dictionary (Table 10). Thus, ResNet-18 has a compressible
+coefficient distribution, but accurate logit and decision reconstruction retains a substantial tail.
+This separation is much stronger in ResNet-34. AlthoughK= 16,384(25%) captures88.10%of
+vector mass, its relative error is35.5789and its Top-1 agreement is0.20%. Even atK= 32,768
+(50%), vector mass is97.90%, but error remains13.8741and agreement is only0.60%(Table 8).
+On average,99.495%of all non-empty terms are needed to reach10%vector error. For this check-
+point, squared coefficient mass is therefore compressible, whereas magnitude-truncated logit and
+prediction reconstruction is effectively dense.
+Term identity matters, but order alone is insufficient.Table 9 and panels (b)–(d) of Figures 9
+and 10 show that magnitude selection usually yields much lower numerical error than random or
+order-matched selection. For ResNet-18 atK= 64, it also raises agreement from below0.5%for
+both controls to30.48%. In ResNet-34, magnitude selection reduces error at the25%and50%
+budgets, but all three methods still have near-zero agreement. Hence, selecting the identities of large
+terms is more informative than selecting their orders alone, but it is not sufficient for sparse decision
+reconstruction in the deeper model.
+Low-order truncation fails for a complementary reason. In ResNet-18, retaining all orders through
+r= 7keeps254of255terms yet gives error2.6881and agreement20.12%; including the eighth-
+order term restores exact reconstruction. In ResNet-34, retaining all orders throughr= 15keeps
+33
+Preprint
+Table 8: Magnitude Top-Kconcentration and reconstruction. Entries are dataset means; uncertainty
+terms are omitted for readability. Scalar and vector supports are ranked separately. Top-1 agreement
+is measured against the corresponding all-open model prediction.
+RetainedKΓ vK ErrvK ΓhK ErrhK CosK Agree
+ResNet-18 (N= 10,000,M= 255)
+1% 3 0.2445 0.9934 0.1450 4.0016 0.0019 0.0019
+5% 13 0.6140 0.8625 0.4345 4.0782 0.1214 0.0063
+10% 26 0.8161 0.6754 0.6548 3.6881 0.1671 0.0339
+25% 64 0.9751 0.2644 0.9364 1.7686 0.4896 0.3048
+50% 128 0.9988 0.0575 0.9971 0.2850 0.9554 0.8766
+100% 255 1.00001.61×10 −7 1.00001.04×10 −6 1.0000 1.0000
+ResNet-34 (N= 1,000,M= 65,535)
+0.1% 66 0.0672 4.8806 0.0223 44.1222 0.0099 0.0010
+0.5% 328 0.2023 7.3811 0.0817 69.5117 0.0006 0.0000
+1% 656 0.3077 8.0174 0.1400 76.1582 -0.0164 0.0000
+5% 3,277 0.6597 8.1968 0.4409 65.1384 -0.0097 0.0020
+10% 6,554 0.8125 6.6638 0.6545 42.4853 0.0115 0.0000
+25% 16,384 0.9528 4.4102 0.8810 35.5789 0.0288 0.0020
+50% 32,768 0.9947 1.7966 0.9790 13.8741 0.0788 0.0060
+100% 65,535 1.0000<10 −12 1.0000<10 −12 1.0000 1.0000
+Table 9: Representative vector-readout baseline comparisons. Magnitude selection substantially
+improves numerical reconstruction over random and order-matched selection, but this does not nec-
+essarily translate into prediction agreement. Values are dataset means.
+Model RetainedKRelative error Top-1 agreement
+Magnitude Random Order-matched Magnitude Random Order-matched
+ResNet-18 25% 64 1.7686 7.9048 7.3574 0.3048 0.0028 0.0044
+50% 128 0.2850 9.0794 7.7646 0.8766 0.0042 0.0068
+ResNet-34 25% 16,384 35.5789 123.0253 117.9390 0.0020 0.0018 0.0006
+50% 32,768 13.8741 141.9837 111.8046 0.0060 0.0016 0.0024
+65,534of65,535terms but still gives error6.8803and agreement2.10%. The order-composition
+heatmaps in panels (f) further show that the magnitude-selected sets are enriched in mid- and high-
+order terms, consistent with the spectra in Appendix F. These results reflect cancellation within the
+anchored M¨obius expansion and should not be interpreted as an executable high-order path.
+Conclusion.The robust sparsity result is concentration of squared M ¨obius coefficient mass.
+ResNet-18 additionally permits moderately compressed prediction reconstruction, whereas ResNet-
+34 requires nearly the full interaction dictionary for small logit error under magnitude truncation.
+The experiment therefore supports input-specific contribution concentration, not sparse execution or
+uniformly sparse decision reconstruction. The next experiment examines whether the identities of
+the high-magnitude interactions vary systematically across inputs.
+34
+Preprint
+Table 10: Vector effective budgets. Mean per-image first-hitKand its fraction of theMnon-
+empty interactions. Error thresholds use the first crossing of a potentially non-monotone curve;
+mass thresholds are monotone.
+Model Criterion MeanK K/M
+ResNet-18Err hK ≤0.10150.60 59.059%
+ErrhK ≤0.05186.64 73.191%
+ΓhK ≥0.9055.77 21.870%
+ΓhK ≥0.9568.59 26.898%
+ΓhK ≥0.9999.85 39.155%
+ResNet-34Err hK ≤0.1065,203.74 99.495%
+ErrhK ≤0.0565,425.85 99.833%
+ΓhK ≥0.9018,188.62 27.754%
+ΓhK ≥0.9525,097.15 38.296%
+ΓhK ≥0.9938,389.40 58.578%
+35
+Preprint
+I INPUT-DEPENDENTRESIDUALEXPERTSETS
+This section tests whether the high-magnitude residual interactions identified for one input are also
+selected for other inputs. Across both ResNet-18 and ResNet-34, vector-ranked interaction sets
+contain a large shared global core, but same-class images consistently exhibit greater overlap than
+different-class images. Decision-conditioned scalar sets show substantially stronger class alignment,
+whereas confidence has little effect on set similarity. The resulting picture is therefore not one of
+disjoint routes, but of class-structured, input-dependent variation around a broadly reused interaction
+set.
+I.1 MOTIVATION
+Coefficient concentration alone does not establish input-dependent routing. A fixed set of large
+interactions could explain every input and still yield a compressible representation. A routing-like
+interpretation additionally requires the identities of the selected interactions to vary across inputs in
+a structured manner. We therefore ask whether input-specific magnitude Top-Ksets differ across
+images, whether same-class images share more terms than different-class images, and whether any
+class gap survives random-set and label-shuffle controls. Because the underlying ResNets remain
+densely executed, this is a test of input-dependent functional contribution rather than conditional
+execution.
+I.2 EXPERIMENTALSETUP ANDEVALUATIONMETRICS
+Models, Data, and Interaction Rankings.We use torchvision ResNet-18 and ResNet-34 check-
+points with IMAGENET1K V1 weights. Both models are evaluated on the same class-balanced
+ImageNet-1K validation subset containing ten images from each of the1,000classes (N= 10,000).
+The all-open Top-1 accuracies are69.94%for ResNet-18 and73.55%for ResNet-34, providing a
+check that images, labels, and pretrained weights are aligned. As in the preceding experiments,
+we enumerate all binary residual masks and compute the exact M ¨obius coefficients. ResNet-18
+hasL= 8residual branches andM= 255non-empty interactions; ResNet-34 hasL= 16and
+M= 65,535.
+For each imagex, vector interactions are ranked bya hS(x) =∥∆ Shx∥2, while scalar interactions
+are ranked bya vS(x) =|∆ Svx|. Herev x is the logit of the class predicted by the all-open model,
+with that class fixed across masks. The corresponding per-input sets are
+ArK(x) = TopK
+S̸=∅
+arS(x), r∈ {h, v}.(53)
+The vector ranking is label-free and uses a common logit-space norm. The scalar ranking is decision-
+conditioned because its output coordinate depends on the image’s full-model prediction; we there-
+fore treat scalar results as a complementary diagnostic rather than an independent label-free routing
+test.
+ResNet-18 usesK∈ {3,8,13,26,32,64}, corresponding approximately to retained fractions
+{1,3,5,10,13,25}%. ResNet-34 usesK∈ {32,656,1967,3277,6554,8520,16384}, correspond-
+ing to{0.05,1,3,5,10,13,25}%. The fixedK= 32setting is used for the nearest-neighbor diag-
+nostic in both models. This is a comparison at the same absolute budget, not at the same retained
+fraction:K= 32corresponds to12.55%of the ResNet-18 dictionary but only0.0488%of the
+ResNet-34 dictionary. For the cross-model global-set histograms, we instead match the retained
+fraction at approximately13%, usingK= 32for ResNet-18 andK= 8,520for ResNet-34.
+Binary and Weighted Signatures.The binary signature records the identities of the selected
+terms,
+zrK,S(x) =1[S∈ ArK(x)].(54)
+For the vector ranking, we additionally define the normalized squared coefficient massp hS(x) =
+ahS(x)2/ PT̸=∅ ahT (x)2 and the truncated weighted signaturew hK,S(x) =p hS(x)1[S∈ AhK(x)].
+Thus, the weighted signature preserves the relative magnitude of selected vector interactions without
+renormalizing away the omitted mass.
+36
+Preprint
+Table 11: Vector interaction-set overlap. Entries are dataset means.J same andJ diff use ground-
+truth ImageNet classes;J rand is the uniform random-Kbaseline; andJ global is the mean per-image
+overlap withG K. Uncertainty columns are omitted for readability.
+RetainedK J hsame J hdiff ∆hclass Lifth Jrand Jglobal
+ResNet-18 (M= 255)
+1.18% 3 0.6334 0.5972 0.0362 1.061 0.0069 0.6900
+3.14% 8 0.6623 0.6318 0.0305 1.048 0.0167 0.7312
+5.10% 13 0.6885 0.6560 0.0325 1.050 0.0268 0.7443
+10.20% 26 0.7778 0.7557 0.0222 1.029 0.0537 0.8072
+12.55% 32 0.8329 0.8150 0.0179 1.022 0.0683 0.8705
+25.10% 64 0.9179 0.9096 0.0083 1.009 0.1438 0.9371
+ResNet-34 (M= 65,535)
+0.05% 32 0.4068 0.3825 0.0243 1.064 0.0003 0.5004
+1.00% 656 0.5162 0.4842 0.0321 1.066 0.0050 0.5980
+3.00% 1,967 0.6205 0.5904 0.0301 1.051 0.0152 0.6857
+5.00% 3,277 0.6991 0.6734 0.0257 1.038 0.0257 0.7546
+10.00% 6,554 0.8371 0.8213 0.0158 1.019 0.0527 0.8706
+13.00% 8,520 0.8639 0.8502 0.0137 1.016 0.0695 0.8921
+25.00% 16,384 0.8576 0.8431 0.0145 1.017 0.1429 0.8862
+Pairwise Overlap and Class Structure.For binary sets, pair similarity is the Jaccard index
+J rK(xi, xj) = |ArK(xi)∩ ArK(xj)||ArK(xi)∪ ArK(xj)| .(55)
+For vector-weighted signatures, we useJwK(xi, xj) = PS min{wi,S, wj,S}/(PS max{wi,S, wj,S}+ϵ). The primary class statistics are
+∆rclass(K) =E[J rK |y i =y j]−E[J rK |y i ̸=y j],Lift rclass(K) = E[J rK |y i =y j]E[J rK |y i ̸=y j] +ϵ .(56)
+All45,000within-class pairs are used, and an equal number of different-class pairs are sampled.
+The same pair indices are reused acrossKwhenever applicable.
+Controls and Auxiliary Diagnostics.A uniform random-Kbaseline, estimated from2,000sim-
+ulated pairs at eachK, measures overlap expected solely from set size. To test whether vector sets
+reduce to a fixed global subset, we define
+GK = TopK
+S̸=∅
+Ex[phS(x)].(57)
+and reportJ(A hK(x),G K)for each image. The global set is estimated and evaluated on the same
+10,000images, so this overlap is an in-sample descriptive statistic. A seeded label-shuffle control
+recomputes the same-class and different-class gap after permuting the ground-truth labels. It pro-
+vides one fixed null realization at eachK, not a permutation test distribution. The source analysis
+also uses200ordinary pair-level bootstrap resamples. Because pairs share images, we treat these
+uncertainties as descriptive and omit them from the tables below.
+We also perform leave-one-out 1-nearest-neighbor classification using binary Jaccard similarity at
+K= 32and compare its accuracy with the empirical class-prior reference of0.10%; the exact
+self-excluded random-neighbor probability on this balanced sample is9/9,999≈0.09%. Binary
+signatures can produce tied nearest neighbors, and the stored implementation resolves ties by the first
+maximum. We therefore use 1-NN accuracy as a diagnostic rather than as a standalone statistical
+test. Finally, images are divided into upper and lower terciles of all-open softmax confidence. We
+compare the Jaccard similarity of random within-tercile pairs to test whether low-confidence images
+use more idiosyncratic interaction sets.
+I.3 RESULTS ANDANALYSIS
+Vector interaction sets combine global reuse with class structure.As shown in Figures 11(a)–
+(c) and 12(a)–(c) and quantified in Table 11, same-class overlap exceeds different-class overlap at
+every evaluated budget. For ResNet-18, the binary vector gap is0.0362atK= 3and decreases to
+0.0083atK= 64as both pair types approach saturation. ResNet-34 reproduces the pattern: the
+37
+Preprint
+(a) (b) (c) (d)
+(e) (f) (g)
+ResNet-18
+Figure 11: Input dependence and class structure of ResNet-18 interaction sets. Results use
+N= 10,000ImageNet-1K validation images andM= 255non-empty interactions. (a) Vector-
+set Jaccard similarity for same-class and different-class pairs, a uniform random-Kbaseline, and
+per-image overlap with the global vector set. (b) Same-class minus different-class gaps for vec-
+tor binary, vector weighted, and decision-conditioned scalar signatures, together with the vector
+label-shuffle control. (c) Same-class/different-class overlap lift for vector and scalar signatures. (d)
+Leave-one-out 1-nearest-neighbor class accuracy atK= 32, compared with the empirical0.10%
+chance level. (e) Similarity of random pairs drawn within the high- and low-confidence terciles.
+(f) Distribution of per-image overlap with the global vector set atK= 32(12.55%retention). (g)
+Same-class and different-class pairwise Jaccard distributions atK= 32. The vector sets share a
+strong global core but retain a small class-dependent component, while the decision-conditioned
+scalar sets show substantially stronger class alignment.
+Table 12: Class-alignment gaps across signatures and controls.∆ h is binary vector Jaccard,∆ w
+is weighted vector Jaccard,∆ v is binary predicted-class scalar Jaccard, and∆ shuf is the vector
+gap after label permutation. Scalar results are decision-conditioned because the selected output
+coordinate can differ across images. Values are means.
+RetainedK∆ h ∆w J vsame J vdiff ∆v ∆shuf
+ResNet-18
+1.18% 3 0.0362 0.0361 0.1911 0.0710 0.1200 0.0014
+3.14% 8 0.0305 0.0327 0.2535 0.1289 0.1246 0.0019
+5.10% 13 0.0325 0.0347 0.2994 0.1765 0.1229 0.0005
+10.20% 26 0.0222 0.0279 0.3844 0.2804 0.1040 -0.0009
+12.55% 32 0.0179 0.0256 0.4195 0.3248 0.0947 0.0003
+25.10% 64 0.0083 0.0226 0.5896 0.5232 0.0664 0.0000
+ResNet-34
+0.05% 32 0.0243 0.0257 0.0369 0.0163 0.0206 0.0016
+1.00% 656 0.0321 0.0325 0.1152 0.0747 0.0406 0.0003
+3.00% 1,967 0.0301 0.0311 0.1883 0.1444 0.0439 0.0002
+5.00% 3,277 0.0257 0.0280 0.2364 0.1927 0.0437 0.0002
+10.00% 6,554 0.0158 0.0220 0.3093 0.2658 0.0435 0.0003
+13.00% 8,520 0.0137 0.0206 0.3383 0.2949 0.0434 0.0002
+25.00% 16,384 0.0145 0.0199 0.4285 0.3881 0.0403 0.0001
+gap peaks at0.0321at1%retention and remains positive through25%. Weighted vector gaps are
+similarly positive (Table 12), while the shuffled-label gaps remain within0.0019for ResNet-18 and
+0.0016for ResNet-34. Thus, the class signal is small in absolute magnitude but systematic and not
+explained by set size alone.
+38
+Preprint
+(a) (b) (c) (d)
+(e) (f) (g)
+ResNet-34
+Figure 12: Input dependence and class structure of ResNet-34 interaction sets. Results use the
+sameN= 10,000class-balanced ImageNet-1K validation images andM= 65,535non-empty
+interactions. Panels (a), (c), and (e) include retained fractions from0.05%to25%; the fraction-
+matched comparison in panel (b) begins at1%. Panel (f) reports per-image overlap with the global
+vector set atK= 8,520(13.0%retention), matching the retained fraction used for ResNet-18 rather
+than its absoluteK. Panel (g) shows the same-class and different-class Jaccard distributions at
+the fixedK= 32used by the nearest-neighbor diagnostic. The positive class gaps replicate the
+ResNet-18 trend, but high global overlap again indicates class-structured variation around a shared
+interaction core rather than disjoint routes.
+Table 13: Signature diagnostics. Leave-one-out 1-NN uses binary Jaccard at the fixed absolute
+budgetK= 32; this is not a fraction-matched comparison across architectures, and deterministic
+tie handling makes the values diagnostic. The final column is the largest absolute confidence-tercile
+gap over the evaluatedKgrid.
+Model Vector 1-NN Scalar 1-NN Chance Max conf. gap
+ResNet-18 0.0039 0.2423 0.0010 0.0045
+ResNet-34 0.0033 0.0991 0.0010 0.0031
+At the same time, the vector sets are close to a dataset-level global set. At approximately13%
+retention, mean per-image global overlap is0.8705for ResNet-18 and0.8921for ResNet-34, as
+shown in panel (f) of each figure and in Table 11. Same-class and different-class pairs also have
+high absolute overlap at these budgets. The label-free vector analysis therefore supports a shared
+interaction core with input-specific, class-aligned variation, rather than routing to nearly disjoint
+interaction sets.
+Decision-conditioned scalar signatures show stronger class alignment.The scalar gaps in Fig-
+ure 11(b) and Figure 12(b) are larger than their vector counterparts over most of the evaluated range.
+In ResNet-18,∆ v is approximately0.12for the smallest three budgets and remains0.0664at25%
+retention. In ResNet-34, it reaches0.0439at3%retention and remains near0.04thereafter. Con-
+sistently, the scalar binary signatures attain24.23%and9.91%leave-one-out 1-NN accuracy for
+ResNet-18 and ResNet-34, compared with0.10%chance; vector signatures reach only0.39%and
+0.33%(Table 13). These results show that predicted-class interaction identities contain substantial
+class information. Because the scalar coordinate is selected separately for each image, and because
+theK= 32comparison is not fraction matched, however, these values should not be read as a
+39
+Preprint
+direct architectural ranking. The scalar evidence is decision-conditioned and should not by itself be
+interpreted as a label-free routing mechanism.
+Set similarity is nearly independent of confidence.Panel (e) of each figure and Table 13 show
+almost identical within-tercile overlaps for high- and low-confidence images. Across the fullKgrid,
+the largest absolute difference is0.0045for ResNet-18 and0.0031for ResNet-34, with no consistent
+direction in ResNet-18. We therefore observe no material association between confidence tercile and
+how broadly the vector-ranked interaction set is shared. This pattern is consistent with the separate
+difficulty analysis: the identities of prominent interactions vary with class more clearly than the
+amount of interaction structure varies with sample difficulty.
+Conclusion.Both checkpoints exhibit consistent class structure in their post-hoc interaction sets,
+but the dominant vector interactions are also strongly reused across inputs. The most defensible
+routing-like interpretation is therefore a limited one: inputs modulate a class-aligned component
+around a shared functional core, without an explicit router or sparse execution. Decision-conditioned
+scalar signatures expose stronger class information, while the vector results provide the more con-
+servative label-free evidence.
+40
+Preprint
+J SAMPLEDIFFICULTY ANDRESIDUALINTERACTIONCOMPLEXITY
+This section examines whether difficult inputs induce a more complex residual interaction profile.
+Across the studied ResNet-18 and ResNet-34 checkpoints, sample difficulty is only weakly asso-
+ciated with interaction breadth, interaction order, or magnitude-based reconstruction budgets. The
+hardest loss quartile exhibits a small increase in effective interaction count, most visibly for the
+decision-conditioned scalar readout of ResNet-18, but the effective order and low-order coefficient
+mass remain nearly unchanged. The same conclusion holds when misclassified and correctly clas-
+sified images are compared. Thus, input dependence in the identities of selected interactions does
+not translate into substantial difficulty-dependent scaling of the amount or order of functional inter-
+action.
+J.1 MOTIVATION
+The preceding experiment shows that the identities of high-magnitude interactions vary across inputs
+and contain class structure. That result does not establish that harder inputs use a broader or higher-
+order set of interactions. A difficulty-adaptive interpretation would predict that hard images recruit
+more interaction terms, shift coefficient mass toward higher orders, or require a larger magnitude-
+ranked set to reconstruct the logits. We test these possibilities by relating per-image difficulty to
+three complementary aspects of the residual-interaction decomposition: breadth, interaction order,
+and magnitude-based compressibility. As throughout the paper, these quantities describe post-hoc
+functional contributions rather than changes in the densely executed computation graph.
+J.2 EXPERIMENTALSETUP ANDEVALUATIONMETRICS
+Models, Data, and Interaction Strengths.We evaluate torchvision ResNet-18 and ResNet-34
+checkpoints with IMAGENET1K V1 weights on the same class-balanced ImageNet-1K validation
+subset used in Appendix I. The subset contains ten images from each of1,000classes (N= 10,000).
+The all-open Top-1 accuracies are69.94%for ResNet-18 and73.55%for ResNet-34. ResNet-18
+containsL= 8gateable residual branches andM= 2 8 −1 = 255non-empty interaction terms,
+whereas ResNet-34 containsL= 16branches andM= 2 16 −1 = 65,535terms. For each im-
+age, exhaustive residual-mask evaluation and M ¨obius inversion yield scalar and vector magnitudes
+avS(x) =|∆ Svx|anda hS(x) =∥∆ Shx∥2, respectively. The scalar readout uses the class predicted
+by the all-open model, fixed across all masks for that image.
+Difficulty Measures.Leth fullx be the all-open logits,ythe ground-truth class, andˆy=
+arg maxc hfullx,c . We use three label-aware difficulty measures: negative log-likelihoodd NLL =
+−log softmax(h fullx )y, the binary error indicatord wrong =1[ˆy̸=y], and the negative true-class
+logit margind true =−(h fullx,y −max c̸=y hfullx,c ). We additionally use two label-free measures: neg-
+ative confidenced conf =−max c softmax(hfullx )c and the negative predicted-class logit margin
+dpred =−(h fullx,ˆy−max c̸=ˆyhfullx,c ). All five scores are oriented so that larger values indicate harder
+inputs.
+Breadth and Interaction Order.For either readoutr∈ {v, h}, defineq rS =a rS/ PT arT and
+prS = (a rS)2/ PT (arT )2, where all sums are over non-empty interactions. We measure breadth
+using the participation ratio and entropy effective count,
+N reff (x) = 1P
+S(qrS(x))2 , N rent(x) = exp
+ 
+−
+X
+S
+prS(x) logp rS(x)
+!
+.(58)
+We summarize interaction order using the magnitude-weighted and squared-magnitude-weighted
+averages
+¯kr(x) = X
+S
+|S|q rS(x), κ r(x) = X
+S
+|S|prS(x),(59)
+and the low-order squared coefficient massC r≤3(x) = P|S|≤3 prS(x). The complementary high-
+order mass isT r>3(x) = 1−C r≤3(x), so only one of the two is needed in the tables.
+41
+Preprint
+Table 14: Tie-correct Spearman correlations for vector-readout complexity. Every difficulty score
+is oriented so that larger values mean harder inputs.C h≤3 is shown instead of the redundantT h>3 =
+1−C h≤3.
+DifficultyN heff N hent ¯kh κh Ch≤3 Kerr.10 Kerr.05 Kmass.90 Kmass.95 Kmass.99
+ResNet-18
+NLL 0.0313 0.0352 0.0157 0.0182 -0.0080 0.0711 0.0489 0.0267 0.0232 0.0238
+Wrong 0.0186 0.0237 0.0063 0.0083 0.0002 0.0264 -0.0009 0.0170 0.0116 0.0103
+−True margin 0.0268 0.0306 0.0137 0.0162 -0.0073 0.0575 0.0351 0.0237 0.0187 0.0187
+−Confidence 0.0383 0.0407 0.0154 0.0191 -0.0080 0.0883 0.0796 0.0334 0.0298 0.0335
+−Predicted margin 0.0339 0.0355 0.0102 0.0145 -0.0052 0.0665 0.0598 0.0315 0.0254 0.0290
+ResNet-34
+NLL 0.0274 0.0280 0.0042 0.0042 -0.0226 0.0580 0.0526 0.0288 0.0319 0.0280
+Wrong 0.0110 0.0132 -0.0115 -0.0122 -0.0045 0.0139 0.0133 0.0105 0.0141 0.0106
+−True margin 0.0209 0.0212 0.0063 0.0059 -0.0224 0.0513 0.0467 0.0225 0.0253 0.0217
+−Confidence 0.0367 0.0370 0.0058 0.0057 -0.0243 0.0744 0.0685 0.0384 0.0412 0.0372
+−Predicted margin 0.0262 0.0255 0.0141 0.0128 -0.0283 0.0693 0.0643 0.0289 0.0308 0.0273
+Table 15: Tie-correct Spearman correlations for scalar-readout complexity. The scalar coordinate is
+the class predicted by the all-open model and is fixed across masks for each image.
+DifficultyN veff N vent ¯kv κv C v≤3
+ResNet-18
+NLL 0.0533 0.0637 -0.0355 -0.0456 0.0275
+Wrong 0.0234 0.0333 -0.0186 -0.0320 0.0211
+−True margin 0.0478 0.0571 -0.0369 -0.0435 0.0290
+−Confidence 0.0654 0.0757 -0.0326 -0.0447 0.0250
+−Predicted margin 0.0550 0.0639 -0.0365 -0.0443 0.0286
+ResNet-34
+NLL 0.0190 0.0234 -0.0011 -0.0084 -0.0216
+Wrong 0.0024 0.0090 -0.0059 -0.0129 -0.0107
+−True margin 0.0165 0.0205 -0.0019 -0.0080 -0.0184
+−Confidence 0.0290 0.0317 -0.0013 -0.0092 -0.0225
+−Predicted margin 0.0264 0.0282 -0.0025 -0.0095 -0.0184
+Magnitude-based Reconstruction Budgets.For the vector readout, we also use the cumulative
+magnitude Top-Kreconstructions from Appendix H. We defineK errτ (x)as the firstKfor which
+the relative logit error is at mostτ∈ {0.10,0.05}, andK massη (x)as the firstKthat captures at
+leastη∈ {0.90,0.95,0.99}of the squared coefficient mass. These are post-hoc magnitude-ranking
+budgets, not optimal subset sizes.
+Evaluation Protocol.We recompute tie-correct Spearman correlations directly from the stored
+per-image quantities using average ranks for tied values; these numbers match the result-
+visualization figures. Because binary error is more naturally interpreted as a group comparison, we
+additionally report the mean difference between misclassified and correctly classified images. For
+NLL, the easiest and hardest groups are the bottom and top quartiles, each containing2,500images,
+and the hard–easy gap is the difference of their means. Finally, we fit the class-fixed-effect model
+c(x) =β 0 +β 1dNLL(x) +γ y(x) +ε x by demeaning difficulty and complexity within each ground-
+truth class. The reportedβ 1 values use the original units and are therefore intended as within-metric
+diagnostics rather than cross-metric effect sizes. All table entries are point estimates; standard devi-
+ations and standard errors are omitted. Because difficulty and complexity are measured on the same
+model outputs, these analyses are observational and do not identify a causal effect of difficulty.
+J.3 RESULTS ANDANALYSIS
+Difficulty has little rank association with interaction complexity.Figures 13(a)–(d) and 14(a)–
+(d), together with Tables 14 and 15, show that all associations are weak. For ResNet-18, the largest
+absolute vector correlation is0.0883, between negative confidence andK err.10, while the largest
+scalar correlation is0.0757, between negative confidence andN vent. The corresponding maxima
+42
+Preprint
+(a)
+(b)
+(c)
+(d)
+(e) (f) (g) (h)
+ResNet-18
+Figure 13: Sample difficulty and residual interaction complexity for ResNet-18. Results use
+N= 10,000ImageNet-1K validation images andM= 255non-empty interactions. (a) Tie-correct
+Spearman correlations between label-aware difficulty measures and vector-readout complexity. (b)
+The same analysis for negative confidence and negative predicted-class margin, both oriented so that
+larger values denote harder inputs. (c,d) Corresponding results for the decision-conditioned scalar
+readout. (e) Relative hard–easy change in the vector metrics,100(µ hard −µ easy)/|µeasy|, between
+the top and bottom NLL quartiles. (f) Relative change in the vector metrics between misclassified
+and correctly classified images. Panels (e,f) displayT h>3, whereas the tables report its equivalent
+complementC h≤3 = 1−T h>3 to avoid redundant columns. (g,h) NLL versus the vector effective
+interaction countN heff and low-order massC h≤3 (shown as a percentage), respectively. Associations
+are uniformly weak; the clearest change is a small broadening of the interaction-magnitude distribu-
+tion, not a shift toward higher interaction orders.
+for ResNet-34 are0.0744and0.0317. More importantly, the effective-order correlations are close
+to zero: across the continuous difficulty measures,|ρ(κ h)| ≤0.0191for ResNet-18 and≤0.0128
+for ResNet-34. Difficulty therefore has little monotonic association with either breadth or interaction
+order.
+Hard images exhibit only small and model-dependent broadening.The loss-quartile compar-
+ison in Figure 13(e), Figure 14(e), and Table 16 reveals a small increase in breadth. In ResNet-18,
+N heff increases from89.1949to89.4823(0.322%), whileK err.10 increases from148.7320to151.5508
+(1.895%). The decision-conditioned scalar breadth changes more, withN veff increasing by2.204%.
+The same directions appear in ResNet-34 but are smaller: the relative increases are0.194%,0.031%,
+and0.398%, respectively. Moreover, the within-class slopes in Table 18 are mixed: the vector effec-
+tive count has a small negative slope in both models, whereas the scalar effective count has a small
+positive slope. The observed broadening is therefore weak and not a readout-independent difficulty
+effect.
+43
+Preprint
+(a)
+(b)
+(c)
+(d)
+(e) (f) (g) (h)
+ResNet-34
+Figure 14: Sample difficulty and residual interaction complexity for ResNet-34. Results are
+computed over a class-balanced subset ofN= 10,000ImageNet-1K validation images and all
+M= 65,535non-empty residual interactions. All difficulty scores are oriented so that larger values
+indicate harder inputs. (a) Tie-correct Spearman correlations between label-aware difficulty mea-
+sures, including NLL, prediction error, and negative true-class margin, and vector-readout measures
+of interaction breadth, order, and Top-Kcompressibility. (b) Corresponding correlations for the
+label-free measures of negative confidence and negative predicted-class margin. (c,d) Scalar-readout
+counterparts of (a,b), where the scalar coordinate is the class predicted by the all-open model. (e)
+Relative changes in vector-readout complexity between the highest- and lowest-NLL quartiles. (f)
+Relative changes between misclassified and correctly classified images. These comparisons cover
+effective interaction counts, interaction order, high-order coefficient mass, and reconstruction bud-
+gets. (g,h) Binned distributions of NLL against the vector effective interaction countN heff and low-
+order coefficient massC h≤3, respectively; color intensity denotes the number of images in each bin.
+Across all analyses, the correlations and group differences remain small: harder inputs neither recruit
+substantially broader interaction supports nor shift coefficient mass toward higher orders, despite the
+large interaction dictionary.
+Interaction order remains essentially fixed.Neither architecture shifts toward higher-order in-
+teractions on hard images. For ResNet-18,κ h changes by only0.0036between the easiest and
+hardest quartiles, andC h≤3 changes by−0.000326. For ResNet-34, the corresponding changes are
+−0.000388and−1.68×10 −5. The scalar effective order decreases slightly rather than increasing,
+by0.0600for ResNet-18 and0.0060for ResNet-34. These values, together with the near-zero cor-
+relations and class-controlled slopes, provide no evidence that difficult inputs recruit systematically
+higher-order residual interactions.
+Misclassification yields the same qualitative conclusion.The wrong–correct comparisons in
+Figures 13(f) and 14(f), together with Table 17, are also small. Misclassified ResNet-18 images
+increaseN heff by0.1876andK err.10 by0.7436, whileκ h changes by only0.0020. For ResNet-34, the
+44
+Preprint
+Table 16: Loss-quartile comparison. Easy and hard denote the bottom and top NLL quartiles. Rel-
+ative change is100(Hard−Easy)/|Easy|. Values are dataset means; no uncertainty columns are
+included. ForC ≤3, the relative percentage can appear comparatively large because the ResNet-34
+baseline is close to zero; the absolute gap should be used to assess its practical size.
+Quantity Easy Hard Hard−Easy Relative (%)
+ResNet-18
+N heff 89.1949 89.4823 0.2874 0.322
+N hent 62.7012 63.0648 0.3635 0.580
+κh 4.9283 4.9319 0.0036 0.073
+C h≤3 0.135677 0.135351 -0.000326 -0.241
+K err.10 148.7320 151.5508 2.8188 1.895
+K mass.95 68.5012 68.6252 0.1240 0.181
+N veff 63.4144 64.8123 1.3979 2.204
+N vent 38.5587 39.9825 1.4238 3.693
+κv 5.0352 4.9752 -0.0600 -1.191
+C v≤3 0.136853 0.145008 0.008155 5.959
+ResNet-34
+N heff 29220.21 29276.79 56.59 0.194
+N hent 18305.46 18361.31 55.85 0.305
+κh 9.885070 9.884682 -0.000388 -0.004
+C h≤3 0.00112166 0.00110484 -0.00001682 -1.500
+K err.10 65185.65 65205.61 19.96 0.031
+K mass.95 25068.59 25132.30 63.71 0.254
+N veff 18856.96 18932.03 75.07 0.398
+N vent 9165.25 9238.67 73.42 0.801
+κv 9.888993 9.882980 -0.006012 -0.061
+C v≤3 0.00116970 0.00115286 -0.00001685 -1.440
+corresponding relative changes are0.072%,0.007%, and−0.031%. Thus, prediction failure is not
+accompanied by a meaningful expansion of the magnitude-ranked reconstruction support or a shift
+in interaction order.
+Conclusion.For the studied checkpoints, residual-interaction complexity is approximately stable
+across the difficulty spectrum. Hard images sometimes exhibit a small increase in breadth or recon-
+struction budget, especially under the decision-conditioned scalar readout, but the effect is modest,
+attenuates in ResNet-34, and is not consistent across readouts after class control. The stronger find-
+ing is the absence of an order shift. Combined with Appendix I, these results distinguish two forms
+of input dependence: the identities of prominent interactions vary with the input and class, whereas
+the overall breadth and order of the interaction profile remain nearly constant. This supports only
+a limited routing-like interpretation at the level of functional contribution and does not support a
+strong difficulty-adaptive interpretation or sparse execution.
+45
+Preprint
+Table 17: Correctness comparison. The ResNet-18 subset contains6,994correct and3,006incorrect
+predictions; the ResNet-34 subset contains7,355correct and2,645incorrect predictions. Relative
+change is100(Wrong−Correct)/|Correct|. Absolute gaps are the more informative scale for the
+smallC ≤3 baseline.
+Quantity Correct Wrong Wrong−Correct Relative (%)
+ResNet-18
+N heff 89.2743 89.4619 0.1876 0.210
+N hent 62.7944 63.0482 0.2538 0.404
+κh 4.9300 4.9320 0.0020 0.041
+C h≤3 0.135411 0.1354132.22×10 −6 0.002
+K err.10 150.5648 151.3084 0.7436 0.494
+K mass.95 68.5332 68.6045 0.0713 0.104
+N veff 64.2505 64.6977 0.4472 0.696
+N vent 39.3443 39.8978 0.5535 1.407
+κv 5.0081 4.9755 -0.0326 -0.652
+C v≤3 0.141030 0.145338 0.004309 3.055
+ResNet-34
+N heff 29247.64 29268.72 21.08 0.072
+N hent 18328.32 18352.43 24.11 0.132
+κh 9.889496 9.886413 -0.003083 -0.031
+C h≤3 0.00110605 0.00110169−4.36×10 −6 -0.394
+K err.10 65201.56 65206.12 4.56 0.007
+K mass.95 25098.68 25125.33 26.65 0.106
+N veff 18919.93 18933.02 13.09 0.069
+N vent 9212.29 9239.69 27.41 0.297
+κv 9.889846 9.882120 -0.007726 -0.078
+C v≤3 0.00116570 0.00115321−1.249×10 −5 -1.071
+Table 18: Class-controlled NLL slopes. Each entry is the rawβ 1 from a within-class fixed-effect
+regression. Because the quantities have different units and scales, their signed magnitudes should
+be interpreted within each column rather than compared directly across metrics or architectures.
+ModelN heff κh C h≤3 K err.10 K mass.95 N veff κv
+ResNet-18 -0.0306 -0.0010039.652×10 −5 0.1311 -0.0086 0.0913 -0.007939
+ResNet-34 -5.7765 -0.0002422.762×10 −7 0.8280 -5.1910 0.9821 0.000174
+46

@@ -4118,3 +4118,13 @@ ingest 报告：[[ingest-reports/2026-10-25-hyperd-correction|WHY 报告]]
 更新的页面：[[tqn]]（新增数据流、结构与复杂度、边界；性能 24/24→22/24）, [[source-tqn]]（补 arXiv/PMLR/raw 溯源，局限按 §5+A.3 重写，公式转 LaTeX，source_count 1）, [[temporal-query-technique]]（公式转 LaTeX，$W$ 表补 Solar/Weather 并修正 ETTm2，新增 Table 3 实测表）
 ingest 报告：[[ingest-reports/tqn-2026-10-25|WHY 报告]]
 数值备注：源 md 丢失 §5 第三条局限（Figure 8），按 PDF 补回；旧版 24/24 与 §4.2「22 out of 24」及 Count 行冲突已改；Table 3 Traffic 例外并列两值；$d$ 原文明示未给，不补
+
+## [2026-10-25] ingest | Do ResNets Route? Sparse Interaction Experts in Residual Networks
+arXiv:2610.02907v1（Yan et al.，复旦/华盛顿/同济/山大/Datacanvas，preprint）。问题：标准 ResNet 对每个输入执行全部残差块、没有 router，path-ensemble 视角只数结构路径不解释功能贡献。机制：把残差支路开关当布尔格，$2^L$ 个掩码下做 Möbius 反演，得 shortcut 基线 + 一阶修正 + 高阶 interaction 的唯一精确分解；Prop 2.3 证明光滑残差堆的 $k$ 阶系数满足 $\mathcal{O}(\lambda^k)$。证据：ImageNet ResNet-18（$L=8$，$N=10{,}000$）与 ResNet-34（$L=16$，$N=1{,}000$）穷举全部掩码，朴素求和的相对误差 79.2/18,851.9 而 Möbius 重构到浮点精度；平方系数质量峰在 $k=5/10$（$\kappa^v=5.001/9.887$，$M_L/M_1=32.21/341.4$）；缩放 $\lambda$ 压低阶次但 top-1 一致率同步崩到 0.0518/0.0450；ResNet-18 保留 25% 字典得 93.64% 向量质量却只有 30.48% 一致率，ResNet-34 需 99.495% 的项才到 10% 误差。边界：只覆盖两个 ImageNet 检查点，Top-$K$ 是事后解析支撑，不与 sparse execution 或加速等同。
+创建的页面：[[source-resnets-route-without-routers]], [[residual-interaction-decomposition]], [[interaction-order-spectrum]], [[implicit-residual-experts]], [[implicit-functional-routing]]
+更新的页面：[[mixture-of-experts]]（新增「反向视角」小节 + 链接与脚注，source_count 13→14）, [[index]]
+ingest 报告：[[ingest-reports/2026-10-25-resnets-route-without-routers|WHY 报告]]
+数值备注：§3 与 Table 1 称阶谱在 validation 子集上算，附录 F.2/G/H 与 Table 8 称 unlabeled test split，两处并列未择一；标量类差 0.125/0.044 仅见 Figure 5；PDF 文本层变音符与上下标断裂，Table 4–11 逐格核对后可读，图片类图表按正文数字引用
+
+## [2026-10-25] maintenance | ResNets Route 五页文案压实（polisher 不可用）
+polisher 两轮调用（6 文件一次、2m25s；重试 2m29s）均以 `[google/gemini-3.8-flash] Retry budget exhausted after 10 retries: MALFORMED_FUNCTION_CALL` 失败，与 10-24/10-25 前两次同一症状，无产出。回退主 agent 手工压缩：5 个新页 + WHY 报告总字符数 −2.9% 至 −6.6%、正文（剔除表格与 `$$` 块）−4.5% 至 −8.3%（source-summary −4.1%/−4.5%、residual-interaction-decomposition −4.1%/−6.7%、interaction-order-spectrum −2.9%/−5.1%、implicit-residual-experts −6.1%/−7.9%、implicit-functional-routing −6.5%/−8.3%、报告 −6.6%/−6.6%）。未达 10%–20% 目标：页面主体是数字、Table 4–11 表格与 aligned 维度块，继续压缩只能删事实，故停止。校验脚本比对压缩前后：数字多重集、`$$` 块逐字、表格整行、heading 集、`[^src-*]` 集、wikilink 集全部一致；过程中发现并恢复三处被压掉的限定（`top-1` 指标名、`λ=1` 对照、21.870/27.754 的模型归属）。`raw/*.pdf` 按 `.gitignore` 不入库。
