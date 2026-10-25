@@ -246,7 +246,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-patchstg]] — PatchSTG: efficient large-scale traffic Transformer via irregular spatial patching and dual attention (KDD 2025)
 - [[source-patchtst]] — PatchTST: A Time Series is Worth 64 Words, long-term forecasting with Transformers (ICLR 2023)
 - [[source-pdformer-jiang-2023]] — PDFormer: Propagation Delay-Aware Dynamic Long-Range Transformer for Traffic Flow Prediction（AAAI 2023），地理/语义双 mask 空间自注意力 + DFT 显式建模传播时延，6 数据集 17 基线
-- [[source-penguin]] — PENGUIN: periodic-nested group attention for long-term forecasting (AISTATS 2026)
+- [[source-penguin]] — PENGUIN: 把 ALiBi 距离惩罚按 patch 后周期折叠成加性注意力偏置 + 一组一周期、组内共享 KV，9 数据集均值 0.300 vs CycleNet 0.317 / CATS 0.319，但 MSE 只在 ETT、Solar、Traffic 上最低（Sun, Chen & Sun, Fudan/小红书, AISTATS 2026, PMLR 300）
 - [[source-performer]] — Rethinking Attention with Performers（Choromanski et al., Google/Cambridge/DeepMind/Alan Turing Institute, ICLR 2021，会议标识 PDF 内核实；arXiv:2009.14794v4），FAVOR+：正随机特征无偏估计 softmax 核 + 正交化降方差，线性时空复杂度近似全秩 softmax 注意力（论文自述首个此类架构），MSE/尾界/一致收敛定理与 TrEMBL/ImageNet64/PG-19/LRA 实验
 - [[source-phat]] — PHAT: period heterogeneity-aware Transformer with 3D bucket + PNA for MTSF (ICLR 2026)
 - [[source-physics-aware-reprogramming]] — REPST: Language Model Empowered ST Forecasting via Physics-Aware Reprogramming (arXiv 2024), Koopman 分解 + Gumbel-Softmax selective discrete reprogramming, METR-LA MAE 3.63
@@ -537,7 +537,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[patchstg]] — PatchSTG, efficient large-scale traffic Transformer with leaf KDTree spatial patching + dual attention (KDD 2025)
 - [[patchtst]] — PatchTST, patch tokenization + channel independence Transformer for LSTF and self-supervised learning (ICLR 2023)
 - [[pecpm]] — PECPM, pattern-matching-based CSTF with expandable pattern bank without historical data replay (KDD 2023)
-- [[pfrp]] — PFRP, 模型无关检索增强单变量 TSF 框架，GMB + PCL + K-medoids + 双门控 + 动态融合 (AAAI 2026)
+- [[penguin]] — PENGUIN, PatchTST 式通道独立骨干 + 周期折叠相对偏置 + 分组多查询注意力，一组绑定一个周期（AISTATS 2026）
 - [[phat]] — PHAT, Period Heterogeneity-Aware Transformer with positive-negative attention and periodic bucket structure (ICLR 2026)
 - [[pipe]] — PIPE, physics-informed position encoding for multimodal typhoon forecasting (NeurIPS 2025)
 - [[pir]] — PIR（Post-forecasting Identification and Revision），模型无关预测后识别-修订框架，误差估计识别失败实例 + 局部/全局上下文修订（Liu et al., NeurIPS 2025, USTC）
@@ -1180,6 +1180,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[pattern-recognizer-guidance]] — 模式识别器引导，判别器近似 p(M|X) + EM + 扩散反向引导，处理 MNAR (PRDIM, arXiv 2026)
 - [[pdformer]] — PDFormer, propagation delay-aware dynamic long-range Transformer for traffic flow prediction (AAAI 2023)
 - [[performer]] — Performer，FAVOR+ 线性注意力 Transformer：核化注意力按 Q′((K′)ᵀV) 结合律计算，O(Lrd) 时间/O(Lr+Ld+rd) 空间，不依赖稀疏/低秩先验（ICLR 2021）
+- [[periodic-nested-attention-bias]] — 周期化相对注意力偏置：模周期 + 三角折叠距离，按组绑定周期、组内共享 KV，配一组线性非周期偏置（PENGUIN）
 - [[periodic-temporal-attention]] — PTA: time-aware cross-attention with learnable daily/weekly periodic embedding queries (HEPHAESTUS, ICLR 2026 under review)
 - [[personalized-aggregation-strategy]] — 个性化聚合 PAS：按模块职责划分共享/私有参数，只聚合全局信息相关参数
 - [[physics-informed-position-encoding]] — physics-informed position encoding, embedding physical metadata (timestamps, geo-coordinates) into transformer position encodings (PIPE, NeurIPS 2025)

@@ -7,8 +7,8 @@ tags:
   - extrapolation
   - iclr-2022
 created: 2026-04-28
-last_updated: 2026-05-30
-source_count: 3
+last_updated: 2026-10-25
+source_count: 4
 confidence: high
 status: active
 ---
@@ -45,6 +45,18 @@ $$2^{-8/n}, 2^{-7/n}, ..., 2^0$$
 | **相对位置** | 每层注入位置信息到 Q 和 K，不注入 V[^src-alibi] |
 | **固定斜率** | 斜率不参与训练，保持固定[^src-alibi] |
 
+## 时序预测中的扩展
+
+ALiBi 的斜率与"加性偏置"形式被搬到时间序列预测，改动集中在距离项：
+
+| 做法 | 距离项 | 出处 |
+|---|---|---|
+| 原式 | $m_k\cdot\lvert i-j\rvert$ | [[linear-attention-bias\|线性注意力偏置]] |
+| 周期折叠 | $m_k\cdot\min\!\left(\lvert i-j\rvert \bmod P_S,\ P_S-\lvert i-j\rvert\right)$ | [[periodic-nested-attention-bias\|周期化相对注意力偏置]]（PENGUIN，AISTATS 2026）[^src-penguin] |
+| 局部性先验 | 距离衰减用于金融时序的局部归纳偏置 | TIPS（AAAI 2026）[^src-tips] |
+
+PENGUIN 把斜率公式 $m_k=2^{-k/8}$ 直接沿用、固定不训练，只在多头之上再加一层"组"：每组绑定一个周期长度并共享该组的 $K,V$，从而在一次注意力里同时处理多个周期[^src-penguin]。它的消融显示偏置项本身贡献最大（Traffic avg MSE 0.407→0.396），周期形式再降至 0.390[^src-penguin]。细节见 [[penguin|PENGUIN]]。
+
 ## 性能对比
 
 ### 外推能力
@@ -80,11 +92,12 @@ $$2^{-8/n}, 2^{-7/n}, ..., 2^0$$
 ## 局限性
 
 - 外推性能在约 2L 达到峰值，之后逐渐下降[^src-alibi]
-- 在非语言任务（如时序预测）上未验证[^src-alibi] — 但 TIPS (AAAI 2026) 将 ALiBi 的距离衰减应用于金融时序预测的局部性归纳偏置[^src-tips]
+- 论文本身只验证了语言任务，时序预测上的迁移由后续工作完成（见上节）[^src-alibi]
 - 在 [[generalized-positional-encoding-framework|GPE 框架]]视角下，ALiBi 无法满足 [[long-distance-correlation-preservation|LDCP]] 和 [[gradient-positional-sensitivity|GPS]]，导致远距离相关性被完全抑制且梯度不携带位置信息[^src-vetcha-2026-towards-infinite-length-extrapolation]
 
 ## 引用
 
 [^src-alibi]: [[source-alibi]]
+[^src-penguin]: [[source-penguin]]
 [^src-tips]: [[source-tips]]
 [^src-vetcha-2026-towards-infinite-length-extrapolation]: [[source-vetcha-2026-towards-infinite-length-extrapolation]]

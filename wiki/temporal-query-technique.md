@@ -8,8 +8,8 @@ tags:
   - time-series
   - global-correlation
 created: 2026-04-28
-last_updated: 2026-08-30
-source_count: 2
+last_updated: 2026-10-25
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -57,11 +57,13 @@ Head_h = Softmax(Q_h K_h^T / √L) V_h
 |------|-----------|------|
 | TQ Technique | 可学习向量（周期性偏移） | 融合全局先验 + 局部样本 |
 | 标准自注意力 | 输入序列 | 仅样本级相关性 |
-| PENGUIN | 输入序列 + 周期偏置 | 在注意力分数中注入周期偏置 |
+| PENGUIN | 输入序列 + 周期偏置 | 在注意力分数中注入周期偏置[^src-penguin] |
 | CycleNet | 可学习参数（无注意力） | 无注意力机制 |
 | [[detr\|DETR]]（目标检测） | 可学习 object queries（decoder 输入嵌入） | 集合预测的非自回归并行解码[^src-detr] |
 
 「Query 来自可学习参数而非输入数据」这一设计在目标检测中的对应实例是 [[detr|DETR]] 的 [[object-queries|object queries]]：N 个 learned positional embeddings 输入 Transformer decoder，逐 query 并行解码目标集合（Sec 3.2）[^src-detr]。
+
+与 PENGUIN 的分工：两者都往注意力里注入周期先验，但 TQ 换的是 query 的来源（可学习向量），PENGUIN 保留输入序列作 query、改的是 key 侧打分上的加性偏置（相位差折叠）[^src-penguin]。
 
 ## 超参数
 
@@ -81,4 +83,5 @@ Head_h = Softmax(Q_h K_h^T / √L) V_h
 ## 引用
 
 [^src-tqn]: [[source-tqn]]
+[^src-penguin]: [[source-penguin]]
 [^src-detr]: [[source-detr]]

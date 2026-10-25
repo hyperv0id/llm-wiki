@@ -6,7 +6,7 @@ tags:
   - spatial-temporal
   - intelligent-transportation
 created: 2026-04-27
-last_updated: 2026-09-16
+last_updated: 2026-10-25
 source_count: 71
 confidence: high
 status: active
@@ -266,7 +266,7 @@ Several influential models span the development of traffic and spatial-temporal 
 - **[[source-st-resnet|ST-ResNet]]** (AAAI 2017) — one of the first deep learning approaches for citywide crowd flow prediction, using residual convolutional units to model spatial-temporal dependencies[^src-st-resnet].
 - **[[source-astgcn|ASTGCN]]** (AAAI 2019) — combines attention mechanisms with graph convolution to jointly capture spatial and temporal patterns in traffic flow[^src-astgcn].
 - **[[source-prnet|PRNet]]** — introduces periodic residual learning to explicitly model recurring temporal patterns in crowd flow forecasting[^src-prnet].
-- **[[source-penguin|PENGUIN]]** (AISTATS 2026) — proposes periodic-nested group attention for long-sequence time-series forecasting, with applicability to traffic domains[^src-penguin].
+- **[[penguin|PENGUIN]]** (AISTATS 2026) — a patch-Transformer whose attention scores carry a period-folded relative bias (one attention group per period, $K/V$ shared inside the group); on the 862-channel Traffic benchmark (periods $\{24,168\}$) it reports 0.388 MSE / 0.262 MAE averaged over horizons 96/192/336/720, the lowest in its own Table 2[^src-penguin].
 
 For a comprehensive overview of deep learning methods for time series, including traffic forecasting, the [[source-deep-time-series-survey|TSLib survey]] provides systematic benchmarking across multiple domains[^src-deep-time-series-survey].
 

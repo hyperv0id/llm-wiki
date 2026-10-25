@@ -120,10 +120,11 @@ status: active
 
 ### PENGUIN（AISTATS 2026）
 
-[[source-penguin|PENGUIN]] 为每个注意力头组注入周期偏置：对相对位置做模运算（模 = 周期长度），周期相同的位点获得更高注意力得分[^src-penguin]。各组分配不同周期长度（如 24 = 日周期，168 = 周周期），另设一组非周期偏置处理无周期性数据。周期信息通过 ACF 先验获取。
+[[penguin|PENGUIN]] 把 [[alibi|ALiBi]] 的距离惩罚改成相位惩罚：相对位置先模周期 $P_S=P_r/S$（$S$ 为 patch 步长，要求整除），再三角折叠成 $\min(u,\,P_S-u)$，乘固定斜率 $m_k=2^{-k/8}$ 加到注意力分数上[^src-penguin]。多头被分成 $g$ 组，每组绑定一个周期并共享该组的 $K,V$，组内 $n=h/g$ 个头各自一份偏置；另设一组线性非周期偏置，供 $\mathcal{P}=\varnothing$ 的数据（Exchange）与"两者并存"的设置使用[^src-penguin]。周期是超参，ACF 只是论文引用的离线取法，没有检测实验[^src-penguin]。偏置构造单列在 [[periodic-nested-attention-bias|周期化相对注意力偏置]]。
 
-- **核心贡献**：证明仅在注意力中注入周期偏置即可让 Transformer 超越 MLP 模型
-- **局限**：需要预先知道周期长度；非平稳数据集上弱于 CATS
+- **核心贡献**：把周期先验做成注意力分数上的常量表，因此多周期只增一组偏置与一组 KV，不重排序列、不做频域变换；消融显示偏置项本身贡献最大（Traffic avg MSE 0.407→0.396），换成周期形式再降至 0.390[^src-penguin]
+- **证据强度**：9 数据集均值 0.300 / 0.330，低于 CycleNet 0.317 / 0.339 与 CATS 0.319 / 0.339，但 6 个数据集分组里 MSE 只在 ETT、Solar、Traffic 上最低（Solar 的 MAE 仍输 CATS）；Electricity 上最低的是 CycleNet（0.160），Weather 上最低的是 CATS（0.227），主表单种子[^src-penguin]
+- **局限**：周期需预先给定，且作者自述不适合周期随时间变化的信号（ECG）；$p>1$ 时组与周期的对应规则与组数 $g$ 均未单独消融；注意力仍是 $N\times N$[^src-penguin]
 
 ### TQNet（ICML 2025）
 

@@ -1,0 +1,2107 @@
+
+
+===== PAGE 1 =====
+--- LEFT COL ---
+PENGUIN: Enhancing Transform
+Attention for Long-term
+Tian Sun1,2 Yuqi C
+1 School of Computer Sc
+2 Shanghai Key Laboratory of D
+3 Xiaohon
+Abstract
+Despite advances in the Transformer archi-
+tecture,theireffectivenessforlong-termtime
+series forecasting (LTSF) remains contro-
+versial. In this paper, we investigate the
+potential of integrating explicit periodicity
+modeling into the self-attention mechanism
+to enhance the performance of Transformer-
+based architectures for LTSF. Specifically,
+we propose PENGUIN, a simple yet effec-
+tive periodic-nested group attention mecha-
+nism. Our approach introduces a periodic-
+aware relative attention bias to directly cap-
+tureperiodicstructuresandagroupedmulti-
+query attention mechanism to handle mul-
+tiple coexisting periodicities (e.g., daily and
+weekly cycles) within time series data. Ex-
+tensive experiments across diverse bench-
+marks demonstrate that PENGUIN con-
+sistently outperforms both MLP-based and
+Transformer-based models. Code is avail-
+able at https://github.com/ysygMhdxw/
+AISTATS2026_PENGUIN.
+1 INTRODUCTION
+Long-term time series forecasting (LTSF) is a pivotal
+taskinvariousdomains,includingfinance(Chenetal.,
+2019; Zhang et al., 2017), traffic (Zhang et al., 2018;
+Zhengetal.,2020;Chenetal.,2023;Sunetal.,2025),
+Tian Sun and Yuqi Chen contributed equally to the
+research. Work was conducted during Yuqi Chen’s affili-
+ation with Fudan University. Correspondence to Weiwei
+Sun. contact: wwsun@fudan.edu.cn
+Proceedings of the 29thInternational Conference on Arti-
+ficial Intelligence and Statistics (AISTATS) 2026, Tangier,
+Morocco. PMLR: Volume 300. Copyright 2026 by the au-
+thor(s).
+--- RIGHT COL ---
+mer with Periodic-Nested Group
+Time Series Forecasting
+Chen1,2,3 Weiwei Sun1,2
+cience, Fudan University
+Data Science, Fudan University
+ngshu Inc.
+and healthcare (Chen et al., 2024; Yi et al., 2024),
+where accurate prediction of future values is essential
+fordecision-making(Zhouetal.,2022;ZhangandYan,
+2023; Wang et al., 2024; Zhang et al., 2024; Li et al.,
+2022; Zhang et al., 2025). Transformers, with their
+ability to capture long-range dependencies (Vaswani,
+2017),haveshownpromisingresultsinsequence-based
+tasks (Touvron et al., 2023; Bai et al., 2023; Brown
+et al., 2020; Raffel et al., 2020). However, their ef-
+fectiveness in LTSF remains contentious (Zeng et al.,
+2023). Recent studies suggest that simple linear mod-
+elscanoutperformTransformer-basedapproaches(Xu
+et al., 2024; Lin et al., 2024; Xu et al., 2023), raising
+questionsaboutwhetherTransformersareeffectivefor
+long-term time series forecasting.
+In this paper, we rethink the design principle of self-
+attention and demonstrate that, when enhanced with
+Periodic-Nested Group Attention mechanism (short
+for PENGUIN), self-attention can be highly effec-
+tive for LTSF. Specifically, PENGUIN is designed to
+explicitly model temporal dependencies and intrin-
+sic periodic patterns. PENGUIN incorporates two
+core components: a periodic-nested relative attention
+bias that directly captures periodic structures, and
+a grouped multi-query attention mechanism Ainslie
+et al. (2023) that effectively handles multiple coexist-
+ing periodicities. The motivations behind this design
+can be summarized in the following two aspects.
+Firstly, time series data often exhibit periodic pat-
+terns (Xu et al., 2024; Lin et al., 2024; Qin et al.,
+2024; Wu et al., 2022; Elfeky et al., 2005), which con-
+ventional attention mechanisms struggle to capture
+over long horizons (Xu et al., 2024; Kim et al., 2024;
+Zeng et al., 2023). Existing methods, such as Auto-
+former (Wu et al., 2021) and FEDformer (Zhou et al.,
+2022), attempt to model these patterns implicitly via
+frequency decomposition. However, recent work (Xu
+et al., 2024) suggests that explicitly modeling period-
+icity yields better results. Motivated by this, we pi-
+oneer integrating explicit periodicity modeling within
+
+
+===== PAGE 2 =====
+--- LEFT COL ---
+Enhancing Transformer with Periodi
+the attention mechanism to enhance the LTSF perfor-
+mance, while retaining the strong modeling capability
+of Transformers.
+Secondly, capturing multiple periodicities is essen-
+tial for accurate time series forecasting, as real-world
+dataoften exhibits complex, overlappingtemporal cy-
+cles (Xu et al., 2024; Wang et al., 2024). Existing
+methods, such as TimesNet (Wu et al., 2022), address
+this issue by decomposing time series into multiple
+temporal sequences, each corresponding to a different
+periodlength. Suchanapproachcanbecomputation-
+ally inefficient. In contrast, we propose a group atten-
+tion mechanism that partitions the multi-head atten-
+tion into several groups, each dedicated to modeling a
+specific period length. To further improve efficiency,
+each group employs multi-query attention (Shazeer,
+2019). This design facilitates more effective and spe-
+cialized learning of diverse periodic patterns. In sum-
+mary, the contributions of the paper are as follows:
+• We pioneer the exploration of explicitly model-
+ing periodicity within the attention structure to
+enhance the performance of the LTSF task.
+• Technically, we introduce periodic-nested group
+attention,namedPENGUIN,aneffectiveandeffi-
+cient approach for learning multiple periodic pat-
+terns for time series data.
+• Extensive experiments on benchmark datasets
+demonstrate that PENGUIN achieves state-of-
+the-art performance.
+2 RELATED WORK
+2.1 Transformers for Long-term Time Series
+Forecasting
+Applying Transformer architectures to time series
+forecasting has emerged as a prominent research
+topic within the time series community in recent
+years Zhou et al. (2021); Liu et al. (2022,?). Con-
+currently, PatchTST (Nie et al., 2022) has established
+itself as the benchmark Transformer model by patch-
+ing the time series input in a channel-independent
+(CI) manner (Kim et al., 2024), a.k.a. CI strat-
+egy (Shao et al., 2024). Following this strategy, Path-
+Former (Chen et al., 2024) introduces a multi-scale
+Transformerarchitecturewithadaptivepathways,par-
+titioning time series data into multiple temporal res-
+olutions. CATS (Kim et al., 2024) replaces self-
+attention with a cross-attention-only Transformer ap-
+proach,highlightingtheeffectivenessofcross-attention
+for LTSF. Another strategy, known as the channel-
+dependent (CD) strategy, focuses on modeling the re-
+lationships among variates (Liu et al., 2023). iTrans-
+--- RIGHT COL ---
+ic-Nested Group Attention for LTSF
+former (Liu et al., 2023) emerges as a straightfor-
+ward yet effective implementation of the CD strat-
+egy, making no modification to the vanilla Trans-
+former architecture (Vaswani, 2017). More recently,
+DGCformer (Liu et al., 2024) proposed relatively bal-
+anced channel strategies called channel-hard cluster-
+ing (CHC), and DUET (Qiu et al., 2024) adopted a
+channel-soft clustering (CSC) strategy and developed
+a fully adaptive sparsity module to dynamically build
+groups for each channel.
+In this paper, we intend to answer a fundamental
+question: Can periodic temporal patterns be explic-
+itly modeled within the attention mechanism to en-
+hance the performance for LTSF tasks? To this end,
+we observe that existing Transformers lack the ability
+to explicitly model multiple periodicities. Moreover,
+relativeattentionbias(RAB),successfulinthefieldof
+natural language processing (Raffel et al., 2020; Press
+et al., 2021) and large language models (Sturua et al.,
+2024), remainsunder-exploitedintimeseriesforecast-
+ing. To overcome these limitations, we propose a sim-
+pleyeteffectiveperiodic-nestedgroupattentionmech-
+anism for long-term time series forecasting.
+2.2 Linear Models for Long-term Time Series
+Forecasting
+While Transformers have been extensively studied for
+LSTF, their effectiveness remains debatable. Recent
+works have demonstrated that simple linear models
+can outperform Transformer-based approaches (Xu
+et al., 2024; Ni et al., 2024). DLinear (Zeng
+et al., 2023) proposes a one-layer linear model and
+demonstrates the effectiveness of simple architec-
+tures for LTSF. Both FITS (Xu et al., 2023) and
+SparseTSF (Lin et al., 2024) adopt lightweight de-
+signs, with FITS employing complex-valued neural
+networks and SparseTSF utilizing sparse forecasting
+technique. Furthermore, CycleNet (Xu et al., 2024)
+explicitly models periodic patterns to capture cycli-
+cal dependencies in time series data. FreqMoE (Liu,
+2025)introducesfrequencydecompositiontoimplicitly
+handle multiple periodicities. These lightweight mod-
+els, despite the risk of oversimplifying complex tem-
+poralpatterns,achievehighforecastingaccuracy,rais-
+ing questions about the effectiveness of Transformers
+for LSTF. In this paper, we address this issue by en-
+hancing the Transformer with Periodic-Nested Group
+Attention, achieving state-of-the-art performance.
+2.3 Language Model v.s. Time Series
+Transformers have demonstrated remarkable success
+in Large Language Models (LLMs) (Yang, 2019). Re-
+cently, several works have explored leveraging large
+
+
+===== PAGE 3 =====
+--- LEFT COL ---
+Tian Sun, Yuqi C
+language models for time series forecasting (Liu et al.,
+2024; Ekambaram et al., 2024; Liu et al., 2024; Cao
+et al., 2024). UniTime (Liu et al., 2024) proposes a
+language-empowered unified model for cross-domain
+time series forecasting. TEMPO (Cao et al., 2024) in-
+troduces prompt-based generative pre-trained Trans-
+formersfortimeseries. Thesemethodsfocusonlever-
+aging LLM representations for TSF. However, unlike
+natural language, time series data exhibits a distinct
+periodic nature (Xu et al., 2024; Fan et al., 2025; Wu
+et al., 2021; Wen et al., 2022). To bridge the gap,
+we extend the ALiBi bias (Press et al., 2021) by in-
+corporatingperiodicity,enablingthemodeltocapture
+repetitive seasonal trends2, making it fundamentally
+different from the LLM-based approaches.
+3 PRELIMINARIES
+Long-termtimeseriesforecasting(LTSF)involvespre-
+dicting future values of a time series based on histori-
+cal observations. Formally, a multi-variate time series
+X = [x ,··· ,x ] ∈ RL×C represents a sequence
+t−L+1 t
+ofobservationsoverLtimesteps, eachwithC variates
+(a.k.a channels). The objective is to predict the fu-
+ture sequence X = [x ,··· ,x ] ∈ RH×C, where
+t+1 t+H
+H denotes the forecasting horizon.
+4 PROPOSED METHODOLOGY
+We introduce PENGUIN, a novel periodic-nested
+group attention mechanism for accurate long-term
+time series forecasting. As illustrated in Figure 1,
+our model first converts time series into channel-
+independent patch representations via patch embed-
+ding. The encoder then leverages our enhanced self-
+attention with periodic-nested group attention to ef-
+fectively capture periodic and temporal dependencies,
+followed by a linear projection to produce predictions.
+Themodelisoptimizedusingmeansquarederrorloss.
+In the rest of this section, we will detail the proposed
+attention architecture, while leaving the details about
+input processing to Appendix A.
+4.1 Channel Independent Encoder
+The encoder processes the time series in a channel-
+independentmanner. Forthec-thchannel,theinputis
+2Although originally proposed to address input length
+extrapolation in natural language processing (Press et al.,
+2021), ALiBi stands out for its simplicity, robustness, and
+strong performance even without extrapolation (i.e., the
+sequence length within the train dataset is equivalent to
+that in the test dataset), outperforming sinusoidal em-
+bedding (Vaswani, 2017). These advantages motivate our
+choice to extend ALiBi for time series data.
+--- RIGHT COL ---
+Chen, Weiwei Sun
+first normalized using Revertible Instance Normaliza-
+tion(Nieetal.,2022)andprojectedintopatchembed-
+dings,yieldingx(c) ∈RN×d,whereN isthenumberof
+e
+patches. The periodic information P (detailed in the
+S
+next subsection) is incorporated as input and shared
+uniformly across all channels. Suppose we have E en-
+coder layers. The overall equations for the l-th layer
+are summarized as:
+x(c,l,1) =x(c,l−1)+Norm(cid:0)PENGUIN(x(c,l−1);P ) (cid:1) ,
+e e e S
+x(c,l,2) =x(c,l,1)+Norm(cid:0)FeedForward(x(c,l,1)) (cid:1) , (1)
+e e e
+wherex(c,l) =x(c,l,2)andx(c,0) =x(c). Here,Normde-
+e e e e
+notestherootmeansquarelayernormalization(Zhang
+and Sennrich, 2019), i.e.,
+x
+Norm(x)= ·γ , (2)
+(cid:113)
+1(cid:80)d x2+ϵ
+d i=1 i
+wheredisthedimensionalityofx,andγ ∈Rd denotes
+learnable weights. FeedForward is an MLP module,
+i.e.,
+FeedForward(X)=ReLU(XW1+b1)W2+b2 , (3)
+f f f f
+whereW1 ∈Rd×dff ,W2 ∈Rdff×d,b1 ∈Rdff andb2 ∈Rd
+f f f f
+are learnable parameters, and d is the intermediate
+ff
+dimensionality of the feed-forward network. PEN-
+GUINistheproposedperiodic-nestedgroupattention.
+4.2 Periodic-Nested Group Attention
+PENGUIN is an attention mechanism for capturing
+multiple periodicities within time series data. Specif-
+ically, given the input representation X ∈ RN×d,
+we calculate self-attention in a group-query attention
+manner (Ainslie et al., 2023). Assuming we have h
+attention heads and g attention groups. Addition-
+ally, we assume that g is a factor of h. There-
+fore, the self-attention module applies linear projec-
+tions to compute the query, key, and value matrices
+Q ∈ RN×h×dh , K ∈ RN×g×dh , and V ∈ RN×g×dh ,
+where d = d/h denotes the dimensionality per head.
+h
+Specifically, Q = XW , K = XW , V = XW ,
+Q K V
+whereW
+Q
+∈Rd×d,W
+K
+,W
+V
+∈Rd×(g×dh)aretrainable
+weight matrices. For each group, keys and values are
+shared, i.e., for each query within the r-th group, the
+group-specific key and value are denoted as kr ∈ Rdh
+and vr ∈Rdh (Shazeer, 2019).
+Generallyspeaking, wedenoten=h/g asthenumber
+of heads per group. Each attention group calculates
+a multi-query attention with a group specified rela-
+tive attention bias B ∈Rn×N×N, B(k) stands for the
+r r
+attention bias for the k-th attention head within the
+group. Here,theattentionbiasisanadditivetermap-
+plied to the attention scores before softmax to encode
+
+
+===== PAGE 4 =====
+--- LEFT COL ---
+Enhancing Transformer with Periodi
+Periodic-Neste
+𝒈
+Projection Attention Gr
+Encoder × L 𝑑=6
+Add&Norm
+𝑋
+Feed Forward
+Add&Norm
+Periodic/Non-P
+𝒏
+Periodic-NestedGroupAttention
+𝟎
+−
+−𝟏
+𝑚 −
+! −𝟐
+⋮ ×
+… −
+𝑚 " −𝟑
+−
+−𝟒
+Patch Embedding −𝟓 −
+𝑁=𝑍
+Figure 1: Illustration of PENGUIN, a novel Transform
+for LTSF. We first transform time series into patch em
+encoder module comprises the proposed periodic-nested
+part of the figure illustrates the periodic-nested group a
+structural priors such as temporal proximity and pe-
+riodic alignment. Finally, for the r-th attention group
+with n keys and values, the attention mechanism is
+formulated as:
+(cid:18) Qℓ(kr)⊤ (cid:19)
+head =Softmax √ +B(k) vr ,
+ℓ d r
+h
+PENGUIN (X)=Output([head ∥...∥head ]) ,
+r τ+1 τ+n
+(4)
+where τ = (r − 1) ∗ n, r ∈ {1,...,g}, ℓ de-
+notes the head index, k = ℓ mod n + 1, [·∥·] in-
+dicates the concatenation operation, and Output(·)
+denotes the linear projection. The final output of
+the attention module is obtained by concatenating
+the outputs from all g groups, i.e., PENGUIN(X) =
+[PENGUIN (X)∥···∥PENGUIN (X)].
+1 g
+4.2.1 Attention Bias for the Non-Periodic
+Case
+Timeseriesdatamaycontaininstanceswhereperiodic
+information is absent, or the dataset itself lacks inher-
+ent periodicity. In such cases, prior methods such as
+CycleNet(Xuetal.,2024)oftenstruggletomakeaccu-
+ratepredictionsandtendtodegradeintosimplelinear
+predictors. Moreover, when time series lack inherent
+periodicity,frequencydecompositionmethods,suchas
+Autoformer (Wu et al., 2021) and FEDformer (Zhou
+etal.,2022),oftenproducehighlyinconsistentspectra
+--- RIGHT COL ---
+ic-Nested Group Attention for LTSF
+[ 0
+−1 q0
+−2 −1 0
+−3 −2 −1 0
+−4 −3 −2 −1 0
+−5 −4 −3 −2 −1 0
+[ 0
+−1 0
+−2 −1 0 𝑚 !
+⋮ × −3 −2 −1 0
+𝑚 "
+−4 −3 −2 −1 0
+−3 −2 −3 −2 −1 0
+[
+𝟎
+−𝟏 𝟎
+−𝟐 −𝟏 𝟎
+−𝟑 −𝟐 −𝟏 𝟎
+−𝟐 −𝟑 −𝟐 −𝟏 𝟎
+−𝟏 −𝟐 −𝟑 −𝟐 −𝟏 𝟎
+[
+edGroupAttention
+Group 1
+query
+Softmax + 𝐵 ! ⋅
+keys
+values Softmax + 𝐵 ! ⋅
+Periodic Attention Bias 𝑩𝒊
+𝒏
+𝟎
+−𝟏 𝟎
+−𝟐 −𝟏 𝟎
+−𝟑 −𝟐 −𝟏 𝟎
+−𝟒 −𝟑 −𝟐 −𝟏 𝟎
+Non-periodic bias Periodic bias with period=6
+mer model with periodic-nested group attention tailored
+mbeddings in a channel-independent manner. Next, the
+d group attention and a feed-forward network. The right
+attention with periodic/non-periodic attention bias.
+SlidingPatching
+Time
+Time Series Patch Embedding Causal Dependency
+Week Periodic Dependency Strong Periodic Dependency
+Figure 2: Illustration of periodic attention modeling
+with an overlapping patching technique. Given a time
+series with a period of 12, the patching length P and
+stride S are set to 8 and 4, respectively. Every three
+patch embeddings share the same sub-region of the
+original time series, leading to a period after patching
+of P =[3].
+S
+across different windowed segments, undermining the
+stabilityandeffectivenessoffrequency-domainmodel-
+ing. Onthecontrary,forthenon-periodiccase,wecan
+defineaneffectivelinearbiasdependentontherelative
+positional distance3, i.e.,
+B(k) =−m ·|i−j| , (5)
+ij k
+3Forperiodicdata,suchattentionbiascanstillbeben-
+eficial. Therefore, we can also leave one "expert" or one
+attentiongroupthatdoesnotrelyonperiodicinformation.
+
+
+===== PAGE 5 =====
+--- LEFT COL ---
+Tian Sun, Yuqi C
+Table 1: Summary of datasets for
+Dataset ETTh1&ETTh2 ETTm1&ETTm2
+Channels 7 7
+SamplingFrequency 1hour 15mins
+NaturalPeriodicity Daily Daily D
+PeriodLengthsP {24} {96}
+where i,j ∈ [1,N], m = [m ,...,m ] is a head-
+1 n
+specific slope fixed before training, with m k = 2− k 8
+and k ∈ [1,n] One key benefit of the attention bias
+is that it encourages the model to focus more on lo-
+calcontextwhilestillmaintainingaccesstolong-range
+information.
+4.2.2 Attention Bias for the Periodic Case
+Time series data exhibits periodic characteristics,
+distinguishing it from natural language data. To
+bridge the gap, we adopt a periodic-nested atten-
+tion bias to capture periodic attributes from in-
+put embeddings adeptly. In this study, we assume
+that the periodic information or cycle lengths are
+known a priori for the dataset. Previous work (Xu
+et al., 2024) highlights that such periodic informa-
+tion could be obtained through autocorrelation func-
+tions (ACF) (Cryer, 1986). Formally speaking, let the
+dataset be associated with multiple periods denoted
+as P = {P ,...,P }, where p denotes the number of
+1 p
+periods. For instance, the Traffic dataset is collected
+hourlyandexhibitsbothdailyandweeklyperiodicity,
+corresponding to P ={24,168}.
+Since the time series is transformed into a sequence
+of tokens through patching to reduce computational
+costs,theperiodicityofthepatchembeddingsbecomes
+dependent on the stride S. As illustrated in Figure 2,
+the periods after applying sliding patches are defined
+as P
+S
+= {P
+S
+1,...,P
+S
+p}. Throughout this paper, we as-
+sume S to be a factor of each element in P.
+Additionally, each attention group is specified for one
+particular period length. Let the period length after
+patching for the r-th attention group be defined as
+P(r). Therefore, we can define a periodic-nested at-
+S
+tention bias as:
+B
+i
+(
+j
+k) =−m
+k
+·B(cid:98)
+i
+(
+j
+k) ,
+
+u, if u< P S (r) ,
+B(cid:98) (k) = 2
+ij P(r)−u, if u≥ P S (r) ,
+S 2
+where u=|i−j| Mod P(r) . (6)
+S
+The modulo operation ensures that the bias reflects
+periodic variations aligned with the corresponding pe-
+--- RIGHT COL ---
+Chen, Weiwei Sun
+long-term time series forecasting.
+Electricity Exchange Weather Solar Traffic
+321 8 21 137 862
+1hour 1Day 10mins 10mins 1hour
+Daily&Weekly - Daily Daily Daily&Weekly
+{24,168} ∅ {144} {144} {24,168}
+riod value. Additionally, the bias slope vector, i.e., m,
+issharedacrossgroup,andwedefinem=[m ,...,m ],
+1 n
+with m k =2− k 8 and k ∈[1,n].
+4.3 Output Projection and Loss Function
+We apply a linear projection to obtain predictions
+X(cid:101) = [x
+(cid:101)t+1
+,...,x
+(cid:101)t+H
+] ∈ RH×C. Following recent
+LSTF work, we use Mean Squared Error (MSE) loss.
+Let X = [x ,...,x ] ∈ RH×C be the ground
+t+1 t+H
+truth, the loss function is calculated as:
+H
+L = 1 (cid:88) ∥x −x ∥2. (7)
+MSE H (cid:101)t+i t+i 2
+i=1
+5 EXPERIMENTS
+5.1 Experimental Setup
+5.1.1 Datasets
+To evaluate the effectiveness of PENGUIN, we con-
+ducted experiments on nine widely used datasets
+in the field of long-term time series forecasting.
+These datasets include ETT (comprising ETTh1,
+ETTh2,ETTm1,andETTm2),Electricity,Exchange,
+Weather, Solar, and Traffic (Wu et al., 2021; Zhou
+et al., 2021; Xu et al., 2024). A detailed overview of
+these datasets is provided in Table 1.
+5.1.2 Baselines
+We selected the current state-of-the-art and repre-
+sentative works in this field as baselines. These in-
+clude linear-based or MLP-based models (e.g., DLin-
+ear (Zeng et al., 2023), SparseTSF (Lin et al., 2024),
+CycleNet (Xu et al., 2024), MoLE (Ni et al., 2024),
+MTLinear (Nochumsohn et al., 2025)), Transformer-
+based models (e.g., Autoformer (Wu et al., 2021),
+FEDformer (Zhou et al., 2022), PatchTST (Nie et al.,
+2022), iTransformer (Liu et al., 2023), CATS (Kim
+et al., 2024)), and CNN-based models (e.g., Times-
+Net (Wu et al., 2022)).
+
+
+===== PAGE 6 =====
+--- LEFT COL ---
+Enhancing Transformer with Periodi
+Table 2: Multivariate long-term forecasting results. Th
+averaged over prediction horizons of H ∈ {96,192,336
+ETTh2, ETTm1, and ETTm2. The best results are in b
+Dataset ETT Electricity Exchan
+Metric MSE MAE MSE MAE MSE
+Autoformer 0.451 0.461 0.229 0.340 0.732
+FEDformer 0.408 0.439 0.251 0.355 0.769
+DLinear 0.376 0.404 0.166 0.263 0.376
+TimesNet 0.396 0.415 0.249 0.338 0.416
+MoLE 0.380 0.404 0.166 0.264 0.557
+MTLinear 0.377 0.404 0.166 0.263 0.285 0
+PatchTST 0.356 0.390 0.179 0.278 0.448
+iTransformer 0.371 0.400 0.163 0.258 0.459
+CATS 0.357 0.392 0.173 0.259 0.425
+SparseTSF 0.356 0.384 0.174 0.266 0.397
+CycleNet 0.351 0.384 0.160 0.253 0.400
+PENGUIN 0.344 0.379 0.165 0.261 0.340
+Table 3: Experiment results of different choices of perio
+the prediction horizons of H ∈{96,192,336,720}. Thro
+heads to 12 to ensure that the number of groups g is a f
+Case NoBias Non-Periodic Periodi
+P ∅ ∅ {24} {168}
+Metric MSE MAE MSE MAE MSE MAE MSE MA
+cffiarT
+96 0.382 0.266 0.364 0.252 0.361 0.250 0.360 0.2
+192 0.401 0.270 0.385 0.256 0.378 0.254 0.380 0.2
+336 0.411 0.280 0.401 0.274 0.396 0.269 0.399 0.2
+720 0.437 0.290 0.434 0.286 0.433 0.289 0.429 0.2
+avg. 0.407 0.277 0.396 0.267 0.392 0.265 0.392 0.2
+yticirtcelE
+96 0.143 0.246 0.144 0.247 0.138 0.236 0.136 0.2
+192 0.159 0.260 0.151 0.245 0.149 0.243 0.149 0.2
+336 0.176 0.276 0.175 0.274 0.170 0.267 0.171 0.2
+720 0.208 0.299 0.209 0.300 0.208 0.299 0.208 0.2
+avg. 0.171 0.270 0.169 0.266 0.166 0.261 0.166 0.2
+5.2 Main Results
+To demonstrate the effectiveness of PENGUIN in
+capturing long-range periodic patterns, we evaluate
+its performance across various forecast horizons while
+keeping the input sequence length fixed at 336. Ta-
+ble 2 presents a comparison of PENGUIN against
+othermodelsonmultivariatelong-termseriesforecast-
+ing (LTSF) tasks. 4 A detailed result can be found in
+Table10. Moreover, weprovideacomprehensiveeval-
+uation using the input sequence length of 96 as shown
+inTable11. Fromtheresults, wecandrawthefollow-
+ing four conclusions:
+(i) State-of-the-art performance: PENGUIN achieves
+4To ensure fair comparison, we reproduce baseline re-
+sultsusingthecodeandscriptsfromTimesLib. Wesetthe
+input length to 336 to align with our experimental setting
+and avoid the "drop-last" issue that discards samples in
+the final batch during evaluation.
+--- RIGHT COL ---
+ic-Nested Group Attention for LTSF
+he look-back length L is fixed as 336 and the results are
+6,720}. ETT indicates the averaged results of ETTh1,
+bold and the second best are underlined.
+nge Weather Solar Traffic
+MAE MSE MAE MSE MAE MSE MAE
+0.634 0.348 0.391 0.913 0.703 0.679 0.422
+0.643 0.333 0.382 0.324 0.404 0.622 0.386
+0.444 0.245 0.299 0.253 0.315 0.434 0.295
+0.443 0.267 0.298 0.236 0.279 0.634 0.354
+0.512 0.244 0.298 0.253 0.314 0.434 0.295
+0.380 0.246 0.300 0.252 0.314 0.434 0.295
+0.443 0.234 0.270 0.203 0.265 0.405 0.282
+0.457 0.236 0.272 0.230 0.286 0.390 0.275
+0.436 0.227 0.266 0.206 0.248 0.411 0.276
+0.427 0.250 0.282 0.266 0.281 0.436 0.290
+0.422 0.246 0.279 0.223 0.277 0.423 0.288
+0.403 0.228 0.267 0.200 0.253 0.388 0.262
+odic length. The look-back length L is fixed as 336 and
+oughout this experiment, we set the number of attention
+factor of h.
+ic Both
+{24,168} {24} {168} {24,168}
+AE MSE MAE MSE MAE MSE MAE MSE MAE
+246 0.358 0.244 0.356 0.244 0.356 0.243 0.357 0.247
+259 0.377 0.255 0.378 0.256 0.378 0.254 0.376 0.253
+273 0.395 0.266 0.390 0.265 0.393 0.270 0.390 0.262
+289 0.433 0.288 0.428 0.285 0.429 0.284 0.428 0.286
+266 0.390 0.263 0.388 0.262 0.389 0.263 0.387 0.262
+235 0.137 0.236 0.139 0.237 0.146 0.249 0.138 0.247
+244 0.147 0.243 0.150 0.245 0.149 0.244 0.149 0.245
+269 0.169 0.266 0.173 0.261 0.172 0.269 0.171 0.268
+298 0.207 0.298 0.209 0.300 0.210 0.302 0.206 0.295
+261 0.165 0.260 0.167 0.260 0.169 0.266 0.166 0.263
+state-of-the-art overall results. Specifically, com-
+pared to the state-of-the-art MLP-based model Cy-
+cleNet (Xu et al., 2024), PENGUIN achieves an over-
+all improvement of 5.3% (0.317 → 0.300) in terms
+of MSE. Moreover, when compared to the leading
+Transformer-based model CATS (Kim et al., 2024),
+PENGUIN delivers an overall MSE improvement of
+6.0% (0.319 → 0.300).
+(ii) Superior improvement over existing decomposi-
+tion approaches: PENGUIN significantlyoutperforms
+Autoformer (Wu et al., 2021) and FEDformer (Zhou
+et al., 2022) by over 45% in MSE, underscoring the
+importanceofexplicitlymodelingperiodicinformation
+to boost performance.
+(iii) Consistent improvement over Transformer-based
+approaches: PENGUIN outperforms PatchTST (Nie
+et al., 2022) and CATS (Kim et al., 2024) across al-
+most all datasets, except for the Electricity dataset,
+
+
+===== PAGE 7 =====
+--- LEFT COL ---
+Tian Sun, Yuqi C
+Table 4: Experiment results of MHA compared to
+GQA. The look-back length L is fixed as 336 and
+the results are averaged over prediction horizons of
+H ∈{96,192,336,720}. Timedenotestheaveragedu-
+ration of a single training iteration (seconds/iter).
+Dataset Traffic Electricity
+Metric Time MSE MAE Time MSE MAE
+MHA 0.166 0.389 0.263 0.239 0.167 0.264
+GQA 0.145 0.387 0.262 0.224 0.165 0.260
+Improve +12.7% +0.51% +0.38% +6.28% +1.20% +1.51%
+where CATS achieves better performance. We hy-
+pothesize that this is due to the Electricity dataset
+being more affected by non-stationarity (Shao et al.,
+2024;Liuetal.,2024),whichPENGUIN isnotspecif-
+ically designed to handle. In conclusion, these results
+highlight the robustness of PENGUIN and its supe-
+rior capacity compared to existing Transformer-based
+approaches.
+(iv) Effective periodic modeling technique: BothPEN-
+GUIN and CycleNet (Xu et al., 2024) aim to capture
+periodicpatternsintimeseriesdata. Thesuperiorper-
+formance of PENGUIN over CycleNet demonstrates
+itseffectivenessandoffersnovelinsightsintomodeling
+periodic patterns for time series data.
+5.3 Ablation Study
+5.3.1 Ablation Study of Attention Bias
+In this paper, we propose a simple yet effective atten-
+tion mechanism, termed PENGUIN, specifically de-
+signed for LTSF. To validate its effectiveness, we con-
+duct a comprehensive ablation study on the Traffic
+andElectricitydatasets,asshowninTable3. Notably,
+both datasets exhibit multiple periodic patterns (Xu
+et al., 2024), including daily and weekly cycles. We
+conductfourgroupsofexperiments: (i)NoBias,where
+we adopt multi-query attention with a single atten-
+tion group (Shazeer, 2019); (ii) Non-Periodic, where
+we also adopt multi-query attention with a single at-
+tention group, but with a non-periodic attention bias;
+(iii) Periodic, where we adopt a group-query atten-
+tionwithvariouspredefinedperiodicinformation; (iv)
+Both, where we combine both types of biases by as-
+signing one attention group to non-periodic bias and
+the remaining groups to periodic biases. From this
+table, we can draw the following four conclusions:
+(i) The attention mechanism without any bias yields
+the poorest performance, underscoring the impor-
+tance of incorporating attention bias in LTSF. For in-
+stance, a non-periodic bias improves the performance
+by 2.77% (0.407 → 0.396) on the Traffic dataset.
+--- RIGHT COL ---
+Chen, Weiwei Sun
+Table 5: Experiment results of incorporating PEN-
+GUIN with RCF technique. The look-back length L
+is fixed as 336 and the prediction horizons of H ∈
+{96,192,336,720}.
+Dataset Traffic Solar Electricity
+Metric MSE MAE MSE MAE MSE MAE
+CycleNet 0.423 0.288 0.223 0.277 0.160 0.265
+PENGUIN 0.388 0.262 0.200 0.253 0.165 0.261
++RCF 0.401 0.268 0.198 0.254 0.163 0.258
+Improve -3.35% -2.29% +1.00% -0.39% +1.21% +1.15%
+(ii) Results from the periodic groups consistently out-
+perform their non-periodic counterparts, highlighting
+the critical role of periodic information in long-term
+forecasting. For instance, a multiple-periodic bias fur-
+ther improves the performance by 2.32% (0.396 →
+0.387) on the Traffic dataset.
+(iii) When multiple periodicities are present in the
+dataset, leveraging these patterns leads to an overall
+0.5% performance improvement on both datasets.
+(iv) Periodic attention bias captures recurring pat-
+terns, while non-periodic bias focuses on preserving
+temporal dependencies. Our empirical study shows
+that combining both types of attention bias yields im-
+proved performance on the Traffic dataset.
+5.3.2 Ablative Study of Attention Structure
+To improve PENGUIN’s efficiency, we replace stan-
+dard multi-head attention (MHA) with group-query
+attention (GQA), where queries remain head-specific
+but keys and values are shared within each attention
+group. As reported in Table 4, GQA lowers computa-
+tionaloverhead,cuttingtimecostby13%ontheTraf-
+fic dataset, and consistently yields performance gains
+across multiple benchmarks. These results highlight
+GQA as an effective trade-off between efficiency and
+accuracy in long-term time series forecasting.
+5.3.3 Ablation of Periodic Patterns Modeling
+Both PENGUIN and the Residual Cycle Forecasting
+(RCF)technique(Xuetal.,2024)aredesignedtocap-
+tureperiodicpatternsintimeseriesdata. WhilePEN-
+GUIN focuses on modeling complex and implicit pe-
+riodic dependencies, RCF decomposes the time series
+intoalearnablerecurrentcyclecomponentandaresid-
+ual component, where the cycle component explicitly
+captures periodic patterns by learning a fixed-length
+repeating template. To assess their complementary
+effectiveness, we integrate RCF into PENGUIN and
+report the results in Table 5, comparing the origi-
+nal PENGUIN, the combined PENGUIN +RCF (Xu
+et al., 2024), and CycleNet. The results show only
+
+
+===== PAGE 8 =====
+--- LEFT COL ---
+Enhancing Transformer with Periodi
+Table 6: The effectiveness of PENGUIN for Decoder
+architecture. The look-back length L is fixed as 336
+and the results are averaged over prediction horizons
+of H ∈{96,192,336,720}.
+Dataset ETTh1 ETTm1 Weather
+Metric MSE MAE MSE MAE MSE MAE
+Decoder 0.478 0.465 0.448 0.439 0.228 0.261
++PENGUIN 0.430 0.440 0.361 0.392 0.226 0.258
+Improve +10.00% +5.43% +19.36% +10.60% +1.23% +1.04%
+EncDec 0.495 0.473 0.520 0.469 0.236 0.267
++PENGUIN 0.419 0.436 0.354 0.388 0.231 0.265
+Improve +15.42% +7.88% +31.96% +17.33% +2.04% +0.68%
+Figure 3: The efficiency analysis of five models (i.e.,
+PatchTST(Nieetal.,2022),CATS(Kimetal.,2024),
+TimesNet (Wu et al., 2022), FEDformer (Zhou et al.,
+2022), and PENGUIN) on ETTm1 dataset. The ex-
+periments are conducted with a look-back length L of
+336. Both the number of parameters and MACs are
+plotted on a logarithmic scale.
+marginal performance gains from incorporating RCF
+with PENGUIN. This suggests that the Transformer-
+based PENGUIN is sufficiently capable of modeling
+periodic dependencies without additional reliance on
+the RCF components.
+5.4 Extendability Study
+TheTransformerconsistsofencoderanddecodermod-
+ules (Vaswani, 2017). We extend PENGUIN to the
+decoder, with a key difference in the non-periodic at-
+tentionbias: B(k) =m ·|(i+N)−j|,replacingEq.(5).
+ij k
+Here, N is the length of keys and values in the en-
+coderarchitecture. 5 Asimilarmodificationisapplied
+to Eq. (9) for the periodic case. The experimental
+results, presented in Table 6, reveal that PENGUIN
+deliverssignificantimprovementsforboththedecoder
+structure and the encoder-decoder (EncDec) models.
+ThesefindingssuggestthatPENGUIN hasstrongpo-
+tential as a plugin for Transformer-based models in
+time series modeling.
+5In cross-attention forecasting, keys and values come
+from the input series of length N, so M decoding tokens
+align with positions N+1,...,N+M (Kim et al., 2024).
+--- RIGHT COL ---
+ic-Nested Group Attention for LTSF
+0 1.0 0 1.0
+5 5
+0.8 0.8
+10 10
+15 0.6 15 0.6
+20 20
+25 0.4 25 0.4
+30 30
+0.2 0.2
+35 35
+40 40
+0.0 0.0
+0 5 10 15 20 25 30 35 40 0 5 10 15 20 25 30 35 40
+(a) PatchTST (b) PatchTST w/ Causal
+0 1.0 0 1.0
+5 5
+0.8 0.8
+10 10
+15 0.6 15 0.6
+20 20
+25 0.4 25 0.4
+30 30
+0.2 0.2
+35 35
+40 40
+0.0 0.0
+0 5 10 15 20 25 30 35 40 0 5 10 15 20 25 30 35 40
+(c) PENGUIN (head=1) (d) PENGUIN (head=5)
+Figure 4: Visualization of PENGUIN and PatchTST
+on the Traffic dataset, using P = {24,168} with a
+patchlengthP =16andstrideS =8. ForPatchTST,
+wetraintwovariantswithdifferentmaskingstrategies
+(i.e., full attention and attention with a causal mask).
+ForPENGUIN,wevisualizetwoattentionheads,each
+belonging to a different attention group.
+5.5 Efficiency Study
+To assess the efficiency of PENGUIN, we consider
+two key metrics: the number of parameters and
+Multiply-Accumulate Operations (MACs). The pa-
+rameter count measures the total number of learnable
+weights, while MACs quantify the computational cost
+of inference. The results, evaluated on the ETTm1
+dataset with afixed batch size of 32 across all models,
+are presented in Figure 3. For comparison, we include
+fourrepresentativebaselinesdesignedtomodeltempo-
+ral dependencies in time series data. Notably, PEN-
+GUIN achieves the highest prediction accuracy, out-
+performing the second-best baseline, CATS, by 1.5%,
+while simultaneously requiring the lowest computa-
+tional cost among all evaluated approaches. In par-
+ticular, PENGUIN demonstratesasubstantialadvan-
+tage over TimesNet in terms of MAC efficiency, un-
+derscoring the inefficiency of decomposing time series
+into multiple temporal sequences.
+5.6 Visualization Study
+WecomparetheattentionmatricesofPENGUIN and
+PatchTST (Nie et al., 2022), as shown in Figure 4. In
+thefigure, thei-throwdenotestheattentiondistribu-
+tion over all tokens conditioned on the i-th query to-
+ken. AsillustratedinFigures4(c)–(d), PENGUIN ef-
+fectivelycapturesperiodictemporalcorrelations, with
+
+
+===== PAGE 9 =====
+--- LEFT COL ---
+Tian Sun, Yuqi C
+Table 7: Experiment results of missing or incorrect perio
+and the prediction horizons of H ∈{96,192,336,720}.
+Case ExistingApproaches
+Model/P SparseTSF CATS ∅ {24}
+Metric MSE MAE MSE MAE MSE MAE MSE M
+cffiarT
+96 0.415 0.281 0.382 0.260 0.364 0.252 0.361 0
+192 0.426 0.283 0.401 0.268 0.385 0.256 0.378 0
+336 0.438 0.289 0.414 0.275 0.401 0.274 0.396 0
+720 0.465 0.306 0.447 0.300 0.434 0.286 0.433 0
+avg. 0.436 0.290 0.411 0.276 0.396 0.267 0.392 0
+1mTTE
+96 0.306 0.347 0.297 0.352 0.290 0.341 0.288 0
+192 0.339 0.366 0.323 0.369 0.330 0.370 0.328 0
+336 0.374 0.386 0.357 0.389 0.361 0.390 0.359 0
+720 0.428 0.416 0.413 0.421 0.414 0.420 0.411 0
+avg. 0.362 0.379 0.348 0.383 0.349 0.380 0.347 0
+different attention heads or groups learning distinct
+periodic patterns. In contrast, PatchTST produces
+less interpretable attention maps, while its causal-
+attention variant reveals some structural patterns but
+stillfallsshortofPENGUIN.Wehypothesizethatthe
+causal attention mechanism is essential for preserving
+temporal causality and modeling the auto-regressive
+generative nature of time series data. Supporting this
+claim, our empirical study shows that removing the
+causal mask from PENGUIN leads to performance
+drops of 3.5% and 4.8% on ETTh1 and ETTh2, re-
+spectively. Together, these results underscore the im-
+portanceofexplicitlymodelingtemporaldependencies
+andhighlighttheeffectivenessofPENGUIN incaptur-
+ing both causal and periodic structures for accurate
+time series forecasting.
+5.7 Robustness Towards Missing and
+Incorrect Periodic Information
+In real-world time series forecasting tasks, it is com-
+mon for periodic information to be either missing
+or incorrectly specified due to noisy data or inaccu-
+rate prior knowledge. To evaluate PENGUIN’s ro-
+bustness in such scenarios, we conducted experiments
+by intentionally introducing missing or incorrect peri-
+odic information into the datasets (Xu et al., 2024).
+Specifically, we select various periodic lengths from
+[24,72,96,144,168]. Theresults,showninTable7,com-
+pare PENGUIN with representative approaches, i.e.,
+SparseTSFandCATS.Wecandrawthefollowingtwo
+conclusions:
+(i) PENGUIN maintains comparable, and sometimes
+state-of-the-art, performance against strong baselines
+even when periodic information is missing, highlight-
+ing its ability to capture temporal dependencies with-
+out relying on precise periodic cues.
+(ii) When periodic information is incorrect, perfor-
+--- RIGHT COL ---
+Chen, Weiwei Sun
+odic information. The look-back length L is fixed as 336
+PENGUIN
+} {72} {96} {144} {168}
+MAE MSE MAE MSE MAE MSE MAE MSE MAE
+0.250 0.366 0.254 0.363 0.250 0.361 0.251 0.360 0.246
+0.254 0.383 0.258 0.383 0.262 0.382 0.261 0.380 0.259
+0.269 0.400 0.274 0.402 0.274 0.401 0.276 0.399 0.273
+0.289 0.433 0.292 0.433 0.290 0.432 0.291 0.429 0.289
+0.266 0.396 0.270 0.395 0.269 0.394 0.270 0.392 0.267
+0.341 0.290 0.341 0.290 0.341 0.290 0.344 0.290 0.342
+0.365 0.329 0.367 0.319 0.361 0.329 0.368 0.328 0.366
+0.389 0.363 0.391 0.355 0.387 0.362 0.391 0.360 0.390
+0.423 0.415 0.427 0.409 0.419 0.414 0.421 0.413 0.420
+0.380 0.349 0.382 0.343 0.377 0.349 0.381 0.348 0.380
+mance degrades noticeably as expected (e.g., 1.7% on
+the ETTm1 dataset), since incorrect patterns hinder
+model predictions. However, even with incorrect pe-
+riodicity,PENGUIN outperformsmanyexistingmod-
+els (e.g., SparseTSF), demonstrating its ability to ex-
+tractusefultemporalfeaturesdespiteperiodicdiscrep-
+ancies.
+6 CONCLUSION
+Long-term time series forecasting (LSTF) is a fun-
+damental task with broad real-world applications.
+In this paper, we revisit the effectiveness of self-
+attention mechanisms and demonstrate that incorpo-
+rating a simple attention bias can significantly en-
+hance their capability for LSTF. To this end, we pro-
+pose a novel periodic-nested group attention mecha-
+nism, PENGUIN, which combines a periodic linear
+bias with a grouped query attention structure. This
+design enables the model to capture diverse periodic
+patterns while maintaining temporal causality. Ex-
+tensive experiments on nine benchmark datasets show
+that PENGUIN consistently achieves state-of-the-art
+performance across a wide range of LSTF tasks.
+References
+Ainslie, J., J. Lee-Thorp, M. De Jong, Y. Zemlyan-
+skiy, F. Lebrón, and S. Sanghai (2023). Gqa:
+Training generalized multi-query transformer mod-
+els from multi-head checkpoints. arXiv preprint
+arXiv:2305.13245.
+Bai, J., S. Bai, Y. Chu, Z. Cui, K. Dang, X. Deng,
+Y.Fan,W.Ge,Y.Han,F.Huang,etal.(2023).Qwen
+technical report. arXiv preprint arXiv:2309.16609.
+Brown,T.,B.Mann,N.Ryder,M.Subbiah,J.D.Ka-
+plan,P.Dhariwal,A.Neelakantan,P.Shyam,G.Sas-
+
+
+===== PAGE 10 =====
+--- LEFT COL ---
+Enhancing Transformer with Periodi
+try, A. Askell, et al. (2020). Language models are
+few-shot learners. Advances in neural information
+processing systems 33, 1877–1901.
+Cao, D., F. Jia, S. O. Arik, T. Pfister, Y. Zheng,
+W. Ye, and Y. Liu (2024). TEMPO: Prompt-based
+generative pre-trained transformer for time series
+forecasting. In International Conference on Learn-
+ing Representations (ICLR).
+Chen, C., L. Zhao, J. Bian, C. Xing, and T.-Y. Liu
+(2019). Investment behaviors can tell what inside:
+Exploring stock intrinsic properties for stock trend
+prediction. InProceedingsofthe25thACMSIGKDD
+International Conference on Knowledge Discovery &
+Data Mining, pp. 2376–2384.
+Chen, P., Y. Zhang, Y. Cheng, Y. Shu, Y. Wang,
+Q. Wen, B. Yang, and C. Guo (2024). Path-
+former: Multi-scaletransformerswithadaptivepath-
+ways for time series forecasting. arXiv preprint
+arXiv:2402.05956.
+Chen,Y.,K.Ren,K.Song,Y.Wang,Y.Wang,D.Li,
+and L. Qiu (2024). Eegformer: Towards transferable
+and interpretable large-scale eeg foundation model.
+arXiv preprint arXiv:2401.10278.
+Chen, Y., H. Zhang, W. Sun, and B. Zheng (2023).
+Rntrajrec: Road network enhanced trajectory recov-
+erywithspatial-temporaltransformer. In2023 IEEE
+39th International Conference on Data Engineering
+(ICDE), pp. 829–842. IEEE.
+Cryer, J. D. (1986). Time series analysis, Volume
+286. Duxbury Press Boston.
+Ekambaram, V., A. Jati, N. Nguyen, P. Dayama,
+C. Reddy, W. Gifford, and J. Kalagnanam (2024).
+Tiny time mixers (TTMs): Fast pre-trained models
+for enhanced zero/few-shot forecasting of multivari-
+ate time series. In Advances in Neural Information
+Processing Systems (NeurIPS).
+Elfeky, M. G., W. G. Aref, and A. K. Elmagarmid
+(2005). Periodicitydetectionintimeseriesdatabases.
+IEEE Transactions on Knowledge and Data Engi-
+neering 17(7), 875–887.
+Fan,J.,W.Weng,Q.Chen,H.Wu,andJ.Wu(2025).
+Pdg2seq: Periodic dynamic graph to sequence model
+for traffic flow prediction. Neural Networks 183,
+106941.
+Kim,D.,J.Park,J.Lee,andH.Kim(2024). Areself-
+attentionseffectivefortimeseriesforecasting? arXiv
+preprint arXiv:2405.16877.
+--- RIGHT COL ---
+ic-Nested Group Attention for LTSF
+Kim, T., J. Kim, Y. Tae, C. Park, J.-H. Choi, and
+J. Choo (2021). Reversible instance normalization
+for accurate time-series forecasting against distribu-
+tion shift. In International Conference on Learning
+Representations.
+Li, L., J. Yan, Y. Zhang, J. Zhang, J. Bao, Y. Jin,
+and X. Yang (2022). Learning generative rnn-ode
+for collaborative time-series and event sequence fore-
+casting. IEEE Transactions on Knowledge and Data
+Engineering 35(7), 7118–7137.
+Lin, S., W. Lin, W. Wu, H. Chen, and J. Yang
+(2024). Sparsetsf: Modeling long-term time se-
+ries forecasting with 1k parameters. arXiv preprint
+arXiv:2405.00946.
+Liu, P., B. Wu, Y. Hu, N. Li, T. Dai, J. Bao, and S.-
+t. Xia (2024). Timebridge: Non-stationarity matters
+for long-term time series forecasting. arXiv preprint
+arXiv:2410.04442.
+Liu, Q., Y. Fang, P. Jiang, and G. Li (2024).
+Dgcformer: Deep graph clustering transformer for
+multivariate time series forecasting. arXiv preprint
+arXiv:2405.08440.
+Liu, S., H. Yu, C. Liao, J. Li, W. Lin, A. X. Liu,
+and S. Dustdar (2022). Pyraformer: Low-complexity
+pyramidal attention for long-range time series mod-
+eling and forecasting. In The Tenth International
+ConferenceonLearningRepresentations,ICLR2022,
+Virtual Event, April 25-29, 2022.
+Liu, X., J. Hu, Y. Li, S. Diao, Y. Liang, B. Hooi,
+and R. Zimmermann (2024). Unitime: A language-
+empoweredunifiedmodelforcross-domaintimeseries
+forecasting. In Proceedings of the ACM Web Confer-
+ence (WWW).
+Liu, Y., T. Hu, H. Zhang, H. Wu, S. Wang, L. Ma,
+and M. Long (2023). itransformer: Inverted trans-
+formersareeffectivefortimeseriesforecasting. arXiv
+preprint arXiv:2310.06625.
+Liu, Y., G. Qin, X. Huang, J. Wang, and M. Long
+(2024). Autotimes: Autoregressive time series fore-
+castersvialargelanguagemodels.AdvancesinNeural
+Information Processing Systems 37, 122154–122184.
+Liu, Y., H. Wu, J. Wang, and M. Long (2022). Non-
+stationary transformers: Exploring the stationarity
+in time series forecasting. Advances in Neural Infor-
+mation Processing Systems 35, 9881–9893.
+Liu,Z.(2025). FreqMoE:Enhancingtimeseriesfore-
+casting through frequency decomposition mixture of
+experts. InInternational Conference on Artificial In-
+telligence and Statistics (AISTATS).
+
+
+===== PAGE 11 =====
+--- LEFT COL ---
+Tian Sun, Yuqi C
+Ni, R., Z. Lin, S. Wang, and G. Fanti (2024).
+Mixture-of-linear-experts for long-term time series
+forecasting. InInternational Conference on Artificial
+Intelligence and Statistics, pp. 4672–4680. PMLR.
+Nie, Y., N. H. Nguyen, P. Sinthong, and
+J. Kalagnanam (2022). A time series is worth
+64 words: Long-term forecasting with transformers.
+arXiv preprint arXiv:2211.14730.
+Nochumsohn, L., H. Zisling, and O. Azencot (2025).
+Amulti-tasklearningapproachtolinearmultivariate
+forecasting. arXiv preprint arXiv:2502.03571.
+Press, O., N. A. Smith, and M. Lewis (2021). Train
+short, test long: Attention with linear biases en-
+ables input length extrapolation. arXiv preprint
+arXiv:2108.12409.
+Qin, J., Y. Jia, Y. Tong, H. Chai, Y. Ding, X. Wang,
+B. Fang, and Q. Liao (2024). Muse-net: Disentan-
+gling multi-periodicity for traffic flow forecasting. In
+2024 IEEE 40th International Conference on Data
+Engineering (ICDE), pp. 1282–1295. IEEE.
+Qiu, X., X. Wu, Y. Lin, C. Guo, J. Hu, and
+B. Yang (2024). Duet: Dual clustering enhanced
+multivariate time series forecasting. arXiv preprint
+arXiv:2412.10859.
+Raffel,C.,N.Shazeer,A.Roberts,K.Lee,S.Narang,
+M. Matena, Y. Zhou, W. Li, and P. J. Liu (2020).
+Exploringthelimitsoftransferlearningwithaunified
+text-to-texttransformer.Journalofmachinelearning
+research 21(140), 1–67.
+Shao, Z., F. Wang, Y. Xu, W. Wei, C. Yu, Z. Zhang,
+D. Yao, T. Sun, G. Jin, X. Cao, et al. (2024). Ex-
+ploring progress in multivariate time series forecast-
+ing: Comprehensivebenchmarkingandheterogeneity
+analysis. IEEE Transactions on Knowledge and Data
+Engineering.
+Shazeer, N. (2019). Fast transformer decoding:
+One write-head is all you need. arXiv preprint
+arXiv:1911.02150.
+Sturua, S., I. Mohr, M. K. Akram, M. Günther,
+B. Wang, M. Krimmel, F. Wang, G. Mastrapas,
+A. Koukounas, N. Wang, et al. (2024). jina-
+embeddings-v3: Multilingual embeddings with task
+lora. arXiv preprint arXiv:2409.10173.
+Sun, T., Y. Chen, B. Zheng, and W. Sun (2025).
+Learningspatio-temporaldynamicsfortrajectoryre-
+covery via time-aware transformer. IEEE Transac-
+tions on Intelligent Transportation Systems.
+--- RIGHT COL ---
+Chen, Weiwei Sun
+Touvron, H., T. Lavril, G. Izacard, X. Martinet,
+M.-A. Lachaux, T. Lacroix, B. Rozière, N. Goyal,
+E.Hambro,F.Azhar,etal.(2023). Llama: Openand
+efficient foundation language models. arXiv preprint
+arXiv:2302.13971.
+Vaswani, A. (2017). Attention is all you need. Ad-
+vances in Neural Information Processing Systems.
+Wang, S., J. Li, X. Shi, Z. Ye, B. Mo, W. Lin, S. Ju,
+Z.Chu,andM.Jin(2024). Timemixer++: Ageneral
+time series pattern machine for universal predictive
+analysis. arXiv preprint arXiv:2410.16032.
+Wang, S., H. Wu, X. Shi, T. Hu, H. Luo, L. Ma,
+J.Y.Zhang,andJ.Zhou(2024).Timemixer: Decom-
+posable multiscale mixing for time series forecasting.
+arXiv preprint arXiv:2405.14616.
+Wen,Q.,T.Zhou,C.Zhang,W.Chen,Z.Ma,J.Yan,
+and L. Sun (2022). Transformers in time series: A
+survey. arXiv preprint arXiv:2202.07125.
+Wu, H., T. Hu, Y. Liu, H. Zhou, J. Wang, and
+M. Long (2022). Timesnet: Temporal 2d-variation
+modeling for general time series analysis. arXiv
+preprint arXiv:2210.02186.
+Wu, H., J. Xu, J. Wang, and M. Long (2021).
+Autoformer: Decomposition transformers with auto-
+correlationforlong-termseriesforecasting. Advances
+in neural information processing systems 34, 22419–
+22430.
+Xu, S., Z. Ma, Y. Huang, H. Lee, and J. Chai
+(2024). Cyclenet: Rethinking cycle consistency in
+text-guided diffusion for image manipulation. Ad-
+vances in Neural Information Processing Systems 36.
+Xu, Z., A. Zeng, and Q. Xu (2023). Fits: Model-
+ing time series with 10k parameters. arXiv preprint
+arXiv:2307.03756.
+Yang, Z. (2019). Xlnet: Generalized autoregres-
+sive pretraining for language understanding. arXiv
+preprint arXiv:1906.08237.
+Yi,K.,Y.Wang,K.Ren,andD.Li(2024). Learning
+topology-agnosticeegrepresentationswithgeometry-
+aware modeling. Advances in Neural Information
+Processing Systems 36.
+Zeng, A., M. Chen, L. Zhang, and Q. Xu (2023).
+Aretransformerseffectivefortimeseriesforecasting?
+In Proceedings of the AAAI conference on artificial
+intelligence, Volume 37, pp. 11121–11128.
+Zhang,B.andR.Sennrich(2019). Rootmeansquare
+layernormalization. Advances in Neural Information
+Processing Systems 32.
+
+
+===== PAGE 12 =====
+--- LEFT COL ---
+Enhancing Transformer with Periodi
+Zhang, H., H. Wu, W. Sun, and B. Zheng (2018).
+Deeptravel: a neural network based travel time es-
+timation model with auxiliary supervision. arXiv
+preprint arXiv:1802.02147.
+Zhang, J., J. Wang, X. Shen, and W. Qiang (2025).
+Enhancing time series forecasting via logic-inspired
+regularization. arXiv preprint arXiv:2503.06867.
+Zhang, L., C. Aggarwal, and G.-J. Qi (2017). Stock
+pricepredictionviadiscoveringmulti-frequencytrad-
+ing patterns. In Proceedings of the 23rd ACM
+SIGKDD international conference on knowledge dis-
+covery and data mining, pp. 2141–2149.
+Zhang, Y., M. Liu, S. Zhou, and J. Yan (2024).
+Up2me: Univariate pre-training to multivariate fine-
+tuning as a general-purpose framework for multivari-
+ate time series analysis. In Forty-first International
+Conference on Machine Learning.
+Zhang, Y. and J. Yan (2023). Crossformer: Trans-
+formerutilizingcross-dimensiondependencyformul-
+tivariate time series forecasting. In The eleventh in-
+ternational conference on learning representations.
+Zheng,C.,X.Fan,C.Wang,andJ.Qi(2020). Gman:
+A graph multi-attention network for traffic predic-
+tion. In Proceedings of the AAAI conference on arti-
+ficial intelligence, Volume 34, pp. 1234–1241.
+Zhou, H., S. Zhang, J. Peng, S. Zhang, J. Li,
+H. Xiong, and W. Zhang (2021). Informer: Be-
+yond efficient transformer for long sequence time-
+seriesforecasting. InProceedingsoftheAAAIconfer-
+ence on artificial intelligence, Volume 35, pp. 11106–
+11115.
+Zhou, T., Z. Ma, Q. Wen, X. Wang, L. Sun, and
+R. Jin (2022). Fedformer: Frequency enhanced de-
+composed transformer for long-term series forecast-
+ing. InInternationalconferenceonmachinelearning,
+pp. 27268–27286. PMLR.
+Checklist
+1. For all models and algorithms presented, check if
+you include:
+(a) A clear description of the mathematical set-
+ting, assumptions, algorithm, and/or model.
+[Yes]
+(b) An analysis of the properties and complexity
+(time, space, sample size) of any algorithm.
+[Yes]
+(c) (Optional) Anonymized source code, with
+specification of all dependencies, including
+external libraries. [Yes]
+--- RIGHT COL ---
+ic-Nested Group Attention for LTSF
+2. For any theoretical claim, check if you include:
+(a) Statements of the full set of assumptions of
+all theoretical results. [Not Applicable]
+(b) Complete proofs of all theoretical results.
+[Not Applicable]
+(c) Clear explanations of any assumptions. [Not
+Applicable]
+3. For all figures and tables that present empirical
+results, check if you include:
+(a) The code, data, and instructions needed to
+reproduce the main experimental results (ei-
+ther in the supplemental material or as a
+URL). [Yes]
+(b) All the training details (e.g., data splits, hy-
+perparameters, how they were chosen). [Yes]
+(c) A clear definition of the specific measure or
+statisticsanderrorbars(e.g.,withrespectto
+the random seed after running experiments
+multiple times). [Yes]
+(d) Adescriptionofthecomputinginfrastructure
+used. (e.g.,typeofGPUs,internalcluster,or
+cloud provider). [Yes]
+4. If you are using existing assets (e.g., code, data,
+models) or curating/releasing new assets, check if
+you include:
+(a) Citationsofthe creatorIfyourworkusesex-
+isting assets. [Yes]
+(b) The license information of the assets, if ap-
+plicable. [Yes]
+(c) New assets either in the supplemental mate-
+rial or as a URL, if applicable. [Yes]
+(d) Information about consent from data
+providers/curators. [Yes]
+(e) Discussion of sensible content if applicable,
+e.g.,personallyidentifiableinformationorof-
+fensive content. [Yes]
+5. If you used crowdsourcing or conducted research
+with human subjects, check if you include:
+(a) The full text of instructions given to partici-
+pants and screenshots. [Not Applicable]
+(b) Descriptions of potential participant risks,
+with links to Institutional Review Board
+(IRB) approvals if applicable. [Not Appli-
+cable]
+(c) The estimated hourly wage paid to partici-
+pants and the total amount spent on partici-
+pant compensation. [Not Applicable]
+
+
+===== PAGE 13 =====
+--- LEFT COL ---
+Enhancing Transformer with Peri
+Long-term Time Series Forecast
+A Details about Input Processing
+A.1 Revertible Instance Normalization
+Time series data often encounter challenges related to
+such as mean and variance over time (Nie et al., 2022;
+normalizationstrategy,namelyreversibleinstancenorma
+enhancement for LTSF. Mathematically, given the input
+mean and variance:
+x(c)−µ(c)
+x(c) = √
+σ(c)+ϵ
+whereµ(c) andσ(c) arethemeanandstandarddeviation
+constant added for numerical stability. After the model
+restored, mitigating the impact of non-stationary compo
+and accuracy.
+A.2 Input Patching
+Long-term time series possess extensive look-back windo
+local and long-term information. This enhancement t
+studies (Nie et al., 2022). This approach involves divid
+c represents the c-th channel, into patches that serve
+Formally, given an input sequence of length L, the inp
+subsequencesoflengthP withastrideofS,resultinginN
+weembedeachpatchintoahigher-dimensionalspace, x˜(
+p
+the learnable embedding matrix and bias vector, d repre
+sequential order of the patches, a position embedding PE
+the absolute position of each patch within the sequence
+x˜(c) +PE, where x(c) ∈ RN×d represents the final inp
+p e
+embedding vector that encodes the position information
+B Details about applying PENGUIN fo
+In the vanilla Transformer, the decoder network contain
+module. To incorporate PENGUIN for the decoder stru
+the cross-attention sub-module. Furthermore, following
+2024),theinputtothedecodermodelconsistsoflearnabl
+embeddingcorrespondingtothepatchstrideofS,thenu
+c-thchannelisx(c) ∈RM×d. Afterprocessingthroughth
+d
+to the output via linear transformation, i.e., x(c) = x˜(c)
+(cid:101)d d
+the transformed output x(c) ∈RM×S is then concatenat
+(cid:101)d
+Attention Bias for the Periodic Case for Cross At
+queries and keys can be different. Specifically, given qu
+in Equation (9) should be modified as follows:
+--- RIGHT COL ---
+iodic-Nested Group Attention for
+ting - Supplementary Materials
+o distributional shifts in terms of statistical properties
+Liu et al., 2023). To address the challenge, a standard
+alization(Revin)(Kimetal.,2021),demonstratesagreat
+t X ∈RL×C, Revin normalizes the data by removing its
+)
+,c∈{1,...,C} , (8)
+nacrossthec-thchannelinputsequence, andϵisasmall
+l processes the data, the original mean and variance are
+onents. This approach improves the model’s robustness
+ows, necessitating models that can adeptly capture both
+through patching has been substantiated in numerous
+ding each univariate input time series x(c) ∈ RL, where
+as either overlapping or non-overlapping input tokens.
+put time series sequence is divided into non-overlapping
+N =⌊(L−P)⌋+2patchesasx(c) ∈RN×P. Subsequently,
+S p
+(c) =x(c)W +b , whereW ∈RP×d andb ∈Rd denote
+p p p p p p
+esents the size of hidden dimension. To incorporate the
+E is added to enhance the model’s ability to understand
+e. This process is mathematically represented as x(c) =
+e
+put to the Transformer encoder and PE is the position
+n.
+or Decoder Structure
+ns a self-attention sub-module and a cross-attention sub-
+ucture, we extend the proposed attention mechanism for
+g the cross-attention architecture of CATS (Kim et al.,
+lequeries. Sincethetimeseriesistransformedtoapatch
+umberoflearningqueriesisM = H andtheinputforthe
+S
+hedecodermodel,theoutputx˜(c) ∈RM×d istransformed
+d
+)WT +b , where W ∈ Rd×S and b ∈ RS. Afterward,
+d d d d
+ted to reconstruct the final sequence x(c) ∈RH.
+(cid:101)
+ttention Unlike the encoder, the number of tokens for
+ueries Q ∈ RM×d and keys K ∈ RN×d, the periodic bias
+
+
+===== PAGE 14 =====
+--- LEFT COL ---
+Enhancing Transformer with Periodi
+B(k) =−m ·B
+ij k
+
+u,
+B(cid:98) (k) =
+ij P(r)−
+S
+where u=|(i+N
+SincethereareN tokenscorrespondingtothekeys(i.e.,
+first query — should be assigned an index of N +1, the
+bias between the i-th query and the j-th key should be
+fact that queries represent future tokens while keys repr
+Furthermore,thedecoder’sobjectiveistopredictfuture
+forecasting S future values. As a result, causal masking
+since future tokens are allowed unrestricted access to inf
+C Details about Experimental Setting
+C.1 Dataset Split and Hyper-parameter Setting
+Following the settings of Nie et al. (2022) and Xu et a
+ETTm1, ETTm2) into training, validation, and testing
+divided using a 7:1:2 ratio. For our model, we adopt fix
+2017). To address GPU memory limitations during trai
+characteristics: larger batch sizes are used for datasets
+are applied to higher-dimensional datasets to ensure st
+overview of the hyperparameter configurations and train
+Dataset BatchSize HiddenDimension P
+ETTh1 64 16
+ETTh2 32 16
+ETTm1 64 16
+ETTm2 32 16
+Electricity 12 128
+Weather 8 128
+Solar 4 512
+Traffic 4 512
+Table 8: Experimental setting of var
+C.2 Hyper-Parameter Search Space
+We observe that patch stride, patch length, and hidden
+conduct the following search space as shown in Table 9.
+Table 9: Hyperparameter s
+Hyperparameter
+Patch Stride
+Patch Length
+Hidden Dimensions
+To avoid the OOM issue during hyperparameter search,
+when using the largest hyperparameter.
+--- RIGHT COL ---
+ic-Nested Group Attention for LTSF
+B(cid:98) (k) ,
+ij
+if u< P S (r) ,
+2
+−u, if u≥ P S (r) ,
+2
+N)−j| Mod P(r) . (9)
+S
+thepasthistory),thefirstdecodingtoken—thatis,the
+e second N +2, and so on. Consequently, the positional
+defined as |(i+N)−j| instead of |i−j|, reflecting the
+resent past tokens.
+horizons,witheachlearnablequerytokenresponsiblefor
+is no longer necessary in the cross-attention mechanism,
+formation from past tokens.
+gs
+al. (2024), we split the ETT datasets (ETTh1, ETTh2,
+g sets using a 6:2:2 ratio, while the other datasets are
+xed positional embeddings for the input data (Vaswani,
+ining, we adapt the batch size according to the dataset
+s with fewer feature channels, while smaller batch sizes
+table optimization (Lin et al., 2024). A comprehensive
+ning setups is provided in Table 8.
+PatchLength PatchStride Epochs Patience
+1 1 30 6
+12 2 30 6
+4 2 30 6
+2 2 30 6
+12 2 30 6
+4 1 30 6
+16 1 30 10
+16 8 10 6
+rious time series forecasting datasets.
+n dimensions influence the performance. Therefore, we
+search space of PENGUIN.
+Values
+[1, 2, 4, 8]
+[1, 2, 4, 8, 12, 16]
+[16, 64, 128, 512]
+, we set the batch size according to the GPU limitation
+
+
+===== PAGE 15 =====
+--- LEFT COL ---
+Tian Sun, Yuqi C
+C.3 Compared Baselines
+We selected the current state-of-the-art and representati
+based or MLP-based models, including:
+• DLinear: A combination of a decomposition scheme
+• SparseTSF (Lin et al., 2024): A linear approach
+periodicity and trend in time series data.
+• CycleNet(Xuetal.,2024): Thestate-of-the-artMLP
+residual cycle forecasting (RCF) to capture inheren
+• MoLE (Ni et al., 2024): A Mixture-of-Linear-Exp
+linear-based model for TSF.
+• MTLinear (Nochumsohn et al., 2025): A multi-task
+grouped together, and each group forms a separate
+Additionally, we also compare the Transformer-based m
+• Autoformer(Wuetal.,2021): Anoveldecompositio
+anism, which empowers Autoformer with progressiv
+series.
+• FEDformer (Zhou et al., 2022): An efficient Transfo
+applies shared embeddings and weights across univa
+• PatchTST (Nie et al., 2022): An approach that firs
+a Transformer network.
+• iTransformer (Liu et al., 2023) (short for iTrans.): A
+network on the inverted dimensions to capture mult
+• CATS (Kim et al., 2024): The state-of-the-art Tran
+attention, leveraging cross-attention mechanisms in
+Furthermore, we compare PENGUIN with a convolutio
+proachthattransformstimeseriesdatainto2Dtensorsan
+block.
+C.4 Metrics and Environments
+Consistent with prevalent methodologies (Nie et al., 2
+traditional Mean Squared Error (MSE) and Mean Abso
+C.5 Environments
+All experiments are conducted on a single NVIDIA RTX
+D Additional Experimental Results
+D.1 Main Results
+TodemonstratetheeffectivenessofPENGUIN incaptur
+mance across various forecast horizons while keeping th
+6Fordatasetswithoutperiodicity(e.g.,Exchange),werem
+with a single linear layer and reversible instance normalizatio
+--- RIGHT COL ---
+Chen, Weiwei Sun
+ive works in this field as baselines. These include linear-
+e (Wu et al., 2021; Zhou et al., 2022) with linear layers.
+that simplifies the forecasting task by decoupling the
+P-basedapproachforLTSF,modelingtimeseriesthrough
+nt periodic patterns6.
+perts approach that employs channel-wise MoE with a
+k learning approach for TSF where similar variates are
+task.
+models, including:
+onarchitectureincorporatinganAuto-Correlationmech-
+ve decomposition capabilities for modeling complex time
+ormer design that segments time series into patches and
+ariate series.
+st divides time series into sub-level patches, followed by
+An approach that applies the attention and feed-forward
+tivariate correlations.
+nsformer-based approach for LTSF that eliminates self-
+nstead.
+on-based approach, TimesNet (Wu et al., 2022), an ap-
+ndcapturesmulti-periodicpatternsthroughaninception
+2022; Xu et al., 2024; Zeng et al., 2023), we elect the
+olute Error (MAE) as the core metrics for evaluation.
+X 3090 GPU with 24GB of memory.
+ringlong-rangeperiodicpatterns, weevaluateitsperfor-
+he input sequence length fixed at 336. Table 10 presents
+movetheRCFtechniquefromCycleNet,resultinginamodel
+on.
+
+
+===== PAGE 16 =====
+--- LEFT COL ---
+Enhancing Transformer with Periodi
+a comparison of PENGUIN against other models on mu
+reported in the table, PENGUIN achieves state-of-the
+lowestaverageerroracrossbenchmarks. Moreover,table
+sequence length fixed at 96, a standard experimental set
+ing. Notably, the results of CycleNet Xu et al. (2024),
+2024) are directly copied from the original paper. The
+the iTransformer (Liu et al., 2023) paper to avoid the dr
+that PENGUIN achieves state-of-the-art performance as
+Table10: Multivariatelong-termforecastingresultsusin
+models. The look-back length L is fixed as 336 and th
+{96,192,336,720}. The best results are in bold and the
+Model ETTh1 ETTh2 ETTm1 ETTm2 Electricit
+Metric MSE MAE MSE MAE MSE MAE MSE MAE MSE M
+NIUGNEP 96 0.375 0.397 0.283 0.343 0.290 0.341 0.168 0.258 0.137 0.
+192 0.420 0.426 0.351 0.387 0.319 0.361 0.227 0.296 0.147 0.
+336 0.436 0.439 0.376 0.409 0.355 0.387 0.282 0.333 0.169 0.
+720 0.448 0.461 0.403 0.438 0.409 0.419 0.374 0.390 0.207 0.
+STAC
+96 0.381 0.399 0.294 0.350 0.297 0.352 0.197 0.289 0.130 0.
+192 0.421 0.432 0.356 0.391 0.323 0.369 0.252 0.325 0.147 0.
+336 0.432 0.444 0.387 0.416 0.357 0.389 0.304 0.357 0.165 0.
+720 0.495 0.486 0.415 0.443 0.413 0.421 0.395 0.411 0.251 0.
+teNelcyC 96 0.382 0.403 0.281 0.345 0.301 0.344 0.172 0.263 0.130 0.
+192 0.414 0.422 0.349 0.392 0.335 0.364 0.226 0.299 0.146 0.
+336 0.438 0.437 0.373 0.415 0.369 0.384 0.280 0.335 0.162 0.
+720 0.455 0.468 0.428 0.453 0.424 0.414 0.381 0.395 0.200 0.
+FSTesrapS 96 0.425 0.424 0.290 0.345 0.306 0.347 0.174 0.264 0.149 0.
+192 0.438 0.431 0.352 0.387 0.339 0.366 0.231 0.302 0.160 0.
+336 0.441 0.438 0.372 0.413 0.374 0.386 0.280 0.333 0.175 0.
+720 0.462 0.474 0.404 0.434 0.428 0.416 0.375 0.390 0.213 0.
+.snarTi
+96 0.404 0.420 0.301 0.358 0.302 0.357 0.173 0.266 0.133 0.
+192 0.451 0.450 0.376 0.405 0.350 0.385 0.247 0.314 0.156 0.
+336 0.476 0.467 0.398 0.423 0.380 0.402 0.297 0.345 0.167 0.
+720 0.538 0.523 0.416 0.444 0.446 0.442 0.379 0.398 0.195 0.
+teNsemiT 96 0.384 0.402 0.393 0.418 0.342 0.387 0.198 0.280 0.209 0.
+192 0.436 0.429 0.416 0.441 0.374 0.407 0.297 0.340 0.242 0.
+336 0.491 0.469 0.403 0.439 0.417 0.428 0.327 0.365 0.257 0.
+720 0.521 0.500 0.460 0.475 0.469 0.460 0.408 0.403 0.288 0.
+TSThctaP 96 0.380 0.406 0.288 0.346 0.290 0.345 0.174 0.265 0.142 0.
+192 0.422 0.435 0.358 0.390 0.340 0.379 0.229 0.301 0.178 0.
+336 0.473 0.464 0.381 0.412 0.374 0.400 0.288 0.337 0.186 0.
+720 0.483 0.489 0.405 0.437 0.435 0.439 0.378 0.391 0.208 0.
+raeniLTM 96 0.371 0.392 0.309 0.368 0.301 0.345 0.170 0.264 0.140 0.
+192 0.408 0.416 0.352 0.396 0.336 0.368 0.235 0.315 0.154 0.
+336 0.455 0.454 0.423 0.446 0.381 0.402 0.303 0.365 0.169 0.
+720 0.500 0.510 0.634 0.565 0.447 0.443 0.407 0.424 0.203 0.
+ELoM
+96 0.371 0.393 0.291 0.354 0.299 0.344 0.167 0.262 0.140 0.
+192 0.409 0.420 0.357 0.396 0.336 0.367 0.236 0.318 0.154 0.
+336 0.446 0.447 0.441 0.458 0.374 0.393 0.304 0.360 0.169 0.
+720 0.495 0.506 0.721 0.604 0.439 0.438 0.396 0.416 0.203 0.
+raeniLD 96 0.374 0.398 0.281 0.347 0.307 0.350 0.165 0.250 0.140 0.
+192 0.430 0.440 0.367 0.404 0.340 0.373 0.227 0.307 0.153 0.
+336 0.442 0.445 0.438 0.454 0.377 0.397 0.304 0.362 0.169 0.
+720 0.497 0.507 0.598 0.549 0.433 0.433 0.431 0.441 0.203 0.
+remrofDEF 96 0.387 0.433 0.383 0.430 0.382 0.428 0.256 0.333 0.225 0.
+192 0.435 0.461 0.420 0.457 0.404 0.441 0.290 0.353 0.232 0.
+336 0.463 0.474 0.430 0.468 0.479 0.474 0.334 0.380 0.259 0.
+720 0.492 0.503 0.479 0.493 0.471 0.466 0.428 0.436 0.286 0.
+remrofotuA 96 0.551 0.499 0.381 0.427 0.459 0.463 0.266 0.341 0.208 0.
+192 0.514 0.505 0.398 0.437 0.550 0.512 0.298 0.361 0.210 0.
+336 0.501 0.511 0.393 0.437 0.608 0.548 0.331 0.378 0.218 0.
+720 0.513 0.505 0.448 0.475 0.590 0.549 0.414 0.428 0.280 0.
+Discussion Toensureafairandrigorouscomparisonw
+sive experiments, with results presented in Table 12. Th
+variants of CycleNet by a considerable margin.
+D.2 Results on M4 dataset
+In the previous sections, we have comprehensively evalu
+forecasting. However, these datasets span an excessive
+--- RIGHT COL ---
+ic-Nested Group Attention for LTSF
+ultivariate long-term series forecasting (LTSF) tasks. As
+e-art results, attaining the highest top-1 count and the
+e11summarizestheexperimentalresultsusingtheinput
+tting for most research on long-term time series forecast-
+iTransformer (Liu et al., 2023), and CATS (Kim et al.,
+results of PatchTST (Nie et al., 2022) are copied from
+rop-last issue of time series evaluation. The results show
+s compared to recent strong baselines.
+ngafixedrandomseedacrossbenchmarksandcompared
+he results are averaged over prediction horizons of H ∈
+e second best are underlined.
+ty Exchange Weather Solar Traffic Avg.
+MAE MSE MAE MSE MAE MSE MAE MSE MAE MSE MAE
+.236 0.093 0.218 0.150 0.202 0.180 0.244 0.357 0.247
+.243 0.190 0.316 0.194 0.243 0.200 0.256 0.376 0.253
+.266 0.313 0.408 0.245 0.284 0.205 0.254 0.390 0.262 0.300 0.330
+.298 0.763 0.668 0.323 0.339 0.214 0.259 0.428 0.286
+.218 0.101 0.222 0.151 0.203 0.191 0.237 0.382 0.260
+.236 0.182 0.305 0.193 0.243 0.203 0.246 0.401 0.268 0.319 0.339
+.253 0.342 0.427 0.244 0.282 0.214 0.256 0.414 0.275
+.327 1.074 0.790 0.319 0.335 0.214 0.251 0.447 0.300
+.226 0.091 0.211 0.174 0.225 0.203 0.287 0.399 0.276
+.241 0.192 0.310 0.216 0.259 0.224 0.297 0.413 0.282
+0.317 0.339
+.257 0.385 0.449 0.263 0.293 0.227 0.261 0.426 0.288
+.289 0.930 0.719 0.330 0.339 0.238 0.264 0.453 0.305
+.243 0.101 0.226 0.177 0.227 0.234 0.264 0.415 0.281
+.253 0.189 0.313 0.220 0.262 0.263 0.279 0.426 0.283
+0.327 0.343
+.268 0.334 0.420 0.267 0.297 0.284 0.291 0.438 0.289
+.300 0.963 0.749 0.335 0.343 0.283 0.290 0.465 0.306
+.228 0.103 0.230 0.159 0.209 0.201 0.256 0.365 0.261
+.251 0.212 0.334 0.203 0.251 0.223 0.278 0.378 0.269
+0.329 0.350
+.265 0.369 0.448 0.254 0.289 0.243 0.298 0.392 0.277
+.289 1.153 0.815 0.327 0.340 0.254 0.312 0.424 0.293
+.312 0.107 0.234 0.179 0.230 0.223 0.268 0.607 0.344
+.331 0.226 0.344 0.241 0.283 0.242 0.294 0.625 0.349
+0.376 0.375
+.343 0.367 0.448 0.297 0.322 0.236 0.281 0.641 0.356
+.367 0.964 0.746 0.350 0.356 0.242 0.273 0.663 0.367
+.245 0.100 0.227 0.151 0.199 0.193 0.253 0.377 0.270
+.280 0.185 0.313 0.200 0.249 0.200 0.264 0.394 0.275
+0.321 0.344
+.288 0.392 0.451 0.252 0.287 0.209 0.274 0.407 0.283
+.299 1.113 0.780 0.334 0.344 0.210 0.269 0.442 0.299
+.237 0.086 0.208 0.178 0.243 0.222 0.291 0.410 0.282
+.250 0.182 0.308 0.216 0.275 0.249 0.312 0.423 0.287
+0.321 0.352
+.267 0.306 0.416 0.265 0.319 0.269 0.326 0.436 0.296
+.300 0.565 0.586 0.325 0.363 0.271 0.328 0.466 0.315
+.238 0.088 0.213 0.175 0.237 0.222 0.291 0.410 0.282
+.250 0.488 0.491 0.216 0.275 0.250 0.312 0.423 0.288
+0.353 0.367
+.268 0.599 0.576 0.260 0.310 0.268 0.325 0.437 0.297
+.301 1.053 0.770 0.327 0.369 0.271 0.329 0.466 0.315
+.237 0.110 0.252 0.174 0.235 0.222 0.292 0.410 0.282
+.250 0.208 0.349 0.219 0.281 0.249 0.313 0.423 0.288
+0.331 0.359
+.267 0.410 0.501 0.264 0.317 0.268 0.327 0.436 0.296
+.299 0.774 0.675 0.324 0.363 0.271 0.326 0.466 0.315
+.334 0.375 0.454 0.276 0.345 0.275 0.374 0.606 0.380
+.342 0.490 0.524 0.309 0.370 0.308 0.382 0.620 0.383
+0.437 0.436
+.361 0.715 0.645 0.353 0.395 0.376 0.446 0.623 0.386
+.382 1.494 0.948 0.395 0.419 0.337 0.414 0.640 0.396
+.323 0.351 0.445 0.294 0.369 1.019 0.753 0.679 0.419
+.327 0.542 0.559 0.341 0.388 0.904 0.706 0.677 0.417
+0.523 0.481
+.333 0.661 0.624 0.372 0.411 0.964 0.710 0.663 0.415
+.376 1.373 0.908 0.384 0.394 0.763 0.642 0.697 0.437
+withCycleNet(Xuetal.,2024), weconductcomprehen-
+he table clearly shows that PENGUIN outperforms both
+uated PENGUIN on benchmark datasets of time series
+ely short time horizon (e.g., the weather dataset covers
+
+
+===== PAGE 17 =====
+--- LEFT COL ---
+Tian Sun, Yuqi C
+Table 11: Multivariate long-term forecasting results. Th
+averaged over prediction horizons of H ∈ {96,192,336,
+not reported in the original paper, and the results are re
+Model PENGUIN CycleNet /Linear CycleNet
+Metric MSE MAE MSE MAE MSE
+ETTh1 0.426 0.433 0.432 0.427 0.457
+ETTh2 0.378 0.402 0.383 0.404 0.388
+ETTm1 0.378 0.394 0.386 0.395 0.379
+ETTm2 0.286 0.332 0.272 0.315 0.266 0
+Exchange 0.355 0.401 0.383∗ 0.414∗ 0.378∗ 0
+Traffic 0.440 0.278 0.485 0.313 0.472
+Weather 0.246 0.274 0.254 0.279 0.243 0
+Electricity 0.176 0.266 0.170 0.260 0.168 0
+Solar 0.224 0.261 0.235 0.270 0.210 0
+avg. 0.323 0.337 0.333 0.341 0.329
+Table 12: Rigorous comparison with CycleNet. The l
+averaged over prediction horizons of H ∈ {96,192,336,
+indicates results from the original paper (Table 8 of Cyc
+Model PENGUIN CycleNet /Linear + C
+Metric MSE MAE MSE MAE M
+ETTh1 0.419 0.430 0.415 0.426 0.
+ETTh2 0.353 0.394 0.355 0.398 0.
+ETTm1 0.343 0.377 0.355 0.379 0.
+ETTm2 0.263 0.319 0.251 0.309 0.
+Traffic 0.388 0.262 0.421 0.289 0.
+Weather 0.228 0.267 0.242 0.278 0.
+Electricity 0.165 0.261 0.158 0.250 0.
+Solar 0.200 0.253 0.226 0.265 0.
+avg. 0.294 0.320 0.302 0.324 0.
+Table 13: Forecasting results on the M4 dataset across
+OWA metrics. Smaller values indicate better performan
+Model PENGUIN CATS C
+ylraeY
+SMAPE 13.364±0.012 13.575±0.007 1
+MASE 3.003±0.006 3.065±0.008 3
+OWA 0.786±0.001 0.801±0.002 0
+ylretrauQ SMAPE 10.202±0.012 10.342±0.013 1
+MASE 1.201±0.004 1.222±0.008 1
+OWA 0.902±0.002 0.915±0.001 0
+ylhtnoM SMAPE 12.872±0.019 13.750±0.101 1
+MASE 0.958±0.003 1.071±0.013 0
+OWA 0.897±0.002 0.980±0.010 0
+ylkeeW SMAPE 9.791±0.050 10.116±0.243 1
+MASE 3.166±0.022 3.174±0.102 3
+OWA 1.079±0.035 1.104±0.029 1
+yliaD
+SMAPE 3.063±0.012 3.161±0.119 3
+MASE 3.286±0.014 3.385±0.122 3
+OWA 1.004±0.003 1.035±0.038 1
+ylruoH
+SMAPE 18.802±0.002 20.374±0.125 1
+MASE 2.769±0.001 3.834±0.137 2
+OWA 1.090±0.001 1.525±0.045 1
+egarevA SMAPE 11.360 11.886
+MASE 2.422 2.625
+OWA 0.972 1.060
+--- RIGHT COL ---
+Chen, Weiwei Sun
+he look-back length L is fixed as 96 and the results are
+720}. The best results are in bold. ∗ indicates results
+eproduced.
+t CATS PatchTST iTransformer
+/MLP
+MAE MSE MAE MSE MAE MSE MAE
+0.441 0.454 0.447 0.469 0.454 0.454 0.447
+0.409 0.383 0.407 0.387 0.407 0.383 0.407
+0.396 0.407 0.410 0.387 0.400 0.407 0.410
+0.314 0.288 0.332 0.281 0.326 0.288 0.332
+0.410∗ 0.374∗ 0.409∗ 0.367 0.404 0.360 0.403
+0.301 0.428 0.282 0.481 0.304 0.428 0.282
+0.271 0.258 0.278 0.259 0.281 0.258 0.278
+0.259 0.178 0.270 0.205 0.290 0.178 0.270
+0.261 0.233 0.262 0.270 0.307 0.233 0.262
+0.340 0.333 0.344 0.345 0.352 0.332 0.343
+look-back length L is fixed as 336 and the results are
+,720}. ∗ indicates results that are reproduced, while +
+cleNet paper (Xu et al., 2024)).
+CycleNet + CycleNet ∗ CycleNet ∗
+/MLP /Linear /MLP
+MSE MAE MSE MAE MSE MAE
+.437 0.440 0.422 0.432 0.432 0.437
+.371 0.407 0.357 0.401 0.373 0.410
+.361 0.390 0.357 0.376 0.362 0.389
+.271 0.324 0.264 0.323 0.271 0.324
+.413 0.281 0.423 0.288 0.414 0.283
+.226 0.266 0.246 0.279 0.230 0.269
+.157 0.251 0.160 0.253 0.158 0.252
+.194 0.255 0.223 0.277 0.197 0.260
+.303 0.326 0.306 0.328 0.304 0.328
+different time granularities under SMAPE, MASE, and
+nce. Bold values denote the best average performance.
+CycleNet/MLP CycleNet/Linear PatchTST
+13.534±0.013 14.129±0.002 13.529±0.032
+3.056±0.009 3.050±0.001 3.042±0.011
+0.798±0.002 0.816±0.000 0.796±0.002
+10.310±0.016 10.762±0.001 10.843±0.071
+1.215±0.003 1.305±0.002 1.292±0.005
+0.911±0.002 0.964±0.001 0.963±0.005
+13.011±0.018 13.346±0.000 18.176±0.482
+0.969±0.002 1.015±0.000 1.626±0.110
+0.907±0.001 0.940±0.000 1.420±0.209
+12.025±0.252 12.436±0.267 9.821±0.222
+3.887±0.158 4.496±0.108 3.157±0.096
+1.356±0.083 1.488±0.049 1.134±0.025
+3.113±0.012 3.415±0.000 3.322±0.041
+3.354±0.016 3.744±0.000 3.532±0.043
+1.023±0.004 1.132±0.000 1.0795±0.014
+18.335±0.158 21.361±0.000 21.734±0.542
+2.939±0.065 3.392±0.000 4.065±0.334
+1.168±0.021 1.289±0.000 1.439±0.090
+11.721 12.574 12.904
+2.570 2.833 2.785
+1.027 1.104 1.138
+
+
+===== PAGE 18 =====
+--- LEFT COL ---
+Enhancing Transformer with Periodi
+only a 1-year period, and ETT datasets cover only 2 ye
+specifically designed to capture seasonal patterns. To t
+fromhttps://www.kaggle.com/datasets/yogesh94/m4
+time series data collected over years. The M4 dataset is
+and Hourly. The experimental results are reported in T
+in {2021,2022,2023,2024,2025}. We have noticed that P
+of the M4 dataset, with an overall improvement of 3.17
+(12.574 → 11.360) over CycleNet/Linear under the SMA
+improvements on the yearly, quarterly, monthly, and hou
+D.3 Ablation Study on More Dataset
+We conduct an additional ablation study on the Weat
+table 14. We can draw three conclusions. First, incorp
+performance. Second, integrating periodic information
+periodic components is beneficial even in datasets witho
+hourly) capture variations that coarser patterns (e.g., da
+Table 14: More experiment results of different choices
+336 and the prediction horizons of H ∈ {96,192,336,72
+attention heads to 12 to ensure that the number of grou
+Weather
+Case NoBias Non-Periodic Periodic
+P ∅ ∅ {6} {144}
+Metric MSE MAE MSE MAE MSE MAE MSE M
+96 0.151 0.199 0.151 0.200 0.151 0.200 0.150 0.2
+192 0.200 0.249 0.196 0.245 0.193 0.242 0.194 0.2
+336 0.252 0.287 0.250 0.284 0.246 0.282 0.245 0.2
+720 0.334 0.344 0.326 0.340 0.322 0.337 0.323 0.3
+avg. 0.234 0.270 0.230 0.267 0.228 0.265 0.228 0.2
+ETTm2
+Case NoBias Non-Periodic Periodic
+P ∅ ∅ {4} {96}
+Metric MSE MAE MSE MAE MSE MAE MSE M
+96 0.174 0.265 0.172 0.262 0.167 0.257 0.168 0.2
+192 0.229 0.301 0.226 0.298 0.223 0.294 0.227 0.2
+336 0.288 0.337 0.285 0.334 0.279 0.333 0.282 0.3
+720 0.378 0.391 0.373 0.390 0.370 0.388 0.374 0.3
+avg. 0.267 0.324 0.264 0.321 0.260 0.318 0.263 0.3
+D.4 Ablation Study of Patching Stride
+To elaborate on the performance of various patching st
+ments of different patching lengths P and stride S illustr
+that reducing the stride S enhances prediction accuracy
+the ETTh1 dataset, a smaller stride significantly improv
+0.426 at P = 8,S = 4 to 0.419 at P = 1,S = 1, with
+the Weather dataset, where the smallest stride configu
+all, shorter strides allow PENGUIN to process a greate
+feature extraction and better long-range dependency mo
+--- RIGHT COL ---
+ic-Nested Group Attention for LTSF
+ears), rendering them inadequate for evaluating models
+this end, we extend our evaluation to the M4 datasets
+4-forecasting-competition-dataset,whichcontains
+divided into Yearly, Quarterly, Monthly, Weekly, Daily,
+Table 13 using a significant test with five random seeds
+PENGUIN outperforms CycleNet on all six frequencies
+7% (11.721 → 11.360) over CycleNet/MLP and 10.68%
+APE metric. Moreover, PENGUIN achieves significant
+urly datasets.
+ther and ETTm2 dataset and show the results in the
+orating attention bias consistently improves forecasting
+n also yields significant gains. Finally, using multiple
+out clear multi-periodicity, as fine-grained patterns (e.g.,
+aily) miss.
+of periodic length. The look-back length L is fixed as
+20}. Throughout this experiment, we set the number of
+ups g is a factor of h.
+r Dataset
+c Both
+{6,144} {6} {144} {6,144}
+MAE MSE MAE MSE MAE MSE MAE MSE MAE
+202 0.149 0.201 0.152 0.201 0.151 0.202 0.150 0.200
+243 0.193 0.240 0.195 0.243 0.192 0.240 0.194 0.241
+284 0.244 0.281 0.243 0.281 0.243 0.282 0.243 0.282
+339 0.322 0.342 0.326 0.340 0.321 0.337 0.318 0.334
+267 0.227 0.266 0.229 0.266 0.227 0.265 0.226 0.264
+Dataset
+c Both
+{4,96} {4} {96} {4,96}
+MAE MSE MAE MSE MAE MSE MAE MSE MAE
+258 0.168 0.257 0.167 0.257 0.172 0.261 0.171 0.260
+296 0.224 0.294 0.224 0.294 0.224 0.294 0.224 0.295
+333 0.279 0.333 0.278 0.332 0.278 0.331 0.282 0.332
+390 0.370 0.388 0.370 0.389 0.370 0.390 0.371 0.391
+319 0.260 0.318 0.260 0.318 0.261 0.319 0.262 0.320
+trides in PENGUIN, we conduct comprehensive experi-
+rated in Table 15. The results consistently demonstrate
+y across multiple datasets and metrics. For instance, in
+ves performance, with the average MSE decreasing from
+1.64% decrease. Similarly, the trend is also evident for
+uration (P = 4,S = 1) achieves the lowest MSE. Over-
+er number of overlapping patches, enabling finer-grained
+odeling.
+
+
+===== PAGE 19 =====
+--- LEFT COL ---
+Tian Sun, Yuqi C
+P/S 16/8 8/8 8/4 4/4
+Metric MSE MAE MSE MAE MSE MAE MSE MAE M
+1hTTE
+96 0.382 0.401 0.382 0.400 0.380 0.397 0.381 0.398 0.
+192 0.416 0.421 0.416 0.419 0.417 0.418 0.418 0.418 0.
+336 0.435 0.434 0.437 0.435 0.437 0.433 0.434 0.429 0.
+720 0.459 0.474 0.466 0.478 0.466 0.478 0.458 0.470 0.
+avg. 0.423 0.433 0.425 0.433 0.426 0.432 0.423 0.429 0.
+2hTTE
+96 0.287 0.344 0.289 0.345 0.290 0.346 0.288 0.344 0.
+192 0.354 0.387 0.355 0.387 0.357 0.389 0.354 0.388 0.
+336 0.380 0.410 0.380 0.410 0.379 0.410 0.379 0.412 0.
+720 0.397 0.433 0.399 0.436 0.398 0.434 0.394 0.432 0.
+avg. 0.355 0.394 0.356 0.395 0.356 0.395 0.354 0.394 0.
+1mTTE
+96 0.293 0.344 0.301 0.345 0.286 0.339 0.293 0.345 0.
+192 0.332 0.370 0.335 0.371 0.329 0.367 0.327 0.365 0.
+336 0.362 0.387 0.361 0.388 0.357 0.387 0.356 0.387 0.
+720 0.416 0.418 0.419 0.421 0.405 0.418 0.404 0.416 0.
+avg. 0.351 0.380 0.354 0.381 0.344 0.378 0.345 0.378 0.
+rehtaeW
+96 0.150 0.198 0.152 0.203 0.150 0.199 0.152 0.202 0.
+192 0.195 0.242 0.197 0.244 0.193 0.240 0.195 0.244 0.
+336 0.248 0.282 0.247 0.281 0.246 0.281 0.246 0.283 0.
+720 0.324 0.334 0.321 0.333 0.323 0.337 0.320 0.334 0.
+avg. 0.229 0.264 0.321 0.333 0.228 0.264 0.228 0.266 0.
+Table 15: Additional experiment results of the impact
+fixedas336andthepredictionhorizonsofH ∈{96,192,
+while S indicates the stride.
+E Additional Robustness Study
+E.1 Robustness Towards Varied Look-Back Win
+To assess PENGUIN’s robustness, we conducted expe
+the look-back window length, denoted as L, across a r
+the experimental results in Figure 5, PENGUIN consist
+windowlengthswhentheinputlengthislargerthan96. W
+forcapturingtemporalpatterns. TheseresultsvalidateP
+scales and long-range dependencies in time series data.
+0.50
+0.40
+48 96 192 264 336 528
+Lookback Window
+rorrE
+erauqS
+naeM
+CycleNet
+iTransformer
+PatchTST
+CATS
+PENGIUN
+(a) ETTm1 Dataset
+Figure5: Theexperimentalresultsofvariousmodelswith
+dataset. The experiments are averaged over the predicte
+E.2 Robustness Towards Random Seeds
+Inaddition,weconductedrobustnesstestsusedinthem
+ourapproachagainstrandomparameterinitialization, w
+{2021,2022,2023,2024,2025}. Table 16 reports the stand
+across these seeds. Results show that PENGUIN ach
+baselines on these datasets.
+--- RIGHT COL ---
+Chen, Weiwei Sun
+4/2 2/2 4/1 2/1 1/1
+MSE MAE MSE MAE MSE MAE MSE MAE MSE MAE
+.379 0.397 0.378 0.397 0.379 0.398 0.378 0.396 0.380 0.400
+.416 0.418 0.414 0.417 0.422 0.423 0.416 0.418 0.418 0.424
+.441 0.438 0.432 0.430 0.459 0.455 0.435 0.434 0.431 0.436
+.454 0.466 0.455 0.467 0.446 0.460 0.463 0.472 0.431 0.436
+.423 0.430 0.420 0.428 0.427 0.434 0.423 0.430 0.419 0.430
+.287 0.345 0.287 0.343 0.291 0.347 0.291 0.347 0.290 0.347
+.355 0.389 0.362 0.396 0.359 0.393 0.359 0.393 0.354 0.389
+.380 0.413 0.378 0.410 0.396 0.425 0.396 0.425 0.379 0.412
+.399 0.437 0.400 0.438 0.392 0.430 0.392 0.430 0.397 0.435
+.355 0.396 0.357 0.397 0.360 0.399 0.360 0.399 0.355 0.396
+.281 0.337 0.291 0.342 0.293 0.348 0.295 0.347 0.299 0.351
+.319 0.363 0.327 0.365 0.322 0.365 0.334 0.372 0.332 0.372
+.353 0.385 0.355 0.387 0.353 0.386 0.354 0.386 0.356 0.389
+.403 0.416 0.401 0.416 0.406 0.418 0.399 0.415 0.407 0.420
+.339 0.375 0.344 0.378 0.344 0.379 0.346 0.380 0.349 0.383
+.152 0.203 0.151 0.202 0.148 0.200 0.200 0.195 0.157 0.207
+.193 0.243 0.198 0.245 0.194 0.241 0.242 0.245 0.197 0.245
+.246 0.282 0.249 0.283 0.243 0.282 0.282 0.319 0.249 0.285
+.320 0.334 0.319 0.333 0.320 0.337 0.319 0.333 0.321 0.336
+.228 0.266 0.229 0.266 0.226 0.265 0.227 0.264 0.231 0.268
+of various patching strides. The look-back length L is
+,336,720}. Inthetable, Pindicatesthepatchinglength,
+ndow
+eriments on the ETTm1 and Traffic datasets, varying
+range of values: [48,96,192,264,336,528]. As shown in
+tently outperforms baseline models across these different
+Wehypothesizethataninputlengthof48isinsignificant
+PENGUIN’sabilitytoeffectivelyhandlevaryingtemporal
+0.350
+0.300
+48 96 192 264 336 528
+Lookback Window
+rorrE
+etulosbA
+naeM
+CycleNet
+iTransformer
+PatchTST
+CATS
+PENGIUN
+(b) Traffic Dataset
+hdiverselookbackwindowsLontheETTm1andTraffic
+ed horizon of H ∈{96,192,336,720}.
+maincomparisonexperiments. Tovalidatethestabilityof
+weevaluatedPENGUIN withfivedifferentrandomseeds
+dard deviation of MSE and MAE for different methods
+hieves statistically significant improvements over strong
+
+
+===== PAGE 20 =====
+--- LEFT COL ---
+Enhancing Transformer with Periodi
+Table 16: Robustness analysis with five random seeds co
+336 and the results are averaged over prediction horizon
+Model PENGUIN Cycl
+Metric MSE MAE MSE
+cffiarT
+96 0.357±0.000 0.247±0.000 0.399±0.0
+192 0.376±0.000 0.253±0.000 0.413±0.0
+336 0.390±0.000 0.262±0.000 0.426±0.0
+720 0.428±0.000 0.286±0.000 0.453±0.0
+raloS
+96 0.180±0.002 0.245±0.002 0.202±0.0
+192 0.202±0.005 0.257±0.006 0.225±0.0
+336 0.203±0.006 0.252±0.003 0.227±0.0
+720 0.213±0.005 0.257±0.003 0.237±0.0
+1mTTE
+96 0.290±0.001 0.341±0.000 0.301±0.0
+192 0.319±0.000 0.361±0.000 0.335±0.0
+336 0.356±0.001 0.387±0.000 0.369±0.0
+720 0.409±0.000 0.418±0.001 0.424±0.0
+F Limitation and Future Work
+PENGUIN demonstrates its effectiveness in LTSF with
+are several potential limitations of PENGUIN that wa
+be suitable for datasets with varied periodic lengths ov
+PENGUIN employs a predefined set of periodic length
+basedmethods, typicallyrequiresmoreGPUmemoryan
+the attention matrix is square in relation to the input le
+to conserve GPU memory and explore linear attention a
+--- RIGHT COL ---
+ic-Nested Group Attention for LTSF
+ompared to baselines. The look-back length L is fixed as
+ns of H ∈{96,192,336,720}.
+leNet/Linear PatchTST
+MAE MSE MAE
+000 0.276±0.000 0.378±0.002 0.270±0.002
+000 0.282±0.000 0.394±0.002 0.274±0.003
+000 0.288±0.000 0.406±0.003 0.283±0.004
+000 0.305±0.000 0.443±0.004 0.298±0.004
+001 0.286±0.001 0.195±0.004 0.252±0.003
+001 0.297±0.000 0.201±0.003 0.263±0.002
+001 0.261±0.000 0.208±0.005 0.274±0.004
+001 0.264±0.000 0.211±0.004 0.268±0.003
+000 0.344±0.000 0.289±0.001 0.345±0.001
+000 0.364±0.000 0.339±0.002 0.378±0.002
+000 0.384±0.000 0.373±0.002 0.400±0.001
+000 0.414±0.000 0.434±0.004 0.438±0.003
+the proposed periodic causal attention. However, there
+warrant discussion here. Firstly, PENGUIN might not
+ver time, such as electrocardiogram (ECG) data, since
+hs. Secondly, PENGUIN, as well as other Transformer-
+ndcomputationcostcomparedtolinearmodels, because
+ength. In future work, we plan to develop flash attention
+approaches to reduce computational costs.
