@@ -4091,3 +4091,6 @@ NeurIPS 2023（北交大）。主张 long-range 需同时捕获 global-local 相
 更新的页面：[[periodicity-modeling-in-time-series]]（路线二加 WITRAN 小节，source_count 18→19）, [[timesnet]]（Connections 加周期设定对照，source_count 4→5）, [[patchtst]]（补 patch 洞察迁移到 RNN，source_count 7→8）, [[cross-period-sparse-forecasting]]（加同形不同用对照，source_count 1→2）, [[channel-independence]]（补单通道评估实例，source_count 16→17）, [[index]]
 ingest 报告：[[ingest-reports/2026-10-25-witran-jia-2023|WHY 报告]]
 数值备注：PDF 转文本对勾/叉号成 (cid:33)/(cid:37)、Table 3/4/9 数据集与方法名镜像、公式下标断裂（已复原）；$L$ 一符多义、式 (2) 维度标注疑与式 (5) 互换；§4.1 百分比聚合公式未给出（复核为等权平均）；Table 10 norm 列跨行合并缺值
+
+## [2026-10-25] maintenance | WITRAN 三页文案压实（polisher 不可用）
+外部模型（omp -p google/gemini-3.8-flash:high）三次调用全部中断/超时（600s、900s×2，"error: interrupted"），与 10-24 DeCoDy 轮同症状；首轮唯一产出降幅 0.8% 且私自新增两个 '5'，弃用。回退主 agent 手工压缩：[[witran]] -1.8%、[[recurrent-acceleration-network]] -2.7%、[[source-witran-jia-2023]] 0%。未达 10%–20% 目标：三页正文以数字、公式块、表/图/节编号与归因限定语为主，可删字面集中在连接词，继续压缩只能删事实，故停止。校验：数字 Counter、[^src-*] 唯一集、wikilink 集、公式块逐字、heading 集全部比对通过（witran 唯一 delta 为页内 "Stage 2" 自引用 +1 与删除句中一个 §3.2，非数据改动）。基线备份 .scratch/*.baseline。同轮顺带把 witran.md 数据流 Stage 2–4 重排为技能规定的支路列表 + 汇合结构，单行公式块包 \begin{aligned}，Stage 3/4 补维度注解。
