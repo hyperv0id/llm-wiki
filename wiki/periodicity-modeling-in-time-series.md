@@ -98,12 +98,24 @@ status: active
 - **核心贡献**：周期残差为可插拔模块，降低参数 1–147 倍同时提升精度
 - **局限**：依赖已知固定周期长度（日、周）；网格化 CNN 对不规则传感器布局不适用
 
-### HyperD（2025）
+### HyperD（AAAI 2026）
 
-[[hyperd|HyperD]] 提出**混合周期解耦**（Hybrid Periodicity Decoupling），将交通信号显式分解为**短周期**（intra-day, 1–6 小时）、**长周期**（daily/weekly）和**残差**三部分[^src-hyperd-hybrid-periodicity-decoupling]。FR 模块通过 RFFT 将频率分量聚类为高/中/低三频段，分别对应残差、短周期嵌入、长周期嵌入。双路径编码器（STFE + FR-STFE）各自处理原始信号和残差信号，由对应的频率嵌入引导。fDMLP 解码器进一步在预测阶段做趋势分离。
+[[hyperd|HyperD]] 把交通序列拆成 periodic 与 residual 两支。periodic 支由可学习的日表 $P_D\in\mathbb{R}^{288\times N}$ 与周表 $P_W\in\mathbb{R}^{2016\times N}$ 按时间戳取行相加得到；residual 支先做减法 $R^{in}=X-S^{in}$，再在空间、时间两轴依次做 FFT → 复值 MLP → IFFT；两支相加构成预测，DVA 损失把预测频谱的低频段压向周期支、高频段压向残差支[^src-hyperd-hybrid-periodicity-decoupling]。
 
-- **核心贡献**：首次在编码器层面实现短/长周期路径分离；频率阈值通过学习获得，自动对齐日周期（288 步/天）和周周期（2016 步/周）
-- **局限**：针对交通预测设计，泛化到一般时间序列未验证；PeMS 之外数据集覆盖有限
+$$\begin{aligned}
+S^{in} &= \tilde P_D[i_D^{in}]+\tilde P_W[i_W^{in}] && \text{// } [288,N],[2016,N]\xrightarrow{\text{按 } T_1 \text{ 个时间戳索引行}}[T_1,N]\ \text{——日表、周表逐元素相加}\\
+R^{in} &= X-S^{in} && \text{// } [T_1,N]\ \text{——减出残差}\\
+\hat Y &= S^{out}+\operatorname{Proj}\!\left(\operatorname{IFFT}_t(\operatorname{CMLP}(\operatorname{FFT}_t(\operatorname{IFFT}_s(\operatorname{CMLP}(\operatorname{FFT}_s(\tilde R^{in}))))))+\tilde R^{in}\right) && \text{// } [T_1,N,D]\xrightarrow{\text{空间轴频域}}\xrightarrow{\text{时间轴频域}}\xrightarrow{\text{投影}}[T_2,N]
+\end{aligned}$$
+
+$T_1=T_2=12$，$\tilde P$ 是经 STAE（GCN + 时间/空间自注意力）精炼后的表，$i_D(t)=\text{time of day}$、$i_W(t)=\text{time of day}+\text{day of week}\times 288$[^src-hyperd-hybrid-periodicity-decoupling]。
+
+- **关键限定**：周期分量是「每节点 × 每墙钟槽位」的均值参数表，前向只读时间戳，不读输入；论文没有 RFFT 三频段聚类、没有可学习频率阈值、没有短/长周期双编码器，也没有 fDMLP 解码器。288/2016 是表的行数，不是 FFT 阈值[^src-hyperd-hybrid-periodicity-decoupling]。
+- **核心贡献**：把周期项从窗口内移动平均换成全训练集按槽位统计的参数表，并用 STAE 在节点、跨周期两维加上下文；DVA 用频段归属约束周期支与残差支的分工[^src-hyperd-hybrid-periodicity-decoupling]。
+- **局限**：周期表长度需先验设定，周期漂移无处理；剖面是全局均值，异常值会抬高槽位均值；残差支无图卷积；12 步预测下 DVA 的 $F_{low}$ 只能取 1–3[^src-hyperd-hybrid-periodicity-decoupling][INFERENCE]。
+
+> [!warning] 引用口径
+> 上述机制以 arXiv:2511.09275v2 原文为准。`raw/` 的二手摘要写成「三频段 + 双路径 + fDMLP」，与原文不符；差异见 [[correction-hyperd-secondary-summary]]。
 
 ### SparseTSF（TPAMI 2026 & ICML 2024 Oral）
 
@@ -146,7 +158,7 @@ status: active
 - **[[source-st-resnet|ST-ResNet]]**（AAAI 2017）分 closeness/daily period/weekly trend 三个分量，各自经 ResNet 处理后通过参数矩阵加权融合[^src-st-resnet]。
 - **[[source-astgcn|ASTGCN]]**（AAAI 2019）沿用了三段时间分量设计并引入时空注意力，使图卷积过程中的节点相关性和时间依赖性均动态调整[^src-astgcn]。
 
-这种三段时间分量模式后来被 HyperD 等深度解耦方法所继承，但后者的关键改进在于**将分量内部进一步拆分**——不是三个独立的并行分支，而是将同一条信号显式分解为不同频段，各自用专门化结构处理。
+三段时间分量在后续工作中仍有回响，但 [[hyperd|HyperD]] 走的是另一条路：不是把输入分成三个并行分量，而是用日、周两张可学习周期表构造周期剖面，从信号中减掉后把残差交给频域分支（见路线二）[^src-hyperd-hybrid-periodicity-decoupling]。
 
 ## 路线五：轻量级稀疏周期建模
 
@@ -163,10 +175,18 @@ status: active
 
 ### CycleNet（NeurIPS 2024）
 
-[[cyclenet|CycleNet]] 提出 **Residual Cycle Forecasting (RCF)** 技术，使用可学习的循环周期 $Q \in \mathbb{R}^{W \times D}$ 显式建模数据内在的���期性模式[^src-cyclenet]。核心思想：
-- 生成可学习循环周期 $Q$，通过循环复制得到周期分量 $C$[^src-cyclenet]
-- 从原始输入中移除周期分量，对残差进行预测，最后加回周期分量[^src-cyclenet]
+[[cyclenet|CycleNet]] 提出 **Residual Cycle Forecasting (RCF)**：每通道一张可学习周期表 $Q \in \mathbb{R}^{W \times D}$（零初始化），按绝对相位 $t \bmod W$ 滚动对齐并循环复制成与窗口等长的周期分量，从输入减掉后由共享骨干预测残差，再加回未来段的周期分量[^src-cyclenet]。
 
+$$\begin{aligned}
+Q^{(t)} &= \operatorname{Roll}(Q,\,-t\bmod W) && \text{// } [W,D]\to[W,D]\ \text{——按绝对相位旋转行序，形状不变}\\
+c_{t-L+1:t} &= [\underbrace{Q^{(t)},\dots,Q^{(t)}}_{\lfloor L/W\rfloor},\,Q^{(t)}_{0:L\bmod W}] && \text{// } [W,D]\xrightarrow{\text{重复并拼接}}[L,D]\ \text{——与历史窗口对齐的周期分量}\\
+x' &= x_{t-L+1:t}-c_{t-L+1:t} && \text{// } [L,D]-[L,D]\to[L,D]\ \text{——残差}\\
+\bar x' &= f_\theta(x') && \text{// } [L,D]\xrightarrow{\text{逐通道共享的 Linear/MLP}}[H,D]\\
+\bar x &= \bar x'+c_{t+1:t+H} && \text{// } [H,D]+[H,D]\to[H,D]\ \text{——加回未来段周期分量}
+\end{aligned}$$
+
+- **不是检索**：$Q$ 就是一张参数矩阵，前向只做「按 $t\bmod W$ 取行 + 复制」；没有数据库、没有近邻匹配、没有冻结编码器。$t\bmod W$ 是墙钟相位，不是检索索引[^src-cyclenet]。
+- **关键限定**：周期分量与输入无关，是所有样本共享的均值剖面；$W$ 需先验设定（ETTh1 为 24，Electricity/Traffic 为 168），取错时性能退化到不用 RCF 的水平（Table 6）[^src-cyclenet]。
 - **核心贡献**：首次系统论证显式建模全局周期模式的有效性；RCF 可作为即插即用模块提升 PatchTST、iTransformer 等模型性能；参数减少 90%+[^src-cyclenet]
 - **局限**：在具有显著时空特性和极端值的 Traffic 数据集上性能略逊于 iTransformer；当前版本仅考虑单通道关系建模[^src-cyclenet]
 
@@ -199,30 +219,30 @@ status: active
 | 模型 | 年份 | 分离粒度 | 自适应 |
 |------|------|----------|--------|
 | FEDformer | 2022 | 随机选取固定数量模式 | 否 |
-| HyperD (FR) | 2025 | 三频段（高/中/低）聚类 | 学习阈值 |
-| Dualformer (HFS) | 2026 | 按层级逐层分配频段 | 区间动态调整 |
 | AFE-TFNet (DHSEW) | 2025 | 谐波能量比加权 | 动态加权 |
+| Dualformer (HFS) | 2026 | 按层级逐层分配频段 | 区间动态调整 |
 
-> 注：HyperD 的 FR 模块将频率分量聚类为高/中/低三段，对应残差、短周期、长周期——是首个在编码器层面实现**短/长周期路径分离**的模型。
+> 注：HyperD 不在本表。它的频域操作只作用在减掉周期剖面后的残差上，唯一的频率切分在 DVA 损失里（预定义 $F_{low}$，取 1–3），不是对输入频段的自适应选择[^src-hyperd-hybrid-periodicity-decoupling]。
 
-路径清晰：从**固定选择 → 聚类 → 层级分配 → 动态加权**，频率分离的自适应性和结构化程度不断提升。
+路径清晰：从**固定选择 → 层级分配 → 动态加权**，频率分离的自适应性和结构化程度不断提升。
 
 ### 周期性认知的层级
 
 1. **隐式**（ST-ResNet, ASTGCN）：通过时间分量组织输入让网络自己学习周期模式
-2. **显式—分解**（Autoformer, HyperD）：将周期成分从信号中显式分离
-3. **显式—变换**（TimesNet, FreTS）：通过域变换（Fourier, 2D reshape) 暴露周期结构
-4. **显式—先验**（PENGUIN, PRNet, TQNet）：将周期知识编码为模型先验（注意力偏置、可学习 Query 或残差目标）
-5. **显式—稀疏**（SparseTSF）：通过跨周期下采样实现周期结构利用 + 极端压缩
+2. **显式—窗口分解**（Autoformer, DLinear）：在回看窗内用移动平均分离趋势与季节
+3. **显式—周期表**（CycleNet, HyperD）：用全局周期剖面参数表，按墙钟相位取值后从输入减掉，残差交给骨干
+4. **显式—变换**（TimesNet, FreTS）：通过域变换（Fourier, 2D reshape) 暴露周期结构
+5. **显式—先验**（PENGUIN, PRNet, TQNet）：将周期知识编码为模型先验（注意力偏置、可学习 Query 或残差目标）
+6. **显式—稀疏**（SparseTSF）：通过跨周期下采样实现周期结构利用 + 极端压缩
 
-层级越高，模型对周期结构的"理解"越深入，但泛化到无周期或弱周期数据时风险越大。
+这几类的分别不在「理解深浅」，而在周期分量的来源与用途：窗口统计、全局参数表、域变换、模型先验。周期强、训练段长时，全局周期表直接有效；周期漂移或弱周期数据时，参数表会把错误相位写进预测。
 
 ### 分解到什么程度？
 
 一个持续存在的设计张力：
 
 - **趋势 vs 季节**：Autoformer、FEDformer 分趋势和季节两类（粗粒度）
-- **短周期 vs 长周期**：HyperD 在季节内部再分短/长两类（中粒度）
+- **周期 vs 残差**：CycleNet、HyperD 用全局周期剖面，残差交给骨干或频域分支（中粒度）
 - **多周期并行**：TimesNet 保留 top-k 个周期各自独立处理（细粒度）
 - **周期残差**：PRNet 仅建模相对于已知周期的偏差（极简方案）
 
@@ -241,7 +261,7 @@ TPLib 调查的结论——"没有单一架构在所有任务上通用"——对
 | [[source-timesnet|TimesNet]] | 2023 | **ICLR** | 1D→2D 多周期变换 |
 | [[source-witran-jia-2023|WITRAN]] | 2023 | **NeurIPS 2023** | 周期重排 + 双向 RNN（water-wave） |
 | [[source-frets|FreTS]] | 2023 | **NeurIPS** | 频域 MLP 高效学习 |
-| [[source-hyperd-hybrid-periodicity-decoupling|HyperD]] | 2025 | **AAAI 2026** | 短/长周期解耦 + 双路径编码器 ★ |
+| [[source-hyperd-hybrid-periodicity-decoupling|HyperD]] | 2025 | **AAAI 2026** | 日/周周期表 + 频域残差支 + 频段对齐损失 ★ |
 | [[source-afe-tfnet|AFE-TFNet]] | 2025 | Ocean Engineering (期刊) | WT+FFT 联合自适应提取 |
 | [[source-deep-time-series-survey|TSLib Survey]] | 2025 | arXiv (期刊在投) | 系统性归类与基准评测 |
 | [[source-dualformer|Dualformer]] | 2026 | arXiv (投稿中) | 层级频率采样反低通滤波 |

@@ -50,7 +50,7 @@ Wang & Du 等人的 MTSI 综述将 TimesNet 归为预测式-CNN 类插补方法�
 - **[[informer]]** — Informer (AAAI 2021 Best Paper) pioneered efficient Transformer-based LSTF and is listed as a key baseline in TimesNet's experiments[^src-timesnet].
 - **[[autoformer]]** — Autoformer's progressive decomposition and periodicity analysis via autocorrelation precede TimesNet's approach. TimesNet extends the idea by explicitly modeling multiple periods through 2D reshaping[^src-timesnet].
 - **[[source-autoformer|Autoformer (source)]]** — Autoformer is extensively cited by TimesNet as a foundational reference for periodicity-based time series modeling[^src-timesnet].
-- **[[source-hyperd-hybrid-periodicity-decoupling|HyperD]]** — HyperD decouples short-term and long-term periodicity into separate specialized pathways, an alternative design to TimesNet's shared 2D convolution approach over multiple discovered periods[^src-hyperd-hybrid-periodicity-decoupling]
+- **[[source-hyperd-hybrid-periodicity-decoupling|HyperD]]** — HyperD decouples periodic and residual components: learnable daily/weekly periodic tables supply the periodic profile, and a frequency-domain branch models the residual, an alternative to TimesNet's shared 2D convolution over discovered periods[^src-hyperd-hybrid-periodicity-decoupling]
 - **[[unica|UniCA]]** — 作为时间序列基础模型（TSFM）之一，TimesFM 可作为 UniCA 的适配基线。UniCA 框架可为其添加异构协变量支持，同时保持 TimesNet/TimesFM 主干冻结[^src-unica]
 - **[[witran|WITRAN]]** — WITRAN 的周期重排直接受 TimesNet 启发，但明确改掉 FFT 自适应多周期：分析数据自然周期后以超参 $C\in\{12,24,48\}$ 人工设定重排，论文自述因此"much simpler"；其批评 TimesNet 受 2D 卷积骨干感受野限制、需堆多层才能建模全局相关（Table 1）。WITRAN 的效率实验中 TimesNet 即使 batch=1 也 OOM 未入对比[^src-witran-jia-2023]
 

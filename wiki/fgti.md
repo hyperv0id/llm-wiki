@@ -114,7 +114,7 @@ KDD 10% 设置下，FGTI 的运行时间与其他扩散方法处于同一量级�
 - [[frequency-aware-conditioning|频率感知条件化]]：FGTI 是该范式在时序插补任务上的实例——频域滤波提取条件信号、编码后经 cross-attention 注入生成网络[^src-fgti]；与图像生成中的 [[freqflow|FreqFlow]] 同族但任务与注入方式不同（FreqFlow 侧对照见 [[frequency-aware-conditioning]] 页）。
 - [[frequency-diffusion|频域扩散]] / [[frequency-based-noise-control|频域噪声控制]]：改前向噪声频谱 vs 改条件信号，是频域介入扩散模型的两个不同位置，FGTI 属后者[^src-fgti]。
 - [[fourier-imputation-loss|FIL]]：ImputeFormer 的 Fourier loss 对插补输出的频谱做 ℓ1 稀疏正则[^src-2312-01728]；FGTI 则从输入观测提取频域条件[^src-fgti]——输出端正则与输入端条件化的区别。
-- [[frequency-aware-residual-representation|FR（HyperD）]]：交通预测中的 HyperD 也将高频段映射到残差分量[^src-hyperd-hybrid-periodicity-decoupling]；FGTI 在插补任务上给出同方向论断并附分项实验（Table 7）[^src-fgti]，是"高频↔残差"这一跨任务模式的第二处独立证据。
+- [[frequency-aware-residual-representation|FARR（HyperD）]]：交通预测中的 HyperD 把「观测减周期剖面」后的残差送进空间/时间频域复值 MLP，但不对输入做频段划分[^src-hyperd-hybrid-periodicity-decoupling]；FGTI 是从观测中提取高频条件，两者的「高频」口径不同，不能互相作为证据。
 - [[mts-imputation-taxonomy|MTSI 综述]]：综述 Table 1 收录 FGTI（Category 列 generative、架构列 Diffusion, Attention）[^src-mts-imputation-survey]；FGTI 原文同时引用了该综述（其参考文献 [48] 即 arXiv:2402.04059，用于"预测模型可经改造用于插补"的论断）[^src-fgti]。
 
 ## 范围与口径

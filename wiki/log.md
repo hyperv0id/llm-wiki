@@ -4101,3 +4101,13 @@ ingest 报告：[[ingest-reports/2026-10-25-witran-jia-2023|WHY 报告]]
 更新的页面：[[source-penguin]]（41 行英文摘要重写为机制/证据/未报告/数值缺陷四段，补 Table 2/10/3/7 数字）, [[alibi]]（新增「时序预测中的扩展」小节，source_count 3→4）, [[periodicity-modeling-in-time-series]]（路线三 PENGUIN 小节重写机制与证据强度）, [[hybrid-periodicity-decoupling]]（把 "learned period" 改为先验给定 + 折叠公式，source_count 1→2）, [[temporal-query-technique]]（PENGUIN 行补引用与分工说明，source_count 2→3）, [[traffic-forecasting]]（PENGUIN 条目换成 Traffic 实际设置与数值）, [[index]]
 ingest 报告：[[ingest-reports/2026-10-25-penguin|WHY 报告]]
 数值备注：表格加粗/下划线全丢，最优基线为按数值复算；正文「相对 Autoformer/FEDformer 改进 over 45%」与 Table 10 均值复算 42.6%/31.4% 冲突，两处并列；正文称 Electricity 上 CATS 更好但表格 MSE 相反（仅 MAE 成立）；Table 15 的 Weather $P/S=8/8$ avg 行等于其 720 行（排版错误）；百分比分母在不同段落不统一；p.13–14/18–20 右栏被裁切、Table 10 多数逐 horizon 单元格在文本层错位（仅 PENGUIN 行与聚合值可复原）；编码器层数、优化器、参数量/MACs 原文未给
+## [2026-10-25] contradiction | HyperD（6 页 + 分析页） | 情况 1（主源取代二手摘要）
+旧：`raw/hyperd-hybrid-periodicity-decoupling.md` 称 RFFT 高/中/低三频段聚类、短/长周期双编码器（STFE + FR-STFE）、fDMLP 去趋势解码器、Soft-DTW + 余弦相似度 DVA。新：arXiv:2511.09275v2 原文用日/周可学习周期表按时间戳取行相加得到周期剖面，残差 $R=X-S$ 在空间、时间两轴做 FFT → 复值 MLP → IFFT，DVA 把预测频谱按预定义 $F_{low}$ 切段后分别对周期支、残差支做 MSE；论文没有三频段、双路径与 fDMLP。解决方案：以原文重写 [[hyperd]]、[[source-hyperd-hybrid-periodicity-decoupling]] 与 4 个组件页，删除 [[demlp-decoder]]，新增 [[correction-hyperd-secondary-summary]] 记录逐条差异；`raw/` 未改。
+
+## [2026-10-25] maintenance | 周期梳理页补数据流 + CycleNet 去检索误读
+[[periodicity-modeling-in-time-series]] 的 HyperD、CycleNet 两节补分阶段维度块，明写 HyperD 的周期分量是「每节点 × 墙钟槽位参数表」、CycleNet 的 $Q$ 按 $t\bmod W$ 查表而非检索；同步修正三频段表、周期认知层级、分解粒度、路线四与时间线。[[residual-cycle-forecasting]] 与 [[cyclenet]] 补相位取值说明。全文改动的横向引用（fedformer / timesnet / dualsformer / pdformer / fgti / source-autoformer / traffic-forecasting）一并按原文校正。
+创建的页面：[[correction-hyperd-secondary-summary]]
+更新的页面：[[hyperd]]（source_count 1→2）, [[source-hyperd-hybrid-periodicity-decoupling]], [[periodicity-modeling-in-time-series]], [[frequency-aware-residual-representation]], [[spatial-temporal-attentive-encoder]], [[dual-view-alignment-loss]], [[hybrid-periodicity-decoupling]], [[cyclenet]], [[residual-cycle-forecasting]], [[index]]
+删除的页面：[[demlp-decoder]]
+ingest 报告：[[ingest-reports/2026-10-25-hyperd-correction|WHY 报告]]
+数值备注：二手摘要与原文在作者、模块、基线数、消融与效率数字上系统性冲突（见更正页）；PEMS03 MAPE 非最优（DGCRN 15.42% vs HyperD 15.76%）；$T_1'$、Table 4 Reduction 基线与 $W_o$ 维度按上下文推断，已标 [INFERENCE]

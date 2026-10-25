@@ -18,6 +18,9 @@ RCF 是 CycleNet 的核心技术，由华南理工大学等机构提出（NeurIP
 
 ## 核心思想
 
+> [!warning] 不是检索（RAG）
+> $Q$ 是一张参数矩阵，前向按绝对相位 $t\bmod W$ 滚动取值；没有数据库、近邻搜索、相似度匹配，也没有冻结编码器。不要把它读成「检索历史周期样本」。
+
 RCF 本质上是一种季节性-趋势分解（STD）方法，其核心思想分为两步：
 
 1. **周期建模**：使用可学习的循环周期 $Q \in \mathbb{R}^{W \times D}$ 显式建模数据内在的周期性模式[^src-cyclenet]
@@ -31,10 +34,10 @@ RCF 本质上是一种季节性-趋势分解（STD）方法，其核心思想分
 
 ### 周期分量对齐
 
-由于循环周期 $Q$ 是虚拟序列，需要通过对齐和复制操作获取等效的周期分量：
+由于循环周期 $Q$ 是虚拟序列，需要通过对齐和复制操作获取等效的周期分量（形状记作 $[W,D]$ 与 $[L,D]$，$L$ 回看长度、$H$ 预测长度）：
 
-- 对历史输入 $x_{t-L+1:t}$：左移 $Q$ $t \mod W$ 位，然后重复 $\lfloor L/W \rfloor$ 次[^src-cyclenet]
-- 对未来预测 $x_{t+1:t+H}$：左移 $Q$ $(t+L) \mod W$ 位，然后重复 $\lfloor H/W \rfloor$ 次[^src-cyclenet]
+- 对历史输入 $x_{t-L+1:t}$：左移 $Q$ $t \bmod W$ 位（$[W,D]\to[W,D]$，只旋转行序），然后重复 $\lfloor L/W \rfloor$ 次并拼接前 $L\bmod W$ 行，得到 $c_{t-L+1:t}\in\mathbb{R}^{L\times D}$[^src-cyclenet]
+- 对未来预测 $x_{t+1:t+H}$：左移 $Q$ $(t+L) \bmod W$ 位，然后重复 $\lfloor H/W \rfloor$ 次并拼接前 $H\bmod W$ 行，得到 $c_{t+1:t+H}\in\mathbb{R}^{H\times D}$[^src-cyclenet]
 
 ### 残差预测流程
 

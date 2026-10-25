@@ -175,7 +175,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-heterogeneous-moe-routing]] — TODO
 - [[source-hifinet]] — HiFiNet: Hierarchical Frequency-Decomposition GNN for Road Network Representation Learning (AAAI 2026)
 - [[source-how-llm-understand-st]] — STG-LLM: How Can Large Language Models Understand Spatial-Temporal Data (arXiv 2024), STG-Tokenizer 节点即 token + STG-Adapter 冻结 GPT2 1.70% 参数, PEMS07 MAE 19.82
-- [[source-hyperd-hybrid-periodicity-decoupling]] — "HyperD: Hybrid Periodicity Decoupling Framework for Traffic Forecasting" (Wen & Feng, 2025)
+- [[source-hyperd-hybrid-periodicity-decoupling]] — "HyperD: Hybrid Periodic Decoupling Framework for Traffic Forecasting" (Shao et al., AAAI 2026)：日/周可学习周期表 + 频域残差支 + 频段对齐损失；含二手摘要差异更正
 - [[source-improved-meanflows]] — Improved Mean Flows (iMF): On the Challenges of Fastforward Generative Models, MeanFlow 同团队后续：目标等价改写为 v-loss 再参数化并修正 JVP 输入、CFG 尺度改为条件变量、in-context conditioning，ImageNet-256 从头训练 1-NFE FID 1.72（Geng, Lu, Wu, Shechtman, Kolter, He; CMU/MIT/Adobe/THU, arXiv 2025 v2）
 - [[source-incident-guided-st-forecasting]] — IGSTGNN: Incident-Guided Spatiotemporal Graph Neural Network for Traffic Forecasting (KDD 2026)
 - [[source-instaflow]] — InstaFlow: One Step is Enough, reflow+distill SD to one-step generation (ICLR 2024)
@@ -484,7 +484,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[gtr]] — GTR, lightweight plug-and-play global temporal retrieval module for MTSF, extends cycle awareness beyond look-back window (ICLR 2026)
 - [[hephestus]] — HEPHAESTUS, adaptive multi-scale MoE + periodic temporal attention + heterogeneous spatial attention for traffic forecasting (ICLR 2026, under review)
 - [[hifinet]] — HiFiNet, hierarchical frequency-decomposition GNN for road network representation learning (AAAI 2026)
-- [[hyperd]] — Hybrid Periodicity Decoupling framework for traffic forecasting
+- [[hyperd]] — Hybrid Periodic Decoupling: learnable daily/weekly periodic tables + frequency-domain residual branch for traffic forecasting
 - [[igstgnn]] — IGSTGNN, incident-guided spatiotemporal graph neural network for traffic forecasting (KDD 2026)
 - [[imputeformer]] — ImputeFormer, low-rankness-induced Transformer with projected/embedded attention and Fourier sparsity loss for generalizable spatiotemporal imputation (KDD 2024)
 - [[informer]] — Informer, efficient Transformer for LSTF with ProbSparse attention (AAAI 2021 Best Paper)
@@ -739,7 +739,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[heterogeneous-task-weights]] — 多步预测中对未来各步赋予非均匀任务权重（QDF 用 Σ^{-1} 对角元建模）
 - [[hidden-global-components]] — 隐藏全局成分：局部数据中含反映跨区域交通变化的成分这一假设、提取机制与三条证据
 - [[hybrid-llm-flow-matching-forecasting]] — 混合 LLM-流匹配预测，耦合预训练 LLM 语义理解与 FM 连续随机建模的生成式预测范式 (ICML 2026)
-- [[hybrid-periodicity-decoupling]] — explicitly separating short-term and long-term periodicity in time-series signals
+- [[hybrid-periodicity-decoupling]] — decoupling a learnable daily/weekly periodic profile from the residual, then modeling the residual in the frequency domain
 - [[identity-mapping-property]] — 残差连接中浅层信号直通深层的恒等映射性质
 - [[imputation-consistency]] — 插补一致性，intra（插补值与观测值互相可重构）+ inter（相邻窗口时序一致），MTSCI 提出并以 CRPS 度量；与 Consistency Models 的少步自一致性不同义 (CIKM 2024)
 - [[in-context-learning]] — ICL，冻结基础模型仅凭上下文演示适配新任务的范式；WeatherGFM 视觉 ICL 的基础 (2026)
@@ -957,7 +957,6 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[deformable-fast-weight-experts]] — 形变 fast-weight 专家：专家组成由内容决定而非位置切块，MiTA 用 landmark query 对全 KV 打分取 top-k，$N$-to-$m$ 路由后可复用
 - [[decody]] — Delay-Coupled Neural Dynamics：残差递推的延迟耦合 + 增益约束 + 全 horizon 求解器，8 h–7 d 多日交通演化预测
 - [[decoy-injection]] — benchmark technique injecting fake PII to increase privacy reasoning difficulty
-- [[demlp-decoder]] — two-stage coarse-to-fine decoder with explicit trend removal
 - [[denoising-reduction]] — Denoising Reduction 去噪步数缩减策略，训练时用 10 步推理时用 40 步以加速在线 RL (NeurIPS 2025)
 - [[detr]] — DETR，目标检测建模为直接集合预测：二部匹配 Hungarian loss + CNN/Transformer encoder-decoder，免 anchors/NMS（arXiv 2020）
 - [[differentiable-spatial-embedding]] — 可微空间嵌入 SE-L（冻结 LLaMA3 文本描述）与 SE-H（GeoHash + 字符 BERT，训练中更新），以及两者在不同数据集上的实证差异
@@ -982,7 +981,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[dual-level-hard-negative-mining]] — Dual-level hard negative mining at sample + channel granularity for cross-modal TS-text alignment (TRACE, NeurIPS 2025)
 - [[dual-stream-attention-time-series]] — Dual-Stream Attention for Time Series, orthogonal Time + Variate attention as low-rank decomposition (arXiv 2026)
 - [[dual-stream-temporal-frequency-processing]] — 双流时频处理，TCN+GCN 时域与 DCT 频域的并行处理与 Cross-Attention 融合 (arXiv 2025)
-- [[dual-view-alignment-loss]] — regularization loss aligning representations across periodicity views
+- [[dual-view-alignment-loss]] — frequency-band alignment loss: prediction lows match the periodic profile, highs match the residual
 - [[dynamic-correlation-estimation]] — DCE：Pearson + Qt V Qtᵀ 低秩动态相关估计（CoRA）
 - [[dynamic-graph-qualification]] — DGQ, qualifying edge reliability via cross-time-step similarity for adjacency matrix refinement (AAAI 2026)
 - [[dynamic-reassembly]] — Dynamic Reassembly：对选中 patch 可微 Argsort 学习顺序 (SRS, NeurIPS 2025)
@@ -1021,7 +1020,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[fourier-self-attention]] — 傅里叶域自注意力，DFT频域多头注意力IDFT 显式编码空间周期性，与 FEDformer FEB 不同
 - [[frenet-frequency-domain-network]] — FreNet, frequency-domain network using FFT + learnable frequency embedding to extract stable low-frequency components resilient to distribution drift (STBP, ICLR 2026)
 - [[freqflow]] — FreqFlow, frequency-aware flow matching with dual-branch architecture (arXiv 2026)
-- [[frequency-aware-residual-representation]] — Fourier-based signal decomposition into periodic and residual components
+- [[frequency-aware-residual-representation]] — FARR: residual (input minus periodic profile) encoded by complex-valued MLPs in spatial and temporal frequency domains
 - [[frequency-balance-loss]] — 惩罚各频率在 mini-batch 上的平均选择概率偏离 $1/P$ 的均衡正则
 - [[frequency-diffusion]] — 频域扩散，在傅里叶频域中执行扩散过程的生成方法
 - [[frequency-domain-stability-augmentation]] — FDA, frequency-domain perturbation with spectral constraints for roadlane transfer in MiniTraffic
@@ -1240,7 +1239,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[sparse-balanced-mixture-of-experts-st]] — 稀疏平衡混合专家，每节点 Top-K 激活 + 符号 SGD 负载均衡，克服线性图学习的低秩瓶颈 (MAGE, NeurIPS 2025)
 - [[sparse-teacher-forcing]] — STF，间歇性数据推断状态重校准的 DSR 训练方法，控制梯度爆炸同时探索长期动力学
 - [[spatial-imputation-decoder]] — Spatial Imputation Decoder, neighbor-only two-stage message-passing imputation (ICLR 2022)
-- [[spatial-temporal-attentive-encoder]] — dual-pathway encoder for short-term and long-term periodicity
+- [[spatial-temporal-attentive-encoder]] — GCN + temporal/spatial self-attention that refines HyperD's learnable periodic tables
 - [[spatial-temporal-tokenizer]] — 空间+时间双维度 token 生成，激活 PLM 对时空数据的理解 (AAAI 2025)
 - [[spatial-tokenizer-adjacency-patches]] — STUNet spatial tokenizer: adjacency-matrix ViT-style patches, AE pretrain + node permutation, frozen at backbone stage (KDD 2026)
 - [[spatio-temporal-retrieval-store]] — 基于 FAISS 的双维度向量记忆库 + 动量 EMA 管理 (RAST, AAAI 2026)
@@ -1311,6 +1310,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 
 ## Analyses
 
+- [[correction-hyperd-secondary-summary]] — HyperD 二手摘要与 arXiv 原文的逐条差异：三频段/双路径/fDMLP 均不存在，附正确数字与处置
 - [[diffusion-frequency-domain-theory]] — 扩散模型为什么先学低频——频域理论的统一视角：谱偏置频率层级频域噪声控制EqualSNRSNR-t Bias范式转移
 - [[fast-weight-scaling-taxonomy]] — 高效注意力的五维坐标（缩放策略／专家数量／专家类型／专家构造／路由拓扑）+ 14 个方法的格位映射，含 MiTA 对只压缩方法的增量收益
 - [[graph-node-clustering]] — 图节点聚类方案全景：拓扑驱动（Louvain/METIS/KD-Tree）× 特征驱动（k-means/k-medoids/DTW）× 可学习聚类（胶囊路由/对比聚类/记忆向量锚点/注意力分数），静态 vs 动态取舍

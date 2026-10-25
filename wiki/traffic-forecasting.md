@@ -56,7 +56,7 @@ STTN (2020), GMAN (2020), [[pdformer|PDFormer]] (2023)[^src-pdformer-jiang-2023]
 [[adafre|AdaFre]]（AAAI 2026）把输入按 DFT 有效频带切成 $P=4$ 条 band-limited 时域视图，每个频带配对同序号的拉普拉斯特征向量分组（[[frequency-specific-spatial-embedding|频率特异谱嵌入]]），再以节点级温度 softmax + top-$K$（$K=2$）只激活 $K$ 个频带分支、按归一化权重融合，backbone 取 [[stid|STID]]。与 FEDformer 一路把频域当作统一处理对象不同，AdaFre 显式建模了频率重要性随上下文变化、空间依赖随频率变化这两点，并以均衡损失抑制路由坍塌[^src-adafre]。PeMSD3/4/7/8 输入 288 步预测 12 步，对 22 个基线 MAE 14.27 / 17.89 / 18.58 / 12.99 全部最低（PeMSD4 次优 HimNet 18.14，PeMSD8 次优 STWave 13.42），参数量 337K 低于 AGCRN 763K 与 HimNet 11B[^src-adafre]。见 [[band-limited-temporal-decomposition]]、[[frequency-pathway-routing]]、[[frequency-balance-loss]]。
 
 ### Periodicity-Decoupled
-[[hyperd|HyperD]] (2025) explicitly decouples short-term and long-term periodicity via hybrid frequency-domain decomposition[^src-hyperd-hybrid-periodicity-decoupling].
+[[hyperd|HyperD]] (2025) explicitly decouples periodic and residual components: learnable daily/weekly periodic tables supply the periodic profile, and a frequency-domain branch models the residual[^src-hyperd-hybrid-periodicity-decoupling].
 
 ### Accident-Aware
 Traditional models assume stationary traffic patterns but fail during accidents which create non-stationary perturbations with directional shockwaves. ConFormer (KDD 2026) addresses this through accident-aware graph propagation and Guided Layer Normalization (GLN), achieving up to 10.7% improvement in accident scenarios[^src-conformer].

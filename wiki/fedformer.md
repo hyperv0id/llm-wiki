@@ -94,7 +94,7 @@ Random mode selection consistently outperforms fixed low-frequency selection acr
 ### Successors & Alternatives
 - **[[dualsformer|Dualformer]]** — builds on FEDformer's frequency-domain paradigm but replaces fixed random sampling with input-adaptive hierarchical frequency selection and periodicity-aware weighting, addressing FEDformer's main limitation[^src-fedformer]
 - **[[source-frets|FreTS]]** (NeurIPS 2023) — takes frequency-domain operation further by using pure MLPs instead of attention, achieving greater efficiency at the cost of coarser frequency selection
-- **[[hyperd|HyperD]]** — uses explicit short/long-term periodicity decoupling with separate encoder pathways rather than uniform frequency processing
+- **[[hyperd|HyperD]]** — decouples a periodic profile (learnable daily/weekly tables) from a frequency-domain residual branch, rather than applying frequency processing uniformly to the whole signal
 - **[[timesnet]]** (ICLR 2023) — alternative paradigm: transforms 1D series into 2D tensors for multi-periodicity modeling via FFT-based period discovery
 - **[[sparsetsf|SparseTSF]]** (ICML 2024 Oral) — pushes efficiency to extreme: sub-1k parameters via cross-period sparse forecasting
 - **[[cyclenet|CycleNet]]** (NeurIPS 2024) — explicit periodicity modeling via learnable recurrent cycles, a different decomposition philosophy
