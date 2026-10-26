@@ -4244,3 +4244,13 @@ Kwon et al., SOSP '23（arXiv:2309.06180v1）。问题：LLM 服务的批大小�
 更新的页面：[[kv-cache-compression]]（新增「放置轴（与压缩正交）」一节与交叉链接，source_count 5→6）, [[index]]
 ingest 报告：[[ingest-reports/2026-10-26-pagedattention|WHY 报告]]
 数值备注：arXiv v1 16 页无附录，块表/kernel/分布式分别在 §4.2–§4.3、§5.1、§4.6；全文只有 Table 1，性能数字全在 Fig 2、Fig 12–19；Fig 2 的 vLLM 柱除 96.3% 外只剩不可读的细窄条；Fig 2 的 20.4% 与按 ShareGPT 均值算的 24.4%（499.3/2048）差 4 个百分点，因时间加权与数据集混合，原文未说明；Table 1 的 GB 须读作 GiB 才复现 15.7K/60.1K 槽（66B 算得 9,557 对表值 9.7K）；加速比三套口径（摘要与 §9 的 2–4×、§6.2 的请求率 1.7–8×、Fig 13 的并发批 2.2×/4.3×）不互相换算；§7.3 原文「重算 ≤ 换出延迟的 20%」与同段「块大时换出更高效」矛盾，疑为「至多慢 20%」，页面并列
+## [2026-10-26] ingest | DeepSeek-V2 技术报告：Multi-head Latent Attention
+arXiv:2405.04434v5（DeepSeek-AI，2024-05，预印本）。问题：MHA 每 token 要缓存 $2n_hd_hl$ 个元素，MQA/GQA 靠共享头压 cache 但质量下降（7B 同参数下 BBH 37.0 / 35.6 / 33.2）。机制：K 与 V 联合下投影成 $d_c=512$ 的 latent（$1/32$ 于 $d_hn_h=16384$），推理只缓存 latent；RoPE 会插在 $W^{UQ}$ 与 $W^{UK}$ 之间破坏上投影吸收，故拆出 $d^R_h=64$ 的解耦位置分支，cache 为 $(d_c+d^R_h)l=34{,}560$ 元素/token，等价 2.25 组 GQA。证据：MoE 两规模上 MLA 对 MHA 的 BBH 为 39.0/37.9（小）与 50.7/46.6（大），cache 降至 14% 与 4%（表 9）；摘要的 93.3% cache 降幅需按 67B 的 8 组 GQA、95 层与 6 bit 量化复算才成立，5.76× 吞吐与 42.5% 训练成本含 MoE 与 FP8 的整体账；$d_c$、$d^R_h$ 无消融，表 9 大模型 MHA 列 860.2K 与正文头配置不自洽。
+创建的页面：[[multi-head-latent-attention]], [[source-deepseek-v2-2405-04434]]
+更新的页面：[[index]]（Sources / Techniques 段各一条）
+ingest 报告：[[ingest-reports/2026-10-26-deepseek-v2-mla|WHY 报告]]
+数值备注：表 9 大 MoE 的 MHA 列 860.2K 反推每层 $n_hd_h=7168$，与 $n_h=128$、$d_h=128$ 不符；小模型 C-Eval MLA 50.9 vs MHA 51.6 是唯一反向格；93.3% 依赖 67B 的层数/组数（论文未列）与 6 bit 量化，同配置 MHA 对 MLA 为 1.76%
+## [2026-10-27] lint | DeepSeek-V2 ingest 独立复核（3 页 + 2 新建）
+严重 2 类修 2：index.md 把 technique 页 [[multi-head-latent-attention]] 插进了 Concepts 段（WHY 报告声称 Techniques 段），移至 Techniques 段 multi-delay-coupled-accumulation 与 multi-mesh-representation 之间；MLA 页 5 处 [[multi-query-attention]]/[[grouped-query-attention]] 悬空，按单源（V2 报告表 1/表 8/表 9 口径，全程归因措辞）新建 [[multi-query-attention]]、[[grouped-query-attention]] 两页补齐并插入 index Techniques 段。维度 2 处修：Stage 5 折叠矩阵 $\tilde{W}^{UQ}_i$ 的维度标注由整体形状 [512, 16384]×[16384, 1536] 改为逐头 [512, 128]×[128, 1536]；吸收后 query 补 $[\tilde{W}^{UQ}_ic^Q_t;\ q^R_{t,i}]$ 拼接，与下一条 576 维内积自洽。表 1/8/9 逐格、cache 公式与复算（34,560 / 1,966,080 / 1.76% / 56.9× / 2.25 组 / 69,120 B）、93.3% 与 42.5% 的整体口径、§2.1.1–3.2.3 与附录 B/C/D 节号引用逐项与 PDF 核对无出入；表 9 大 MoE MHA 列 860.2K 不自洽维持页面与报告并列的记法。
+创建的页面：[[multi-query-attention]], [[grouped-query-attention]]
+更新的页面：[[multi-head-latent-attention]], [[index]]

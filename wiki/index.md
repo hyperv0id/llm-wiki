@@ -101,6 +101,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-deep-time-series-survey]] — Deep Time Series Models: comprehensive survey and benchmark (TSLib)
 - [[source-deepar]] — DeepAR: Probabilistic Forecasting with Autoregressive Recurrent Networks, global shared LSTM + Gaussian/negbin likelihood + MC sample paths (Salinas et al., Amazon, arXiv:1704.04110)
 - [[source-deepfec]] — DeepFEC: Energy Consumption Prediction under Real-World Driving Conditions for Smart Cities
+- [[source-deepseek-v2-2405-04434]] — DeepSeek-V2 技术报告：Multi-head Latent Attention（KV 联合低秩压缩 + decoupled RoPE，表 1 给 MHA/GQA/MQA/MLA 的 cache 公式）与 DeepSeekMoE，236B/21B 激活，128K 上下文（DeepSeek-AI, arXiv:2405.04434）
 - [[source-deepstate]] — DeepState: Deep State Space Models for Time Series Forecasting, RNN-parametrized linear SSM + Kalman likelihood (NeurIPS 2018)
 - [[source-demystify-mamba-linear-attention-2024]] — Demystify Mamba in Vision: A Linear Attention Perspective (NeurIPS 2024)
 - [[source-detr]] — DETR: End-to-End Object Detection with Transformers（Carion et al., Facebook AI, arXiv:2005.12872v3，venue 未在 PDF 内核实），direct set prediction + Hungarian 二部匹配损失 + Transformer encoder-decoder + learned object queries 并行解码，COCO AP 42.0 与强化 Faster R-CNN 相当、APL 优 APS 弱，panoptic PQ 45.1（R101, COCO val）
@@ -495,7 +496,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[graphsparsenet]] — GraphSparseNet (GSNet), scalable GNN with low-dimensional compressed adjacency for large-scale traffic (PVLDB 2025)
 - [[grid-world-environment]] — 网格世界环境，强化学习教学示例
 - [[grin]] — GRIN, first GNN-based multivariate time series imputation model with message-passing spatial decoder (ICLR 2022)
-- [[grouped-query-attention]] — GQA：$H$ 个 query head 分 $G$ 组共享 K/V，每步 K/V 读取量按 $G/H$ 缩放而注意力算术量不变；含 mean-pooling 初始化与 uptraining 流程
+- [[grouped-query-attention]] — GQA：$H$ 个 query head 分 $G$ 组共享 K/V，每步 K/V 读取量按 $G/H$ 缩放而注意力算术量不变；含 mean-pooling 初始化与 uptraining 流程，cache $2n_gd_hl$、MLA 的 cache 等价 2.25 组（DeepSeek-V2 报告）
 - [[gsli]] — GSLI, multi-scale graph structure learning for spatiotemporal imputation with feature heterogeneity (AAAI 2025)
 - [[gtr]] — GTR, lightweight plug-and-play global temporal retrieval module for MTSF, extends cycle awareness beyond look-back window (ICLR 2026)
 - [[hephestus]] — HEPHAESTUS, adaptive multi-scale MoE + periodic temporal attention + heterogeneous spatial attention for traffic forecasting (ICLR 2026, under review)
@@ -1163,11 +1164,12 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[mtsci]] — MTSCI，条件扩散插补：complementary mask 双视图 intra contrastive loss + mixup inter-consistency 条件网络 + vanilla/inverted transformer 双块编码器，ε-预测（CIKM 2024）
 - [[muffin-mae]] — Muffin-MAE, multifaceted masked autoencoder with temporal/spatial/global masking for inter-correlated urban dynamics (UrbanMind, KDD 2025)
 - [[multi-delay-coupled-accumulation]] — 多延迟耦合与累积：自状态持续 + 局部驱动 + 五个延迟档（5–60 min）的邻居影响三项合成残差递推
+- [[multi-head-latent-attention]] — MLA：每 token 缓存一个 KV latent（$d_c=512$）加 64 维共享位置 key，上投影可吸收进 $W^Q$/$W^O$，cache 等价 2.25 组 GQA 而质量不低于 MHA
 - [[multi-mesh-representation]] — Multi-mesh，icosahedron 6 次细分（M0 12 节点M6 40,962 节点）+ M0–M6 全层级边叠加的球面均匀多分辨率图，低层级节点作长程通信 hub；消融显示多级边为位势短时效优势的必要结构（arXiv 2022 v2）
 - [[multi-modality-guided-spatial-expert]] — multi-modality-guided spatial expert mechanism with MoE routing (KDD 2026)
 - [[multi-modality-refinement]] — SNR-based modality selection for multi-modality ST prediction (KDD 2026)
 - [[multi-objective-temporal-masking]] — MOTM：掩码比例时序范围掩码策略三级采样，多目标掩码预训练（Zeus, ICML 2026）
-- [[multi-query-attention]] — MQA：去掉 K/V 的 head 维、保留 query 的 head 维，解码单步 K/V 字节随 $H$ 线性而乘加数不变，算术强度 0.5→4 FLOP/byte（$H=8$），实测 12.1× 解码加速、训练与 encoder 不动
+- [[multi-query-attention]] — MQA：去掉 K/V 的 head 维、保留 query 的 head 维，解码单步 K/V 字节随 $H$ 线性而乘加数不变，算术强度 0.5→4 FLOP/byte（$H=8$），实测 12.1× 解码加速、训练与 encoder 不动；cache $2d_hl$ 为四机制最小，7B 同参数对照四基准均为最低（DeepSeek-V2 报告）
 - [[multi-scale-attention]] — Multi-scale window attention with dynamic relative position for hierarchical TS patterns (MANF)
 - [[multi-scale-linear-prediction]] — 多尺度线性预测，下采样 + 自上而下混合提取多粒度趋势模式 (DST-Mamba, AAAI 2025)
 - [[multi-source-causal-constraints]] — multi-source causal constraints framework: Granger + do-calculus + TDMI + VAE jointly supervise causal graph learning (CausalX, ICML 2026)
