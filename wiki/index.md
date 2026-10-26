@@ -228,6 +228,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-midas]] — MIDAS: Mutual Information Disentanglement with Uncertainty-Aware Fusion, MI minimax 解耦 + 变分不确定性加权处理不完全多模态情感分析 (TPAMI 2026)
 - [[source-middir]] — MiDDiR: Mixed Channel Dependency Diffusion Model with Retrieval Guidance (ICLR 2026 under review)
 - [[source-minimax-2026-sparse-attention]] — MiniMax Sparse Attention（MSA）：GQA 原生块稀疏两支路，Index Branch 逐组 top-k 选块（max 池化打分 + KL 对齐训练）+ Main Branch 选中块上精确 softmax，109B/3T 与 GQA 基线可比、1M 处 FLOPs 降 28.4×、H800 prefill 14.2×/decode 7.6×（Xunhao Lai et al., MiniMax, arXiv:2606.13392v2；PDF raw/minimax-sparse-attention-2606-13392.pdf）
+- [[source-minimax-2025-01]] — MiniMax-01: Scaling Foundation Models with Lightning Attention：456B/45.9B MoE，7 lightning + 1 softmax 的 transnormer 混合 80 层，训练 1M 外推 4M 上下文，RULER 1M 0.910（MiniMax, arXiv:2501.08313；PDF raw/minimax-01-2501-08313.pdf）
 - [[source-minitraffic]] — MiniTraffic: mini-sized contrastive learning pre-trained model for fine-grained traffic tasks, ICML 2026
 - [[source-mmckm]] — MMCKM: Micro-Macro Coupled Koopman Modeling for Traffic Flow Prediction (ICLR 2026)
 - [[source-moba-mixture-of-block-attention]] — MoBA: Mixture of Block Attention for Long-Context LLMs（Moonshot AI，arXiv:2502.13189），块稀疏 MoE attention：8K 缩放验证 loss 差 1e-3 内、Llama-8B-1M RULER 0.7818 vs 0.7849、attention 层 1M prefill 6.5× / 10M 16× 加速，自述部署于 Kimi
@@ -1138,6 +1139,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[learnable-recurrent-cycles]] — trainable cycle parameters Q ∈ ℝ^(W×D) for periodicity representation
 - [[lejepa]] — LeJEPA，JEPA 预测损失 + SIGReg 各向同性高斯正则的单超参凸组合：无 stop-gradient/teacher-student/调度器，超参扫描无塌缩，训练损失与下游准确率 Spearman 94–99% 支持无标签模型选择，Galaxy10 域内预训练超 DINOv2/v3 迁移，1.8B ViT-g 平稳训练（arXiv:2511.08544）
 - [[lets-group]] — SGL, 即插即用子图学习：可学习记忆向量按特征相似度划分可重叠子图 + 跨子图平均聚合，降低 STGNN 空间特征提取的 GPU 内存开销 (IJCAI 2025)
+- [[lightning-attention]] — Lightning attention：TransNormer 的 IO-aware 分块实现，块内左积 + 块间右积绕开 cumsum，$O(nd^2+nBd)$；MiniMax-01 以每 8 层 1 个 softmax 的 7:1 混合推到 456B 规模，序列相关注意力 FLOPs 缩为 softmax-only 的 1/8
 - [[linear-adaptive-graph-learning]] — 线性自适应图学习，kernel 近似将图卷积从 O(N²) 降为 O(N)，线性于节点数 (MAGE, NeurIPS 2025)
 - [[linear-attention-bias]] — ALiBi's core mechanism: adding distance-proportional penalty to attention scores
 - [[linear-predictive-score]] — LPS: train-on-synthetic ridge CRPS for evaluating generative time-series samples (TSDiff, NeurIPS 2023)

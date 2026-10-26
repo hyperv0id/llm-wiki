@@ -4354,3 +4354,10 @@ ingest 报告：[[ingest-reports/2026-10-27-universal-transformer|WHY 报告]]
 ## [2026-10-27] lint | Universal Transformers ingest 独立核查（2 新建 + 1 修改 + 1 报告）
 对照 arXiv:1807.03819v3 逐项核查：Table 1–7 全部数字、式 1/4–8、附录 B/E/F（10 seed 平均与任务 17/19 best seed）、Stage 5 与附录 C Listing 1–2 的转写、recurrent-depth 谱系段改挂一手源与 source_count 2→3 均一致。修 2 处（[[universal-transformer]]）：Stage 5 的 $\pi_t$/$w_t$ 中 $\rho_t$ 项补 $\mathbb{1}[\pi_{t-1}+p_t>\epsilon]\odot\mathbb{1}[\pi_{t-1}<1]$ 掩码，使已停机位置 $w_t=0$、状态复制与 Listing 2 一致（$\rho_t=(1-\pi_{t-1})$ 口径经 pdftotext -layout 复核 L19/L21 行序证实正确，未误改）；Stage 2 的 $\mathrm{head}_i$ 输入由 $H^{t-1}$ 统一为 $H^{t-1}+P^t$，与式 5 一致。复跑 scripts/lint.py：本次页面 severe/warn/info 命中 0，全库 severe 135 / warn 46 / info 1160。
 更新的页面：[[universal-transformer]]
+## [2026-10-27] ingest | MiniMax-01: Scaling Foundation Models with Lightning Attention（arXiv:2501.08313）
+
+问题：线性注意力提出九年后从未进入主流 LLM——causal 场景右积退化为 cumsum，阻碍高效并行。机制：lightning attention 把因果注意力分块，块内左积（$B\times B$ 因果注意力，SRAM 上并行）、块间右积（$\mathbf{KV}$ 状态外积累加），复杂度 $O(nd^2+nBd)$；检索缺陷由每 8 层 1 个 softmax 块的 7:1 混合补齐（"Going Through a Book" 机理：softmax 等价于每步重算隐藏状态的线性 RNN，容量 $O(d)$ 对 lightning 的 $O(d^2/h)$）。关键证据：Table 2 同预算 hybrid loss 更低（$3.4797C^{-0.0763}$ 对 softmax $3.7087C^{-0.0798}$）；Table 3/4 NIAH 95.7/98.0 对 hybrid-window 全部 ≤57.9；Table 5 的 28B/5B 消融 BBH 28.2→32.2；最终模型 RULER 1M 0.910（Table 9）、训练 1M 推理外推 4M（Figure 14）、MoE 纯通信开销降 50%、1,024,000 token 处 lightning 延迟占比 <12% 对 softmax 实现 95%。边界：1/8 softmax 是论文自述妥协（目标彻底去掉 softmax）、7:1 无比例扫描消融、编程基准垫底（MBPP+ 71.7）、长上下文评测集偏人工场景。
+创建的页面：[[source-minimax-2025-01]], [[lightning-attention]]
+更新的页面：[[index]]（Sources/Techniques 各一条）、[[linear-attention-rnn-form]]（位置段加链接）、[[flash-attention]]（与稀疏/近似路线的区分段加链接）、[[native-sparse-attention]]（相关页面加链接）、[[deepseek-sparse-attention]]（lightning indexer 名称消歧链接）
+ingest 报告：[[ingest-reports/2026-10-27-minimax-01|WHY 报告]]
+数值备注：Figure 4/7/8 图内数值只有坐标轴刻度进入文本层，不可读；Eq. 1 括号错位、Eq. 9 求和下标笔误与 Table 1 分式压扁均按 arXiv HTML 核正；LASP+ 收益原句「computation speed … up to $1/N_{pcn}$ of the original LASP」字面与加速语义相反且通信量明言增加，按原文转写；任务提示的 CSC 算子与 T同步训练在论文中不存在（实际为 LASP+/varlen ring attention 与渐进式上下文扩展），4M 为推理外推而非训练长度；NSA 归属为 DeepSeek-AI 而非 MiniMax 同机构，未采用提示中的说法。

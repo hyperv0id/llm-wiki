@@ -26,7 +26,7 @@ GPU 内存层级差异悬殊：A100 的 HBM 容量为 40–80 GB、带宽 1.5–
 
 ## 与稀疏/近似路线的区分
 
-稀疏与近似注意力（Sparse Transformer、Longformer 等改变依赖集合的稀疏方法，低秩近似，以及本库中的 [[logsparse-self-attention]]、[[native-sparse-attention]]、[[moba-attention]]、[[deepseek-sparse-attention]]）通过减少参与注意力的元素数降低计算量，输出原注意力的近似[^src-dao-2022-flashattention]。FlashAttention 不改依赖集合与数学结果，精确算出与标准实现相同的输出，加速来自减少 HBM 读写次数。两条路线正交：论文进一步将 block-sparse FlashAttention 作为稀疏路线的 IO-aware 实现，加速超过所有被测近似注意力方法[^src-dao-2022-flashattention]。
+稀疏与近似注意力（Sparse Transformer、Longformer 等改变依赖集合的稀疏方法，低秩近似，以及本库中的 [[logsparse-self-attention]]、[[native-sparse-attention]]、[[moba-attention]]、[[deepseek-sparse-attention]]）通过减少参与注意力的元素数降低计算量，输出原注意力的近似[^src-dao-2022-flashattention]。FlashAttention 不改依赖集合与数学结果，精确算出与标准实现相同的输出，加速来自减少 HBM 读写次数。两条路线正交：论文进一步将 block-sparse FlashAttention 作为稀疏路线的 IO-aware 实现，加速超过所有被测近似注意力方法[^src-dao-2022-flashattention]。线性近似路线也有 IO-aware 实现：[[lightning-attention]] 共享 tiling 思想，但把打分数学本身线性化，直接消去 $N^2$ 项。
 
 ## 机制：tiling、online softmax 重缩放、重算
 

@@ -116,6 +116,6 @@ Table 3 中 Bi-LSTM 为 10.94 / 1,047 s，LSH-4 为 9.33 / 2,250 s。序列复�
 
 ## 在本 wiki 中的位置
 
-[[linear-attention-unified-framework]] 对齐本页递推与 Mamba 选择性 SSM 公式并消融六项组件差异，本页循环形式在该页作为已知结论引用。[[performer]] 与 [[positive-random-features]] 沿本页骨架把 $\phi$ 换为 softmax 核的随机特征估计；Performer 附录报告 elu+1 线性注意力在其 ProGen 设置中训练早期梯度爆炸。[[fast-weight-mlp-view-of-attention]] 从 fast-weight 视角指出 $s_i$ 正是逐 token 即时写入的矩阵权重。[[source-katharopoulos-2020-linear-attention]] 为论文源摘要。
+[[linear-attention-unified-framework]] 对齐本页递推与 Mamba 选择性 SSM 公式并消融六项组件差异，本页循环形式在该页作为已知结论引用。[[performer]] 与 [[positive-random-features]] 沿本页骨架把 $\phi$ 换为 softmax 核的随机特征估计；Performer 附录报告 elu+1 线性注意力在其 ProGen 设置中训练早期梯度爆炸。[[fast-weight-mlp-view-of-attention]] 从 fast-weight 视角指出 $s_i$ 正是逐 token 即时写入的矩阵权重。[[lightning-attention]] 在基础模型规模复用本页的右积递推，用分块（块内左积 + 块间右积）解决 causal 场景 cumsum 不可并行的工程问题。[[source-katharopoulos-2020-linear-attention]] 为论文源摘要。
 
 [^src-katharopoulos-2020-linear-attention]: [[source-katharopoulos-2020-linear-attention]]

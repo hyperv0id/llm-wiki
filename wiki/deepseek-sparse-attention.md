@@ -146,6 +146,8 @@ indexer 的输入从计算图中 detach：indexer 只由 $\mathcal{L}^{I}$ 优�
 
 打分来源上，NSA 的块重要性分直接取自压缩支路的注意力分数 $p^{cmp}_t=\operatorname{Softmax}(q_t^{\top}\tilde K^{cmp}_t)$（式 8），没有独立打分网络与辅助损失；DSA 则用独立的 lightning indexer 为每个前序 token 打标量分，indexer 自身仍是 $\mathcal{O}(L^2)$（§2.3）[^src-2502-11089-nsa][^src-2512-02556-deepseek-v3-2]。选择粒度上，NSA 按 64-token 的块选 top-$n=16$，另设压缩与滑动窗口两支路承担全局概括与局部精度；DSA 逐 MLA latent 选 $k=2048$ 个，无块结构，也无额外的压缩或窗口支路[^src-2502-11089-nsa][^src-2512-02556-deepseek-v3-2]。为保持组内一致，NSA 把同组各 query head 的块分数求和（式 10），使整组选同一批块；DSA 在 MLA 的 MQA 模式下所有 query head 共用一个 latent 集合，选一次即全组共用（§2.1）[^src-2502-11089-nsa][^src-2512-02556-deepseek-v3-2]。规模上，NSA 在 27B 总参 / 3B 激活的模型上从头预训练（§4.1）；DSA 在 V3.1-Terminus 的 base checkpoint 上做两阶段继续预训练，原文未给参数量[^src-2502-11089-nsa][^src-2512-02556-deepseek-v3-2]。
 
+名称消歧：DSA 的 lightning indexer 是为稀疏选择打分的独立网络（$\mathcal{O}(L^2)$，见上），与 [[lightning-attention]]——MiniMax-01 的线性注意力 IO-aware 实现——机制无关，仅名称相似。
+
 ## 证据
 
 ### 稀疏化前后的质量对照（§2.2）
