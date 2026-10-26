@@ -234,6 +234,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-moba-mixture-of-block-attention]] — MoBA: Mixture of Block Attention for Long-Context LLMs（Moonshot AI，arXiv:2502.13189），块稀疏 MoE attention：8K 缩放验证 loss 差 1e-3 内、Llama-8B-1M RULER 0.7818 vs 0.7849、attention 层 1M prefill 6.5× / 10M 16× 加速，自述部署于 Kimi
 - [[source-module-embedding-theorem-towers-algebras]] — Module Embedding Theorem via Towers of Algebras: Markov towers 进路推广 Jones-Penneys 嵌入定理至任意循环模，arXiv 2018
 - [[source-moirai-moe]] — Moirai-MoE: 首个 Sparse MoE 时间序列基础模型，token 级专业化替代频率级数据分组，cluster-based gating + next-token prediction，39 数据集 SOTA，ICML 2025（Salesforce）
+- [[source-moonshot-2025-kimi-linear]] — Kimi Linear：KDA（GDN 的逐通道对角门扩展，DPLR $a{=}b{=}k$ 特化分块算法）+ 3:1 KDA/MLA 混合（MLA 全 NoPE），48B/3B 激活；1.4T 同配方对照短/长上下文与 RL 全面超 full MLA，KV cache 省 75%、1M 解码至多 6.3×，RULER@1M 94.8（Kimi Team, Moonshot AI, arXiv:2510.26692v2；PDF raw/kimi-linear-2510-26692.pdf）
 - [[source-most]] — MoST: A Foundation Model for Multi-modality Spatio-temporal Traffic Prediction (KDD 2026)
 - [[source-motm]] — MoTM: Towards a Foundation Model for Time Series Imputation based on Continuous Modeling，连续时间 INR 插补基础模型 (AALTD/ECML 2025 口头报告)
 - [[source-mrcr-dataset]] — OpenAI MRCR 数据集卡：多实例绑定、随机前缀与 SequenceMatcher；与论文 MRCRv2 命名的对应缺口
@@ -1070,6 +1071,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[frequency-specific-spatial-embedding]] — 拉普拉斯特征向量按特征值等量切成 $P$ 组，与时间频带一一配对
 - [[fully-adjacent-layer]] — 全邻接层：仅把最后一层邻接改为全连接以打破 over-squashing 瓶颈的演示性方案，零新增权重，附维度/层位/部分边消融（ICLR 2021）
 - [[gated-delta-rule]] — Gated DeltaNet 核心层：delta rule「先擦除再写入」的转移矩阵内侧乘标量遗忘门，$\alpha_t\to0$ 清空状态、$\alpha_t\to1$ 退化为纯 delta rule；UT transform 下仅 Gram 矩阵换成 $\Gamma\odot KK^\top$，chunkwise 张量核训练（Yang et al., ICLR 2025）
+- [[gated-delta-rule]] — GDN：DeltaNet 重构损失在线梯度下降之上加标量遗忘门的权重衰减，秩 1 修正可 chunkwise 并行；可读作转移矩阵数据依赖的乘性位置编码，放松 RoPE 正交性（Kimi Linear 报告 §2.2、§6.1 口径）
 - [[gated-linear-units]] — GLU: gated linear units as efficient MoE experts with parallel computation
 - [[gated-residual-network]] — GRN: residual + GLU-gated nonlinear block with optional context (TFT building block)
 - [[gated-temporal-attention]] — GTA，SADI 中用自注意力替代膨胀卷积的门控时序注意力 (AAAI 2025)
@@ -1132,6 +1134,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[k-medoids-clustering]] — K-medoids 聚类，以真实样本为簇中心的划分式聚类，用于构建可解释的历史模式记忆库 (PFRP, AAAI 2026)
 - [[kalmannet-uncertainty-modeling]] — KalmanNet, neuralized Kalman Predict/Update refining KoopmanNet's biased linear system and defining the VAE variational posterior (K²VAE, ICML 2025)
 - [[key-normalization]] — ℓ2 normalization of keys to prevent attention hijacking
+- [[kimi-delta-attention]] — KDA：GDN 标量门细化为逐通道对角门 $\operatorname{Diag}(\alpha_t)$，DPLR 的 $a{=}b{=}k$ 特化使分块算法二级计算 4→2、约 2× kernel；3:1 KDA/MLA 混合 + MLA NoPE，1.4T 同配方下短/长上下文与 RL 全面超 full attention，KV cache 省 75%、1M 解码至多 6.3×（Moonshot AI, arXiv:2510.26692）
 - [[knowledge-guided-conditioning]] — Knowledge-Guided Conditioning，统计先验双线性调制内生–外生注意力
 - [[langevin-dynamics]] — 朗之万动力学 (Langevin Dynamics)，基于分数函数的 MCMC 采样方法
 - [[laplacian-kernel-temporal-regularization]] — Laplacian 核时域正则：度 2τ 无向 circulant 图 Laplacian 第一列 + circular convolution，Parseval 频域等价，QV 正则为其有向度 2 特例 (LCR, arXiv 2022/2024)

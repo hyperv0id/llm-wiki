@@ -9,8 +9,8 @@ tags:
   - llm
   - decoupled-rope
 created: 2026-10-26
-last_updated: 2026-10-26
-source_count: 1
+last_updated: 2026-10-27
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -150,4 +150,7 @@ query 上投影从 $n_hd_hd'_c=25.17$M 乘加增至吸收后 $n_hd_cd'_c=100.66$
 
 [[multi-query-attention]] 削减头数，所有 query 头共享一份 K/V，cache 最小但质量损失最大（表 8 MQA 33.2 BBH）；[[grouped-query-attention]] 削减组数，组内共享 K/V，介于 MHA 与 MQA 之间，MLA 在 cache 上等价于 2.25 组且质量不低于 MHA；[[kv-cache-compression]] 减少已缓存条目，在推理期淘汰或量化 token 与 bit 数，与模型设计正交，V2 部署即叠加 6 bit 量化；[[deepseek-sparse-attention]] 缩减被 attend 的 token 数，在 MLA latent 上通过 top-$k$ 选择降低 $\mathcal{O}(L^2)$ 计算，MLA 本身不减 token 数；[[rope]] 为 decoupled RoPE 规避的旋转矩阵不可交换性；[[deepseek-v3-2]] 与 [[source-2512-02556-deepseek-v3-2]] 均沿用 MLA。
 
+MLA 之外的一种用法：Kimi Linear（Moonshot AI）在 3:1 KDA/MLA 层间混合中把 Full MLA 用作全局注意力支路并对全部 MLA 层用 NoPE——位置信息交给 [[kimi-delta-attention|KDA]] 的门控衰减承载，免掉 RoPE base 调整，且 NoPE 的 MLA 可在推理期转成纯 MQA（§4）[^src-moonshot-2025-kimi-linear]。
+
 [^src-deepseek-v2-2405-04434]: [[source-deepseek-v2-2405-04434]]
+[^src-moonshot-2025-kimi-linear]: [[source-moonshot-2025-kimi-linear]]

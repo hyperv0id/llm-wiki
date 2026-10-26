@@ -9,7 +9,7 @@ tags:
   - llm
 created: 2026-10-27
 last_updated: 2026-10-27
-source_count: 2
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -105,5 +105,8 @@ DeepSeek-V3.2 DSA 中的 lightning indexer 是为稀疏注意力逐 token 打分
 
 [[linear-attention-rnn-form]] 给出 lightning attention 复用的结合律骨架与右积递推的原始出处；[[flash-attention]] 将同一 IO-aware 思想应用于精确 softmax 注意力（tiling 减 HBM 访问），lightning attention 则把打分数学本身线性化、彻底消去 $N^2$ 项；[[native-sparse-attention]] 是另一条减注意力成本的路线——不改打分数学、改依赖集合（训练期块稀疏选择）。[[source-minimax-2025-01]] 为源摘要。
 
+同属「块内并行 + 块间递推」分块策略的 [[kimi-delta-attention|KDA]] 在骨架上再加门控与 delta 修正项：其报告以 3:1 的 KDA/softmax 混合即超过 full attention（Table 1），低于 MiniMax-01 为 lightning attention 保留的 7:1 softmax 占比，并把差距归因于细粒度门控对有限状态记忆的更精细调控（§1、§5.2）[^src-moonshot-2025-kimi-linear]。
+
 [^src-minimax-2025-01]: [[source-minimax-2025-01]]
 [^src-2512-02556-deepseek-v3-2]: [[source-2512-02556-deepseek-v3-2]]
+[^src-moonshot-2025-kimi-linear]: [[source-moonshot-2025-kimi-linear]]

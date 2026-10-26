@@ -9,7 +9,7 @@ tags:
   - gpu-kernel
 created: 2026-10-27
 last_updated: 2026-10-27
-source_count: 6
+source_count: 7
 confidence: medium
 status: active
 ---
@@ -192,9 +192,10 @@ exp-free top-$k$ 利用 softmax 保序直接在原始分上排序选块，跳过
 
 ## 相关页面
 
-[[source-minimax-2026-sparse-attention]] 为源摘要；[[native-sparse-attention]] 为三支路及门控合并的块稀疏对照；[[moba-attention]] 为大块与块均值打分的 GQA 块稀疏对照；[[deepseek-sparse-attention]] 为 token 级 top-$k$、MQA 端点共享索引的对照；[[compressed-sparse-attention]] 为先压缩 KV 再跑 DSA 选择的对照；[[longformer-attention]] 为内容无关固定掩码端点；[[deepseek-v4-hybrid-attention]] 为压缩与选择分层交错路线；[[grouped-query-attention]] 为 MSA 依附的头共享结构；[[attention-sink]] 记录附录 A 与 B.5 观察及消融现象；[[flash-attention]] 为 MSA kernel 复用的算法骨架。
+[[source-minimax-2026-sparse-attention]] 为源摘要；[[native-sparse-attention]] 为三支路及门控合并的块稀疏对照；[[moba-attention]] 为大块与块均值打分的 GQA 块稀疏对照；[[deepseek-sparse-attention]] 为 token 级 top-$k$、MQA 端点共享索引的对照；[[compressed-sparse-attention]] 为先压缩 KV 再跑 DSA 选择的对照；[[longformer-attention]] 为内容无关固定掩码端点；[[deepseek-v4-hybrid-attention]] 为压缩与选择分层交错路线；[[grouped-query-attention]] 为 MSA 依附的头共享结构；[[attention-sink]] 记录附录 A 与 B.5 观察及消融现象；[[flash-attention]] 为 MSA kernel 复用的算法骨架。线性注意力路线的对照端点见 [[kimi-delta-attention|KDA]]：Kimi Linear 报告将两条路线对立比较——稀疏注意力保留全 KV cache 做 token 选择、检索细但上限仍是 full attention，线性注意力以固定状态压缩换常数推理成本、细粒度选择弱但状态可学习（§7.1）[^src-moonshot-2025-kimi-linear]。
 
 [^src-minimax-sparse-attention-2606-13392]: [[source-minimax-2026-sparse-attention]]
+[^src-moonshot-2025-kimi-linear]: [[source-moonshot-2025-kimi-linear]]
 [^src-2502-11089-nsa]: [[source-2502-11089-nsa]]
 [^src-moba-mixture-of-block-attention]: [[source-moba-mixture-of-block-attention]]
 [^src-2512-02556-deepseek-v3-2]: [[source-2512-02556-deepseek-v3-2]]

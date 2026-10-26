@@ -8,7 +8,7 @@ tags:
   - hardware-aware
 created: 2026-10-27
 last_updated: 2026-10-27
-source_count: 3
+source_count: 4
 confidence: medium
 status: active
 ---
@@ -91,7 +91,7 @@ Transformer 层由 MHA 与 MLP 子块交错构成，Mamba 则由单一同构块�
 
 ## 与其他页面
 
-[[mamba]] 为实体页，本页记录原始论文口径细节。[[linear-attention-unified-framework]] 中，Han et al. 将本页递推与线性注意力对齐为同一公式（$C_t\leftrightarrow Q_t$、$B_t\leftrightarrow K_t^\top$、$\Delta_t\odot x_t\leftrightarrow V_t$），差异落在六项可消融组件上；本页给出递推的原始出处。关于 [[fast-weight-mlp-view-of-attention]]，论文 Appendix A 将选择机制与 fast weights 区分：对角层 $y=\sigma(Wx)\circ x$ 虽符合 gating、hypernetwork 与 data-dependence 的通俗定义，实质仅为 GLU；论文只把沿序列维交互的门控（以 RNN 门控为特例）归入选择机制[^src-gu-dao-2023-mamba]。在 [[deep-state-space-model]] 的术语谱系中，DeepState 属于统计 SSM（线性高斯与 Kalman 解析推断），本页 SSM 专指结构化 S4 家族，论文 §2 对二者做了明确切割[^src-gu-dao-2023-mamba]。[[mamba-block-design]] 记录 Han et al. 对 Mamba 块的视觉重构消融（子块交换、拼接与统一归一化），而非原始 Mamba block 本身；原始块见本页 Stage 4。[[flash-attention]] 中 Stage 3 的 kernel 融合与重计算沿用 IO-aware 原则对齐显存目标；论文直接以 FlashAttention 实现作为显存与速度参照。后续谱系见 [[gated-delta-rule]]：Gated DeltaNet 把本页「数据依赖遗忘」的标量门塞进 delta rule 的 Householder 转移矩阵，其论文 §5 指出现代 forget gate 与 LSTM 设计的区别正是去掉对前一隐状态的依赖、保住跨长度并行（Yang et al., ICLR 2025）[^src-yang-2024-gated-delta]。
+[[mamba]] 为实体页，本页记录原始论文口径细节。[[linear-attention-unified-framework]] 中，Han et al. 将本页递推与线性注意力对齐为同一公式（$C_t\leftrightarrow Q_t$、$B_t\leftrightarrow K_t^\top$、$\Delta_t\odot x_t\leftrightarrow V_t$），差异落在六项可消融组件上；本页给出递推的原始出处。Kimi Linear 报告把 Mamba2 的更新归入「只有乘性衰减、无 delta 修正项」一类（Table 7），其合成任务对照（palindrome/MQAR/stack）中 Mamba2 全部失败，作为 [[kimi-delta-attention|KDA]] 引入 delta rule 的反面证据（§5.1）[^src-moonshot-2025-kimi-linear]。关于 [[fast-weight-mlp-view-of-attention]]，论文 Appendix A 将选择机制与 fast weights 区分：对角层 $y=\sigma(Wx)\circ x$ 虽符合 gating、hypernetwork 与 data-dependence 的通俗定义，实质仅为 GLU；论文只把沿序列维交互的门控（以 RNN 门控为特例）归入选择机制[^src-gu-dao-2023-mamba]。在 [[deep-state-space-model]] 的术语谱系中，DeepState 属于统计 SSM（线性高斯与 Kalman 解析推断），本页 SSM 专指结构化 S4 家族，论文 §2 对二者做了明确切割[^src-gu-dao-2023-mamba]。[[mamba-block-design]] 记录 Han et al. 对 Mamba 块的视觉重构消融（子块交换、拼接与统一归一化），而非原始 Mamba block 本身；原始块见本页 Stage 4。[[flash-attention]] 中 Stage 3 的 kernel 融合与重计算沿用 IO-aware 原则对齐显存目标；论文直接以 FlashAttention 实现作为显存与速度参照。后续谱系见 [[gated-delta-rule]]：Gated DeltaNet 把本页「数据依赖遗忘」的标量门塞进 delta rule 的 Householder 转移矩阵，其论文 §5 指出现代 forget gate 与 LSTM 设计的区别正是去掉对前一隐状态的依赖、保住跨长度并行（Yang et al., ICLR 2025）[^src-yang-2024-gated-delta]。
 
 ## 边界（论文自述）
 
@@ -100,3 +100,4 @@ Transformer 层由 MHA 与 MLP 子块交错构成，Mamba 则由单一同构块�
 [^src-gu-dao-2023-mamba]: [[source-gu-dao-2023-mamba]]
 [^src-yang-2024-gated-delta]: [[source-yang-2024-gated-delta]]
 [^src-demystify-mamba-linear-attention-2024]: [[source-demystify-mamba-linear-attention-2024]]
+[^src-moonshot-2025-kimi-linear]: [[source-moonshot-2025-kimi-linear]]

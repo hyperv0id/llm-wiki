@@ -7,7 +7,7 @@ tags:
   - linear-complexity
 created: 2026-05-08
 last_updated: 2026-10-27
-source_count: 4
+source_count: 5
 confidence: high
 status: active
 ---
@@ -67,6 +67,7 @@ SSD-TS introduces BAM (bidirectional Mamba + temporal attention for intra-channe
 - [[forget-gate-in-sequential-models|遗忘门在序列模型中的作用]]
 - [[mamba-block-design|Mamba 块设计]]
 - [[selective-ssm|Selective SSM（S6）]] — 原始论文口径的机制页：选择机制、硬件感知 scan、块结构
+- [[kimi-delta-attention|KDA]] — GDN 的细粒度门控扩展；在 Kimi Linear 报告的合成任务对照中，Mamba2 因更新只有乘性衰减、无 delta 修正项而在 palindrome/MQAR/stack 三个任务全部失败（§5.1、Table 7）[^src-moonshot-2025-kimi-linear]
 - [[source-gu-dao-2023-mamba|Mamba 原始论文摘要]]
 - [[e2-cstp|E²-CSTP]] — GCN+Mamba 混合时空编码器，17-56% 效率提升 vs Transformer (NeurIPS 2025)
 - [[rivermamba|RiverMamba]] — 首个全球 0.05° 河流流量和洪水预报 Mamba 模型，空间填充曲线 + LOAN + Hindcast-Forecast 架构 (NeurIPS 2025)
@@ -75,3 +76,4 @@ SSD-TS introduces BAM (bidirectional Mamba + temporal attention for intra-channe
 [^src-gu-dao-2023-mamba]: [[source-gu-dao-2023-mamba]]
 [^src-ssdts]: [[source-ssdts]]
 [^src-rivermamba]: [[source-rivermamba]]
+[^src-moonshot-2025-kimi-linear]: [[source-moonshot-2025-kimi-linear]]
