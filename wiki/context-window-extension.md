@@ -6,8 +6,8 @@ tags:
   - context-length
   - extrapolation
 created: 2026-04-28
-last_updated: 2026-09-13
-source_count: 4
+last_updated: 2026-10-26
+source_count: 5
 confidence: high
 status: active
 ---
@@ -46,10 +46,12 @@ status: active
 
 | 方法 | 机制 | 最大扩展 |
 |------|------|---------|
-| Position Interpolation (PI) | 等比例拉伸频率 | ~8x |
+| [[position-interpolation|Position Interpolation (PI)]] | 全部 $d/2$ 对频率同除 $s$，位置下标 $m\to m/s$ | 2048→32768（16×）[^src-pi] |
 | [[ntk-aware-interpolation|NTK-aware]] | 改变 base 参数 | ~16x |
 | [[ntk-by-parts-interpolation|NTK-by-parts]] | 按波长分段插值 | ~32x |
 | [[yarn|YaRN]] | NTK-by-parts + 温度缩放 | ~32x |
+
+[[position-interpolation|PI]] 是这一支的起点：位置下标压回预训练区间，配 1000 步全参数微调，理论上界比直接外推小约 600 倍（LLaMA 7B 设置）[^src-pi]。后续分档方法都在改「哪些频率被压缩」。
 
 ### 推理时方法（零微调）
 
@@ -60,7 +62,7 @@ status: active
 
 ## 关键挑战
 
-1. **高频信息丢失**：等比例拉伸会移除位置编码的高频分量[^src-yarn]
+1. **高频信息丢失**：等比例拉伸会移除位置编码的高频分量[^src-yarn]；PI 把 $d/2$ 对频率统一除以 $s$，最短波长对的相邻 token 相位差被压到 $1/s$[^src-pi]
 2. **绝对 vs 相对位置**：长波长维度编码绝对位置，短波长编码相对位置[^src-yarn]
 3. **注意力熵失控**：长上下文中注意力分布过于平坦[^src-yarn]
 4. **短序列性能退化**：固定缩放因子在短序列上过度插值[^src-yarn]
@@ -78,9 +80,15 @@ status: active
 
 [INFERENCE] 因此，窗口扩展回答“能输入多长”，[[conditional-state-update|条件状态更新]]与轨迹前置回答“读到材料时，哪些任务信息已经可用”。这两类问题不能用同一个最大 token 数指标替代；本论文也没有验证它与本页各扩窗方法组合后的效果。[^src-trace-as-state]
 
+## 历史论断
+
+> 本页 2026-04-28 建页时把 Position Interpolation 的最大扩展记为「~8x」，该格没有引用来源。
+> 已由 [[position-interpolation]]（2026-10-26 入库）取代：原文在 LLaMA 7B/13B 上把 2048 扩到 32768（33B 到 16384、65B 到 8192），即 16×，代价是 1000 步全参数微调[^src-pi]。YaRN 一侧的复现表给 PI 另有一套 perplexity 数值，口径不同，不并入本行。
+
 ## 相关页面
 
 - [[kv-cache-compression]] — 长上下文的另一条推理侧路线：压缩 KV cache 而非扩展位置编码，两者可叠加
+- [[position-interpolation]] — 位置下标压缩 + 短程微调，插值一栏的源头
 - [[trace-as-state]] — 已有窗口内的跨遍状态反馈
 - [[trace-as-state-reproduction]] — 重读带来的输入、输出与缓存开销
 
@@ -90,3 +98,4 @@ status: active
 [^src-alibi]: [[source-alibi]]
 [^src-vetcha-2026-towards-infinite-length-extrapolation]: [[source-vetcha-2026-towards-infinite-length-extrapolation]]
 [^src-trace-as-state]: [[source-trace-as-state]]
+[^src-pi]: [[source-position-interpolation-2306-15595]]

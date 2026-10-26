@@ -256,6 +256,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-pipe]] — PIPE: Physics-Informed Position Encoding for satellite image-time series alignment in typhoon forecasting (NeurIPS 2025)
 - [[source-pir]] — PIR: Improving Time Series Forecasting via Instance-aware Post-hoc Revision，模型无关预测后识别-修订框架，误差估计识别失败实例 + 局部/全局上下文修订（NeurIPS 2025）
 - [[source-pn-train]] — PN-Train: perturbation-based pattern neuron detector + optimizer for urban time series forecasting, identifies and fine-tunes <10% neurons to boost low-frequency pattern accuracy, ICLR 2025
+- [[source-position-interpolation-2306-15595]] — Position Interpolation (PI)：把 RoPE 位置下标按 $s=L'/L$ 压回预训练区间扩窗，LLaMA 7B/13B 经 Pile 1000 步微调把 2048 扩到 32768、33B 到 16384、65B 到 8192，passkey 有效窗口 200 步后达标（Meta，arXiv:2306.15595v2）
 - [[source-prdim]] — PRDIM: Missing Pattern Recognized Diffusion Imputation Model for Missing Not At Random (arXiv 2026)
 - [[source-predicting-the-future-by-retrieving-the-past-aaai2026]] — PFRP: Predicting the Future by Retrieving the Past, 检索增强单变量 TSF，GMB + PCL + K-medoids + 双门控 + 动态融合，AAAI 2026
 - [[source-pristi]] — PriSTI: A Conditional Diffusion Framework for Spatiotemporal Imputation (arXiv 2023 / ICDE 2023)
@@ -1197,6 +1198,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[policy-evaluation]] — 给定策略下求解状态值函数的过程
 - [[policy-iteration]] — 策略评估与改进交替的动态规划算法
 - [[position-extrapolation]] — Transformer model's ability to handle longer sequences at inference than training
+- [[position-interpolation]] — PI：位置下标 $m\to m/s$，RoPE 全部 $d/2$ 对相位同除 $s$，打分只依赖 $(m-i)/s$，不加参数即可扩窗（LLaMA 7B/13B 从 2048 到 32768、33B 到 16384、65B 到 8192，1000 步微调）
 - [[positive-random-features]] — PRF，softmax 核的正随机特征无偏估计：trig 特征在核值趋 0 时 MSE 发散、PRF 趋 0，ORF 正交化对任意维度 d 降方差（ICLR 2021）
 - [[post-hoc-forecast-revision]] — 预测后修订：骨干预测完成后独立模块修正输出，误差估计识别 + 局部/全局上下文加权融合（PIR, NeurIPS 2025）
 - [[prediction-refinement]] — Prediction Refinement: post-hoc refinement of base forecaster predictions using diffusion model as energy-based prior (TSDiff, NeurIPS 2023)

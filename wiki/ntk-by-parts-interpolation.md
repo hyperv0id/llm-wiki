@@ -6,7 +6,7 @@ tags:
   - interpolation
   - context-extension
 created: 2026-04-28
-last_updated: 2026-05-31
+last_updated: 2026-10-26
 source_count: 1
 confidence: medium
 status: active
@@ -53,8 +53,8 @@ $$h(\theta_d) = \left(1 - \gamma(r(d))\right) \frac{\theta_d}{s} + \gamma(r(d)) 
 
 - **精确控制**：显式区分相对位置维度和绝对位置维度[^src-yarn]
 - **无越界外推**：所有维度严格在插值范围内[^src-yarn]
-- **微调效果好**：优于 PI 和 NTK-aware[^src-yarn]
-- **无微调也可用**：性能优于 PI[^src-yarn]
+- **微调效果好**：优于 [[position-interpolation|PI]] 和 NTK-aware[^src-yarn]
+- **无微调也可用**：性能优于 [[position-interpolation|PI]][^src-yarn]
 
 ## 与 YaRN 的关系
 

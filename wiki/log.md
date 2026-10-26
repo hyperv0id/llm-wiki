@@ -4155,3 +4155,12 @@ RoFormer（arXiv:2104.09864v5，Su et al.）把位置编码从「加到表示上
 更新的页面：[[rope]]（补推导、数据流、衰减前提与外推分界，source_count 4→6）, [[roformer]]（Table 1/2/4/5 全列并补实验设置，source_count 1→3）, [[source-roformer]]（source_count 0→1、confidence 改 medium、补脚注、摘要重写为 493 字、补版本行）, [[learnable-frequency-scaling]]（纠正「高维编码细粒度」的方向性错误，页内留更正说明）, [[linear-attention-bias]]（Rotary 行补引用 + 乘性注入对照，source_count 3→4）, [[siren-rope]]（标准 RoPE 行补引用）, [[index]]
 维护报告：[[ingest-reports/2026-10-26-roformer-derivation|WHY 报告]]
 数值备注：§4.5.4 称 1024 长度绝对提升 1.5%，表 5 测试列差 1.69、验证列差 2.00，三处并列；Figure 2 纵轴即式 (37) 后交代的 $\frac{1}{d/2}\sum_{i=1}^{d/2}|S_i|$，读数约 20→8；频率编号 §3.2.2 为 1 基 $10000^{-2(i-1)/d}$、§3.4.3 为 0 基 $10000^{-2i/d}$，同一 schedule 的两种下标
+## [2026-10-26] ingest | Extending Context Window of Large Language Models via Positional Interpolation（PI，arXiv:2306.15595）
+RoPE 模型直接外推时，2048 窗口的 LLaMA 在 4096 以上 perplexity 超过 $10^3$；PI 把位置下标除以 $s=L'/L$ 压回预训练区间，注意力打分变成 $a((m-i)/s)$，不改结构也不加参数。LLaMA 7B/13B 经 Pile 1000 步全参数微调把 2048 扩到 32768、33B 到 16384、65B 到 8192，PG19 perplexity 随评估窗口单调降到 6.77（7B），微调 200 步后 passkey 有效窗口达到 $L'$；原窗口基准随倍数退化（7B 扩到 32768 时 BoolQ 76.1→64.7）。插值上界比 RoPE 外推界小约 600 倍（LLaMA 7B 设置），代价是全部 $d/2$ 对频率共用一个 $s$ 且需要微调。
+创建的页面：[[source-position-interpolation-2306-15595]], [[position-interpolation]]
+更新的页面：[[context-window-extension]]（PI 行改为 2048→32768 并补引用，新增历史论断，source_count 4→5）, [[ntk-aware-interpolation]]（动机段补 PI 机制与结果，source_count 1→2）, [[yarn]]（PI 行加协议注，source_count 1→2）, [[rope]]（后续发展加 PI）, [[learnable-frequency-scaling]]（对照表加 PI 链接）, [[dynamic-scaling]]（固定 $s$ 标注为 PI 用法）, [[index]]
+ingest 报告：[[ingest-reports/2026-10-26-position-interpolation|WHY 报告]]
+数值备注：§3 称可扩 32 倍而实验最大 32768/2048=16×；§3.4 称退化最多 2% 而 Table 5 中 7B 的 BoolQ 76.1→73.2 为 2.9 点；Table 2 上 32768 窗口 perplexity 高于 16384（7B 2.48 vs 2.24），原文「趋势延伸到 32768 无衰减」只在 PG19 上成立；Table 4 的 7B/32768 模型在 600 步一档记为 18432；yarn 页 PI 行 PPL 与原文 Table 2 口径不同，已在页内注明
+
+## [2026-10-26] contradiction | context-window-extension | 情况 1
+旧论断：PI 的最大扩展记为「~8x」，表格该格没有引用来源。新论断：原文在 LLaMA 7B–65B 上把 2048 扩到 32768（16×），配 1000 步全参数微调。解决方案：情况 1，旧论断移入 `## 历史论断`，正文写 16× 并挂原文引用。

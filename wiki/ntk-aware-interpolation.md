@@ -6,8 +6,8 @@ tags:
   - interpolation
   - context-extension
 created: 2026-04-28
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-10-26
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -18,7 +18,7 @@ NTK-aware 插值是 RoPE 上下文扩展的一种方法，通过改变 RoPE 的 
 
 ## 动机
 
-Position Interpolation (PI) 将所有 RoPE 维度等比例拉伸 $s$ 倍，导致高频分量被完全移除[^src-yarn]。根据 Neural Tangent Kernel (NTK) 理论，深度神经网络在低维输入上难以学习高频信息[^src-yarn]。RoPE 与 Fourier Features 高度相似，保留高频分量对位置编码至关重要[^src-yarn]。
+[[position-interpolation|Position Interpolation (PI)]] 把所有 $d/2$ 对频率统一除以 $s$、波长整体放大 $s$ 倍[^src-pi]；按波长分档的观点认为这等于把高频分量移除[^src-yarn]。PI 自身在 LLaMA 7B/13B 上把 2048 窗口扩到 32768（33B 到 16384、65B 到 8192），微调 1000 步，passkey 有效窗口 200 步后达标[^src-pi]。根据 Neural Tangent Kernel (NTK) 理论，深度神经网络在低维输入上难以学习高频信息[^src-yarn]。RoPE 与 Fourier Features 高度相似，保留高频分量对位置编码至关重要[^src-yarn]。
 
 ## 数学定义
 
@@ -57,4 +57,5 @@ NTK-aware 是 [[ntk-by-parts-interpolation|NTK-by-parts]] 的前身，后者通�
 
 ## 引用
 
+[^src-pi]: [[source-position-interpolation-2306-15595]]
 [^src-yarn]: [[source-yarn]]

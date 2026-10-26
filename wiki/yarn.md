@@ -7,8 +7,8 @@ tags:
   - context-extension
   - interpolation
 created: 2026-04-28
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-10-26
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -48,6 +48,8 @@ Dynamic-YaRN = YaRN + Dynamic Scaling
     推理时动态调整 → 零微调扩展 2x+
 ```
 
+谱系里的 PI 一项见 [[position-interpolation]]：它把全部 $d/2$ 对频率统一除以 $s$、波长整体放大 $s$ 倍[^src-pi]，本页「等比例拉伸所有维度」指的就是这一步。
+
 ## 关键参数
 
 | 参数 | 含义 | 推荐值 |
@@ -67,6 +69,8 @@ Dynamic-YaRN = YaRN + Dynamic Scaling
 | NTK-aware (微调) | 4.39 | 3.73 | 3.21 | 8.49 |
 | NTK-by-parts (微调) | 4.14 | 3.62 | 3.12 | 2.81 |
 | **YaRN (微调)** | **4.19** | **3.30** | **3.09** | **2.77** |
+
+表内 PI 行来自 YaRN 自建的微调对照，其步数与超参不同于 PI 原文的 Pile 1000 步全参数微调；原文 7B 扩到 32768（$s=16$）的模型在 8k/16k 评估窗口为 2.39/2.24（Table 2）[^src-pi]。两套数值口径不同，不互相校准。
 
 ### 标准基准（Llama 2 7B, s=16）
 
@@ -98,3 +102,4 @@ YaRN 和 [[alibi|ALiBi]] 都解决 Transformer 的上下文外推问题，但路
 ## 引用
 
 [^src-yarn]: [[source-yarn]]
+[^src-pi]: [[source-position-interpolation-2306-15595]]

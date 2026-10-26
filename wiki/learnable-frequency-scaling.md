@@ -49,7 +49,7 @@ $$\Theta_j(T_i) = f_\phi(T_i)_j \cdot \omega_j^s + p_i \cdot \theta_j \cdot \lam
 | 方法 | 频率策略 | 可学习 |
 |------|----------|--------|
 | 标准 RoPE | 固定逆频率 $\theta_j = base^{-2j/d_k}$ | ❌ |
-| Position Interpolation | 等比例拉伸所有维度 | ❌ |
+| [[position-interpolation|Position Interpolation]] | 全部 $d/2$ 对频率同除 $s$ | ❌ |
 | NTK-aware | 改变 base 参数 | ❌ |
 | **可学习频率缩放** | 每维独立 $\omega_j^s$ | ✅ |
 

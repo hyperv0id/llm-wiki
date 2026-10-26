@@ -6,7 +6,7 @@ tags:
   - inference
   - context-extension
 created: 2026-04-28
-last_updated: 2026-05-31
+last_updated: 2026-10-26
 source_count: 1
 confidence: medium
 status: active
@@ -20,7 +20,7 @@ Dynamic Scaling 是一种推理时技术，在每次前向传播中根据当前�
 
 固定缩放因子的问题[^src-yarn]：
 
-1. **短序列性能下降**：当 $l' < L$ 时，固定 $s = L'/L$ 导致过度插值
+1. **短序列性能下降**：当 $l' < L$ 时，固定 $s = L'/L$ 导致过度插值——固定 $s$ 即 [[position-interpolation|PI]] 的用法，一个 checkpoint 绑一个 $L'$
 2. **边界突变**：序列长度超过 $L'$ 时性能突然崩溃
 
 Dynamic Scaling 通过动态调整 $s$ 解决这两个问题[^src-yarn]。

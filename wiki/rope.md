@@ -189,7 +189,7 @@ $R^d_{\Theta,m}$ 对任意整数 $m$ 均有定义，位置以旋转进入，公�
 
 ## 后续发展
 
-- **上下文扩展**：[[ntk-aware-interpolation]]、[[ntk-by-parts-interpolation]]、[[dynamic-scaling]]、[[yarn]]
+- **上下文扩展**：[[position-interpolation]]、[[ntk-aware-interpolation]]、[[ntk-by-parts-interpolation]]、[[dynamic-scaling]]、[[yarn]]
 - **时间序列适配**：[[temporal-rotation]]（SIREN-RoPE，把固定序数索引换成时间条件化旋转）、[[learnable-frequency-scaling]]（可学习频率缩放）
 - **物理知情位置编码**：[[physics-informed-position-encoding|PIPE]] 把位置 ID 换成物理量（经纬度 + 时间），配合 [[variant-frequency-positional-encoding|变频率正弦编码]]，用于台风预测[^src-pipe]
 - **统一理论框架**：[[generalized-positional-encoding-framework]]
