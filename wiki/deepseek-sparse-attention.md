@@ -168,6 +168,7 @@ Figure 3 分 prefill 与 decode 两个面板，按 token position 给出 V3.1-Te
 - [[compressed-sparse-attention]] — DSA 在 $1/4$ 压缩 KV 上的 V4 实例化
 - [[deepseek-v4-hybrid-attention]] — CSA 与 HCA 交错的混合架构
 - [[moba-attention]] — 块粒度的 top-$k$ 路由对照
+- [[minimax-sparse-attention]] — 同样索引保持 $O(N^2)$、KL 对齐训练的块稀疏对照：逐 GQA 组选块而非全头共享 token 级索引
 - [[native-sparse-attention]] — 同一实验室更早的训练期块稀疏方法（三分支 + 门控合并）
 - [[fast-weight-scaling-taxonomy]] — DSA 在五维坐标中的格位
 - [[deformable-fast-weight-experts]] — 逐 query top-$k$ 与可复用专家组的差别

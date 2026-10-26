@@ -226,6 +226,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-mhc-manifold-constrained-hyper-connections]] — mHC: Manifold-Constrained Hyper-Connections (DeepSeek-AI, arXiv 2026)
 - [[source-midas]] — MIDAS: Mutual Information Disentanglement with Uncertainty-Aware Fusion, MI minimax 解耦 + 变分不确定性加权处理不完全多模态情感分析 (TPAMI 2026)
 - [[source-middir]] — MiDDiR: Mixed Channel Dependency Diffusion Model with Retrieval Guidance (ICLR 2026 under review)
+- [[source-minimax-2026-sparse-attention]] — MiniMax Sparse Attention（MSA）：GQA 原生块稀疏两支路，Index Branch 逐组 top-k 选块（max 池化打分 + KL 对齐训练）+ Main Branch 选中块上精确 softmax，109B/3T 与 GQA 基线可比、1M 处 FLOPs 降 28.4×、H800 prefill 14.2×/decode 7.6×（Xunhao Lai et al., MiniMax, arXiv:2606.13392v2；PDF raw/minimax-sparse-attention-2606-13392.pdf）
 - [[source-minitraffic]] — MiniTraffic: mini-sized contrastive learning pre-trained model for fine-grained traffic tasks, ICML 2026
 - [[source-mmckm]] — MMCKM: Micro-Macro Coupled Koopman Modeling for Traffic Flow Prediction (ICLR 2026)
 - [[source-moba-mixture-of-block-attention]] — MoBA: Mixture of Block Attention for Long-Context LLMs（Moonshot AI，arXiv:2502.13189），块稀疏 MoE attention：8K 缩放验证 loss 差 1e-3 内、Llama-8B-1M RULER 0.7818 vs 0.7849、attention 层 1M prefill 6.5× / 10M 16× 加速，自述部署于 Kimi
@@ -1157,6 +1158,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[meanflow]] — MeanFlow，预测区间平均速度的少步生成框架：MeanFlow Identity（JVP 全导数修正）+ CFG 内建目标场，ImageNet-256 从头训练 1-NFE FID 3.43（作者报告）(arXiv 2025)
 - [[median-of-means-ensemble]] — MoM estimator for aggregating probabilistic samples into point predictions
 - [[memory-augmented-gating]] — memory-based MoE routing with meta-node bank and dual classification losses for regression (TESTAM, ICLR 2024)
+- [[minimax-sparse-attention]] — MSA：Index Branch 每 GQA 组独立 top-k 选块（token 打分 + 块内 max 池化，local block 强制）+ Main Branch 选中块上精确 softmax，KL 对齐 + detach + warmup 训练索引，exp-free top-k 与 KV-outer kernel（MiniMax，arXiv:2606.13392）
 - [[mita-attention]] — MiTA attention：landmark query 分段平均池化 → 取 top-k KV 作形变专家 + 常开共享专家，top-1 路由后拼接，每 query 看 m+k 对 KV
 - [[mix-hop-propagation-layer]] — TODO
 - [[mixed-modal-masked-image-modeling]] — MMIM, VQA-style masked-target reconstruction (75% block-wise) unifying weather tasks; target full-masking at inference (WeatherGFM, ICLR 2025)

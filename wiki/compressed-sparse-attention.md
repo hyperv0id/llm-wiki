@@ -122,7 +122,7 @@ KV 共享上，CSA/HCA 落在 [[multi-query-attention]] 的 $G=1$ 端点：压�
 
 ## 相关页面
 
-[[deepseek-v4-hybrid-attention]] 包含 CSA 与 HCA 的交错混合、共用组件与效率总账；[[heavily-compressed-attention]] 是同一压缩算子的重度版，不选、全读；[[deepseek-sparse-attention]] 是 CSA 所复用的 indexer + top-k 框架（V3.2）。[[native-sparse-attention]] 作为块选择路线先例，选择对象是原始 token 块；[[multi-query-attention]] 是共享 KV 的 $G=1$ 形态来源，[[grouped-query-attention]] 处于头共享谱系中间档，CSA 位于 $G=1$ 端点。[[multi-head-latent-attention]] 为 query 低秩 latent 的同形对照（库内尚未建页，链接悬空），[[source-deepseek-v4-2606-19348]] 则是源摘要。
+[[deepseek-v4-hybrid-attention]] 包含 CSA 与 HCA 的交错混合、共用组件与效率总账；[[heavily-compressed-attention]] 是同一压缩算子的重度版，不选、全读；[[deepseek-sparse-attention]] 是 CSA 所复用的 indexer + top-k 框架（V3.2）。[[native-sparse-attention]] 作为块选择路线先例，选择对象是原始 token 块；[[minimax-sparse-attention]] 同样在原始 token 块上精确注意力但不压缩 KV，逐 GQA 组选块；[[multi-query-attention]] 是共享 KV 的 $G=1$ 形态来源，[[grouped-query-attention]] 处于头共享谱系中间档，CSA 位于 $G=1$ 端点。[[multi-head-latent-attention]] 为 query 低秩 latent 的同形对照（库内尚未建页，链接悬空），[[source-deepseek-v4-2606-19348]] 则是源摘要。
 
 [^src-deepseek-v4-2606-19348]: [[source-deepseek-v4-2606-19348]]
 [^src-2512-02556-deepseek-v3-2]: [[source-2512-02556-deepseek-v3-2]]

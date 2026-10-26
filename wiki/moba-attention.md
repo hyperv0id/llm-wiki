@@ -149,7 +149,7 @@ MoBA 为单支路，门控在块集合上取 top-k，选中块与当前块直接
 
 ## 相关页面
 
-[[mixture-of-experts]] 为 MoBA 直接借用的 top-k 门控原则，[[attention-sink]] 是 MoBA 归入静态稀疏特例的现象，[[kv-cache-compression]] 代表与 MoBA 训练期稀疏正交的推理期 KV 压缩路线，[[source-moba-mixture-of-block-attention]] 为源摘要。[[mita-attention]] 以形变 expert 替代定长块并采用 $N$-to-$m$ 路由，[[deformable-fast-weight-experts]] 对应刚性块与形变专家的对照，[[fast-weight-scaling-taxonomy]] 标出 MoBA 在五维分类中的格位。[[native-sparse-attention]] 对应三支路加门控合并的块稀疏对照，[[deepseek-sparse-attention]] 对应 token 粒度的 top-$k$ 对照，[[sdpa-output-gating]] 则是决定读取哪些 KV 的块级 top-$k$ 门控与输出侧逐元素门控的粒度对照。
+[[mixture-of-experts]] 为 MoBA 直接借用的 top-k 门控原则，[[attention-sink]] 是 MoBA 归入静态稀疏特例的现象，[[kv-cache-compression]] 代表与 MoBA 训练期稀疏正交的推理期 KV 压缩路线，[[source-moba-mixture-of-block-attention]] 为源摘要。[[mita-attention]] 以形变 expert 替代定长块并采用 $N$-to-$m$ 路由，[[deformable-fast-weight-experts]] 对应刚性块与形变专家的对照，[[fast-weight-scaling-taxonomy]] 标出 MoBA 在五维分类中的格位。[[native-sparse-attention]] 对应三支路加门控合并的块稀疏对照，[[deepseek-sparse-attention]] 对应 token 粒度的 top-$k$ 对照，[[sdpa-output-gating]] 则是决定读取哪些 KV 的块级 top-$k$ 门控与输出侧逐元素门控的粒度对照，[[minimax-sparse-attention]] 同在 GQA 上的块稀疏对照：小块 + 专用索引头按 KL 对齐训练、逐组独立选块。
 
 [^src-moba-mixture-of-block-attention]: [[source-moba-mixture-of-block-attention]]
 [^src-2602-01219-mita]: [[source-2602-01219-mita]]

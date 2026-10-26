@@ -8,7 +8,7 @@ tags:
   - transformer
   - pretraining
 created: 2026-10-26
-last_updated: 2026-10-26
+last_updated: 2026-10-27
 source_count: 1
 confidence: medium
 status: active
@@ -103,7 +103,7 @@ Masked LM 预训练（从 RoBERTa checkpoint 继续，滑窗 $w{=}512$ 与 RoBER
 
 ## 与相邻稀疏注意力工作的区分
 
-[[sparse-transformer-strided-fixed]] 中 Sparse Transformer（Child et al. 2019）的 strided/fixed 模式服务于自回归生成；其中 8×8 块空洞滑窗（BlockSparse）与 Longformer 最接近，但 Longformer 面向迁移学习并引入任务驱动的 global attention（§2）。[[flash-attention]] 属于精确注意力的 IO 优化，不改变计算依赖；Longformer 改动模式本身，两条路线正交。[[pyraformer]] 是金字塔多分辨率图上的 $O(L)$ 时序注意力，依赖由同尺度相邻与父子节点构成，并非滑窗加空洞；[[patchstg-sparse-attention-form]] 将静态结构稀疏与固定掩码用于时空双轴，同属 static structured sparsity。[[native-sparse-attention]] 与 [[moba-attention]] 作为长上下文后续，分别采用三支路（压缩/选择/滑窗）与 KV 块级 MoE 门控，滑窗支路即该模式的自回归形态；[[logsparse-self-attention]] 与 [[deepseek-sparse-attention]] 属同题不同解的时序与索引路线。
+[[sparse-transformer-strided-fixed]] 中 Sparse Transformer（Child et al. 2019）的 strided/fixed 模式服务于自回归生成；其中 8×8 块空洞滑窗（BlockSparse）与 Longformer 最接近，但 Longformer 面向迁移学习并引入任务驱动的 global attention（§2）。[[flash-attention]] 属于精确注意力的 IO 优化，不改变计算依赖；Longformer 改动模式本身，两条路线正交。[[pyraformer]] 是金字塔多分辨率图上的 $O(L)$ 时序注意力，依赖由同尺度相邻与父子节点构成，并非滑窗加空洞；[[patchstg-sparse-attention-form]] 将静态结构稀疏与固定掩码用于时空双轴，同属 static structured sparsity。[[native-sparse-attention]] 与 [[moba-attention]] 作为长上下文后续，分别采用三支路（压缩/选择/滑窗）与 KV 块级 MoE 门控，滑窗支路即该模式的自回归形态；[[logsparse-self-attention]] 与 [[deepseek-sparse-attention]] 属同题不同解的时序与索引路线；[[minimax-sparse-attention]] 则把选择交给学习的内容依赖索引，与固定掩码路线相对。
 
 ## 边界
 

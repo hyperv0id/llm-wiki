@@ -179,6 +179,7 @@ NIAH 在 64k 上下文、1K 到 64k 位置扫描中检索准确率全部正确�
 - [[source-2502-11089-nsa]] — 源摘要
 - [[mita-attention]] — 拼接后单次 softmax 的对照口径
 - [[moba-attention]] — 同为训练期块稀疏，单支路 top-k 门控
+- [[minimax-sparse-attention]] — 同为 GQA 原生块稀疏，逐组独立 top-k + 专用索引头（KL 对齐、detach、warmup 训练）
 - [[deepseek-sparse-attention]] — 逐 latent 选择、独立 indexer 打分
 - [[compressed-sparse-attention]] — DSA 框架在 $1/4$ 压缩 KV 上的 V4 实例化
 - [[deepseek-v4-hybrid-attention]] — 压缩与选择拆到不同层交错的对照路线
