@@ -9,8 +9,8 @@ tags:
   - dilated-convolution
   - wavenet
 created: 2026-05-31
-last_updated: 2026-09-04
-source_count: 4
+last_updated: 2026-10-26
+source_count: 5
 confidence: high
 status: active
 ---
@@ -148,6 +148,7 @@ GWNet established a durable design principle: **spatial dependencies should be l
 |-----------|------|------------|
 | [[mtgnn|MTGNN]] | KDD 2020 | Same team; generalizes to arbitrary MTS + curriculum learning |
 | AGCRN | NeurIPS 2020 | Couples graph learning with node-specific pattern discovery |
+| [[d2stgnn|D²STGNN]] | PVLDB 2022 | Keeps the self-adaptive transition matrix but puts it in the same localized convolution as the forward/backward ones, and modulates all three with a per-time-step self-attention mask[^src-2206-09112-d2stgnn] |
 | [[ragc|RAGC]] | arXiv 2026 | $O(N)$ cosine-similarity graph convolution + node embedding regularization (addressing GWNet's 72% parameter concentration) |
 | [[bigst|BigST]] | PVLDB 2024 | Linearizes the adaptive adjacency to $O(N)$ via PRF kernel ($A\approx D^{-1}\phi(E_1)\phi(E_2)^\top$) + cached long-sequence features; scales to ~100K nodes |
 | [[specstg|SpecSTG]] | arXiv 2024 | Adapts WaveNet as Spectral Graph WaveNet for spectral-domain diffusion |
@@ -184,3 +185,4 @@ GWNet 的持续在场与失效边界（跨年 OOD、超大规模、精度上限�
 [^src-dpgnet]: [[source-dpgnet]]
 [^src-bigst]: [[source-bigst]]
 [^src-virtual-nodes]: [[source-virtual-nodes]]
+[^src-2206-09112-d2stgnn]: [[source-2206-09112-d2stgnn]]

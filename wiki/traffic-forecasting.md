@@ -6,8 +6,8 @@ tags:
   - spatial-temporal
   - intelligent-transportation
 created: 2026-04-27
-last_updated: 2026-10-25
-source_count: 71
+last_updated: 2026-10-26
+source_count: 72
 confidence: high
 status: active
 ---
@@ -29,7 +29,10 @@ Two main dependencies must be modeled simultaneously[^src-hyperd-hybrid-periodic
 ARIMA, VAR, and SVR fail to capture non-linear spatial correlations[^src-hyperd-hybrid-periodicity-decoupling].
 
 ### Deep Graph-Based
-The dominant paradigm since [[dcrnn|DCRNN]] (2018): Graph Neural Networks (GNNs) combined with temporal models (TCN, RNN, attention). Key milestones include [[dcrnn|DCRNN]], [[stgcn|STGCN]] (2018), [[source-astgcn|ASTGCN]] (2019), [[gwnet|GWNet]] (2019), STSGCN (2020), STFGNN (2020), D2STGNN (2022), and STGODE (2021)[^src-hyperd-hybrid-periodicity-decoupling].
+The dominant paradigm since [[dcrnn|DCRNN]] (2018): Graph Neural Networks (GNNs) combined with temporal models (TCN, RNN, attention). Key milestones include [[dcrnn|DCRNN]], [[stgcn|STGCN]] (2018), [[source-astgcn|ASTGCN]] (2019), [[gwnet|GWNet]] (2019), STSGCN (2020), STFGNN (2020), [[d2stgnn|D²STGNN]] (2022), and STGODE (2021)[^src-hyperd-hybrid-periodicity-decoupling].
+
+### Signal-Level Decoupling
+[[dcrnn|DCRNN]] 与 [[gwnet|GWNet]] 都把传感器读数整体当成扩散过程的结果。[[d2stgnn|D²STGNN]]（PVLDB 2022）把每条序列拆成从邻居扩散进来的 diffusion signal 与本地产生、与其它传感器无关的 inherent signal，用估计门给出扩散占比、用 backcast 残差分解把已解释的部分扣掉，两支路分别由时空局部化卷积与 GRU+自注意力建模[^src-2206-09112-d2stgnn]。它的解耦对照（Table 4）在 METR-LA h12 MAE 上是 D²STGNN† 3.38 / D²STGNN‡（去掉门与残差）3.51 / GWNet 3.53，说明收益主要来自分解本身而非动态图[^src-2206-09112-d2stgnn]。机制细节见 [[diffusion-inherent-signal-decoupling]] 与 [[spatial-temporal-localized-convolution]]。
 
 ### Transformer-Based
 STTN (2020), GMAN (2020), [[pdformer|PDFormer]] (2023)[^src-pdformer-jiang-2023], and [[staeformer|STAEformer]] (2024) use attention mechanisms to model global spatial-temporal dependencies[^src-hyperd-hybrid-periodicity-decoupling].
@@ -303,6 +306,7 @@ The standard benchmarks are the PeMS (Caltrans Performance Measurement System) d
 The XTraffic benchmark provides incident-aligned traffic datasets for California (2023), with 521-990 sensor nodes and 5,587-18,700 incident records[^src-incident-guided-st-forecasting].
 
 [^src-hyperd-hybrid-periodicity-decoupling]: [[source-hyperd-hybrid-periodicity-decoupling]]
+[^src-2206-09112-d2stgnn]: [[source-2206-09112-d2stgnn]]
 [^src-pdformer-jiang-2023]: [[source-pdformer-jiang-2023]]
 [^src-st-resnet]: [[source-st-resnet]]
 [^src-astgcn]: [[source-astgcn]]

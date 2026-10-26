@@ -15,6 +15,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 ## Sources
 
 - [[source-2108-00298]] — GRIN: Filling the G_ap_s — Multivariate Time Series Imputation by Graph Neural Networks (ICLR 2022)
+- [[source-2206-09112-d2stgnn]] — D²STGNN：把每条交通序列拆成 diffusion / inherent 两类隐藏信号（估计门 + 残差分解），扩散块用时空局部化卷积、固有块用 GRU + 时间自注意力、动态图用注意力掩码调制静态转移矩阵；四数据集 12 基线，METR-LA h12 MAE 3.35 vs DGCRN 3.44（Shao et al., PVLDB 15(11) 2022, arXiv:2206.09112v4）
 - [[source-2312-00516-std-mae]] — STD-MAE: Spatial-Temporal-Decoupled Masked Pre-training for Spatiotemporal Forecasting (IJCAI-2024)
 - [[source-2312-01728]] — ImputeFormer: Low Rankness-Induced Transformers for Generalizable Spatiotemporal Imputation (KDD 2024)
 - [[source-2312-08874-agent-attention]] — Agent attention: 在 (Q, A, K, V) 中加入 n 个 agent token，先聚合再广播，两次 softmax 等价于核化线性注意力（复杂度 O(N²)→O(Nnd)），视觉四骨干 + Stable Diffusion 加速（Han et al., 清华自动化系 + 快手, ECCV 2024, arXiv:2312.08874）
@@ -479,6 +480,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[ctenet]] — CTENet, ADR 架构嵌入 PINN + 欧拉连续空间，空气质量预测，NeurIPS 2025
 - [[cvpe]] — CVPE, Cross-Variate Patch Embedding for CI model enhancement (arXiv 2025)
 - [[cyclenet]] — CycleNet, periodicity modeling with residual cycle forecasting (NeurIPS 2024)
+- [[d2stgnn]] — D²STGNN，把交通信号解耦成扩散/固有分量的动态 STGNN，时空局部化卷积 + 估计门 + 残差分解（PVLDB 2022）
 - [[dag]] — DAG，确定性外生预测框架：双相关发现—注入，gating 融合
 - [[dcrnn]] — DCRNN, diffusion convolutional recurrent neural network for traffic forecasting (ICLR 2018)
 - [[ddpm]] — DDPM, denoising diffusion probabilistic models (NeurIPS 2020)
@@ -1006,6 +1008,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[detr]] — DETR，目标检测建模为直接集合预测：二部匹配 Hungarian loss + CNN/Transformer encoder-decoder，免 anchors/NMS（arXiv 2020）
 - [[differentiable-spatial-embedding]] — 可微空间嵌入 SE-L（冻结 LLaMA3 文本描述）与 SE-H（GeoHash + 字符 BERT，训练中更新），以及两者在不同数据集上的实证差异
 - [[diffputer]] — DiffPuter，论文自述首个把扩散生成模型整合进 EM 框架的插补方法，表格数据；TabCSDI/MissDiff 为其一步式扩散基线 (ICLR 2025)
+- [[diffusion-inherent-signal-decoupling]] — DSTF：估计门给出扩散分量占比 + backcast 残差分解把未解释信号下传，两类隐藏信号分别由扩散块与固有块建模
 - [[diffusion-loss]] — Diffusion Loss，小 MLP 去噪扩散头建模 per-token 连续分布 p(x|z) 使 AR 摆脱 VQ，含温度采样与 100 步推理（MAR, NeurIPS 2024）
 - [[diffusion-schrodinger-bridge-matching]] — DSBM，参数化 IMF：forward/reverse Markov drift matching + consistency loss
 - [[dilated-inception-layer]] — TODO
@@ -1314,6 +1317,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[sparse-transformer-strided-fixed]] — Sparse Transformer 的 strided/fixed 两头稀疏分解：每头 $|A^{(m)}_i|\propto\sqrt{n}$、任意位置对 $\le 2$ 步连通，$O(n^2)\to O(n\sqrt{n})$；pre-activation 残差 + 反向重算支撑跨块训练（Child et al., 2019）
 - [[spatial-imputation-decoder]] — Spatial Imputation Decoder, neighbor-only two-stage message-passing imputation (ICLR 2022)
 - [[spatial-temporal-attentive-encoder]] — GCN + temporal/spatial self-attention that refines HyperD's learnable periodic tables
+- [[spatial-temporal-localized-convolution]] — 把 $k_t$ 个滞后并进节点维的扩散卷积：局部化转移矩阵 $[N,k_tN]$ 屏蔽对角块（自身模式让给固有块），三拓扑按阶加权
 - [[spatial-temporal-tokenizer]] — 空间+时间双维度 token 生成，激活 PLM 对时空数据的理解 (AAAI 2025)
 - [[spatial-tokenizer-adjacency-patches]] — STUNet spatial tokenizer: adjacency-matrix ViT-style patches, AE pretrain + node permutation, frozen at backbone stage (KDD 2026)
 - [[spatio-temporal-retrieval-store]] — 基于 FAISS 的双维度向量记忆库 + 动量 EMA 管理 (RAST, AAAI 2026)

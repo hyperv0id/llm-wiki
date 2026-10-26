@@ -7,8 +7,8 @@ tags:
   - graph-neural-networks
   - diffusion-convolution
 created: 2026-05-31
-last_updated: 2026-07-27
-source_count: 1
+last_updated: 2026-10-26
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -128,7 +128,7 @@ Key trend: DCRNN's advantage over non-graph methods **grows with the prediction 
 
 ## Limitations
 
-1. **Static, pre-defined graph** — The adjacency matrix is handcrafted and fixed. It cannot adapt to new roads, closures, or changing traffic patterns. This is DCRNN's most fundamental limitation and motivated [[gwnet|GWNet]]'s adaptive adjacency matrix and later [[adaptive-graph-learner|DPGNet's AGL]], which goes further by generating per-timestep dynamic adjacency matrices[^src-dcrnn].
+1. **Static, pre-defined graph** — The adjacency matrix is handcrafted and fixed. It cannot adapt to new roads, closures, or changing traffic patterns. This is DCRNN's most fundamental limitation and motivated [[gwnet|GWNet]]'s adaptive adjacency matrix and later [[adaptive-graph-learner|DPGNet's AGL]], which goes further by generating per-timestep dynamic adjacency matrices[^src-dcrnn] [[d2stgnn|D²STGNN]] (PVLDB 2022) takes a different route: it keeps the road-network transition matrices but multiplies them element-wise with a self-attention mask computed per time step, and additionally adds a GWNet-style self-adaptive matrix inside the same convolution[^src-2206-09112-d2stgnn].
 
 2. **Global K-step truncation** — $K$ is a dataset-wide hyperparameter. Different nodes in a heterogeneous road network (highway vs local street) may need different $K$ values, but DCRNN uses one $K$ for all nodes[^src-dcrnn].
 
@@ -175,4 +175,5 @@ As of 2026, DCRNN has accumulated 3,000+ citations and remains a standard baseli
 - [[adaptive-graph-learner]] — AGL, dynamic per-timestep graph learning via gated self-attention
 
 [^src-dcrnn]: [[source-dcrnn]]
+[^src-2206-09112-d2stgnn]: [[source-2206-09112-d2stgnn]]
 [^src-dpgnet]: [[source-dpgnet]]
