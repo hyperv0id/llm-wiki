@@ -8,15 +8,15 @@ tags:
   - architecture
   - language-model
 created: 2026-10-26
-last_updated: 2026-10-26
-source_count: 1
+last_updated: 2026-10-27
+source_count: 2
 confidence: medium
 status: active
 ---
 
 # Pre-LN Transformer（前置层归一化）
 
-Pre-LN 指把 LayerNorm 放在每个子层输入端、残差相加之前的 Transformer 块排布，与 Transformer 原文在残差相加之后的 post-LN 相对。GPT-2 报告在沿用 GPT 时列出这一改动：LayerNorm 移到每个子块输入端，并在最后一个 self-attention block 之后补一层 LayerNorm（§2.3）[^src-gpt2-2019-language-models]。报告用「与 pre-activation 残差网络相似」（similar to）描述该排布，未使用 pre-LN 这一名称[^src-gpt2-2019-language-models]。
+Pre-LN 指把 LayerNorm 放在每个子层输入端、残差相加之前的 Transformer 块排布，与 Transformer 原文在残差相加之后的 post-LN 相对。GPT-1 的 12 层 decoder 仍是 post-LN 排布，未做此改动（§4.1）[^src-radford-2018-gpt]。GPT-2 报告在沿用 GPT 时列出这一改动：LayerNorm 移到每个子块输入端，并在最后一个 self-attention block 之后补一层 LayerNorm（§2.3）[^src-gpt2-2019-language-models]。报告用「与 pre-activation 残差网络相似」（similar to）描述该排布，未使用 pre-LN 这一名称[^src-gpt2-2019-language-models]。
 
 ## 逐子层式子对比
 
@@ -101,3 +101,4 @@ GPT-2 的对应设置为：最大模型 1.5B 参数、48 层、$d_{model}=1600$�
 - [[normalization-independence]] — 时序域的另一类归一化设计（实例归一化与分布漂移）
 
 [^src-gpt2-2019-language-models]: [[source-gpt2-2019-language-models]] — Radford et al., Language Models are Unsupervised Multitask Learners, OpenAI 技术报告, 2019
+[^src-radford-2018-gpt]: [[source-radford-2018-gpt]]

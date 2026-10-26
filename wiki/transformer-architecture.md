@@ -8,7 +8,7 @@ tags:
   - machine-translation
   - architecture
 created: 2026-10-26
-last_updated: 2026-10-26
+last_updated: 2026-10-27
 source_count: 3
 confidence: medium
 status: active
@@ -183,7 +183,7 @@ big 模型 EN-DE 比当时最好的集成模型高 2.04 BLEU，8 卡 P100 训练
 
 ## 相关页面
 
-[[sinusoidal-positional-encoding]] 涵盖位置注入与平移的线性映射，[[scaling-factor-sqrt-dk]] 梳理缩放因子的失效模式与后续讨论，[[interpretable-multi-head-attention]] 记录 TFT 在多头结构上共享 value 并平均注意力图，[[inverted-transformer-architecture]] 包含保留组件、反转注意力作用维度的后续架构，[[probsparse-self-attention]]、[[logsparse-self-attention]] 给出针对 $O(n^2\cdot d)$ 的稀疏化方案，[[multi-query-attention]] 是只留一份 K/V、保留 query head 维的推理侧变体，[[source-attention-is-all-you-need-1706-03762]] 为论文摘要页，[[rmsnorm]] 记录可原位替换其中 LayerNorm、去掉均值中心化的归一化。
+[[sinusoidal-positional-encoding]] 涵盖位置注入与平移的线性映射，[[scaling-factor-sqrt-dk]] 梳理缩放因子的失效模式与后续讨论，[[interpretable-multi-head-attention]] 记录 TFT 在多头结构上共享 value 并平均注意力图，[[inverted-transformer-architecture]] 包含保留组件、反转注意力作用维度的后续架构，[[probsparse-self-attention]]、[[logsparse-self-attention]] 给出针对 $O(n^2\cdot d)$ 的稀疏化方案，[[multi-query-attention]] 是只留一份 K/V、保留 query head 维的推理侧变体，[[source-attention-is-all-you-need-1706-03762]] 为论文摘要页，[[rmsnorm]] 记录可原位替换其中 LayerNorm、去掉均值中心化的归一化，[[generative-pretraining]] 把该架构实例化为 12 层 decoder-only 语言模型做生成式预训练。
 
 ---
 

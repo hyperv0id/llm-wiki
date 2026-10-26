@@ -281,6 +281,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-qdf]] — QDF: Quadratic Direct Forecast, learns PSD weighting matrix Σ for quadratic NLL objective addressing label autocorrelation + heterogeneous task weights (ICLR 2026 preprint, arXiv:2511.00053)
 - [[source-quest]] — QUEST: efficient long-range attention via token clustering
 - [[source-quizsf-zero-shot-forecasting-www26]] — QuiZSF: RAG for zero-shot TSF, ChronoRAG Base + HHTR + MSIL + MCC, 75%/87.5% Top1 (WWW 2026)
+- [[source-radford-2018-gpt]] — GPT-1: Improving Language Understanding by Generative Pre-Training，BooksCorpus 预训练 12 层 post-LN decoder-only Transformer + 判别微调 + 任务特定输入变换（traversal 拼接），12 任务 9 项 SOTA：Story Cloze 86.5（+8.9）、RACE 59.0（+5.7）、MNLI-m 82.1、CoLA 45.4、GLUE 72.8；消融去预训练 −14.8、换 LSTM −5.6（Radford, Narasimhan, Salimans, Sutskever, OpenAI 技术报告 2018；PDF raw/gpt-1-language-understanding-2018.pdf）
 - [[source-raf]] — RAF: Retrieval Augmented Forecasting, 首个系统性 RAG 框架用于 TSFM 零样本预测 (arXiv 2024)
 - [[source-ragc-efficient-traffic-forecasting]] — RAGC: Efficient Traffic Forecasting on Large-Scale Road Network by Regularized Adaptive Graph Convolution (arXiv 2026)
 - [[source-rainpro]] — RainPro-8: 高效 8h 概率降水预报模型，多源融合（雷达/卫星/NWP/地形）+ 有序一致性损失 + 单次前向预测，ICLR 2026
@@ -1068,6 +1069,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[gated-temporal-attention]] — GTA，SADI 中用自注意力替代膨胀卷积的门控时序注意力 (AAAI 2025)
 - [[gaussian-splatting]] — 3D/2D Gaussian Splatting，各向异性高斯原语渲染，与传统高斯加权插值等价，QCGS 首次应用于降水场生成
 - [[generalized-perturbation-unit]] — GenPU, multinomial-mask message perturbation generating variant environments, optimized via worst-case DRO selection (STOP, ICML 2025)
+- [[generative-pretraining]] — GPT-1 生成式预训练：LM 目标预训练 + $\mathcal{L}_2+\lambda\mathcal{L}_1$ 微调 + 任务特定输入变换把结构化输入折成单序列，12 任务 9 项 SOTA（Radford et al., 2018）
 - [[generative-style-decoder]] — non-autoregressive one-forward-pass decoding from Informer (AAAI 2021)
 - [[geographic-feature-alignment]] — GFA, cross-city geographic representation alignment via traffic flow alignment + optimal transport (CRAFT, NeurIPS 2025)
 - [[geometric-barrier-principle]] — 几何屏障原理，语义冲突下跨模态传输代价 (δ-2ε)² 正下界，指数抑制冲突模态 (GMF, Theorem 4.5)
