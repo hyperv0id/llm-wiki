@@ -7,8 +7,8 @@ tags:
   - long-sequence
   - sparse-attention
 created: 2026-05-04
-last_updated: 2026-10-26
-source_count: 2
+last_updated: 2026-10-27
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -60,7 +60,7 @@ ProbSparse achieves the same asymptotic complexity as LSH-based methods, but thr
 ## Distinction from Other Sparse Attention Methods
 
 ProbSparse differs from earlier sparse attention approaches in a crucial way:
-- **Sparse Transformer**: Uses fixed stride patterns — sparsity pattern is architecturally hard-coded, not data-dependent.
+- **[[sparse-transformer-strided-fixed|Sparse Transformer]]** (Child et al., 2019): Uses fixed strided/fixed patterns — sparsity pattern is architecturally hard-coded, not data-dependent[^src-zhou-informer-2021][^src-child-2019-sparse-transformer].
 - **LogSparse**: Uses exponentially growing intervals — while attention scope grows with distance, the specific pattern is still fixed.
 - **Reformer (LSH)**: Uses locality-sensitive hashing to bucket similar queries/keys — effective but requires hash collision luck.
 - **ProbSparse**: The sparsity pattern is **fully data-driven** — which queries are "important" depends on the actual dot-product scores computed from the input, adapting to each sequence's specific long-range dependency structure.
@@ -71,3 +71,4 @@ ProbSparse attention replaces canonical self-attention in both the encoder and d
 
 [^src-zhou-informer-2021]: [[source-zhou-informer-2021]]
 [^src-attention-1706-03762]: [[source-attention-is-all-you-need-1706-03762]]
+[^src-child-2019-sparse-transformer]: [[source-child-2019-sparse-transformer]]

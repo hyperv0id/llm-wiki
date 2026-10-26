@@ -4260,3 +4260,16 @@ ingest 报告：[[ingest-reports/2026-10-26-deepseek-v2-mla|WHY 报告]]
 更新的页面：[[pyraformer]]（Overview 稀疏变体清单接机制页链接）、[[patchstg-sparse-attention-form]]（static structured sparsity 一族接 Longformer）、[[index]]
 ingest 报告：[[ingest-reports/2026-10-26-longformer|WHY 报告]]
 数值备注：Table 12 的 Phase 5 LR 在 pdftotext 中丢前缀成 `000015625`，按 §4.2「每 phase 学习率减半」口径读作 0.000015625；同表 Phase 5 窗口的顶层值在文本转换中缺失（Phase 1 为 32–8,192 可读）；任务提示的 text90 不存在，字符级数据集为 text8/enwik8（各 100M 字符，90/5/5 切分，附录 B）；Fig 1/3 只能读趋势与端点值；[[flash-attention]] 为前向链接（20 号论文尚未入库，最终页名未定）
+## [2026-10-27] ingest | Generating Long Sequences with Sparse Transformers
+
+Child et al. 2019（OpenAI，arXiv:1904.10509v1，raw/sparse-transformer-1904-10509.pdf）。问题：自注意力 $O(n^2)$ 的时间与显存把 Transformer 挡在长序列之外。机制：注意力矩阵按 $p{=}2$ 头稀疏分解——strided（局部窗口 + 同列历史）与 fixed（块内互看 + 块末摘要单元广播），任意位置对 $\le 2$ 步连通、每头 $|A|\propto\sqrt{n}$，总量 $O(n\sqrt{n})$；配套 pre-activation 残差 + $1/\sqrt{2N}$ 初始化、反向重算激活、block-sparse kernel。证据：Enwik8 0.99（95M fixed，追平 277M Transformer-XL）、CIFAR-10 2.80（59M strided）、ImageNet-64 3.44（152M strided）、音乐 1.97（Table 1）；同上下文 fixed 0.99 对 dense 1.00、每步 0.55 对 1.31（Table 2）；音频长度 ×4 需容量 ÷$4\sqrt{4}=8$，百万步只剩 3M 参数（Table 4）。边界：只测密度建模，文本上 strided 失败改 fixed，无翻译/BLEU 任务。库内 logsparse-self-attention 实为 LogTrans 完整页而非空壳（缺的只是 index 摘要），不合并，仅接链接。
+
+创建的页面：[[source-child-2019-sparse-transformer]], [[sparse-transformer-strided-fixed]]
+更新的页面：[[logsparse-self-attention]]（方法对照表接入新页与本源链接）, [[probsparse-self-attention]]（区分小节 Sparse Transformer 条接链接，source_count 2→3）, [[index]]（Sources/Techniques 各一条，补 logsparse 的 TODO 摘要）
+ingest 报告：[[ingest-reports/2026-10-26-sparse-transformer|WHY 报告]]
+数值备注：任务清单所列 text8/BooksCorpus/Wikipedia/CNN-DailyMail/天体摄影/BLEU 均不在该论文；"fast weights 跨块缓存 K/V" 非本文机制，参数不变来自 §5.1 的 attend 内维按 $1/n_h$ 收缩；"close to √n" 与 "$4\sqrt{4}=8$" 的根号在 pdftotext 丢失，按上下文恢复
+## [2026-10-27] lint | Sparse Transformer ingest 核查（7 文件）
+
+对照 pdftotext 原文逐项核查：Table 1–4 数字与设置、±/单次运行标注、式 3–15 编号、§5.1 参数不变表述、index 字母序与摘要行、frontmatter/脚注/source_count 均无误。修复技术页两处代数错：strided 窗口实为 $l{+}1$ 个位置（$t=\max(0,i-l)$，原写 $\le l$ 且窗口起点偏移 1）；两步连通构造改为判据方向 $a=i-l\lfloor(i-j)/l\rfloor$（初稿 $a=i-((i-j)\bmod l)$ 在 $i-j\ge 2l$ 时 $j$ 落在 $a$ 窗口外）。复跑 scripts/lint.py：本次页面无 severe/warn。
+
+更新的页面：[[sparse-transformer-strided-fixed]]（Stage 2 窗口大小、连通性构造、依赖集计数口径）, [[ingest-reports/2026-10-26-sparse-transformer|WHY 报告]]（同步推导描述）

@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-10-26
+last_updated: 2026-10-27
 tags:
   - meta
 source_count: 0
@@ -69,6 +69,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-chapter-5-monte-carlo-methods]] — 第 5 章：蒙特卡洛方法与 ε-greedy
 - [[source-chapter-7-temporal-difference-methods]] — 第 7 章：TD 方法、Sarsa 与 Q-learning
 - [[source-cheng-2025-cora-correlation-aware-adapter]] — CoRA (Correlation-aware Adapter): TSFM 下游通道相关插件，DCE 低秩时变/时不变 + HPCL 异质-部分对比，推理 O(N)（Cheng et al., ICLR 2026）
+- [[source-child-2019-sparse-transformer]] — Generating Long Sequences with Sparse Transformers：注意力矩阵按 $p{=}2$ 头稀疏分解（strided/fixed），$O(n^2)\to O(n\sqrt{n})$ 且全局连通；pre-activation 残差 + $1/\sqrt{2N}$ 初始化、反向重算激活、block-sparse kernel；Enwik8 0.99、CIFAR-10 2.80、ImageNet-64 3.44 bits/dim（Child et al., OpenAI, arXiv:1904.10509v1；PDF raw/sparse-transformer-1904-10509.pdf）
 - [[source-chronos]] — Chronos: Learning the Language of Time Series (ICLR 2024)
 - [[source-chronosx]] — ChronosX: IIB past + OIB future modular covariate adapters for pretrained TS models; 32 synthetic benchmark; TimesFMX/MOMENTX (AISTATS 2025, arXiv:2503.12107)
 - [[source-cirt]] — CirT: Geometry-Inspired Spherical Transformer for S2S Climate Forecasting, 圆形分块 + 傅里叶域自注意力，超越 ECMWF/PanguWeather/GraphCast，ICLR 2025
@@ -1130,7 +1131,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[linearized-spatial-convolution]] — LSC, O(N) graph message passing via PRF-kernel adjacency factorization, avoids materializing the N×N matrix (BigST, PVLDB 2024)
 - [[llm-enhanced-graph-construction]] — LLM-Enhanced Graph Construction, using frozen LLM + α-Entmax to build semantically meaningful adjacency matrices from node text (FSTLLM, ICML 2025)
 - [[location-aware-adaptive-normalization]] — LOAN，位置感知自适应归一化，通过静态地理属性注入空间偏置条件化特征 (RiverMamba)
-- [[logsparse-self-attention]] — TODO
+- [[logsparse-self-attention]] — LogSparse self-attention：LogTrans 的指数间隔稀疏注意力，每格只看 $\lfloor\log_2 L\rfloor+1$ 个历史格（$O(L\log L)$/层），堆 $\log L$ 层保证任意两格连通（NeurIPS 2019）
 - [[long-distance-correlation-preservation]] — maintaining meaningful attention for distant tokens
 - [[long-sequence-feature-extractor]] — LSFE, BigST cached pre-processing: linearized Transformer (PRF) + periodic feature sampling for long-history encoding (PVLDB 2024)
 - [[longformer-attention]] — Longformer 混合注意力：滑动窗口 + 空洞 + global 三模式的并集掩码，打分 $O(nw)$、混合整体 $O(n)$；global 独立投影 $Q_g,K_g,V_g$，chunk 实现显存 $O(n^2)\to O(nw)$
@@ -1275,6 +1276,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[space-filling-curves]] — 空间填充曲线，双射 Φ:Z³N 将高维时空点序列化为 1D 序列，Gilbert/Sweep/Zigzag 交替扫描用于 Mamba 时空建模 (RiverMamba, NeurIPS 2025)
 - [[sparse-balanced-mixture-of-experts-st]] — 稀疏平衡混合专家，每节点 Top-K 激活 + 符号 SGD 负载均衡，克服线性图学习的低秩瓶颈 (MAGE, NeurIPS 2025)
 - [[sparse-teacher-forcing]] — STF，间歇性数据推断状态重校准的 DSR 训练方法，控制梯度爆炸同时探索长期动力学
+- [[sparse-transformer-strided-fixed]] — Sparse Transformer 的 strided/fixed 两头稀疏分解：每头 $|A^{(m)}_i|\propto\sqrt{n}$、任意位置对 $\le 2$ 步连通，$O(n^2)\to O(n\sqrt{n})$；pre-activation 残差 + 反向重算支撑跨块训练（Child et al., 2019）
 - [[spatial-imputation-decoder]] — Spatial Imputation Decoder, neighbor-only two-stage message-passing imputation (ICLR 2022)
 - [[spatial-temporal-attentive-encoder]] — GCN + temporal/spatial self-attention that refines HyperD's learnable periodic tables
 - [[spatial-temporal-tokenizer]] — 空间+时间双维度 token 生成，激活 PLM 对时空数据的理解 (AAAI 2025)

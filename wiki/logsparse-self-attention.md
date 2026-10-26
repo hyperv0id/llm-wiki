@@ -8,7 +8,7 @@ tags:
   - time-series
   - long-sequence
 created: 2026-05-30
-last_updated: 2026-05-31
+last_updated: 2026-10-27
 source_count: 2
 confidence: medium
 status: active
@@ -72,7 +72,7 @@ On electricity-f (370 series × 129,120 time steps, 15-min granularity) and traf
 |--------|---------|----------------|------------|
 | **LogSparse** | Fixed exponential intervals | No | [[logtrans|LogTrans]] (NeurIPS 2019) |
 | [[probsparse-self-attention|ProbSparse]] | Top-$u$ queries by KL sparsity | Yes | [[informer|Informer]] (AAAI 2021) |
-| Sparse Transformer | Fixed stride + local windows | No | Child et al. (2019) |
+| [[sparse-transformer-strided-fixed|Sparse Transformer]] | Strided / fixed (stride blocks + summary cells) | No | [[source-child-2019-sparse-transformer\|Child et al. (2019)]] |
 | Reformer (LSH) | Hash-bucketed queries/keys | Yes | Kitaev et al. (2020) |
 
 LogSparse's key distinction: it is the only method with a **constructive proof** that information flows between any pair given sufficient depth, combined with super-exponential path multiplicity for distant pairs[^src-logtrans].
