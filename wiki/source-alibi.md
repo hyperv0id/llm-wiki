@@ -7,7 +7,7 @@ tags:
   - extrapolation
   - iclr-2022
 created: 2026-04-28
-last_updated: 2026-05-31
+last_updated: 2026-10-26
 source_count: 1
 confidence: medium
 status: active
@@ -15,34 +15,23 @@ status: active
 
 # ALiBi 论文摘要
 
+官方论文见 https://arxiv.org/abs/2108.12409，版本为 arXiv:2108.12409v2（ICLR 2022 正式版，2022-04-22，25 页），开源代码见 https://github.com/ofirpress/attention_with_linear_biases，本地文档 `raw/alibi-2108-12409.pdf`（`*.pdf` 被 `.gitignore` 排除，只保留本地副本；`pdftotext -layout` 提取文本 1492 行）。
+
 ## 核心论点
 
-本文提出 **Attention with Linear Biases (ALiBi)** 方法，解决 Transformer 模型在推理时无法处理比训练时更长序列的根本性问题[^src-alibi]。核心发现：位置编码方法是导致外推失败的根本原因[^src-alibi]。
+Transformer 各层函数本身与输入长度无关，推理时处理比训练更长序列失败源于位置表示方法[^src-alibi]。论文以 Baevski & Auli 语言模型为骨架，仅替换位置方法，并固定随机种子与 205 个 epoch 的其余超参做对照[^src-alibi]。
 
-## 主要贡献
+## 方法
 
-1. **首次系统性研究外推问题**：证明 sinusoidal 位置编码在推理时无法处理超过训练长度 20-50 个 token 的序列[^src-alibi]
+ALiBi 全程不加位置向量，只在每个头 query-key 打分上加静态偏置 $m_h\cdot[-(i-1),\dots,-1,0]$。$m_h$ 训练前固定、不参与学习、不乘 $1/\sqrt{d_k}$ 缩放；$n$ 头时 $m_h=2^{-8h/n}$，序列右端恒为 $2^{-8}$[^src-alibi]。位置信息每层进入 Q、K，不进 V；实现上把偏置并入掩码，掩码由 $L\times L$ 变为 $n\times L\times L$[^src-alibi]。
 
-2. **ALiBi 方法**：不添加位置嵌入，而是在注意力分数上添加与距离成线性关系的偏置惩罚[^src-alibi]
+## 证据
 
-3. **高效外推**：1.3B 参数模型在 L=1024 训练，可外推到 L=2048，性能与在 L=2048 训练的 sinusoidal 模型相当，训练速度快 11%，内存节省 11%[^src-alibi]
+WikiText-103 上，$L=512$ 训练的模型在 $L_{valid}=3072$ 上为 18.40，低于 sinusoidal 在 $L=3072$ 训练的 $18.67\pm 0.24$，训练快 1.84 倍；$L=3072$ 的 ALiBi 为 17.60（Table 5、§4.1）[^src-alibi]。同 $L=3072$ 对比基线，ALiBi 为 17.60，T5 bias 为 18.01，rotary 为 18.57，sinusoidal 为 18.67；拉到 16072 token 时分别为 17.22、OOM、34.51、231.29（Table 4）[^src-alibi]。开销上，同 $L=512$ 训练为 28.3k 对 28.5k WPS、显存同为 15.3 GB（Table 1）；同长度下速度无损失，代价是 $n\times L\times L$ 掩码（100 MB 以内）[^src-alibi]。CC100+RoBERTa 1.3B 上，$L=512$ 的 ALiBi 与 $L=1024$ 的 sinusoidal 训练时长相同，$L_{valid}=1024$ 时为 9.30 对 9.24、显存 24.6 对 26.2 GB；$L_{valid}=2048$ 时为 9.54 对 48.85（Table 12）[^src-alibi]。斜率集合在 WikiText-103 上选定后原样用于 Toronto Books 与 1.3B 模型，未再调参（§4.1、A.3、§4.2）[^src-alibi]。
 
-## 实验结果
+## 局限
 
-- **WikiText-103**：ALiBi 在 L=512 训练可外推到 12k+ tokens，性能超越 sinusoidal 在 L=3072 的训练结果[^src-alibi]
-- **CC100+RoBERTa**：1.3B 参数模型在 L=1024 训练，外推到 L=2048 时 perplexity 优于 sinusoidal 在 L=2048 训练的结果[^src-alibi]
-- **效率**：训练速度与 sinusoidal 相当，内存增加可忽略（0-100MB）[^src-alibi]
-
-## 关键发现
-
-- **位置编码决定外推能力**：Sinusoidal、Rotary、T5 Bias 都有外推局限，ALiBi 是首个实现高效外推的方法[^src-alibi]
-- **归纳偏置**：ALiBi 对近邻位置有天然偏好（inductive bias towards recency），这与语言模型的实际需求相符[^src-alibi]
-- **无需调参**：几何斜率序列 2^(-8/n), 2^(-7/n), ..., 2^0 可泛化到不同模型规模和数据集[^src-alibi]
-
-## 局限性
-
-- 外推性能在约 2L 达到峰值，之后逐渐下降[^src-alibi]
-- 在 Traffic 等非语言任务数据集上未验证[^src-alibi]
+滑窗（$S=1$）评估下困惑度随 $L_{valid}$ 持平，$L_{valid}>L$ 的收益主要来自缓解 early token curse，并未利用超过 $L$ 的上下文（Appendix B、Table 15）[^src-alibi]。峰值位置依设置而变：CC100 上约 $2L$，WikiText-103 上至少到 $3L$ 仍改善（§4.1、§4.2）[^src-alibi]。实验只验证三个语言建模语料，未测其他任务，也未与上下文扩窗类微调方法组合[^src-alibi]。
 
 ## 引用
 

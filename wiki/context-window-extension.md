@@ -36,7 +36,7 @@ status: active
 
 | 方法 | 机制 | 最大扩展 |
 |------|------|---------|
-| [[alibi|ALiBi]] | 线性注意力偏置 | ~3L |
+| [[alibi|ALiBi]] | 线性加性偏置，网络内不加位置向量 | $\ge 3L$：WikiText-103 上 $L=512$ 到 6× 仍改善，CC100 上峰值约 $2L$[^src-alibi] |
 | [[adaptive-positional-encoding|APE]] | 自适应频率调制 + 次线性衰减偏置 | >256L |
 | xPos (Sun et al., 2022) | 旋转位置编码 + 衰减 | ~2L |
 

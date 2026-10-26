@@ -1,3 +1,12 @@
+## [2026-10-26] ingest | Train Short, Test Long: Attention with Linear Biases Enables Input Length Extrapolation
+
+ALiBi 用加性线性偏置替代位置编码：在 $q_iK^{\top}$ 上加 $m_h\cdot[-(i-1),\dots,-1,0]$（不乘 $1/\sqrt{d_k}$），$n$ 头斜率 $m_h=2^{-8h/n}$，右端恒为 $2^{-8}$；网络任何位置都不加位置向量，位置只经 Q/K 逐层进入、不进 V。WikiText-103 非重叠评估上，$L=512$ 的模型在 $L_{valid}=3072$ 处 18.40，低于 sinusoidal 在 $L=3072$ 训练的同列 18.67，且训练快 1.84 倍；同 $L=3072$ 时 ALiBi 17.60 对 T5 bias 18.01、rotary 18.57、sinusoidal 18.67（Table 4、Table 5）。同 $L$ 开销持平（28.3k 对 28.5k WPS、15.3 GB），多出 $n\times L\times L$ 掩码。边界：滑窗 $S=1$ 评估下困惑度随 $L_{valid}$ 持平，$L_{valid}>L$ 的收益主要来自 early token curse 缓解，ALiBi 未必真用到超过 $L$ 的上下文（Appendix B、Table 15）。
+
+创建的页面：无
+更新的页面：[[alibi]]（新增四阶段数据流、斜率几何级推导与距离尺度、外推机制/边界、四方法对照表；修正斜率序列写法与效率口径）, [[source-alibi]]（补官方 URL/版本/代码/本地副本，改为四段摘要，confidence medium）, [[geometric-slope-schedule]]（补各条 §节出处、序列两端固定与距离尺度推导）, [[position-extrapolation]]（外推曲线按 WikiText-103 与 CC100 两设置分写，补收益来源边界）, [[context-window-extension]]（ALiBi 行的最大扩展改按两设置实测口径）
+ingest 报告：[[ingest-reports/2026-10-26-alibi-derivation|WHY 报告]]
+数值备注：`pdftotext` 丢指数负号（$2^{-1}$ 被提为 "21"、$2^{-0.5}$ 为 "20.5"）；图内数值不可读，全部改用 Table 1–15；摘要的「训练快 11%、显存省 11%」对应 1.3B 模型同时长比较（Table 11），同 $L$ 下为速度持平、显存相同，两处口径已分写。
+
 ## [2026-09-09] ingest | Elucidating Flow Matching ODE Dynamics via Data Geometry and Denoisers
 
 PDF 归档到 `raw/2412.18730v4.pdf`（79 页，arXiv v4 2025-06-03，ICML 2025 Poster；venue 依据 icml.cc poster/44549 与 OpenReview f5czhqYK3H 著录。Zhengchao Wan、Qingsong Wang 共同一作，Gal Mishne、Yusu Wang 共同末位，UCSD HDSI / University of Missouri）。论文以 denoiser $m_t(x)=\mathbb{E}[X\mid X_t=x]$ 为中心做 FM ODE 单条轨迹的全程理论分析：noise-to-signal ratio $\sigma=\beta_t/\alpha_t$ 统一调度坐标下 ODE 化为 $dx_\sigma/d\sigma=-(1/\sigma)(m_\sigma-x_\sigma)$；吸引（attracting）/吸收（absorbing）两条元定理（锐角条件 + 避开 medial axis）导出三阶段图景——初始向数据均值（Prop 4.2 显式阈值与速率）、中间被局部簇吸收（Local Cluster Assumption + Prop 4.3/4.4）、终端收敛（Thm 5.3：正 reach + 密度下界下流映射 $\Psi_1$ 对 a.e. $x$ 存在，速率 $O(\sigma_t^{\zeta/2})$，子流形 $O(\sqrt{\sigma_t})$、离散 $O(\sigma_t)$；作者称首个覆盖低维子流形支撑的 FM ODE 收敛结果）。配套：良定性（Thm 4.1，有限 2-moment，覆盖子流形支撑）、denoiser→投影收敛 $O(\sigma^\zeta)$（Thm 5.1）、流映射对相似变换等变性（Prop 5.7，仿射子空间可降维训练）、终端奇异性刻画（medial axis 处 denoiser 极限不连续、Lipschitz 爆炸；非满支撑时向量场发散，Prop C.4）。记忆理论（Prop 5.9/5.10）：离散分布下每训练点以 $\sigma_0(V_i^\epsilon)$ 刻画吸收强度（重复样本抬权重 → 解释 Somepalli 复制现象；CIFAR-10 $\epsilon=1.0$ 平均 $\sigma_0\approx 0.17$ 对应 EDM 最后四分之一采样步）；渐近最优 denoiser 必然重现训练数据 → 泛化要求终端 denoiser 逼近真实流形投影而非训练点投影。实验（作者报告）：合成三簇阶段预测与轨迹转向点定量吻合；CIFAR-10（1 万种子）初始 4 步均值吸引相对误差 <1%，扰动渐近最优 denoiser 下轨迹仍收敛至距训练集约 1.0（均值范数 27.2）；FFHQ 无显式簇时轨迹仍被照度高密度区吸收。矛盾检查：无现有论断与新源冲突，未触发矛盾解决策略。
