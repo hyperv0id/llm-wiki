@@ -8,7 +8,7 @@ tags:
   - long-context
   - llm
 created: 2026-10-08
-last_updated: 2026-10-24
+last_updated: 2026-10-26
 source_count: 4
 confidence: medium
 status: active
@@ -112,6 +112,7 @@ MoBA 是 full attention 的 drop-in 替代：参数量不变，top-k 覆盖全�
 - [[fast-weight-scaling-taxonomy]] — MoBA 在五维分类中的格位
 - [[native-sparse-attention]] — 三支路 + 门控合并的块稀疏对照
 - [[deepseek-sparse-attention]] — token 粒度的 top-$k$ 对照
+- [[sdpa-output-gating]] — 块级 top-$k$ 门控（决定读哪些 KV）与输出侧逐元素门控的粒度对照
 
 [^src-moba-mixture-of-block-attention]: [[source-moba-mixture-of-block-attention]]
 [^src-2602-01219-mita]: [[source-2602-01219-mita]]

@@ -174,9 +174,11 @@ NSA 在 9 项中 7 项更高，平均 +0.013；两项更低的是 MMLU（−0.00
 - 未与同为训练期稀疏的方法同台：LongBench 的对照是 H2O、InfLLM、Quest、Exact-Top 四种推理期方法，Table 1、Table 3 只有 Full Attention；MoBA 一类训练期块稀疏方法未出现在实验中[^src-2502-11089-nsa]。
 - 加速比出自 Triton 实现而非生产 kernel，基线是同后端 FlashAttention-2；Table 4 按访存量推算期望值，与 Figure 6 实测不是同一口径（Table 4 只覆盖解码，Figure 6 覆盖 forward/backward）[^src-2502-11089-nsa]。
 - 门控是 sigmoid 输出、三支路和为 1 与否未约束，论文未分析门控值分布（§3.2）[^src-2502-11089-nsa]。
+- 门控贡献未与稀疏设计分离：Qwen 的 gated-attention 扫描指出 NSA 的整体增益没有拆出门控这一项，而其 sigmoid 权重是三支路输出的分支级加权系数，既不逐 head 也不逐通道，与 SDPA 输出侧逐元素门控不是同一粒度（arXiv:2505.06708 §1）[^src-gated-attention-for-large-language-models-2505-06708]。
 
 ## 相关页面
 
+- [[sdpa-output-gating]] — 分支级权重与逐 head 逐元素输出门控的粒度对照
 - [[source-2502-11089-nsa]] — 源摘要
 - [[mita-attention]] — 拼接后单次 softmax 的对照口径
 - [[moba-attention]] — 同为训练期块稀疏，单支路 top-k 门控
@@ -191,5 +193,6 @@ NSA 在 9 项中 7 项更高，平均 +0.013；两项更低的是 MMLU（−0.00
 - [[grouped-query-attention]] — 组内共享 K/V 的头结构，§2.1 的「组内并集」读量口径以它为背景
 
 [^src-2502-11089-nsa]: [[source-2502-11089-nsa]]
+[^src-gated-attention-for-large-language-models-2505-06708]: [[source-gated-attention-for-large-language-models-2505-06708]]
 [^src-2602-01219-mita]: [[source-2602-01219-mita]]
 [^src-shazeer-2019-mqa]: [[source-shazeer-2019-mqa]]

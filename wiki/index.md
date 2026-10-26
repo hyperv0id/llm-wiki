@@ -153,6 +153,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-frets]] — FreTS: frequency-domain MLPs for time series forecasting (NeurIPS 2023)
 - [[source-from-news-to-forecast]] — From News to Forecast: LLM generative agent iteratively filters news events with reflection + CoT for time series prediction (NeurIPS 2024)
 - [[source-fstllm]] — FSTLLM: Spatio-Temporal LLM for Few Shot Time Series Forecasting, plug-and-play LLM augmentation (ICML 2025)
+- [[source-gated-attention-for-large-language-models-2505-06708]] — Gated Attention: softmax attention 的 SDPA 输出侧逐头 sigmoid 门控，30 变体消融把增益定位到 $G_1$；15A2B MoE / 1.7B dense、最高 3.5T token 上 PPL 6.026→5.761、首 token 注意力 0.467→0.048、YaRN 128k RULER 31.65→58.82（Qwen Team, arXiv:2505.06708）
 - [[source-gamma-net]] — GAMMA-Net: GAT + Multi-Axis Mamba Interleaved for traffic forecasting (arXiv 2026)
 - [[source-gcgnet]] — GCGNet: Graph-Consistent Generative Network for TS forecasting with exogenous variables (joint graph alignment + VAE generator + Graph Refiner, ICLR 2026)
 - [[source-gcrdd]] — D³VAE (GCRDD): generative time series forecasting with coupled diffusion, denoise, and disentanglement (NeurIPS 2022)
@@ -1254,6 +1255,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[sandglass-attention]] — SGA, precoder-decoder 注意力模块，聚合区域 token 捕获高阶时空相关性 + 降开销 (AAAI 2025)
 - [[sarsa-algorithm]] — on-policy TD 控制算法
 - [[scale-wise-autoregressive-decoding]] — 尺度级自回归轨迹解码：把自回归步从「下一步」换成「下一个尺度」，三次插值构造细尺度起点 + block-wise causal mask + 全尺度 RMSE（TrajAR）
+- [[sdpa-output-gating]] — SDPA 输出门控：$W_O$ 之前乘 $\sigma(XW_\theta)$，逐 token、逐 head、逐通道；插入逐元素非线性打断 $W_V$–$W_O$ 的低秩合并，并引入输入相关稀疏（Qwen Team, arXiv:2505.06708）
 - [[selective-patching]] — Selective Patching：stride-1 候选上可微 Argmax 选 patch（可重复采样）(SRS, NeurIPS 2025)
 - [[self-speculative-decoding]] — Self-speculative decoding, same-model multi-head draft + verify for faster autoregressive generation (Stern/Medusa; strengthened by multi-token pretraining)
 - [[sheaf-laplacian]] — 层拉普拉斯算子 (Sheaf Laplacian)，推广图拉普拉斯以编码边特定的变换语义，用于谱域滤波 (ICLR 2026 under review)
