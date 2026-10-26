@@ -197,6 +197,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-jmlr-25-1243]] — FusionBench: unified library + benchmark for deep model fusion (JMLR 26, 2025; PDF raw/jmlr-25-1243.pdf)
 - [[source-jstc]] — JSTC: Travel Time Prediction with Joint Spatial-Temporal Correlation Mechanism
 - [[source-k2vae]] — K²VAE: Koopman-Kalman Enhanced VAE for Probabilistic Time Series Forecasting (ICML 2025 Spotlight)
+- [[source-katharopoulos-2020-linear-attention]] — Transformers are RNNs：线性注意力原始论文——非负核特征映射 + 结合律把 $O(N^2)$ 降到 $O(N)$，$\phi(x)=\operatorname{elu}(x)+1$，因果掩码写成双状态 RNN（注意力记忆 $s$ + 归一化记忆 $z$）常数成本自回归解码，MNIST/CIFAR-10 吞吐 317×/4,462×、WSJ PER 8.08（Katharopoulos et al., Idiap/EPFL, ICML 2020, arXiv:2006.16236；PDF raw/transformers-are-rnns-2006-16236.pdf）
 - [[source-kellerjordan-muon-blog]] — TODO
 - [[source-kexue-muon-analysis]] — Muon优化器赏析：从向量到矩阵的本质跨越 (苏剑林, 2024)
 - [[source-kite]] — KITE: Knowledge-Guided Probabilistic Modeling for Time Series Forecasting with Exogenous Variables（HCM + KGC + CFG，ICML 2026）
@@ -783,6 +784,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[large-scale-spatial-temporal-graph]] — 大规模时空图预测的计算复杂度与解决方案
 - [[latent-reasoning]] — 隐空间推理：在连续隐状态里完成推理、不经 token 投影，与 verbalized CoT 构成两条 test-time compute 轴；Huginn 的 $r=1$ 无推理能力为主证据，代价是可监督性（arXiv:2502.05171）
 - [[lead-lag-dependency]] — lead–lag 依赖：跨空间-时间的延迟依赖 $\tau_{ij}=|t_1-t_2|$，空间/时间依赖为其一维退化形式；统计/领域/深度三类建模谱系
+- [[linear-attention-rnn-form]] — Katharopoulos 2020 机制页：非负核 + 结合律重排、$\operatorname{elu}(x)+1$、因果前缀和递推 $s_i/z_i$、梯度累积和与 $O(NCM)$ 对 $O(N^2\max(D,M))$，Table 1–5 逐表数字
 - [[linear-attention-unified-framework]] — Mamba Linear Attention unified formulation with 6 differences identified
 - [[location-scale-noise-model]] — LSNM，将条件分布的均值和方差同时建模的位置-尺度噪声模型，使扩散模型能感知数据异质性
 - [[lomb-scargle-periodogram]] — Lomb–Scargle 周期图，非均匀采样数据的频谱估计方法

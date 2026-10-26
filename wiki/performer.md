@@ -9,8 +9,8 @@ tags:
   - efficiency
   - iclr-2021
 created: 2026-08-30
-last_updated: 2026-08-30
-source_count: 3
+last_updated: 2026-10-27
+source_count: 4
 confidence: medium
 status: active
 ---
@@ -50,7 +50,7 @@ FAVOR+ 作用于形如 A(i,j)=K(qᵢ,kⱼ) 的注意力矩阵，其中核 K(x,y)
 - **长序列**：ImageNet64（L=12288，常规 Transformer 不可行）上 Performer/6 层匹配 Reformer/12 层、Performer/12 层匹配 Reformer/24 层；硬件相关（TPU/GPU）条件下 (U) 设置中 Performer 经 Jax 优化可比 Reformer 快约 2 倍（Sec 4.5, Fig 7）[^src-performer]。拼接 TrEMBL 长序列（L=8192）上常规 Transformer 每芯片 batch 1 仍内存溢出，缩小版 3 层 Transformer 准确率被限制在约 19%，Performer 以标准架构、batch 8 持续训练到约 24%（Sec 4.5, Fig 7）[^src-performer]。
 - **设置消融**：ImageNet64 (U) 100K 步时 Performer-ReLU / Performer-Softmax / Performer-Softmax (SMREG) 分别为 3.67 / 3.69 / 3.67 BPD（Appendix D.2）[^src-performer]。
 - **Long Range Arena**：附录转引 LRA 基准结果（Tay et al., 2021, Fig 19），作者报告 Performers 在速度大于 100 examples/sec 的可扩展 Transformer 方法中取得最高 LRA 分数（Appendix D.5，作者自述口径）[^src-performer]。
-- **对照 Linear Transformer**：ProGen 设置下以 elu(x)+1 为特征映射的 Linear Transformer（Katharopoulos et al., 2020）3 个种子均在训练早期梯度爆炸终止，双向设置在约 125K 步处同样爆炸（Appendix D.4, Fig 18）[^src-performer]。
+- **对照 Linear Transformer**：ProGen 设置下以 elu(x)+1 为特征映射的 Linear Transformer（Katharopoulos et al., 2020，即 [[linear-attention-rnn-form]] 的原始论文）3 个种子均在训练早期梯度爆炸终止，双向设置在约 125K 步处同样爆炸（Appendix D.4, Fig 18）[^src-performer]。
 - **训练即插即用**：Performer 使用与常规 Transformer 相同的训练超参数取得竞争性结果，作者称 FAVOR 可作为不需大量调参的 drop-in 组件（Appendix A.2，作者自述）[^src-performer]。
 
 ## 论文自述局限
@@ -77,5 +77,6 @@ Performer 是 [[linear-attention-unified-framework|线性注意力统一框架]]
 - [[source-performer]] — 论文源摘要
 
 [^src-performer]: [[source-performer]]
+[^src-katharopoulos-2020-linear-attention]: [[source-katharopoulos-2020-linear-attention]]
 [^src-2509-22259]: [[source-2509-22259]]
 [^src-graphgps]: [[source-graphgps]]

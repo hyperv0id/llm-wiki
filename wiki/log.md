@@ -4314,3 +4314,11 @@ ingest 报告：[[ingest-reports/2026-10-27-flashattention|WHY 报告]]
 对照 raw 原文逐条核查 [[deepseek-sparse-attention]] 四个 Stage 维度块与六条新增推导：维度可乘性与 $\bcancel$/规约轴、省算不等式 $\frac{H^I d^I}{2n_h d_h}+\frac{k}{L}$、top-$k$ 单调等价、2.1B/943.7B 复算、[INFERENCE] 标注、脚注与 source_count=3 均通过。修复三处表述：ReLU 段的 $p_{t,:}$ 由「概率之和」改回论文原词「分数求和」并指向训练节的口径推断，删去「单头非负使 Softmax 可对齐非负混合」（softmax 输出恒非负，该因果不成立）；$p_{t,:}$ 口径推断的 logits 反例由「L1 归一化后不构成分布」更正为「负分取绝对值后不再与注意力分数成比例」；两阶段顺序的理由由「绕开选择不可导与无训练信号」更正为「KL 先对齐，引入 top-$k$ 时选择才落在有意义的分数上」。复跑 scripts/lint.py：本页无 severe/warn，severe 计数与基线持平。
 
 更新的页面：[[deepseek-sparse-attention]]、[[ingest-reports/2026-10-27-dsa-derivation|推导核验报告]]（同步修正说明）
+## [2026-10-27] ingest | Transformers are RNNs: Fast Autoregressive Transformers with Linear Attention
+
+Katharopoulos et al.（Idiap/EPFL，ICML 2020，arXiv:2006.16236；PDF raw/transformers-are-rnns-2006-16236.pdf，v3 通读、diff 核对 v1 正文一致）。问题：softmax 注意力 $O(N^2)$ 时间显存卡住长上下文与自回归解码。机制：广义注意力只要求 sim 非负——覆盖全部正定核，取特征映射 $\phi$ 后按结合律先算 $\phi(K)^{\top}V$ 把复杂度降到 $O(N)$；实验用 $\phi(x)=\operatorname{elu}(x)+1$（elu 替代 relu 为负区梯度不归零）；因果掩码下分子分母都是前缀和，$s_i=s_{i-1}+\phi(k_i)v_i^{\top}$、$z_i=z_{i-1}+\phi(k_i)$ 递推构成双状态 RNN，解码每步常数成本，梯度沿 $1..N$/$N..1$ 累积和线性时间（附录 A）。证据：MNIST 0.644 bpd / 142.8 img/s（317×，Table 1）、CIFAR-10 3.40 bpd / 17.85 img/s（4,462×，Table 2，对 stateful-softmax 仍 >50×，Table 4）、WSJ CTC PER 8.08 / 824 s/epoch 优于 Bi-LSTM 与 LSH-4 但不及 softmax 5.12（Table 3）；任务清单所列 text8/WikiText-103/IMDB/AAHQ 语言建模实验不在论文任何版本中。边界：语音质量差距、CIFAR-10 的 bpd 优势来自 3 倍 epoch（caption 自述）、$\phi$ 的选择经验性（§5 开放方向）。
+
+创建的页面：[[source-katharopoulos-2020-linear-attention]], [[linear-attention-rnn-form]]
+更新的页面：[[linear-attention-unified-framework]]（循环形式公式补原始出处引用，source_count 5→6）, [[performer]]（对照 Linear Transformer 条补引用与链接，source_count 3→4）, [[positive-random-features]]（结合律重排补原始出处，source_count 2→3）, [[fast-weight-mlp-view-of-attention]]（相关页面加链接）, [[spectral-kernel-linear-attention]]（落成线性注意力节加原始推导链接）, [[index]]（Sources/Techniques 各一条）
+ingest 报告：[[ingest-reports/2026-10-27-linear-attention|WHY 报告]]
+数值备注：任务提示的 autoencoder 之外的语言建模实验（text8、WikiText-103、IMDB、AAHQ）在 v1–v3 均不存在，论文实验为 MNIST/CIFAR-10 自回归图像生成 + WSJ 语音识别 + 吞吐基准；§C.2 正文"almost 6.6× faster"与 Table 5 数字不直接对应（GPU 300.1/61.3≈4.9×、CPU 8,651.4/45.1≈191.8×），页面并列照录未采信单一口径；摘要"up to 4000×"对应 Table 2 的 4,462×

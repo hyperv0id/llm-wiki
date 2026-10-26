@@ -9,7 +9,7 @@ tags:
   - graph-transformers
   - effective-resistance
 created: 2026-08-13
-last_updated: 2026-08-30
+last_updated: 2026-10-27
 source_count: 4
 confidence: medium
 status: active
@@ -53,7 +53,7 @@ WIRE Theorem 3 陈述的是一阶展开 $q_i^\top k_j\left(1 - \frac{\omega^2 R(
 
 $$\mathcal{O}_i = \frac{\phi(q_i)^\top \sum_j \phi(k_j) v_j^\top}{\phi(q_i)^\top \sum_j \phi(k_j)}$$
 
-按结合律先累加 $\sum_j \phi(k_j)v_j^\top$ 与 $\sum_j \phi(k_j)$，得到 $O(N)$ 复杂度（每 token 特征 $\phi$ 计算 $O(dm)$，谱分解一次性 $O(N^3)$ 或稀疏图迭代近似、跨层摊销），无 $N\times N$ 矩阵、无 softmax。线性注意力的循环形式 $S_i = S_{i-1} + K_i^\top V_i$ 见 [[linear-attention-unified-framework]]；归一化对性能至关重要（移除归一化导致 -5.2%）[^src-demystify-mamba-linear-attention-2024]。
+按结合律先累加 $\sum_j \phi(k_j)v_j^\top$ 与 $\sum_j \phi(k_j)$，得到 $O(N)$ 复杂度（每 token 特征 $\phi$ 计算 $O(dm)$，谱分解一次性 $O(N^3)$ 或稀疏图迭代近似、跨层摊销），无 $N\times N$ 矩阵、无 softmax。该结合律重排与递推形式的原始推导见 [[linear-attention-rnn-form]]；循环形式 $S_i = S_{i-1} + K_i^\top V_i$ 见 [[linear-attention-unified-framework]]；归一化对性能至关重要（移除归一化导致 -5.2%）[^src-demystify-mamba-linear-attention-2024]。
 
 ## 两条实现路线
 

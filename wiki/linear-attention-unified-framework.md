@@ -7,8 +7,8 @@ tags:
   - unified-framework
   - architecture-analysis
 created: 2026-05-08
-last_updated: 2026-10-24
-source_count: 5
+last_updated: 2026-10-27
+source_count: 6
 confidence: medium
 status: active
 ---
@@ -21,7 +21,7 @@ Han et al. (NeurIPS 2024) 提出的统一框架，将 Mamba（选择性状态空
 
 ### 线性注意力的循环形式
 
-线性注意力使用核函数 $\phi$ 替代 softmax，其循环形式为[^src-demystify-mamba-linear-attention-2024]：
+线性注意力使用核函数 $\phi$ 替代 softmax，其循环形式为[^src-demystify-mamba-linear-attention-2024]。该递推的原始出处是 Katharopoulos et al. 2020 的因果掩码线性化（式 10–12 与式 18–19，记号为 $s_i=s_{i-1}+\phi(k_i)v_i^{\top}$、$z_i=z_{i-1}+\phi(k_i)$），机制推导与实验见 [[linear-attention-rnn-form]][^src-katharopoulos-2020-linear-attention]：
 
 $$S_i = S_{i-1} + K_i^\top V_i, \quad Z_i = Z_{i-1} + K_i^\top$$
 $$y_i = \frac{Q_i S_i}{Q_i Z_i}$$
@@ -93,9 +93,11 @@ $$y_i = C_i \sum_{j=1}^i (\prod_{k=j+1}^i \widetilde{A}_k) B_j (\Delta_j \odot x
 - [[agent-attention|Agent Attention]] — 以 agent token 参数化核函数的线性注意力实例，两段 softmax 与 aggregate/broadcast 同序
 - [[performer|Performer]] — 核随机特征路线的代表机制：softmax 核的正随机特征无偏估计 + 正交化降方差，线性注意力时间 O(Lrd)（ICLR 2021）[^src-performer]
 - [[positive-random-features|PRF]] — Performer 论文中 softmax 核估计的数学核心：trig 特征在小核值区 MSE 发散、正特征收敛
+- [[linear-attention-rnn-form]] — 上述循环形式的原始出处（Katharopoulos 2020）：核化推导、elu+1、因果前缀和与 RNN 重写
 
 [^src-demystify-mamba-linear-attention-2024]: [[source-demystify-mamba-linear-attention-2024]]
 [^src-stgformer]: [[source-stgformer]]
 [^src-performer]: [[source-performer]]
 [^src-2602-01219-mita]: [[source-2602-01219-mita]]
 [^src-2312-08874-agent-attention]: [[source-2312-08874-agent-attention]]
+[^src-katharopoulos-2020-linear-attention]: [[source-katharopoulos-2020-linear-attention]]

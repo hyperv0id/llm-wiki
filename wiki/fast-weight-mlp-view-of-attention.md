@@ -7,7 +7,7 @@ tags:
   - efficient-attention
   - unified-framework
 created: 2026-10-24
-last_updated: 2026-10-24
+last_updated: 2026-10-27
 source_count: 1
 confidence: medium
 status: active
@@ -69,5 +69,6 @@ wiki 里已有两种统一注意力的写法，覆盖的家族不同，不能互
 - [[linear-attention-unified-framework]] — 公式级统一（Mamba ↔ 线性注意力）
 - [[cbsa]] · [[representative-token-extraction]] — 压缩支的算子级统一
 - [[performer]] — 核随机特征路线，在本视角下属「压缩成单个共享线性层」
+- [[linear-attention-rnn-form]] — 递归状态 $s_i$ 即矩阵形式的 fast weights：核化线性注意力的原始机制页
 
 [^src-2602-01219-mita]: [[source-2602-01219-mita]]
