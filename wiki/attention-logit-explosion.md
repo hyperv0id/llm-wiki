@@ -8,7 +8,7 @@ tags:
   - training-dynamics
 created: 2026-04-28
 last_updated: 2026-10-26
-source_count: 3
+source_count: 4
 confidence: medium
 status: active
 ---
@@ -56,12 +56,14 @@ $$\frac{1}{\sqrt{d}}\|q_i\|\|k_j\| \rightarrow \infty$$
 
 | 方法 | 机制 | 效果 |
 |------|------|------|
-| QKNorm | Q、K 均 ℓ2 归一化 | 稳定训练，但限制表达能力 |
+| [[qk-norm\|QK-Norm]] | Q、K 沿 head 维 ℓ2 归一化，打分乘可学习标量 $g$[^src-henry-2020-qk-norm] | 打分取值被限制在 $[-g,g]$；5 个低资源翻译方向上报告平均 +0.928 BLEU |
 | RMSNorm | 均方根归一化 | 部分稳定 |
 | 初始化策略 | 精心设计初始化 | 延迟但不解决 |
 | **键归一化** | **仅归一化 K** | **稳定 + 保持锐度控制** |
 
 RMSNorm 一栏的「部分稳定」是机制判断：它按激活的均方根归一化、不做 re-centering，也不像 QKNorm 那样逐个约束 Q/K 的范数。它在四类任务上与 LayerNorm 质量相当、运行时间降 7%~64%[^src-zhang-2019-rmsnorm]，说明 LayerNorm 对激活的约束主要来自 re-scaling 不变性；这些实验测的是收敛与质量，不是 logit 尺度 [INFERENCE]。机制与定义见 [[rmsnorm]]。
+
+QK-Norm 的动机从相反方向给出：余弦打分被限制在 $[-1,1]$ 之后行内差值太小，模型无法有效忽略不该关注的连接，所以用可学习标量把打分放大[^src-henry-2020-qk-norm]。它约束的是打分取值，不约束范数增长；论文没有测量训练中的 logit 幅度、注意力熵或梯度范数，与「范数增长 → logit 放大 → 熵崩溃」这条链条没有直接对照。
 
 ## 训练不稳定的信号
 
@@ -87,11 +89,17 @@ RMSNorm 一栏的「部分稳定」是机制判断：它按激活的均方根归
 - 梯度裁剪
 - 早停策略[^src-quest]
 
+## 历史论断
+
+> 本页 QKNORM 行此前把效果写作「稳定训练，但限制表达能力」，无脚注；该说法与 QUEST 对两侧归一的批评同源——锐度不再随查询变化[^src-quest]。
+> 已按 [^src-henry-2020-qk-norm]（2020-10）改写：打分取值被搬进 $[-g,g]$，锐度由全局标量 $g$ 统一设定，论文据此声称不牺牲表达能力。
+
 ## 引用
 
 [^src-quest]: [[source-quest]]
 [^src-bluuuuue-scaling-factor-intuition]: [[source-bluuuuue-scaling-factor-intuition]]
 [^src-zhang-2019-rmsnorm]: [[source-zhang-2019-rmsnorm]]
+[^src-henry-2020-qk-norm]: [[source-henry-2020-qk-norm]]
 
 ## 相关页面
 

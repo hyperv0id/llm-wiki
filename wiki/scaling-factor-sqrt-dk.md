@@ -74,6 +74,10 @@ $$e_{ij}=\frac{1}{\sqrt{d_z}}\Big(x_iW^Q\big(x_jW^K\big)^{\top}+x_iW^Q\big(a^K_{
 
 边向量与被加宽的 key 内积共用同一个缩放因子；只缩放内容项会让位置项的相对量级随 $d_z$ 与边向量范数漂移，而边向量的量级由训练中的 $w^K$ 自由决定，没有独立的斜率参数可调[INFERENCE]。
 
+## 学习式尺度：把常数换成可学习标量
+
+QK-Norm 沿 head 维对 query 与 key 做 ℓ2 归一化后乘一个可学习标量 $g$，用乘法代替这里的除法，$g$ 初始化为 $\log_2(L^2-L)$，$L$ 为训练集源/目标序列长度的 97.5 分位[^src-henry-2020-qk-norm]。两者钉的不是同一个量：$1/\sqrt{d_k}$ 按「分量独立、零均值、单位方差时点积方差为 $d$」把方差压到 1[^src-bluuuuue-scaling-factor-intuition]；归一化之后打分退化为余弦相似度，被 Cauchy–Schwarz 限制在 $[-1,1]$、与 $d$ 无关，尺度改由 $g$ 决定可取范围。这一族的中间形态是 ScaleNorm——沿 embedding 维归一 Q、K、V 后乘一个可学习标量，标量初值恰好取 $1/\sqrt{d}$，与本页这个常数同值[^src-henry-2020-qk-norm]。推导与实验见 [[qk-norm]]。
+
 ## 在后续架构中的保留
 
 该缩放因子在 VLA（视觉-语言-动作模型）和世界模型等后续架构的注意力模块中被完整保留——无论是 Cross-Attention 还是 Causal Attention[^src-bluuuuue-scaling-factor-intuition]。其不可替代性来自所解决问题的结构性质：只要注意力沿用"高维向量内积施加 Softmax"这一基本形式，点积方差膨胀就是必然发生的数学事实。
@@ -88,6 +92,7 @@ $$e_{ij}=\frac{1}{\sqrt{d_z}}\Big(x_iW^Q\big(x_jW^K\big)^{\top}+x_iW^Q\big(a^K_{
 | [[attention-logit-explosion]] | 缩放因子控制初始化阶段的 logit 尺度，防止 Q/K 范数增长的数值后果 |
 | [[attention-temperature-scaling]] | 温度缩放是 $1/\sqrt{d_k}$ 的推广——在 RoPE 上下文扩展中调节 $t$ 值 |
 | [[key-normalization]] | 键归一化从另一角度解决注意力不稳定——约束 K 范数而非缩放点积 |
+| [[qk-norm]] | 把 $1/\sqrt{d_k}$ 换成乘在余弦打分上的可学习标量，初值由训练序列长度决定 |
 | [[entropy-boundedness]] | 缩放因子确保注意力熵远离零（防止饱和）和远离最大值（防止均匀化） |
 
 ## 引用
@@ -95,4 +100,8 @@ $$e_{ij}=\frac{1}{\sqrt{d_z}}\Big(x_iW^Q\big(x_jW^K\big)^{\top}+x_iW^Q\big(a^K_{
 [^src-bluuuuue-scaling-factor-intuition]: [[source-bluuuuue-scaling-factor-intuition]]
 [^src-attention-1706-03762]: [[source-attention-is-all-you-need-1706-03762]]
 [^src-shaw-2018-relative-position]: [[source-shaw-2018-relative-position]]
+<<<<<<< HEAD
 [^src-shazeer-2019-mqa]: [[source-shazeer-2019-mqa]]
+=======
+[^src-henry-2020-qk-norm]: [[source-henry-2020-qk-norm]]
+>>>>>>> cd8b2f8 (ingest Query-Key Normalization for Transformers)

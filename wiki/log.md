@@ -4220,3 +4220,10 @@ arXiv:2002.04745v2（Xiong et al.，ICML 2020 / PMLR 108）。问题：训练 Po
 更新的页面：[[identity-mapping-property]]（新增「LN 放置对恒等路径的影响」一节并补引用，source_count 1→2）, [[index]]
 ingest 报告：[[ingest-reports/2026-10-26-layernorm-placement|WHY 报告]]
 数值备注：§4.2 的 BERT 加速比方向与步数相反（Post-LN 500k vs Pre-LN 700k 却称 40% 加速，同段又称加速 200k），页面并列陈述；全文无 $\eta$ 上限表达式，任务预期的定理式学习率界不存在，已按梯度界写；任务记的 Theorem 3.1 在 arXiv v2 中编号为 Theorem 1；全文仅 Table 1 一张表，其余指标均为曲线，散文数字仅 8.45/约 34/31.16/2.77/约 4/35.5/1.69；IWSLT 上口径为 comparable，未给出 Pre-LN 更低的结论
+
+## [2026-10-26] ingest | Query-Key Normalization for Transformers（QK-NORM，arXiv:2010.04245，Findings of EMNLP 2020）
+源把注意力尺度的来源从「按 $d$ 除」改成「归一化后乘一个可学习标量」：沿 head 维对 query 与 key 做 ℓ2 归一化，打分退化为余弦相似度、取值被限制在 $[-1,1]$，再乘 $g$（初值 $\log_2(L^2-L)$，$L$ 为训练序列长度的 97.5 分位），V 不归一、与 LayerNorm 并用。证据是 5 个低资源 NMT 方向（TED Talks 四向 + IWSLT'15 en→vi）：Table 2 的 Moses 口径平均 +0.928 BLEU（bootstrap $p<0.01$），其中 gl→en 一项 +2.20、其余四向 +0.45 至 +0.68；Table 3 用 SacreBLEU 复评后逐列平均 +0.99（论文未报告该平均）。边界：对照模型同时把 ScaleNorm 换成 LayerNorm，没有保留基线只换注意力打分的消融（Table 6 在方法内部逐项移除）；机制解释以 conjecture 措辞给出，未测量 logit 幅度或注意力熵。
+创建的页面：[[source-henry-2020-qk-norm]]、[[qk-norm]]
+更新的页面：[[scaling-factor-sqrt-dk]]（补学习式尺度一节与 qk-norm 表行，source_count 3→4）、[[key-normalization]]（区分只归一 K 与两侧都归一，QKNorm 行给出 $g$ 与出处，source_count 2→3）、[[attention-logit-explosion]]（QKNorm 行改为有出处的机制描述并注明动机在差值过小一侧，source_count 2→3）、[[attention-temperature-scaling]]（补第三种尺度取值 $g$，source_count 2→3）、[[index]]
+ingest 报告：[[ingest-reports/2026-10-26-qk-norm|WHY 报告]]
+数值备注：Table 2 与 Table 3 的 en→vi 基线不同（32.79 vs 32.41），论文交代 Table 2 取 Nguyen & Salazar 报告值、复现最好值为 32.48/32.41；摘要的 0.928 对应 Table 2，Table 3 逐列平均为 0.99 而论文未报告；Table 1 的 10k 例句 / 0.37M token 直接取自 Nguyen & Salazar，与 31M 参数模型规模不成比例，照录不改；Figure 1–2 的 19.4→24.33 属独立小实验（IWSLT 2016 de→en、10 epoch），论文自称 obviously not systematic；$g_0=\log_2(L^2-L)$ 原文只称 rule of thumb，页内另给的临界值推导标 [INFERENCE]；附录 Table 4–6 只覆盖 en→vi 单方向

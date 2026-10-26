@@ -7,7 +7,7 @@ tags:
   - context-extension
 created: 2026-04-28
 last_updated: 2026-10-26
-source_count: 2
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -70,9 +70,10 @@ $$\sqrt{\frac{1}{t}} = 0.1\ln(s) + 1$$
 - 温度缩放处理注意力的熵/集中度
 - 两者结合 = [[yarn|YaRN]]
 
-温度缩放与 [[scaling-factor-sqrt-dk|缩放因子 $1/\sqrt{d_k}$]] 在数学上同构——两者都是在 Softmax 前对 logits 施加线性缩放。$1/\sqrt{d_k}$ 将点积方差归一化至 1 以预防饱和[^src-bluuuuue-scaling-factor-intuition]；温度 $t$ 则根据上下文扩展比例 $s$ 动态调节注意力锐度[^src-yarn]。温度缩放可视为缩放因子在位置编码上下文扩展场景下的推广。
+温度缩放与 [[scaling-factor-sqrt-dk|缩放因子 $1/\sqrt{d_k}$]] 在数学上同构——两者都是在 Softmax 前对 logits 施加线性缩放。$1/\sqrt{d_k}$ 将点积方差归一化至 1 以预防饱和[^src-bluuuuue-scaling-factor-intuition]；温度 $t$ 则根据上下文扩展比例 $s$ 动态调节注意力锐度[^src-yarn]。温度缩放可视为缩放因子在位置编码上下文扩展场景下的推广。同一位置还有第三种取值：[[qk-norm|QK-Norm]] 先把打分归一成 $[-1,1]$ 的余弦相似度，再乘一个可学习标量 $g$（初值 $\log_2(L^2-L)$），$g$ 相当于训练出来的温度，而非按扩展比例算出的温度[^src-henry-2020-qk-norm]。
 
 ## 引用
 
 [^src-yarn]: [[source-yarn]]
 [^src-bluuuuue-scaling-factor-intuition]: [[source-bluuuuue-scaling-factor-intuition]]
+[^src-henry-2020-qk-norm]: [[source-henry-2020-qk-norm]]

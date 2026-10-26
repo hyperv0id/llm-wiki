@@ -174,6 +174,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-gtr]] — GTR: Global Temporal Retriever, plug-and-play global cycle retrieval for MTSF (ICLR 2026)
 - [[source-guo-imputation-evaluation]] — Guo et al., A Survey and Benchmarking of Spatial-Temporal Traffic Data Imputation Models（arXiv:2412.04733v2，PDF 内核实；v1 题名 An Experimental Evaluation of Imputation Models for Spatial-Temporal Traffic Data 见 FENCE 参考文献著录），practice-oriented 缺失模式四分类 + 模型双分类 + 11 模型 × 4 交通数据集 × 20 缺失场景统一评测管线，评测复现口径结论与模型选择建议
 - [[source-gwnet]] — GWNet: Graph WaveNet, adaptive adjacency matrix + dilated causal convolution for STG traffic forecasting (IJCAI 2019)
+- [[source-henry-2020-qk-norm]] — Query-Key Normalization for Transformers（Henry et al., Findings of EMNLP 2020）：沿 head 维 ℓ2 归一 Q、K 使打分为余弦相似度，再乘可学习标量 $g$，5 个低资源 NMT 方向平均 +0.928 BLEU
 - [[source-hephestus]] — HEPHAESTUS: Hierarchical Periodic Heterogeneous Adaptive Spatio-Temporal Unified System for Traffic Forecasting (ICLR 2026 under review)
 - [[source-heterogeneous-moe-routing]] — TODO
 - [[source-hifinet]] — HiFiNet: Hierarchical Frequency-Decomposition GNN for Road Network Representation Learning (AAAI 2026)
@@ -1223,6 +1224,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[proxy-node-generation]] — 代理节点生成 GPN：共享 global queries + 时移滤波注意力在本地生成代表全局信息的节点，再经双掩码编码器恢复跨客户端依赖
 - [[q-learning-algorithm]] — off-policy TD 控制算法
 - [[qcgs]] — Query-Conditioned Gaussian Splatting (Station2Radar)，AWS-卫星融合 + INR 高斯参数估计 + 降雨感知采样，无雷达降水场生成 (ICLR 2026)
+- [[qk-norm]] — Query-Key Normalization：Q、K 沿 head 维 ℓ2 归一后打分落在 $[-g,g]$，用可学习标量代替 $1/\sqrt{d_k}$（Henry et al., Findings of EMNLP 2020）
 - [[quadratic-form-weighted-objective]] — QDF 二次型加权目标 L_Σ 与双层学习 Σ 的训练技术 (ICLR 2026)
 - [[query-aggregate-attention]] — STUNet two-stage fusion: query upstream/downstream via spatial tokens, then aggregate causal sensor info with dual RoPE (KDD 2026)
 - [[quizsf]] — QuiZSF, retrieval-augmented zero-shot TSF framework, ChronoRAG Base + MSIL + MCC dual-branch adapter (WWW 2026)
