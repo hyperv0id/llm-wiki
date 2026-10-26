@@ -298,6 +298,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-select-then-balance]] — Select, then Balance 旧 slug（已由 [[source-exost]] 取代；同文 arXiv only）
 - [[source-shaw-2018-relative-position]] — Self-Attention with Relative Position Representations：相对偏移的可学习向量加到 K/V（$2k+1$ 标签 + 裁剪距离 $k$），big 模型 EN-DE +1.3 BLEU（Shaw/Uszkoreit/Vaswani, Google, arXiv:1803.02155v1, 2018）
 - [[source-shazeer-2020-glu-variants]] — GLU Variants Improve Transformer：ReGLU/GEGLU/SwiGLU/Bilinear 在 T5-base 上等参数对照，GEGLU 1.633、SwiGLU 1.636 困惑度最低（Shazeer, Google, arXiv:2002.05202v1, 2020）
+- [[source-shazeer-2019-mqa]] — Fast Transformer Decoding: One Write-Head is All You Need：MQA，$H$ 组 query head 共享一份 K/V，乘加数不变而解码期 K/V 重读字节降为 $1/H$；WMT14 EN-DE dev ln(PPL) 1.424→1.439、test beam-4 BLEU 28.4→28.5，解码 46→3.8 µs/token（Shazeer, Google, arXiv:1911.02150v1, 2019-11；PDF raw/fast-transformer-decoding-one-write-head-1911-02150.pdf）
 - [[source-shortcut-models]] — Shortcut Models: one-step diffusion via self-consistency (arXiv 2025)
 - [[source-sifusion]] — SIFusion: 统一多粒度北极海冰预测框架，Swin V2 空间编码 + granularity variate 跨粒度融合 (NeurIPS 2025)
 - [[source-simdiff]] — SimDiff: simpler yet better diffusion model for time series point forecasting (AAAI 2026)
@@ -1161,6 +1162,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[multi-modality-guided-spatial-expert]] — multi-modality-guided spatial expert mechanism with MoE routing (KDD 2026)
 - [[multi-modality-refinement]] — SNR-based modality selection for multi-modality ST prediction (KDD 2026)
 - [[multi-objective-temporal-masking]] — MOTM：掩码比例时序范围掩码策略三级采样，多目标掩码预训练（Zeus, ICML 2026）
+- [[multi-query-attention]] — MQA：去掉 K/V 的 head 维、保留 query 的 head 维，解码单步 K/V 字节随 $H$ 线性而乘加数不变，算术强度 0.5→4 FLOP/byte（$H=8$），实测 12.1× 解码加速、训练与 encoder 不动
 - [[multi-scale-attention]] — Multi-scale window attention with dynamic relative position for hierarchical TS patterns (MANF)
 - [[multi-scale-linear-prediction]] — 多尺度线性预测，下采样 + 自上而下混合提取多粒度趋势模式 (DST-Mamba, AAAI 2025)
 - [[multi-source-causal-constraints]] — multi-source causal constraints framework: Granger + do-calculus + TDMI + VAE jointly supervise causal graph learning (CausalX, ICML 2026)

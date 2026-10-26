@@ -8,8 +8,8 @@ tags:
   - llm
   - hardware
 created: 2026-10-24
-last_updated: 2026-10-24
-source_count: 2
+last_updated: 2026-10-26
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -23,7 +23,7 @@ DeepSeek-AI、北京大学与华盛顿大学（arXiv:2502.11089v2，2025-02）�
 既有做法的失效归为四点（§2.1、§2.2）[^src-2502-11089-nsa]：
 
 - **阶段受限**：H2O 只在解码期稀疏，prefill 仍需算注意力图与建索引；MInference 只在 prefill 稀疏。至少一个阶段的开销与 full attention 相当，prefill 为主的负载（书摘、代码补全）与 decode 为主的负载（长思维链）各自拿不到加速（§2.1）。
-- **与 GQA/MQA 不兼容**：Quest 一类方法逐 head 独立选 KV 子集，MHA 下计算与访存同时稀疏；GQA 下 KV cache 访存量由组内各 query head 选中集合的**并集**决定，计算量降而访存量不降（§2.1）。
+- **与 GQA/MQA 不兼容**：Quest 一类方法逐 head 独立选 KV 子集，MHA 下计算与访存同时稀疏；GQA 下 KV cache 访存量由组内各 query head 选中集合的**并集**决定，计算量降而访存量不降（§2.1）。这条共享谱系的端点是 [[multi-query-attention]]：K/V 只留一份、全部 query head 共用，解码期 K/V 重读字节降为 $1/H$ 而乘加数不变（§2.4.1）[^src-shazeer-2019-mqa][^src-2502-11089-nsa]。
 - **事后稀疏的质量损失**：推理期插入稀疏迫使模型偏离预训练的优化轨迹；论文转引 Chen et al. 2024b：top 20% 注意力只覆盖总注意力分数的 70%（§2.2）。
 - **训练期插入的障碍**：ClusterKV 的 k-means、MagicPIG 的 SimHash 在计算图中造成不连续；HashAttention 一类逐 token 选择需非连续读取 KV cache，与 FlashAttention 依赖连续块访存冲突，退化为低硬件利用率（§2.2）。
 
@@ -186,7 +186,9 @@ NSA 在 9 项中 7 项更高，平均 +0.013；两项更低的是 MMLU（−0.00
 - [[deformable-fast-weight-experts]] — 刚性块与形变专家的差别
 - [[mixture-of-experts]] — 块选择与门控合并借用的 MoE 原则
 - [[kv-cache-compression]] — 推理期 KV 淘汰路线，与训练期稀疏正交
+- [[multi-query-attention]] — 只留一份 K/V，是组内共用摊薄访存的前提
 - [[quest-attention]] — 被列入对照的块打分选择方法
 
 [^src-2502-11089-nsa]: [[source-2502-11089-nsa]]
 [^src-2602-01219-mita]: [[source-2602-01219-mita]]
+[^src-shazeer-2019-mqa]: [[source-shazeer-2019-mqa]]

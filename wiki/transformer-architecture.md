@@ -66,6 +66,7 @@ O &= \operatorname{Concat}\!\left(O^{(1)},\dots,O^{(h)}\right)W^{O} && \text{// 
 \end{aligned}$$
 
 $h d_v=d_{\text{model}}$，因而多头的总算力与全维单头相当（§3.2.2）[^src-attention-1706-03762]。多头让不同子空间在不同位置各自关注，单头平均则会削弱这一点（§3.2.2）[^src-attention-1706-03762]。
+把 K/V 的 head 维去掉、只留 query 的 head 维，即 [[multi-query-attention]]：$h$ 组 query 共享一份 $K,V$，拼头投影不变、乘加数不变，解码期 K/V 的重读字节降为 $1/h$（§2.4.1）[^src-shazeer-2019-mqa]。
 
 ### Stage 4 · post-LN 残差与前馈
 
@@ -182,9 +183,14 @@ big 模型 EN-DE 比当时最好的集成模型高 2.04 BLEU，8 卡 P100 训练
 
 ## 相关页面
 
+<<<<<<< HEAD
 [[sinusoidal-positional-encoding]] 涵盖位置注入与平移的线性映射，[[scaling-factor-sqrt-dk]] 梳理缩放因子的失效模式与后续讨论，[[interpretable-multi-head-attention]] 记录 TFT 在多头结构上共享 value 并平均注意力图，[[inverted-transformer-architecture]] 包含保留组件、反转注意力作用维度的后续架构，[[probsparse-self-attention]]、[[logsparse-self-attention]] 给出针对 $O(n^2\cdot d)$ 的稀疏化方案，[[source-attention-is-all-you-need-1706-03762]] 为论文摘要页，[[rmsnorm]] 记录可原位替换其中 LayerNorm、去掉均值中心化的归一化。
+=======
+[[sinusoidal-positional-encoding]] 涵盖位置注入与平移的线性映射，[[scaling-factor-sqrt-dk]] 梳理缩放因子的失效模式与后续讨论，[[interpretable-multi-head-attention]] 记录 TFT 在多头结构上共享 value 并平均注意力图，[[inverted-transformer-architecture]] 包含保留组件、反转注意力作用维度的后续架构，[[probsparse-self-attention]]、[[logsparse-self-attention]] 给出针对 $O(n^2\cdot d)$ 的稀疏化方案，[[multi-query-attention]] 是只留一份 K/V、保留 query head 维的推理侧变体，[[source-attention-is-all-you-need-1706-03762]] 为论文摘要页。
+>>>>>>> 1a32967 (ingest Fast Transformer Decoding: One Write-Head is All You Need)
 
 ---
 
+[^src-shazeer-2019-mqa]: [[source-shazeer-2019-mqa]]
 [^src-attention-1706-03762]: [[source-attention-is-all-you-need-1706-03762]]
 [^src-shazeer-2020-glu-variants]: [[source-shazeer-2020-glu-variants]]

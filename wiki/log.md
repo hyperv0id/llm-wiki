@@ -1,3 +1,12 @@
+## [2026-10-26] ingest | Fast Transformer Decoding: One Write-Head is All You Need（MQA，arXiv:1911.02150）
+
+MQA 去掉 K/V 的 head 维、保留 query 的 head 维：$H$ 组 query 共享一份 $K,V$，打分与加权仍逐 head 独立，拼头投影不变。解码单步 K/V 读字节 $8bHMd_k\to 8bMd_k$、乘加数不变，算术强度 0.5→4 FLOP/byte（$H=8$），瓶颈由算力换成带宽；每步重写整段 K/V 的开销同比例下降，标题的 write-head 指写入记忆的这一端。WMT14 EN-DE dev $\ln(\text{PPL})$ 1.424→1.439、test beam-4 BLEU 28.4→28.5；Billion-Word dev PPL 29.9→30.2；单张 TPUv2 8 核、序列长 128、batch 1024 下解码 46→3.8 µs/token（12.1×，beam-4 203→32），训练 13.2→13.0 与 encoder 1.7→1.5 几乎不动，局部注意力叠加后 3.3 µs。v1 无附录，kernel 细节以 §2.4 伪代码与代码清单给出。
+
+创建的页面：[[source-shazeer-2019-mqa]], [[multi-query-attention]]
+更新的页面：[[transformer-architecture]]（Stage 3 补 MQA 一句，source_count 1→2）, [[kv-cache-compression]]（新增「副本数」轴，source_count 5→6）, [[native-sparse-attention]]（GQA/MQA 条目接 MQA 端点，source_count 2→3）, [[deepseek-sparse-attention]]（MLA 的 MQA 模式接机制页，source_count 2→3）, [[scaling-factor-sqrt-dk]]（补缩放因子折算进 $P_q,P_k$ 的省略写法，source_count 3→4）
+ingest 报告：[[ingest-reports/2026-10-26-mqa|WHY 报告]]
+数值备注：§2.4.1 的超参假设印作 "$k=v=hd$"，按字面推不出 $\Theta(bn^2d)$ 与 $1/h$，取 $k=v=d/h$（Vaswani 约定）才自洽；§2.4 代码清单里多头增量分支用了未定义的 `M`（应为 `x`）、末尾 einsum 用未定义的 `O`（应为 `o`）、`P_v` 形状一行的方括号残缺。
+
 ## [2026-10-26] ingest | Train Short, Test Long: Attention with Linear Biases Enables Input Length Extrapolation
 
 ALiBi 用加性线性偏置替代位置编码：在 $q_iK^{\top}$ 上加 $m_h\cdot[-(i-1),\dots,-1,0]$（不乘 $1/\sqrt{d_k}$），$n$ 头斜率 $m_h=2^{-8h/n}$，右端恒为 $2^{-8}$；网络任何位置都不加位置向量，位置只经 Q/K 逐层进入、不进 V。WikiText-103 非重叠评估上，$L=512$ 的模型在 $L_{valid}=3072$ 处 18.40，低于 sinusoidal 在 $L=3072$ 训练的同列 18.67，且训练快 1.84 倍；同 $L=3072$ 时 ALiBi 17.60 对 T5 bias 18.01、rotary 18.57、sinusoidal 18.67（Table 4、Table 5）。同 $L$ 开销持平（28.3k 对 28.5k WPS、15.3 GB），多出 $n\times L\times L$ 掩码。边界：滑窗 $S=1$ 评估下困惑度随 $L_{valid}$ 持平，$L_{valid}>L$ 的收益主要来自 early token curse 缓解，ALiBi 未必真用到超过 $L$ 的上下文（Appendix B、Table 15）。

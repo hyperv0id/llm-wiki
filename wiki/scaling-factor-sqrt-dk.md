@@ -9,7 +9,7 @@ tags:
   - variance-control
 created: 2026-05-04
 last_updated: 2026-10-26
-source_count: 3
+source_count: 4
 confidence: medium
 status: active
 ---
@@ -78,6 +78,8 @@ $$e_{ij}=\frac{1}{\sqrt{d_z}}\Big(x_iW^Q\big(x_jW^K\big)^{\top}+x_iW^Q\big(a^K_{
 
 该缩放因子在 VLA（视觉-语言-动作模型）和世界模型等后续架构的注意力模块中被完整保留——无论是 Cross-Attention 还是 Causal Attention[^src-bluuuuue-scaling-factor-intuition]。其不可替代性来自所解决问题的结构性质：只要注意力沿用"高维向量内积施加 Softmax"这一基本形式，点积方差膨胀就是必然发生的数学事实。
 
+[[multi-query-attention]] 的公式把 $1/\sqrt{d_k}$ 折算进 $P_q$、$P_k$ 后不再显式写出，维度与数值都不变，只是文面省略（§2.2）[^src-shazeer-2019-mqa]。
+
 ## 与相关概念的关系
 
 | 概念 | 与缩放因子的关系 |
@@ -93,3 +95,4 @@ $$e_{ij}=\frac{1}{\sqrt{d_z}}\Big(x_iW^Q\big(x_jW^K\big)^{\top}+x_iW^Q\big(a^K_{
 [^src-bluuuuue-scaling-factor-intuition]: [[source-bluuuuue-scaling-factor-intuition]]
 [^src-attention-1706-03762]: [[source-attention-is-all-you-need-1706-03762]]
 [^src-shaw-2018-relative-position]: [[source-shaw-2018-relative-position]]
+[^src-shazeer-2019-mqa]: [[source-shazeer-2019-mqa]]

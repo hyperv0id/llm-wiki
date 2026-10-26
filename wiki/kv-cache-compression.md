@@ -7,8 +7,8 @@ tags:
   - efficient-inference
   - attention
 created: 2026-08-30
-last_updated: 2026-10-24
-source_count: 5
+last_updated: 2026-10-26
+source_count: 6
 confidence: medium
 status: active
 ---
@@ -42,6 +42,8 @@ KV 压缩与 [[context-window-extension]]（扩展位置编码以支持更长输
 
 正交的一条是训练期架构稀疏：[[moba-attention]] 用 top-k 门控选 KV 块，改 attention 计算结构而非推理期缓存淘汰；H2O、StreamingLLM、TOVA、FastGen、Quest 等属 decode 侧，与它互补[^src-moba-mixture-of-block-attention]。
 
+副本数是另一条独立轴：[[multi-query-attention]] 不淘汰任何 KV 条目，只让全部 query head 共享同一份 $K,V$，解码期 K/V 的重读字节降为 $1/H$，KV cache 的元素数从 $HMd_k$ 压到 $Md_k$（$H=8$ 即 $8\times$）[^src-shazeer-2019-mqa]。
+
 [[deepseek-sparse-attention|DSA]] 同属训练期架构稀疏，但不淘汰任何 KV：每个 query 在注意力时只读取 top-$k$ 个 MLA latent，主注意力复杂度由 $\mathcal{O}(L^2)$ 降到 $\mathcal{O}(Lk)$；代价是产生选择分数的 indexer 仍要对全部前序位置打分，保持 $\mathcal{O}(L^2)$（§2.3）[^src-2512-02556-deepseek-v3-2]。
 
 [[native-sparse-attention|NSA]] 也属训练期稀疏且不淘汰 KV：每个 query 只读 $\lfloor (s-l)/d\rfloor+nl'+w$ 个 token（$l=32$、$d=16$、$l'=64$、$n=16$、$w=512$），64k 序列下为 5632 个等价 token，对应 11.6× 的解码预期加速（Table 4）；访存的节省依赖 GQA 组内共用同一批块，逐 head 独立选块时读量由组内并集决定（§2.1、§5.2）[^src-2502-11089-nsa]。
@@ -57,6 +59,7 @@ KV 压缩与 [[context-window-extension]]（扩展位置编码以支持更长输
 - [[attention-sink]] — sink token 现象
 - [[rope]] — pre-RoPE/post-RoPE 区分的来源
 - [[moba-attention]] — 训练期块稀疏架构（正交路线）
+- [[multi-query-attention]] — 减少 K/V 副本数，不淘汰条目
 - [[deepseek-sparse-attention]] — 训练期 token 粒稀疏，不淘汰 KV
 - [[native-sparse-attention]] — 训练期块稀疏，三支路减少每步访存
 - [[source-triattention]] — 源摘要
@@ -67,3 +70,4 @@ KV 压缩与 [[context-window-extension]]（扩展位置编码以支持更长输
 [^src-trace-as-state]: [[source-trace-as-state]]
 [^src-2512-02556-deepseek-v3-2]: [[source-2512-02556-deepseek-v3-2]]
 [^src-2502-11089-nsa]: [[source-2502-11089-nsa]]
+[^src-shazeer-2019-mqa]: [[source-shazeer-2019-mqa]]

@@ -8,8 +8,8 @@ tags:
   - kv-cache
   - llm
 created: 2026-10-24
-last_updated: 2026-10-24
-source_count: 2
+last_updated: 2026-10-26
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -34,9 +34,9 @@ $$\mathbf{u}_{t}=\mathrm{Attn}\left(\mathbf{h}_{t},\left\{\mathbf{c}_{s}\mid I_{
 
 ## 为什么落在 MLA 的 MQA 模式
 
-DSA 的 KV entry 就是 MLA 的 latent vector。kernel 层要求一个 KV entry 被多个 query 共享才能摊薄访存，因此 DSA 用 MLA 的 MQA 模式实例化：每个 latent vector 在该 query token 的**所有 query head 间共享**（§2.1）[^src-2512-02556-deepseek-v3-2]。由此 top-$k$ 只需选一次，对所有 head 共用同一组 latent。
+DSA 的 KV entry 就是 MLA 的 latent vector。kernel 层要求一个 KV entry 被多个 query 共享才能摊薄访存，因此 DSA 用 MLA 的 MQA 模式实例化：每个 latent vector 在该 query token 的**所有 query head 间共享**（§2.1）[^src-2512-02556-deepseek-v3-2]。由此 top-$k$ 只需选一次，对所有 head 共用同一组 latent。这正是 [[multi-query-attention]] 的机制：$H$ 组 query 对同一份 $K,V$ 打分，乘加数不变而 K/V 重读字节降为 $1/H$（§2.4.1）[^src-shazeer-2019-mqa]。
 
-附录 A 只给了一张 MHA / MQA 模式的对比示意图（Figure 7），并说明 DeepSeek-V3.1-Terminus 在训练与 prefill 用 MHA 模式、decode 用 MQA 模式；**没有**给两种模式的公式或维度（附录 A）[^src-2512-02556-deepseek-v3-2]。
+附录 A 只给了一张 MHA / MQA 模式的对比示意图（Figure 7），并说明 DeepSeek-V3.1-Terminus 在训练与 prefill 用 MHA 模式、decode 用 MQA 模式；**没有**给两种模式的公式或维度（附录 A）[^src-2512-02556-deepseek-v3-2]。两种模式的维度形态见 [[multi-query-attention]]。
 
 ## 数据流与维度变换
 
@@ -160,7 +160,9 @@ Figure 3 按 token position 给出 V3.1-Terminus 与 V3.2 的每百万 token 成
 - [[fast-weight-scaling-taxonomy]] — DSA 在五维坐标中的格位
 - [[deformable-fast-weight-experts]] — 逐 query top-$k$ 与可复用专家组的差别
 - [[kv-cache-compression]] — 该机制不淘汰任何 KV，只减少每次注意力的读取
+- [[multi-query-attention]] — 该机制所依附的 K/V 共享形态
 - [[source-2512-02556-deepseek-v3-2]] — 源摘要
 
 [^src-2512-02556-deepseek-v3-2]: [[source-2512-02556-deepseek-v3-2]]
 [^src-2502-11089-nsa]: [[source-2502-11089-nsa]]
+[^src-shazeer-2019-mqa]: [[source-shazeer-2019-mqa]]
