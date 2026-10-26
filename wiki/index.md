@@ -95,6 +95,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-cvpe-2025]] — CVPE: Enhancing CI Forecasting via Cross-Variate Patch Embedding (arXiv 2025)
 - [[source-cyclenet]] — CycleNet: modeling periodic patterns for time series forecasting (NeurIPS 2024)
 - [[source-dag]] — DAG: A Dual Correlation Network for TS Forecasting with Exogenous Variables（时间+通道双相关发现—注入，IJCAI 2026）
+- [[source-dao-2022-flashattention]] — FlashAttention: IO-aware 精确注意力，tiling + online softmax 重缩放 + 反向重算，HBM 访问 $\Theta(N^2d^2M^{-1})$ 对标准 $\Theta(Nd+N^2)$（Dao et al., NeurIPS 2022, arXiv:2205.14135v2；PDF raw/flashattention-2205-14135.pdf）
 - [[source-dcrnn]] — DCRNN: Diffusion Convolutional Recurrent Neural Network for Traffic Forecasting (ICLR 2018)
 - [[source-ddim]] — DDIM: Denoising Diffusion Implicit Models (ICLR 2021), 确定性 ODE 加速采样
 - [[source-ddim-ode-spaces-ac-cn]] — 生成扩散模型漫谈（六）：一般框架之 ODE 篇 (苏剑林, 2022), F-P 方程视角下的概率流 ODE 与 DDIM
@@ -1037,6 +1038,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[fenchel-young-loss]] — FY loss, convex surrogate for Bregman divergence enabling end-to-end training through combinatorial layers
 - [[fgti]] — FGTI，频率感知生成式插补：high-frequency filter（引导残差项）+ dominant-frequency filter（趋势/季节项背景结构）+ 双 cross-attention（Q/K 来自频域、V 来自时域）融入条件扩散去噪网络 (NeurIPS 2024)
 - [[fine-grained-time-text-semantic-alignment]] — MindTS's cross-view text fusion and contrastive alignment (ICLR 2026)
+- [[flash-attention]] — FlashAttention：不改数学结果的精确注意力，tiling + online softmax 重缩放 + 反向重算，HBM 访问 $\Theta(N^2d^2M^{-1})$ 对标准 $\Theta(Nd+N^2)$，BERT 15%、GPT-2 3×、LRA 2.4×、显存线性省 20×（Dao et al., NeurIPS 2022）
 - [[flash-gradient-update]] — single-sample single-step calibrator update on the dequeued FIFO-queue sample to avoid information leakage (ST-TTC, NeurIPS 2025)
 - [[fleximodal-fusion]] — presence-mask gating at encoder/attention/loss levels enabling one model for arbitrary input modality subsets (OmniField, ICLR 2026)
 - [[flow-opd]] — Flow-OPD: On-Policy Distillation for Flow Matching，通过多教师在线蒸馏解决多任务 seesaw effect (arXiv 2026)

@@ -6,8 +6,8 @@ tags:
   - training-efficiency
   - gradient-computation
 created: 2026-06-16
-last_updated: 2026-06-16
-source_count: 1
+last_updated: 2026-10-27
+source_count: 2
 confidence: high
 status: active
 ---
@@ -127,4 +127,9 @@ Activation checkpointing has been a standard technique for training very deep ne
 - [[memory-efficient-training]] — broader context
 - [[diffusionblocks]] — complementary technique reducing all memory components
 
+## Relation to FlashAttention
+
+FlashAttention applies this trade-off specifically to attention: it stores only the softmax statistics (per-row max and row sum) plus the PRNG state, and recomputes attention blocks on-chip during the backward pass instead of reading the $O(N^2)$ attention matrix back from HBM. Because the recomputation removes the dominant memory traffic, the extra FLOPs are repaid by fewer HBM accesses — backward gets faster rather than slower, unlike generic checkpointing which trades speed for memory[^src-dao-2022-flashattention].
+
 [^src-diffusionblocks]: [[source-diffusionblocks]]
+[^src-dao-2022-flashattention]: [[source-dao-2022-flashattention]]

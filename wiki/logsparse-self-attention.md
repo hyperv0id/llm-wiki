@@ -9,7 +9,7 @@ tags:
   - long-sequence
 created: 2026-05-30
 last_updated: 2026-10-27
-source_count: 2
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -77,5 +77,8 @@ On electricity-f (370 series × 129,120 time steps, 15-min granularity) and traf
 
 LogSparse's key distinction: it is the only method with a **constructive proof** that information flows between any pair given sufficient depth, combined with super-exponential path multiplicity for distant pairs[^src-logtrans].
 
+All methods in the table above reduce work by shrinking the dependency set, so their outputs approximate full attention. [[flash-attention]] takes the orthogonal route: it computes exact attention with the same mathematical result and instead cuts HBM read/write counts via tiling and recomputation[^src-dao-2022-flashattention].
+
 [^src-logtrans]: [[source-logtrans]]
 [^src-zhou-informer-2021]: [[source-zhou-informer-2021]]
+[^src-dao-2022-flashattention]: [[source-dao-2022-flashattention]]

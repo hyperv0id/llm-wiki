@@ -9,7 +9,7 @@ tags:
   - hardware
 created: 2026-10-24
 last_updated: 2026-10-27
-source_count: 3
+source_count: 5
 confidence: medium
 status: active
 ---
@@ -100,7 +100,7 @@ o^*_t &= \sum_{c}g^{c}_t\,O^{c}_t && \text{// } [d_v,1]\times 3\xrightarrow{\tex
 
 ## 硬件对齐与 kernel（§3.4、§5）
 
-**优化目标的分野**（§3.1）：训练与 prefill 的批量矩阵乘算术强度高，compute-bound，目标是减计算；自回归解码每步生成一个 token 却要读整个 KV cache，算术强度低，memory-bound，目标是减访存。§1 引用的理论估计：64k 上下文解码时 softmax 注意力占总延迟的 70–80%[^src-2502-11089-nsa]。
+**优化目标的分野**（§3.1）：训练与 prefill 的批量矩阵乘算术强度高，compute-bound，目标是减计算；自回归解码每步生成一个 token 却要读整个 KV cache，算术强度低，memory-bound，目标是减访存。§1 引用的理论估计：64k 上下文解码时 softmax 注意力占总延迟的 70–80%[^src-2502-11089-nsa]。这条「精确注意力也该减访存」路线的起点是 [[flash-attention]]：不改依赖集合、输出与标准注意力相同，加速只来自减少 HBM 读写次数[^src-dao-2022-flashattention]。
 
 **kernel 结构**（§3.4、Figure 3）：压缩与窗口两支路与 FlashAttention-2 兼容，需专门实现的是选择支路。按 FlashAttention 把时间上连续的 query 块装进 SRAM 时，块内各 query 的选中 KV 块不相交，访存低效。NSA 改为**按位置装组内全部 query head**：外层在 Triton grid 上跑 query/output 循环，内层对位置 $t$ 载入 $Q\in\mathbb{R}^{[H,d_k]}$ 与全组共享的块索引 $\mathcal I_t$，再顺序载入 $K\in\mathbb{R}^{[B_k,d_k]}$、$V\in\mathbb{R}^{[B_k,d_v]}$ 进 SRAM，$B_k\mid l'$。收益两条：组内共享免去重复 KV 传输；内层长度（正比于 $n$）在 query 块间几乎相同，适合交给 grid 调度器做负载均衡[^src-2502-11089-nsa]。
 
@@ -195,6 +195,7 @@ NSA 在 9 项中 7 项更高，平均 +0.013；两项更低的是 MMLU（−0.00
 - [[grouped-query-attention]] — 组内共享 K/V 的头结构，§2.1 的「组内并集」读量口径以它为背景
 
 [^src-2502-11089-nsa]: [[source-2502-11089-nsa]]
+[^src-dao-2022-flashattention]: [[source-dao-2022-flashattention]]
 [^src-gated-attention-for-large-language-models-2505-06708]: [[source-gated-attention-for-large-language-models-2505-06708]]
 [^src-2602-01219-mita]: [[source-2602-01219-mita]]
 [^src-shazeer-2019-mqa]: [[source-shazeer-2019-mqa]]
