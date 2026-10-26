@@ -107,6 +107,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-deepseek-v2-2405-04434]] — DeepSeek-V2 技术报告：Multi-head Latent Attention（KV 联合低秩压缩 + decoupled RoPE，表 1 给 MHA/GQA/MQA/MLA 的 cache 公式）与 DeepSeekMoE，236B/21B 激活，128K 上下文（DeepSeek-AI, arXiv:2405.04434）
 - [[source-deepseek-v4-2606-19348]] — DeepSeek-V4 技术报告（preview）：混合注意力 CSA（$1/4$ 压缩 + DSA top-k）+ HCA（$1/128$ 压缩 dense）支撑 1M 上下文，1M 下 FLOPs 为 V3.2 的 27%/10%、KV 为 10%/7%（Pro/Flash）；mHC + Muon，32T/33T token，GRPO 专家 + 全词表 OPD 后训练（DeepSeek-AI, arXiv:2606.19348v1, 2026-04；PDF raw/deepseek-v4-2606-19348.pdf）
 - [[source-deepstate]] — DeepState: Deep State Space Models for Time Series Forecasting, RNN-parametrized linear SSM + Kalman likelihood (NeurIPS 2018)
+- [[source-dehghani-2019-universal-transformers]] — Universal Transformers：同一组自注意力+transition 权重沿深度循环 $T$ 步（步取 1 即 Transformer）+ ACT 逐位置动态停机；bAbI 0.21–7.78 零/少失败、LAMBADA test PPL 142、WMT14 En-De 28.9 BLEU（+0.9），有限精度下固定深度不可能计算通用、UT 取步数为长度函数即解除（Dehghani et al., UvA/DeepMind/Google Brain, ICLR 2019, arXiv:1807.03819v3；PDF raw/universal-transformers-1807-03819.pdf）
 - [[source-demystify-mamba-linear-attention-2024]] — Demystify Mamba in Vision: A Linear Attention Perspective (NeurIPS 2024)
 - [[source-detr]] — DETR: End-to-End Object Detection with Transformers（Carion et al., Facebook AI, arXiv:2005.12872v3，venue 未在 PDF 内核实），direct set prediction + Hungarian 二部匹配损失 + Transformer encoder-decoder + learned object queries 并行解码，COCO AP 42.0 与强化 Faster R-CNN 相当、APL 优 APS 弱，panoptic PQ 45.1（R101, COCO val）
 - [[source-diffputer]] — DiffPuter: Empowering Diffusion Models for Missing Data Imputation, EM 交替式扩散插补（M 步扩散密度估计 / E 步前向-反向混合条件采样），9 个表格数据集 MCAR 30% 相对最强基线平均提升 6.94% MAE / 4.78% RMSE（ICLR 2025）
@@ -1347,6 +1348,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[unified-prompt-learning]] — UrbanDiT 的三个 memory pool（时域/频域/空域）+任务掩码 prompt 的自适应引导机制
 - [[uniflow]] — UniFlow, foundation model for unified grid+graph urban spatio-temporal flow prediction (arXiv 2024)
 - [[unist]] — UniST, one-for-all spatio-temporal foundation model with MAE pre-training and memory-based prompt learning (KDD 2024)
+- [[universal-transformer]] — 同一组自注意力+transition 权重沿深度循环 $T$ 步、每步重加正弦位置-时间编码：步取 1 即 Transformer、固定 $T$ 即全层权重绑定的多层 Transformer；ACT 逐位置停机（阈值/余量/状态插值，按附录 C 伪代码转写），步数取长度函数是长度泛化与计算通用的前提；bAbI/LAMBADA/算法任务大幅超 Transformer、WMT +0.9 BLEU 但 ACT 在 MT 上略降（Dehghani et al., ICLR 2019）
 - [[urbangpt]] — UrbanGPT, spatio-temporal large language model with instruction-tuning paradigm (KDD 2024)
 - [[urbanmind]] — UrbanMind, multifaceted ST-LLM with Muffin-MAE and test-time adaptation for urban dynamics (KDD 2025)
 - [[urbanpg]] — UrbanPG, efficient framework with personalized context prompts + general backbone for large-scale/few-shot/continual ST learning (AAAI 2026)

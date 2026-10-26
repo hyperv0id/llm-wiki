@@ -8,8 +8,8 @@ tags:
   - latent-reasoning
   - language-model
 created: 2026-10-25
-last_updated: 2026-10-25
-source_count: 2
+last_updated: 2026-10-27
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -130,11 +130,12 @@ $$\begin{aligned}
 
 ## 谱系与相邻路线
 
-论文只在相关工作里提谱系：recurrent depth 被反复重新发现（RNN、扩散模型、universal/looped transformer）；Dehghani et al. 用循环深度追求图灵完备，Lan et al. 在规模上用过但固定循环次数；直接同源的是「随机 unroll + 每步注入输入」能学可泛化算法的一线工作；与 deep equilibrium model 可视为同族的「学习一个不动点迭代」（§8）[^src-2502-05171-recurrent-depth]。论文没有给出与 Universal Transformer 的逐条对照（未讨论 ACT 式逐位置停机、层间共享与块级共享的差别），也没有引用其 halting 机制[^src-2502-05171-recurrent-depth]。
+论文只在相关工作里提谱系：recurrent depth 被反复重新发现（RNN、扩散模型、universal/looped transformer）；Dehghani et al. 用循环深度追求图灵完备[^src-dehghani-2019-universal-transformers]——一手源核实（[[universal-transformer]]，§2、§4）：UT 把同一组自注意力 + transition 权重沿深度施加 $T$ 步、每步重加正弦位置-时间编码，固定 $T$ 即全层权重绑定的多层 Transformer，另配 ACT 逐位置停机，与 Huginn 的块级共享、无停机、每轮重注入输入嵌入不同；Lan et al. 在规模上用过但固定循环次数；直接同源的是「随机 unroll + 每步注入输入」能学可泛化算法的一线工作；与 deep equilibrium model 可视为同族的「学习一个不动点迭代」（§8）[^src-2502-05171-recurrent-depth]。论文没有给出与 Universal Transformer 的逐条对照（未讨论 ACT 式逐位置停机、层间共享与块级共享的差别），也没有引用其 halting 机制[^src-2502-05171-recurrent-depth]。
 
-二手报道给出的时间线（Universal Transformers 2018 → ALBERT 2019 跨层参数共享 → Coconut 2024 连续思维 → Huginn 2025 → Mixture-of-Recursions 2025 逐 token 递归深度 → Ouro/LoopLM 2025 学习退出）只出现在博客里，未在论文正文核实[^src-tosea-looped-transformer]。
+二手报道给出的时间线（Universal Transformers 2018 → ALBERT 2019 跨层参数共享 → Coconut 2024 连续思维 → Huginn 2025 → Mixture-of-Recursions 2025 逐 token 递归深度 → Ouro/LoopLM 2025 学习退出）只出现在博客里，未在论文正文核实[^src-tosea-looped-transformer]；其中 Universal Transformers 一条现已入库一手源 [[source-dehghani-2019-universal-transformers]]。
 
 与 MoE 的关系是论文 §9 明确写下的互补：本架构 compute-heavy、材料化参数多于实际参数，MoE 相反；作者原话是循环深度擅长学习推理模式、MoE 擅长存储与检索复杂信息，并设想未来的 recurrent MoE 能在多轮迭代里反复路由到同一 expert[^src-2502-05171-recurrent-depth]。
 
 [^src-2502-05171-recurrent-depth]: [[source-2502-05171-recurrent-depth]]
 [^src-tosea-looped-transformer]: [[source-tosea-looped-transformer]]
+[^src-dehghani-2019-universal-transformers]: [[source-dehghani-2019-universal-transformers]]

@@ -4344,3 +4344,13 @@ ingest 报告：[[ingest-reports/2026-10-27-minimax-msa|WHY 报告]]
 更新的页面：[[transformer-architecture]]（相关页面段加 [[generative-pretraining]] 链接，合并既有 HEAD/1a32967 冲突块（[[rmsnorm]]、[[multi-query-attention]] 与 [[source-attention-is-all-you-need-1706-03762]] 均保留），source_count 2→3 为对页面既有 3 个唯一引用的补计，wikilink 不计入）, [[pre-ln-transformer]]（开头补 GPT-1 仍为 post-LN 的谱系对照句，source_count 1→2）, [[index]]（Sources / Techniques 段各一条）
 ingest 报告：[[ingest-reports/2026-10-27-gpt|WHY 报告]]
 数值备注：引言（§1）称 GLUE「absolute improvements … 5.5%」，Table 4 为 72.8 对 68.9（差 3.9 点；3.9/68.9≈5.7% 与相对提升口径接近，论文未解释），页面两处并列不取舍；Table 5 的 MNLI 列 81.8 与 Table 2 的 MNLI-m 82.1 不同（正文未说明口径，照录）；摘要 9/12 SOTA 与表格逐项核对一致（RTE、MRPC、SST-2 三项未达）
+## [2026-10-27] ingest | Universal Transformers (Dehghani et al., ICLR 2019)
+
+Dehghani et al.（UvA/DeepMind/Google Brain，ICLR 2019，arXiv:1807.03819v3；PDF raw/universal-transformers-1807-03819.pdf，23 页通读）。问题：标准 Transformer 固定层栈缺迭代归纳偏置、训练长度之外泛化差。机制：同一组自注意力+transition 权重沿深度循环 $T$ 步（步取 1 即 Transformer，固定 $T$ 即全层权重绑定的多层 Transformer，attention 恒等+卷积 transition+$T$=输入长度归约出 Neural GPU），每步重加正弦位置-时间编码；ACT 逐位置停机按附录 C 伪代码转写（阈值 $\epsilon$、余量、状态凸组合；Graves 的 ponder-cost 损失项不在本论文中）。证据：bAbI 平均错误 0.21/0.29（10K）、4.55/7.78（1K）、20 任务零失败（Table 1）；LAMBADA test PPL 142、RC 0.5625（Table 3）；WMT14 En-De 28.9 BLEU、+0.9 vs Transformer base 且不用 ACT（Table 7）；算法任务 train 40→test 400 外推改善但不完美（Table 4）。边界：ACT 在 MT 上略降；1K bAbI 任务 17/19 仍失败；计算通用依赖步数可为输入长度函数与足够内存（附录 B）。
+创建的页面：[[source-dehghani-2019-universal-transformers]], [[universal-transformer]]
+更新的页面：[[recurrent-depth]]（谱系段 UT 条改挂一手源并核实与 Huginn 的共享粒度/停机/注入差别，source_count 2→3）, [[index]]（Sources/Techniques 各一条）
+ingest 报告：[[ingest-reports/2026-10-27-universal-transformer|WHY 报告]]
+数值备注：任务提示的 bAbI 基线口径（LSTM/Neural Programmer-Interpreter）与论文不符，Table 1 对照为 QRNet/Sparse DNC/GA+MAGE/MemN2N/Transformer；论文无 MLM 实验，语言建模 PPL 来自 LAMBADA（Table 3）；ACT 停机公式论文只给附录 C 伪代码，页面为转写并标注；式 (1) 的 $\sqrt{d}$ 中 $d$ 按式内定义是 Q 的列数，页面按原式加注
+## [2026-10-27] lint | Universal Transformers ingest 独立核查（2 新建 + 1 修改 + 1 报告）
+对照 arXiv:1807.03819v3 逐项核查：Table 1–7 全部数字、式 1/4–8、附录 B/E/F（10 seed 平均与任务 17/19 best seed）、Stage 5 与附录 C Listing 1–2 的转写、recurrent-depth 谱系段改挂一手源与 source_count 2→3 均一致。修 2 处（[[universal-transformer]]）：Stage 5 的 $\pi_t$/$w_t$ 中 $\rho_t$ 项补 $\mathbb{1}[\pi_{t-1}+p_t>\epsilon]\odot\mathbb{1}[\pi_{t-1}<1]$ 掩码，使已停机位置 $w_t=0$、状态复制与 Listing 2 一致（$\rho_t=(1-\pi_{t-1})$ 口径经 pdftotext -layout 复核 L19/L21 行序证实正确，未误改）；Stage 2 的 $\mathrm{head}_i$ 输入由 $H^{t-1}$ 统一为 $H^{t-1}+P^t$，与式 5 一致。复跑 scripts/lint.py：本次页面 severe/warn/info 命中 0，全库 severe 135 / warn 46 / info 1160。
+更新的页面：[[universal-transformer]]
