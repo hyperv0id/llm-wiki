@@ -4289,3 +4289,10 @@ ingest 报告：[[ingest-reports/2026-10-27-flashattention|WHY 报告]]
 对照 arXiv:2205.14135v2 原文逐项核查：Algorithm 1 循环结构（外层 j 装 K/V、内层 i 装 Q/O）、Theorem 1 不变量与 FLOPs、Theorem 2/5 访存计数、B.2 式 (4) 与 softmax 雅可比、B.5 与 Rabe & Staats 对照、Proposition 3/4、表 1–7/21 与图 2/3 数字均与页面一致。修 2 类 4 处：GPT-2 medium 对 Megatron 表内括号实为 1.8×（页面误作 1.7×），1.7×/1.8× 的出处改为 §4.1 正文与 caption / §4 开头列表（摘要只写 3×），原「摘要与 §4 正文写 1.8×」归因有误；访存分析「摘要与 Proposition 3 用 $\Omega(Nd+N^2)$」改为 §1 引言用 $\Omega(Nd+N^2)$ 对照、Theorem 2 用 $\Theta$、Proposition 3 是 $o(N^2d^2M^{-1})$ 全域下界。[[native-sparse-attention]] source_count 4→5（ingest 前即 4 定义对 3 不符）。log/报告同步更正。
 更新的页面：[[flash-attention]], [[native-sparse-attention]], [[log]]
 复跑 scripts/lint.py：severe 136（log.md 缺 frontmatter 等既有项，无本次新增）、warn 49（较修复前 50 消除 native-sparse-attention 一条）
+## [2026-10-27] maintenance | MoBA 数据流推导补强
+对照原文（arXiv:2502.13189v1，arXiv 未见更新版本）核验 [[moba-attention]] 与 [[source-moba-mixture-of-block-attention]] 全部数字与论断：§2 分块/门控/因果处理、五步实现、§3 全部实验数字、[[native-sparse-attention]] 对照段均一致；新增分阶段数据流（分块 mean-pool → 块级 top-k 门控 → 当前块 causal/历史块 non-causal 两段 → online softmax 合并）与门控归一化推导（淘汰块概率严格为 0 的条件、与 full attention 的分母差异、退化口径 $k\geq\lceil\mathrm{pos}(\bm{q})/B\rceil$）。修 2 处：删去论文未出现的「无需自定义 CUDA kernel」；source 页作者行由「全部署名 Moonshot AI」改为 23 Moonshot + 清华/之江浙大各 1。
+更新的页面：[[moba-attention]]（新增「数据流与维度变换」「门控归一化与 full attention 的关系」两节）、[[source-moba-mixture-of-block-attention]]（作者行、实现句、last_updated）
+报告：[[ingest-reports/2026-10-27-moba-derivation|WHY 报告]]
+数值备注：论文 §3.1 同段先算出 8K 稀疏度 81.25%、段末又写 75%；Figure 3 标题写 last 1K、图内表格写 last 2K（页面已注明，取表格口径）；式 (1)(2) 未写 $1/\sqrt{d_k}$ 温度项，数据流按原文口径省略
+## [2026-10-27] lint | MoBA 推导补全独立核查（2 页 + 报告）
+数据流 4 个 Stage 的 aligned 块逐式验可乘性与规约轴，与 Algorithm 1 及式 (2)–(6) 一致；§2/§3 全部数字（81.25%/75%、1e-3、1e-2、拟合指数、块 4096 top-12、RULER 62.5%、6.5×/16×、末 3 层、90/10、插值时点、query head 级 TP）与原文对上；$k\geq\lceil\mathrm{pos}(\bm{q})/B\rceil$ 退化口径在边界位置（pos 恰在块边界、pos=1）自洽。修 2 处（[[moba-attention]]）：缩放定律段并列论文同段 81.25% vs 75% 口径差（log 已记而页面此前未列）；「训练完成后不能即插即用作推理期近似」自论文归因句拆出，标为本页推导判断（原文 approximate 仅指线性 attention 与逼近静态稀疏架构）。复跑 scripts/lint.py，本次页面 severe/warn 无新增（source 页 source_count warn 为全库 27 个 source 页既有脚本误报，不动）。
