@@ -4371,3 +4371,14 @@ ingest 报告：[[ingest-reports/2026-10-27-gated-delta|WHY 报告]]
 对照 arXiv:2412.06464v3 原文逐项核查：Eq. 10 与四个 Stage 的 aligned 块逐行验可乘性与收缩/规约轴（$F^r_{[t]}=\gamma^r_{[t]}P^r_{[t]}$、UT transform 的 $\Gamma\odot KK^\top$、跨 chunk 两式、转置箭头记号）、Table 2–5 与 S.1/S.2 全部数字、§1/§3.2/§4/§5 边界归因均与页面一致；index 字母序、frontmatter/脚注目标核验无缺。修 4 处：Stage 3 两处未定义记号 $\bar\gamma^r$ 改回论文的 $\gamma^r_{[t]}$（PDF 无 bar 记号）；Table 3 的 Avg 55.32 系 8 项（LMB acc + 7 常识）平均，「十项平均」改「八项平均」；linear-attention-rnn-form 谱系句补 [^src-yang-2024-gated-delta] 引用与脚注，source_count 1→2。
 更新的页面：[[gated-delta-rule]], [[linear-attention-rnn-form]]
 复跑 scripts/lint.py：severe 135、warn 47、info 1156，与修前持平，本次页面均无条目（无新增 severe）
+## [2026-10-27] ingest | Qwen3-Next（80B-A3B）：GDN + GA 3:1 hybrid 技术发布
+
+来源是技术发布（官方博客 2025-09-11 + HF 模型卡），非论文：无消融表，所有数字按出处（博客/模型卡）逐条标注、评测一律归因厂商自述。机制：48 层按 `12*(3*(Gated DeltaNet->MoE)->1*(Gated Attention->MoE))` 交替——75% 层用常数状态线性注意力 GDN、25% 层保留 softmax attention 并加输出门控（沿用其 arXiv:2505.06708）、单头 256、partial RoPE 前 25% 位置维；MoE 512 选 10+1 shared（80B 总参激活 3B≈3.7%）；Zero-Centered RMSNorm + norm 权重 weight decay + router 初始化归一化；原生 MTP 多步训练兼作投机解码 draft。关键数字：训练 15T/36T tokens、9.3% Qwen3-32B 计算成本（博客）；LiveCodeBench v6 56.6、Arena-Hard v2 82.7 为模型卡对照表最高，MMLU-Pro 80.6 / AIME25 69.5 低于 235B-A22B-2507（模型卡表）；RULER-1M 平均 91.8（YaRN）对 235B 版 92.5（DCA）、256K 及以内各档高于 235B 版（模型卡表）；>32K 上下文 prefill/decode 均 >10x（博客，依赖实现）。边界：3:1 优于单一架构、GDN 优于 SWA/Mamba2、RL 稳定性已解决均为博客自述、无数据；基准图为位图。
+创建的页面：[[source-qwen3-next-blog-2025-09]], [[source-qwen3-next-modelcard-2025-09]], [[qwen3-next-hybrid]]
+更新的页面：[[mixture-of-experts]]（加 LLM ultra-sparse 实例段，source_count 15→16）, [[multi-token-prediction]]（加 Qwen3-Next 原生 MTP 工程落地段，source_count 1→3）, [[index]]（Sources 段 2 条 + Techniques 段 1 条）
+ingest 报告：[[ingest-reports/2026-10-27-qwen3-next|WHY 报告]]
+数值备注：博客基准图为位图、图内数字不可读，评测数字取自模型卡 Performance 与 Long-Context Performance 两表；博客正文 `Qwen3-30A-3B` 为型号笔误（应为 Qwen3-30B-A3B），照录不采信；「less than 10% training cost」与「9.3% of the compute cost of Qwen3-32B」并存，取 9.3% 为精确口径；qwen.ai 为纯客户端 SPA，正文经无头 Chromium 渲染提取，部署命令代码块未随渲染导出、以模型卡为准；任务给的文件名 `qwen3-next-blog-2026-09` 与博客实际日期 2025-09-11 不符，按实际日期归档为 raw/qwen3-next-blog-2025-09.md（slug 与页名随之）。
+## [2026-10-27] lint | Qwen3-Next ingest 独立复核（3 新建 + 3 修改 + 1 报告）
+对照 raw 两源逐项核查：五个 Stage 的 aligned 块全部可乘（12×4=48 层、36 GDN+12 GA 3:1、16×128=2048 QK、32×128=4096 V、16×256=4096 GA Q、64/256=25% RoPE、16/2=8 GQA 组、top-10+1 对应 3.7%≈3B），主表 5 行与 RULER 三行均值逐数核对一致；博客/模型卡归因与 [INFERENCE] 标注齐全。修 2 处事实偏差：RULER「256K 及以内各档高于 235B 版」与模型卡表格矛盾（192K 档 94.0 对 94.5 低于、4K 档 98.5 持平），改为博客口径与表格逐档并列；「MTP 未进入 HF transformers 主线」与源文不符（模型代码已进主线、MTP 功能 not generally available），三处改为「MTP 未在 HF transformers 中提供」。[[gated-delta-rule]] 为有意前向链接（本库尚无此页，另次 ingest 建页）。
+更新的页面：[[qwen3-next-hybrid]], [[source-qwen3-next-modelcard-2025-09]], [[multi-token-prediction]]
+复跑 scripts/lint.py：severe 135、warn 47、info 1156，本次页面均无条目（无新增 severe）

@@ -8,8 +8,8 @@ tags:
   - sample-efficiency
   - code-generation
 created: 2026-07-27
-last_updated: 2026-07-27
-source_count: 1
+last_updated: 2026-10-27
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -65,6 +65,10 @@ $$P_\theta(x_{t+i}\mid x_{t:1}) = \mathrm{softmax}\big(f_u(f_{h_i}(f_s(x_{t:1}))
 - 对已 next-token 收敛的模型（如 Llama-2）直接多 token 微调收益有限。
 - 增益随数据量增大可能收窄（摘要、GSM8K 均有此趋势）。
 
+## 工程落地：Qwen3-Next 的原生 MTP（2025-09）
+
+阿里 Qwen 的 Qwen3-Next 把 MTP 做成原生组件：官方称其同时提升预训练性能与投机解码接受率，并针对多步推理做了「训练-推理一致」的多步训练[^src-qwen3-next-blog-2025-09]。部署参数：SGLang `NEXTN`（3 步、topk 1、4 个 draft tokens）或 vLLM `qwen3_next_mtp`（2 个 speculative tokens）；MTP 未在 HF transformers 中提供，模块数与内部结构两源均未给[^src-qwen3-next-modelcard-2025-09]。与 Gloeckle et al. 的定位差异：这里是「训练侧联合目标 + 推理侧 draft」双用途的原生设计，而非仅作辅助预训练任务。架构语境见 [[qwen3-next-hybrid]]。
+
 ## 相关
 
 - [[source-gloeckle-2024-multi-token-prediction]] — 源论文摘要
@@ -75,3 +79,5 @@ $$P_\theta(x_{t+i}\mid x_{t:1}) = \mathrm{softmax}\big(f_u(f_{h_i}(f_s(x_{t:1}))
 ## 引用
 
 [^src-gloeckle-2024-multi-token-prediction]: [[source-gloeckle-2024-multi-token-prediction]]
+[^src-qwen3-next-blog-2025-09]: [[source-qwen3-next-blog-2025-09]]
+[^src-qwen3-next-modelcard-2025-09]: [[source-qwen3-next-modelcard-2025-09]]

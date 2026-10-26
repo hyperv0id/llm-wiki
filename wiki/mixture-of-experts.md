@@ -6,8 +6,8 @@ tags:
   - architecture
   - scalability
 created: 2026-04-29
-last_updated: 2026-10-25
-source_count: 15
+last_updated: 2026-10-27
+source_count: 16
 references:
   - [[source-fast-long-horizon-forecasting]]
   - [[source-2602-01219-mita]]
@@ -139,6 +139,10 @@ MoBA（Moonshot AI，2025）把 top-k 门控的对象从 FFN 专家换成 KV 上
 
 [[native-sparse-attention|NSA]] 则把门控放在支路合并处：压缩、块选择、滑动窗口三条支路各自 softmax，再由 sigmoid 门控加权求和，三个门控值互不归一（式 5）；块选择本身在支路内部按复用自压缩支路的注意力分数取 top-$n$，不引入独立打分网络（式 8、§3.3）[^src-2502-11089-nsa]。
 
+## LLM 侧的 ultra-sparse 形态（Qwen3-Next）
+
+Qwen3-Next（阿里 Qwen，2025-09）把稀疏度推到 LLM 前沿：512 个 routed 专家每 token 只激活 10 个、另加 1 个 shared expert（Qwen3 为 128 选 8），80B 总参激活约 3B、占 3.7%[^src-qwen3-next-blog-2025-09]。博客称在 global load balancing（其引文 [4]）下固定激活专家数、增大专家总量可持续降低训练损失[^src-qwen3-next-blog-2025-09]。与上文时序/时空 MoE 的差异在量级：专家数与稀疏率都高一个数量级，均衡仍走负载均衡损失一系；架构全貌见 [[qwen3-next-hybrid]]。
+
 ## 反向视角：dense ResNet 的功能层隐性路由
 
 上面所有条目都是**先造专家、再学 router**。Yan et al.（arXiv:2610.02907，2026）反过来问：已训练好的标准 ResNet 里是否已经存在隐式专家结构。做法是把残差支路开关当作博弈参与者，对 $2^L$ 个掩码做 Möbius 反演，得到 shortcut 基线 + 一阶修正 + 高阶 interaction 的精确加性分解；高阶项按幅值排序即为 per-input 专家集[^src-resnets-route-without-routers]。
@@ -197,3 +201,4 @@ MoE 把容量放在参数上、每次前向只激活一部分；[[recurrent-dept
 [^src-2502-11089-nsa]: [[source-2502-11089-nsa]]
 [^src-resnets-route-without-routers]: [[source-resnets-route-without-routers]]
 [^src-2502-05171-recurrent-depth]: [[source-2502-05171-recurrent-depth]]
+[^src-qwen3-next-blog-2025-09]: [[source-qwen3-next-blog-2025-09]]

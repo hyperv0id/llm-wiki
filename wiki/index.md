@@ -283,6 +283,8 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-qdf]] — QDF: Quadratic Direct Forecast, learns PSD weighting matrix Σ for quadratic NLL objective addressing label autocorrelation + heterogeneous task weights (ICLR 2026 preprint, arXiv:2511.00053)
 - [[source-quest]] — QUEST: efficient long-range attention via token clustering
 - [[source-quizsf-zero-shot-forecasting-www26]] — QuiZSF: RAG for zero-shot TSF, ChronoRAG Base + HHTR + MSIL + MCC, 75%/87.5% Top1 (WWW 2026)
+- [[source-qwen3-next-blog-2025-09]] — Qwen3-Next 发布博客（Qwen Team, 2025-09-11）：GDN+GA 3:1 hybrid、512 选 10+1 ultra-sparse MoE（80B/3B≈3.7%）、Zero-Centered RMSNorm、原生 MTP；15T/36T tokens、9.3% Qwen3-32B 计算成本、>32K 上下文 prefill/decode >10x（博客自述；正文 raw/qwen3-next-blog-2025-09.md）
+- [[source-qwen3-next-modelcard-2025-09]] — Qwen3-Next-80B-A3B-Instruct 模型卡：48 层 12×(3×(GDN→MoE)→1×(GA→MoE))、16Q/2KV×256 + RoPE 64、GDN 32V/16QK×128、512/10+1×512、262,144 原生至 YaRN 1,010,000；Instruct 评测表（MMLU-Pro 80.6、LiveCodeBench 56.6、Arena-Hard v2 82.7）与 RULER-1M 91.8（2026-10-27 抓取；全文 raw/qwen3-next-modelcard-2025-09.md）
 - [[source-radford-2018-gpt]] — GPT-1: Improving Language Understanding by Generative Pre-Training，BooksCorpus 预训练 12 层 post-LN decoder-only Transformer + 判别微调 + 任务特定输入变换（traversal 拼接），12 任务 9 项 SOTA：Story Cloze 86.5（+8.9）、RACE 59.0（+5.7）、MNLI-m 82.1、CoLA 45.4、GLUE 72.8；消融去预训练 −14.8、换 LSTM −5.6（Radford, Narasimhan, Salimans, Sutskever, OpenAI 技术报告 2018；PDF raw/gpt-1-language-understanding-2018.pdf）
 - [[source-raf]] — RAF: Retrieval Augmented Forecasting, 首个系统性 RAG 框架用于 TSFM 零样本预测 (arXiv 2024)
 - [[source-ragc-efficient-traffic-forecasting]] — RAGC: Efficient Traffic Forecasting on Large-Scale Road Network by Regularized Adaptive Graph Convolution (arXiv 2026)
@@ -1256,6 +1258,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[quadratic-form-weighted-objective]] — QDF 二次型加权目标 L_Σ 与双层学习 Σ 的训练技术 (ICLR 2026)
 - [[query-aggregate-attention]] — STUNet two-stage fusion: query upstream/downstream via spatial tokens, then aggregate causal sensor info with dual RoPE (KDD 2026)
 - [[quizsf]] — QuiZSF, retrieval-augmented zero-shot TSF framework, ChronoRAG Base + MSIL + MCC dual-branch adapter (WWW 2026)
+- [[qwen3-next-hybrid]] — Qwen3-Next 3:1 hybrid：75% Gated DeltaNet（常数状态递推）+ 25% Gated Attention（输出门控 + 单头 256 + partial RoPE），512 选 10+1 MoE（3.7% 激活），原生 MTP；分阶段 aligned 数据流与配置账（Qwen, 2025-09 技术发布）
 - [[radial-basis-function-interpolation]] — RBF 插值，Multiquadric 核从离散站点构建连续污染物场
 - [[rdpi]] — RDPI，两阶段时空插补框架：确定性初始模型（GRIN）+ 以"初值−真值"残差为扩散目标的条件扩散，观测值入前向过程、保留随机项的 DDIM 式加速；四时空数据集 MAE/MSE 作者报告最优 (arXiv 2024, AAAI 2025 著录)
 - [[recurrent-acceleration-network]] — RAN，反对角线 slice 并行：串行步数 $L\to R+C-1=O(\sqrt L)$、内存 $O(L)$，WITRAN 的通用递推加速框架（NeurIPS 2023）
