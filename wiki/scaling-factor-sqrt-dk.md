@@ -9,7 +9,7 @@ tags:
   - variance-control
 created: 2026-05-04
 last_updated: 2026-10-26
-source_count: 4
+source_count: 5
 confidence: medium
 status: active
 ---
@@ -100,8 +100,5 @@ QK-Norm 沿 head 维对 query 与 key 做 ℓ2 归一化后乘一个可学习标
 [^src-bluuuuue-scaling-factor-intuition]: [[source-bluuuuue-scaling-factor-intuition]]
 [^src-attention-1706-03762]: [[source-attention-is-all-you-need-1706-03762]]
 [^src-shaw-2018-relative-position]: [[source-shaw-2018-relative-position]]
-<<<<<<< HEAD
 [^src-shazeer-2019-mqa]: [[source-shazeer-2019-mqa]]
-=======
 [^src-henry-2020-qk-norm]: [[source-henry-2020-qk-norm]]
->>>>>>> cd8b2f8 (ingest Query-Key Normalization for Transformers)
