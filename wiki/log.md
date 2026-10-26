@@ -6,6 +6,17 @@ ALiBi 用加性线性偏置替代位置编码：在 $q_iK^{\top}$ 上加 $m_h\cd
 更新的页面：[[alibi]]（新增四阶段数据流、斜率几何级推导与距离尺度、外推机制/边界、四方法对照表；修正斜率序列写法与效率口径）, [[source-alibi]]（补官方 URL/版本/代码/本地副本，改为四段摘要，confidence medium）, [[geometric-slope-schedule]]（补各条 §节出处、序列两端固定与距离尺度推导）, [[position-extrapolation]]（外推曲线按 WikiText-103 与 CC100 两设置分写，补收益来源边界）, [[context-window-extension]]（ALiBi 行的最大扩展改按两设置实测口径）
 ingest 报告：[[ingest-reports/2026-10-26-alibi-derivation|WHY 报告]]
 数值备注：`pdftotext` 丢指数负号（$2^{-1}$ 被提为 "21"、$2^{-0.5}$ 为 "20.5"）；图内数值不可读，全部改用 Table 1–15；摘要的「训练快 11%、显存省 11%」对应 1.3B 模型同时长比较（Table 11），同 $L$ 下为速度持平、显存相同，两处口径已分写。
+## [2026-10-26] ingest | GLU Variants Improve Transformer
+
+Shazeer 把 GLU（两条线性投影的逐元素积，其中一条先过 sigmoid）推广为一族门控激活，并作为 Transformer 的逐位置 FFN 与两矩阵 ReLU/GELU/Swish FFN 做等参数、等算力对照：门控激活取 σ、ReLU、GELU、Swish$_1$ 与恒等分别得 GLU、ReGLU、GEGLU、SwiGLU、Bilinear，第三个矩阵 $W_2$ 把宽度降回 $d_{\text{model}}$，三矩阵对两矩阵按 $d_{ff}\to\frac{2}{3}d_{ff}$ 折算（T5-base 3072→2048，式 6、§3.1）。T5-base（编码器/解码器各 12 层、$d_{\text{model}}=768$、$h=12$）在 C4 上 span-filling 预训练 524,288 步，batch 128，Adafactor + 逆平方根学习率、末 10% 线性衰减，预训练不用 dropout，另训 4 个 65,536 步模型测跨次方差。heldout log-perplexity（表 1）：GEGLU 1.633、SwiGLU 1.636 最低，ReLU 基线 1.677，五个门控变体全部低于 ReLU/GELU/Swish。微调 131,072 步、lr $10^{-3}$、每模型一次并报 dev 最佳 checkpoint（表 2–4）：GLUE 均分 ReGLU 84.67、SwiGLU 84.36 对 ReLU 83.80，SuperGLUE SwiGLU 74.56 对 72.76，SQuAD EM 最高 Bilinear 83.82、F1 最高 ReGLU 91.18，GLU 在 SQuAD 两项反低于 ReLU。论文结论节不给机制解释，证据限于一套 T5-base 文本迁移设置，预训练长程列为单次运行、微调方差未测，表内标准差行取自 Raffel et al.。机制拆解页把「门控为何有效」的三条读法标为无原文支撑的推断。
+
+创建的页面：[[source-shazeer-2020-glu-variants]], [[swiglu]]
+更新的页面：[[glu-gated-linear-unit]]（补无偏置三矩阵形式、变体映射与 SQuAD 反例，source_count 1→2）, [[gated-linear-units]]（SwiGLU 行更正为 Swish 门控 + 两升一降，留历史论断，source_count 1→2）, [[transformer-architecture]]（Stage 4 前馈补一句门控变体与折算，source_count 1→2）, [[index]]
+ingest 报告：[[ingest-reports/2026-10-26-glu-variants|WHY 报告]]
+数值备注：pdftotext 把「factor of 3/2」抽成「factor of 32」，按 3072→2048 判定为 $3/2$；§3.1「thee weight matrices」为 three 的拼写错误；表 1 的 524,288 步列无标准差；表 4 中 GLU 低于 ReLU 基线，与「多数任务最好」的概括并存。
+## [2026-10-26] contradiction | gated-linear-units | 情形 1
+
+旧论断（2026-05-31 版）把 SwiGLU 记为 $\sigma(W_1x)\odot(W_2x)\odot W_3x$：门控激活写成 sigmoid、三个矩阵排成连乘。新论断（Shazeer 式 4–6）：门控分支为 $\operatorname{Swish}_1(xW)$，内容分支为 $xV$，两者逐元素相乘后才过 $W_2$，三矩阵是两升一降、门控激活不是 sigmoid。解决方案：情形 1——新源是 SwiGLU 的原始定义、证据更强，表格行就地更正，旧写法移入 [[gated-linear-units]] 的「历史论断」。
 
 ## [2026-09-09] ingest | Elucidating Flow Matching ODE Dynamics via Data Geometry and Denoisers
 

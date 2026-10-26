@@ -297,6 +297,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-sde]] — Score-Based SDE: Unified framework for SMLD and DDPM (ICLR 2021)
 - [[source-select-then-balance]] — Select, then Balance 旧 slug（已由 [[source-exost]] 取代；同文 arXiv only）
 - [[source-shaw-2018-relative-position]] — Self-Attention with Relative Position Representations：相对偏移的可学习向量加到 K/V（$2k+1$ 标签 + 裁剪距离 $k$），big 模型 EN-DE +1.3 BLEU（Shaw/Uszkoreit/Vaswani, Google, arXiv:1803.02155v1, 2018）
+- [[source-shazeer-2020-glu-variants]] — GLU Variants Improve Transformer：ReGLU/GEGLU/SwiGLU/Bilinear 在 T5-base 上等参数对照，GEGLU 1.633、SwiGLU 1.636 困惑度最低（Shazeer, Google, arXiv:2002.05202v1, 2020）
 - [[source-shortcut-models]] — Shortcut Models: one-step diffusion via self-consistency (arXiv 2025)
 - [[source-sifusion]] — SIFusion: 统一多粒度北极海冰预测框架，Swin V2 空间编码 + granularity variate 跨粒度融合 (NeurIPS 2025)
 - [[source-simdiff]] — SimDiff: simpler yet better diffusion model for time series point forecasting (AAAI 2026)
@@ -1281,6 +1282,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[stochastic-optimal-control]] — TODO
 - [[stochastic-shared-embedding]] — SSE, stochastic shared embedding regularization for graph node embeddings (NeurIPS 2019, adapted 2026)
 - [[structural-token-sorting]] — STS，lead–lag 图上消息传递求 patch 重要性并重排 token，把图结构转译为自回归序列顺序 (LagLLM, ICML 2026)
+- [[swiglu]] — SwiGLU 及 GLU 变体前馈层：门控激活谱系、$d_{ff}$ 折算与 T5-base 对照结果
 - [[task-adaptive-dynamic-prompting]] — TADP，从 WFM 编码器嵌入权重内生生成任务自适应软提示的 PEFT 技术（WeatherPEFT, ICLR 2026）
 - [[task-arithmetic]] — 任务向量算术：微调位移的加减组合与编辑
 - [[temporal-decoder]] — TiDE per-horizon residual fusion of decoded vectors with projected future covariates

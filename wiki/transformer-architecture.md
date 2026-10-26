@@ -9,7 +9,7 @@ tags:
   - architecture
 created: 2026-10-26
 last_updated: 2026-10-26
-source_count: 1
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -77,6 +77,8 @@ H &\leftarrow \operatorname{LayerNorm}\!\left(H + F\right) && \text{// } [N, d_{
 \end{aligned}$$
 
 前馈网络等价于两次核宽 1 的卷积，各位置共享参数、跨层不共享（§3.3）[^src-attention-1706-03762]。子层输出统一写作 $\operatorname{LayerNorm}(x+\operatorname{Sublayer}(x))$，所有子层与嵌入层输出均保持 $d_{\text{model}}$，残差才能直接相加（§3.1）[^src-attention-1706-03762]。
+
+把这一子层的 $HW_1$ 过激活后与另一条升维投影 $HV$ 逐元素相乘、再由第三个矩阵降回 $d_{\text{model}}$，即 GLU 系前馈变体；三矩阵对两矩阵按 $d_{ff}\to\tfrac{2}{3}d_{ff}$ 折算（T5-base 3072→2048），论文的这套 T5-base 设置下五个门控变体的困惑度全部低于 ReLU 基线，下游均分多数更高（式 6、§3.1、表 1–4）[^src-shazeer-2020-glu-variants]。展开见 [[swiglu]]。
 
 ### Stage 5 · 解码器第一子层：带因果掩码的自注意力
 
@@ -185,3 +187,4 @@ big 模型 EN-DE 比当时最好的集成模型高 2.04 BLEU，8 卡 P100 训练
 ---
 
 [^src-attention-1706-03762]: [[source-attention-is-all-you-need-1706-03762]]
+[^src-shazeer-2020-glu-variants]: [[source-shazeer-2020-glu-variants]]

@@ -6,8 +6,8 @@ tags:
   - activation-function
   - efficiency
 created: 2026-04-29
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-10-26
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -74,10 +74,12 @@ GLU Expert 在保持精度的同时实现 1.4x 推理加速[^src-fast-long-horiz
 
 | 机制 | 公式 | 特点 |
 |------|------|------|
-| LSTM Gate | σ(Wx + b) ⊙ tanh(Wx + b) | 用于序列建模 |
-| GLU | σ(W_1x + b_1) ⊙ (W_2x + b_2) | 双线性变换，信息流量更大 |
-| SwiGLU | σ(W_1x) ⊙ (W_2x) ⊙ W_3x | GLU + Swish 激活 |
-| 门控残差 | σ(Wx) ⊙ x + (1-σ(Wx)) ⊙ F(x) | 动态 skip 连接 |
+| LSTM Gate | $\sigma(Wx+b)\odot\tanh(Wx+b)$ | 用于序列建模 |
+| GLU | $\sigma(W_1x+b_1)\odot(W_2x+b_2)$ | 双线性变换，信息流量更大 |
+| SwiGLU | $\left(\operatorname{Swish}_1(W_1x)\odot(W_2x)\right)W_3$ | 门控激活换成 $\operatorname{Swish}_1$，两升一降，$W_3$ 把宽度降回 $d_{\text{model}}$ |
+| 门控残差 | $\sigma(Wx)\odot x+\left(1-\sigma(Wx)\right)\odot F(x)$ | 动态 skip 连接 |
+
+SwiGLU 的两个升维矩阵并列作用于同一输入，逐元素积之后再由 $W_3$ 降维；门控激活是 $\operatorname{Swish}_1$ 而不是 sigmoid，三个矩阵因此是两升一降而非连乘（式 4–6）[^src-shazeer-2020-glu-variants]。
 
 ## 优势总结
 
@@ -85,9 +87,16 @@ GLU Expert 在保持精度的同时实现 1.4x 推理加速[^src-fast-long-horiz
 - **保持容量**：保持建模非线性关系的能力
 - **梯度流好**：门控机制有助于深层网络训练
 
+## 历史论断
+
+> 截至 2026-05-31 版，SwiGLU 曾记为 $\sigma(W_1x)\odot(W_2x)\odot W_3x$：门控激活写成 sigmoid，三个矩阵排成连乘。
+> 已由 [^src-shazeer-2020-glu-variants]（2020-02）的原始定义取代：门控分支先过 $\operatorname{Swish}_1$、内容分支保持线性，两者逐元素相乘后才由 $W_3$ 降维，三个矩阵是两升一降。
+
 ## 相关页面
 
 - [[mixture-of-experts|Dense MoE]] — GLU 作为 expert 的应用场景
 - [[adaptive-graph-agent-attention|AGA-Att]] — 配合 MoE 的空间注意力模块
+- [[swiglu]] — SwiGLU 及 GLU 变体作为 Transformer FFN 的数据流、参数折算与对照结果
 
 [^src-fast-long-horizon-forecasting]: [[source-fast-long-horizon-forecasting]]
+[^src-shazeer-2020-glu-variants]: [[source-shazeer-2020-glu-variants]]
