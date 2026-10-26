@@ -4296,3 +4296,11 @@ ingest 报告：[[ingest-reports/2026-10-27-flashattention|WHY 报告]]
 数值备注：论文 §3.1 同段先算出 8K 稀疏度 81.25%、段末又写 75%；Figure 3 标题写 last 1K、图内表格写 last 2K（页面已注明，取表格口径）；式 (1)(2) 未写 $1/\sqrt{d_k}$ 温度项，数据流按原文口径省略
 ## [2026-10-27] lint | MoBA 推导补全独立核查（2 页 + 报告）
 数据流 4 个 Stage 的 aligned 块逐式验可乘性与规约轴，与 Algorithm 1 及式 (2)–(6) 一致；§2/§3 全部数字（81.25%/75%、1e-3、1e-2、拟合指数、块 4096 top-12、RULER 62.5%、6.5×/16×、末 3 层、90/10、插值时点、query head 级 TP）与原文对上；$k\geq\lceil\mathrm{pos}(\bm{q})/B\rceil$ 退化口径在边界位置（pos 恰在块边界、pos=1）自洽。修 2 处（[[moba-attention]]）：缩放定律段并列论文同段 81.25% vs 75% 口径差（log 已记而页面此前未列）；「训练完成后不能即插即用作推理期近似」自论文归因句拆出，标为本页推导判断（原文 approximate 仅指线性 attention 与逼近静态稀疏架构）。复跑 scripts/lint.py，本次页面 severe/warn 无新增（source 页 source_count warn 为全库 27 个 source 页既有脚本误报，不动）。
+## [2026-10-27] maintenance | NSA 推导核验与补强
+对照 `raw/2502.11089-nsa.txt` 复算 [[native-sparse-attention]] 的 Stage 1–5 与全部数字：Table 1–4、§4.1 配置、§3.4 kernel、Figure 6 数值均与原文一致；修 3 处——Stage 1 value 侧输入维 $[d_v,l]$ 改 $[d_v,t]$、Stage 2/3 块数统一为 $\lfloor(t-l)/d\rfloor+1$、$\psi$ 共享与否改标 [INFERENCE]（原文只称 analogous formulation）。补强：$N_t$ 完整推导（64k 三口径 5630/5631/5632，差 2 定位到压缩支路是否减 $l$ 的取整口径，$l/d=2$ 整除故 $\lfloor s/d\rfloor=\lfloor(s-l)/d\rfloor+2$）；两支路算例演示「支路内 softmax+门控」与「拼接单次 softmax」权重不可比（[INFERENCE]）；式(9) 适用前提与 8 项实为 5 个不同下标（权重 $1,2,2,2,1$）；$\varphi$ 带块内位置编码补原文表述。frontmatter 单源已是 medium，无 severe。
+更新的页面：[[native-sparse-attention]], [[source-2502-11089-nsa]]（解码读取量补 Table 4 取整口径注）
+核验报告：[[ingest-reports/2026-10-27-nsa-derivation|推导核验报告]]
+## [2026-10-27] lint | NSA 推导补全独立复核
+独立复算 [[native-sparse-attention]] 的 Stage 1–5、$N_t$ 三口径（5630/5631/5632）、Table 4 四档（按 $\lfloor s/d\rfloor+nl'+w$ 全部复现）、门控两口径算例（0.881/0.119 与 0.440/0.060）与式 (9) 下标重叠（8 项实为 5 个不同下标，权重 1,2,2,2,1），并与 raw/ 原文逐条核对通过；修 2 处——source_count 3→4（正文唯一脚注 4 个）、框架节引文「式 3–5」补为「式 3–6」（显示式含式 6 的 $N_t$ 定义）。复跑 lint：本次相关 severe/warn/info 均为 0，无新增 severe。
+更新的页面：[[native-sparse-attention]]
+核验报告：[[ingest-reports/2026-10-27-nsa-derivation|推导核验报告]]（本轮复核未改动）
