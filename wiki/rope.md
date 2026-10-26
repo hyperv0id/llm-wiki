@@ -8,8 +8,8 @@ tags:
   - rotary-position-embedding
   - llm
 created: 2026-06-22
-last_updated: 2026-08-30
-source_count: 4
+last_updated: 2026-10-26
+source_count: 5
 confidence: high
 status: active
 ---
@@ -27,6 +27,8 @@ RoPE（Rotary Position Embedding）是一种乘法型相对位置编码方法，
 $$\langle f_q(\boldsymbol{x}_m, m), f_k(\boldsymbol{x}_n, n) \rangle = g(\boldsymbol{x}_m, \boldsymbol{x}_n, m-n)$$
 
 这在数学上等价于要求 query/key 在纳入位置信息后，其内积仅通过 $(m-n)$ 依赖于位置。[^src-roformer]
+
+加法型方案没有走到这一步：基线一侧（绝对位置嵌入）把位置直接加到输入上，另一侧（XLNet 式相对偏置）把相对偏移的可学习向量加到 key 与 value 上——Shaw 等（2018）给出的正是后者的原始形式，位置项与内容项在 softmax 前相加[^src-shaw-2018-relative-position]。两条路径都让位置停留在表示层的加法上，而 RoPE 要问的是能否把它变成内积中的乘法。
 
 ## 形式化
 
@@ -102,6 +104,8 @@ RoPE 的独特之处：**形式上编码绝对位置（旋转角度），效果�
 | [[alibi|ALiBi]] | 相对偏置 | ✅ | ✅ | ✅ (线性偏置) |
 | **RoPE** | **绝对旋转→相对内积** | ✅ | ✅ | ✅ (乘法衰减) |
 
+表中的「XLNet 式相对偏置」即 [[relative-position-representation]]：$2k+1$ 个可学习向量按 $\operatorname{clip}(j-i,k)$ 取用，分别加到 $K$ 与 $V$，位置信息停在表示层的加法上；RoPE 则用旋转把它写进内积，表示里不额外携带位置向量[^src-shaw-2018-relative-position]。
+
 ## 在 LLM 中的统治地位
 
 RoPE 被几乎所有主流开源 LLM 采用：
@@ -131,6 +135,7 @@ RoPE 引发了大量后续研究，包括但不限于：
 - [[roformer]] — RoFormer 模型实体
 - [[siren-rope]] — 时间条件化 RoPE 扩展
 - [[alibi]] — 替代位置编码方案
+- [[relative-position-representation]] — 加法型相对位置表示，旋转类编码的前身
 - [[scaling-factor-sqrt-dk]] — 注意力 $\frac{1}{\sqrt{d_k}}$ 缩放因子的数值稳定性
 - [[physics-informed-position-encoding]] — PIPE：RoPE 的物理知情扩展
 - [[pipe]] — PIPE 台风预测模型
@@ -141,3 +146,4 @@ RoPE 引发了大量后续研究，包括但不限于：
 [^src-pipe]: [[source-pipe]]
 [^src-2509-22259]: [[source-2509-22259]]
 [^src-triattention]: [[source-triattention]]
+[^src-shaw-2018-relative-position]: [[source-shaw-2018-relative-position]]

@@ -294,6 +294,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-score-based-generative-models]] — TODO
 - [[source-sde]] — Score-Based SDE: Unified framework for SMLD and DDPM (ICLR 2021)
 - [[source-select-then-balance]] — Select, then Balance 旧 slug（已由 [[source-exost]] 取代；同文 arXiv only）
+- [[source-shaw-2018-relative-position]] — Self-Attention with Relative Position Representations：相对偏移的可学习向量加到 K/V（$2k+1$ 标签 + 裁剪距离 $k$），big 模型 EN-DE +1.3 BLEU（Shaw/Uszkoreit/Vaswani, Google, arXiv:1803.02155v1, 2018）
 - [[source-shortcut-models]] — Shortcut Models: one-step diffusion via self-consistency (arXiv 2025)
 - [[source-sifusion]] — SIFusion: 统一多粒度北极海冰预测框架，Swin V2 空间编码 + granularity variate 跨粒度融合 (NeurIPS 2025)
 - [[source-simdiff]] — SimDiff: simpler yet better diffusion model for time series point forecasting (AAAI 2026)
@@ -823,6 +824,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[qk-concentration]] — Q/K 集中，pre-RoPE Q/K 向量集中于固定非零中心、跨位置/内容/域稳定 (TriAttention, ICML 2026)
 - [[ramsey-theory]] — Ramsey 理论（拉姆齐理论），组合数学核心分支：足够大的结构中必然存在秩序子结构的哲学及其在数论/图论中的应用
 - [[rectified-flow-for-time-series]] — Rectified Flow 在时间序列生成中的应用范式 (FlowTS, 2025)
+- [[relation-aware-self-attention]] — 任意两元素之间的边 $a_{ij}\in\mathbb{R}^{d_a}$ 加进自注意力的 key/value，序列相对位置是其退化特例 (Shaw et al., 2018)
 - [[relative-distance-consistency]] — 相对距离一致性，物理空间距离序关系在潜在空间的保持 (ST-SSDL, NeurIPS 2025)
 - [[residual-connections-as-diffusion]] — 残差连接作为逆扩散的欧拉步，理论桥接残差网络与连续时间扩散模型 (ICLR 2026)
 - [[retrieval-augmented-spatio-temporal-forecasting]] — RAG-for-STF 范式，通过外部记忆扩展模型容量以捕获复杂时空依赖 (AAAI 2026)
@@ -1220,6 +1222,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[recurrent-depth]] — 循环深度 / looped transformer：共享 4 层块迭代 $r$ 次，prelude/core/coda 三段 + 每轮输入注入 + 随机 $s_0$ 换 path independence，深度方向截断反传 $k=8$；$r$ 是推理期旋钮（arXiv:2502.05171）
 - [[rectified-flow]] — Rectified Flow, ODE-based generative model learning straight trajectories for few-step generation (arXiv 2022)
 - [[reflective-stepwise-reward]] — 反思式逐步奖励：LLM evaluator 回看完整轨迹逐步打分改善 credit assignment，折扣聚合后入记忆 (JitRL, ICML 2026)
+- [[relative-position-representation]] — 相对位置表示：$2k+1$ 个裁剪标签向量分别加到 K/V，打分拆成内容项 + 位置项，可整体替代绝对位置编码 (Shaw et al., 2018)
 - [[reparameterization-trick]] — 重参数化技巧，将随机采样重构为可微确定性变换+固定噪声
 - [[representative-token-extraction]] — extracting representative tokens via cross-attention for efficient compression
 - [[residual-cycle-forecasting]] — RCF technique using learnable recurrent cycles for explicit periodicity modeling

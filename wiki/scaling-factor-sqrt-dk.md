@@ -9,7 +9,7 @@ tags:
   - variance-control
 created: 2026-05-04
 last_updated: 2026-10-26
-source_count: 2
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -66,6 +66,14 @@ $$Var\left(\frac{Z}{\sqrt{d_k}}\right) = \frac{1}{d_k} Var(Z) = \frac{1}{d_k} \c
 
 在训练初期模型尚未学会调整 $Q$ 和 $K$ 的范数时，缩放因子防止因纯粹的数值尺度问题陷入不可逆的饱和状态。层归一化与残差连接使每层注意力输入的统计特性在训练中保持相对稳定，因此缩放因子对深层结构中的注意力稳定性具有持续贡献[^src-bluuuuue-scaling-factor-intuition]。
 
+## 与位置项的共用缩放
+
+[[relative-position-representation|相对位置向量]]加到 key 之后，$1/\sqrt{d_z}$ 仍统一乘在「内容项 + 位置项」之和外面[^src-shaw-2018-relative-position]：
+
+$$e_{ij}=\frac{1}{\sqrt{d_z}}\Big(x_iW^Q\big(x_jW^K\big)^{\top}+x_iW^Q\big(a^K_{ij}\big)^{\top}\Big)$$
+
+边向量与被加宽的 key 内积共用同一个缩放因子；只缩放内容项会让位置项的相对量级随 $d_z$ 与边向量范数漂移，而边向量的量级由训练中的 $w^K$ 自由决定，没有独立的斜率参数可调[INFERENCE]。
+
 ## 在后续架构中的保留
 
 该缩放因子在 VLA（视觉-语言-动作模型）和世界模型等后续架构的注意力模块中被完整保留——无论是 Cross-Attention 还是 Causal Attention[^src-bluuuuue-scaling-factor-intuition]。其不可替代性来自所解决问题的结构性质：只要注意力沿用"高维向量内积施加 Softmax"这一基本形式，点积方差膨胀就是必然发生的数学事实。
@@ -83,5 +91,5 @@ $$Var\left(\frac{Z}{\sqrt{d_k}}\right) = \frac{1}{d_k} Var(Z) = \frac{1}{d_k} \c
 ## 引用
 
 [^src-bluuuuue-scaling-factor-intuition]: [[source-bluuuuue-scaling-factor-intuition]]
-
 [^src-attention-1706-03762]: [[source-attention-is-all-you-need-1706-03762]]
+[^src-shaw-2018-relative-position]: [[source-shaw-2018-relative-position]]

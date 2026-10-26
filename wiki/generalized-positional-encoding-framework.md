@@ -6,8 +6,8 @@ tags:
   - extrapolation
   - theory
 created: 2026-04-28
-last_updated: 2026-05-08
-source_count: 2
+last_updated: 2026-10-26
+source_count: 3
 confidence: high
 status: active
 ---
@@ -42,6 +42,10 @@ $$A(n) = f(n) \cdot q_i^\top W(n) k_j + b(n)$$
 2. **ALiBi** 通过线性偏置实现衰减，但完全丢失了远距离相关性[^src-vetcha-2026-towards-infinite-length-extrapolation]
 3. **APE** 结合两者优点，通过次线性衰减保留长程依赖[^src-vetcha-2026-towards-infinite-length-extrapolation]
 
+### 覆盖不到的形态：边向量位置项
+
+Shaw 等（2018）的[[relative-position-representation|相对位置表示]]把位置写成加在 key 上的向量 $e_{ij}=q_i\big(k_j+a^K_{j-i}\big)^{\top}/\sqrt{d_z}$，得到的位置项 $p_{ij}=q_i(a^K_{j-i})^{\top}/\sqrt{d_z}$ 随 query 内容变化，且不经过 $x_j$ 的投影：它既不是与 $q_i$、$k_j$ 都无关的标量 $b(n)$，也不是作用于 $k_j$ 的 $W(n)$[^src-shaw-2018-relative-position][INFERENCE]。上述两种作用位点覆盖不到这一类「按距离取向量、再与 query 做内积」的位置编码。
+
 ## 与 Mamba 遗忘门的联系
 
 GPE 框架的分解 $A(n) = f(n) \cdot q_i^\top W(n) k_j + b(n)$ 直接解释了 Mamba 遗忘门可被位置编码替代的原因[^src-demystify-mamba-linear-attention-2024]：
@@ -54,3 +58,4 @@ GPE 框架的分解 $A(n) = f(n) \cdot q_i^\top W(n) k_j + b(n)$ 直接解释了
 
 [^src-vetcha-2026-towards-infinite-length-extrapolation]: [[source-vetcha-2026-towards-infinite-length-extrapolation]]
 [^src-demystify-mamba-linear-attention-2024]: [[source-demystify-mamba-linear-attention-2024]]
+[^src-shaw-2018-relative-position]: [[source-shaw-2018-relative-position]]

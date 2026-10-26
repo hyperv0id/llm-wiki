@@ -7,8 +7,8 @@ tags:
   - extrapolation
   - iclr-2022
 created: 2026-04-28
-last_updated: 2026-10-25
-source_count: 4
+last_updated: 2026-10-26
+source_count: 5
 confidence: high
 status: active
 ---
@@ -88,6 +88,7 @@ PENGUIN 把斜率公式 $m_k=2^{-k/8}$ 直接沿用、固定不训练，只在�
 - **Rotary**：相对位置编码，部分外推能力但有额外计算开销[^src-alibi]
 - **T5 Bias**：相对位置编码，外推效果好但训练速度慢 2 倍[^src-alibi]
 - **ALiBi**：相对位置编码，高效外推，无额外运行时开销[^src-alibi]
+- **[[relative-position-representation|相对位置表示]]（Shaw et al. 2018）**：$2k+1$ 个可学习向量按 $\operatorname{clip}(j-i,k)$ 加到 $K$ 与 $V$ 上，向量随头学习；ALiBi 把这条路径压成每个头一个固定斜率、只改 logit、不进 value[^src-shaw-2018-relative-position][^src-alibi]
 
 ## 局限性
 
@@ -101,3 +102,4 @@ PENGUIN 把斜率公式 $m_k=2^{-k/8}$ 直接沿用、固定不训练，只在�
 [^src-penguin]: [[source-penguin]]
 [^src-tips]: [[source-tips]]
 [^src-vetcha-2026-towards-infinite-length-extrapolation]: [[source-vetcha-2026-towards-infinite-length-extrapolation]]
+[^src-shaw-2018-relative-position]: [[source-shaw-2018-relative-position]]
