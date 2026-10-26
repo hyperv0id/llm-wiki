@@ -8,7 +8,7 @@ tags:
   - generative-model
   - icml-2025
 created: 2026-06-08
-last_updated: 2026-08-06
+last_updated: 2026-10-26
 source_count: 1
 confidence: high
 status: active
@@ -30,7 +30,7 @@ TimeFlow Loss 是基于流匹配的参数化训练目标，允许自回归 Trans
 
 三种规模配置 (Table 5): Small (32M), Base (128M), Large (444M)。架构特性:
 - **Patch tokenization**: patch size 16, 实现 patch 级预测以减少自回归步数
-- **Decoder-only Transformer**: Pre-LN, RoPE, FlashAttention, KV Cache
+- **Decoder-only Transformer**: [[pre-ln-transformer|Pre-LN]], RoPE, FlashAttention, KV Cache
 - **Context length ≤ 2880**, 预测长度 16 (短时) 或 720 (长时)
 - 支持任意长度 lookback 的动态推理
 

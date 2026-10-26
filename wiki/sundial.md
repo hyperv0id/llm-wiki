@@ -9,7 +9,7 @@ tags:
   - tsinghua
   - icml-2025
 created: 2026-06-08
-last_updated: 2026-08-19
+last_updated: 2026-10-26
 source_count: 3
 confidence: medium
 status: active
@@ -46,7 +46,7 @@ Sundial 是 Fig.1 分类中的**原生连续 tokenization + 灵活无先验分�
 ### 3. 关键架构提升
 
 - **RoPE**: 提升零样本预测性能 (Fig 9a)
-- **Pre-LN**: 更多训练迭代 → 更好性能，Post-LN 反而损害下游结果 (Fig 9b)
+- **Pre-LN**: 更多训练迭代 → 更好性能，Post-LN 反而损害下游结果 (Fig 9b)，排布见 [[pre-ln-transformer|Pre-LN Transformer]]
 - **FlashAttention + KV Cache**: 减少 14.8% 内存占用和 43.6% 推理时间 (Fig 9c-d)
 - **Multi-patch prediction**: 减少自回归步数
 

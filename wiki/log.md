@@ -4173,3 +4173,9 @@ ingest 报告：[[ingest-reports/2026-10-26-position-interpolation|WHY 报告]]
 
 ## [2026-10-26] contradiction | context-window-extension | 情况 1
 旧论断：PI 的最大扩展记为「~8x」，表格该格没有引用来源。新论断：原文在 LLaMA 7B–65B 上把 2048 扩到 32768（16×），配 1000 步全参数微调。解决方案：情况 1，旧论断移入 `## 历史论断`，正文写 16× 并挂原文引用。
+## [2026-10-26] ingest | Language Models are Unsupervised Multitask Learners（GPT-2，OpenAI 2019 技术报告）
+2019 年报告，非同行评议。问题：NLP 任务按任务建监督数据集，模型是窄域专家；作者主张大语料上的语言模型以无监督方式学任务，目标是 $p(\text{output}\mid\text{input},\text{task})$。机制：WebText（Reddit karma $\geq 3$ 外链、去重后 800 万篇 / 40 GB、剔除 Wikipedia）+ byte-level BPE（基础词表 256、禁跨字符类别合并）+ 四尺寸 Transformer，最大者 1.5B / 48 层 / $d_{model}=1600$；结构沿用 GPT，四处改动为 LayerNorm 移到每个子块输入端、最后一个 attention block 后补一层 LayerNorm、残差层权重初始化乘 $1/\sqrt{N}$、词表 50,257，上下文 512→1024。证据：零样本 8 个语言建模数据集 7 个刷新最好成绩（WikiText-2 18.34 对 39.14、PTB 35.76 对 46.54、LAMBADA 8.63 对 99.8），1BW 42.16 对 21.8 落后；CoQA 零样本 55 F1。边界：摘要式任务指标仍 rudimentary、far from use-able，四尺寸均未收敛于 WebText，结构改动无消融、pre-LN 贡献未分离；梯度范数与 warmup 的机制解释不属该报告，留给 arXiv:2002.04745 的专门分析。
+创建的页面：[[source-gpt2-2019-language-models]], [[pre-ln-transformer]]
+更新的页面：[[sundial]]（Pre-LN 条目接新页）, [[source-sundial]]（架构特性补 wikilink）, [[zeus]]（block 描述补 wikilink）, [[index]]
+ingest 报告：[[ingest-reports/2026-10-26-gpt2-preln|WHY 报告]]
+数值备注：$1/\sqrt{N}$ 的 $N$ 是块数(48)还是残差分支数(96)报告未定；§2.3 未给头数、FFN 宽度、位置嵌入类型；Table 3 十列对应 8 数据集（LAMBADA、CBT 各两指标）；PTB/WikiText-2 数字依赖 de-tokenizer，正文差 2.5–5 困惑度；CBT 因测试集含 WebText 内书籍改用验证集

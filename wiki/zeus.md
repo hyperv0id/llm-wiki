@@ -9,7 +9,7 @@ tags:
   - multi-scale
   - icml-2026
 created: 2026-08-06
-last_updated: 2026-08-06
+last_updated: 2026-10-26
 source_count: 1
 confidence: medium
 status: active
@@ -35,7 +35,7 @@ point-wise tokenization，U 形（fine-to-coarse-to-fine）对称下采样-上�
 - 尺度配置 scales [1, 8, 32, 8, 1]，层数 [1, 3, 3, 3, 2]，hidden [384, 768, 768, 768, 384]，heads [6, 12, 12, 12, 6]，intermediate [1536, 3072, 3072, 3072, 1536]，约 100M 参数，最大上下文 4096[^src-2607-01918]
 - 下采样用 pooling + 可学习线性投影（论文式 2-3），上采样用 unpooling 并加对应尺度的残差跳跃连接（式 4）[^src-2607-01918]
 - 细尺度用轻量 Transformer block 保局部细节，粗尺度用更深更宽的 block 建模长程依赖[^src-2607-01918]
-- Transformer block：MHA + RoPE + gated FFN（GLU）+ RMSNorm + pre-LN，FlashAttention v2[^src-2607-01918]
+- Transformer block：MHA + RoPE + gated FFN（GLU）+ RMSNorm + [[pre-ln-transformer|pre-LN]]，FlashAttention v2[^src-2607-01918]
 - gated embedding：$h_t = W_r x_t + W_d \sigma(W_g x_t) \odot W_u x_t$（式 1）；引入可学习 [MASK] 与 [PAD] token[^src-2607-01918]
 - quantile head：每时间步输出 9 个分位数 Q={0.1, ..., 0.9}，实现概率重建；点估计 = 各分位数平均[^src-2607-01918]
 - channel-independent 策略处理多变量（引用 [[patchtst|PatchTST]]）；用 instance normalization（RevIN，引用 Kim et al. 2021）去尺度变化[^src-2607-01918]

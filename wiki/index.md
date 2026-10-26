@@ -163,6 +163,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-gmf]] — GMF: Geometry-based Schrödinger Bridges for Trustworthy Multimodal Fusion, 潜在空间传输几何用于多模态融合可靠性评估，打破统计方法的循环依赖
 - [[source-gpd]] — GPD: generative pre-training on diffusion for spatio-temporal few-shot learning via hypernetwork (ICLR 2024)
 - [[source-gpt-st]] — GPT-ST: spatio-temporal MAE pre-training framework with hypergraph capsule clustering (NeurIPS 2023)
+- [[source-gpt2-2019-language-models]] — GPT-2: Language Models are Unsupervised Multitask Learners，WebText（800 万篇 / 40 GB）+ byte-level BPE + 1.5B/48 层/1600 的 Transformer，LayerNorm 移到每个子块输入端并补末尾 LN、残差层初始化乘 $1/\sqrt{N}$、词表 50,257、上下文 1024（OpenAI 技术报告 2019，非同行评议）；零样本在 8 个语言建模数据集上 7 个刷新最好成绩，1BW 仍落后
 - [[source-gpt4mts]] — DP-GPT4MTS: Dual-Prompt LLM 多模态时序预测框架，explicit prompt（任务指令）+ textual prompt（BERT 文本上下文嵌入）+ frozen GPT-2 骨干，GDELT/Time-MMD SOTA，arXiv 2025
 - [[source-graph-mixture-density-networks]] — Graph Mixture Density Networks（ICML 2021），走 MDN 而非 MoE，论文自述的取舍作为两者边界
 - [[source-graphcast]] — GraphCast: Learning skillful medium-range global weather forecasting（Lam、Sanchez-Gonzalez、Willson 等 7 人共同一作，Google DeepMind + Google Research，arXiv:2212.12794v2，Science 著录未在 PDF 内核实），encode-process-decode GNN（36.7M 参数）+ 多分辨率 icosahedron multi-mesh + 6h 步长自回归滚动，2018 年 1380 验证目标 90.3% RMSE 优于 HRES（显著检验 89.9%），10 天 0.25° 预报单 TPU v4 不足 60 秒，含极端事件与训练数据时效实验
@@ -1201,6 +1202,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[position-interpolation]] — PI：位置下标 $m\to m/s$，RoPE 全部 $d/2$ 对相位同除 $s$，打分只依赖 $(m-i)/s$，不加参数即可扩窗（LLaMA 7B/13B 从 2048 到 32768、33B 到 16384、65B 到 8192，1000 步微调）
 - [[positive-random-features]] — PRF，softmax 核的正随机特征无偏估计：trig 特征在核值趋 0 时 MSE 发散、PRF 趋 0，ORF 正交化对任意维度 d 降方差（ICLR 2021）
 - [[post-hoc-forecast-revision]] — 预测后修订：骨干预测完成后独立模块修正输出，误差估计识别 + 局部/全局上下文加权融合（PIR, NeurIPS 2025）
+- [[pre-ln-transformer]] — Pre-LN：LayerNorm 移到每个子层输入端、残差相加之前（post-LN 为 $x_{l+1}=\mathrm{LN}(x_l+F(x_l))$，pre-LN 为 $x_{l+1}=x_l+F(\mathrm{LN}(x_l))$ 加末尾 LN），主干保持恒等通路，GPT-2 的落点
 - [[prediction-refinement]] — Prediction Refinement: post-hoc refinement of base forecaster predictions using diffusion model as energy-based prior (TSDiff, NeurIPS 2023)
 - [[predictive-contrastive-learning]] — PCL，正样本按预测区间 MSE 而非回溯窗口相似度选择的对比学习策略 (PFRP, AAAI 2026)
 - [[predictor-corrector-sampling]] — PC sampling, combining SDE solvers with score-based MCMC
