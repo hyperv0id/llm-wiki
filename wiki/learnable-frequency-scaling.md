@@ -7,7 +7,7 @@ tags:
   - frequency
   - learnable
 created: 2026-04-29
-last_updated: 2026-06-22
+last_updated: 2026-10-26
 source_count: 2
 confidence: medium
 status: active
@@ -22,8 +22,11 @@ status: active
 标准 RoPE 使用固定的逆频率 schedule：
 $$\theta_j = base^{-2j/d_k}, \quad j = 0, 1, \dots, d_k/2 - 1$$
 
-- base 通常设为 $10^4$ 到 $10^5$
-- 频率随维度指数衰减，高维编码细粒度位置信息[^src-siren-rope]
+- 原始设定 $base = 10^4$[^src-roformer]
+- 频率沿维度按几何级数递减：$j$ 小的一对维度每走一个位置就转过接近 1 弧度，只分辨相邻 token；$j$ 大的一对旋转慢、波长长，跨越大范围位置才转过一圈。位置分辨率由低维承担，长程相位由高维承担[^src-roformer]
+
+> [!note] 更正
+> 本页旧版写「高维编码细粒度位置信息[^src-siren-rope]」，方向与 $\theta_j=base^{-2j/d_k}$ 的定义相反：$j$ 大则 $\theta_j$ 小、旋转慢、波长大，承担的是长程相位；短程分辨率由 $j$ 小的维度承担[^src-roformer]。原句所引的 SIREN-RoPE 源只给出 schedule，未讨论这一方向。
 
 ## SIREN-RoPE 的改进
 

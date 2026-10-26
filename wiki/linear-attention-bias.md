@@ -6,8 +6,8 @@ tags:
   - attention
   - position-encoding
 created: 2026-04-28
-last_updated: 2026-05-08
-source_count: 3
+last_updated: 2026-10-26
+source_count: 4
 confidence: high
 status: active
 ---
@@ -49,9 +49,11 @@ attention_scores = attention_scores + bias
 |------|-----------------|-----------|
 | Sinusoidal | 加到词嵌入 | 否 |
 | Learned | 加到词嵌入 | 是 |
-| Rotary | 乘到 Q 和 K | 否 |
+| Rotary | 乘到 Q 和 K | 否[^src-roformer] |
 | T5 Bias | 加到注意力分数 | 是 |
 | **ALiBi** | **加到注意力分数** | **否** |
+
+加法型方案（Sinusoidal、Learned、T5 Bias）把位置项加到表示或注意力分数上[^src-roformer]；Rotary 把位置写成乘在投影结果上的正交变换，不改变范数，因此能在线性注意力里保留相对位置形式——两侧特征映射的输出各自旋转，累加状态与 query 位置解耦[^src-roformer]。ALiBi 与 Rotary 的衰减来源不同：前者是显式加在分数上的距离线性偏置，后者是多频旋转在打分里造成的相位差，经 Abel 变换后给出打分模的上界[^src-alibi][^src-roformer]。
 
 ## 优势
 
@@ -79,3 +81,4 @@ Mamba 的遗忘门 $\widetilde{A}_i = \text{diag}(\exp(\Delta_i A))$ 与 ALiBi �
 [^src-alibi]: [[source-alibi]]
 [^src-vetcha-2026-towards-infinite-length-extrapolation]: [[source-vetcha-2026-towards-infinite-length-extrapolation]]
 [^src-demystify-mamba-linear-attention-2024]: [[source-demystify-mamba-linear-attention-2024]]
+[^src-roformer]: [[source-roformer]]

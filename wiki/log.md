@@ -4149,3 +4149,9 @@ arXiv:1803.02155v1（Shaw / Uszkoreit / Vaswani，Google，2018-03-06，5 页；
 更新的页面：[[rope]]（补相对位置偏置这一支的来源与对比表说明，source_count 4→5）, [[alibi]]（补相对位置表示与固定斜率的差别，source_count 4→5）, [[generalized-positional-encoding-framework]]（边向量位置项不在 $b(n)$/$W(n)$ 的覆盖内，source_count 2→3）, [[scaling-factor-sqrt-dk]]（内容项与位置项共用同一 $1/\sqrt{d_z}$，source_count 1→2）, [[index]]
 ingest 报告：[[ingest-reports/2026-10-26-shaw-relative-position|WHY 报告]]
 数值备注：摘要的 1.3 / 0.3 BLEU 只对应 big 模型的差值；Table 1 基线是同库复现值；「叠加绝对位置编码无进一步收益」无对应表格；$k\ge2$ 的饱和结论只在开发集 newstest2013 上；PDF 文本层无边标签表，$w_{-k..k}$ 按 §3.2 正文与 Figure 1 复原
+## [2026-10-26] maintenance | RoPE / RoFormer 推导补全与数值回打
+RoFormer（arXiv:2104.09864v5，Su et al.）把位置编码从「加到表示上」改成「乘在投影结果上」：$d$ 维按相邻两维分成 $d/2$ 对，第 $i$ 对按 $m\theta_i$、$\theta_i=10000^{-2(i-1)/d}$ 旋转，$R_m^\top R_n=R_{n-m}$ 使内积只依赖相对位移，且全程保范、无新增参数、代价 $O(Nd)$。本轮补三块此前缺失的材料：Stage 1–3（含线性注意力 Stage 2′）的维度数据流；长距离衰减 $|s_{mn}|\sqrt d\le 2\|q_m\|\|k_n\|\sum_i|S_{i+1}|$ 的完整链条与三条成立前提（成对分组、几何频率、范数有界），并指出该上界从 $\Theta(d^2)$ 降到 $\Theta(d^{3/2})$ 后持平而非趋零；RoPE 与加法型相对编码在注入点上的结构差别。证据按原表号回打：WMT 27.5 对 27.3（表 1）、GLUE 六项三升三降（表 2）、中文 CAIL2019-SCM 69.79% 对 WoBERT-512 68.10%（表 5）。论文的「序列长度灵活」与 ALiBi 记录的 rotary 外推失效按「定义层面性质 vs 无插值时实测失效」在正文分述，不设争议章节。
+创建的页面：无
+更新的页面：[[rope]]（补推导、数据流、衰减前提与外推分界，source_count 4→6）, [[roformer]]（Table 1/2/4/5 全列并补实验设置，source_count 1→3）, [[source-roformer]]（source_count 0→1、confidence 改 medium、补脚注、摘要重写为 493 字、补版本行）, [[learnable-frequency-scaling]]（纠正「高维编码细粒度」的方向性错误，页内留更正说明）, [[linear-attention-bias]]（Rotary 行补引用 + 乘性注入对照，source_count 3→4）, [[siren-rope]]（标准 RoPE 行补引用）, [[index]]
+维护报告：[[ingest-reports/2026-10-26-roformer-derivation|WHY 报告]]
+数值备注：§4.5.4 称 1024 长度绝对提升 1.5%，表 5 测试列差 1.69、验证列差 2.00，三处并列；Figure 2 纵轴即式 (37) 后交代的 $\frac{1}{d/2}\sum_{i=1}^{d/2}|S_i|$，读数约 20→8；频率编号 §3.2.2 为 1 基 $10000^{-2(i-1)/d}$、§3.4.3 为 0 基 $10000^{-2i/d}$，同一 schedule 的两种下标

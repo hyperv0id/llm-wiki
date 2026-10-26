@@ -9,7 +9,7 @@ tags:
   - sequential-recommendation
   - linkedin
 created: 2026-04-29
-last_updated: 2026-06-22
+last_updated: 2026-10-26
 source_count: 2
 confidence: medium
 status: active
@@ -27,7 +27,7 @@ SIREN-RoPE (Sinusoidal Representation Network Rotary Position Embedding) 是 Lin
 
 | 方法 | 时间信号 | 可学习频率 | 序数门控 |
 |------|----------|------------|----------|
-| 标准 RoPE | ❌ | ❌ | — |
+| 标准 RoPE | ❌ | ❌ | —[^src-roformer] |
 | TO-RoPE | ✅ (归一化时间戳) | ❌ | — |
 | **SIREN-RoPE** | ✅ (SIREN-DNN) | ✅ | ✅ |
 

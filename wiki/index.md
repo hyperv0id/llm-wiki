@@ -1232,7 +1232,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[retrieval-based-condition-augmentation]] — RCA, RAG-style condition enrichment for cross-city diffusion generation (CRAFT, NeurIPS 2025)
 - [[retrieval-guidance]] — inference-time retrieval of similar history to analytically tilt diffusion score estimation (MiDDiR, ICLR 2026 under review)
 - [[road-impedance]] — BPR 道路阻抗 + 流量变异因子 + 相邻路段阻抗差动态图
-- [[rope]] — Rotary Position Embedding, 乘法型相对位置编码，现代 LLM 的标准方案
+- [[rope]] — Rotary Position Embedding，分块正交旋转使 query-key 内积只依赖相对位移；含前向数据流、长距离衰减上界的推导与前提
 - [[router-attention-for-cvpe]] — 两步聚合-分发注意力机制，CVPE 中用于跨变量信息注入 (arXiv 2025)
 - [[router-mechanism-for-cross-dimension]] — Router mechanism reducing cross-dimension attention from O(D²L) to O(DL) (ICLR 2023)
 - [[rwse]] — RWSE（Random-Walk Structural Encoding），m 步随机游走矩阵对角线作节点 local SE，机制归因 Dwivedi et al.（LSPE），GraphGPS 消融中增益一致且对分子数据尤佳（NeurIPS 2022）
