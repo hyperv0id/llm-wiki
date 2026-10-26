@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-10-25
+last_updated: 2026-10-26
 tags:
   - meta
 source_count: 0
@@ -41,6 +41,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-alphaflow]] — AlphaFlow: Understanding and Improving MeanFlow Models, MeanFlow 损失分解为轨迹流匹配 + 轨迹一致性、梯度冲突实证、α 统一目标族与课程退火 (arXiv 2025, Snap Research)
 - [[source-armd]] — ARMD: Auto-Regressive Moving Diffusion Models for Time Series Forecasting, ARMA-inspired sliding-window diffusion (AAAI 2025)
 - [[source-astgcn]] — ASTGCN: attention spatial-temporal graph convolutional networks for traffic (AAAI 2019)
+- [[source-attention-is-all-you-need-1706-03762]] — Attention Is All You Need: 纯注意力编码器-解码器，多头自注意力 + 逐位置 FFN + post-LN 残差 + 正弦位置编码，WMT 2014 EN-DE 28.4 / EN-FR 41.8 BLEU（NIPS 2017, arXiv:1706.03762v7）
 - [[source-aurora]] — Aurora: universal generative multimodal time series forecasting (ICLR 2026)
 - [[source-autoformer]] — Autoformer: decomposition transformers with auto-correlation (NeurIPS 2021)
 - [[source-autonomous-machine-intelligence]] — LeCun《A Path Towards Autonomous Machine Intelligence》v0.9.2（2022-06-27，62 页）立场论文：可配置认知架构 + JEPA/H-JEPA + 非对比 SSL 四项自述贡献与 8.1 节自述缺口（证据源为 PDF 全文，不在 raw/）
@@ -1242,6 +1243,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[shrinkage-periodic-background]] — 收缩估计的周周期背景：周槽与日槽训练均值按有效观测数收缩混合，历史与未来以残差表示
 - [[sigreg]] — SIGReg，1D 随机投影 + Epps-Pulley 特征函数检验的各向同性高斯分布匹配正则：方向检验充分性（Cramér-Wold）、损失/梯度/曲率有界、O(N) 复杂度；矩检验退化极限恢复 VICReg（arXiv:2511.08544）
 - [[sinkhorn-algorithm]] — Sinkhorn/IPF 算法，交替优化对偶 Schrödinger potentials 求解静态 SB
+- [[sinusoidal-positional-encoding]] — 正弦位置编码，$\sin/\cos$ 按 $10000^{2i/d}$ 铺开频率，固定位移 $k$ 等于逐对旋转的线性映射
 - [[sliced-wasserstein-distance]] — SWD：Cramér-Wold 定理保证随机 1D 投影对齐决定全分布，1D W2 闭式解为排序后逐点 Lp 距离
 - [[sliding-window-diffusion]] — Sliding-Window Diffusion, ARMD's deterministic intermediate-state generation that slides the series window instead of adding noise (AAAI 2025)
 - [[space-filling-curves]] — 空间填充曲线，双射 Φ:Z³N 将高维时空点序列化为 1D 序列，Gilbert/Sweep/Zigzag 交替扫描用于 Mamba 时空建模 (RiverMamba, NeurIPS 2025)
@@ -1290,6 +1292,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[trace-as-state]] — Trace as State 主入口：问题例子、同轨迹前后置机制、主要实证与不能外推的结论
 - [[trailing-fraction-local-normalization]] — 尾部比例局部归一化，统计量取窗口尾部 $r\cdot L$ 步；搜索显示尾部分数 0.3%–30% 最优、full-window 几乎从不被选中（arXiv:2606.27282）
 - [[trajectory-consistency-flow-matching]] — 轨迹一致性流匹配，在 CFM 之外约束速度场沿轨迹恒定并给出少步积分误差界 (LOFT, KDD 2026)
+- [[transformer-architecture]] — Transformer 机制页：编码器/解码器数据流、masked self-attention 与 cross-attention、多头、post-LN 残差、FFN、训练与推理路径
 - [[transport-based-reliability-assessment]] — 基于传输的可靠性评估：通过潜在空间传输几何而非分类器输出来度量可靠性
 - [[truncated-policy-iteration]] — 值迭代与策略迭代��间的截断折中
 - [[tt-wasserstein]] — TT-Wasserstein metric for quantifying CTR alignment quality (ICLR 2026)

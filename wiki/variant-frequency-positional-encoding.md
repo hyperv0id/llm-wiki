@@ -7,8 +7,8 @@ tags:
   - physics-informed
   - frequency
 created: 2025-07-14
-last_updated: 2026-08-08
-source_count: 1
+last_updated: 2026-10-26
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -19,7 +19,7 @@ status: active
 
 ## 动机
 
-标准正弦位置编码中，所有维度共享相同的频率进程（几何级数从 $1$ 到 $10000$），只编码序列顺序。但不同物理变量有天然不同的周期性特征：一天 24 小时、一年 366 天、纬度 180°、经度 360°——这些周期应当通过不同的波长反映在位置嵌入中[^src-pipe]。
+标准正弦位置编码中，所有维度共享相同的频率进程（几何级数从 $1$ 到 $10000$），只编码序列顺序[^src-pipe]；频率按维序铺开、固定位移对应逐对旋转，公式与推导见 [[sinusoidal-positional-encoding]][^src-attention-1706-03762]。但不同物理变量有天然不同的周期性特征：一天 24 小时、一年 366 天、纬度 180°、经度 360°——这些周期应当通过不同的波长反映在位置嵌入中[^src-pipe]。
 
 ## 公式
 
@@ -59,9 +59,12 @@ $$PE(pos, 2i+1) = \cos\left(\frac{2\pi \cdot pos}{p \cdot 10000^{2i/d_{\text{mod
 
 ## 相关页面
 
+- [[sinusoidal-positional-encoding]] — 标准正弦编码的公式与固定位移的旋转映射
 - [[physics-informed-position-encoding]] — 物理知情位置编码的完整框架
 - [[pipe]] — PIPE 模型
 - [[source-pipe]] — 论文摘要
 - [[rope]] — RoPE（PIPE 中与变频率编码配合使用）
 
 [^src-pipe]: [[source-pipe]]
+
+[^src-attention-1706-03762]: [[source-attention-is-all-you-need-1706-03762]]

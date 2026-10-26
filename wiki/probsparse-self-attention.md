@@ -7,8 +7,8 @@ tags:
   - long-sequence
   - sparse-attention
 created: 2026-05-04
-last_updated: 2026-05-04
-source_count: 1
+last_updated: 2026-10-26
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -16,6 +16,8 @@ status: active
 # ProbSparse Self-Attention
 
 **ProbSparse Self-Attention** is an efficient attention mechanism proposed in the [[informer|Informer]] model (Zhou et al., AAAI 2021 Best Paper) that reduces the time and memory complexity of canonical dot-product self-attention from $O(L^2)$ to **$O(L \log L)$**[^src-zhou-informer-2021].
+
+Canonical dot-product self-attention 指 [[transformer-architecture|Transformer]] 的自注意力层：每层 $O(n^2\cdot d)$ 计算、$O(1)$ 串行步，代价随序列长度平方增长（Table 1）[^src-attention-1706-03762]。
 
 ## Motivation
 
@@ -68,3 +70,4 @@ ProbSparse differs from earlier sparse attention approaches in a crucial way:
 ProbSparse attention replaces canonical self-attention in both the encoder and decoder of [[informer|Informer]]. In the encoder, it is followed by a self-attention distilling operation. In the decoder, it is combined with causal masking to enable the generative (one-forward-pass) prediction paradigm without autoregressive leakage.
 
 [^src-zhou-informer-2021]: [[source-zhou-informer-2021]]
+[^src-attention-1706-03762]: [[source-attention-is-all-you-need-1706-03762]]

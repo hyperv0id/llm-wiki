@@ -7,8 +7,8 @@ tags:
   - architecture-design
   - ICLR-2024
 created: 2026-05-30
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-10-26
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -16,6 +16,8 @@ status: active
 # Inverted Transformer Architecture
 
 Inverted Transformer Architecture 是 iTransformer 提出的架构范式：不修改 Transformer 任何原生组件（attention, FFN, LayerNorm），而是**反转它们的应用维度**——将 attention 作用于变量维度而非时间维度，将 FFN 作用于时间维度而非变量维度[^src-itransformer]。
+
+原生组件的定义沿用 [[transformer-architecture|原始 Transformer]]：多头注意力与逐位置 FFN 各套一次残差、再做层归一化，子层输出统一保持 $d_{\text{model}}$（§3.1、§3.3）[^src-attention-1706-03762]。
 
 ## 核心公式
 
@@ -102,3 +104,4 @@ $$\text{LayerNorm}(\mathbf{H})_n = \frac{h_n - \text{Mean}(h_n)}{\sqrt{\text{Var
 - [[itransformer]] — 使用反转架构的代表性模型
 
 [^src-itransformer]: [[source-itransformer]]
+[^src-attention-1706-03762]: [[source-attention-is-all-you-need-1706-03762]]

@@ -4135,3 +4135,11 @@ arXiv:2502.05171v2（Geiping et al.，ELLIS Tübingen/UMD/LLNL）。问题：推
 ingest 报告：[[ingest-reports/2026-10-25-recurrent-depth|WHY 报告]]
 数值备注：学习率 §4.1 5e-4 vs §4.3 4e-5 两处并列；参数量 3.5B 与 Fig 1 的 3.6B 并存；「50B」是 FLOP 口径而 Fig 1 材料化参数轴到 103B，博客混用已在博客页并列；博客 r=1 行 SciQ 47.19 vs 论文 47.10、GSM8K 0.00/0.15 vs 0.00/0.00；Table 2 flexible/strict 列序按 caption 引用但保留风险；47000 步 ×16M ≈ 752–788B 与 800B 不吻合，论文未解释；训练总 GPU·小时未给
 文案压实：polisher 本轮再试单文件仍以 `MALFORMED_FUNCTION_CALL` 失败（`omp -p` 侧 gemini/sonnet 两条路径均超时无产出），经用户确认跳过，四页按初稿入库。
+
+## [2026-10-26] ingest | Attention Is All You Need
+
+Vaswani et al., NIPS 2017（arXiv:1706.03762v7）。问题：循环模型沿符号位置串行、样本内无法并行；卷积路线并行但任意两位置间操作数随距离增长。机制：编码器/解码器各 6 层，多头自注意力 + 逐位置 FFN，子层先加残差再层归一化（post-LN），位置以正弦向量在栈底加一次；解码器自注意力以上三角 $-\infty$ 掩码维持自回归，第三子层 cross-attention 的 key/value 取编码器输出。多头把 $d_{\text{model}}$ 切 $h$ 份并行计算再拼接，任意两位置路径长度降为常数，代价是每层 $O(n^2 d)$ 复杂度与注意力平均的分辨率损失。点积除以 $\sqrt{d_k}$ 的依据是分量独立、零均值、单位方差时点积方差为 $d_k$；正弦编码使固定位移 $k$ 对应逐对固定旋转（整条编码乘一个与位置无关的分块旋转矩阵）。证据：WMT 2014 EN-DE 28.4 / EN-FR 41.8 BLEU（Table 2），base 12 小时、big 3.5 天（8×P100）；单头掉 0.9 BLEU、去 dropout 掉 1.2、正弦 vs 学习式位置嵌入 25.8 vs 25.7（Table 3）；WSJ 句法分析 F1 91.3/92.7。
+创建的页面：[[source-attention-is-all-you-need-1706-03762]], [[transformer-architecture]], [[sinusoidal-positional-encoding]]
+更新的页面：[[scaling-factor-sqrt-dk]]（补 §3.2.1 的方差条件与加法注意力对照，source_count 1→2）, [[variant-frequency-positional-encoding]]（标准正弦基线接原文出处，1→2）, [[interpretable-multi-head-attention]]（标准多头投影与 $h=8$、$d_k=d_v=64$ 出处，1→2）, [[inverted-transformer-architecture]]（原生组件定义出处，1→2）, [[probsparse-self-attention]]（canonical self-attention 复杂度出处，1→2）, [[index]]
+ingest 报告：[[ingest-reports/2026-10-26-attention-is-all-you-need-1706-03762|WHY 报告]]
+数值备注：EN-FR big 模型 BLEU 在 §6.1 正文写 41.0，Table 2 与摘要写 41.8；Table 3 行 (B) 只印一列 16/32 且版面落在 $d_v$ 列，正文称其变化的是 $d_k$

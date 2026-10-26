@@ -8,8 +8,8 @@ tags:
   - softmax
   - variance-control
 created: 2026-05-04
-last_updated: 2026-05-04
-source_count: 1
+last_updated: 2026-10-26
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -48,6 +48,10 @@ $$Var\left(\frac{Z}{\sqrt{d_k}}\right) = \frac{1}{d_k} Var(Z) = \frac{1}{d_k} \c
 
 方差归一化后，点积值约 95% 落在 $[-2, 2]$ 范围内，Softmax 具有足够的非线性区分度且避开饱和区[^src-bluuuuue-scaling-factor-intuition]。
 
+## 原始出处（§3.2.1）
+
+缩放因子随 Scaled Dot-Product Attention 一起提出，论证写在脚注 4：假设 $q$、$k$ 的各分量是独立随机变量、均值 0、方差 1，则点积 $q\cdot k$ 的均值为 0、方差为 $d_k$[^src-attention-1706-03762]。同节的对照是加法注意力——$d_k$ 小时两种注意力表现接近，$d_k$ 大时未缩放的加法注意力反超，论文据此把差异归到点积幅度而非交互函数形式；点积注意力实现更快、更省空间，因为可直接用矩阵乘法[^src-attention-1706-03762]。后续实验的默认尺度是 $h=8$、$d_k=d_v=64$（§3.2.2），完整数据流见 [[transformer-architecture]][^src-attention-1706-03762]。
+
 ## 三个数学特性
 
 ### 1. 恰好 $1/\sqrt{d_k}$ 而非 $1/d_k$
@@ -79,3 +83,5 @@ $$Var\left(\frac{Z}{\sqrt{d_k}}\right) = \frac{1}{d_k} Var(Z) = \frac{1}{d_k} \c
 ## 引用
 
 [^src-bluuuuue-scaling-factor-intuition]: [[source-bluuuuue-scaling-factor-intuition]]
+
+[^src-attention-1706-03762]: [[source-attention-is-all-you-need-1706-03762]]

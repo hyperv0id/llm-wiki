@@ -8,8 +8,8 @@ tags:
   - tft
   - time-series
 created: 2026-07-13
-last_updated: 2026-07-24
-source_count: 1
+last_updated: 2026-10-26
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -20,7 +20,7 @@ status: active
 
 ## Standard vs Interpretable Form
 
-Standard multi-head attention concatenates head-specific value projections, so a large attention weight in one head does not correspond to a unique importance of an input feature. TFT instead uses:
+Standard multi-head attention concatenates head-specific value projections, so a large attention weight in one head does not correspond to a unique importance of an input feature. The standard form projects each head into its own \(d_k\)/\(d_v\) subspace and applies \(W^O\) after concatenation, with \(h=8\), \(d_k=d_v=64\) in the base model ([[transformer-architecture]][^src-attention-1706-03762]). TFT instead uses:
 
 \[
 \begin{aligned}
@@ -50,3 +50,4 @@ Ablating instance-wise attention (trainable fixed attention matrix) hurts P90 su
 ---
 
 [^src-tft]: [[source-tft]]
+[^src-attention-1706-03762]: [[source-attention-is-all-you-need-1706-03762]]
