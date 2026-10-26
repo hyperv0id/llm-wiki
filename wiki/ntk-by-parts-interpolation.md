@@ -24,6 +24,8 @@ RoPE 并非纯粹的相对位置编码——当波长 $\lambda > L$ 时，该维
 - **$\lambda \geq L$（长波长）**：编码绝对位置 → 必须插值[^src-yarn]
 - **中间区域**：混合处理[^src-yarn]
 
+两端的相位覆盖理由（低频维的相位只落在圆周一段弧上、高频维的相位已铺满整圈）见 [[yarn#NTK-by-parts 为什么成立]]；边界取 $\alpha=1$、$\beta=32$ 是实测标定，不是从波长关系推出的。
+
 ## 数学定义
 
 引入比率 $r(d) = \frac{L}{\lambda_d}$，表示第 $d$ 维在预训练上下文长度内的旋转圈数[^src-yarn]：
@@ -52,13 +54,13 @@ $$h(\theta_d) = \left(1 - \gamma(r(d))\right) \frac{\theta_d}{s} + \gamma(r(d)) 
 ## 优势
 
 - **精确控制**：显式区分相对位置维度和绝对位置维度[^src-yarn]
-- **无越界外推**：所有维度严格在插值范围内[^src-yarn]
-- **微调效果好**：优于 [[position-interpolation|PI]] 和 NTK-aware[^src-yarn]
-- **无微调也可用**：性能优于 [[position-interpolation|PI]][^src-yarn]
+- **低频段不再越界**：$r<\alpha$ 的维度按 PI 压缩，相位落回训练时见过的范围；$r>\beta$ 的维度不插值，靠相位在窗口内已转满整圈来承受更长的位置[^src-yarn]
+- **微调效果好**：优于 PI 和 NTK-aware[^src-yarn]
+- **无微调也可用**：性能优于 PI[^src-yarn]
 
 ## 与 YaRN 的关系
 
-NTK-by-parts 是 [[yarn|YaRN]] 的核心组成部分。YaRN 在此基础上增加了注意力温度缩放，进一步提升了长上下文性能[^src-yarn]。
+NTK-by-parts 是 [[yarn|YaRN]] 的核心组成部分。YaRN 在此基础上增加了注意力温度缩放，进一步提升了长上下文性能[^src-yarn]。组合后的分阶段数据流（波长→圈数→三段→缩放频率→温度并入分母）见 [[yarn#数据流与维度变换]]。
 
 ## 引用
 

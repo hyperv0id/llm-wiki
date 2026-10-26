@@ -63,6 +63,7 @@ Dynamic Scaling 与 YaRN 结合 = Dynamic-YaRN[^src-yarn]：
 - **Dynamic NTK**：Dynamic Scaling + NTK-aware 插值[^src-yarn]
 - **Dynamic-YaRN**：Dynamic Scaling + YaRN[^src-yarn]
 - 已被 Qwen 7B 等开源模型采用[^src-yarn]
+- 在 YaRN 数据流里它只决定每次 forward 用哪个 $s$、$\cos/\sin$ 表何时重建，不改变插值公式本身，见 [[yarn#Stage 5 · 决定缩放因子来源与重算时机]]
 
 ## 引用
 

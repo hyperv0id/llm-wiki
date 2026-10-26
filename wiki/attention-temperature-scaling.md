@@ -6,7 +6,7 @@ tags:
   - rope
   - context-extension
 created: 2026-04-28
-last_updated: 2026-05-04
+last_updated: 2026-10-26
 source_count: 2
 confidence: medium
 status: active
@@ -24,11 +24,13 @@ $$\text{softmax}\left(\frac{q_m^T k_n}{\sqrt{|D|}}\right)$$
 
 YaRN 修改为[^src-yarn]：
 
-$$\text{softmax}\left(\frac{q_m^T k_n}{t\sqrt{|D|}}\right)$$
+$$\text{softmax}\left(\frac{q_m^T k_n}{t\sqrt{|D|}}\right)=\text{softmax}\left(\frac{c\,q_m^T c\,k_n}{\sqrt{|D|}}\right),\quad c=\sqrt{1/t}$$
+
+温度与原有的 $1/\sqrt{|D|}$ 合成一个分母 $t\sqrt{|D|}$：$q_m$ 与 $k_n$ 各乘 $c$，内积放大 $c^{2}=1/t$，因此接入点只有一处缩放常数[^src-yarn]（§3.3, Eq. 14）。
 
 ## 温度公式
 
-对于缩放因子 $s$，推荐温度由经验公式给出[^src-yarn]：
+对于缩放因子 $s$，推荐温度由拟合给出：在 LLaMA 7b/13b/33b/65b 上不微调、扫不同 $s$ 并取 perplexity 最低的 $\sqrt{1/t}$，再对该结果拟合[^src-yarn]：
 
 $$\sqrt{\frac{1}{t}} = 0.1\ln(s) + 1$$
 
@@ -63,7 +65,7 @@ $$\sqrt{\frac{1}{t}} = 0.1\ln(s) + 1$$
 
 ## 与 NTK-by-parts 的关系
 
-温度缩放与 [[ntk-by-parts-interpolation|NTK-by-parts]] 插值互补[^src-yarn]：
+温度缩放与 [[ntk-by-parts-interpolation|NTK-by-parts]] 插值互补[^src-yarn]（两者在 [[yarn#数据流与维度变换|YaRN 数据流]] 的 Stage 3 与 Stage 4 依次生效）：
 - NTK-by-parts 处理位置编码的频率分布
 - 温度缩放处理注意力的熵/集中度
 - 两者结合 = [[yarn|YaRN]]

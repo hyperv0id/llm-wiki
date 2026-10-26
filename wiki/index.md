@@ -649,7 +649,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[witran]] — WITRAN，按自然周期重排 2D 网格的双向 GSC 递推模型 + RAN 加速（NeurIPS 2023）
 - [[worldts]] — WorldTS：多模态协变量条件化的潜空间未来状态预测框架，两阶段训练（arXiv:2609.31162）
 - [[xcpd]] — xCPD, model-agnostic plugin for spectral-domain channel-patch dependency routing (ICLR 2026)
-- [[yarn]] — YaRN, efficient context window extension for RoPE models (2023)
+- [[yarn]] — YaRN，NTK-by-parts 波长分段插值 + 注意力温度缩放，含 Stage 1–5 数据流与 4k→128k 证据（arXiv:2309.00071, 2023）
 - [[zeus]] — Zeus，unified tuning-free TSFM，point tokenization + U 形多尺度 encoder + MOTM，五任务零微调（ICML 2026）
 
 ## Concepts
