@@ -8,7 +8,7 @@ tags:
   - hardware-aware
 created: 2026-10-27
 last_updated: 2026-10-27
-source_count: 2
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -91,11 +91,12 @@ Transformer 层由 MHA 与 MLP 子块交错构成，Mamba 则由单一同构块�
 
 ## 与其他页面
 
-[[mamba]] 为实体页，本页记录原始论文口径细节。[[linear-attention-unified-framework]] 中，Han et al. 将本页递推与线性注意力对齐为同一公式（$C_t\leftrightarrow Q_t$、$B_t\leftrightarrow K_t^\top$、$\Delta_t\odot x_t\leftrightarrow V_t$），差异落在六项可消融组件上；本页给出递推的原始出处。关于 [[fast-weight-mlp-view-of-attention]]，论文 Appendix A 将选择机制与 fast weights 区分：对角层 $y=\sigma(Wx)\circ x$ 虽符合 gating、hypernetwork 与 data-dependence 的通俗定义，实质仅为 GLU；论文只把沿序列维交互的门控（以 RNN 门控为特例）归入选择机制[^src-gu-dao-2023-mamba]。在 [[deep-state-space-model]] 的术语谱系中，DeepState 属于统计 SSM（线性高斯与 Kalman 解析推断），本页 SSM 专指结构化 S4 家族，论文 §2 对二者做了明确切割[^src-gu-dao-2023-mamba]。[[mamba-block-design]] 记录 Han et al. 对 Mamba 块的视觉重构消融（子块交换、拼接与统一归一化），而非原始 Mamba block 本身；原始块见本页 Stage 4。[[flash-attention]] 中 Stage 3 的 kernel 融合与重计算沿用 IO-aware 原则对齐显存目标；论文直接以 FlashAttention 实现作为显存与速度参照。
+[[mamba]] 为实体页，本页记录原始论文口径细节。[[linear-attention-unified-framework]] 中，Han et al. 将本页递推与线性注意力对齐为同一公式（$C_t\leftrightarrow Q_t$、$B_t\leftrightarrow K_t^\top$、$\Delta_t\odot x_t\leftrightarrow V_t$），差异落在六项可消融组件上；本页给出递推的原始出处。关于 [[fast-weight-mlp-view-of-attention]]，论文 Appendix A 将选择机制与 fast weights 区分：对角层 $y=\sigma(Wx)\circ x$ 虽符合 gating、hypernetwork 与 data-dependence 的通俗定义，实质仅为 GLU；论文只把沿序列维交互的门控（以 RNN 门控为特例）归入选择机制[^src-gu-dao-2023-mamba]。在 [[deep-state-space-model]] 的术语谱系中，DeepState 属于统计 SSM（线性高斯与 Kalman 解析推断），本页 SSM 专指结构化 S4 家族，论文 §2 对二者做了明确切割[^src-gu-dao-2023-mamba]。[[mamba-block-design]] 记录 Han et al. 对 Mamba 块的视觉重构消融（子块交换、拼接与统一归一化），而非原始 Mamba block 本身；原始块见本页 Stage 4。[[flash-attention]] 中 Stage 3 的 kernel 融合与重计算沿用 IO-aware 原则对齐显存目标；论文直接以 FlashAttention 实现作为显存与速度参照。后续谱系见 [[gated-delta-rule]]：Gated DeltaNet 把本页「数据依赖遗忘」的标量门塞进 delta rule 的 Householder 转移矩阵，其论文 §5 指出现代 forget gate 与 LSTM 设计的区别正是去掉对前一隐状态的依赖、保住跨长度并行（Yang et al., ICLR 2025）[^src-yang-2024-gated-delta]。
 
 ## 边界（论文自述）
 
 选择机制通过 scan 保持训练并行，但失去了卷积的 FFT 快速路径，这也是此前 SSM 坚持 LTI 的根本原因[^src-gu-dao-2023-mamba]。在连续与离散信号上，选择机制适用于文本与 DNA 等离散模态，但在均匀采样且平滑的连续信号上表现相反：长音频波形预训练中 S4 改为 S6 效果显著变差；靠近原始信号的层需保持 LTI，经外层压缩为 token 后的内层则不需要[^src-gu-dao-2023-mamba]。数域设置以实数为默认且普遍适用，唯一例外是音频实验改用复数，作者推测复数利于连续模态[^src-gu-dao-2023-mamba]。模型规模上，缩放律覆盖至 1.3B，下游评测达到 2.8B（300B token），7B+ 规模下的表现与所需工程调整留待后续验证[^src-gu-dao-2023-mamba]。
 
 [^src-gu-dao-2023-mamba]: [[source-gu-dao-2023-mamba]]
+[^src-yang-2024-gated-delta]: [[source-yang-2024-gated-delta]]
 [^src-demystify-mamba-linear-attention-2024]: [[source-demystify-mamba-linear-attention-2024]]

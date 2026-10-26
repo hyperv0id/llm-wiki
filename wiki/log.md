@@ -4361,3 +4361,13 @@ ingest 报告：[[ingest-reports/2026-10-27-universal-transformer|WHY 报告]]
 更新的页面：[[index]]（Sources/Techniques 各一条）、[[linear-attention-rnn-form]]（位置段加链接）、[[flash-attention]]（与稀疏/近似路线的区分段加链接）、[[native-sparse-attention]]（相关页面加链接）、[[deepseek-sparse-attention]]（lightning indexer 名称消歧链接）
 ingest 报告：[[ingest-reports/2026-10-27-minimax-01|WHY 报告]]
 数值备注：Figure 4/7/8 图内数值只有坐标轴刻度进入文本层，不可读；Eq. 1 括号错位、Eq. 9 求和下标笔误与 Table 1 分式压扁均按 arXiv HTML 核正；LASP+ 收益原句「computation speed … up to $1/N_{pcn}$ of the original LASP」字面与加速语义相反且通信量明言增加，按原文转写；任务提示的 CSC 算子与 T同步训练在论文中不存在（实际为 LASP+/varlen ring attention 与渐进式上下文扩展），4M 为推理外推而非训练长度；NSA 归属为 DeepSeek-AI 而非 MiniMax 同机构，未采用提示中的说法。
+## [2026-10-27] ingest | Gated Delta Networks: Improving Mamba2 with Delta Rule
+arXiv:2412.06464v3（Yang, Kautz & Hatamizadeh, MIT/NVIDIA, ICLR 2025；v1/v2 比对确认实验范围一致）。问题：线性 Transformer 的外积关联记忆超维度后记忆碰撞，Mamba2 的均匀衰减不能定点改写、DeltaNet 不能快速清空。机制：gated delta rule $S_t=S_{t-1}(\alpha_t(I-\beta_tk_tk_t^\top))+\beta_tv_tk_t^\top$，$\alpha_t\to0$ 清空状态、$\alpha_t\to1$ 退化为纯 delta rule；WY 表示扩展后 chunk 内仅 Gram 矩阵换 $\Gamma\odot KK^\top$，张量核友好训练。证据：1.3B/100B 上 LM 与常识推理平均 55.32 对 Mamba2 54.89、DeltaNet 52.14（Table 3）；S-NIAH-1 8K 91.8 对 Mamba2 30.4、S-NIAH-2 2K 99.8 对 DeltaNet 45.6（Table 2）；混合 H1/H2 真实检索 39.0/40.1 超 Transformer++ 37.0（Table 4）、LongBench 17.8/18.4；消融换回 naive delta rule PPL 27.35→30.87（Table S.1）。边界：长度外推结果混合（论文自述）、真实检索优势小、吞吐比 Mamba2 慢 2–3K tokens/sec；全部实验 ≤1.3B/100B，任务简报所称 2.7B/380B、"Gated Delta Slot"、"GATED DELTA NIAH"、GTA/VDeltaD 在三个版本中均不存在，未补写。
+创建的页面：[[source-yang-2024-gated-delta]], [[gated-delta-rule]]
+更新的页面：[[trace-as-state-reproduction]]（§2「GDN + GA」补一手出处，source_count 4→5）、[[mamba]]（相关页面加链接）、[[selective-ssm]]（与其他页面段补谱系句，source_count 2→3）、[[linear-attention-rnn-form]]（在本 wiki 中的位置补谱系句）、[[index]]（Sources / Techniques 段各一条）
+ingest 报告：[[ingest-reports/2026-10-27-gated-delta|WHY 报告]]
+数值备注：正文称 Table 3 覆盖 400M 与 1.3B 但表内仅 1.3B 行（页面边界节并列照录）；chunkwise 公式上下标经页面图渲染核对；Fig 1–3 图内数值不可读，相关结论取自正文。
+## [2026-10-27] lint | Gated DeltaNet ingest 独立复核（2 新建 + 6 修改 + 1 报告）
+对照 arXiv:2412.06464v3 原文逐项核查：Eq. 10 与四个 Stage 的 aligned 块逐行验可乘性与收缩/规约轴（$F^r_{[t]}=\gamma^r_{[t]}P^r_{[t]}$、UT transform 的 $\Gamma\odot KK^\top$、跨 chunk 两式、转置箭头记号）、Table 2–5 与 S.1/S.2 全部数字、§1/§3.2/§4/§5 边界归因均与页面一致；index 字母序、frontmatter/脚注目标核验无缺。修 4 处：Stage 3 两处未定义记号 $\bar\gamma^r$ 改回论文的 $\gamma^r_{[t]}$（PDF 无 bar 记号）；Table 3 的 Avg 55.32 系 8 项（LMB acc + 7 常识）平均，「十项平均」改「八项平均」；linear-attention-rnn-form 谱系句补 [^src-yang-2024-gated-delta] 引用与脚注，source_count 1→2。
+更新的页面：[[gated-delta-rule]], [[linear-attention-rnn-form]]
+复跑 scripts/lint.py：severe 135、warn 47、info 1156，与修前持平，本次页面均无条目（无新增 severe）

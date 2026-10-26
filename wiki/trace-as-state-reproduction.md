@@ -3,8 +3,8 @@ title: Trace as State 方法复现技术笔记
 type: analysis
 tags: [analysis, reproduction, trace-as-state, long-context, token-usage]
 created: 2026-09-13
-last_updated: 2026-09-13
-source_count: 4
+last_updated: 2026-10-27
+source_count: 5
 confidence: medium
 status: active
 ---
@@ -33,6 +33,7 @@ status: active
 
 核对要点：
 
+- **GDN 一手出处**：架构归因「GDN + GA」里的 GDN（Gated Deltanet）即 Gated DeltaNet——Mamba2 式标量遗忘门进 delta rule 的线性 RNN token mixer（Yang, Kautz & Hatamizadeh, ICLR 2025, arXiv:2412.06464），机制与证据见 [[gated-delta-rule]] [^src-yang-2024-gated-delta]。
 - **版本消歧**：论文明确 DeepSeek V4 Pro 有两个同名版本（2026-4-24、2026-8-13 发布），实验用 **2026-4-24 版**；Table 1-1 称 "DeepSeek V4 Pro Preview"，§4.1 模型列表同 [^src-trace-as-state]。
 - **effort 投递位置**：Qwen 3.7 Max 的 `xhigh` 是官方评估指引推荐的 **prompt 文本**，不是 provider 侧 `reasoning_effort` 参数值；MRCRv2 的 runner 把该指令前置于 system message，GraphWalks 与 NUB-1M 的 runner 前置于单条 user message，且同一数据集内投递格式跨条件固定（Appendix C）[^src-trace-as-state]。指令全文照录：
   > Reasoning effort is set to xhigh. Please think carefully through the task, validate key assumptions, consider plausible alternatives, and prioritize correctness, consistency, and clarity in the final answer.
@@ -275,5 +276,6 @@ $$
 
 [^src-trace-as-state]: [[source-trace-as-state]] —— Xu Zou, Jie Tang. *Trace as State: Reasoning Traces as Conditional States for Long-Context Transformers*. arXiv:2609.02702v1, 2026-09-02。本页所有论文内事实引自该来源的 §4、Appendix B/C/F、Table 1-1/1-2/6 及 arXiv TeX 源包；PDF/HTML/TeX 视为同一来源。
 [^src-graphwalks-dataset]: [[source-graphwalks-dataset]] —— OpenAI GraphWalks 数据集卡，<https://huggingface.co/datasets/openai/graphwalks>，访问 2026-09-13，快照 `downloads/graphwalks-dataset.md`。
+[^src-yang-2024-gated-delta]: [[source-yang-2024-gated-delta]] —— Songlin Yang, Jan Kautz, Ali Hatamizadeh. *Gated Delta Networks: Improving Mamba2 with Delta Rule*. ICLR 2025, arXiv:2412.06464v3。仅为「GDN」架构归因提供一手出处，Table 1-1 的归因表述本身仍引自 [^src-trace-as-state]。
 [^src-mrcr-dataset]: [[source-mrcr-dataset]] —— OpenAI MRCR 数据集卡，<https://huggingface.co/datasets/openai/mrcr>，访问 2026-09-13，快照 `downloads/mrcr-dataset.md`。
 [^src-nub-1m-benchmark]: [[source-nub-1m-benchmark]] —— xz-keg *Novel-Understanding-Bench* 仓库，<https://github.com/xz-keg/Novel-Understanding-Bench>，访问 2026-09-13，快照 `downloads/nub-1m-benchmark.md`。

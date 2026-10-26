@@ -427,6 +427,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-worldts]] — WorldTS（Zhu et al., arXiv:2609.31162v1，2026-09-25）：多模态协变量直接条件化潜空间未来状态预测，两阶段训练；21 数据集上数值协变量 12/12 平均最优、Time-MMD 14/16 第一、MMSP 最低
 - [[source-xcpd]] — xCPD: graph spectral decomposition for channel-patch dependency routing (ICLR 2026)
 - [[source-xiong-2020-layernorm-placement]] — Xiong et al., ICML 2020：LN 放在残差和内外决定初始化梯度尺度，Post-LN 末层梯度 $\mathcal{O}(d\sqrt{\ln d})$ 与深度无关、Pre-LN 为 $\mathcal{O}(d\sqrt{\ln d/L})$，故 Pre-LN 可去 warmup
+- [[source-yang-2024-gated-delta]] — Gated Delta Networks: Improving Mamba2 with Delta Rule，gated delta rule（遗忘门 $\alpha_t$ 进 delta rule 转移矩阵）+ WY 表示扩展的 chunkwise 并行训练，1.3B/100B 上 LM 与常识推理超 Mamba2/DeltaNet（Avg 55.32 对 54.89/52.14），S-NIAH 三任务与混合架构证据（Yang, Kautz & Hatamizadeh, MIT/NVIDIA, ICLR 2025, arXiv:2412.06464；PDF raw/gated-delta-networks-2412-06464.pdf）
 - [[source-yang-consistency-fm-arxiv24]] — Consistency-FM: Defining Straight Flows with Velocity Consistency, 速度一致性直线流少步 FM，LOFT $L_{CT}$ 的方法来源 (arXiv 2024 preprint, v1)
 - [[source-yang-gsli-2025]] — GSLI: Graph Structure Learning for Spatial-Temporal Imputation Adapting to Node and Feature Scales (Yang et al., AAAI 2025)
 - [[source-yarn]] — YaRN: efficient context window extension of large language models (2023)
@@ -1066,6 +1067,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[frequency-pathway-routing]] — 频率维上的节点级温度 softmax + top-$K$ 选择，再按 softmax 权重融合分支输出
 - [[frequency-specific-spatial-embedding]] — 拉普拉斯特征向量按特征值等量切成 $P$ 组，与时间频带一一配对
 - [[fully-adjacent-layer]] — 全邻接层：仅把最后一层邻接改为全连接以打破 over-squashing 瓶颈的演示性方案，零新增权重，附维度/层位/部分边消融（ICLR 2021）
+- [[gated-delta-rule]] — Gated DeltaNet 核心层：delta rule「先擦除再写入」的转移矩阵内侧乘标量遗忘门，$\alpha_t\to0$ 清空状态、$\alpha_t\to1$ 退化为纯 delta rule；UT transform 下仅 Gram 矩阵换成 $\Gamma\odot KK^\top$，chunkwise 张量核训练（Yang et al., ICLR 2025）
 - [[gated-linear-units]] — GLU: gated linear units as efficient MoE experts with parallel computation
 - [[gated-residual-network]] — GRN: residual + GLU-gated nonlinear block with optional context (TFT building block)
 - [[gated-temporal-attention]] — GTA，SADI 中用自注意力替代膨胀卷积的门控时序注意力 (AAAI 2025)

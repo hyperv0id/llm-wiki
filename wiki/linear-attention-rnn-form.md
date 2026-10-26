@@ -9,7 +9,7 @@ tags:
   - efficiency
 created: 2026-10-27
 last_updated: 2026-10-27
-source_count: 1
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -116,6 +116,8 @@ Table 3 中 Bi-LSTM 为 10.94 / 1,047 s，LSH-4 为 9.33 / 2,250 s。序列复�
 
 ## 在本 wiki 中的位置
 
-[[linear-attention-unified-framework]] 对齐本页递推与 Mamba 选择性 SSM 公式并消融六项组件差异，本页循环形式在该页作为已知结论引用。[[performer]] 与 [[positive-random-features]] 沿本页骨架把 $\phi$ 换为 softmax 核的随机特征估计；Performer 附录报告 elu+1 线性注意力在其 ProGen 设置中训练早期梯度爆炸。[[fast-weight-mlp-view-of-attention]] 从 fast-weight 视角指出 $s_i$ 正是逐 token 即时写入的矩阵权重。[[lightning-attention]] 在基础模型规模复用本页的右积递推，用分块（块内左积 + 块间右积）解决 causal 场景 cumsum 不可并行的工程问题。[[source-katharopoulos-2020-linear-attention]] 为论文源摘要。
+[[linear-attention-unified-framework]] 对齐本页递推与 Mamba 选择性 SSM 公式并消融六项组件差异，本页循环形式在该页作为已知结论引用。[[performer]] 与 [[positive-random-features]] 沿本页骨架把 $\phi$ 换为 softmax 核的随机特征估计；Performer 附录报告 elu+1 线性注意力在其 ProGen 设置中训练早期梯度爆炸。[[fast-weight-mlp-view-of-attention]] 从 fast-weight 视角指出 $s_i$ 正是逐 token 即时写入的矩阵权重。[[gated-delta-rule]] 沿本页递推加两项改造：擦除项 $-S_{t-1}k_tk_t^\top$ 与写入强度 $\beta_t$（delta rule），再乘标量遗忘门 $\alpha_t$（Gated DeltaNet, ICLR 2025）[^src-yang-2024-gated-delta]——本页的 Hebbian 累积是该递推去掉擦除与写入强度的特例。[[lightning-attention]] 在基础模型规模复用本页的右积递推，用分块（块内左积 + 块间右积）解决 causal 场景 cumsum 不可并行的工程问题。[[source-katharopoulos-2020-linear-attention]] 为论文源摘要。
+
 
 [^src-katharopoulos-2020-linear-attention]: [[source-katharopoulos-2020-linear-attention]]
+[^src-yang-2024-gated-delta]: [[source-yang-2024-gated-delta]]

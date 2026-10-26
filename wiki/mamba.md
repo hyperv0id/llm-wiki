@@ -63,6 +63,7 @@ SSD-TS introduces BAM (bidirectional Mamba + temporal attention for intra-channe
 - [[cmb|CMB]] — 通道 Mamba 块，扩散去噪的通道间建模模块
 - [[mila|MILA]] — 受 Mamba 启发的线性注意力模型
 - [[linear-attention-unified-framework|Mamba ↔ Linear Attention 统一框架]]
+- [[gated-delta-rule]] — Mamba2 的 $\alpha_t$ 遗忘门进 delta rule：$S_t=S_{t-1}(\alpha_t(I-\beta_tk_tk_t^\top))+\beta_tv_tk_t^\top$，本页门控更新的定点改写扩展 (ICLR 2025)
 - [[forget-gate-in-sequential-models|遗忘门在序列模型中的作用]]
 - [[mamba-block-design|Mamba 块设计]]
 - [[selective-ssm|Selective SSM（S6）]] — 原始论文口径的机制页：选择机制、硬件感知 scan、块结构
