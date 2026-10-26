@@ -104,6 +104,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-deepar]] — DeepAR: Probabilistic Forecasting with Autoregressive Recurrent Networks, global shared LSTM + Gaussian/negbin likelihood + MC sample paths (Salinas et al., Amazon, arXiv:1704.04110)
 - [[source-deepfec]] — DeepFEC: Energy Consumption Prediction under Real-World Driving Conditions for Smart Cities
 - [[source-deepseek-v2-2405-04434]] — DeepSeek-V2 技术报告：Multi-head Latent Attention（KV 联合低秩压缩 + decoupled RoPE，表 1 给 MHA/GQA/MQA/MLA 的 cache 公式）与 DeepSeekMoE，236B/21B 激活，128K 上下文（DeepSeek-AI, arXiv:2405.04434）
+- [[source-deepseek-v4-2606-19348]] — DeepSeek-V4 技术报告（preview）：混合注意力 CSA（$1/4$ 压缩 + DSA top-k）+ HCA（$1/128$ 压缩 dense）支撑 1M 上下文，1M 下 FLOPs 为 V3.2 的 27%/10%、KV 为 10%/7%（Pro/Flash）；mHC + Muon，32T/33T token，GRPO 专家 + 全词表 OPD 后训练（DeepSeek-AI, arXiv:2606.19348v1, 2026-04；PDF raw/deepseek-v4-2606-19348.pdf）
 - [[source-deepstate]] — DeepState: Deep State Space Models for Time Series Forecasting, RNN-parametrized linear SSM + Kalman likelihood (NeurIPS 2018)
 - [[source-demystify-mamba-linear-attention-2024]] — Demystify Mamba in Vision: A Linear Attention Perspective (NeurIPS 2024)
 - [[source-detr]] — DETR: End-to-End Object Detection with Transformers（Carion et al., Facebook AI, arXiv:2005.12872v3，venue 未在 PDF 内核实），direct set prediction + Hungarian 二部匹配损失 + Transformer encoder-decoder + learned object queries 并行解码，COCO AP 42.0 与强化 Faster R-CNN 相当、APL 优 APS 弱，panoptic PQ 45.1（R101, COCO val）
@@ -948,6 +949,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[cluster-based-gating]] — 簇基门控，利用预训练 dense 模型 token 嵌入 k-means 聚类中心引导 MoE 专家分配的创新门控函数 (Moirai-MoE, ICML 2025)
 - [[cmb]] — CMB, Channel Mamba Block for inter-channel dependency in diffusion denoising (KDD 2025)
 - [[cold-sampling]] — Cold Sampling, DDIM推广到广义扩散模型的采样算法，与 Euler 方法求解 ODE 等价
+- [[compressed-sparse-attention]] — CSA：DeepSeek-V4 把每 4 个 token 的 KV 压成 1 个 entry（重叠双支路）再跑 DSA top-k（512/1024），indexer keys 同步压缩、主注意力与 indexer 共享低秩 query latent
 - [[conditional-attention-pooling]] — CAP: UniCA's conditional attention mechanism for covariate fusion (ICLR 2026)
 - [[conditional-prior-sampling]] — 条件先验采样，Langevin 动力学 + 引导实现无条件模型的条件化预测 (TSFlow, ICLR 2025)
 - [[conditional-score-flow-matching]] — [SF]²M，给定 entropic OT coupling 的免仿真 SB 学习
@@ -977,6 +979,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[ddim]] — DDIM, 概率流 ODE 的一阶 Euler 离散化 (ICLR 2021)
 - [[ddpm-simplified-training-objective]] — DDPM's L_simple, simplified noise prediction loss for diffusion models
 - [[deepseek-sparse-attention]] — DSA：FP8 lightning indexer 打分 + 逐 query 取 top-k 个 MLA latent，主注意力 $O(L^2)\to O(Lk)$、indexer 仍 $O(L^2)$，两阶段继续预训练（DeepSeek-V3.2）
+- [[deepseek-v4-hybrid-attention]] — DeepSeek-V4 混合注意力：CSA/HCA 交错 + 滑窗分支 + QK RMSNorm + partial RoPE + attention sink，1M 上下文 KV 约为 BF16 GQA8 基线的 2%、FLOPs 为 V3.2 的 27%（Pro）/10%（Flash）
 - [[deformable-fast-weight-experts]] — 形变 fast-weight 专家：专家组成由内容决定而非位置切块，MiTA 用 landmark query 对全 KV 打分取 top-k，$N$-to-$m$ 路由后可复用
 - [[decody]] — Delay-Coupled Neural Dynamics：残差递推的延迟耦合 + 增益约束 + 全 horizon 求解器，8 h–7 d 多日交通演化预测
 - [[decoy-injection]] — benchmark technique injecting fake PII to increase privacy reasoning difficulty
@@ -1080,6 +1083,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[grpo-for-forecasting]] — GRPO for forecasting, NRMSE-reward RL stage with length/decode penalties for traffic-accuracy optimization (ST-Vision-LLM, arXiv 2025)
 - [[guided-layer-normalization]] — conditional normalization with dynamic affine parameters for accident-aware modeling
 - [[gwnet]] — GWNet, Graph WaveNet: self-adaptive adjacency matrix + dilated causal convolutions for STG forecasting (IJCAI 2019)
+- [[heavily-compressed-attention]] — HCA：DeepSeek-V4 把每 128 个 token 的 KV 压成 1 个 entry（非重叠单路）后对全部条目做 dense 共享 KV MQA，无稀疏选择器，百万 token 约压到 8×10^3 条目
 - [[heterogeneous-moe-routing]] — 异质性感知 MoE 路由，FaST 的动态 expert 路由机制
 - [[heterogeneous-partial-contrastive-learning]] — HPCL：正/负空间掩码对比学习 HCorr+PCorr（仅训练）
 - [[heterogeneous-spatial-attention]] — HSA: low-rank pattern library + gated fusion for node-specific spatial attention (HEPHAESTUS, ICLR 2026 under review)

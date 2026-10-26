@@ -8,7 +8,7 @@ tags:
   - llm
   - multi-query
 created: 2026-10-26
-last_updated: 2026-10-26
+last_updated: 2026-10-27
 source_count: 1
 confidence: medium
 status: active
@@ -121,6 +121,6 @@ Figure 4 显示 T5-Large 转 MQA、$\alpha=0.05$，三种初始化 mean / first 
 
 ## 相关页面
 
-[[source-ainslie-2023-gqa]] 为源摘要；[[multi-query-attention]] 是 $G=1$ 的端点，K/V 头退化为单份；[[qk-norm]] 作用于 Q/K 归一化，不改头共享结构；[[kv-cache-compression]] 用于推理期缓存压缩，GQA 改的是头共享结构而非缓存内容；[[native-sparse-attention]] 与 [[deepseek-sparse-attention]] 在 GQA / MQA 分组之上做块与 token 粒稀疏。
+[[source-ainslie-2023-gqa]] 为源摘要；[[multi-query-attention]] 是 $G=1$ 的端点，K/V 头退化为单份；[[qk-norm]] 作用于 Q/K 归一化，不改头共享结构；[[kv-cache-compression]] 用于推理期缓存压缩，GQA 改的是头共享结构而非缓存内容；[[native-sparse-attention]] 与 [[deepseek-sparse-attention]] 在 GQA / MQA 分组之上做块与 token 粒稀疏；[[compressed-sparse-attention]] 与 [[heavily-compressed-attention]] 落在 $G=1$ 端点并把序列维再压 $1/4$ 与 $1/128$（DeepSeek-V4）。
 
 [^src-ainslie-2023-gqa]: [[source-ainslie-2023-gqa]]

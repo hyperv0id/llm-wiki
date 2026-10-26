@@ -8,7 +8,7 @@ tags:
   - llm
   - hardware
 created: 2026-10-24
-last_updated: 2026-10-26
+last_updated: 2026-10-27
 source_count: 3
 confidence: medium
 status: active
@@ -183,6 +183,8 @@ NSA 在 9 项中 7 项更高，平均 +0.013；两项更低的是 MMLU（−0.00
 - [[mita-attention]] — 拼接后单次 softmax 的对照口径
 - [[moba-attention]] — 同为训练期块稀疏，单支路 top-k 门控
 - [[deepseek-sparse-attention]] — 逐 latent 选择、独立 indexer 打分
+- [[compressed-sparse-attention]] — DSA 框架在 $1/4$ 压缩 KV 上的 V4 实例化
+- [[deepseek-v4-hybrid-attention]] — 压缩与选择拆到不同层交错的对照路线
 - [[fast-weight-scaling-taxonomy]] — NSA 在五维坐标中的格位
 - [[fast-weight-mlp-view-of-attention]] — full attention 的 fast-weight 读法
 - [[deformable-fast-weight-experts]] — 刚性块与形变专家的差别

@@ -8,9 +8,8 @@ tags:
   - kv-cache
   - llm
 created: 2026-10-24
-last_updated: 2026-10-26
-source_count: 3
-source_count: 2
+last_updated: 2026-10-27
+source_count: 4
 confidence: medium
 status: active
 ---
@@ -105,6 +104,10 @@ u_{t} &= W^{O}\operatorname{Concat}\left(o_{t,1},\dots,o_{t,n_h}\right) && \text
 - indexer：$[L,L]$ 打分无法避免，复杂度仍是 $\mathcal{O}(L^2)$；头数少、维度低、可 FP8，实际计算量远小于 MLA，但两者的 FLOPs 对比未给出（§2.3）[^src-2512-02556-deepseek-v3-2]。
 - 复杂度结论只覆盖这两块：gather 的访存、indexer 的 $[L,L]$ 中间量驻留均未计入。
 
+## 在压缩 KV 上实例化：DeepSeek-V4 的 CSA
+
+DeepSeek-V4 把 DSA 的选择对象从逐 token latent 换成压缩条目：先把每 $m=4$ 个 token 的 KV 压成 1 个 entry（重叠双支路、净压缩率 $1/4$），indexer keys 经同一压缩算子同步压短，再在压缩条目上跑同一套 indexer + top-$k$ + MQA；$k$ 从 2048 降到 512（V4-Flash）/ 1024（V4-Pro），主注意力与 indexer 的 query 共用同一个低秩 latent $c^{Q}_t$（§2.3.1）[^src-deepseek-v4-2606-19348]。indexer 打分矩阵由 $[L,L]$ 量级缩短为 $[L, L/4]$ 量级，是本页「indexer 仍为 $\mathcal{O}(L^2)$」结论在 V4 中的直接放松。机制与维度见 [[compressed-sparse-attention]]。
+
 ## 训练：两阶段继续预训练
 
 起点是上下文已扩到 128K 的 DeepSeek-V3.1-Terminus base checkpoint，两阶段数据分布与 128K 长上下文扩展数据一致（§2.1.1）[^src-2512-02556-deepseek-v3-2]。
@@ -156,6 +159,8 @@ Figure 3 按 token position 给出 V3.1-Terminus 与 V3.2 的每百万 token 成
 ## 相关页面
 
 - [[deepseek-v3-2]] — 该机制唯一落地的模型与训练配方
+- [[compressed-sparse-attention]] — DSA 在 $1/4$ 压缩 KV 上的 V4 实例化
+- [[deepseek-v4-hybrid-attention]] — CSA 与 HCA 交错的混合架构
 - [[moba-attention]] — 块粒度的 top-$k$ 路由对照
 - [[native-sparse-attention]] — 同一实验室更早的训练期块稀疏方法（三分支 + 门控合并）
 - [[fast-weight-scaling-taxonomy]] — DSA 在五维坐标中的格位
@@ -168,3 +173,4 @@ Figure 3 按 token position 给出 V3.1-Terminus 与 V3.2 的每百万 token 成
 [^src-2512-02556-deepseek-v3-2]: [[source-2512-02556-deepseek-v3-2]]
 [^src-2502-11089-nsa]: [[source-2502-11089-nsa]]
 [^src-shazeer-2019-mqa]: [[source-shazeer-2019-mqa]]
+[^src-deepseek-v4-2606-19348]: [[source-deepseek-v4-2606-19348]]

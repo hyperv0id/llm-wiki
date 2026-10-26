@@ -9,8 +9,8 @@ tags:
   - training-stability
   - large-language-models
 created: 2026-06-22
-last_updated: 2026-06-22
-source_count: 1
+last_updated: 2026-10-27
+source_count: 2
 confidence: high
 status: active
 ---
@@ -61,6 +61,10 @@ mHC 沿用 HC 的动态/静态映射分解：对展平的 $x_l$ 做 RMSNorm 后�
 
 在 DeepSeek-V3 风格的 MoE 语言模型上，$n=4$ 的 mHC 在 27B 参数规模下相比标准基线最终训练损失降低 0.021，且没有出现 HC 的梯度/损失尖峰；复合映射最大增益幅度从 HC 的近 3000 降至约 1.6[^src-mhc-manifold-constrained-hyper-connections]。下游 benchmark 上 mHC 在 BBH、DROP、GSM8K 等任务上普遍优于基线和 HC，大规模训练仅引入约 6.7% 的时间开销[^src-mhc-manifold-constrained-hyper-connections]。
 
+## 在 DeepSeek-V4 中的落地
+
+DeepSeek-V4 系列把 mHC 用于全部 Transformer 块：两个模型均取 $n_{hc}=4$、Sinkhorn-Knopp 迭代 $t_{max}=20$；约束实现为 $A_l=\sigma(\tilde A_l)$、$C_l=2\sigma(\tilde C_l)$（式 6–7）；mHC 的静态偏置与门控因子用 AdamW 更新，其余模块走 Muon（§2.2、§2.4、§4.2.1）[^src-deepseek-v4-2606-19348]。工程侧与上节三项优化同构：融合 kernel、选择性重计算、DualPipe 调度调整，把 mHC 的 wall-time 开销压到重叠 1F1B 流水线阶段的 6.7%（§3.4.2）[^src-deepseek-v4-2606-19348]，与 mHC 论文口径一致。$C_l$ 带因子 2 的形式出自 V4 报告的转述，mHC 原文是否有此因子未对照。
+
 ## 相关概念
 
 - [[hyper-connections|Hyper-Connections (HC)]] — mHC 的前置方法
@@ -70,3 +74,4 @@ mHC 沿用 HC 的动态/静态映射分解：对展平的 $x_l$ 做 RMSNorm 后�
 - [[residual-connections-as-diffusion|Residual Connections as Euler Steps of Reverse Diffusion]] — 残差连接的另一种宏观视角
 
 [^src-mhc-manifold-constrained-hyper-connections]: [[source-mhc-manifold-constrained-hyper-connections]]
+[^src-deepseek-v4-2606-19348]: [[source-deepseek-v4-2606-19348]]

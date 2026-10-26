@@ -7,8 +7,8 @@ tags:
  - orthogonalization
  - matrix-optimization
 created: 2026-04-30
-last_updated: 2026-05-30
-source_count: 2
+last_updated: 2026-10-27
+source_count: 3
 confidence: high
 status: active
 ---
@@ -292,7 +292,14 @@ Muon 与 2015 年的论��� "Stochastic Spectral Descent for Restricted Bol
 
 ---
 
+## DeepSeek-V4 中的 Muon
+
+DeepSeek-V4 系列把 Muon 用于除 embedding、prediction head、mHC 静态偏置与门控因子、RMSNorm 权重外的全部模块（§2.4、§4.2.2）[^src-deepseek-v4-2606-19348]。动量 0.95、权重衰减 0.1，更新矩阵 RMS 重标到 0.18 以复用 AdamW 学习率；与 Muon is Scalable for LLM Training（Liu et al., 2025）不同的两点：正交化用 **hybrid Newton-Schulz**——10 次迭代分两段，前 8 次 $(a,b,c)=(3.4445,-4.7750,2.0315)$ 快速逼近、后 2 次 $(2,-1.5,0.5)$ 把奇异值精确稳定在 1（Algorithm 1、§2.4）；以及**不用 QK-Clip**——V4 注意力对 query 与 KV 条目做 RMSNorm，logits 不爆炸，clip 无必要（§2.4）[^src-deepseek-v4-2606-19348]。
+
+实现侧（§3.4.1）[^src-deepseek-v4-2606-19348]：dense 参数限制 ZeRO 并行度并用背包算法把参数矩阵分到各 rank、桶 padding 换 reduce-scatter 效率（开销 <10%）；MoE 参数按「全部专家 down→up→gate 投影展平」均分，不设并行度上限；同形参数合并后批量跑 Newton-Schulz；MoE 梯度以随机舍入量化到 BF16 同步（通信量减半），并用 all-to-all + FP32 局部和替代 tree/ring reduce-scatter 以避开低精度累加误差。
+
 ## 参考文献
 
 [^src-muon-optimizer]: [[source-muon-optimizer]]
 [^src-kexue-muon-analysis]: [[source-kexue-muon-analysis]]
+[^src-deepseek-v4-2606-19348]: [[source-deepseek-v4-2606-19348]]
