@@ -7,8 +7,8 @@ tags:
   - optimization-stability
   - gradient-flow
 created: 2026-06-22
-last_updated: 2026-06-22
-source_count: 1
+last_updated: 2026-10-26
+source_count: 2
 confidence: high
 status: active
 ---
@@ -28,6 +28,12 @@ $$x_L = x_l + \sum_{i=l}^{L-1} F(x_i, W_i)$$
 - 反向传播中，梯度可以直接从深层流回浅层，而不必经过每个残差函数，抑制梯度消失或爆炸；
 - 当残差函数 $F$ 的初始化或学习动态不理想时，模型仍可退化到恒等映射，降低优化难度[^src-mhc-manifold-constrained-hyper-connections]。
 
+## LN 放置对恒等路径的影响
+
+原版 Transformer 把 LN 放在残差相加之后（Post-LN，$x_{l+1}=\mathrm{LN}(x_l+F(x_l))$），恒等路径每层被归一化重设一次，残差和的幅值固定在 $\sqrt{d}$ 量级。Pre-LN 把 LN 挪进残差支路（$x_{l+1}=x_l+F(\mathrm{LN}(x_l))$），残差流保持纯加法，$\mathbb{E}\|x^{pre}_l\|_2^2$ 随深度增长，落在 $\left[(1+\frac{l}{2})d,(1+\frac{3l}{2})d\right]$，因此需要在最后一层之后单加一次归一化再进 softmax[^src-xiong-2020-layernorm-placement]。
+
+这一处放置同时决定梯度：Post-LN 的层间雅可比每层带一个 $\sqrt{2/3}$ 的收缩，梯度按 $(2/3)^{(L-l)/2}$ 向浅层衰减（单层收缩出自附录 F 的近似估计，非定理结论）、输出侧保持 $\mathcal{O}(d\sqrt{\ln d})$，训练因此需要学习率预热；Pre-LN 的层间连乘近似恒等，代价是全部梯度被出口那一次归一化除以 $\sqrt{L}$[^src-xiong-2020-layernorm-placement]。展开见 [[pre-ln-vs-post-ln-analysis]]。
+
 ## 在 Hyper-Connections 中的破坏
 
 [[hyper-connections|Hyper-Connections]] 将残差流扩展为 $n$ 流，并把恒等项替换为可学习的 $H_l^{res} x_l$。递归展开后，浅层到深层的传递由复合映射 $\prod_i H_i^{res}$ 决定。由于 $H_l^{res}$ 无约束，该复合映射可能显著偏离恒等映射，导致信号均值不守恒、幅值无界放大或衰减，从而在大规模训练中触发不稳定[^src-mhc-manifold-constrained-hyper-connections]。
@@ -42,5 +48,7 @@ $$x_L = x_l + \sum_{i=l}^{L-1} F(x_i, W_i)$$
 - [[hyper-connections|Hyper-Connections]]
 - [[birkhoff-polytope|Birkhoff 多面体]]
 - [[residual-connections-as-diffusion|Residual Connections as Euler Steps of Reverse Diffusion]]
+- [[pre-ln-vs-post-ln-analysis|Pre-LN vs Post-LN：层归一化放置与梯度尺度]]
 
 [^src-mhc-manifold-constrained-hyper-connections]: [[source-mhc-manifold-constrained-hyper-connections]]
+[^src-xiong-2020-layernorm-placement]: [[source-xiong-2020-layernorm-placement]]

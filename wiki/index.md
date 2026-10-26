@@ -409,6 +409,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-witran-jia-2023]] — WITRAN: Water-wave Information Transmission and Recurrent Acceleration Network，周期重排 + 双向门控 RNN + 反对角线并行（O(√L) 串行步数），long/ultra-long-range MSE 降 5.803%/14.275%（Jia et al., BJTU, NeurIPS 2023；PDF raw/witran-jia-2023.pdf）
 - [[source-worldts]] — WorldTS（Zhu et al., arXiv:2609.31162v1，2026-09-25）：多模态协变量直接条件化潜空间未来状态预测，两阶段训练；21 数据集上数值协变量 12/12 平均最优、Time-MMD 14/16 第一、MMSP 最低
 - [[source-xcpd]] — xCPD: graph spectral decomposition for channel-patch dependency routing (ICLR 2026)
+- [[source-xiong-2020-layernorm-placement]] — Xiong et al., ICML 2020：LN 放在残差和内外决定初始化梯度尺度，Post-LN 末层梯度 $\mathcal{O}(d\sqrt{\ln d})$ 与深度无关、Pre-LN 为 $\mathcal{O}(d\sqrt{\ln d/L})$，故 Pre-LN 可去 warmup
 - [[source-yang-consistency-fm-arxiv24]] — Consistency-FM: Defining Straight Flows with Velocity Consistency, 速度一致性直线流少步 FM，LOFT $L_{CT}$ 的方法来源 (arXiv 2024 preprint, v1)
 - [[source-yang-gsli-2025]] — GSLI: Graph Structure Learning for Spatial-Temporal Imputation Adapting to Node and Feature Scales (Yang et al., AAAI 2025)
 - [[source-yarn]] — YaRN: efficient context window extension of large language models (2023)
@@ -1204,6 +1205,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[positive-random-features]] — PRF，softmax 核的正随机特征无偏估计：trig 特征在核值趋 0 时 MSE 发散、PRF 趋 0，ORF 正交化对任意维度 d 降方差（ICLR 2021）
 - [[post-hoc-forecast-revision]] — 预测后修订：骨干预测完成后独立模块修正输出，误差估计识别 + 局部/全局上下文加权融合（PIR, NeurIPS 2025）
 - [[pre-ln-transformer]] — Pre-LN：LayerNorm 移到每个子层输入端、残差相加之前（post-LN 为 $x_{l+1}=\mathrm{LN}(x_l+F(x_l))$，pre-LN 为 $x_{l+1}=x_l+F(\mathrm{LN}(x_l))$ 加末尾 LN），主干保持恒等通路，GPT-2 的落点
+- [[pre-ln-vs-post-ln-analysis]] — Pre-LN 与 Post-LN 的放置差异：分阶段前向、层间雅可比连乘与 $\sqrt{2/3}$ 收缩、定理 1 的条件与两条梯度界、warmup 实验对照
 - [[prediction-refinement]] — Prediction Refinement: post-hoc refinement of base forecaster predictions using diffusion model as energy-based prior (TSDiff, NeurIPS 2023)
 - [[predictive-contrastive-learning]] — PCL，正样本按预测区间 MSE 而非回溯窗口相似度选择的对比学习策略 (PFRP, AAAI 2026)
 - [[predictor-corrector-sampling]] — PC sampling, combining SDE solvers with score-based MCMC
