@@ -8,7 +8,7 @@ tags:
   - attention
 created: 2026-08-30
 last_updated: 2026-10-26
-source_count: 7
+source_count: 8
 confidence: medium
 status: active
 ---
@@ -54,6 +54,10 @@ KV 压缩与 [[context-window-extension]]（扩展位置编码以支持更长输
 
 作者在 Limitations 指出，轨迹前置可能降低多轮场景的 KV cache 复用；Appendix F 分别报告 cached input、missed input 与 output，不能据理论中的最坏情况内存差距宣称实际显存指数下降。完整开销口径见 [[trace-as-state-reproduction]]。[^src-trace-as-state]
 
+## 放置轴（与压缩正交）
+
+[[paged-attention]] 走的是另一条轴：不改每个 token 的 KV 字节数，也不淘汰任何 KV，只把 KV cache 切成固定大小的块按需分配、按引用计数共享，消掉预分配造成的碎片与重复——OPT-13B 上有效显存从 20.4%–38.2% 提到 96.3%（Fig 2）[^src-pagedattention]。它与本页的压缩淘汰、以及 MQA/GQA 式头共享（减少每 token 要存的 K/V 条数）可叠加：paging 决定这些 KV 落在哪、由谁共用，压缩与头共享决定每个 token 占多少字节。
+
 ## 相关页面
 
 - [[triattention]] — pre-RoPE 压缩方法
@@ -65,6 +69,7 @@ KV 压缩与 [[context-window-extension]]（扩展位置编码以支持更长输
 - [[deepseek-sparse-attention]] — 训练期 token 粒稀疏，不淘汰 KV
 - [[native-sparse-attention]] — 训练期块稀疏，三支路减少每步访存
 - [[grouped-query-attention]] — 头共享：改 K/V 头数而非缓存内容
+- [[paged-attention]] — 分页放置：块级分配与共享，不压字节、不淘汰
 - [[source-triattention]] — 源摘要
 - [[trace-as-state]] / [[conditional-state-update]] — 条件可用时机与缓存容量的区别
 
@@ -75,3 +80,4 @@ KV 压缩与 [[context-window-extension]]（扩展位置编码以支持更长输
 [^src-2512-02556-deepseek-v3-2]: [[source-2512-02556-deepseek-v3-2]]
 [^src-2502-11089-nsa]: [[source-2502-11089-nsa]]
 [^src-shazeer-2019-mqa]: [[source-shazeer-2019-mqa]]
+[^src-pagedattention]: [[source-kwon-2023-pagedattention]]

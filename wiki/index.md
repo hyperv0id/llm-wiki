@@ -195,6 +195,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-kellerjordan-muon-blog]] — TODO
 - [[source-kexue-muon-analysis]] — Muon优化器赏析：从向量到矩阵的本质跨越 (苏剑林, 2024)
 - [[source-kite]] — KITE: Knowledge-Guided Probabilistic Modeling for Time Series Forecasting with Exogenous Variables（HCM + KGC + CFG，ICML 2026）
+- [[source-kwon-2023-pagedattention]] — PagedAttention / vLLM: 分页 KV cache 内存管理，块表逻辑→物理映射 + 块级引用计数共享，有效显存 20.4%–38.2% → 96.3%，吞吐 2–4×（SOSP 2023, arXiv:2309.06180）
 - [[source-lagllm-icml2026]] — LagLLM: LLM-empowered lead–lag dependency learning for spatial-temporal time series forecasting，frozen LLM 判 lead–lag 语义掩码 + token 按图排序 + GPT-2 LoRA 骨干，8 数据集 27 例 22 例最优（ICML 2026, 浙大）
 - [[source-language-flow-time]] — Language in the Flow of Time: TaTS Framework (ICLR 2026) superseded by [[source-language-in-the-flow-of-time]]
 - [[source-language-in-the-flow-of-time]] — Language in the Flow of Time: TaTS framework for multimodal TS: CTR/TT-Wasserstein + 编码器与鲁棒性消融 (ICLR 2026, arXiv:2502.08942)
@@ -1194,6 +1195,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[opencity]] — OpenCity, spatio-temporal traffic foundation model with TimeShift Transformer + instance norm for zero-shot prediction (arXiv 2024)
 - [[ordinal-consistent-loss]] — 有序一致性损失，条件概率公式强制降水强度单调性，BCE + 有序掩码保证概率一致性
 - [[ordinal-temporal-fusion]] — fusing temporal and ordinal signals with learnable gate
+- [[paged-attention]] — 分页 KV cache 管理：逻辑块→物理块块表 + 块级引用计数/写时复制，注意力按块 gather；有效显存 96.3%，注意力 kernel 慢 20%–26%（vLLM, SOSP 2023）
 - [[patch-based-tokenization]] — converting time series into overlapping patch tokens for transformer input
 - [[patch-low-frequency-forecasting]] — PLFM 技术：重叠 patch 频谱 + 低通监督 + FALoss 的低频趋势学习 (LoFT-LLM)
 - [[patch-reprogramming]] — Patch Reprogramming，通过 cross-attention to text prototypes 将时序 patch 对齐到 LLM 词嵌入空间 (ICLR 2024)
