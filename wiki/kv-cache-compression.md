@@ -8,7 +8,7 @@ tags:
   - attention
 created: 2026-08-30
 last_updated: 2026-10-26
-source_count: 6
+source_count: 7
 confidence: medium
 status: active
 ---
@@ -48,6 +48,8 @@ KV 压缩与 [[context-window-extension]]（扩展位置编码以支持更长输
 
 [[native-sparse-attention|NSA]] 也属训练期稀疏且不淘汰 KV：每个 query 只读 $\lfloor (s-l)/d\rfloor+nl'+w$ 个 token（$l=32$、$d=16$、$l'=64$、$n=16$、$w=512$），64k 序列下为 5632 个等价 token，对应 11.6× 的解码预期加速（Table 4）；访存的节省依赖 GQA 组内共用同一批块，逐 head 独立选块时读量由组内并集决定（§2.1、§5.2）[^src-2502-11089-nsa]。
 
+与压缩、稀疏并列的另一条轴是头共享：[[grouped-query-attention|GQA]] 不淘汰也不压缩任何 KV，把 $H$ 个 query head 分成 $G$ 组、每组共享一份 K/V，每步读取字节按 $G/H$ 缩放（$G=1$ 即 MQA 的 $1/H$，$G=H$ 即 MHA）；注意力算术量与 $G$ 无关、仍正比于 $H$，故算术强度提高 $H/G$ 倍（§2.2）。KV cache 容量同样缩到 MHA 的 $G/H$，且该比例不随模型规模漂移；MQA 固定砍到 $1/H$，头数随规模上调时砍得更狠。既有多头 checkpoint 可经 K/V 投影组内 mean pooling 加 5% 继续预训练转到 GQA：GQA-8 的 T5-XXL 平均 47.1 对 MHA-XXL 47.2，每样本 0.28 s 对 1.51 s（Table 1）[^src-ainslie-2023-gqa]。
+
 [[trace-as-state|Trace as State]] 处理的是另一个约束：后出现的任务状态不能改变同一遍中已经形成的早期 token 表示。它把推理轨迹放在原文之前重新读取，不执行 KV 淘汰或压缩。论文 Appendix A 把位置、全部逐层 KV 条目及其他持久输入相关缓冲一并算入工作状态；“有限状态”并不等于“只保留一个固定大小向量”。[^src-trace-as-state]
 
 作者在 Limitations 指出，轨迹前置可能降低多轮场景的 KV cache 复用；Appendix F 分别报告 cached input、missed input 与 output，不能据理论中的最坏情况内存差距宣称实际显存指数下降。完整开销口径见 [[trace-as-state-reproduction]]。[^src-trace-as-state]
@@ -62,11 +64,13 @@ KV 压缩与 [[context-window-extension]]（扩展位置编码以支持更长输
 - [[multi-query-attention]] — 减少 K/V 副本数，不淘汰条目
 - [[deepseek-sparse-attention]] — 训练期 token 粒稀疏，不淘汰 KV
 - [[native-sparse-attention]] — 训练期块稀疏，三支路减少每步访存
+- [[grouped-query-attention]] — 头共享：改 K/V 头数而非缓存内容
 - [[source-triattention]] — 源摘要
 - [[trace-as-state]] / [[conditional-state-update]] — 条件可用时机与缓存容量的区别
 
 [^src-triattention]: [[source-triattention]]
 [^src-moba-mixture-of-block-attention]: [[source-moba-mixture-of-block-attention]]
+[^src-ainslie-2023-gqa]: [[source-ainslie-2023-gqa]]
 [^src-trace-as-state]: [[source-trace-as-state]]
 [^src-2512-02556-deepseek-v3-2]: [[source-2512-02556-deepseek-v3-2]]
 [^src-2502-11089-nsa]: [[source-2502-11089-nsa]]

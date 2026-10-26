@@ -10,6 +10,7 @@ tags:
 created: 2026-10-24
 last_updated: 2026-10-26
 source_count: 3
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -161,6 +162,7 @@ Figure 3 按 token position 给出 V3.1-Terminus 与 V3.2 的每百万 token 成
 - [[deformable-fast-weight-experts]] — 逐 query top-$k$ 与可复用专家组的差别
 - [[kv-cache-compression]] — 该机制不淘汰任何 KV，只减少每次注意力的读取
 - [[multi-query-attention]] — 该机制所依附的 K/V 共享形态
+- [[grouped-query-attention]] — $G=1$ 端点的头结构背景：MQA 模式下全部 query head 共用一个 latent 集合
 - [[source-2512-02556-deepseek-v3-2]] — 源摘要
 
 [^src-2512-02556-deepseek-v3-2]: [[source-2512-02556-deepseek-v3-2]]

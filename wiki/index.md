@@ -36,6 +36,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-adafre]] — AdaFre: Adaptive Frequency Pathways for Spatiotemporal Forecasting（Qin et al., AAAI 2026），DFT 有效频带均匀切分 + 频率特异谱嵌入 + 节点级 top-2 频带路由 + 频率均衡损失，PeMSD3/4/7/8 MAE 14.27/17.89/18.58/12.99 全最优
 - [[source-adaptraj]] — AdapTraj: A Multi-Source Domain Generalization Framework for Multi-Agent Trajectory Prediction，借用专家集合思想的逐域 extractor + 域标签聚合（无门控网络）
 - [[source-afe-tfnet]] — AFE-TFNet: adaptive feature extraction time-frequency network for wave height
+- [[source-ainslie-2023-gqa]] — GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints，$H$ 个 query head 分 $G$ 组各共享一份 K/V（$G=1$ 即 MQA、$G=H$ 即 MHA），MHA checkpoint 经组内 mean pooling 加 5% 继续预训练即可转换；T5-XXL 上 GQA-8 平均 47.1 对 MHA-XXL 47.2、每样本 0.28 s 对 1.51 s（Ainslie et al., Google Research, EMNLP 2023, arXiv:2305.13245v3）
 - [[source-alibi]] — ALiBi: attention with linear biases enables input length extrapolation (ICLR 2022)
 - [[source-allspark]] — AllSpark: multimodal spatio-temporal general intelligence model with 10 modalities via LaRF (Shao et al., 2024)
 - [[source-alphaflow]] — AlphaFlow: Understanding and Improving MeanFlow Models, MeanFlow 损失分解为轨迹流匹配 + 轨迹一致性、梯度冲突实证、α 统一目标族与课程退火 (arXiv 2025, Snap Research)
@@ -492,6 +493,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[graphsparsenet]] — GraphSparseNet (GSNet), scalable GNN with low-dimensional compressed adjacency for large-scale traffic (PVLDB 2025)
 - [[grid-world-environment]] — 网格世界环境，强化学习教学示例
 - [[grin]] — GRIN, first GNN-based multivariate time series imputation model with message-passing spatial decoder (ICLR 2022)
+- [[grouped-query-attention]] — GQA：$H$ 个 query head 分 $G$ 组共享 K/V，每步 K/V 读取量按 $G/H$ 缩放而注意力算术量不变；含 mean-pooling 初始化与 uptraining 流程
 - [[gsli]] — GSLI, multi-scale graph structure learning for spatiotemporal imputation with feature heterogeneity (AAAI 2025)
 - [[gtr]] — GTR, lightweight plug-and-play global temporal retrieval module for MTSF, extends cycle awareness beyond look-back window (ICLR 2026)
 - [[hephestus]] — HEPHAESTUS, adaptive multi-scale MoE + periodic temporal attention + heterogeneous spatial attention for traffic forecasting (ICLR 2026, under review)

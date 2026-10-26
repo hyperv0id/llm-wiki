@@ -188,6 +188,7 @@ NSA 在 9 项中 7 项更高，平均 +0.013；两项更低的是 MMLU（−0.00
 - [[kv-cache-compression]] — 推理期 KV 淘汰路线，与训练期稀疏正交
 - [[multi-query-attention]] — 只留一份 K/V，是组内共用摊薄访存的前提
 - [[quest-attention]] — 被列入对照的块打分选择方法
+- [[grouped-query-attention]] — 组内共享 K/V 的头结构，§2.1 的「组内并集」读量口径以它为背景
 
 [^src-2502-11089-nsa]: [[source-2502-11089-nsa]]
 [^src-2602-01219-mita]: [[source-2602-01219-mita]]
