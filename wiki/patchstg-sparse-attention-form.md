@@ -8,7 +8,7 @@ tags:
   - traffic-forecasting
   - transformer
 created: 2026-08-31
-last_updated: 2026-08-31
+last_updated: 2026-10-26
 source_count: 2
 confidence: medium
 status: active
@@ -46,7 +46,7 @@ $$\mathcal{X}^{(l)}=A^{\mathrm{B}}\big(A^{\mathrm{D}}\mathcal{X}^{(l-1)}\big),\q
 
 ## 稀疏模式的三个特征
 
-1. **模式静态、内容动态**。$\Omega^{\mathrm{D}}$ 与 $\Omega^{\mathrm{B}}$ 由预处理阶段 KDTree 一次确定：数据无关、不参与学习、无 top-k 选择；动态的只有 attention 权值。本页将其归入 static structured sparsity（Longformer/Swin 一族），区别于 content-based 稀疏（Reformer、[[quest-attention|QUEST]] 一族）与核近似（[[performer|Performer]]）。
+1. **模式静态、内容动态**。$\Omega^{\mathrm{D}}$ 与 $\Omega^{\mathrm{B}}$ 由预处理阶段 KDTree 一次确定：数据无关、不参与学习、无 top-k 选择；动态的只有 attention 权值。本页将其归入 static structured sparsity（[[longformer-attention|Longformer]]/Swin 一族），区别于 content-based 稀疏（Reformer、[[quest-attention|QUEST]] 一族）与核近似（[[performer|Performer]]）。
 2. **掩码承载语义**。$\Omega^{\mathrm{D}}$ 承载地理局部性（同子树点地理相邻；论文消融中 w/o LKDT 在四个数据集上均为最大退化项）[^src-patchstg]；$\Omega^{\mathrm{B}}$ 承载 BFS 序对齐。论文自述的 fidelity 源于此：每个位置 $p$ 有独立的 $R\times R$ 全局注意力，而非把 patch 压缩成单 token——Table 1 中 patching 行 Information Loss = ✘ 的含义是 K/V 不做低秩压缩 [^src-patchstg]。
 3. **全局感受野靠复合获得**。单层内不存在「不同 patch 且不同位置」点对的直接交互；两跳路径 $(r,p)\to(r,p'')\to(r',p'')$ 使一层之后感受野覆盖全图。复合 $A^{\mathrm{B}}A^{\mathrm{D}}$ 是两个独立 softmax 的乘积，不能改写成并集掩码 $(\Omega^{\mathrm{D}}\cup\Omega^{\mathrm{B}})$ 下的单个 softmax——这既是表达力限制，也是效率来源（本页分析）。
 

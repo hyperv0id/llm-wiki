@@ -11,7 +11,7 @@ tags:
   - ICLR-2022
   - ant-group
 created: 2026-05-31
-last_updated: 2026-05-31
+last_updated: 2026-10-26
 source_count: 1
 confidence: medium
 status: active
@@ -27,7 +27,7 @@ status: active
 
 - **RNN/CNN**：O(L) 复杂度，但最大信号传播路径为 O(L)，无法高效捕获远程依赖
 - **Transformer**：O(1) 最大路径，但 O(L^2) 复杂度，无法处理长序列
-- **稀疏 Transformer 变体（LogTrans, Informer, Longformer, Reformer, ETC）**：取折中，但多数无法同时达到 O(1) 路径和 O(L) 复杂度 [^src-pyraformer]
+- **稀疏 Transformer 变体（LogTrans, Informer, [[longformer-attention|Longformer]], Reformer, ETC）**：取折中，但多数无法同时达到 O(1) 路径和 O(L) 复杂度 [^src-pyraformer]
 
 Pyraformer 用**多分辨率金字塔图**打破这一僵局：在粗尺度上描述远程依赖天然更简洁（图意义上的"parsimonious"），将计算量从 O(L^2) 压至 O(L)，同时保持全局感受野 [^src-pyraformer]。
 

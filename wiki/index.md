@@ -47,6 +47,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-autoformer]] — Autoformer: decomposition transformers with auto-correlation (NeurIPS 2021)
 - [[source-autonomous-machine-intelligence]] — LeCun《A Path Towards Autonomous Machine Intelligence》v0.9.2（2022-06-27，62 页）立场论文：可配置认知架构 + JEPA/H-JEPA + 非对比 SSL 四项自述贡献与 8.1 节自述缺口（证据源为 PDF 全文，不在 raw/）
 - [[source-back-to-basics-let-denoising-generative-models-denoise]] — Back to Basics: Let Denoising Generative Models Denoise, x-prediction via plain ViT on pixel patches (Li & He, MIT, arXiv 2025)
+- [[source-beltagy-2020-longformer]] — Longformer: The Long-Document Transformer，滑动窗口 + 空洞 + 任务驱动 global 的 O(n) 稀疏注意力；RoBERTa 复制位置嵌入继续 MLM，六下游任务 dev 一致超 RoBERTa-base，WikiHop 81.9 / TriviaQA 77.3 提交时点 SOTA + LED 摘要变体（Beltagy, Peters & Cohan, AI2, arXiv:2004.05150v2；PDF raw/longformer-2004-05150.pdf）
 - [[source-benamou-brenier-blog]] — Benamou-Brenier 算法（博客笔记），最优传输的动态公式化与增广拉格朗日求解
 - [[source-beyond-imitation-mobility]] — Beyond Imitation: Generating Human Mobility from Context-aware Reasoning with LLMs (MobiGeaR)
 - [[source-bigcity]] — BIGCity: first MTMD spatio-temporal model unifying trajectory + traffic state (arXiv 2024)
@@ -1132,6 +1133,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[logsparse-self-attention]] — TODO
 - [[long-distance-correlation-preservation]] — maintaining meaningful attention for distant tokens
 - [[long-sequence-feature-extractor]] — LSFE, BigST cached pre-processing: linearized Transformer (PRF) + periodic feature sampling for long-history encoding (PVLDB 2024)
+- [[longformer-attention]] — Longformer 混合注意力：滑动窗口 + 空洞 + global 三模式的并集掩码，打分 $O(nw)$、混合整体 $O(n)$；global 独立投影 $Q_g,K_g,V_g$，chunk 实现显存 $O(n^2)\to O(nw)$
 - [[low-rank-prior-estimation]] — 掩码低秩分解神经参数化构造流匹配信息先验，单次前向、线性复杂度 (LOFT, KDD 2026)
 - [[lrsgat]] — LrSGAT, low-rank guided sampling graph attention: significance-scored hybrid node sampling + low-rank re-attention + semi-adaptive dynamic graph (STAMImputer, arXiv 2025)
 - [[lscd]] — LSCD, Lomb–Scargle conditioned diffusion for time series imputation (ICML 2025)
