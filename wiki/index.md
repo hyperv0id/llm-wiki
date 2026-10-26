@@ -179,6 +179,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-graphwalks-dataset]] — OpenAI GraphWalks 数据集卡：BFS/Parents 定义、公开评分示例与版本修复范围
 - [[source-grid-world-code-readme]] — 网格世界环境官方代码说明（Zhao, Mi & Li）
 - [[source-gtr]] — GTR: Global Temporal Retriever, plug-and-play global cycle retrieval for MTSF (ICLR 2026)
+- [[source-gu-dao-2023-mamba]] — Mamba: Linear-Time Sequence Modeling with Selective State Spaces，选择机制（$\Delta/B/C$ 输入函数化）+ 硬件感知 scan + H3/MLP 合一块；1.3B 内首个匹配 Transformer++ 的无注意力架构，Mamba-2.8B 下游平均 63.3 vs Pythia-2.8B 59.1（Gu & Dao, arXiv:2312.00752v2；PDF raw/mamba-2312-00752.pdf）
 - [[source-guo-imputation-evaluation]] — Guo et al., A Survey and Benchmarking of Spatial-Temporal Traffic Data Imputation Models（arXiv:2412.04733v2，PDF 内核实；v1 题名 An Experimental Evaluation of Imputation Models for Spatial-Temporal Traffic Data 见 FENCE 参考文献著录），practice-oriented 缺失模式四分类 + 模型双分类 + 11 模型 × 4 交通数据集 × 20 缺失场景统一评测管线，评测复现口径结论与模型选择建议
 - [[source-gwnet]] — GWNet: Graph WaveNet, adaptive adjacency matrix + dilated causal convolution for STG traffic forecasting (IJCAI 2019)
 - [[source-henry-2020-qk-norm]] — Query-Key Normalization for Transformers（Henry et al., Findings of EMNLP 2020）：沿 head 维 ℓ2 归一 Q、K 使打分为余弦相似度，再乘可学习标量 $g$，5 个低资源 NMT 方向平均 +0.928 BLEU
@@ -1272,6 +1273,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[scale-wise-autoregressive-decoding]] — 尺度级自回归轨迹解码：把自回归步从「下一步」换成「下一个尺度」，三次插值构造细尺度起点 + block-wise causal mask + 全尺度 RMSE（TrajAR）
 - [[sdpa-output-gating]] — SDPA 输出门控：$W_O$ 之前乘 $\sigma(XW_\theta)$，逐 token、逐 head、逐通道；插入逐元素非线性打断 $W_V$–$W_O$ 的低秩合并，并引入输入相关稀疏（Qwen Team, arXiv:2505.06708）
 - [[selective-patching]] — Selective Patching：stride-1 候选上可微 Argmax 选 patch（可重复采样）(SRS, NeurIPS 2025)
+- [[selective-ssm]] — Selective SSM（S6，Mamba 核心层）：$\Delta/B/C$ 输入函数化打破 LTI、卷积失效，kernel 融合 + 并行 scan + 重计算把 $(B,L,D,N)$ 扩展态留在 SRAM；含分阶段维度数据流与 Theorem 1 门控等价 (Gu & Dao, 2023)
 - [[self-speculative-decoding]] — Self-speculative decoding, same-model multi-head draft + verify for faster autoregressive generation (Stern/Medusa; strengthened by multi-token pretraining)
 - [[sheaf-laplacian]] — 层拉普拉斯算子 (Sheaf Laplacian)，推广图拉普拉斯以编码边特定的变换语义，用于谱域滤波 (ICLR 2026 under review)
 - [[shortcut-models]] — Shortcut Models, one-step diffusion via step-size conditioning and self-consistency (arXiv 2025)

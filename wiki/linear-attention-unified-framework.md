@@ -28,7 +28,7 @@ $$y_i = \frac{Q_i S_i}{Q_i Z_i}$$
 
 ### Mamba 的 SSM 形式
 
-Mamba 的选择性 SSM 为[^src-demystify-mamba-linear-attention-2024]：
+Mamba 的选择性 SSM 为[^src-demystify-mamba-linear-attention-2024]（递推与 ZOH 离散化的原始出处见 [[selective-ssm]]；$\widetilde{A}_i = \operatorname{diag}(\exp(\Delta_i A))$ 即 $\bar{A}_t = \exp(\Delta_t A)$ 的对角形式[^src-gu-dao-2023-mamba]）：
 
 $$h_i = \widetilde{A}_i \odot h_{i-1} + B_i(\Delta_i \odot x_i)$$
 $$y_i = C_i h_i + D \odot x_i$$
@@ -83,6 +83,8 @@ $$y_i = C_i \sum_{j=1}^i (\prod_{k=j+1}^i \widetilde{A}_k) B_j (\Delta_j \odot x
 
 - [[mamba|Mamba]] — 选择性状态空间模型
 - [[mila|MILA]] — 基于此框架的线性注意力模型
+- [[selective-ssm|Selective SSM（S6）]] — 本页对齐公式中 SSM 一侧的原始论文口径：选择机制、scan 与卷积失效的推导
+- [[source-gu-dao-2023-mamba|Mamba 原始论文摘要]]
 - [[forget-gate-in-sequential-models|遗忘门在序列模型中的作用]]
 - [[mamba-block-design|Mamba 块设计]]
 - [[linear-attention-bias|线性注意力偏置（ALiBi）]]
@@ -96,6 +98,7 @@ $$y_i = C_i \sum_{j=1}^i (\prod_{k=j+1}^i \widetilde{A}_k) B_j (\Delta_j \odot x
 - [[linear-attention-rnn-form]] — 上述循环形式的原始出处（Katharopoulos 2020）：核化推导、elu+1、因果前缀和与 RNN 重写
 
 [^src-demystify-mamba-linear-attention-2024]: [[source-demystify-mamba-linear-attention-2024]]
+[^src-gu-dao-2023-mamba]: [[source-gu-dao-2023-mamba]]
 [^src-stgformer]: [[source-stgformer]]
 [^src-performer]: [[source-performer]]
 [^src-2602-01219-mita]: [[source-2602-01219-mita]]

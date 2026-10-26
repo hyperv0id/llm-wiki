@@ -8,8 +8,8 @@ tags:
   - kalman-filter
   - time-series
 created: 2026-07-13
-last_updated: 2026-07-21
-source_count: 2
+last_updated: 2026-10-27
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -29,6 +29,10 @@ status: active
 DeepState 将映射写为 \(\Theta_t=\Psi(x_{1:t},\Phi)\)，其中 \(\Psi\) 由 LSTM 实现，\(\Theta_t\) 含转移矩阵、创新强度、发射向量与观测噪声等；数据似然为线性高斯 SSM 的边际 \(p_{\mathrm{SS}}\)，训练对共享 \(\Phi\) 最大化似然。非线性外生效应（促销等）主要通过协变量进入 \(\Psi\)，而非破坏线性潜动态。[^src-deepstate]
 
 相关文献中的其他深度 SSM 变体包括：用 MLP 参数化转移的 Deep Markov Model、切断潜状态递归而依赖 RNN 隐状态的 Variational RNN / State-Space LSTM、以及保持线性高斯以便 Kalman 的 KVAE 等；DeepState 的特点是**直接让 RNN 输出完整 SSM 参数**，避免额外的局部线性基组合超参。[^src-deepstate]
+
+## 术语谱系：「SSM」一词的两个家族
+
+「状态空间模型」在文献中是 umbrella term（MDP、Kalman 滤波、HMM/LDS、深度循环模型都在用）。Gu & Dao 的结构化 SSM 一系（S4/Mamba）与 DeepState 一支同用此名但谱系不同：后者保留线性高斯动态以换取 Kalman 解析推断；前者把 SSM 当作**可学习的序列变换**——对角参数 + 连续系统离散化 + （Mamba 起）输入依赖的选择机制，原文明确声明「本文 SSM 专指结构化 S4 家族」并区分了 Kalman/HMM/LDS 等其他用法[^src-gu-dao-2023-mamba]。机制见 [[selective-ssm]]。
 
 ## 与后续路线的关系
 
@@ -55,4 +59,5 @@ RiverMamba (NeurIPS 2025) 将深度 SSM 范式推向全球尺度时空水文预�
 - [[rivermamba|RiverMamba]] — 全球尺度 SSM 时空水文应用
 
 [^src-deepstate]: [[source-deepstate]]
+[^src-gu-dao-2023-mamba]: [[source-gu-dao-2023-mamba]]
 [^src-rivermamba]: [[source-rivermamba]]

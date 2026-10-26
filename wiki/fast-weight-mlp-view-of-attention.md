@@ -8,7 +8,7 @@ tags:
   - unified-framework
 created: 2026-10-24
 last_updated: 2026-10-27
-source_count: 1
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -60,6 +60,7 @@ wiki 里已有两种统一注意力的写法，覆盖的家族不同，不能互
 
 - 式（3）的权重并非完全独立于 query：式（4）中 $\hat V$ 包含依赖 $q$ 的 softmax 归一化因子 $\exp(\hat K^{\top}q)^{\top}\mathbf{1}_N$。论文直接声明等价，未做限定[^src-2602-01219-mita]。
 - 「宽度 $=N$」属于结构计数，与「物化 $N\times N$ 矩阵」不同：前者适用于所有 full attention，后者取决于算子实现。wiki 复杂度表（如 [[probsparse-self-attention]] 的 $O(L^2)$ 行）指代后者，两者不可混淆。
+- Mamba 原始论文（Appendix A）自述选择机制与 fast weights（Ba et al. 2016; Schlag et al. 2021）相关，但刻意与广义「乘性交互」划界：对角层 $y=\sigma(Wx)\circ x$ 同时满足通俗意义的 gating/hypernetwork/data-dependence 却只是 GLU；论文只把**沿序列长度维交互**的门控（RNN 门控为其特例，见 [[selective-ssm]] 的 Theorem 1）归入选择机制。按 §3.1 的压缩表述，attention 的 fast weights（全量 KV）对应「不压缩」一极，选择性 SSM 的有限状态 $h$ 对应「压缩但可选择」一极[^src-gu-dao-2023-mamba]。
 
 ## 相关页面
 
@@ -67,8 +68,10 @@ wiki 里已有两种统一注意力的写法，覆盖的家族不同，不能互
 - [[mita-attention]] — 压缩 + 路由的实例
 - [[deformable-fast-weight-experts]] — 专家构造维的展开
 - [[linear-attention-unified-framework]] — 公式级统一（Mamba ↔ 线性注意力）
+- [[selective-ssm|Selective SSM（S6）]] — 选择机制的原始论文口径；Appendix A 对 selection 与 fast weights 的区分引自该页「与其他页面」一节
 - [[cbsa]] · [[representative-token-extraction]] — 压缩支的算子级统一
 - [[performer]] — 核随机特征路线，在本视角下属「压缩成单个共享线性层」
 - [[linear-attention-rnn-form]] — 递归状态 $s_i$ 即矩阵形式的 fast weights：核化线性注意力的原始机制页
 
 [^src-2602-01219-mita]: [[source-2602-01219-mita]]
+[^src-gu-dao-2023-mamba]: [[source-gu-dao-2023-mamba]]

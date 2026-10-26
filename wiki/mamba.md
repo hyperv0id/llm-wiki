@@ -6,15 +6,15 @@ tags:
   - sequence-modeling
   - linear-complexity
 created: 2026-05-08
-last_updated: 2026-07-21
-source_count: 3
-confidence: medium
+last_updated: 2026-10-27
+source_count: 4
+confidence: high
 status: active
 ---
 
 # Mamba
 
-**Mamba** 是一种选择性状态空间模型（Selective State Space Model, SSM），通过输入依赖的参数化机制解决了传统 SSM 在内容感知建模上的局限。Mamba 在语言、视觉等多个领域展现出与 Transformer 竞争的性能，同时保持线性计算复杂度[^src-demystify-mamba-linear-attention-2024]。
+**Mamba** 是一种选择性状态空间模型（Selective State Space Model, SSM），通过输入依赖的参数化机制解决了传统 SSM 在内容感知建模上的局限。Mamba 在语言、视觉等多个领域展现出与 Transformer 竞争的性能，同时保持线性计算复杂度[^src-demystify-mamba-linear-attention-2024]。该定义的原始出处是 Gu & Dao (2023)：Mamba 以选择性 SSM 为核心的注意力无关架构，论文自述在语言建模上 Mamba-3B 匹配两倍大小的 Transformer、推理吞吐 4–5×、上下文外推至 1M 长度[^src-gu-dao-2023-mamba]。机制细节见 [[selective-ssm]]。
 
 ## 与线性注意力的统一
 
@@ -34,7 +34,7 @@ Mamba 的选择性机制通过输入依赖的参数 $\mathbf{\Delta}_i$、$\math
 $$h_i = \widetilde{A}_i \odot h_{i-1} + B_i(\Delta_i \odot x_i)$$
 $$y_i = C_i h_i + D \odot x_i$$
 
-其中遗忘门 $\widetilde{A}_i = \text{diag}(\exp(\Delta_i A))$ 位于 $(0,1)$ 区间，实现输入依赖的指数衰减。
+其中遗忘门 $\widetilde{A}_i = \text{diag}(\exp(\Delta_i A))$ 位于 $(0,1)$ 区间，实现输入依赖的指数衰减。注意口径：原始论文的主递推写为 $h_t = \bar{A}_t h_{t-1} + \bar{B}_t x_t$、$y_t = C_t h_t$（Algorithm 2，$\bar{A},\bar{B}$ 由输入依赖的 $\Delta,B$ 离散化而来），主文公式不含 $D\odot x$ 捷径项；含 $D$ 项的形式来自 Han et al. 的形式化[^src-gu-dao-2023-mamba][^src-demystify-mamba-linear-attention-2024]。
 
 ## 关键发现
 
@@ -65,9 +65,12 @@ SSD-TS introduces BAM (bidirectional Mamba + temporal attention for intra-channe
 - [[linear-attention-unified-framework|Mamba ↔ Linear Attention 统一框架]]
 - [[forget-gate-in-sequential-models|遗忘门在序列模型中的作用]]
 - [[mamba-block-design|Mamba 块设计]]
+- [[selective-ssm|Selective SSM（S6）]] — 原始论文口径的机制页：选择机制、硬件感知 scan、块结构
+- [[source-gu-dao-2023-mamba|Mamba 原始论文摘要]]
 - [[e2-cstp|E²-CSTP]] — GCN+Mamba 混合时空编码器，17-56% 效率提升 vs Transformer (NeurIPS 2025)
 - [[rivermamba|RiverMamba]] — 首个全球 0.05° 河流流量和洪水预报 Mamba 模型，空间填充曲线 + LOAN + Hindcast-Forecast 架构 (NeurIPS 2025)
 
 [^src-demystify-mamba-linear-attention-2024]: [[source-demystify-mamba-linear-attention-2024]]
+[^src-gu-dao-2023-mamba]: [[source-gu-dao-2023-mamba]]
 [^src-ssdts]: [[source-ssdts]]
 [^src-rivermamba]: [[source-rivermamba]]

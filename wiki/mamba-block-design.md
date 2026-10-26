@@ -6,8 +6,8 @@ tags:
   - block-design
   - architecture
 created: 2026-05-08
-last_updated: 2026-05-08
-source_count: 1
+last_updated: 2026-10-27
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -15,6 +15,9 @@ status: active
 # Mamba Block Design
 
 **Mamba 的块设计（Block Design）** 是 Mamba 架构中与标准 Transformer 块的关键结构差异。Han et al. (NeurIPS 2024) 通过消融实验证明，块设计是 Mamba 在视觉任务中成功的最重要单一因素，贡献了 +1.8% 的准确率提升[^src-demystify-mamba-linear-attention-2024]。
+
+> [!warning] 口径区分
+> 本页的「块设计」指 Han et al. 对 Mamba 式块的**重构消融**（子块交换、拼接、统一归一化），不是 Gu & Dao 原始 Mamba block 本身——原始块是 H3 与 MLP 合一的单同构块（SiLU 乘性门 + SSM 主支路，无拼接结构），见 [[selective-ssm]] Stage 4[^src-gu-dao-2023-mamba]。两页描述的是不同对象，勿混用结论。
 
 ## 三项结构差异
 
@@ -58,6 +61,8 @@ Mamba 的块设计与标准 Transformer 块存在三项差异[^src-demystify-mam
 
 - [[mamba|Mamba]] — 选择性状态空间模型
 - [[mila|MILA]] — 采用此块设计的线性注意力模型
+- [[selective-ssm|Selective SSM（S6）]] — 原始 Mamba block 的结构（H3+MLP 合一）见其 Stage 4
 - [[linear-attention-unified-framework|Mamba ↔ Linear Attention 统一框架]]
 
 [^src-demystify-mamba-linear-attention-2024]: [[source-demystify-mamba-linear-attention-2024]]
+[^src-gu-dao-2023-mamba]: [[source-gu-dao-2023-mamba]]
