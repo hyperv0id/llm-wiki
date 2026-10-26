@@ -4304,3 +4304,13 @@ ingest 报告：[[ingest-reports/2026-10-27-flashattention|WHY 报告]]
 独立复算 [[native-sparse-attention]] 的 Stage 1–5、$N_t$ 三口径（5630/5631/5632）、Table 4 四档（按 $\lfloor s/d\rfloor+nl'+w$ 全部复现）、门控两口径算例（0.881/0.119 与 0.440/0.060）与式 (9) 下标重叠（8 项实为 5 个不同下标，权重 1,2,2,2,1），并与 raw/ 原文逐条核对通过；修 2 处——source_count 3→4（正文唯一脚注 4 个）、框架节引文「式 3–5」补为「式 3–6」（显示式含式 6 的 $N_t$ 定义）。复跑 lint：本次相关 severe/warn/info 均为 0，无新增 severe。
 更新的页面：[[native-sparse-attention]]
 核验报告：[[ingest-reports/2026-10-27-nsa-derivation|推导核验报告]]（本轮复核未改动）
+## [2026-10-27] maintenance | DSA 推导逐项核验
+
+对照 arXiv:2512.02556 复算 [[deepseek-sparse-attention]] 四个 Stage 的维度与变换：全部无误；§2 编号公式仅式 1–4，wiki 引用一致；v1 与 latest HTML 正文逐字相同，无版本漂移；未发现与原文冲突的论断。新增推导：ReLU 单头非负而总分可负的含义、top-$k$ 在 logits 域排序的单调等价与上限语义、gather 落在 latent 粒度的省算理由、省算量乘加比不等式 $\frac{H^I d^I}{2n_h d_h}+\frac{k}{L}<1$、top-$k$ 梯度路径（论文未给 STE）、$p_{t,:}$ 口径推断；两阶段 token 复算（2.1B/943.7B）吻合；论文无任何 kv cache/成本数值，§2.3 无可复算项。修复 frontmatter 重复 `source_count`（3）。
+更新的页面：[[deepseek-sparse-attention]]（新增推导与复算、frontmatter 去重、新增 [[multi-head-latent-attention]] 入链）
+核验报告：[[ingest-reports/2026-10-27-dsa-derivation|推导核验报告]]
+## [2026-10-27] lint | DSA 推导补全核查（1 页）
+
+对照 raw 原文逐条核查 [[deepseek-sparse-attention]] 四个 Stage 维度块与六条新增推导：维度可乘性与 $\bcancel$/规约轴、省算不等式 $\frac{H^I d^I}{2n_h d_h}+\frac{k}{L}$、top-$k$ 单调等价、2.1B/943.7B 复算、[INFERENCE] 标注、脚注与 source_count=3 均通过。修复三处表述：ReLU 段的 $p_{t,:}$ 由「概率之和」改回论文原词「分数求和」并指向训练节的口径推断，删去「单头非负使 Softmax 可对齐非负混合」（softmax 输出恒非负，该因果不成立）；$p_{t,:}$ 口径推断的 logits 反例由「L1 归一化后不构成分布」更正为「负分取绝对值后不再与注意力分数成比例」；两阶段顺序的理由由「绕开选择不可导与无训练信号」更正为「KL 先对齐，引入 top-$k$ 时选择才落在有意义的分数上」。复跑 scripts/lint.py：本页无 severe/warn，severe 计数与基线持平。
+
+更新的页面：[[deepseek-sparse-attention]]、[[ingest-reports/2026-10-27-dsa-derivation|推导核验报告]]（同步修正说明）
