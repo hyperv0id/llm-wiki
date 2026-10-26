@@ -7,8 +7,8 @@ tags:
   - stability
   - training-dynamics
 created: 2026-04-28
-last_updated: 2026-05-04
-source_count: 2
+last_updated: 2026-10-26
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -61,6 +61,8 @@ $$\frac{1}{\sqrt{d}}\|q_i\|\|k_j\| \rightarrow \infty$$
 | 初始化策略 | 精心设计初始化 | 延迟但不解决 |
 | **键归一化** | **仅归一化 K** | **稳定 + 保持锐度控制** |
 
+RMSNorm 一栏的「部分稳定」是机制判断：它按激活的均方根归一化、不做 re-centering，也不像 QKNorm 那样逐个约束 Q/K 的范数。它在四类任务上与 LayerNorm 质量相当、运行时间降 7%~64%[^src-zhang-2019-rmsnorm]，说明 LayerNorm 对激活的约束主要来自 re-scaling 不变性；这些实验测的是收敛与质量，不是 logit 尺度 [INFERENCE]。机制与定义见 [[rmsnorm]]。
+
 ## 训练不稳定的信号
 
 1. **注意力熵下降**：注意力分布趋于尖锐
@@ -89,9 +91,11 @@ $$\frac{1}{\sqrt{d}}\|q_i\|\|k_j\| \rightarrow \infty$$
 
 [^src-quest]: [[source-quest]]
 [^src-bluuuuue-scaling-factor-intuition]: [[source-bluuuuue-scaling-factor-intuition]]
+[^src-zhang-2019-rmsnorm]: [[source-zhang-2019-rmsnorm]]
 
 ## 相关页面
 
 - [[cbsa]] — CBSA 通过子空间压缩实现训练稳定性，与 QUEST 的键归一化方法不同
 - [[scaling-factor-sqrt-dk]] — 缩放因子 $1/\sqrt{d_k}$ 控制初始化阶段的点积方差，是预防 logit 爆炸的第一道防线
+- [[rmsnorm]] — 只保留 re-scaling 不变性的 LayerNorm 替代，去掉均值项后质量相当、训练更快
 - [[algorithm-unrolling]] — CBSA 通过算法展开从优化目标导出，每层操作

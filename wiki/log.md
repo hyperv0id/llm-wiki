@@ -4170,7 +4170,6 @@ RoPE 模型直接外推时，2048 窗口的 LLaMA 在 4096 以上 perplexity 超
 更新的页面：[[context-window-extension]]（PI 行改为 2048→32768 并补引用，新增历史论断，source_count 4→5）, [[ntk-aware-interpolation]]（动机段补 PI 机制与结果，source_count 1→2）, [[yarn]]（PI 行加协议注，source_count 1→2）, [[rope]]（后续发展加 PI）, [[learnable-frequency-scaling]]（对照表加 PI 链接）, [[dynamic-scaling]]（固定 $s$ 标注为 PI 用法）, [[index]]
 ingest 报告：[[ingest-reports/2026-10-26-position-interpolation|WHY 报告]]
 数值备注：§3 称可扩 32 倍而实验最大 32768/2048=16×；§3.4 称退化最多 2% 而 Table 5 中 7B 的 BoolQ 76.1→73.2 为 2.9 点；Table 2 上 32768 窗口 perplexity 高于 16384（7B 2.48 vs 2.24），原文「趋势延伸到 32768 无衰减」只在 PG19 上成立；Table 4 的 7B/32768 模型在 600 步一档记为 18432；yarn 页 PI 行 PPL 与原文 Table 2 口径不同，已在页内注明
-
 ## [2026-10-26] contradiction | context-window-extension | 情况 1
 旧论断：PI 的最大扩展记为「~8x」，表格该格没有引用来源。新论断：原文在 LLaMA 7B–65B 上把 2048 扩到 32768（16×），配 1000 步全参数微调。解决方案：情况 1，旧论断移入 `## 历史论断`，正文写 16× 并挂原文引用。
 ## [2026-10-26] ingest | Language Models are Unsupervised Multitask Learners（GPT-2，OpenAI 2019 技术报告）
@@ -4185,6 +4184,13 @@ ingest 报告：[[ingest-reports/2026-10-26-gpt2-preln|WHY 报告]]
 更新的页面：[[yarn]]（数据流 Stage 1–5、NTK-by-parts 推导、温度拟合来源、证据按 Table 1/3/4/5/6/7/8/9/10 重写、ALiBi 段按 §1 重述）, [[source-yarn]]（「平均 <0.5%」改回 §4.4 的 $s=16$ 与 $s=32$ 之间 0.49%；「首次完整记录」改为 §1 原话；局限改为可核实的拟合范围与 131072 上限）, [[ntk-aware-interpolation]]（新增 $\theta_d'/\theta_d=s^{-2d/(|D|-2)}$ 推导，修正 $d$ 与频率的对应，补「高频维继续外推」）, [[ntk-by-parts-interpolation]]（删「所有维度严格在插值范围内」，加相位论证指向）, [[attention-temperature-scaling]]（Eq. 14 分母 $t\sqrt{|D|}$ 与 $c=\sqrt{1/t}$ 的对应、Eq. 15 拟合对象）, [[dynamic-scaling]]（指向 Stage 5）, [[index]]
 ingest 报告：[[ingest-reports/2026-10-26-yarn-derivation|WHY 报告]]
 数值备注：Table 5 是 2048/4096/8192/16384/32768 五列，lint 轮把旧表跳过的 4k 列补回（PI 4.95、NTK-aware 3.92、NTK-by-parts 3.75、YaRN 3.77）；YaRN 在 2k/4k 两列落后 NTK-by-parts（4.19 对 4.14、3.77 对 3.75），原文未解释，旧页「唯一单调下降」已改；Eq. 21 的指数 $(|D|-2)/|D|$ 与 Eq. 8 的 $2d/|D|$ 差一个因子 2，按 $d=|D|/2-1$ 读才自洽，ntk-aware 页补了两种记法的换算；$|D|=128$ 取自 LLaMA 配置、原文未给，算例标 [INFERENCE]；PDF 按 slug 规则存为 `raw/yarn.pdf`（批次给定 `yarn-2309-00071.pdf` 会使 slug 与 6 页既有引用脱节）
-
 ## [2026-10-26] lint | YaRN ingest 二次复核（8 页）
 严重 3 修 3：Eq. 14 分母初稿写成 $\sqrt{t|D|}$，与 $c=\sqrt{1/t}$ 的合并式差一个 $\sqrt{t}$，按 PDF 字形（`t` 在根号外）改为 $t\sqrt{|D|}$（`yarn`、`attention-temperature-scaling`）；`source-yarn` 的「变动在 $\pm1.3$ 以内」与 Table 3 不符（MMLU 为 $-1.3/-2.1/-3.0/-3.9$），改为「除 MMLU 外 $\pm1.7$ 以内」。警告 4 修：Table 5 补回 4k 列（正文引用了该列）；微调行 PI 单调下降，「PI 与 NTK-aware 在高列上翘」只对 NTK-aware 成立；`yarn` 开头把 $s=16$/400 步说成直达 128k（实为 64k，续训 200 步到 128k）；Table 7 列名 98k 改 98304。Stage 1–3 算例（$r(20)=36.66$、$r(21)=31.75$、$r(45)=1.004$、$r(46)=0.87$、$d^{\ast}\approx20.94/45.03$、$\gamma$ 与温度取值）逐项复算一致；脚本复跑 severe 139、warn 46，与基线相同。
+## [2026-10-26] ingest | Root Mean Square Layer Normalization
+
+Zhang & Sennrich, NeurIPS 2019（arXiv:1910.07467v1）。问题：LayerNorm 每步算均值与方差两个统计量，RNN 上的开销抵掉更快收敛的净收益（Figure 1：loss 到 7.0 时 LayerNorm 同步数 5.4、同时间 5.9）。机制：删掉 re-centering、只按均方根归一化 $\bar a_i=a_ig_i/\mathrm{RMS}(a)$，均值恰为零时与 LayerNorm 逐元素相同；$\mathrm{RMS}^2=\sigma^2+\mu^2$ 说明分母即标准差换成均方的差别，共模平移不再被消掉，权重矩阵与数据的 re-centering 不变性随之失去（Table 1）；梯度侧 $\partial L/\partial W$ 对输入缩放不变、对权重缩放负相关，起隐式学习率调节（式 8–10），对 $a$ 的 Jacobian 比 LayerNorm 少中心化投影项。pRMSNorm 只用前 $p\%$ 分量估 RMS，齐次性保证不变性不变，$p=6.25\%$ 可用。证据：WMT14 En-De（GRU RNNSearch、base Transformer）、CNN/Daily Mail、MS COCO、CIFAR-10 上质量与 LayerNorm 相当，运行时间降 7%~64%（Table 2/3/4/6/8/10）；Table 5 显示未归一化的均值也比 Baseline 稳定。边界：加速比随框架与结构在 6.9%~40.8% 间浮动，图像任务不如 BatchNorm/WeightNorm，pRMSNorm 实测未稳定提速。
+
+创建的页面：[[source-zhang-2019-rmsnorm]], [[rmsnorm]]
+更新的页面：[[attention-logit-explosion]]（RMSNorm 一栏接原文出处与 [[rmsnorm]] 链接，source_count 2→3）, [[transformer-architecture]]（相关页面接 [[rmsnorm]]）, [[index]]
+ingest 报告：[[ingest-reports/2026-10-26-rmsnorm|WHY 报告]]
+数值备注：清单条目提到的 MNIST、Enwik8 在原文中不存在，实际任务为 WMT14 En-De、CNN/Daily Mail、MS COCO、CIFAR-10；梯度推导在 §4.2 正文而非附录；§6.4 正文称 RMSNorm 超 Baseline 0.013%，Table 10 为 8.83% vs 8.96%，差 0.13 个百分点；式 6 写 $\mathrm{RMS}(\alpha x)=\alpha\mathrm{RMS}(x)$，严格形式为 $|\alpha|$；式 4 的 $\bar a$ 不含 $b$，式 5/8 含 $b$，该 $b$ 是式 1 原有神经元偏置

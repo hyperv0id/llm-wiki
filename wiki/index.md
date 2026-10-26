@@ -413,6 +413,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-yang-gsli-2025]] — GSLI: Graph Structure Learning for Spatial-Temporal Imputation Adapting to Node and Feature Scales (Yang et al., AAAI 2025)
 - [[source-yarn]] — YaRN: efficient context window extension of large language models (2023)
 - [[source-zeng-2022-are-transformers-effective]] — Are Transformers Effective for Time Series Forecasting? LTSF-Linear baseline (Zeng et al., 2022)
+- [[source-zhang-2019-rmsnorm]] — RMSNorm: 删掉 LayerNorm 的 re-centering、只按均方根归一化，四类任务质量相当、运行时间降 7%~64%（Zhang & Sennrich, NeurIPS 2019, arXiv:1910.07467）
 - [[source-zhou-informer-2021]] — Informer: Beyond Efficient Transformer for Long Sequence Time-Series Forecasting (AAAI 2021 Best Paper)
 
 ## Entities
@@ -1235,6 +1236,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[retrieval-augmented-statistical-channel]] — RAGC: retrieval-augmented statistical channel for高铁 channel prediction (KDD 2026)
 - [[retrieval-based-condition-augmentation]] — RCA, RAG-style condition enrichment for cross-city diffusion generation (CRAFT, NeurIPS 2025)
 - [[retrieval-guidance]] — inference-time retrieval of similar history to analytically tilt diffusion score estimation (MiDDiR, ICLR 2026 under review)
+- [[rmsnorm]] — 只按均方根归一化、去掉均值中心化的 LayerNorm 替代方案；保留 re-scaling 不变性，梯度少一项中心化投影
 - [[road-impedance]] — BPR 道路阻抗 + 流量变异因子 + 相邻路段阻抗差动态图
 - [[rope]] — Rotary Position Embedding，分块正交旋转使 query-key 内积只依赖相对位移；含前向数据流、长距离衰减上界的推导与前提
 - [[router-attention-for-cvpe]] — 两步聚合-分发注意力机制，CVPE 中用于跨变量信息注入 (arXiv 2025)
