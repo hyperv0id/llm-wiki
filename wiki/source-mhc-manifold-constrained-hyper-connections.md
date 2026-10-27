@@ -21,11 +21,11 @@ status: active
 
 ## 核心论点
 
-[[hyper-connections|Hyper-Connections]] 通过加宽残差流提升模型拓扑复杂度，但无约束的学习映射破坏了残差连接的恒等映射性质，导致大规模训练不稳定和显存访问开销[^src-mhc-manifold-constrained-hyper-connections]。mHC 将残差映射 $H_l^{res}$ 投影到 [[birkhoff-polytope|Birkhoff 多面体]]（双随机矩阵流形），恢复信号守恒并兼顾跨流信息交换[^src-mhc-manifold-constrained-hyper-connections]。
+[[hyper-connections|Hyper-Connections]] 通过加宽残差流提升模型拓扑复杂度，但无约束的学习映射破坏了残差连接的恒等映射，导致大规模训练不稳定并增加显存访问开销[^src-mhc-manifold-constrained-hyper-connections]。mHC 将残差映射 $H_l^{res}$ 投影到 [[birkhoff-polytope|Birkhoff 多面体]]（双随机矩阵流形），恢复信号守恒并兼顾跨流信息交换[^src-mhc-manifold-constrained-hyper-connections]。
 
 ## 方法
 
-单层更新为 $x_{l+1} = H_l^{res} x_l + H_l^{post\top} F(H_l^{pre} x_l, W_l)$，其中 $H_l^{res}$ 经 [[sinkhorn-algorithm|Sinkhorn-Knopp]] 约束为双随机矩阵，$H_l^{pre}, H_l^{post}$ 经 Sigmoid 保证非负[^src-mhc-manifold-constrained-hyper-connections]。双随机性带来谱范数不超过 1、乘法封闭、复合映射守恒三个性质[^src-mhc-manifold-constrained-hyper-connections]。
+单层更新为 $x_{l+1} = H_l^{res} x_l + H_l^{post\top} F(H_l^{pre} x_l, W_l)$，其中 $H_l^{res}$ 经 [[sinkhorn-algorithm|Sinkhorn-Knopp]] 约束为双随机矩阵，$H_l^{pre} = \sigma(\tilde H_l^{pre})$、$H_l^{post} = 2\sigma(\tilde H_l^{post})$ 保证非负（式 8）[^src-mhc-manifold-constrained-hyper-connections]。双随机性带来谱范数不超过 1、乘法封闭与复合映射守恒三个性质（论文 §4.1 直接列出，未附证明）[^src-mhc-manifold-constrained-hyper-connections]。
 
 ## 效率与实验
 
@@ -33,6 +33,6 @@ mHC 使用 TileLang 核融合、选择性重计算与扩展 DualPipe 调度，$n
 
 ## 展望
 
-mHC 为探索其他几何约束的宏观架构设计提供了框架，有望推动下一代基础模型拓扑演化[^src-mhc-manifold-constrained-hyper-connections]。
+mHC 为探索其他几何约束的宏观架构提供框架，有望推动下一代基础模型拓扑演化[^src-mhc-manifold-constrained-hyper-connections]。
 
 [^src-mhc-manifold-constrained-hyper-connections]: [[source-mhc-manifold-constrained-hyper-connections]]

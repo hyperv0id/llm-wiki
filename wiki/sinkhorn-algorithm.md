@@ -8,7 +8,7 @@ tags:
   - schrödinger-bridge
   - doubly-stochastic
 created: 2026-06-16
-last_updated: 2026-06-22
+last_updated: 2026-10-27
 source_count: 2
 confidence: high
 status: active
@@ -83,7 +83,7 @@ Sinkhorn's algorithm 的交替优化结构在现代生成建模中反复出现�
 
 $$M^{(t)} = T_r(T_c(M^{(t-1)}))$$
 
-其中 $T_r, T_c$ 分别表示逐行、逐列 rescale 到和为 1。当 $t \to \infty$ 时，$M^{(t)}$ 收敛到一个双随机矩阵[^src-mhc-manifold-constrained-hyper-connections]。
+其中 $T_r, T_c$ 分别表示逐行、逐列 rescale 到和为 1。当 $t \to \infty$ 时，$M^{(t)}$ 收敛到一个双随机矩阵[^src-mhc-manifold-constrained-hyper-connections]。mHC 论文未给出收敛前提（未讨论矩阵支撑性或正性条件）；由于 $M^{(0)} = \exp(\tilde M)$ 逐元素严格为正，经典 Sinkhorn–Knopp 定理的正矩阵（total support）前提自动满足——此为经典结果推断，非论文原文。mHC 实验取 $t_{max} = 20$，有限迭代只得到近似双随机：27B 模型实测单层后向梯度增益略偏离 1，复合映射最大增益约 1.6（mHC §4.2、§5.4、Fig. 7）[^src-mhc-manifold-constrained-hyper-connections]。
 
 在 [[manifold-constrained-hyper-connections|mHC]] 中，这一操作被用来约束残差流之间的混合矩阵 $H_l^{res}$，使其保持恒等映射的稳定性质[^src-mhc-manifold-constrained-hyper-connections]。
 

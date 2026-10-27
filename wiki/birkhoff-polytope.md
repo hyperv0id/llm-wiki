@@ -7,9 +7,9 @@ tags:
   - geometry
   - permutation-matrices
 created: 2026-06-22
-last_updated: 2026-06-22
+last_updated: 2026-10-27
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
@@ -32,7 +32,7 @@ $$\mathcal{B}_n = \left\{ M \in \mathbb{R}^{n \times n} \mid M \geq 0,\ M\mathbf
 2. 深层复合映射保持守恒；
 3. 几何上可解释的跨流特征融合[^src-mhc-manifold-constrained-hyper-connections]。
 
-mHC 采用 [[sinkhorn-algorithm|Sinkhorn-Knopp 迭代]] 将任意实矩阵指数化后交替归一化行与列，从而逼近 Birkhoff 多面体上的投影[^src-mhc-manifold-constrained-hyper-connections]。
+mHC 采用 [[sinkhorn-algorithm|Sinkhorn-Knopp 迭代]] 将任意实矩阵指数化后交替归一化行与列，从而逼近 Birkhoff 多面体上的投影[^src-mhc-manifold-constrained-hyper-connections]。三条性质中前两条的证明骨架与「混合单调增加、稳健融合」的作者论断归属，见 [[manifold-constrained-hyper-connections#理论性质|mHC 页的推导小节]]。
 
 ## 相关概念
 

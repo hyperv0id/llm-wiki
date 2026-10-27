@@ -7,7 +7,7 @@ tags:
   - optimization-stability
   - gradient-flow
 created: 2026-06-22
-last_updated: 2026-10-26
+last_updated: 2026-10-27
 source_count: 2
 confidence: high
 status: active
@@ -40,7 +40,7 @@ $$x_L = x_l + \sum_{i=l}^{L-1} F(x_i, W_i)$$
 
 ## mHC 的恢复方式
 
-[[manifold-constrained-hyper-connections|mHC]] 通过将 $H_l^{res}$ 约束为双随机矩阵来恢复恒等映射：双随机矩阵的行和、列和均为 1，使得 $H_l^{res} x_l$ 成为输入特征的凸组合，保持均值不变；同时双随机矩阵对乘法封闭，保证任意深度的复合映射仍守恒[^src-mhc-manifold-constrained-hyper-connections]。当 $n=1$ 时，双随机条件退化为标量 1，严格恢复原始残差连接[^src-mhc-manifold-constrained-hyper-connections]。
+[[manifold-constrained-hyper-connections|mHC]] 通过将 $H_l^{res}$ 约束为双随机矩阵来恢复恒等映射：双随机矩阵的行和、列和均为 1，使得 $H_l^{res} x_l$ 成为输入特征的凸组合，保持均值不变；同时双随机矩阵对乘法封闭，保证任意深度的复合映射仍守恒[^src-mhc-manifold-constrained-hyper-connections]。当 $n=1$ 时，双随机条件退化为标量 1，严格恢复原始残差连接[^src-mhc-manifold-constrained-hyper-connections]。27B 模型实测：复合映射最大增益幅度从 HC 的近 3000 降至约 1.6（mHC §5.4、Fig. 7）[^src-mhc-manifold-constrained-hyper-connections]；证明骨架见 [[manifold-constrained-hyper-connections#恒等映射恢复的推导骨架|mHC 页推导小节]]。
 
 ## 相关概念
 
