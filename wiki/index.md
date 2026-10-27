@@ -106,6 +106,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-deep-time-series-survey]] — Deep Time Series Models: comprehensive survey and benchmark (TSLib)
 - [[source-deepar]] — DeepAR: Probabilistic Forecasting with Autoregressive Recurrent Networks, global shared LSTM + Gaussian/negbin likelihood + MC sample paths (Salinas et al., Amazon, arXiv:1704.04110)
 - [[source-deepfec]] — DeepFEC: Energy Consumption Prediction under Real-World Driving Conditions for Smart Cities
+- [[source-deepseek-2026-engram]] — Engram：把 $N$-gram 查表做成条件记忆模块（词表压缩 + 多头哈希 + 上下文门控），27B/3.8B 激活下 27 项基准全超同参同 FLOPs 的 MoE-27B，32k 长上下文 MQ NIAH 97.0 vs 84.2（DeepSeek-AI & PKU, arXiv:2601.07372v2, 2026）
 - [[source-deepseek-v2-2405-04434]] — DeepSeek-V2 技术报告：Multi-head Latent Attention（KV 联合低秩压缩 + decoupled RoPE，表 1 给 MHA/GQA/MQA/MLA 的 cache 公式）与 DeepSeekMoE，236B/21B 激活，128K 上下文（DeepSeek-AI, arXiv:2405.04434）
 - [[source-deepseek-v4-2606-19348]] — DeepSeek-V4 技术报告（preview）：混合注意力 CSA（$1/4$ 压缩 + DSA top-k）+ HCA（$1/128$ 压缩 dense）支撑 1M 上下文，1M 下 FLOPs 为 V3.2 的 27%/10%、KV 为 10%/7%（Pro/Flash）；mHC + Muon，32T/33T token，GRPO 专家 + 全词表 OPD 后训练（DeepSeek-AI, arXiv:2606.19348v1, 2026-04；PDF raw/deepseek-v4-2606-19348.pdf）
 - [[source-deepstate]] — DeepState: Deep State Space Models for Time Series Forecasting, RNN-parametrized linear SSM + Kalman likelihood (NeurIPS 2018)
@@ -1045,6 +1046,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[em-diffusion-interleaving]] — EM 交替式扩散插补，M 步扩散训练=密度 MLE（score matching 为负对数似然上界）、E 步前向/反向混合采样=EAP 估计 (DiffPuter, ICLR 2025)
 - [[embedded-attention]] — low-rank spatial embedded attention using node embedding agents (KDD 2024)
 - [[endogenous-text-alignment]] — ETA, decomposed pattern extraction and contrastive learning for text-TS alignment (ICLR 2026)
+- [[engram]] — 条件记忆：按 token ID 确定性哈希查 $N$-gram 表，$O(1)$ 取回静态嵌入后经上下文门控注入残差流；与 MoE 共享稀疏参数预算，最优约 20%–25% 给记忆
 - [[entropy-boundedness]] — finite Shannon entropy of attention distribution
 - [[environment-basis-manifold]] — Environment Basis Manifold, K learnable bases + sparse Top-K routing + stochastic perturbation for heterogeneity modeling (STPDE, ICML 2026)
 - [[epsilon-greedy]] — 经典探索策略

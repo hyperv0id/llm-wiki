@@ -1,3 +1,17 @@
+## [2026-10-27] lint | Engram ingest 独立复核（2 新建 + 2 关联文件）
+
+对照 raw/engram-2601-07372.pdf 逐项核查：4 个 Stage 的维度链（$d_h=1280/16=80$、$d_{\mathrm{mem}}=16\times80$、$W^V/W^{K(b)}:[1280,2560]$、残差 $[T,2560]$）、参数记账（27B 档 5.79B 对论文 5.7B、40B 档 18.53B）、Table 1 的 27 项逐项差值与 Table 2 全部数字、Table 4 的 1.92%/2.78%、Table 6 的 23.43%、Figure 3/5/6 的关键数值，以及「无 top-k 检索、无 KV 压缩/量化、无 STE」三条纠正与 10 条边界，均与原文一致。修 5 处：source-summary 原为 0 处内联引用，补 8 处并加 [[engram]] 回链；参数反推「差在四舍五入」改为「比论文 5.7B 高 0.09B」；MMLU 冲突补 §1 亦写 +3.4；§7 谱系句改回论文自述的两处差别（评测口径、系统位置）。复跑 lint.py：severe 132 / warn 47 / info 1147，与修前持平。
+更新的页面：[[engram]], [[source-deepseek-2026-engram]]
+lint 报告：lint-reports/2026-10-27.md
+
+## [2026-10-27] ingest | Conditional Memory via Scalable Lookup: A New Axis of Sparsity for LLMs（Engram, arXiv:2601.07372v2）
+
+问题：Transformer 没有原生查表原语，命名实体与固定搭配这类静态模式要靠早期注意力与 FFN 逐层重建，占掉本可用于推理的深度。机制：后缀 $N$-gram 先经词表压缩（128k 词表缩小 23.43%）与 8 头乘法-XOR 哈希映射到素数槽位表，每 token 固定读 $(N-1)K=16$ 行拼成 1280 维记忆向量，用当前隐藏状态做 query 的 sigmoid 门控，接 depthwise 因果卷积后以残差注入第 2、15 层；表可分片训练（All-to-All 收集活跃行、回传梯度），推理按确定性下标预取并可整体卸载到主机内存。证据：固定总参与激活参数下按 $\rho$ 分配 MoE 专家与 Engram 槽位，5.7B/9.9B 两档均呈 U 形，约 20%–25% 稀疏预算给 Engram 最优（9.9B 档验证 loss 1.7248→1.7109）；Engram-27B（3.8B 激活、262B token）在 Table 1 的 27 项下游基准全部高于同参同 FLOPs 的 MoE-27B（BBH +5.0、CMMLU +4.0、HumanEval +3.0）；Table 2 长上下文 MQ NIAH 97.0 vs 84.2、VT 89.0 vs 77.0；Table 4 100B 表卸载吞吐损失最高 2.8%。边界：40B 疑似欠训练，只系统测 2/3-gram，长上下文只到 32k，未给哈希碰撞率与表精度，也未与 NSA/DSA 同台。
+创建的页面：[[engram]], [[source-deepseek-2026-engram]]
+更新的页面：[[index]]（Sources/Techniques 各 1 条）
+ingest 报告：[[ingest-reports/2026-10-27-engram|WHY 报告]]
+数值备注：摘要 MMLU +3.4 与 Table 1/§4.2 的 +3.0 不一致，两处并列；§3.1 称 "10B regime" 而 $P_{\rm tot}\approx9.9$B；摘要 "<3%" 与 Table 4 最大 2.8% 一致；Figure 5 消融与 Figure 6 保留率只有曲线/范围，正文无逐项数值；Table 3 为转引 Ghandeharioun et al. 2024，非本文实验。
+
 ## [2026-10-27] ingest | Switch Transformers（arXiv:2101.03961, JMLR 2022）
 
 把 MoE 路由简化为 top-1 并改用单一乘性辅助损失 $\alpha \cdot N\sum_e f_e P_e$（$\alpha{=}10^{-2}$，均匀路由时损失退化为 $\alpha$），expert 容量减半、派发通信简化；bfloat16 训练靠 selective precision（仅 router 函数体内 float32）与初始化尺度缩 10 倍稳定。证据（表号回打）：Table 1 FLOP-matched 下 Switch-Base 容量因子 1.0 时 62.8h 达标对 MoE 80.1h；Fig. 4–6 64 expert 达 T5-Base 质量省 7.5 倍步数/7 倍墙钟；Table 9 Switch-XXL 500k 步 -1.008 对 T5-XXL -1.095、Switch-C 1571B/2048 expert 快 4 倍；Table 5 微调 SuperGLUE 79.5 vs 75.1；Fig. 7–8 mT5 101 语言全增益、平均 5 倍加速；蒸馏 97–99% 压缩保留约 30% 增益（Table 6–8）。边界：Switch-XXL 间歇不稳定，最大档上游优势未完全转化为推理型下游（§8、附录 E）。谱系锚点 [[sparse-gated-moe-layer]] 与 [[gshard]] 库内尚无对应页面，按悬空 wikilink 处理，前作口径取自本文 §2.1–2.2 的转述。
