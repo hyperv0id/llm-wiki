@@ -317,6 +317,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-seed-2024-hyper-connections]] — Hyper-Connections：可学习 depth/width 连接替代残差连接，超隐矩阵 $n$ 流 + 每层 $(n{+}1)\times(n{+}1)$ 连接矩阵（动态生成 + 静态学习），Pre/Post-Norm 为 $n{=}1$ 非训练特例；OLMo 1B/7B 与 OLMoE 500B tokens 全面增益（1B V2 loss 2.811→2.781，OLMoE ARC-C 41.8→47.8、收敛 1.8×），DiT/ViT 同增益，参数 +0.03%/FLOPs +0.2%（Zhu et al., ByteDance Seed, ICLR 2025, arXiv:2409.19606v3；PDF raw/hyper-connections-2409-19606.pdf）
 - [[source-select-then-balance]] — Select, then Balance 旧 slug（已由 [[source-exost]] 取代；同文 arXiv only）
 - [[source-shaw-2018-relative-position]] — Self-Attention with Relative Position Representations：相对偏移的可学习向量加到 K/V（$2k+1$ 标签 + 裁剪距离 $k$），big 模型 EN-DE +1.3 BLEU（Shaw/Uszkoreit/Vaswani, Google, arXiv:1803.02155v1, 2018）
+- [[source-shazeer-2017-sparse-moe]] — Outrageously Large Neural Networks：Sparsely-Gated MoE 层原始论文，noisy top-k 门控 + CV² importance/load 均衡损失 + 混合并行训练，137B LSTM MoE，1B/100B word 与 WMT'14 证据（Shazeer et al., Google Brain, arXiv:1701.06538, ICLR 2017；PDF raw/shazeer-2017-sparse-moe-1701-06538.pdf）
 - [[source-shazeer-2020-glu-variants]] — GLU Variants Improve Transformer：ReGLU/GEGLU/SwiGLU/Bilinear 在 T5-base 上等参数对照，GEGLU 1.633、SwiGLU 1.636 困惑度最低（Shazeer, Google, arXiv:2002.05202v1, 2020）
 - [[source-shazeer-2019-mqa]] — Fast Transformer Decoding: One Write-Head is All You Need：MQA，$H$ 组 query head 共享一份 K/V，乘加数不变而解码期 K/V 重读字节降为 $1/H$；WMT14 EN-DE dev ln(PPL) 1.424→1.439、test beam-4 BLEU 28.4→28.5，解码 46→3.8 µs/token（Shazeer, Google, arXiv:1911.02150v1, 2019-11；PDF raw/fast-transformer-decoding-one-write-head-1911-02150.pdf）
 - [[source-shortcut-models]] — Shortcut Models: one-step diffusion via self-consistency (arXiv 2025)
@@ -1303,6 +1304,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[sliding-window-diffusion]] — Sliding-Window Diffusion, ARMD's deterministic intermediate-state generation that slides the series window instead of adding noise (AAAI 2025)
 - [[space-filling-curves]] — 空间填充曲线，双射 Φ:Z³N 将高维时空点序列化为 1D 序列，Gilbert/Sweep/Zigzag 交替扫描用于 Mamba 时空建模 (RiverMamba, NeurIPS 2025)
 - [[sparse-balanced-mixture-of-experts-st]] — 稀疏平衡混合专家，每节点 Top-K 激活 + 符号 SGD 负载均衡，克服线性图学习的低秩瓶颈 (MAGE, NeurIPS 2025)
+- [[sparse-gated-moe-layer]] — 稀疏门控 MoE 层，noisy top-k 门控 + CV² importance/load 双均衡损失 + expert 单副本模型并行，条件计算的首个大规模实证，137B 参数（Shazeer et al., ICLR 2017）
 - [[sparse-teacher-forcing]] — STF，间歇性数据推断状态重校准的 DSR 训练方法，控制梯度爆炸同时探索长期动力学
 - [[sparse-transformer-strided-fixed]] — Sparse Transformer 的 strided/fixed 两头稀疏分解：每头 $|A^{(m)}_i|\propto\sqrt{n}$、任意位置对 $\le 2$ 步连通，$O(n^2)\to O(n\sqrt{n})$；pre-activation 残差 + 反向重算支撑跨块训练（Child et al., 2019）
 - [[spatial-imputation-decoder]] — Spatial Imputation Decoder, neighbor-only two-stage message-passing imputation (ICLR 2022)

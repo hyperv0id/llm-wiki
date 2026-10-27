@@ -7,7 +7,7 @@ tags:
   - scalability
 created: 2026-04-29
 last_updated: 2026-10-27
-source_count: 16
+source_count: 17
 references:
   - [[source-fast-long-horizon-forecasting]]
   - [[source-2602-01219-mita]]
@@ -186,6 +186,10 @@ MoE 把容量放在参数上、每次前向只激活一部分；[[recurrent-dept
 
 - [[moe-in-time-series-and-spatio-temporal]] — MoE 在时序/时空领域的机制谱系：动机、插入位置、门控/稀疏/均衡/专家形态四维对照，并列出与 MoE 易混的边界机制
 
+## 谱系源头
+
+本页各现代形态共用的机制起点是 Shazeer et al. 2017 的 [[sparse-gated-moe-layer|稀疏门控 MoE 层]]：noisy top-k 门控、CV 平方 importance/load 双均衡损失、expert 单副本模型并行训练由该文首次作为完整系统落地[^src-shazeer-2017-sparse-moe]。
+
 [^src-fast-long-horizon-forecasting]: [[source-fast-long-horizon-forecasting]]
 [^src-most]: [[source-most]]
 [^src-dynamix]: [[source-dynamix]]
@@ -202,3 +206,4 @@ MoE 把容量放在参数上、每次前向只激活一部分；[[recurrent-dept
 [^src-resnets-route-without-routers]: [[source-resnets-route-without-routers]]
 [^src-2502-05171-recurrent-depth]: [[source-2502-05171-recurrent-depth]]
 [^src-qwen3-next-blog-2025-09]: [[source-qwen3-next-blog-2025-09]]
+[^src-shazeer-2017-sparse-moe]: [[source-shazeer-2017-sparse-moe]]

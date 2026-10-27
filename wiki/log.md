@@ -4434,3 +4434,14 @@ ingest 报告：[[ingest-reports/2026-10-27-hyper-connections|WHY 报告]]
 更新的页面：[[manifold-constrained-hyper-connections]]（新增「恒等映射恢复的推导骨架」「Sinkhorn 迭代的收敛前提」两节）, [[source-mhc-manifold-constrained-hyper-connections]]（σ/2σ 修正，confidence high→medium）, [[birkhoff-polytope]]（confidence high→medium，补推导链接）, [[sinkhorn-algorithm]]（补论文未给前提与 $t_{max}=20$）, [[identity-mapping-property]]（补 3000→1.6 实测锚点）
 推导报告：[[ingest-reports/2026-10-27-mhc-derivation|推导报告]]
 数值备注：Fig. 2/3/5–7 图内数值文本层不可读，取正文陈述；式 (4) 乘积上下标 PDF 文本层乱码，按语义重排并注明；本轮未跑 lint、未 commit（任务约束）。
+## [2026-10-27] ingest | Outrageously Large Neural Networks: The Sparsely-Gated Mixture-of-Experts Layer（arXiv:1701.06538, ICLR 2017）
+
+问题：条件计算理论上让容量与计算解耦，此前无大规模实证；机制：$n$ 个单隐层 FFN expert + noisy top-k 门控（$G(x)=\operatorname{Softmax}(\operatorname{KeepTopK}(H(x),k))$，$H$ 加 Softplus 幅值高斯噪声），CV² importance/load 双软约束（load 经噪声 CDF $\Phi$ 把离散计数松弛成可微负载），标准层同步数据并行 + expert 单副本模型并行把 expert batch 从 $kb/n$ 恢复到 $kbP/n$；证据：1B word 等算力 4096 expert ppl 降 24%（Table 7），137B 参数 65536 expert 在 100B word 上 28.9 对基线 47.0（−39%，Table 8），WMT'14 En→Fr/En→De 40.56/26.03 BLEU 对无 RL GNMT +1.34/+1.12（Table 2/3），多语 11/12 语言对胜 GNMT-Multi（Table 5）；均衡损失消融（Table 6）显示任一损失即可恢复质量，131072 expert 退化（29.2、0.30 TFLOPS/GPU）。
+创建的页面：[[sparse-gated-moe-layer]], [[source-shazeer-2017-sparse-moe]]
+更新的页面：[[mixture-of-experts]]（末尾加谱系句指向新页，source_count 16→17）, [[index]]（Sources/Techniques 各 1 条）
+ingest 报告：[[ingest-reports/2026-10-27-sparse-gated-moe|WHY 报告]]
+数值备注：任务提示所称「k=1/2/4 消融、噪声开关消融」与「train speedup 列」论文中不存在——唯一消融是 Table 6（$w_{\text{importance}}$/$w_{\text{load}}$ 六组合）；训练开销以 training time 与 TFLOPS/GPU 列呈现。Table 5 GNMT-Multi 硬件栏 PDF 原文即「96 k20s」（疑为 k80 排印误），页面只写 96 GPU。附录 C.2 称低 18%，按 Table 1 的 28.0/34.7 实算 19.3%，页面照录论文口径。§3.1 单设备 expert batch 处 pdftotext 读作「kb/n b」，多设备处 kbd/n 且自洽于 factor of d，取 $kb/n$ 与 $kbP/n$。
+## [2026-10-27] lint | Shazeer 2017 ingest 页独立核查（就地修 4 处）
+对照 raw 逐符号核查式 (1)–(14)、5 个 Stage 维度块可乘性与 $\bcancel$/规约轴、Table 1–9 抽样数字与附录 C.2 的 18% 口径，公式与数字零错。修 4 处归因与结构：technique 页「首个在工业规模上兑现条件计算收益」改为论文自述口径（首次兑现 + 容量提升超 1000 倍，§1.1）；「factor of $d$ improvement」由通信内容子句移回 expert batch 主张、通信内容句移入 §3.2 句；source 页 CV² 改 $CV^2$；「局限」列表区分论文自述与页内观察。
+更新的页面：[[sparse-gated-moe-layer]], [[source-shazeer-2017-sparse-moe]]
+复跑 scripts/lint.py：severe 135、warn 47、info 1154，本次页面零条目（无新增 severe）
