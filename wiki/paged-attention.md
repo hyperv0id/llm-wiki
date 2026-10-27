@@ -153,6 +153,7 @@ $B=16$、$L_r\approx499$ 时上界 $15/499\approx3.0\%$，与 Fig 2 里 vLLM 的
 
 - [[kv-cache-compression]] — 正交轴：固定预算下留哪些 KV（重要性估计/淘汰），不涉及放置
 - [[native-sparse-attention]] — 训练期块稀疏，减少每步读取的 KV 量，也不改变缓存布局
+- [[yoco-architecture]] — 与放置正交的层数轴：全局 KV 只存一份、全部 cross 层共享
 - [[source-kwon-2023-pagedattention]] — 源摘要
 - [[attention-sink]] — 长序列上 KV 保留策略的另一端：固定保留初始 token
 

@@ -372,7 +372,8 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-streasoner]] — STReasoner: spatio-temporal reasoning in time series via spatial-aware RL (Ni et al., 2026)
 - [[source-stssl]] — TODO
 - [[source-stunet]] — STUNet: Unified Spatio-Temporal Tokens are Bases for Generalizable Traffic Forecasting; adjacency-matrix spatial tokenizer + query-aggregate attention + frozen spatial tokens for cross-network zero-shot (KDD 2026, ZJU/SUPCON)
-- [[source-stwave]] — STWave: Disentangled Traffic Flow Forecasting via Efficient Spectral Graph Attention Network (arXiv:2112.02740v2；会议/期刊版本信息未在文本中提供), Disentangling Flow Layer 小波解耦 + ESGAT（Query Sampling + 图小波位置编码）, PeMSD4 MAE 18.50
+- [[source-stwave]] — STWave: Disentangled Traffic Flow Forecasting via Efficient Spatial-Temporal Graph Attention Network (arXiv:2112.02740v2；会议/期刊版本信息未在文本中提供), Disentangling Flow Layer 小波解耦 + ESGAT（Query Sampling + 图小波位置编码）, PeMSD4 MAE 18.50
+- [[source-sun-2024-yoco]] — YOCO: You Only Cache Once，decoder-decoder 架构：self-decoder（gRet/SWA，常数 cache）编码唯一一份全局 KV，cross-decoder 共享读取，cache $O(LND)$→$O((N+L)D)$；3B/1.6T 对照 StableLM 相当、1M 上下文 NIAH 近满分、512K prefill 180 s→6 s 内、65B KV cache 约省 80×（Sun et al., MSR + 清华, arXiv:2405.05254v2；PDF raw/yoco-2405-05254.pdf）
 - [[source-sundial]] — Sundial: A Family of Highly Capable Time Series Foundation Models, Flow Matching + TimeFlow Loss (ICML 2025)
 - [[source-swift]] — Swift: An Autoregressive Consistency Model for Efficient Weather Forecasting (arXiv 2025)
 - [[source-t1]] — T1: One-to-One Channel-Head Binding for Multivariate Time-Series Imputation, CNN-Transformer hybrid (ICLR 2026)
@@ -1402,6 +1403,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[visreg]] — VISReg：方差 + SWD sketching + center 三项解耦正则的 JEPA 训练方法，stop-gradient 归一化隔离 scale/shape，塌缩区梯度有界，O(NDK)（arXiv:2606.02572）
 - [[weather-prompt]] — Weather Prompt, three visual prompt formats (single/multi/temporal modal) for in-context weather task specification (WeatherGFM, ICLR 2025)
 - [[wire]] — WIRE，图 Laplacian 谱坐标驱动的旋转位置编码，RoPE 的图推广，兼容线性注意力 (ICML 2026)
+- [[yoco-architecture]] — YOCO 的 self-decoder/cross-decoder 结构、分阶段数据流、cache 记账（层数因子 $O(LND)$→$O((N+L)D)$）与 prefill early exit；与 MQA/MLA/NSA/CSA/paging 的轴对照
 
 ## Analyses
 

@@ -152,5 +152,7 @@ query 上投影从 $n_hd_hd'_c=25.17$M 乘加增至吸收后 $n_hd_cd'_c=100.66$
 
 MLA 之外的一种用法：Kimi Linear（Moonshot AI）在 3:1 KDA/MLA 层间混合中把 Full MLA 用作全局注意力支路并对全部 MLA 层用 NoPE——位置信息交给 [[kimi-delta-attention|KDA]] 的门控衰减承载，免掉 RoPE base 调整，且 NoPE 的 MLA 可在推理期转成纯 MQA（§4）[^src-moonshot-2025-kimi-linear]。
 
+MLA 压的是每 token 缓存的字节、层数 $l$ 仍是 cache 公式的乘积因子；[[yoco-architecture]] 换轴去掉层数份数：全局 cache 只有一份供全部 cross 层读取，两轴正交。
+
 [^src-deepseek-v2-2405-04434]: [[source-deepseek-v2-2405-04434]]
 [^src-moonshot-2025-kimi-linear]: [[source-moonshot-2025-kimi-linear]]

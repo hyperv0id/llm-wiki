@@ -4525,7 +4525,6 @@ ingest 报告：[[ingest-reports/2026-10-27-auxfree|WHY 报告]]
 对照 arXiv:2408.15664 核式 (1)–(7)、Algorithm 1、五个 Stage 维度块、Table 2/3/4/6 与 Figure 2/4；§6 的 300B 与 §4.1、摘要、附录 B 的 200B 冲突，以及 Algorithm 1 的 $\bar c_i-c_i$ 图像口径均留痕。修 10 处：Stage 3 删去「sigmoid 下 K 个权重之和小于 1」、梯度论证限定在选中集合不变的分段、MaxVio 记法补 $\overline{\mathrm{Load}_i}$、泄漏界方向「最多」→「至少」、shuffle 改为「打乱后再切 chunk」、表 4 均衡表述、困惑度方向、softmax 对比归因；source 摘要删去图 2 的 1B 归因；log 数值备注精简。
 更新的页面：[[auxiliary-loss-free-load-balancing]], [[source-wang-2024-aux-free]]
 复跑 scripts/lint.py：severe 132、warn 48、info 1150，本次页面零条目
-
 ## [2026-10-27] ingest | DeepSeek-V4.1-Flash: Pushing the Limits of KV Cache Compression（arXiv:2609.19969, 2026-09）
 
 问题：长上下文 agent 负载让 prefill 计算与 KV 存储/搬运成为主要成本。机制：CED 把 40 层切成 20+20，解码器全局 KV 由编码器末层 $H^{L/2}$ 经逐层权重投影（式 1），SWA 仍逐层自算、只重放最后 $n_{win}=128$ 个 token，prefill 复杂度 $O(NL)\to O(NL/2+n_{win}L/2)$；CSA2 用 Full/Reindex/Reuse 三模式跨层共享主 KV 与 indexer K、复用 Top-$k$ 下标，压缩器去掉 CSA 的跨块重叠与绝对位置偏置、indexer K 改由主 KV 投影，解码器首个 Full 层建 $2{,}048\times8=16{,}384$ 位置候选池，主 KV 转 FP4（E2M1 + 每 16 通道 1 个 E4M3 scale）。证据：全局 KV 890 bytes/token（V4-Flash 的 $1/4$、V1 的 $1/437$），持久化 KV 为 V4-Flash 的 $1/8$，4K→1M decode FLOPs 只增 $1/4$，prefill/decode 每 token 激活 8B/16B；Base（Table 1）MMLU-Pro 74.1 对 V4-Pro 73.5，LongBench-V2 45.2 对 51.5；后训练（Table 3）Codeforces 3471、DeepSWE v1.1 74.2、Terminal-Bench 2.1 90.6。边界：CED 与 CSA2 都没有与 V4 的同台消融，退化只写「negligible」无数字，FP4 主 KV 的 QAT 只在 post-training 做。
@@ -4551,3 +4550,14 @@ ingest 报告：[[ingest-reports/2026-10-27-ouro|WHY 报告]]
 更新的页面：[[ouro]]
 lint 报告：lint-reports/2026-10-27.md
 复跑 scripts/lint.py：severe 132、warn 47、info 1147，本次页面零条目（无新增 severe）。
+## [2026-10-27] ingest | You Only Cache Once: Decoder-Decoder Architectures for Language Models
+
+Sun et al.（MSR + 清华，arXiv:2405.05254v2 通读；PDF raw/yoco-2405-05254.pdf）。问题：KV cache 的层数×长度乘积与平方 prefill 把长上下文推理变成 memory-bound（65B+GQA+8bit 在 512K 占约 86 GB）。机制：decoder-decoder——前 $L/2$ 层 self-decoder 用常数 cache 的高效自注意力（gated retention，含并行/循环/块循环三等价表示；或滑窗 1024）编码唯一一份全局 KV cache $\hat K,\hat V$，后 $L/2$ 层 cross-decoder 以标准 cross-attention（GQA 兼容）只读不写，cache 记账 $O(LND)$→$O((N+L)D)$、prefill 可提前退出且注意力项降到 $O(LND)$。证据：YOCO-3B 1T/1.6T token 对照 StableLM 系 Eval Harness 平均 0.634/0.636、1M 版 0.645；160M–13B scaling 曲线 gRet 版最优（160M PPL 3.530 对 Transformer 3.564、Mamba 3.645）；1M NIAH 近满分、128K 多针 0.98/0.98/0.84/0.56；部署 512K prefill 180 s→6 s 内（1M 71.82×）、吞吐 512K 9.56×（4.5→43.1 token/s）、65B KV cache 约省 80×。边界：once 仅指全局 cache（self 侧常数窗口/状态除外），全局记忆固定为 $X^{L/2}$ 的一次投影、cross 层只读；质量证据止于 3B（1.6T token）与 160M–13B（各 10B token），无 SFT/对话评测。
+创建的页面：[[source-sun-2024-yoco]], [[yoco-architecture]]
+更新的页面：[[multi-query-attention]], [[multi-head-latent-attention]], [[compressed-sparse-attention]], [[native-sparse-attention]], [[paged-attention]], [[kv-cache-compression]], [[index]]
+ingest 报告：[[ingest-reports/2026-10-27-yoco|WHY 报告]]
+数值备注：§2.3 的 $O(N+CL)$ 与 Table 1 的 $O((N+L)D)$ 两口径并列照录（每层常数按 $C$ 还是 $D$ 量级记）；Figure 7a/8 的中间档倍数为图内标注，长度与规模的对应依赖版面顺序。任务提示所称「优化器可扩展性对照」与「先训 self-decoder 再加 cross-decoder 的层次化训练」均不在论文中：§4.2 是 160M–13B 模型规模损失曲线（同一 AdamW），训练为端到端联合，论文中的分阶段仅指 64K→256K→1M 长度课程（Table 7）。
+## [2026-10-27] lint | YOCO ingest 独立核查（2 新页 + 6 页指针）
+
+对照 arXiv:2405.05254v2 复核 [[yoco-architecture]] 的 Stage 1–6 维度链、式(2)–(6)、Table 1/3/4/8 与 §4.4 全部数字，以及六个既有页的指针句。修复 6 处：source_count 1→3（正文 3 个脚注）、gRet 循环式与块循环式的 $K^{\top}$ 缺失、全局 cache 行宽由 $d_{model}$ 改为 $d_{kv}=n_{kv}d_h$（与 2048 元素/token 记账一致）、ZeroSCROLLS 对照集由「Mamba/H3/RetNet」更正为 Figure 12 的 Mamba/Sparse Transformer/Hybrid H3、[[kv-cache-compression]] 新段补 [^src-sun-2024-yoco] 与脚注（source_count 8→9）、[[source-sun-2024-yoco]] 质量证据范围补齐 160M–13B。log 的 ingest 条目同步精简并更正 0.634/0.636 与 token 数口径。复跑 lint：相关 severe/warn/info 均为 0。
+更新的页面：[[yoco-architecture]], [[source-sun-2024-yoco]], [[kv-cache-compression]]

@@ -112,6 +112,6 @@ K/V 不只被读，每步还要重写：实现把新一行拼到旧张量上（`
 
 ## 相关页面
 
-[[source-shazeer-2019-mqa]] 为源摘要；[[transformer-architecture]] 为被替换的多头基线与拼头投影；[[scaling-factor-sqrt-dk]] 为本文公式省掉的缩放因子；[[kv-cache-compression]] 为压缩 KV 条目本身而不减少副本数的另一路径；[[native-sparse-attention]] 说明块稀疏访存节省以组内共用同一批 KV 为前提；[[deepseek-sparse-attention]] 对应在 MLA 的 MQA 模式上实例化逐 query 选择；[[compressed-sparse-attention]] 与 [[heavily-compressed-attention]] 把共享 KV 叠上 $1/4$ 与 $1/128$ 的序列压缩（DeepSeek-V4）。
+[[source-shazeer-2019-mqa]] 为源摘要；[[transformer-architecture]] 为被替换的多头基线与拼头投影；[[scaling-factor-sqrt-dk]] 为本文公式省掉的缩放因子；[[kv-cache-compression]] 为压缩 KV 条目本身而不减少副本数的另一路径；[[native-sparse-attention]] 说明块稀疏访存节省以组内共用同一批 KV 为前提；[[deepseek-sparse-attention]] 对应在 MLA 的 MQA 模式上实例化逐 query 选择；[[compressed-sparse-attention]] 与 [[heavily-compressed-attention]] 把共享 KV 叠上 $1/4$ 与 $1/128$ 的序列压缩（DeepSeek-V4）；[[yoco-architecture]] 把共享从头维推到层维：$L/2$ 个 cross 层读 self-decoder 产出的同一份全局 cache，cache 的层数因子消失（Table 1）。
 
 [^src-shazeer-2019-mqa]: [[source-shazeer-2019-mqa]]
