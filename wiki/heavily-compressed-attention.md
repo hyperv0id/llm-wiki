@@ -9,7 +9,7 @@ tags:
   - compression
 created: 2026-10-27
 last_updated: 2026-10-27
-source_count: 2
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -72,6 +72,8 @@ CSA 与 HCA 交错组成 V4 的注意力层，且分工不对称：Pro 前两层
 
 KV cache 中，HCA 层每 token 分摊 $c/m'$ 个 entry 维，是 CSA 层（$c/m$）的 $1/32$；V4 的 KV cache 在 1M 上下文下约为 BF16 GQA8（head dim 128）基线的 2%（§2.3.4）[^src-deepseek-v4-2606-19348]。缓存布局按 $\operatorname{lcm}(m,m')=128$ token 对齐，每块产出 32 个 CSA 条目与 1 个 HCA 条目（§3.5.1、Figure 6，见 [[deepseek-v4-hybrid-attention]]）。
 
+后继模型不再保留这条支路：DeepSeek-V4.1-Flash 用纯 [[csa2|CSA2]] 取代 CSA–HCA 混合，所有全局注意力层都是 top-$k$ 稀疏，没有对全部条目做 dense 的层；原本由 HCA 承担的全覆盖只保留在 indexer 的全长打分里，解码器后续层则被限制在 16,384 位置的候选池内（§1、§2.3、§2.3.2）[^src-deepseek-v4-1-2609-19969]。
+
 ## 证据
 
 配置（§4.2.1）涵盖两个模型 $m'=128$：Flash 43 层、Pro 61 层，CSA/HCA 交错；Pro 前两层为 HCA、Flash 前两层为纯 SWA；head 维 $c=512$、$n_{win}=128$ 与 CSA 一致。效率（§2.3.4、Figure 1 右）上，1M 上下文下 Flash 单 token FLOPs 为 V3.2 的 10%（低 9.8 倍）、KV cache 为 7%（小 13.7 倍），Pro 为 27% / 10%，HCA 与 CSA 的相对贡献未拆分。长上下文质量（Table 6、Table 7）上，MRCR 1M 上 Pro-Max 83.5、Flash-Max 78.7，CorpusQA 1M 上 62.0 / 60.5，均为整模成绩，HCA 层的独立贡献无消融。
@@ -86,3 +88,4 @@ KV cache 中，HCA 层每 token 分摊 $c/m'$ 个 entry 维，是 CSA 层（$c/m
 
 [^src-deepseek-v4-2606-19348]: [[source-deepseek-v4-2606-19348]]
 [^src-2502-11089-nsa]: [[source-2502-11089-nsa]]
+[^src-deepseek-v4-1-2609-19969]: [[source-deepseek-v4-1-2609-19969]]

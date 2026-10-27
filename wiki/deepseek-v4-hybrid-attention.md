@@ -9,7 +9,7 @@ tags:
   - inference-efficiency
 created: 2026-10-27
 last_updated: 2026-10-27
-source_count: 1
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -21,6 +21,8 @@ DeepSeek-V4 系列以交错的 [[compressed-sparse-attention|CSA]]（$m=4$ 压�
 ## 层配置
 
 Flash（43 层）前两层为纯滑窗注意力，随后 CSA 与 HCA 交错（§4.2.1）[^src-deepseek-v4-2606-19348]；Pro（61 层）前两层全用 HCA，随后同样交错 CSA 与 HCA（§4.2.1）[^src-deepseek-v4-2606-19348]。论文未给出「交错」的具体排布（逐层交替或分段），亦未给出 CSA:HCA 的层间比例 [INFERENCE 缺口]。
+
+该混合方案在下一代被替换：DeepSeek-V4.1-Flash 用纯 [[csa2|CSA2]] 加 [[ced|CED]] 取代交错结构——HCA 支路取消，主 KV 转 FP4，主 KV、indexer K 与 Top-$k$ 下标跨层共享，解码器全局 KV 由编码器末层投影，全局 KV 总量降到 890 bytes/token（§1、§2.3、§2.4.4）[^src-deepseek-v4-1-2609-19969]。
 
 ## 四个共用组件（§2.3.3）
 
@@ -72,3 +74,4 @@ $$s_{h,i,j}=\frac{\operatorname{Exp}(z_{h,i,j})}{\sum_{k}\operatorname{Exp}(z_{h
 [[compressed-sparse-attention]] 涵盖稀疏支路数据流，[[heavily-compressed-attention]] 涵盖重压缩支路数据流，[[deepseek-sparse-attention]] 阐释 CSA 复用的 DSA 框架及其 V3.2 原型，[[native-sparse-attention]] 给出单层三分支门控合并对照路线；[[kv-cache-compression]] 梳理推理期缓存压缩路线，V4 把压缩放进训练期架构；[[manifold-constrained-hyper-connections]] 记录同一模型引入的残差改造，[[multi-query-attention]] 追溯共享 KV 的 $G=1$ 形态来源，[[source-deepseek-v4-2606-19348]] 为源摘要。
 
 [^src-deepseek-v4-2606-19348]: [[source-deepseek-v4-2606-19348]]
+[^src-deepseek-v4-1-2609-19969]: [[source-deepseek-v4-1-2609-19969]]

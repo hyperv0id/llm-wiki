@@ -108,6 +108,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-deepfec]] — DeepFEC: Energy Consumption Prediction under Real-World Driving Conditions for Smart Cities
 - [[source-deepseek-2026-engram]] — Engram：把 $N$-gram 查表做成条件记忆模块（词表压缩 + 多头哈希 + 上下文门控），27B/3.8B 激活下 27 项基准全超同参同 FLOPs 的 MoE-27B，32k 长上下文 MQ NIAH 97.0 vs 84.2（DeepSeek-AI & PKU, arXiv:2601.07372v2, 2026）
 - [[source-deepseek-v2-2405-04434]] — DeepSeek-V2 技术报告：Multi-head Latent Attention（KV 联合低秩压缩 + decoupled RoPE，表 1 给 MHA/GQA/MQA/MLA 的 cache 公式）与 DeepSeekMoE，236B/21B 激活，128K 上下文（DeepSeek-AI, arXiv:2405.04434）
+- [[source-deepseek-v4-1-2609-19969]] — DeepSeek-V4.1-Flash 技术报告：CED（解码器全局 KV 由编码器末层逐层投影，prefill 8B / decode 16B 激活）+ CSA2（Full/Reindex/Reuse 三模式跨层共享主 KV 与 indexer K、分层稀疏 indexer、FP4 主 KV），全局 KV 890 bytes/token（V4-Flash 的 1/4）、持久化 KV 为 1/8，45T token 预训练（DeepSeek-AI, arXiv:2609.19969v1, 2026-09；PDF raw/deepseek-v4-1-flash-2609-19969.pdf）
 - [[source-deepseek-v4-2606-19348]] — DeepSeek-V4 技术报告（preview）：混合注意力 CSA（$1/4$ 压缩 + DSA top-k）+ HCA（$1/128$ 压缩 dense）支撑 1M 上下文，1M 下 FLOPs 为 V3.2 的 27%/10%、KV 为 10%/7%（Pro/Flash）；mHC + Muon，32T/33T token，GRPO 专家 + 全词表 OPD 后训练（DeepSeek-AI, arXiv:2606.19348v1, 2026-04；PDF raw/deepseek-v4-2606-19348.pdf）
 - [[source-deepstate]] — DeepState: Deep State Space Models for Time Series Forecasting, RNN-parametrized linear SSM + Kalman likelihood (NeurIPS 2018)
 - [[source-dehghani-2019-universal-transformers]] — Universal Transformers：同一组自注意力+transition 权重沿深度循环 $T$ 步（步取 1 即 Transformer）+ ACT 逐位置动态停机；bAbI 0.21–7.78 零/少失败、LAMBADA test PPL 142、WMT14 En-De 28.9 BLEU（+0.9），有限精度下固定深度不可能计算通用、UT 取步数为长度函数即解除（Dehghani et al., UvA/DeepMind/Google Brain, ICLR 2019, arXiv:1807.03819v3；PDF raw/universal-transformers-1807-03819.pdf）
@@ -463,6 +464,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[causalx]] — CausalX, causally-interpretable plug-and-play multi-modal ST forecasting with multi-source causal constraints + diffusion graph refinement, ICML 2026
 - [[cbsa]] — CBSA, Contract-and-Broadcast Self-Attention (NeurIPS 2025)
 - [[cbt]] — CBT, Contract-and-Broadcast Transformer
+- [[ced]] — Causal Encoder-Decoder：解码器全局 KV 由编码器末层 $H^{L/2}$ 经逐层权重投影，SWA 仍逐层自算并用 bounded replay 只重放 $n_{win}$ 个 token，prefill $O(NL)\to O(NL/2+n_{win}L/2)$、每 token 激活 8B（decode 16B）
 - [[channelmts]] — ChannelMTS, multimodal time-series framework for HSR channel prediction (KDD 2026)
 - [[chronos]] — Chronos, pretrained time series language model with tokenizer (ICLR 2024)
 - [[chronosx]] — ChronosX, modular past/future covariate injection for Chronos/TimesFM/MOMENT (AISTATS 2025)
@@ -481,6 +483,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[crate-white-box-transformer]] — CRATE, White-Box Transformer with interpretable structure
 - [[crossformer]] — Crossformer, Transformer utilizing cross-dimension dependency for MTS forecasting (ICLR 2023)
 - [[crosslinear]] — CrossLinear, Linear many-to-one exogenous forecaster with O(T) cross-correlation embedding (KDD 2025, USTC)
+- [[csa2]] — CSA2：主 KV 与 indexer K 按 Full/Reindex/Reuse 三模式跨层共享、可复用 Top-k 下标，压缩器去掉 CSA 的跨块重叠与绝对位置偏置、indexer K 改由主 KV 投影，解码器用 16,384 位置候选池限制后续打分，全局 KV 890 bytes/token
 - [[ctenet]] — CTENet, ADR 架构嵌入 PINN + 欧拉连续空间，空气质量预测，NeurIPS 2025
 - [[cvpe]] — CVPE, Cross-Variate Patch Embedding for CI model enhancement (arXiv 2025)
 - [[cyclenet]] — CycleNet, periodicity modeling with residual cycle forecasting (NeurIPS 2024)

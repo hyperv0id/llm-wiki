@@ -10,7 +10,7 @@ tags:
   - large-language-models
 created: 2026-06-22
 last_updated: 2026-10-27
-source_count: 2
+source_count: 3
 confidence: high
 status: active
 ---
@@ -100,6 +100,8 @@ mHC 在全部八项任务上均高于基线，并在多数任务上超过 HC；�
 
 DeepSeek-V4 系列将 mHC 用于全部 Transformer 块：两模型均取 $n_{hc}=4$、Sinkhorn-Knopp 迭代 $t_{max}=20$；约束实现为 $A_l=\sigma(\tilde A_l)$、$C_l=2\sigma(\tilde C_l)$（式 6–7）；mHC 的静态偏置与门控因子由 AdamW 更新，其余模块走 Muon（§2.2、§2.4、§4.2.1）[^src-deepseek-v4-2606-19348]。工程侧与上节三项优化同构：融合 kernel、选择性重计算与 DualPipe 调度调整，将 mHC 的 wall-time 开销压至重叠 1F1B 流水线阶段的 6.7%（§3.4.2）[^src-deepseek-v4-2606-19348]，与 mHC 论文口径一致。$C_l$ 带因子 2 与 mHC 原文式 (8) 的 $H_l^{post} = 2\sigma(\tilde H_l^{post})$ 一致（2026-10-27 已对照原文）。
 
+V4.1 把该实现改成 Single-Pass mHC：输入混合系数错开一个 block（式 6 用 $A_{l-1}$ 代替 $A_l$），输入混合不再等本层系数归约完成，作者报告性能退化可忽略；配合 Mega-mHC 单核把残余更新、输入混合与系数预测融成一次遍历，mHC 与 Single-Pass 的激活读写分别降到 $(3n+2)d$ 与理想下界 $(2n+2)d$（原三核实现为 $(4n+4)d$，两趟实现亦为 $(3n+2)d$）。预训练仍用多核实现，只有部署用 Mega-mHC（§2.4.1）[^src-deepseek-v4-1-2609-19969]。
+
 ## 相关概念
 
 [[hyper-connections|Hyper-Connections (HC)]] 是 mHC 的前置方法，[[birkhoff-polytope|Birkhoff 多面体]] 是 mHC 使用的双随机矩阵流形，[[sinkhorn-algorithm|Sinkhorn-Knopp 算法]] 是实现 Birkhoff 投影的迭代归一化方法，[[identity-mapping-property|Identity Mapping Property]] 是 mHC 力图恢复的残差核心性质，[[residual-connections-as-diffusion|Residual Connections as Euler Steps of Reverse Diffusion]] 提供了残差连接的另一种宏观视角。
@@ -107,3 +109,4 @@ DeepSeek-V4 系列将 mHC 用于全部 Transformer 块：两模型均取 $n_{hc}
 
 [^src-mhc-manifold-constrained-hyper-connections]: [[source-mhc-manifold-constrained-hyper-connections]]
 [^src-deepseek-v4-2606-19348]: [[source-deepseek-v4-2606-19348]]
+[^src-deepseek-v4-1-2609-19969]: [[source-deepseek-v4-1-2609-19969]]

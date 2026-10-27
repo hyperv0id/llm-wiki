@@ -9,7 +9,7 @@ tags:
   - llm
 created: 2026-10-27
 last_updated: 2026-10-27
-source_count: 5
+source_count: 6
 confidence: medium
 status: active
 ---
@@ -112,6 +112,8 @@ o'^{G}_{t,i} &= o^{G}_{t,i}\,W^{G}_{i} && \text{// } [1, \bcancel{(n_{h}/g)c}]\t
 
 KV 共享上，CSA/HCA 落在 [[multi-query-attention]] 的 $G=1$ 端点：压缩条目仅一份，由 $n_h$ 个 query head 共用，[[grouped-query-attention]] 的组间共享在此退化为全共享（§2.3.1）[^src-shazeer-2019-mqa][^src-ainslie-2023-gqa]。MQA 压缩头维，CSA 进一步压缩序列维：每 query 读取 $n/m$ 中的 $k$ 个条目，而非全长。与 [[multi-head-latent-attention]] 对照，query 侧 $c^{Q}_t=h_t W^{DQ}$ 的低秩 latent 压缩与 MLA 的 query latent 同形 [INFERENCE]；KV 侧两者方向相反：MLA 沿特征维压 rank，CSA 沿序列维压 token 数。与 [[native-sparse-attention]] 的差异在于选择对象：NSA 在原始 token 的 64-token 块上选，CSA 在 $m=4$ 压缩出的条目上选，压缩步骤前置到 KV cache 本身（§3.3.2）[^src-2502-11089-nsa][^src-deepseek-v4-2606-19348]。
 
+后继 [[csa2|CSA2]]（V4.1）沿相反方向简化压缩器：去掉 $a/b$ 双支路的跨块重叠与绝对位置偏置、indexer K 改由主 KV 条目投影，并把主 KV 与 Top-$k$ 下标按 Full/Reindex/Reuse 三模式跨层共享；压缩率放松到 $m=2$（编码器）与 $m=1$（解码器），HCA 支路随之取消（§2.3）[^src-deepseek-v4-1-2609-19969]。
+
 ## 证据
 
 配置（§4.2.1）上，Flash 采用 $m=4$、$n^{I}_h=64$、$c^{I}=128$、top-$k=512$，Pro 同前且为 top-$k=1024$，两者共享 $c=512$，Flash 为 $d_c=1024/n_h=64/g=8$、Pro 为 $d_c=1536/n_h=128/g=16$，$n_{win}=128$。FP4 QAT（§5.2.1）将 indexer QK 路径全置为 FP4（缓存、加载、乘法），index scores 由 FP32 转 BF16，top-$k$ selector 提速 2 倍且 KV entry recall 保持 99.7%。在 1M 上下文下（§2.3.4、Figure 1 右），Pro 的单 token FLOPs 为 V3.2 的 27%（低 3.7 倍）、KV cache 为 10%（小 9.5 倍），整体效率见 [[deepseek-v4-hybrid-attention]]，混合架构未单独拆分 CSA 的贡献。长上下文评测（Table 1）中，LongBench-V2 上 V4-Pro-Base 51.5 对 V3.2-Base 40.2，但该对照同时更换了数据、训练长度与全部架构改动，非 CSA 单独归因。
@@ -129,3 +131,4 @@ KV 共享上，CSA/HCA 落在 [[multi-query-attention]] 的 $G=1$ 端点：压�
 [^src-shazeer-2019-mqa]: [[source-shazeer-2019-mqa]]
 [^src-ainslie-2023-gqa]: [[source-ainslie-2023-gqa]]
 [^src-2502-11089-nsa]: [[source-2502-11089-nsa]]
+[^src-deepseek-v4-1-2609-19969]: [[source-deepseek-v4-1-2609-19969]]

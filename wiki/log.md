@@ -4525,3 +4525,17 @@ ingest 报告：[[ingest-reports/2026-10-27-auxfree|WHY 报告]]
 对照 arXiv:2408.15664 核式 (1)–(7)、Algorithm 1、五个 Stage 维度块、Table 2/3/4/6 与 Figure 2/4；§6 的 300B 与 §4.1、摘要、附录 B 的 200B 冲突，以及 Algorithm 1 的 $\bar c_i-c_i$ 图像口径均留痕。修 10 处：Stage 3 删去「sigmoid 下 K 个权重之和小于 1」、梯度论证限定在选中集合不变的分段、MaxVio 记法补 $\overline{\mathrm{Load}_i}$、泄漏界方向「最多」→「至少」、shuffle 改为「打乱后再切 chunk」、表 4 均衡表述、困惑度方向、softmax 对比归因；source 摘要删去图 2 的 1B 归因；log 数值备注精简。
 更新的页面：[[auxiliary-loss-free-load-balancing]], [[source-wang-2024-aux-free]]
 复跑 scripts/lint.py：severe 132、warn 48、info 1150，本次页面零条目
+
+## [2026-10-27] ingest | DeepSeek-V4.1-Flash: Pushing the Limits of KV Cache Compression（arXiv:2609.19969, 2026-09）
+
+问题：长上下文 agent 负载让 prefill 计算与 KV 存储/搬运成为主要成本。机制：CED 把 40 层切成 20+20，解码器全局 KV 由编码器末层 $H^{L/2}$ 经逐层权重投影（式 1），SWA 仍逐层自算、只重放最后 $n_{win}=128$ 个 token，prefill 复杂度 $O(NL)\to O(NL/2+n_{win}L/2)$；CSA2 用 Full/Reindex/Reuse 三模式跨层共享主 KV 与 indexer K、复用 Top-$k$ 下标，压缩器去掉 CSA 的跨块重叠与绝对位置偏置、indexer K 改由主 KV 投影，解码器首个 Full 层建 $2{,}048\times8=16{,}384$ 位置候选池，主 KV 转 FP4（E2M1 + 每 16 通道 1 个 E4M3 scale）。证据：全局 KV 890 bytes/token（V4-Flash 的 $1/4$、V1 的 $1/437$），持久化 KV 为 V4-Flash 的 $1/8$，4K→1M decode FLOPs 只增 $1/4$，prefill/decode 每 token 激活 8B/16B；Base（Table 1）MMLU-Pro 74.1 对 V4-Pro 73.5，LongBench-V2 45.2 对 51.5；后训练（Table 3）Codeforces 3471、DeepSWE v1.1 74.2、Terminal-Bench 2.1 90.6。边界：CED 与 CSA2 都没有与 V4 的同台消融，退化只写「negligible」无数字，FP4 主 KV 的 QAT 只在 post-training 做。
+创建的页面：[[source-deepseek-v4-1-2609-19969]], [[csa2]], [[ced]]
+更新的页面：[[compressed-sparse-attention]]（谱系段加 CSA2 后继，source_count 5→6）, [[heavily-compressed-attention]]（V4.1 取消 HCA 支路，source_count 2→3）, [[deepseek-v4-hybrid-attention]]（加纯 CSA2 + CED 替代句，source_count 1→2）, [[manifold-constrained-hyper-connections]]（Single-Pass mHC 与 Mega-mHC 访存，source_count 2→3）, [[index]]（Sources 1 条 + Techniques 2 条）
+ingest 报告：[[ingest-reports/2026-10-27-v4-1-flash|WHY 报告]]
+数值备注：§2.3 未给 CSA2 的压缩器公式（只给与 CSA 的差异），Stage 1–2 按 CSA 式 (11)(12) 去重叠的同形写法补并标 [INFERENCE]；§3.2.2「2$L$ 个解码器层」与解码器 $L/2$ 层冲突，按 $L/2$ 理解；CED 式 (1) 的逐层 $W_l^{KV}$ 与 §2.3.1「只有 Full 层物化全局 KV」并置，按后者理解才与 890 bytes/token 自洽（反算差约 1%）。
+
+## [2026-10-27] lint | V4.1-Flash ingest 独立核查（就地修 14 处）
+
+对照 arXiv:2609.19969 核 §1、§2.2–2.3.2、§2.4.4、§3.2、§4.2.1、§6、Table 1/3 与 csa2/ced 的 aligned 块：Stage 9 分组输入应为 $4096$（$64/8\times512$）而非 2048；Reindex 只复用 Full 层的主 KV；CSA 侧无「未压缩」形态，HCA 不能记成未压缩；HSI 块大小与 top-$512$ 的关系是 $4{,}096<16{,}384$；层配比与 Figure 1b 口径收窄；反算差约 1.1%，不写「≤1%」；式(1) 注释限于全局 KV。两处后继指针补 §1。
+更新的页面：[[csa2]], [[ced]], [[deepseek-v4-hybrid-attention]], [[heavily-compressed-attention]], [[log]]；ingest 报告同步容差
+复跑 scripts/lint.py：severe 132、warn 47、info 1147，本次页面零条目
