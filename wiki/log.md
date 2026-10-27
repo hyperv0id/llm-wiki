@@ -4493,3 +4493,15 @@ ingest 报告：[[ingest-reports/2026-10-27-deepseekmoe|WHY 报告]]
 
 对照 raw/deepseekmoe-2401-06066.pdf 逐项核查式 (5)–(17)、5 个 Stage 维度块可乘性与规约轴、表 1–6/8–10 抽样数字、图 3–6 与 §4.5 结论句、附录表 10，公式与主要数字无误。修 15 处（11 处在 [[deepseekmoe]]，其余 4 处在既有页与 WHY 报告）：[[deepseekmoe]] 的 Stage 1 删去原文未限定的 softmax 求和范围断言、均衡损失「另加设备层」改为「逐专家计算 + 另加设备层」、表 1「11 项均为最高」改为「均最优（Pile loss 最低）」、Shazeer 行「合计激活 4」改为「随实验设定，多语 k=2」、机制表出处补 §4.1.3/§5.1.2、选择题弱点限定为对 DeepSeek 7B、2.5× 推理速度补「算子优化」前提、两处「全量 softmax」改为「softmax 原值/打分」、CV² 转 LaTeX、修错字；[[gshard]] 谱系句「组级均衡损失」改为「辅助负载均衡损失」；[[source-dai-2024-deepseekmoe]] 选择题对照点名 DeepSeek 7B；WHY 报告修正引句与一处虚标的反向链接。
 复跑 scripts/lint.py：severe 132 / warn 48 / info 1150，与修复前一致。既有未修：[[mixture-of-experts]] source_count=18 而正文与脚注各 19 个（HEAD 即 17 对 18），属既有账差。
+## [2026-10-27] ingest | Auxiliary-Loss-Free Load Balancing Strategy for Mixture-of-Experts（arXiv:2408.15664, 2024-08 preprint）
+
+问题：MoE 的辅助负载均衡损失在「压住路由塌缩」与「不干扰语言建模梯度」之间没有好折中。机制：每个 routed expert 一个标量 bias $b_i$，只加在 top-$K$ 选择前的打分上，输出加权仍用未加 bias 的 $s_{i,t}$（式 3）；每步训练后按 $b_i\leftarrow b_i+u\,\mathrm{sign}(\bar c_i-c_i)$ 更新，只用上一 batch 的负载（避免未来 token 泄漏），$u$ 固定 0.001、无调度。证据：DeepSeekMoE 骨干、sigmoid 门控，1B/100B 与 3B/200B token；表 2 困惑度 9.50/7.92 对辅助损失基线 9.56/7.97，MaxVio 0.04/0.04 对 0.72/0.52；表 3、4 支持 sign 加性而非线性/乘性；附录 C 的 softmax 门控只剩均衡收益（9.599 对 9.604、0.027 对 0.937）；§5.1 论证 computation batch 增大时本方法持续改善、基线走平。边界：无下游 benchmark、无 bias 与辅助损失组合实验、bias 只在 1B 调参。
+创建的页面：[[auxiliary-loss-free-load-balancing]], [[source-wang-2024-aux-free]]
+更新的页面：[[index]]（Sources 1 条 + Techniques 1 条）
+ingest 报告：[[ingest-reports/2026-10-27-auxfree|WHY 报告]]
+数值备注：§6 结论把 3B 的 token 数写成 300B，与 §4.1、摘要、附录 B 的 200B 冲突，页面并列报告；Algorithm 1 的 $e_i$ 在 PDF 文本层为 $c_i-c_i$，按图像核对为 $\bar c_i-c_i$。
+## [2026-10-27] lint | auxfree ingest 独立核查（就地修 10 处）
+
+对照 arXiv:2408.15664 核式 (1)–(7)、Algorithm 1、五个 Stage 维度块、Table 2/3/4/6 与 Figure 2/4；§6 的 300B 与 §4.1、摘要、附录 B 的 200B 冲突，以及 Algorithm 1 的 $\bar c_i-c_i$ 图像口径均留痕。修 10 处：Stage 3 删去「sigmoid 下 K 个权重之和小于 1」、梯度论证限定在选中集合不变的分段、MaxVio 记法补 $\overline{\mathrm{Load}_i}$、泄漏界方向「最多」→「至少」、shuffle 改为「打乱后再切 chunk」、表 4 均衡表述、困惑度方向、softmax 对比归因；source 摘要删去图 2 的 1B 归因；log 数值备注精简。
+更新的页面：[[auxiliary-loss-free-load-balancing]], [[source-wang-2024-aux-free]]
+复跑 scripts/lint.py：severe 132、warn 48、info 1150，本次页面零条目

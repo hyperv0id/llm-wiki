@@ -430,6 +430,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-virtual-nodes]] — Virtual Nodes Improve Long-term Traffic Prediction（Zhuang et al., MIT/清华/UF，arXiv:2501.10048v1，venue 未在 PDF 内核实），将 Virtual Nodes 图改写引入 ST-GNN 长期交通预测：semi-adaptive 邻接矩阵（距离图 + MTGNN 式反对称自适应权重）缓解 over-squashing，LargeST SD 上作者报告 Semi-10 V.N. 在 12 种邻接配置中全部指标最低
 - [[source-visifold]] — VisiFold: Long-Term Traffic Forecasting via Temporal Folding Graph and Node Visibility (arXiv 2026)
 - [[source-visreg]] — VISReg（Wu, Balestriero & Levine，Altos Labs/Brown，arXiv:2606.02572v1，2026-06-01 preprint）：以 SWD sketching 替换 VICReg 协方差项的 JEPA 训练正则化；OOD 六数据集平均最高、ImageNet-22K 训练后与 10 倍数据 DINOv2 相当
+- [[source-wang-2024-aux-free]] — Loss-Free Balancing：每个 expert 一个 bias 只改 top-$K$ 选择、不进路由加权，按上一 batch 负载 sign 更新，1B/3B 困惑度 9.50/7.92、MaxVio 0.04 对基线 9.56/7.97、0.72/0.52（Wang et al., DeepSeek-AI 与北大, arXiv:2408.15664；PDF raw/auxfree-2408-15664.pdf）
 - [[source-wardropnet]] — WardropNet: COAML pipeline embedding Wardrop equilibrium as differentiable layer for traffic flow prediction, Fenchel-Young loss + perturbation regularization, ICLR 2025
 - [[source-weathergfm]] — WeatherGFM: Learning A Weather Generalist Foundation Model via In-context Learning (ICLR 2025)
 - [[source-weatherpeft]] — WeatherPEFT: Task-Adaptive Parameter-Efficient Fine-Tuning for Weather Foundation Models (ICLR 2026)
@@ -949,6 +950,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[attention-logit-explosion]] — training instability from unbounded attention scores
 - [[attention-temperature-scaling]] — YaRN's technique to control attention entropy via temperature
 - [[attnres]] — Attention Residuals，深度维 softmax 注意力替代固定残差累加：单伪查询 + 块级压缩（$N\approx 8$ 恢复大部分收益）；(m)HC 统一为深度维线性注意力、AttnRes 为深度维 softmax 注意力；Block 等效 1.25× 计算
+- [[auxiliary-loss-free-load-balancing]] — Loss-Free Balancing：每个 routed expert 一个标量 bias，只进 top-$K$ 比较、不进输出加权，按上一 batch 负载 sign 更新，零辅助梯度
 - [[average-velocity-modeling]] — 平均速度建模，预测区间条件化平均速度替代瞬时速度 + JVP 修正优化目标 (CoGenCast, ICML 2026)
 - [[bam]] — BAM, Bidirectional Attention Mamba for intra-channel dependency in diffusion denoising (KDD 2025)
 - [[band-limited-temporal-decomposition]] — 按 DFT 有效频带切带、带外置零后 IFFT 回时域，得到 $P$ 条 band-limited 时域视图
