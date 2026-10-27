@@ -313,6 +313,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-schrodinger-bridges-generative-modeling]] — Foundations of Schrödinger Bridges for Generative Modeling, 220 页综合性教程，统一 SB 理论与算法 (Tang, 2026)
 - [[source-score-based-generative-models]] — TODO
 - [[source-sde]] — Score-Based SDE: Unified framework for SMLD and DDPM (ICLR 2021)
+- [[source-seed-2024-hyper-connections]] — Hyper-Connections：可学习 depth/width 连接替代残差连接，超隐矩阵 $n$ 流 + 每层 $(n{+}1)\times(n{+}1)$ 连接矩阵（动态生成 + 静态学习），Pre/Post-Norm 为 $n{=}1$ 非训练特例；OLMo 1B/7B 与 OLMoE 500B tokens 全面增益（1B V2 loss 2.811→2.781，OLMoE ARC-C 41.8→47.8、收敛 1.8×），DiT/ViT 同增益，参数 +0.03%/FLOPs +0.2%（Zhu et al., ByteDance Seed, ICLR 2025, arXiv:2409.19606v3；PDF raw/hyper-connections-2409-19606.pdf）
 - [[source-select-then-balance]] — Select, then Balance 旧 slug（已由 [[source-exost]] 取代；同文 arXiv only）
 - [[source-shaw-2018-relative-position]] — Self-Attention with Relative Position Representations：相对偏移的可学习向量加到 K/V（$2k+1$ 标签 + 裁剪距离 $k$），big 模型 EN-DE +1.3 BLEU（Shaw/Uszkoreit/Vaswani, Google, arXiv:1803.02155v1, 2018）
 - [[source-shazeer-2020-glu-variants]] — GLU Variants Improve Transformer：ReGLU/GEGLU/SwiGLU/Bilinear 在 T5-base 上等参数对照，GEGLU 1.633、SwiGLU 1.636 困惑度最低（Shazeer, Google, arXiv:2002.05202v1, 2020）
@@ -1111,7 +1112,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[history-conditional-manifold]] — History-Conditional Manifold，用历史内生构造可学 Flow Matching 源分布
 - [[hopf-cole-transform]] — Hopf-Cole 变换，将非线性 HJB-FP 系统线性化为 Kolmogorov PDE 对
 - [[hybrid-lead-lag-graph]] — HLLG，数据驱动图 $A_D$ × 空间掩码 $M_S$ × frozen LLM 语义掩码 $M_K$ 的 lead–lag 图构建 (LagLLM, ICML 2026)
-- [[hyper-connections]] — 可学习的多流残差连接设计，扩展残差流宽度以提升拓扑复杂度
+- [[hyper-connections]] — 可学习的多流残差连接：超隐矩阵 $n$ 流 + 每层 $(n{+}1)\times(n{+}1)$ 连接矩阵（$\mathbf{A_m}$ 读流 / $\mathbf{B}$ 写流 / $\mathbf{A_r}$ 流间混合），Pre/Post-Norm 是其 $n{=}1$ 非训练特例
 - [[implicit-neural-representation]] — INR 隐式神经表示，连续坐标到值的映射，分辨率无关但密集查询低效，QCGS 用于高斯参数估计
 - [[improved-meanflows]] — iMF，MeanFlow 后续改进：MeanFlow 目标等价改写为 v-loss 再参数化（JVP 切向量改取网络预测边缘速度）+ 引导尺度/区间条件化 + 多 token in-context conditioning（去 adaLN-zero），1-NFE FID 1.72（作者报告）(arXiv 2025)
 - [[incident-context-spatial-fusion]] — ICSF: incident-context spatial fusion via attention + spatial tensor (KDD 2026)

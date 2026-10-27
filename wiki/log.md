@@ -4404,3 +4404,14 @@ ingest 报告：[[ingest-reports/2026-10-27-mtp-derivation|推导核验报告]]
 更新的页面：[[multi-token-prediction]], [[source-gloeckle-2024-multi-token-prediction]], [[log]]
 复跑 scripts/lint.py：severe 135、warn 47、info 1154，两页均无条目（无新增 severe）
 核验报告：[[ingest-reports/2026-10-27-mtp-derivation|推导核验报告]]（本轮独立复核未改动报告）
+## [2026-10-27] ingest | Hyper-Connections（arXiv:2409.19606v3, ICLR 2025, ByteDance Seed）
+
+问题：Pre/Post-Norm 在梯度消失与表示坍缩间跷跷板，连接强度被预先固定。机制：隐向量复制 $n$ 流（expansion rate），每子层一个 $(n{+}1)\times(n{+}1)$ 连接矩阵——$\mathbf{A_m}$ 加权读流、$\mathbf{B}$ 广播写流、$\mathbf{A_r}$ 流间混合；DHC 经 norm→线性→tanh→可学习缩放（初始 0.01）动态生成，静态分量按 Eq. 14 初始化为严格 Pre-Norm 等价。证据：500B tokens 上 OLMo-1B DHC×4 V2 loss 2.811→2.781（Table 1）、7B 下游 70.1→71.0（Table 5）、OLMoE-1B-7B ARC-C 41.8→47.8 且收敛快 1.8×（Table 6、Fig. 1）、DiT FID 2.36→2.18 与 ViT-Large 77.25→79.94（Tables 10–11），开销参数 +0.033%/FLOPs +0.200%（Tables 7–8）。边界：$n{=}1$ 劣于基线（Appendix F）、ViT 增益随训练递减（Fig. 11）；原 wiki 页的「复合映射增益约 3000」为 mHC 论文观察，留 mHC 页不入本页。
+创建的页面：[[source-seed-2024-hyper-connections]]
+更新的页面：[[hyper-connections]]（全页改挂一手源，记号从 mHC 的 $H^{pre}/H^{res}/H^{post}$ 换回原文 $\mathbf{A_m}/\mathbf{A_r}/\mathbf{B}$，source_count 1→2）, [[index]]（Sources 1 条 + Techniques 摘要更新）
+ingest 报告：[[ingest-reports/2026-10-27-hyper-connections|WHY 报告]]
+数值备注：任务提示中的「depth multiplier $m$、depth reduction 推理加速、分子/语音多模态、scaling law」原文均不存在（grep 零命中），未写入页面；输出模块初始化系数按页面渲染核对为原文 "by a factor of $\sqrt{n}$"，照录；DHC×4 的 V3 Eval Loss 在 Table 1 与 Table 2/3 间为 2.514/2.515，两处并存。
+## [2026-10-27] lint | Hyper-Connections ingest 独立复核（1 新建 + 1 重写 + 3 修改 + 1 报告）
+对照 arXiv:2409.19606v3 原文逐项核查：Eq. 1–7、10–16、公式 2 更新式与式 14 逐字比对；五个 Stage 的 aligned 块逐行验可乘性与收缩/规约轴（$[1,\bcancel{n}]\times[\bcancel{n},d]$、$[n,\bcancel{d}]\times[\bcancel{d},1]$ 转置、外积写回 $[n,\bcancel{1}]\times[\bcancel{1},d]$、末端行求和）；初始化等价 Pre-Norm 论证、缩放因子 0.01（Algorithm 2）与输出 std 乘 $\sqrt{n}$（§4 Implementation）归因核验；Tables 1–11、7–9 数字全表核对（DHC×4 2.781/2.514/63.8、7B 2.559/71.0、OLMoE ARC-C 41.8→47.8、参数 +0.03349%、FLOPs 2.3536→2.3583 即 +0.200%、显存 41.11→51.86 GB 即 +26.1%、DiT FID 2.36→2.18、ViT-Large 79.94）；1.8×（§1、Fig. 1）、WC/B 冻结差 +0.021/+0.017（Table 3 第 4/6 行）、§4.5 可视化（Λ 形、嵌入除末层、PTB layer 11/12、two-hop、HC×1 废层）与边界（无 depth reduction、仅视觉附录、无 scaling law）均与原文一致。修 2 处：Stage 5 的 $\mathbf{h}^L/\mathbf{H}^L$ 层指标上标与全页「上标=流、下标=层」记号冲突，改回 Algorithm 1 的下标 $\mathbf{h}_L/\mathbf{H}_{L,i,:}$；[[source-mhc-manifold-constrained-hyper-connections]] 本次改 confidence 后 last_updated 未随更新，补为 2026-10-27。Table 1 与 Table 2/3 的 V3 loss 2.514/2.515 并列保留，未替论文择一。
+更新的页面：[[hyper-connections]], [[source-mhc-manifold-constrained-hyper-connections]]
+复跑 scripts/lint.py：severe 133、warn 47（与修前持平，均为全库既有项）、info 1154→1153，本次页面无 severe/warn 条目

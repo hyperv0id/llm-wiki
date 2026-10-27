@@ -9,9 +9,9 @@ tags:
   - training-stability
   - deepseek
 created: 2026-06-22
-last_updated: 2026-06-22
+last_updated: 2026-10-27
 source_count: 1
-confidence: high
+confidence: medium
 status: active
 ---
 
