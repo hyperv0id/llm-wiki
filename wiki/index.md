@@ -232,6 +232,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-minimax-2026-sparse-attention]] — MiniMax Sparse Attention（MSA）：GQA 原生块稀疏两支路，Index Branch 逐组 top-k 选块（max 池化打分 + KL 对齐训练）+ Main Branch 选中块上精确 softmax，109B/3T 与 GQA 基线可比、1M 处 FLOPs 降 28.4×、H800 prefill 14.2×/decode 7.6×（Xunhao Lai et al., MiniMax, arXiv:2606.13392v2；PDF raw/minimax-sparse-attention-2606-13392.pdf）
 - [[source-minimax-2025-01]] — MiniMax-01: Scaling Foundation Models with Lightning Attention：456B/45.9B MoE，7 lightning + 1 softmax 的 transnormer 混合 80 层，训练 1M 外推 4M 上下文，RULER 1M 0.910（MiniMax, arXiv:2501.08313；PDF raw/minimax-01-2501-08313.pdf）
 - [[source-minitraffic]] — MiniTraffic: mini-sized contrastive learning pre-trained model for fine-grained traffic tasks, ICML 2026
+- [[source-mistral-2024-mixtral]] — Mixtral of Experts：Mistral 7B 架构每层 FFN 换 8 专家 MoE，router Top-2 softmax、论文未提及辅助均衡损失，47B 总参/13B 激活、32k 上下文；多数基准持平或超 Llama 2 70B（MMLU 70.6 vs 69.9、MATH 28.4 vs 13.8），路由按句法而非主题分工、连续 token 同专家率层 15 达 61.6–67.0%（Jiang et al., Mistral AI, arXiv:2401.04088v1；PDF raw/mixtral-2401-04088.pdf）
 - [[source-mmckm]] — MMCKM: Micro-Macro Coupled Koopman Modeling for Traffic Flow Prediction (ICLR 2026)
 - [[source-moba-mixture-of-block-attention]] — MoBA: Mixture of Block Attention for Long-Context LLMs（Moonshot AI，arXiv:2502.13189），块稀疏 MoE attention：8K 缩放验证 loss 差 1e-3 内、Llama-8B-1M RULER 0.7818 vs 0.7849、attention 层 1M prefill 6.5× / 10M 16× 加速，自述部署于 Kimi
 - [[source-module-embedding-theorem-towers-algebras]] — Module Embedding Theorem via Towers of Algebras: Markov towers 进路推广 Jones-Penneys 嵌入定理至任意循环模，arXiv 2018
@@ -1183,6 +1184,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[mixed-modal-masked-image-modeling]] — MMIM, VQA-style masked-target reconstruction (75% block-wise) unifying weather tasks; target full-masking at inference (WeatherGFM, ICLR 2025)
 - [[mixed-partial-blackout-training]] — MPB 训练策略，RM 预训练 + RM/PB 混合微调 (SADI, AAAI 2025)
 - [[mixed-scale-conditioning]] — 混合尺度条件控制，intra-scale mix token + hybrid-scale prompt 捕获跨尺度气候交互 (ClimateAR, ICML 2026)
+- [[mixtral-of-experts]] — Mixtral 8x7B：每层 8 个 SwiGLU 专家 router Top-2 路由的无辅助损失 SMoE，47B 总参/13B 激活、32k 上下文；分阶段数据流 + Table 2–5/Figure 4–8 证据与路由分析
 - [[mmoe]] — Multimodal Mixture-of-Experts, TMoE+SMoE 双路门控即插即用模块，文本因果知识引导时序预测 (TiMi, ICML 2026)
 - [[moba-attention]] — MoBA，把 MoE top-k 门控用于 attention：KV 块即专家、query 与块内 key 均值内积选块、当前块强制加 causal mask（Moonshot AI / Kimi，arXiv:2502.13189）
 - [[modality-augmentation]] — Modality Augmentation, converting numerical time series into visual and textual modalities via frequency-domain transforms (AAAI 2026)

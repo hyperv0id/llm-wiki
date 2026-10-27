@@ -4464,3 +4464,15 @@ ingest 报告：[[ingest-reports/2026-10-27-gshard|WHY 报告]]
 对照 arXiv:2006.16668 原文逐项核查通过：Algorithm 1 两循环与计数器语义、Algorithm 2 五条 einsum 逐字、式 (1)–(3) 与 $\ell_{\mathrm{aux}}$、随机路由 "∝ $g_2$"/"∝ 2·$g_2$" 两口径照录无误、Figure 6 内嵌表、Table 2（321/66/82/995）、Table 3、消融 +2–3/+3.3/+1.3、系统 1.7×/9×/3.75×/28%+34%/16%→36%、A.2 超参与 Table 1 印刷疑误备注；Table 2 "1/2–1/3" 系原文 "2 to 3 times fewer tokens" 忠实转写不改。修 4 处（gshard.md）：Stage 3 收缩轴标注（contraction 维是 $S$ 而非 $E,C,M$）、"<10%" 归因限定为 ArgMax/Cumsum 等门控通用算子（dispatch/combine einsum 为 $O(GC)=O(1)$ 另述）、训练样本补「聚焦 X→En 后约 13B」、§1.1 障碍补齐第四条（分区手工实现负担重）。复跑 scripts/lint.py：severe 132、warn 47、info 1150 与修前持平，本次页面无 severe/warn。
 更新的页面：[[gshard]]
 lint 报告：lint-reports/2026-10-27.md
+## [2026-10-27] ingest | Mixtral of Experts（arXiv:2401.04088v1, Mistral AI）
+
+问题：dense Transformer 容量与每 token 计算同步膨胀；机制：Mistral 7B 架构下每层 FFN 换成 8 个 SwiGLU 专家，router $G(x)=\operatorname{Softmax}(\operatorname{Top2}(xW_g))$ 每 token 选 2 专家加性合并，47B 总参/13B 激活、32k 上下文，论文未提及辅助负载均衡损失，路由均衡是 §5 观测到的近 $1/8$ 均匀结果；证据：同一管线重跑多数基准持平或超 Llama 2 70B（MMLU 70.6 vs 69.9、MATH 28.4 vs 13.8、GSM8K 74.4 vs 69.6，Table 2），MT-Bench 8.30 对 GPT-3.5 8.32（Table 3），法德西意三项基准全超（Table 4），passkey 检索 100% 且 proof-pile 困惑度随上下文单调下降（Figure 4）；路由按句法而非主题分工，连续 token 同专家率第 15 层达 61.6%–67.0%（Table 5）。边界：内存按 47B 总参计、路由开销适合 batched 负载、训练数据与硬件未披露。
+创建的页面：[[mixtral-of-experts]], [[source-mistral-2024-mixtral]]
+更新的页面：[[mixture-of-experts]]（谱系源头节加一行指向新页，source_count 17→18）, [[index]]（Sources/Techniques 各 1 条）
+ingest 报告：[[ingest-reports/2026-10-27-mixtral|WHY 报告]]
+数值备注：arXiv v1 附录无独立编号的 A/B/C 节（仅 Figure 9/10）；§3.3 偏差表题注为 Figure 5 而正文称 Table 5；§3 正文 "47B tokens" 为参数之排印误；BOLD religious_ideology 组（0.144 vs 0.188）是「情感更积极」概括的表内例外。
+## [2026-10-27] lint | Mixtral ingest 页独立核查（就地修 7 处）
+
+对照 raw 逐符号核查 §2.1 的 $y=\sum_{i=0}^{n-1}G(x)_iE_i(x)$ 与 $G(x)=\operatorname{Softmax}(\operatorname{TopK}(x\cdot W_g))$（TopK 置 $-\infty$）、4 个 Stage 维度块、Table 1–5 与 Figure 4–10 抽样数字，公式与数字零错。修 7 处：句法路由一句按原意改为「跨多 token 的词其各 token 同专家」（原文指词内多 token 同专家，非 self 与 Question 两词同专家）；Table 2/3 差异句补 [INFERENCE] 并注明论文未解释；辅助均衡损失表述 4 处（technique 页、source 页、谱系行、index 摘要）统一为「论文未提及」；source 页「独特贡献」改为「§5 显示」。
+更新的页面：[[mixtral-of-experts]], [[source-mistral-2024-mixtral]], [[mixture-of-experts]], [[index]]
+复跑 scripts/lint.py：severe 132、warn 47、info 1150，与 HEAD 基线集合完全相同（页数 1379→1381），本次页面零条目。

@@ -7,7 +7,7 @@ tags:
   - scalability
 created: 2026-04-29
 last_updated: 2026-10-27
-source_count: 17
+source_count: 18
 references:
   - [[source-fast-long-horizon-forecasting]]
   - [[source-2602-01219-mita]]
@@ -192,7 +192,7 @@ MoE 把容量放在参数上、每次前向只激活一部分；[[recurrent-dept
 
 ## 谱系源头
 
-本页各现代形态共用的机制起点是 Shazeer et al. 2017 的 [[sparse-gated-moe-layer|稀疏门控 MoE 层]]：noisy top-k 门控、CV 平方 importance/load 双均衡损失、expert 单副本模型并行训练由该文首次作为完整系统落地[^src-shazeer-2017-sparse-moe]。
+本页各现代形态共用的机制起点是 Shazeer et al. 2017 的 [[sparse-gated-moe-layer|稀疏门控 MoE 层]]：noisy top-k 门控、CV 平方 importance/load 双均衡损失、expert 单副本模型并行训练由该文首次作为完整系统落地[^src-shazeer-2017-sparse-moe]。Mixtral 8x7B（Mistral AI, 2024）把该谱系带进开源 LLM：Mistral 7B 架构下每层 FFN 换成 8 个 SwiGLU 专家，router 取 Top-2 logits 做 softmax，无噪声项，论文未提及辅助均衡损失，47B 总参仅 13B 激活即多数基准持平 Llama 2 70B，机制与证据见 [[mixtral-of-experts]][^src-mistral-2024-mixtral]。
 
 [^src-fast-long-horizon-forecasting]: [[source-fast-long-horizon-forecasting]]
 [^src-most]: [[source-most]]
@@ -212,3 +212,4 @@ MoE 把容量放在参数上、每次前向只激活一部分；[[recurrent-dept
 [^src-qwen3-next-blog-2025-09]: [[source-qwen3-next-blog-2025-09]]
 [^src-shazeer-2017-sparse-moe]: [[source-shazeer-2017-sparse-moe]]
 [^src-lepikhin-2020-gshard]: [[source-lepikhin-2020-gshard]]
+[^src-mistral-2024-mixtral]: [[source-mistral-2024-mixtral]]
