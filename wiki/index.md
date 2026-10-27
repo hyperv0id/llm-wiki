@@ -142,6 +142,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-fast-long-horizon-forecasting]] — FaST: Efficient Long-Horizon Forecasting for Large-Scale STG via MoE (KDD 2026)
 - [[source-fedformer]] — FEDformer: frequency enhanced decomposed transformer (ICML 2022)
 - [[source-fedhint]] — FedHINT：联邦交通预测中从本地数据抽取隐藏全局成分生成代理节点以恢复跨客户端依赖，只上传模型参数；METIS 切 6 客户端，PEMS03/04/07/08（Zhou et al., AAAI 2026）
+- [[fedus-2022-switch-transformer]] — Switch Transformers: Scaling to Trillion Parameter Models with Simple and Efficient Sparsity：MoE 路由简化为 top-1 + 单一乘性辅助损失 $\alpha \cdot N\sum_e f_e P_e$，router 局部 float32 保 bfloat16 稳定训练；FLOP-matched 下 7 倍预训练加速、Switch-C 1571B/2048 expert、101 语言全增益（Fedus, Zoph & Shazeer, Google, JMLR 23 (2022)；PDF raw/switch-transformer-2101-03961.pdf）
 - [[source-feedback-guidance-diffusion-models-arxiv25]] — FBG: Feedback Guidance of Diffusion Models, 加性误差假设 + 马尔可夫后验追踪的状态相关动态引导尺度 (NeurIPS 2025)
 - [[source-fence]] — FENCE: Spatial-Temporal Feedback Diffusion Guidance for Controlled Traffic Imputation (AAAI 2026)
 - [[source-fgti]] — FGTI: Frequency-aware Generative Models for Multivariate Time Series Imputation, 高频/主频双频域条件 + time/attribute-frequency 跨域表示学习 + DDPM 条件扩散插补，命题 3.1 条件熵论证，KDD/Guangzhou/PhysioNet MCAR 10-40% 作者报告最优（NeurIPS 2024 官方 proceedings，PDF 内核实）
@@ -1331,6 +1332,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[stochastic-shared-embedding]] — SSE, stochastic shared embedding regularization for graph node embeddings (NeurIPS 2019, adapted 2026)
 - [[structural-token-sorting]] — STS，lead–lag 图上消息传递求 patch 重要性并重排 token，把图结构转译为自回归序列顺序 (LagLLM, ICML 2026)
 - [[swiglu]] — SwiGLU 及 GLU 变体前馈层：门控激活谱系、$d_{ff}$ 折算与 T5-base 对照结果
+- [[switch-transformer]] — Switch Transformer：把 MoE 路由砍到 top-1、负载均衡合并为单一乘性辅助损失（$\alpha{=}10^{-2}$），expert 容量减半、router 局部 float32 换 bfloat16 可训；FLOP-matched 7 倍预训练加速至 1.6T 参数（Fedus, Zoph & Shazeer, JMLR 2022）
 - [[task-adaptive-dynamic-prompting]] — TADP，从 WFM 编码器嵌入权重内生生成任务自适应软提示的 PEFT 技术（WeatherPEFT, ICLR 2026）
 - [[task-arithmetic]] — 任务向量算术：微调位移的加减组合与编辑
 - [[temporal-decoder]] — TiDE per-horizon residual fusion of decoded vectors with projected future covariates

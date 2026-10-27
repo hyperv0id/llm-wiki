@@ -6,7 +6,7 @@ tags:
   - gating-function
   - pretraining
 created: 2026-07-20
-last_updated: 2026-07-20
+last_updated: 2026-10-27
 source_count: 1
 confidence: medium
 status: active
@@ -18,7 +18,7 @@ status: active
 
 ## 动机
 
-标准 MoE 门控使用随机初始化的线性层 $G(x) = \text{Softmax}(\text{TopK}(x \cdot W_g))$（Shazeer et al., 2017; Jiang et al., 2024），从头学习路由映射。但随机初始化可能导致次优的专家分配，尤其在训练早期。受 Sparse Upcycling (Komatsuzaki et al., 2022) 和 Qwen 等从 dense checkpoint 初始化 MoE 的启发，簇基门控利用已有预训练模型的表示知识为专家分配提供更好的归纳偏置。
+标准 MoE 门控使用随机初始化的线性层 $G(x) = \text{Softmax}(\text{TopK}(x \cdot W_g))$（Shazeer et al., 2017; Jiang et al., 2024），从头学习路由映射；后续 [[switch-transformer|Switch Transformer]] 把这类路由简化为 top-1 并改用乘性辅助损失。但随机初始化可能导致次优的专家分配，尤其在训练早期。受 Sparse Upcycling (Komatsuzaki et al., 2022) 和 Qwen 等从 dense checkpoint 初始化 MoE 的启发，簇基门控利用已有预训练模型的表示知识为专家分配提供更好的归纳偏置。
 
 ## 技术细节
 

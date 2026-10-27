@@ -1,3 +1,11 @@
+## [2026-10-27] ingest | Switch Transformers（arXiv:2101.03961, JMLR 2022）
+
+把 MoE 路由简化为 top-1 并改用单一乘性辅助损失 $\alpha \cdot N\sum_e f_e P_e$（$\alpha{=}10^{-2}$，均匀路由时损失退化为 $\alpha$），expert 容量减半、派发通信简化；bfloat16 训练靠 selective precision（仅 router 函数体内 float32）与初始化尺度缩 10 倍稳定。证据（表号回打）：Table 1 FLOP-matched 下 Switch-Base 容量因子 1.0 时 62.8h 达标对 MoE 80.1h；Fig. 4–6 64 expert 达 T5-Base 质量省 7.5 倍步数/7 倍墙钟；Table 9 Switch-XXL 500k 步 -1.008 对 T5-XXL -1.095、Switch-C 1571B/2048 expert 快 4 倍；Table 5 微调 SuperGLUE 79.5 vs 75.1；Fig. 7–8 mT5 101 语言全增益、平均 5 倍加速；蒸馏 97–99% 压缩保留约 30% 增益（Table 6–8）。边界：Switch-XXL 间歇不稳定，最大档上游优势未完全转化为推理型下游（§8、附录 E）。谱系锚点 [[sparse-gated-moe-layer]] 与 [[gshard]] 库内尚无对应页面，按悬空 wikilink 处理，前作口径取自本文 §2.1–2.2 的转述。
+创建的页面：[[switch-transformer]], [[fedus-2022-switch-transformer]]
+更新的页面：[[cluster-based-gating]]（动机段补一句 Switch 谱系反链）, [[index]]（Sources/Techniques 各一条）
+ingest 报告：[[ingest-reports/2026-10-27-switch-transformer|WHY 报告]]
+数值备注：任务简报中四项不在本源（Router z-loss、微调 expert 扩容 +4%、容量因子微调放大 2.5/5–10、附录 hierarchical 与编码器容量上限推导），系与 ST-MoE（Zoph et al., 2022）混淆，均未写入；Table 11 图注 "(lower is better)" 与附录 C 正文"jitter 最好"矛盾（jitter 值最高），两说并列；无表格转换缺陷。
+
 ## [2026-10-27] lint | AttnRes ingest 核查（2 新页 + 4 关联文件）
 
 对照 raw/ 原文逐符号核查式 1–10、附录 B 式 11–17、6 个 Stage 数据流块与 Table 1–5/Fig. 4–8 数值，均与论文一致；修复 8 处，核心是 mHC(-lite) 对照口径：「五档全胜」与 Table 2 的 241M 档（mHC(-lite) 1.869 为全场最低）矛盾，改为论文正文口径与逐档数字并录；另改 Fig. 8 模型描述（16 块→16 头，$L_b{=}16$）、mHC(-lite) 归属档位（48B→scaling law）、删「唯一动机」、$\leq$528M 转 LaTeX。复跑 lint.py，severe/warn 无新增。
