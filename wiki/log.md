@@ -4482,3 +4482,14 @@ ingest 报告：[[ingest-reports/2026-10-27-mixtral|WHY 报告]]
 对照 raw 逐符号核查 §2.1 的 $y=\sum_{i=0}^{n-1}G(x)_iE_i(x)$ 与 $G(x)=\operatorname{Softmax}(\operatorname{TopK}(x\cdot W_g))$（TopK 置 $-\infty$）、4 个 Stage 维度块、Table 1–5 与 Figure 4–10 抽样数字，公式与数字零错。修 7 处：句法路由一句按原意改为「跨多 token 的词其各 token 同专家」（原文指词内多 token 同专家，非 self 与 Question 两词同专家）；Table 2/3 差异句补 [INFERENCE] 并注明论文未解释；辅助均衡损失表述 4 处（technique 页、source 页、谱系行、index 摘要）统一为「论文未提及」；source 页「独特贡献」改为「§5 显示」。
 更新的页面：[[mixtral-of-experts]], [[source-mistral-2024-mixtral]], [[mixture-of-experts]], [[index]]
 复跑 scripts/lint.py：severe 132、warn 47、info 1150，与 HEAD 基线集合完全相同（页数 1379→1381），本次页面零条目。
+## [2026-10-27] ingest | DeepSeekMoE: Towards Ultimate Expert Specialization in Mixture-of-Experts Language Models（arXiv:2401.06066v1）
+
+问题：GShard 式 top-$K$ 稀疏 MoE 的专家数少（8 或 16），单个专家被迫装杂糅知识，不同专家又重复学公共知识，专家特化受限。机制：细粒度分割把每个 FFN 专家沿中间维切 $m$ 份、总专家 $mN$、激活 $mK$（参数与算力同 top-$K$ 持平，$N=16,K=2,m=4$ 时激活组合数 $120\to4{,}426{,}165{,}368$），共享专家隔离抽出 $K_s$ 个恒激活、无门控权重的专家并把路由激活数降为 $mK-K_s$；门控为对专家质心的 softmax + top-$k$（无噪声、无 bias），负载均衡用 expert-level $f_iP_i$ 与 device-level $f_i'P_i'$，2B/16B 不丢 token。证据：2B/100B token 在总参、激活、4.3T FLOPs/2K token 对齐下 Pile loss 1.808 对 GShard 1.867，并与专家参数 1.5 倍的 GShard×1.5（2.83B、5.8T）同为 1.808（表 1、表 2）；16B（16.4B/2.8B）以 40.5% 计算量对 DeepSeek 7B（Pile BPB 0.74 对 0.75）、39.6% 对 LLaMA2 7B（HumanEval 26.8 对 14.6，表 3、表 4）；145B 仅训 245B token，Pile loss 1.876 对 GShard 137B 1.961、DeepSeek 67B 1.905，28.5% 计算量（表 6）。边界：选择题任务弱（MMLU 45.0 对 48.2，论文归因 attention 参数仅 0.5B），门控变体与 balance factor 无消融，145B 属初步结果。
+创建的页面：[[deepseekmoe]], [[source-dai-2024-deepseekmoe]]
+更新的页面：[[source-deepseek-v2-2405-04434]]（加一句指向新页，不展开）, [[gshard]]（谱系句补后继，source_count 1→2）, [[mixture-of-experts]]（GShard 节末补一段指针，source_count 17→18）, [[index]]（Sources/Techniques 各 1 条）
+ingest 报告：[[ingest-reports/2026-10-27-deepseekmoe|WHY 报告]]
+数值备注：图 3–6 的柱值、坐标刻度与部分图例数字在 PDF 文本层因字体编码偏移不可读，只取正文结论句；图 4 的屏蔽比例、图 5 的曲线数值正文未给；附录 B 实为「与更大模型对比」（表 8–10），不含专家分布图，冗余分析在 §4.5 与图 4–6；表 3 表注 40.5% 与正文「about 40%」并存，照录。
+## [2026-10-27] lint | DeepSeekMoE ingest 独立复核（2 新建 + 3 指针 + 1 报告）
+
+对照 raw/deepseekmoe-2401-06066.pdf 逐项核查式 (5)–(17)、5 个 Stage 维度块可乘性与规约轴、表 1–6/8–10 抽样数字、图 3–6 与 §4.5 结论句、附录表 10，公式与主要数字无误。修 15 处（11 处在 [[deepseekmoe]]，其余 4 处在既有页与 WHY 报告）：[[deepseekmoe]] 的 Stage 1 删去原文未限定的 softmax 求和范围断言、均衡损失「另加设备层」改为「逐专家计算 + 另加设备层」、表 1「11 项均为最高」改为「均最优（Pile loss 最低）」、Shazeer 行「合计激活 4」改为「随实验设定，多语 k=2」、机制表出处补 §4.1.3/§5.1.2、选择题弱点限定为对 DeepSeek 7B、2.5× 推理速度补「算子优化」前提、两处「全量 softmax」改为「softmax 原值/打分」、CV² 转 LaTeX、修错字；[[gshard]] 谱系句「组级均衡损失」改为「辅助负载均衡损失」；[[source-dai-2024-deepseekmoe]] 选择题对照点名 DeepSeek 7B；WHY 报告修正引句与一处虚标的反向链接。
+复跑 scripts/lint.py：severe 132 / warn 48 / info 1150，与修复前一致。既有未修：[[mixture-of-experts]] source_count=18 而正文与脚注各 19 个（HEAD 即 17 对 18），属既有账差。

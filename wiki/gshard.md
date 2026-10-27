@@ -9,14 +9,14 @@ tags:
   - scaling
 created: 2026-10-27
 last_updated: 2026-10-27
-source_count: 1
+source_count: 2
 confidence: medium
 status: active
 ---
 
 # GShard
 
-GShard（Lepikhin et al., Google, ICLR 2021）将稀疏门控 [[mixture-of-experts|MoE]] 从 Shazeer 2017 的 LSTM 语言模型推进至 Transformer 与 600B 参数规模：以单一非集成模型训练 100→英语多语言翻译，在 2048 块 TPU v3 上 4 天内完成[^src-lepikhin-2020-gshard]。它同时是一套系统，结合轻量 sharding 注解 API 与 XLA 编译器扩展，将整个加速器集群视作单一设备自动分片[^src-lepikhin-2020-gshard]。在 [[mixture-of-experts]] 收录的谱系中，它位于 Shazeer 稀疏门控 MoE 之后、Switch Transformer（尚未入库）之前。
+GShard（Lepikhin et al., Google, ICLR 2021）将稀疏门控 [[mixture-of-experts|MoE]] 从 Shazeer 2017 的 LSTM 语言模型推进至 Transformer 与 600B 参数规模：以单一非集成模型训练 100→英语多语言翻译，在 2048 块 TPU v3 上 4 天内完成[^src-lepikhin-2020-gshard]。它同时是一套系统，结合轻量 sharding 注解 API 与 XLA 编译器扩展，将整个加速器集群视作单一设备自动分片[^src-lepikhin-2020-gshard]。在 [[mixture-of-experts]] 收录的谱系中，它位于 Shazeer 稀疏门控 MoE 之后、Switch Transformer（尚未入库）之前。后继的 [[deepseekmoe]] 保留 top-$K$ 路由与辅助负载均衡损失的框架，但把每个专家切细并隔离出恒激活的共享专家[^src-dai-2024-deepseekmoe]。
 
 ## 问题
 
@@ -158,3 +158,4 @@ SPMD 分割后，replicated 权重、distributed 权重与激活在单设备上�
 MoE(2048E, 60L)、bfloat16 激活与 1T 权重的试跑因数值稳定问题未收录结果，正式训练采用 float32 权重与激活（§4.3）[^src-lepikhin-2020-gshard]。组容量 $C = O(1/D)$ 受 $C \geq 1$ 约束，无法无限扩展（§5.2）[^src-lepikhin-2020-gshard]。溢出 token 的 MoE 贡献被整体丢弃，§2.2 给出定义但全文未报告溢出率数字[^src-lepikhin-2020-gshard]。参数计数不总与规模下的有效容量对应，模型比较需结合问题属性与运行模式（§7）[^src-lepikhin-2020-gshard]。实验仅覆盖多语言翻译，辅助损失权重 $k$、capacity factor 与 top-1/top-2 等设定直接固定给出，未作消融（§4.4）[^src-lepikhin-2020-gshard]。
 
 [^src-lepikhin-2020-gshard]: [[source-lepikhin-2020-gshard]]
+[^src-dai-2024-deepseekmoe]: [[source-dai-2024-deepseekmoe]]

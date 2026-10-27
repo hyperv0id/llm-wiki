@@ -46,7 +46,7 @@ FaST 选择 Dense MoE 的原因：GLU experts 的并行计算可以在单个 GPU
 
 ## 稀疏 MoE 的大规模化起点（GShard）
 
-稀疏 MoE 走到 Transformer 规模化的工程起点是 [[gshard]]（Lepikhin et al., Google, ICLR 2021）：把每隔一个 FFN 层替换为 position-wise MoE 层，top-2 gating（第一 expert 确定性派发、第二 expert 以正比于 $2g_2$ 的概率随机派发）+ 组级辅助负载均衡损失 $\ell_{\mathrm{aux}}=\frac{1}{E}\sum_e (c_e/S)m_e$ + expert 容量限制，把多语言翻译 Transformer 推到 600B 参数，2048 TPU v3 上 4 天训完，100→英语平均 BLEU 44.3、较单语基线 +13.5，训练成本 22.4 core years 对 dense 基线 T(96L) 的约 235.5[^src-lepikhin-2020-gshard]。容量瓶颈消融（128→512 experts +3.3 BLEU、512→2048 仅 +1.3）与溢出直通机制都出自该论文；其 SPMD 自动分片编译器是模型侧条件计算之外的第二条主线。
+稀疏 MoE 走到 Transformer 规模化的工程起点是 [[gshard]]（Lepikhin et al., Google, ICLR 2021）：把每隔一个 FFN 层替换为 position-wise MoE 层，top-2 gating（第一 expert 确定性派发、第二 expert 以正比于 $2g_2$ 的概率随机派发）+ 组级辅助负载均衡损失 $\ell_{\mathrm{aux}}=\frac{1}{E}\sum_e (c_e/S)m_e$ + expert 容量限制，把多语言翻译 Transformer 推到 600B 参数，2048 TPU v3 上 4 天训完，100→英语平均 BLEU 44.3、较单语基线 +13.5，训练成本 22.4 core years 对 dense 基线 T(96L) 的约 235.5[^src-lepikhin-2020-gshard]。容量瓶颈消融（128→512 experts +3.3 BLEU、512→2048 仅 +1.3）与溢出直通机制都出自该论文；其 SPMD 自动分片编译器是模型侧条件计算之外的第二条主线。同一 top-$K$ 框架下的下一次结构性改动来自 [[deepseekmoe]]：每个专家沿中间维切成 $m$ 份、激活数提到 $mK$，再隔离 $K_s$ 个恒激活的共享专家；16B 规模以约 40% 计算量对标 7B dense[^src-dai-2024-deepseekmoe]。
 
 ## 异质性感知路由（HA-Router）
 
@@ -213,3 +213,4 @@ MoE 把容量放在参数上、每次前向只激活一部分；[[recurrent-dept
 [^src-shazeer-2017-sparse-moe]: [[source-shazeer-2017-sparse-moe]]
 [^src-lepikhin-2020-gshard]: [[source-lepikhin-2020-gshard]]
 [^src-mistral-2024-mixtral]: [[source-mistral-2024-mixtral]]
+[^src-dai-2024-deepseekmoe]: [[source-dai-2024-deepseekmoe]]

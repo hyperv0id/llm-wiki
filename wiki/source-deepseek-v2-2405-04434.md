@@ -21,7 +21,7 @@ status: active
 
 ## 核心论点
 
-DeepSeek-V2 是总参数 236B、激活参数 21B 的 MoE 语言模型，两项改动为：注意力侧用 [[multi-head-latent-attention|MLA]] 消除 KV cache 瓶颈，FFN 侧沿用 DeepSeekMoE（§1、§2）[^src-deepseek-v2-2405-04434]。论文以 7B dense 同参数对照论证 MQA/GQA 以质量换 cache：MHA 在 BBH/MMLU/C-Eval/CMMLU 上为 37.0/45.2/42.9/43.5，GQA(8 组) 为 35.6/41.2/37.7/38.4，MQA 为 33.2/37.9/30.0/34.6（表 8）[^src-deepseek-v2-2405-04434]。
+DeepSeek-V2 是总参数 236B、激活参数 21B 的 MoE 语言模型，两项改动为：注意力侧用 [[multi-head-latent-attention|MLA]] 消除 KV cache 瓶颈，FFN 侧沿用 DeepSeekMoE（§1、§2；机制见 [[deepseekmoe]]）[^src-deepseek-v2-2405-04434]。论文以 7B dense 同参数对照论证 MQA/GQA 以质量换 cache：MHA 在 BBH/MMLU/C-Eval/CMMLU 上为 37.0/45.2/42.9/43.5，GQA(8 组) 为 35.6/41.2/37.7/38.4，MQA 为 33.2/37.9/30.0/34.6（表 8）[^src-deepseek-v2-2405-04434]。
 
 ## 设置
 

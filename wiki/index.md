@@ -96,6 +96,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-cvpe-2025]] — CVPE: Enhancing CI Forecasting via Cross-Variate Patch Embedding (arXiv 2025)
 - [[source-cyclenet]] — CycleNet: modeling periodic patterns for time series forecasting (NeurIPS 2024)
 - [[source-dag]] — DAG: A Dual Correlation Network for TS Forecasting with Exogenous Variables（时间+通道双相关发现—注入，IJCAI 2026）
+- [[source-dai-2024-deepseekmoe]] — DeepSeekMoE：细粒度专家分割（$mN$ 个 $1/m$ 专家、激活 $mK$）+ 共享专家隔离（$K_s$ 个恒激活、无门控），expert-level 与 device-level 双均衡损失，2B/16B/145B 三档（Dai et al., DeepSeek-AI, arXiv:2401.06066v1；ACL 2024 著录来自用户）
 - [[source-dao-2022-flashattention]] — FlashAttention: IO-aware 精确注意力，tiling + online softmax 重缩放 + 反向重算，HBM 访问 $\Theta(N^2d^2M^{-1})$ 对标准 $\Theta(Nd+N^2)$（Dao et al., NeurIPS 2022, arXiv:2205.14135v2；PDF raw/flashattention-2205-14135.pdf）
 - [[source-dcrnn]] — DCRNN: Diffusion Convolutional Recurrent Neural Network for Traffic Forecasting (ICLR 2018)
 - [[source-ddim]] — DDIM: Denoising Diffusion Implicit Models (ICLR 2021), 确定性 ODE 加速采样
@@ -727,6 +728,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[d3vae-and-gcrdd-naming]] — D³VAE vs GCRDD 命名关系
 - [[dataset-stationarity-estimation]] — 基于矩统计量的数据集级平稳性估计，滑动窗口局部统计量跨窗口变异，O(NLC) 复杂度 (SARAF, KDD 2026)
 - [[deep-model-fusion]] — 深度模型融合：ensemble / merging / mixing 三分法与 learn-from-model 定位
+- [[deepseekmoe]] — DeepSeekMoE：把 top-$K$ 专家切成 $mN$ 个 $1/m$ 大小、激活 $mK$，再隔离 $K_s$ 个恒激活共享专家，配 expert-level/device-level 双均衡损失，2B 追平 1.5× 专家参数的 GShard、16B 以约 40% 计算量对标 7B dense
 - [[deep-state-space-model]] — 深度状态空间模型：用神经网络参数化/扩展经典线性 SSM（DeepState 等）
 - [[diffsequence]] — Diffsequence（差序列），Ramsey 理论中 gaps 落在指定集合的递增整数序列，van der Waerden 定理的自然推广
 - [[diffusion-memorization-geometry]] — 记忆现象的几何理论：Voronoi 单元吸收强度 σ₀（重复样本抬权重）、渐近最优 denoiser 必然重现训练点、泛化要求终端 denoiser 逼近真实流形投影
