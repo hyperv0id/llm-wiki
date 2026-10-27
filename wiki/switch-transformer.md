@@ -127,4 +127,4 @@ Switch-XXL 间歇不稳定且未训满 1M 步，Switch-C 与 Base/Large 则未�
 
 前两列损失与精度口径来自 Switch 论文 §2.2 的转述（其将 2017 双损失到 GShard 单损失的演化作为自身起点），GShard 侧细节以其原文为准。
 
-[^src-switch-transformer-2101-03961]: [[fedus-2022-switch-transformer]]
+[^src-switch-transformer-2101-03961]: [[source-fedus-2022-switch-transformer]]
