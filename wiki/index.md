@@ -323,6 +323,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-score-based-generative-models]] — TODO
 - [[source-sde]] — Score-Based SDE: Unified framework for SMLD and DDPM (ICLR 2021)
 - [[source-seed-2024-hyper-connections]] — Hyper-Connections：可学习 depth/width 连接替代残差连接，超隐矩阵 $n$ 流 + 每层 $(n{+}1)\times(n{+}1)$ 连接矩阵（动态生成 + 静态学习），Pre/Post-Norm 为 $n{=}1$ 非训练特例；OLMo 1B/7B 与 OLMoE 500B tokens 全面增益（1B V2 loss 2.811→2.781，OLMoE ARC-C 41.8→47.8、收敛 1.8×），DiT/ViT 同增益，参数 +0.03%/FLOPs +0.2%（Zhu et al., ByteDance Seed, ICLR 2025, arXiv:2409.19606v3；PDF raw/hyper-connections-2409-19606.pdf）
+- [[source-seed-2025-ouro]] — Ouro：权重共享的 24/48 层栈循环 4 轮、每步插 LM head 与退出门，均匀先验熵正则 + Stage II 门训练；1.4B/2.6B 用 7.7T token 预训练，BBH 71.02/80.46、MATH500 82.40/90.85，同参数小规模对照仍落后标准 Transformer（ByteDance Seed 等, arXiv:2510.25741v6；PDF raw/ouro-2510-25741.pdf）
 - [[source-select-then-balance]] — Select, then Balance 旧 slug（已由 [[source-exost]] 取代；同文 arXiv only）
 - [[source-shaw-2018-relative-position]] — Self-Attention with Relative Position Representations：相对偏移的可学习向量加到 K/V（$2k+1$ 标签 + 裁剪距离 $k$），big 模型 EN-DE +1.3 BLEU（Shaw/Uszkoreit/Vaswani, Google, arXiv:1803.02155v1, 2018）
 - [[source-shazeer-2017-sparse-moe]] — Outrageously Large Neural Networks：Sparsely-Gated MoE 层原始论文，noisy top-k 门控 + CV² importance/load 均衡损失 + 混合并行训练，137B LSTM MoE，1B/100B word 与 WMT'14 证据（Shazeer et al., Google Brain, arXiv:1701.06538, ICLR 2017；PDF raw/shazeer-2017-sparse-moe-1701-06538.pdf）
@@ -1246,6 +1247,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[opencity]] — OpenCity, spatio-temporal traffic foundation model with TimeShift Transformer + instance norm for zero-shot prediction (arXiv 2024)
 - [[ordinal-consistent-loss]] — 有序一致性损失，条件概率公式强制降水强度单调性，BCE + 有序掩码保证概率一致性
 - [[ordinal-temporal-fusion]] — fusing temporal and ordinal signals with learnable gate
+- [[ouro]] — Looped Language Model：整栈 24/48 层循环 4 轮，每轮 LM head + 退出门，退出分布加权 NLL + 均匀先验熵正则，q 分位早停；7.7T token 下 1.4B/2.6B 对齐 4B/8B dense，解码期只留末轮 KV
 - [[paged-attention]] — 分页 KV cache 管理：逻辑块→物理块块表 + 块级引用计数/写时复制，注意力按块 gather；有效显存 96.3%，注意力 kernel 慢 20%–26%（vLLM, SOSP 2023）
 - [[patch-based-tokenization]] — converting time series into overlapping patch tokens for transformer input
 - [[patch-low-frequency-forecasting]] — PLFM 技术：重叠 patch 频谱 + 低通监督 + FALoss 的低频趋势学习 (LoFT-LLM)

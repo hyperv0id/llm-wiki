@@ -8,8 +8,8 @@ tags:
   - interpretability
   - monitorability
 created: 2026-10-25
-last_updated: 2026-10-25
-source_count: 2
+last_updated: 2026-10-27
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -24,13 +24,15 @@ Latent reasoning 指模型在**连续隐状态**里完成推理计算，不把�
 
 代价也在同一处：进入隐空间后，中间计算失去文字形式。论文附录 A 自陈这"相比可读的思维链带来模型监督上的代价"，只提供了轨迹可视化的初步结果作为缓解[^src-2502-05171-recurrent-depth]。
 
-## 机制证据（Huginn）
+## 机制证据（Huginn、Ouro）
 
 同一组权重、同一份数据下只改循环次数，可以直接测出 latent 迭代承担了多少计算[^src-2502-05171-recurrent-depth]：
 
 - 只过 core 一次（$r=1$）时，0.8T checkpoint 的 GSM8K CoT 为 0.00、ARC-C 24.06、HellaSwag 29.34；$r=32$ 时分别到 34.80/42.08、38.23、65.21（Table 4）[^src-2502-05171-recurrent-depth]。
 - 显式 CoT 的增益依赖循环打底：同一 checkpoint 加系统提示后，GSM8K 从 24.87/38.13（直接作答）到 34.80/42.08（CoT）；而 $r=1$ 时 CoT 完全不起作用（0.00）[^src-2502-05171-recurrent-depth]。
 - 180B 早期 checkpoint 上，循环模型 GSM8K CoT 9.02 对同设置固定深度基线 1.82，差距来自架构而非训练量[^src-2502-05171-recurrent-depth]。
+
+Ouro 把同一路线扩到 7.7T token：每轮都接 LM head 与退出门，损失按退出分布加权；1.4B/2.6B 在 4 轮下分别对齐 4B/8B dense，Thinking 版 AIME24 为 65.0/64.7（Table 7–9）[^src-seed-2025-ouro]。论文的小规模 scaling law 里，同参数标准 Transformer 的平均基准分仍高于 LoopLM，差距随轮数增大、随模型规模减小（Table 18）[^src-seed-2025-ouro]。
 
 ## 表征层面的观察
 
@@ -62,7 +64,9 @@ Latent reasoning 指模型在**连续隐状态**里完成推理计算，不把�
 ## 相关页面
 
 - [[recurrent-depth]] — 承载 latent 迭代的架构本身
+- [[ouro]] — 把整栈循环扩到 7.7T token 的一手论文页
 - [[test-time-computing-st]] — 时空预测里的 inference-time 计算，与本文的 LLM 侧 test-time compute 不是同一问题设定
 
 [^src-2502-05171-recurrent-depth]: [[source-2502-05171-recurrent-depth]]
 [^src-tosea-looped-transformer]: [[source-tosea-looped-transformer]]
+[^src-seed-2025-ouro]: [[source-seed-2025-ouro]]

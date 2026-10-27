@@ -28,7 +28,7 @@ status: active
 - The Information 2026-09-01 报道 OpenAI 的 Astra 使用 recurrent depth；OpenAI 未确认也未否认该架构说法[^src-tosea-looped-transformer]。
 - OpenAI 首席科学家 2026-09-02 回应称当前前沿模型（含 Astra）的计算图深度「在 GPT-4 的两倍以内」，博客把这条标为「已确认、测量未公开」[^src-tosea-looped-transformer]。
 - 2025-07 的 CoT monitorability 立场论文在 "Novel architectures" 一节点名 Coconut 与循环深度一线，认为 latent 推理可能失去 CoT 的安全优势；博客强调该文作者含 OpenAI 首席科学家本人[^src-tosea-looped-transformer]。
-- 谱系表：Universal Transformers 2018 → ALBERT 2019 跨层共享 → Coconut 2024 → Huginn 2025 → Mixture-of-Recursions 2025 → Ouro/LoopLM 2025（学习退出）[^src-tosea-looped-transformer]。
+- 谱系表：Universal Transformers 2018 → ALBERT 2019 跨层共享 → Coconut 2024 → Huginn 2025 → Mixture-of-Recursions 2025 → Ouro/LoopLM 2025（学习退出）[^src-tosea-looped-transformer]。Ouro 一条现已入库一手源 [[source-seed-2025-ouro]]，结构见 [[ouro]]。
 
 以上均只有这一手二手来源，本 wiki 不据此对任何厂商架构下事实断言。
 

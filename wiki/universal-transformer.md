@@ -9,7 +9,7 @@ tags:
   - language-model
 created: 2026-10-27
 last_updated: 2026-10-27
-source_count: 1
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -141,6 +141,7 @@ ACT 在机器翻译上轻度降低结果（§1）[^src-dehghani-2019-universal-t
 
 ## 谱系与后续
 
-UT 定位于与 Neural GPU 及 Neural Turing Machine 同族的「并行 RNN 块」（§4）：与仅绑定自注意力层的 Recursive Transformer 相比，UT 连同 transition 一并绑定，同时在自然语言任务上具备竞争力[^src-dehghani-2019-universal-transformers]。后续循环深度路线见 [[recurrent-depth]]：Huginn 将 UT 列为 recurrent depth 重复发现的一环；两者差异在于 Huginn 采用块级共享、无停机且每轮重注入输入嵌入，UT 采用全层共享、ACT 逐位置停机并在每步重新叠加正弦位置-时间编码（对照见该页谱系段）。逐位置编码见 [[sinusoidal-positional-encoding]]；长度外推见 [[position-extrapolation]]；基础对照见 [[transformer-architecture]]。
+UT 定位于与 Neural GPU 及 Neural Turing Machine 同族的「并行 RNN 块」（§4）：与仅绑定自注意力层的 Recursive Transformer 相比，UT 连同 transition 一并绑定，同时在自然语言任务上具备竞争力[^src-dehghani-2019-universal-transformers]。后续循环深度路线见 [[recurrent-depth]]：Huginn 将 UT 列为 recurrent depth 重复发现的一环；两者差异在于 Huginn 采用块级共享、无停机且每轮重注入输入嵌入，UT 采用全层共享、ACT 逐位置停机并在每步重新叠加正弦位置-时间编码（对照见该页谱系段）。Ouro 也把 UT 列为这条线的源头，并在此之上加入每轮 LM head、退出门与均匀先验的熵正则深度分配（[[ouro]]）[^src-seed-2025-ouro]。逐位置编码见 [[sinusoidal-positional-encoding]]；长度外推见 [[position-extrapolation]]；基础对照见 [[transformer-architecture]]。
 
 [^src-dehghani-2019-universal-transformers]: [[source-dehghani-2019-universal-transformers]]
+[^src-seed-2025-ouro]: [[source-seed-2025-ouro]]

@@ -4533,9 +4533,21 @@ ingest 报告：[[ingest-reports/2026-10-27-auxfree|WHY 报告]]
 更新的页面：[[compressed-sparse-attention]]（谱系段加 CSA2 后继，source_count 5→6）, [[heavily-compressed-attention]]（V4.1 取消 HCA 支路，source_count 2→3）, [[deepseek-v4-hybrid-attention]]（加纯 CSA2 + CED 替代句，source_count 1→2）, [[manifold-constrained-hyper-connections]]（Single-Pass mHC 与 Mega-mHC 访存，source_count 2→3）, [[index]]（Sources 1 条 + Techniques 2 条）
 ingest 报告：[[ingest-reports/2026-10-27-v4-1-flash|WHY 报告]]
 数值备注：§2.3 未给 CSA2 的压缩器公式（只给与 CSA 的差异），Stage 1–2 按 CSA 式 (11)(12) 去重叠的同形写法补并标 [INFERENCE]；§3.2.2「2$L$ 个解码器层」与解码器 $L/2$ 层冲突，按 $L/2$ 理解；CED 式 (1) 的逐层 $W_l^{KV}$ 与 §2.3.1「只有 Full 层物化全局 KV」并置，按后者理解才与 890 bytes/token 自洽（反算差约 1%）。
-
 ## [2026-10-27] lint | V4.1-Flash ingest 独立核查（就地修 14 处）
 
 对照 arXiv:2609.19969 核 §1、§2.2–2.3.2、§2.4.4、§3.2、§4.2.1、§6、Table 1/3 与 csa2/ced 的 aligned 块：Stage 9 分组输入应为 $4096$（$64/8\times512$）而非 2048；Reindex 只复用 Full 层的主 KV；CSA 侧无「未压缩」形态，HCA 不能记成未压缩；HSI 块大小与 top-$512$ 的关系是 $4{,}096<16{,}384$；层配比与 Figure 1b 口径收窄；反算差约 1.1%，不写「≤1%」；式(1) 注释限于全局 KV。两处后继指针补 §1。
 更新的页面：[[csa2]], [[ced]], [[deepseek-v4-hybrid-attention]], [[heavily-compressed-attention]], [[log]]；ingest 报告同步容差
 复跑 scripts/lint.py：severe 132、warn 47、info 1147，本次页面零条目
+## [2026-10-27] ingest | Scaling Latent Reasoning via Looped Language Models（Ouro, arXiv:2510.25741v6）
+
+问题：CoT 把推理推到后训练与生成 token，循环深度想在预训练阶段用隐状态迭代提供第三条扩展轴。机制：同一组 24/48 层 Transformer 栈循环 4 轮，每轮接 LM head 与退出门，损失按退出分布加权各步 NLL 并加均匀先验熵正则（$\beta$ 0.1→0.05），Stage II 冻结 LM 用损失下降量训门，推理按 CDF 的 $q$ 分位早停；7.7T token 下 1.4B/2.6B 报告对齐 4B/8B dense（BBH 71.02/80.46、MATH500 82.40/90.85，Table 7–8），但同参数小规模对照标准 Transformer 仍高 0.015–0.039（Table 18）。边界：只在 $T=4$ 训练、外推退化，RLVR 未超过 SFT，prefill 不能共享 KV。
+创建的页面：[[ouro]], [[source-seed-2025-ouro]]
+更新的页面：[[index]]（Sources/Techniques 各 1 条）, [[recurrent-depth]]（谱系段加 Ouro 指针，source_count 3→4）, [[universal-transformer]]（谱系段加 Ouro 指针，source_count 1→2）, [[latent-reasoning]]（机制证据加 Ouro 一段，source_count 2→3）, [[source-tosea-looped-transformer]]（谱系表加一手源指针）
+ingest 报告：[[ingest-reports/2026-10-27-ouro|WHY 报告]]
+数值备注：任务书假设的「MTP/中间监督插入」在论文中不存在，中间监督是每轮 LM head + 退出门；预训练是四段数据加门的 Stage I/II 两段；摘要「up to 12B」与 §5.1「4B/8B」、结论「4B/8B」口径不一；Table 18 的规模（170M/340M/680M/1.3B）与 §D.1 的五档（53M–1.36B）不一致，论文未解释；Figure 2 雷达图标签在 PDF 文本层拆散、数值与 Table 9 一致，页面统一取 Table 9；Figure 6 右表为图内嵌表、无表号；Figure 8 基座安全只有曲线无数值表；scaling law 只给函数形式与 $R^2$，未给拟合系数。
+## [2026-10-27] lint | Ouro ingest 独立核查（就地修 6 处）
+
+对照 arXiv:2510.25741v6 核式 (1)–(6)、Stage 1–7 维度链、Table 7–15/18、Figure 8–9 与 §D–E 的 scaling law，公式与抽样数字无错；修 6 处：Theorem 1 对照表的 Universal Transformer 步数由 $\log^2$ 改为原文 $\log$、Stage 7 的「低阶项」补 $M\gg d$ 条件、Table 18 的 170M–1.3B 标签与 §D.1 五档并列、§5.4.1 的 67.35 与 Table 10 的 67.45 并存标注，以及 WHY 报告与 log 里 Figure 2「数值不可读」的误述。
+更新的页面：[[ouro]]
+lint 报告：lint-reports/2026-10-27.md
+复跑 scripts/lint.py：severe 132、warn 47、info 1147，本次页面零条目（无新增 severe）。
