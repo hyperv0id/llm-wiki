@@ -128,5 +128,7 @@ $n=1$ 劣于基线，$n>1$ 是收益前提（Table 1；Appendix F）[^src-hyper-
 
 [[manifold-constrained-hyper-connections|mHC]] 保留 HC 的多流拓扑，把流间混合矩阵投影到双随机矩阵流形以恢复恒等映射。mHC 将 HC 的 $\mathbf{A_m} / \mathbf{A_r} / \mathbf{B}$ 改记为 $H^{pre} / H^{res} / H^{post}$（其中 $\mathbf{A_m}$ 与 $H^{pre}$ 互为转置），动态分量改用 RMSNorm 实现；记号与术语沿用 HC 原文[^src-hyper-connections][^src-mhc-manifold-constrained-hyper-connections]。
 
+谱系后续：[[attnres|Attention Residuals]] 把 HC 一类多流递归统一为深度维线性注意力，并以深度维 softmax 注意力直接检索各层输出。
+
 [^src-hyper-connections]: [[source-seed-2024-hyper-connections]]
 [^src-mhc-manifold-constrained-hyper-connections]: [[source-mhc-manifold-constrained-hyper-connections]]

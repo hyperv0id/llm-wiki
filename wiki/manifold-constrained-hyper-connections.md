@@ -103,6 +103,7 @@ DeepSeek-V4 系列将 mHC 用于全部 Transformer 块：两模型均取 $n_{hc}
 ## 相关概念
 
 [[hyper-connections|Hyper-Connections (HC)]] 是 mHC 的前置方法，[[birkhoff-polytope|Birkhoff 多面体]] 是 mHC 使用的双随机矩阵流形，[[sinkhorn-algorithm|Sinkhorn-Knopp 算法]] 是实现 Birkhoff 投影的迭代归一化方法，[[identity-mapping-property|Identity Mapping Property]] 是 mHC 力图恢复的残差核心性质，[[residual-connections-as-diffusion|Residual Connections as Euler Steps of Reverse Diffusion]] 提供了残差连接的另一种宏观视角。
+谱系后续：[[attnres|Attention Residuals]] 把（m）HC 的流间混合读作深度维线性注意力，改用深度维 softmax 注意力直接访问各层输出。
 
 [^src-mhc-manifold-constrained-hyper-connections]: [[source-mhc-manifold-constrained-hyper-connections]]
 [^src-deepseek-v4-2606-19348]: [[source-deepseek-v4-2606-19348]]

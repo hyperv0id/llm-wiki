@@ -235,6 +235,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-module-embedding-theorem-towers-algebras]] — Module Embedding Theorem via Towers of Algebras: Markov towers 进路推广 Jones-Penneys 嵌入定理至任意循环模，arXiv 2018
 - [[source-moirai-moe]] — Moirai-MoE: 首个 Sparse MoE 时间序列基础模型，token 级专业化替代频率级数据分组，cluster-based gating + next-token prediction，39 数据集 SOTA，ICML 2025（Salesforce）
 - [[source-moonshot-2025-kimi-linear]] — Kimi Linear：KDA（GDN 的逐通道对角门扩展，DPLR $a{=}b{=}k$ 特化分块算法）+ 3:1 KDA/MLA 混合（MLA 全 NoPE），48B/3B 激活；1.4T 同配方对照短/长上下文与 RL 全面超 full MLA，KV cache 省 75%、1M 解码至多 6.3×，RULER@1M 94.8（Kimi Team, Moonshot AI, arXiv:2510.26692v2；PDF raw/kimi-linear-2510-26692.pdf）
+- [[source-moonshot-2026-attnres]] — AttnRes: Attention Residuals，把固定权重残差累加换成深度维 softmax 注意力（每层一个零初始化伪查询 + 键上 RMSNorm），Block 变体显存/通信 $O(Ld)\to O(Nd)$；五档 scaling law 均低于基线、Block 等效 1.25× 计算、48B/1.4T 十五基准十四升一平（Kimi Team, Moonshot AI, arXiv:2603.15031v1；PDF raw/attnres-2603-15031.pdf）
 - [[source-most]] — MoST: A Foundation Model for Multi-modality Spatio-temporal Traffic Prediction (KDD 2026)
 - [[source-motm]] — MoTM: Towards a Foundation Model for Time Series Imputation based on Continuous Modeling，连续时间 INR 插补基础模型 (AALTD/ECML 2025 口头报告)
 - [[source-mrcr-dataset]] — OpenAI MRCR 数据集卡：多实例绑定、随机前缀与 SequenceMatcher；与论文 MRCRv2 命名的对应缺口
@@ -939,6 +940,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[attention-entropy-collapse]] — attention distribution becoming one-hot during training
 - [[attention-logit-explosion]] — training instability from unbounded attention scores
 - [[attention-temperature-scaling]] — YaRN's technique to control attention entropy via temperature
+- [[attnres]] — Attention Residuals，深度维 softmax 注意力替代固定残差累加：单伪查询 + 块级压缩（$N\approx 8$ 恢复大部分收益）；(m)HC 统一为深度维线性注意力、AttnRes 为深度维 softmax 注意力；Block 等效 1.25× 计算
 - [[average-velocity-modeling]] — 平均速度建模，预测区间条件化平均速度替代瞬时速度 + JVP 修正优化目标 (CoGenCast, ICML 2026)
 - [[bam]] — BAM, Bidirectional Attention Mamba for intra-channel dependency in diffusion denoising (KDD 2025)
 - [[band-limited-temporal-decomposition]] — 按 DFT 有效频带切带、带外置零后 IFFT 回时域，得到 $P$ 条 band-limited 时域视图

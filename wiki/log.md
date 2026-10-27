@@ -1,3 +1,17 @@
+## [2026-10-27] lint | AttnRes ingest 核查（2 新页 + 4 关联文件）
+
+对照 raw/ 原文逐符号核查式 1–10、附录 B 式 11–17、6 个 Stage 数据流块与 Table 1–5/Fig. 4–8 数值，均与论文一致；修复 8 处，核心是 mHC(-lite) 对照口径：「五档全胜」与 Table 2 的 241M 档（mHC(-lite) 1.869 为全场最低）矛盾，改为论文正文口径与逐档数字并录；另改 Fig. 8 模型描述（16 块→16 头，$L_b{=}16$）、mHC(-lite) 归属档位（48B→scaling law）、删「唯一动机」、$\leq$528M 转 LaTeX。复跑 lint.py，severe/warn 无新增。
+更新的页面：[[attnres]], [[source-moonshot-2026-attnres]], [[index]]
+
+## [2026-10-27] ingest | Attention Residuals（AttnRes，arXiv:2603.15031）
+
+把残差连接对全部前序层输出的固定单位权重累加换成深度维 softmax 注意力：每层一个零初始化伪查询 $w_l$ + 键上 RMSNorm，凸组合聚合；Block 变体块内标准残差、跨块只对块级表示做注意力，显存/通信 $O(Ld)\to O(Nd)$，配跨 stage 缓存与两阶段 online softmax 推理。理论侧把标准残差/Highway/（m）HC 统一为深度维线性注意力（$M$ 半可分离秩 1/$m$），AttnRes 为深度维 softmax 注意力（Full 秩 $L$、Block 介于 $N$ 与 $N+S$）。证据：五档 scaling law 均低于基线（436M 档 Full 1.737、mHC(-lite) 1.747、基线 1.766；241M 档 mHC(-lite) 1.869 为全场最低），Block 等效 1.25× 计算；48B/1.4T Kimi Linear 十五基准十四升一平（GPQA-D +7.5）；训练 PP 下 <4%、推理 <2% 开销。边界：Full 的 $O(Ld)$ 显存当前硬件不可行，故取 $N\approx 8$；深度偏好不作部署建议。
+
+创建的页面：[[attnres]], [[source-moonshot-2026-attnres]]
+更新的页面：[[hyper-connections]]（末尾补一行谱系句）, [[manifold-constrained-hyper-connections]]（相关概念补一行谱系条目）, [[index]]（Sources/Techniques 各一条）
+ingest 报告：[[ingest-reports/2026-10-27-attnres|WHY 报告]]
+数值备注：无。表格（Table 1–5）与图内数值（Fig. 4–8）均可从 PDF 文本层回打；Fig. 6 各 $S$ 档取值为图内标签，正文口径（$S{=}2/4/8\approx 1.746$）已并列。
+
 ## [2026-10-26] ingest | Fast Transformer Decoding: One Write-Head is All You Need（MQA，arXiv:1911.02150）
 
 MQA 去掉 K/V 的 head 维、保留 query 的 head 维：$H$ 组 query 共享一份 $K,V$，打分与加权仍逐 head 独立，拼头投影不变。解码单步 K/V 读字节 $8bHMd_k\to 8bMd_k$、乘加数不变，算术强度 0.5→4 FLOP/byte（$H=8$），瓶颈由算力换成带宽；每步重写整段 K/V 的开销同比例下降，标题的 write-head 指写入记忆的这一端。WMT14 EN-DE dev $\ln(\text{PPL})$ 1.424→1.439、test beam-4 BLEU 28.4→28.5；Billion-Word dev PPL 29.9→30.2；单张 TPUv2 8 核、序列长 128、batch 1024 下解码 46→3.8 µs/token（12.1×，beam-4 203→32），训练 13.2→13.0 与 encoder 1.7→1.5 几乎不动，局部注意力叠加后 3.3 µs。v1 无附录，kernel 细节以 §2.4 伪代码与代码清单给出。
