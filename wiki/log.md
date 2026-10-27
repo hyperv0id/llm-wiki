@@ -3,7 +3,6 @@
 对照 raw/engram-2601-07372.pdf 逐项核查：4 个 Stage 的维度链（$d_h=1280/16=80$、$d_{\mathrm{mem}}=16\times80$、$W^V/W^{K(b)}:[1280,2560]$、残差 $[T,2560]$）、参数记账（27B 档 5.79B 对论文 5.7B、40B 档 18.53B）、Table 1 的 27 项逐项差值与 Table 2 全部数字、Table 4 的 1.92%/2.78%、Table 6 的 23.43%、Figure 3/5/6 的关键数值，以及「无 top-k 检索、无 KV 压缩/量化、无 STE」三条纠正与 10 条边界，均与原文一致。修 5 处：source-summary 原为 0 处内联引用，补 8 处并加 [[engram]] 回链；参数反推「差在四舍五入」改为「比论文 5.7B 高 0.09B」；MMLU 冲突补 §1 亦写 +3.4；§7 谱系句改回论文自述的两处差别（评测口径、系统位置）。复跑 lint.py：severe 132 / warn 47 / info 1147，与修前持平。
 更新的页面：[[engram]], [[source-deepseek-2026-engram]]
 lint 报告：lint-reports/2026-10-27.md
-
 ## [2026-10-27] ingest | Conditional Memory via Scalable Lookup: A New Axis of Sparsity for LLMs（Engram, arXiv:2601.07372v2）
 
 问题：Transformer 没有原生查表原语，命名实体与固定搭配这类静态模式要靠早期注意力与 FFN 逐层重建，占掉本可用于推理的深度。机制：后缀 $N$-gram 先经词表压缩（128k 词表缩小 23.43%）与 8 头乘法-XOR 哈希映射到素数槽位表，每 token 固定读 $(N-1)K=16$ 行拼成 1280 维记忆向量，用当前隐藏状态做 query 的 sigmoid 门控，接 depthwise 因果卷积后以残差注入第 2、15 层；表可分片训练（All-to-All 收集活跃行、回传梯度），推理按确定性下标预取并可整体卸载到主机内存。证据：固定总参与激活参数下按 $\rho$ 分配 MoE 专家与 Engram 槽位，5.7B/9.9B 两档均呈 U 形，约 20%–25% 稀疏预算给 Engram 最优（9.9B 档验证 loss 1.7248→1.7109）；Engram-27B（3.8B 激活、262B token）在 Table 1 的 27 项下游基准全部高于同参同 FLOPs 的 MoE-27B（BBH +5.0、CMMLU +4.0、HumanEval +3.0）；Table 2 长上下文 MQ NIAH 97.0 vs 84.2、VT 89.0 vs 77.0；Table 4 100B 表卸载吞吐损失最高 2.8%。边界：40B 疑似欠训练，只系统测 2/3-gram，长上下文只到 32k，未给哈希碰撞率与表精度，也未与 NSA/DSA 同台。
@@ -11,6 +10,13 @@ lint 报告：lint-reports/2026-10-27.md
 更新的页面：[[index]]（Sources/Techniques 各 1 条）
 ingest 报告：[[ingest-reports/2026-10-27-engram|WHY 报告]]
 数值备注：摘要 MMLU +3.4 与 Table 1/§4.2 的 +3.0 不一致，两处并列；§3.1 称 "10B regime" 而 $P_{\rm tot}\approx9.9$B；摘要 "<3%" 与 Table 4 最大 2.8% 一致；Figure 5 消融与 Figure 6 保留率只有曲线/范围，正文无逐项数值；Table 3 为转引 Ghandeharioun et al. 2024，非本文实验。
+## [2026-10-27] ingest | BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding（arXiv:1810.04805v2, NAACL 2019）
+
+问题：预训练语言表示的两条迁移路线（feature-based ELMo / fine-tuning GPT）都用单向 LM，限制可用架构，且对需要双侧上下文的 token 级任务不利。机制：encoder-only 双向 Transformer，输入为 token+segment+position 嵌入之和，预训练用 MLM（遮 15%，80/10/10，只预测被遮位置）与 NSP（50/50），BASE 12/768/110M、LARGE 24/1024/340M，BooksCorpus 800M + Wikipedia 2,500M 词、128k token/batch × 1M 步（90% 步长 128、10% 步长 512），微调只加一个输出层并全参数训练。证据（表号回打）：Table 1 GLUE 平均 79.6/82.1 对 GPT 75.1、官方榜 80.5 对 72.8；Table 2 SQuAD 1.1 test F1 93.2（7 模型集成 + TriviaQA）；Table 3 SQuAD 2.0 test F1 83.1；Table 4 SWAG test 86.3；Table 5 去 NSP 使 QNLI 88.4→84.9、LTR&No NSP 使 SQuAD 88.5→77.8；Table 6 3L/768→24L/1024 使 MNLI 77.9→86.6；Table 7 固定特征末四层拼接 NER 96.1 对全参数微调 96.4；Table 8 微调对掩码策略不敏感、特征式 NER 对 100% MASK 最敏感（94.0）。边界：[MASK] 造成的预训练-微调不匹配只被缓解，15% 监督使 MLM 收敛略慢（C.1），GLUE 排除 WNLI 且 Table 1 平均分与官方分口径不同。
+创建的页面：[[bert]], [[source-devlin-2019-bert]]
+更新的页面：[[generative-pretraining]]（intro 补一句双向 encoder 路线指针）, [[self-supervised-imputation-training]]（BERT 掩码建模改为链接）, [[index]]（Sources/Techniques 各一条）
+ingest 报告：[[ingest-reports/2026-10-27-bert|WHY 报告]]
+数值备注：摘要 +7.7 与 Table 1 平均 +7.0 是两套对照（官方榜 80.5 对 72.8 vs Table 1 的 82.1 对 75.1），非矛盾；§4.1 的 +4.5/+7.0 实为对 GPT 75.1 的差值，对 Pre-OpenAI SOTA 74.0 则为 5.6/8.1；Table 4 BERT_LARGE test 86.3 低于 dev 86.6，照录；Table 7 特征式六行只报 dev F1；论文正文未描述嵌入层 LayerNorm，机制页按官方实现标注 [INFERENCE]；A.2 的 128k token/batch 与 90% 步用长度 128 并列，页面未替论文调和。
 
 ## [2026-10-27] ingest | Switch Transformers（arXiv:2101.03961, JMLR 2022）
 

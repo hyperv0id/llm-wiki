@@ -7,7 +7,7 @@ tags:
   - time-series
   - diffusion-models
 created: 2026-07-14
-last_updated: 2026-08-29
+last_updated: 2026-10-27
 source_count: 3
 confidence: medium
 status: active
@@ -15,7 +15,7 @@ status: active
 
 # Self-Supervised Imputation Training
 
-**Self-Supervised Imputation Training** 是一种训练插补模型的方法论：当训练数据本身不含明确"缺失值→真值"配对标签时，从观测值中人工构造伪缺失目标与伪条件观测，形成自监督训练信号。该范式由 [[csdi|CSDI]] 在时间序列扩散插补中提出[^src-csdi]，灵感来源于 BERT 的掩码语言建模（Masked Language Modeling）。
+**Self-Supervised Imputation Training** 是一种训练插补模型的方法论：当训练数据本身不含明确"缺失值→真值"配对标签时，从观测值中人工构造伪缺失目标与伪条件观测，形成自监督训练信号。该范式由 [[csdi|CSDI]] 在时间序列扩散插补中提出[^src-csdi]，灵感来源于 [[bert|BERT]] 的掩码语言建模（Masked Language Modeling）。
 
 ## 动机
 

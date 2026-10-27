@@ -113,6 +113,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-dehghani-2019-universal-transformers]] — Universal Transformers：同一组自注意力+transition 权重沿深度循环 $T$ 步（步取 1 即 Transformer）+ ACT 逐位置动态停机；bAbI 0.21–7.78 零/少失败、LAMBADA test PPL 142、WMT14 En-De 28.9 BLEU（+0.9），有限精度下固定深度不可能计算通用、UT 取步数为长度函数即解除（Dehghani et al., UvA/DeepMind/Google Brain, ICLR 2019, arXiv:1807.03819v3；PDF raw/universal-transformers-1807-03819.pdf）
 - [[source-demystify-mamba-linear-attention-2024]] — Demystify Mamba in Vision: A Linear Attention Perspective (NeurIPS 2024)
 - [[source-detr]] — DETR: End-to-End Object Detection with Transformers（Carion et al., Facebook AI, arXiv:2005.12872v3，venue 未在 PDF 内核实），direct set prediction + Hungarian 二部匹配损失 + Transformer encoder-decoder + learned object queries 并行解码，COCO AP 42.0 与强化 Faster R-CNN 相当、APL 优 APS 弱，panoptic PQ 45.1（R101, COCO val）
+- [[source-devlin-2019-bert]] — BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding，encoder-only 双向 Transformer + MLM（15%，80/10/10）+ NSP，BASE 12/768/110M、LARGE 24/1024/340M，GLUE 平均 79.6/82.1、SQuAD 1.1 test F1 93.2、SQuAD 2.0 83.1（Devlin et al., Google AI Language, NAACL 2019, arXiv:1810.04805v2；PDF raw/bert-1810-04805.pdf）
 - [[source-diffputer]] — DiffPuter: Empowering Diffusion Models for Missing Data Imputation, EM 交替式扩散插补（M 步扩散密度估计 / E 步前向-反向混合条件采样），9 个表格数据集 MCAR 30% 相对最强基线平均提升 6.94% MAE / 4.78% RMSE（ICLR 2025）
 - [[source-diffstg]] — DiffSTG: probabilistic spatio-temporal graph forecasting with diffusion models (AAAI 2023)
 - [[source-diffusion-traffic-flow-inference]] — DP-TFI: Diffusion Probabilistic Modeling for Fine-Grained Urban Traffic Flow Inference (ICASSP 2023), DPA 扩散增强 + RDU relaxed structural constraint, TaxiBJ 四时段 RMSE/MAE/MAPE 全最优
@@ -958,6 +959,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[bellman-equation]] — 贝尔曼方程，强化学习中值函数的递归关系
 - [[bellman-optimality-equation]] — 最优值函数与最优策略的不动点方程
 - [[benamou-brenier-algorithm]] — OT 的动态公式化，转化为时空凸优化问题并以增广拉格朗日方法求解
+- [[bert]] — BERT：encoder-only 双向 Transformer 预训练，MLM + NSP 双任务、token/segment/position 嵌入求和、[CLS] 作聚合表示，微调只换输出头覆盖单句/句对/问答/多选
 - [[bigcity]] — BIGCity, first MTMD spatio-temporal model unifying trajectory + traffic state via GPT-2+LoRA+prompt (arXiv 2024)
 - [[brownian-bridge-diffusion]] — 布朗桥扩散，钉住数据与先验两端的扩散桥 + 后验方差缩放(s)切换确定性/概率采样 (S²DBM, arXiv 2024)
 - [[building-schrodinger-bridges]] — 六种 SB 构造方法综述：条件桥、时间反演、FBSDE、h-变换、IMF、随机插值
