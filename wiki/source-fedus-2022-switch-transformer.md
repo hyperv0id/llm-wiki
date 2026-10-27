@@ -33,4 +33,4 @@ MoE 虽在机器翻译上有效，但广泛应用受制于三大阻碍：实现�
 
 Switch-XXL（FLOPs 最大档）间歇不稳定[^src-switch-transformer-2101-03961]；最大档上游困惑度优势未完全转化为推理型下游（Switch-C SQuAD 87.7 低于 Switch-XXL 89.6，论文称 poorly understood）[^src-switch-transformer-2101-03961]；attention 内 expert 层 bfloat16 发散[^src-switch-transformer-2101-03961]；蒸馏不能完整保留质量[^src-switch-transformer-2101-03961]。
 
-[^src-switch-transformer-2101-03961]: [[fedus-2022-switch-transformer]]
+[^src-switch-transformer-2101-03961]: [[source-fedus-2022-switch-transformer]]
