@@ -4445,3 +4445,14 @@ ingest 报告：[[ingest-reports/2026-10-27-sparse-gated-moe|WHY 报告]]
 对照 raw 逐符号核查式 (1)–(14)、5 个 Stage 维度块可乘性与 $\bcancel$/规约轴、Table 1–9 抽样数字与附录 C.2 的 18% 口径，公式与数字零错。修 4 处归因与结构：technique 页「首个在工业规模上兑现条件计算收益」改为论文自述口径（首次兑现 + 容量提升超 1000 倍，§1.1）；「factor of $d$ improvement」由通信内容子句移回 expert batch 主张、通信内容句移入 §3.2 句；source 页 CV² 改 $CV^2$；「局限」列表区分论文自述与页内观察。
 更新的页面：[[sparse-gated-moe-layer]], [[source-shazeer-2017-sparse-moe]]
 复跑 scripts/lint.py：severe 135、warn 47、info 1154，本次页面零条目（无新增 severe）
+## [2026-10-27] ingest | GShard: Scaling Giant Models with Conditional Computation and Automatic Sharding (arXiv:2006.16668, ICLR 2021)
+
+问题：Transformer 缩到数千亿参数时 dense 计算超线性、巨型计算图编译不可行。机制：每隔一层放 position-wise MoE，top-2 gating（第一 expert 确定性、第二 expert 以 $2g_2$ 概率随机派发）+ 组级辅助均衡损失 $\ell_{\mathrm{aux}}=\frac{1}{E}\sum_e (c_e/S)m_e$ + 组容量 $2N/(GE)$ 溢出直通；系统侧 replicate/split/shard 注解 + SPMD 编译器自动分片，dispatch/combine 走 $O(\sqrt{D})$ AllToAll。证据：600B MoE(2048E,36L) 2048 TPU v3 四天训 1T token，X→英语平均 BLEU 44.3 / +13.5，22.4 core years 对 dense T(96L) 约 235.5；experts 128→512 +3.3 BLEU、512→2048 仅 +1.3，容量瓶颈在 128–512 之间；16× 设备执行时间仅 1.7×。边界：60L/bfloat16/1T 数值不稳定未收录、$C\geq 1$ 缩放极限、溢出率全文无数值、辅助损失权重与 gating 变体无消融。
+创建的页面：[[gshard]], [[source-lepikhin-2020-gshard]]
+更新的页面：[[mixture-of-experts]]（新增「稀疏 MoE 的大规模化起点（GShard）」一节，source_count 16→17）, [[index]]（Sources 1 条 + Techniques 1 条）
+ingest 报告：[[ingest-reports/2026-10-27-gshard|WHY 报告]]
+数值备注：Table 1 行 (1)(2) experts 总数印刷 36684/12228 与按每两层一 MoE 层的推算 36864/12288 疑为数字换位；§4.4 正文 "MoE(36E, 128L)" 应为 MoE(128E, 36L)（37B 吻合）；随机路由概率正文 "∝ g2" 与伪代码注释 "∝ 2·g2" 两处口径并存；全文无溢出率/capacity factor 数值；§6 引 Shazeer 2017 为 69B（与常见 137B 口径不一致，照录不采信）。
+## [2026-10-27] lint | GShard ingest 独立复核（2 新建 + 1 新节 + 1 报告）
+对照 arXiv:2006.16668 原文逐项核查通过：Algorithm 1 两循环与计数器语义、Algorithm 2 五条 einsum 逐字、式 (1)–(3) 与 $\ell_{\mathrm{aux}}$、随机路由 "∝ $g_2$"/"∝ 2·$g_2$" 两口径照录无误、Figure 6 内嵌表、Table 2（321/66/82/995）、Table 3、消融 +2–3/+3.3/+1.3、系统 1.7×/9×/3.75×/28%+34%/16%→36%、A.2 超参与 Table 1 印刷疑误备注；Table 2 "1/2–1/3" 系原文 "2 to 3 times fewer tokens" 忠实转写不改。修 4 处（gshard.md）：Stage 3 收缩轴标注（contraction 维是 $S$ 而非 $E,C,M$）、"<10%" 归因限定为 ArgMax/Cumsum 等门控通用算子（dispatch/combine einsum 为 $O(GC)=O(1)$ 另述）、训练样本补「聚焦 X→En 后约 13B」、§1.1 障碍补齐第四条（分区手工实现负担重）。复跑 scripts/lint.py：severe 132、warn 47、info 1150 与修前持平，本次页面无 severe/warn。
+更新的页面：[[gshard]]
+lint 报告：lint-reports/2026-10-27.md

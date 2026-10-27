@@ -210,6 +210,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-large-models-ts-st-survey]] — Large Models for Time Series and Spatio-Temporal Data: A Survey and Outlook (arXiv 2023, v3 2026), 最早系统梳理 TS+ST 大模型的综述，四维分类，LLM4TS 四路线+PFM4TS，Table 2 收 43 个方法
 - [[source-lcr]] — LCR: Laplacian Convolutional Representation for Traffic Time Series Imputation, circulant matrix nuclear norm 低秩 + Laplacian 核时域正则的凸优化插补，FFT 频域 ADMM，arXiv:2212.01529v3（TKDE 2024 著录来自用户，未在 PDF 内核实）
 - [[source-lejepa]] — LeJEPA: Provable and Scalable Self-Supervised Learning Without the Heuristics（Balestriero & LeCun，arXiv:2511.08544v3，2025-11 preprint）：各向同性高斯最优性 + SIGReg + 单超参 JEPA 训练；10+ 数据集、60+ 架构验证
+- [[source-lepikhin-2020-gshard]] — GShard: Scaling Giant Models with Conditional Computation and Automatic Sharding，position-wise top-2 稀疏 MoE + 组级辅助均衡损失 + 随机路由 + SPMD 自动分片，600B 翻译模型 2048 TPU v3 四天，X→英语 44.3 BLEU / +13.5 vs 单语基线、22.4 core years 对 dense 235.5（Lepikhin et al., Google, ICLR 2021, arXiv:2006.16668；PDF raw/gshard-2006-16668.pdf）
 - [[source-lets-group]] — Let's Group: A Plug-and-Play SubGraph Learning Method for Memory-Efficient Spatio-Temporal Graph Modeling, SGPM 记忆向量锚点 top-K 子图划分 + SGFAM 跨子图特征平均聚合，O(N²)O(N+K²)，平均 GPU 内存最高降 56.4%（作者报告），IJCAI-25 官方 proceedings（Weng et al., pp. 3471–3479）
 - [[source-lightweight-mixed-graph-unrolling]] — Lightweight & Interpretable Transformer via Mixed Graph Algorithm Unrolling for Traffic Forecast, ADMM 展开混合图优化为轻量级类 Transformer，ICML 2026
 - [[source-loft]] — LOFT: Low-Rank Prior-Induced Consistency Flow Matching for Efficient Traffic Imputation, 低秩先验 + 速度一致性 + 不确定性矫正，2 NFE 推理 (KDD 2026)
@@ -1102,6 +1103,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[grouped-hyperparameter-search]] — $(g_h, g_s)$ 分组超参搜索，在全局共享与逐 horizon × 逐序列间连续移动；horizon 轴不敏感（≤0.4%）、序列轴共享粒度是数据集属性（arXiv:2606.27282）
 - [[grpo-for-forecasting]] — GRPO for forecasting, NRMSE-reward RL stage with length/decode penalties for traffic-accuracy optimization (ST-Vision-LLM, arXiv 2025)
 - [[guided-layer-normalization]] — conditional normalization with dynamic affine parameters for accident-aware modeling
+- [[gshard]] — GShard：600B 参数稀疏 MoE Transformer 与 SPMD 自动分片——top-2 gating（第二 expert 概率 $2g_2$ 派发）、$\ell_{\mathrm{aux}}=\frac{1}{E}\sum_e (c_e/S)m_e$、组容量 $2N/(GE)$ 溢出直通、all-to-all dispatch/combine、annotation API + XLA 编译器（Lepikhin et al., ICLR 2021）
 - [[gwnet]] — GWNet, Graph WaveNet: self-adaptive adjacency matrix + dilated causal convolutions for STG forecasting (IJCAI 2019)
 - [[heavily-compressed-attention]] — HCA：DeepSeek-V4 把每 128 个 token 的 KV 压成 1 个 entry（非重叠单路）后对全部条目做 dense 共享 KV MQA，无稀疏选择器，百万 token 约压到 8×10^3 条目
 - [[heterogeneous-moe-routing]] — 异质性感知 MoE 路由，FaST 的动态 expert 路由机制
