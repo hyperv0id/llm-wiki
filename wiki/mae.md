@@ -8,9 +8,9 @@ tags:
   - representation-learning
   - pretraining
 created: 2026-05-31
-last_updated: 2026-10-23
-source_count: 2
-confidence: medium
+last_updated: 2026-11-02
+source_count: 3
+confidence: high
 status: active
 ---
 
@@ -37,7 +37,7 @@ MAE 做了一个看似"不用想"但此前没人坚决执行的决定：把 mask
 实现方式：生成所有 patch 的 token → random shuffle → 取前 25%（49/196 for ViT-L/16）→ 送入编码器 → 编码后追加共享的可学习 mask token → unshuffle 恢复原空间顺序 → 送入解码器[^src-mae]。
 
 效果：
-- **FLOPs 降至 1/3.3**：75% mask → 编码器只处理 25% 的 token → 自注意力复杂度从 O(196²) 降至 O(49²)[^src-mae]
+- **FLOPs 降至 1/3.3**：75% mask → 编码器只处理 25% 的 token → 自注意力复杂度从 $O(196^2)$ 降至 $O(49^2)$[^src-mae]
 - **Train-wall-clock 加速 2.8-4.1×**（取决于模型大小和解码器深度）[^src-mae]
 - **Linear probing +13.9pp**（59.6% → 73.5%）——mask token 造成严重的训练/推理分布偏移[^src-mae]
 
@@ -68,7 +68,7 @@ Fine-tuning 在 40%-80% 间均鲁棒（标准差仅 0.6%），但 linear probing
 
 MAE 默认重建 per-patch 归一化的像素值（每个 patch 减均值除标准差），MSE 仅在 masked patch 上计算[^src-mae]。
 
-全尺度/全任务对比中，normalized pixel 与 BEiT 的 dVAE token 差距 ≤0.2%（统计无差异），但 normalized pixel 不需要额外的 250M 图像预训练 tokenizer[^src-mae]。Per-patch normalization 额外贡献 +0.5% fine-tuning 精度——因为它保留了高频信息（纹理、边缘、局部对比度），这些是模型建立精确空间理解的线索[^src-mae]。
+全尺度/全任务对比中，normalized pixel 与 BEiT 的 dVAE token 差距 $\leq 0.2\%$（统计无差异），但 normalized pixel 不需要额外的 250M 图像预训练 tokenizer[^src-mae]。Per-patch normalization 额外贡献 +0.5% fine-tuning 精度——因为它保留了高频信息（纹理、边缘、局部对比度），这些是模型建立精确空间理解的线索[^src-mae]。
 
 PCA 目标（仅低频）反而更差——说明高频细节对视觉表示学习并非噪声[^src-mae]。
 
@@ -85,7 +85,7 @@ MAE ViT-L linear probing 73.5% vs MoCo v3 ViT-L 77.6%（输 4.1pp），但 fine-
 | 4 | ~84.2 | ~81.6 | +2.6 |
 | 24 (full) | 84.9 | 84.1 | +0.8 |
 
-仅微调 1 个 block，MAE 就追平 MoCo v3；微调 4 个 block，反超 2.6pp[^src-mae]。这揭示了两种范式的根本差异：
+仅微调 1 个 block，MAE 就追平 MoCo v3；微调 4 个 block，高出 2.6pp[^src-mae]。这揭示了两种范式的根本差异：
 - **对比学习**优化"类间分离"→ 天然奖励线性可分性
 - **MAE** 优化"从碎片重建整体"→ 学习全局结构理解，但特征天然非线性
 
@@ -99,6 +99,23 @@ MAE 的特征在非线性变换下更强大——这暗示人类视觉更接近 
 | ADE20K 分割 | mIoU (ViT-L) | 49.9 | 53.6 | +3.7 |
 
 检测和分割这类需要空间理解的任务上，自监督 MAE 大幅超越有标签的分类预训练——说明 MAE 的"从部分重建整体"与密集预测任务在认知上同构[^src-mae]。
+
+## 跨模态时序感知的表征特性实证（VETime 消融）
+
+[[vetime|VETime]]（arXiv:2602.16681）在零样本时序异常检测中系统消融了不同的视觉骨干网络与预训练范式，为 MAE 提取 2D 折叠时序图像特征的有效性提供了实证支持（Table 13）[^src-2602-16681-vetime]：
+
+| 视觉骨干模型 | 参数量 (Params) | 预训练范式与架构 | NAB (Aff-F1 / VUS-PR) | WSD (Aff-F1 / VUS-PR) | YAHOO (Aff-F1 / VUS-PR) |
+|---|---|---|---|---|---|
+| ResNet | 25.63M | CNN 层次降采样 | 78.41% / 22.96% | 75.17% / 13.57% | 70.85% / 15.75% |
+| ConvNeXt-Base | 88.58M | CNN 现代卷积 | 78.51% / 23.36% | 82.15% / 25.38% | 79.73% / 38.90% |
+| CLIP-Base | 85.64M | 图文对比学习 (ViT) | 88.42% / 32.72% | 93.01% / 30.90% | 95.87% / 86.12% |
+| **MAE-Base** | **85.64M** | **像素掩码重建 (ViT)** | **88.57% / 32.98%** | **94.31% / 33.85%** | **97.15% / 88.61%** |
+| MAE-Large | 303.10M | 像素掩码重建 (ViT) | 88.67% / 31.54% | 93.94% / 34.10% | 97.03% / 87.20% |
+
+该实验展示出三项重要表征特性（§D.1）[^src-2602-16681-vetime]：
+1. **ViT 补丁化天然契合时间轴逆对齐**：CNN 骨干（ResNet 与 ConvNeXt）性能显著落后于 ViT 架构，原因在于 CNN 的空间降采样操作破坏了严格的时空索引对应，而 ViT 的补丁化（patch tokenization）与 VETime 的补丁级时序逆折叠对齐（PTA）天然契合。
+2. **像素掩码重建优于对比学习**：在相同 ViT-Base 规模下，像素重建预训练的 MAE-Base 性能持续优于图文对比学习的 CLIP-Base（如 WSD 上 Affiliation-F1 94.31% vs 93.01%，VUS-PR 33.85% vs 30.90%）。这证实掩码像素重建迫使模型保留低层像素几何与细粒度结构特征，对检测波形突变与异常边缘更为敏感，而对比学习倾向于抽象高层语义并滤除局部几何畸变。
+3. **视觉骨干缩放的边际收益递减**：将 MAE 规模扩大约 3.5 倍至 MAE-Large（303.10M 参数）并未带来明显收益（NAB VUS-PR 反而由 32.98% 回落至 31.54%），表明 MAE-Base 的表征容量已足以胜任跨周期纹理与波形畸变的提取，过度扩大参数对该跨模态任务性价比极低。
 
 ## 架构形式在生成模型中的复用
 
@@ -115,6 +132,11 @@ MAR（NeurIPS 2024）把 MAE 式非对称 encoder/decoder 直接用作生成骨�
 - [[gpt-st]] — GPT-ST，将 MAE 范式适配到时空图数据的预训练框架（NeurIPS 2023）
 - [[contrastive-learning]] — 对比学习范式
 - [[spatiotemporal-mirage]] — 时空幻象问题（STD-MAE 上下文）
+- [[vetime]] — 采用冻结 MAE-Base 作为视觉骨干的零样本时序异常检测模型
+- [[traceable-image-conversion]] — 将时序转为适配 ViT/MAE 输入的 2D 图像转换技术
+- [[patch-level-temporal-alignment]] — 将 MAE 提取的 2D 补丁逆折叠对齐回 1D 时间轴的技术
+- [[source-2602-16681-vetime]] — VETime 论文源摘要
 
 [^src-2406-11838-mar]: [[source-2406-11838-mar]]
 [^src-mae]: [[source-mae]]
+[^src-2602-16681-vetime]: [[source-2602-16681-vetime]]

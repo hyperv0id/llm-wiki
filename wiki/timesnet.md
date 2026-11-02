@@ -8,9 +8,9 @@ tags:
   - foundation-model
   - ICLR-2023
 created: 2026-04-28
-last_updated: 2026-10-25
-source_count: 5
-confidence: medium
+last_updated: 2026-11-02
+source_count: 6
+confidence: high
 status: active
 ---
 
@@ -53,6 +53,7 @@ Wang & Du 等人的 MTSI 综述将 TimesNet 归为预测式-CNN 类插补方法�
 - **[[source-hyperd-hybrid-periodicity-decoupling|HyperD]]** — HyperD decouples periodic and residual components: learnable daily/weekly periodic tables supply the periodic profile, and a frequency-domain branch models the residual, an alternative to TimesNet's shared 2D convolution over discovered periods[^src-hyperd-hybrid-periodicity-decoupling]
 - **[[unica|UniCA]]** — 作为时间序列基础模型（TSFM）之一，TimesFM 可作为 UniCA 的适配基线。UniCA 框架可为其添加异构协变量支持，同时保持 TimesNet/TimesFM 主干冻结[^src-unica]
 - **[[witran|WITRAN]]** — WITRAN 的周期重排直接受 TimesNet 启发，但明确改掉 FFT 自适应多周期：分析数据自然周期后以超参 $C\in\{12,24,48\}$ 人工设定重排，论文自述因此"much simpler"；其批评 TimesNet 受 2D 卷积骨干感受野限制、需堆多层才能建模全局相关（Table 1）。WITRAN 的效率实验中 TimesNet 即使 batch=1 也 OOM 未入对比[^src-witran-jia-2023]
+- **[[vetime|VETime]]** — 谱系继承与 2D 折叠拓展：TimesNet 将 1D 时序按周期折叠为 2D 张量以捕捉周期内与周期间变化的思路，在 VETime 的可追溯图像转换（TIC）与补丁级时序对齐（PTA）中被推广至零样本异常检测场景[^src-2602-16681-vetime]。两者存在三点显著演化：(1) 周期发现上，TimesNet 依赖 FFT 发现 Top-$k$ 周期，VETime 则在时域用自相关函数（ACF）估计单一主导周期 $T_{\mathrm{fold}}$，并强制约束为 ViT patch 大小（16）的整数倍以防补丁切分导致相位断裂（§3.1）[^src-2602-16681-vetime]；(2) 表达形式上，TimesNet 为单通道重排，VETime 引入季节-趋势分解并将原始序列、趋势与残差独立映射至 RGB 三通道，显式解耦趋势与高频尖刺（§3.1）[^src-2602-16681-vetime]；(3) 架构与对齐上，TimesNet 采用 2D 卷积骨干前向提取特征，VETime 采用冻结预训练 ViT（MAE-Base）并利用 PTA 模块沿时间轴插值与周期轴平均池化逆映射回 1D 时间轴，结合可学习位置编码实现点级时间戳密集异常定位（§3.2）[^src-2602-16681-vetime]。
 
 ## 相关页面
 
@@ -60,6 +61,9 @@ Wang & Du 等人的 MTSI 综述将 TimesNet 归为预测式-CNN 类插补方法�
 - [[covariate-homogenization]] — 协变量同质化技术
 - [[covariate-fusion-module]] — 协变量融合模块技术
 - [[mts-imputation-taxonomy]] — MTSI 综述的分类框架，TimesNet 归为预测式-CNN 类
+- [[vetime]] — VETime 零样本时序异常检测模型
+- [[traceable-image-conversion]] — 可追溯图像转换技术
+- [[patch-level-temporal-alignment]] — 补丁级时序对齐技术
 
 ## 引用
 
@@ -68,3 +72,4 @@ Wang & Du 等人的 MTSI 综述将 TimesNet 归为预测式-CNN 类插补方法�
 [^src-hyperd-hybrid-periodicity-decoupling]: [[source-hyperd-hybrid-periodicity-decoupling]]
 [^src-mts-imputation-survey]: [[source-mts-imputation-survey]]
 [^src-witran-jia-2023]: [[source-witran-jia-2023]]
+[^src-2602-16681-vetime]: [[source-2602-16681-vetime]]

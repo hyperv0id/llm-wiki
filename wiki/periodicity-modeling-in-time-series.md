@@ -9,9 +9,9 @@ tags:
   - decomposition
   - survey
 created: 2026-04-28
-last_updated: 2026-10-25
-source_count: 19
-confidence: medium
+last_updated: 2026-11-02
+source_count: 20
+confidence: high
 status: active
 ---
 
@@ -83,13 +83,19 @@ status: active
 - **核心贡献**：1D→2D 变换，架接时间序列与计算机视觉；跨五大任务一致 SOTA
 - **局限**：FFT 周期发现假设数据有明显周期性；弱周期数据收益不明确
 
-
 ### WITRAN（NeurIPS 2023）
 
 [[witran|WITRAN]] 把 TimesNet 式 1D→2D 周期重排从 CNN 搬进 RNN：按**人工设定的自然周期**（超参 $C\in\{12,24,48\}$，非 FFT 自适应）把序列折成 $R\times C$ 网格，水平方向传周期内语义、垂直方向传周期间语义，每格两个门控 cell（GSC）在门控输入处融合两向信息[^src-witran-jia-2023]。反对角线分片把串行递推步数降到 $R+C-1$（[[recurrent-acceleration-network|RAN]]）。在 ETTh1/ETTh2/ECL/Traffic/Weather（单通道、1h 频率）上 long-range 平均 MSE 降 5.803%、ultra-long-range 降 14.275%（§4.1，数据集级百分比等权平均；40 任务中 35 个 MSE 最优）[^src-witran-jia-2023]。
 
 - **核心贡献**：bi-granular 双向传递让"长/短周期重复模式"成为递推的两个正交方向；Table 1 中与 MICN、TimesNet 同为"专门设计捕获长期重复模式"的三个模型
 - **局限**：周期需人工设定且 $H\bmod C=0$；全部实验单通道、数据聚合到 1h；效率结论仅有定性曲线
+
+### VETime：面向视觉对齐的自适应周期折叠（NeurIPS 2026）
+
+[[vetime|VETime]]（arXiv:2602.16681）将周期折叠拓展至零样本时序异常检测，通过可追溯图像转换（[[traceable-image-conversion|TIC]]）将 1D 序列重构为 2D 网格以适配预训练视觉骨干[^src-2602-16681-vetime]：
+- **自适应折叠机制**：通过自相关函数（ACF）动态估计主导周期 $T_{\mathrm{fold}}$（无显著周期样本默认设为 $\sqrt{L}$）；关键约束在于将 $T_{\mathrm{fold}}$ 调整为 ViT patch 大小（16）的整数倍，以防止时序信息在视觉 patch 切割处发生相位断裂；末尾无法整除片段采用最后一个周期的均值（mean of the final period）做均值填充，降低零填充引发的分布偏移（§3.1）[^src-2602-16681-vetime]。
+- **解耦缩放与逆折叠对齐**：尺寸调整至标准 $(224, 224, 3)$ 时，水平时间轴采用线性插值保持波形连续，垂直周期轴采用复制填充（copy-padding）避免跨周期产生伪模式伪影；后续经 [[patch-level-temporal-alignment|PTA]] 模块将 ViT 补丁特征沿时间轴插值、周期轴平均池化逆折叠回 1D 时间轴（§3.1, §3.2）[^src-2602-16681-vetime]。
+- **失效边界**：周期折叠的强归纳偏置在非周期数据上存在明确失效模式。在确定性混沌（MGAB）与随机游走（Stock）无周期信号上，强制 2D 折叠导致图像充满随机噪声，引入 TIC 后性能即刻恶化且后续融合无法挽救；在正常无尖刺、异常表现为周期性尖刺的 Power 数据集上，TIC 周期折叠误将周期性尖刺编码为正常的背景纹理，导致零样本门控路由器赋予受骗视觉表征较高权重而引发严重负迁移（VUS-PR 从 21.48% 降至 11.54%，Table 17，§D.5）[^src-2602-16681-vetime]。
 
 ### PRNet
 
@@ -231,7 +237,7 @@ x' &= x_{t-L+1:t}-c_{t-L+1:t} && \text{// } [L,D]-[L,D]\to[L,D]\ \text{——残
 1. **隐式**（ST-ResNet, ASTGCN）：通过时间分量组织输入让网络自己学习周期模式
 2. **显式—窗口分解**（Autoformer, DLinear）：在回看窗内用移动平均分离趋势与季节
 3. **显式—周期表**（CycleNet, HyperD）：用全局周期剖面参数表，按墙钟相位取值后从输入减掉，残差交给骨干
-4. **显式—变换**（TimesNet, FreTS）：通过域变换（Fourier, 2D reshape) 暴露周期结构
+4. **显式—变换**（TimesNet, FreTS, VETime）：通过域变换（Fourier, 2D reshape) 暴露周期结构。TimesNet 采用 FFT 多周期重排；VETime 则结合 ACF 估计与 ViT patch 倍数约束自适应折叠，将长程时序距离转化为垂直空间邻近性[^src-2602-16681-vetime]
 5. **显式—先验**（PENGUIN, PRNet, TQNet）：将周期知识编码为模型先验（注意力偏置、可学习 Query 或残差目标）
 6. **显式—稀疏**（SparseTSF）：通过跨周期下采样实现周期结构利用 + 极端压缩
 
@@ -270,6 +276,7 @@ TPLib 调查的结论——"没有单一架构在所有任务上通用"——对
 | [[source-sparsetsf|SparseTSF]] | 2025 | **TPAMI 2026** & **ICML 2024 Oral** | 跨周期稀疏预测 <1k 参数 |
 | [[source-phat|PHAT]] | 2026 | **ICLR 2026** | 周期异质性感知 + 正负分解注意力 + periodic bucket ★ |
 | [[source-cyclenet|CycleNet]] | 2024 | **NeurIPS 2024** | 可学习循环周期 RCF + 即插即用模块 |
+| [[vetime|VETime]] | 2026 | NeurIPS 2026 | ACF 补丁整除折叠 + ViT 密集对齐零样本异常检测 |
 
 > ★ 表示本 wiki 收录的 HyperD 原始论文（arXiv 2025-11, AAAI 2026 中稿）
 
@@ -300,3 +307,4 @@ TPLib 调查的结论——"没有单一架构在所有任务上通用"——对
 [^src-witran-jia-2023]: [[source-witran-jia-2023]]
 [^src-phat]: [[source-phat]]
 [^src-decody-iclr2027]: [[source-decody-iclr2027]]
+[^src-2602-16681-vetime]: [[source-2602-16681-vetime]]

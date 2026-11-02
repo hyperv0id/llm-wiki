@@ -8,8 +8,8 @@ tags:
   - time-series-forecasting
   - icml-2025
 created: 2026-07-28
-last_updated: 2026-07-28
-source_count: 3
+last_updated: 2026-11-02
+source_count: 4
 confidence: high
 status: active
 ---
@@ -93,10 +93,15 @@ flowchart LR
 | [[ts-vl-alignment|TS–VL Alignment]] (Yashwante & Yu) | **对齐几何诊断**（非预测器）：独立预训练 TS/V/L 近正交；后验对比投影有限且不对称，图像可作中介；外生多模态不能默认 foundation 空间自然贴合——支撑 Time-VLM 依赖**显式 VLM 耦合 + 时序成图/成文**而非 PRH 自动收敛[^src-time-vlm][^src-ts-vl-alignment] |
 | [[constrained-text-fusion|CFA]] | 外生文本 **naive vs constrained** 大规模对照：无控 add/concat 常低于 unimodal；低秩残差 plug-in。与 Time-VLM 的门控融合同属「控制文本影响」，但 CFA 锚定 Time-MMD 外生文本而非内生 VLM 图文[^src-constrained-text-fusion] |
 | [[unica|UniCA]] / [[cora-tsfm|CoRA]] | TSFM **外生协变量适配**；Time-VLM 是 backbone+VLM 的端到端多模态预测器，非适配器框架[^src-time-vlm] |
+| [[vetime|VETime]] | 任务错位与对齐对照：专为预测设计的 Time-VLM 优先关注宏观趋势演化，缺乏密集体时间戳级判别能力；VETime 则构建 1D-2D 双向对齐（PTA）与多尺度对比学习，面向密集异常定位任务（§1）[^src-2602-16681-vetime] |
 
-## 局限
+## 局限与任务边界
 
 TAL 受通用 VLM 时序语义与短文本限制；全量高维集可落后专用模型；剧烈非平稳/突变上视觉变换仍不足；依赖自然图像–语言预训练分布，领域专用 VLM 仍是开放方向[^src-time-vlm]。
+
+### 任务边界：预测 vs 逐点异常定位
+
+VETime（arXiv:2602.16681）在引言中分析指出，现有如 Time-VLM 等多模态时序先驱模型专为预测（forecasting）任务设计。预测任务核心关注宏观趋势演化，缺乏密集体时间戳级（timestamp-level）判别能力；预测-残差范式在零样本面对未知多样异常时泛化能力受限，因而存在明确的任务错位（§1）[^src-2602-16681-vetime]。
 
 ## 相关页面
 
@@ -104,7 +109,9 @@ TAL 受通用 VLM 时序语义与短文本限制；全量高维集可落后专�
 - [[multimodal-time-series-forecasting]] · [[source-raf]] · [[retrieval-augmented-spatio-temporal-forecasting]]  
 - [[source-solar-vlm]] · [[st-vision-llm]] · [[vision-language-traffic-forecasting]]  
 - [[vot]] · [[time-mmd]] · [[source-time-llm]] · [[source-time-mmd]] · [[ts-vl-alignment]] · [[source-ts-vl-alignment]] · [[constrained-text-fusion]] · [[source-constrained-text-fusion]]
+- [[vetime]] · [[multimodal-time-series-anomaly-detection]] · [[source-2602-16681-vetime]]
 
 [^src-time-vlm]: [[source-time-vlm]]
 [^src-ts-vl-alignment]: [[source-ts-vl-alignment]]
 [^src-constrained-text-fusion]: [[source-constrained-text-fusion]]
+[^src-2602-16681-vetime]: [[source-2602-16681-vetime]]

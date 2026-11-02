@@ -31,6 +31,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-2512-02556-deepseek-v3-2]] — DeepSeek-V3.2 技术报告：DSA（FP8 lightning indexer + 逐 query 取 top-k 个 MLA latent，MQA 模式实例化）、GRPO 四项工程改动、8.5 万条 agentic 任务合成（DeepSeek-AI, arXiv:2512.02556, 2025-12）
 - [[source-2511-16426]] — FrèqFlow/SpectFlow: Long-term forecasting using lightweight flow matching (NeurIPS 2025)
 - [[source-2602-01219-mita]] — MiTA: Mixture of Top-k Attention，把 attention 读成宽度 N 的 fast-weight MLP，按压缩/路由两条路缩放，用 landmark query 取 top-k KV 作形变专家 + 窄共享专家（BUPT，arXiv 2026；PDF 转换全文 raw/2602.01219-mita.md）
+- [[source-2602-16681-vetime]] — VETime: 跨模态补丁级时序对齐（TIC+PTA）与多尺度对比融合，TSB-AD 26 数据集零样本均排单变量 2.05/多变量 1.58、推理较 VLM 快约 100 倍（清华 & 华为 2012 & Datadog, arXiv:2602.16681, NeurIPS 2026 投稿格式）
 - [[source-2605-07319]] — Generative Modeling with Flux Matching：全新生成建模范式，推广得分函数为任意生成向量场 (Pao-Huang et al., Stanford, arXiv 2026)
 - [[source-2606-27282-ltsf-linear-models]] — How Good Can Linear Models Be for Time-Series Forecasting?（SearchCast）：闭式 Ridge + 四轴预处理分组搜索，7/8 线性类最优、6/8 胜非线性基线；lookback–horizon 幂律 +0.46 至 −0.19（arXiv:2606.27282v2, PDF 标注 Preprint, ICLR 2027 投稿著录来自用户）
 - [[source-2607-01918]] — Zeus: Towards Tuning-Free Foundation Model for Time Series Analysis，U 形多尺度 encoder-only + MOTM 掩码预训练，五任务 tuning-free（ICML 2026; PDF raw/2607.01918.pdf）
@@ -683,6 +684,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[urbandit]] — UrbanDiT, diffusion transformer for open-world spatiotemporal prediction with unified prompt learning (NeurIPS 2025)
 - [[urbanfm]] — UrbanFM, scaling-centric ST foundation model, WorldST (100+ cities), MiniST, minimalist Transformer (arXiv 2026)
 - [[ustd]] — USTD, unified ST diffusion framework decoupling pre-trained encoder + task-specific denoisers (SIGSPATIAL 2024)
+- [[vetime]] — 首个视觉增强的零样本时序异常检测基础模型，冻结 MAE ViT 与 LoRA TimeRCD 双分支，TSB-AD 104 项指标取得 58 项第一（NeurIPS 2026 投稿格式）
 - [[visifold]] — VisiFold, temporal folding graph + node visibility for efficient long-term traffic forecasting (arXiv 2026)
 - [[vot]] — VoT (Value of Text), multimodal time series forecasting model with event-driven reasoning (ICLR 2026)
 - [[wardropnet]] — WardropNet, COAML pipeline combining neural network + Wardrop equilibrium layer for traffic flow prediction, ICLR 2025
@@ -843,7 +845,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[multi-level-alignment]] — 多级对齐，在表示级和预测级融合文本与时间序列模态 (ICLR 2026)
 - [[multi-marginal-schrodinger-bridge]] — 多边际 SB，K 个中间时间点约束的 SB 扩展
 - [[multimodal-spatial-reasoning]] — 多模态空间推理，从异构输入推断空间关系、位置与动作的能力框架 (Zheng et al., 2025)
-- [[multimodal-time-series-anomaly-detection]] — detecting anomalies using multimodal time series and text data (ICLR 2026)
+- [[multimodal-time-series-anomaly-detection]] — 联合数值时序与文本或 2D 视觉流形密集对齐检测异常，涵盖 MindTS 与 VETime 路线（ICLR 2026, NeurIPS 2026 投稿格式）
 - [[multimodal-time-series-forecasting]] — forecasting tasks involving numerical time series plus images/text (ICLR 2026)
 - [[multimodal-traffic-profiling]] — classification of urban traffic states using multimodal numerical/visual/textual data (AAAI 2026)
 - [[multivariate-correlation-attention]] — 多变量相关性注意力，iTransformer 中 attention 作用于 variate token 维度 (ICLR 2024)
@@ -954,6 +956,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[alphaflow]] — α-Flow，带一致性步长比 α 的统一少步目标族（涵盖轨迹流匹配/Shortcut/MeanFlow/CT）+ 课程退火分离梯度冲突 (arXiv 2025, Snap Research)
 - [[ams-moe]] — AMS-MoE: Adaptive Multi-Scale Mixture of Experts with noise-injected Top-K routing for input-adaptive temporal scale selection (HEPHAESTUS, ICLR 2026 under review)
 - [[annealed-langevin-dynamics]] — 退火朗之万动力学，多噪声水平逐步采样的方法
+- [[anomaly-window-contrastive-learning]] — AWCL：短点异常窗内局部对比与长上下文异常窗间全局池化对比，仅预训练自适应构窗、推理零调窗（VETime，arXiv:2602.16681）
 - [[attention-dilution]] — theoretical mechanism explaining LLM performance degradation under long context (2026)
 - [[attention-entropy-collapse]] — attention distribution becoming one-hot during training
 - [[attention-logit-explosion]] — training instability from unbounded attention scores
@@ -1253,6 +1256,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[ouro]] — Looped Language Model：整栈 24/48 层循环 4 轮，每轮 LM head + 退出门，退出分布加权 NLL + 均匀先验熵正则，q 分位早停；7.7T token 下 1.4B/2.6B 对齐 4B/8B dense，解码期只留末轮 KV
 - [[paged-attention]] — 分页 KV cache 管理：逻辑块→物理块块表 + 块级引用计数/写时复制，注意力按块 gather；有效显存 96.3%，注意力 kernel 慢 20%–26%（vLLM, SOSP 2023）
 - [[patch-based-tokenization]] — converting time series into overlapping patch tokens for transformer input
+- [[patch-level-temporal-alignment]] — PTA：将 2D ViT patch 经逆折叠网格重塑、时间轴线性插值与周期轴平均池化投影回 1D 时间轴，结合绝对位置编码密集对齐（VETime，arXiv:2602.16681）
 - [[patch-low-frequency-forecasting]] — PLFM 技术：重叠 patch 频谱 + 低通监督 + FALoss 的低频趋势学习 (LoFT-LLM)
 - [[patch-reprogramming]] — Patch Reprogramming，通过 cross-attention to text prototypes 将时序 patch 对齐到 LLM 词嵌入空间 (ICLR 2024)
 - [[pattern-recognizer-guidance]] — 模式识别器引导，判别器近似 p(M|X) + EM + 扩散反向引导，处理 MNAR (PRDIM, arXiv 2026)
@@ -1356,6 +1360,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[swiglu]] — SwiGLU 及 GLU 变体前馈层：门控激活谱系、$d_{ff}$ 折算与 T5-base 对照结果
 - [[switch-transformer]] — Switch Transformer：把 MoE 路由砍到 top-1、负载均衡合并为单一乘性辅助损失（$\alpha{=}10^{-2}$），expert 容量减半、router 局部 float32 换 bfloat16 可训；FLOP-matched 7 倍预训练加速至 1.6T 参数（Fedus, Zoph & Shazeer, JMLR 2022）
 - [[task-adaptive-dynamic-prompting]] — TADP，从 WFM 编码器嵌入权重内生生成任务自适应软提示的 PEFT 技术（WeatherPEFT, ICLR 2026）
+- [[task-adaptive-multimodal-fusion]] — TMF：以辅助序列重构解耦底层数值连续性，门控动态路由时序/视觉/异常专家并引入利用率负熵正则化 $L_e$（VETime，arXiv:2602.16681）
 - [[task-arithmetic]] — 任务向量算术：微调位移的加减组合与编辑
 - [[temporal-decoder]] — TiDE per-horizon residual fusion of decoded vectors with projected future covariates
 - [[temporal-difference-learning]] — 时序差分学习，包括 Sarsa、Q-learning 等算法
@@ -1376,6 +1381,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[topology-aware-graph-transformer]] — TGT, learnable blend of global self-attention and local graph topology (AAAI 2026)
 - [[topology-aware-node-embedding]] — 基于拉普拉斯特征向量的归纳式节点嵌入，支持跨图结构迁移 (AAAI 2025)
 - [[trace-as-state]] — Trace as State 主入口：问题例子、同轨迹前后置机制、主要实证与不能外推的结论
+- [[traceable-image-conversion]] — TIC：季-趋分解 RGB 强度映射 + ACF 周期折叠（ViT patch 边长 16 整除）+ 解耦缩放，去除后 WSD VUS-PR 降至 20.20%（VETime，arXiv:2602.16681）
 - [[trailing-fraction-local-normalization]] — 尾部比例局部归一化，统计量取窗口尾部 $r\cdot L$ 步；搜索显示尾部分数 0.3%–30% 最优、full-window 几乎从不被选中（arXiv:2606.27282）
 - [[trajectory-consistency-flow-matching]] — 轨迹一致性流匹配，在 CFM 之外约束速度场沿轨迹恒定并给出少步积分误差界 (LOFT, KDD 2026)
 - [[transformer-architecture]] — Transformer 机制页：编码器/解码器数据流、masked self-attention 与 cross-attention、多头、post-LN 残差、FFN、训练与推理路径
@@ -1421,7 +1427,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[on-policy-vs-off-policy]] — on-policy 与 off-policy 学习范式对比
 - [[patchstg-mage-stop-shared-skeleton]] — PatchSTG/MAGE/STOP 同构分析：共享低维中介混合 + 个性化项 + 静态 support 的三种参数化（可分离满秩 / 静态图库标量路由 / K 秩瓶颈）；内容动态 support 为共同空白
 - [[patchstg-sparse-attention-form]] — PatchSTG dual attention 的显式稀疏注意力形式：块对角（depth）× 位置对齐（breadth）双固定掩码的 softmax 复合，O(max(P,R)Md)
-- [[periodicity-modeling-in-time-series]] — analysis of periodic modeling approaches across time-series forecasting architectures
+- [[periodicity-modeling-in-time-series]] — analysis of periodic modeling approaches across time-series architectures, from forecasting to VETime zero-shot anomaly detection
 - [[rl-learning-path-mfrl]] — 基于《Mathematical Foundations of Reinforcement Learning》的系统性 RL 学习路径
 - [[spatio-temporal-foundation-model-landscape]] — 时空基础模型全景：设计哲学三重分裂、架构范式六条路线、预训练策略四象限、泛化机制深度比较
 - [[spectral-kernel-linear-attention]] — WIRE 旋转读作核的随机特征后落地为线性注意力：内容×有效电阻核、O(N)、旋转/精确两条实现路线

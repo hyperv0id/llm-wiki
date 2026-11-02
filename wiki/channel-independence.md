@@ -7,8 +7,8 @@ tags:
   - channel-processing
   - multivariate
 created: 2026-04-28
-last_updated: 2026-10-25
-source_count: 17
+last_updated: 2026-11-02
+source_count: 18
 confidence: high
 status: active
 ---
@@ -92,6 +92,20 @@ CPiRi 的通道打乱测试暴露了一个关键问题：大多数 CD 模型在�
 
 [[trace|TRACE]]（NeurIPS 2025）提出 [[channel-identity-token|Channel Identity Tokens (CITs)]] + [[channel-biased-attention|Channel-biased Attention (CbA)]] 作为 CI 与 CD 的折中方案。CIT 是每通道唯一的可学习 token，充当通道级摘要锚点；CbA 通过偏置注意力掩码使 CIT 仅关注本通道 token，但非 CIT token 可自由跨通道交互[^src-trace-neurips2025]。这与 [[cvpe|CVPE]] 的"仅 patch 层注入 CD"和 [[cpiri|CPiRi]] 的"通道打乱 + 空间模块"不同——TRACE 在注意力掩码级别实现通道解耦而非特征注入或排列不变正则化。消融显示移除 CIT 导致 Avg MSE 0.670->0.713，CbA->Full Attn 导致 0.670->0.713[^src-trace-neurips2025]。
 
+## 在 VETime 零样本异常检测中的落地与边界
+
+[[vetime|VETime]]（arXiv:2602.16681）在多变量时序异常检测中采用 Channel-Independent（CI）架构，以规避在未知目标域中优化复杂噪声跨通道相关性的瓶颈（Appendix A）[^src-2602-16681-vetime]。
+
+### 机制设计
+1. **实例自适应 Gamma 校正**：各变量通道独立进行季节-趋势分解后，为增强视觉表征的通道区分度，引入变量特定的 Gamma 校正进行非线性强度映射。为严格遵循零样本无泄露约束，Gamma 参数在推理阶段仅根据当前输入序列实例的统计量动态计算，杜绝目标域全局先验泄露（Appendix A）[^src-2602-16681-vetime]。
+2. **最大公约数（GCD）统一折叠周期**：各变量独立通过自相关函数（ACF）估计周期长度后，取所有变量周期的最大公约数作为统一的折叠周期 $T_{\mathrm{fold}}$，防止通道拼接时发生边界周期畸变与相位断裂；各变量热图沿时间轴拼接为 $1 \times (N_v L) \times 3$ 复合热图，垂直维度若超过 224 则通过自适应池化动态下采样至 224（Appendix A）[^src-2602-16681-vetime]。
+3. **独立时间动态修正与对比**：在 PTA 补丁对齐阶段，各变量注入相同的位置编码 $E_{\mathrm{pos}}$，并使用 Any-variate attention 独立处理每个变量的时间动态；AWCL 对比损失亦在各变量内部独立构建窗口计算（Appendix A）[^src-2602-16681-vetime]。
+
+### 失效边界与画布容量极限
+VETime 论文同时明确指出了 CI 架构在多变量异常检测中的两项固有边界（Section 5, Appendix C.3）[^src-2602-16681-vetime]：
+- **跨变量耦合建模缺失**：CI 独立处理各变量，无法建模高维系统中变量间的复杂相互依赖关系（inter-variable dependencies），当异常由变量间相关性破坏主导时受限（Section 5）[^src-2602-16681-vetime]。
+- **固定画布的物理容量瓶颈**：在固定 $224 \times 224$ 画布与 5000 长度滑窗下，保证每个数据点占至少一个像素的物理上限约为 10 个变量（$224 \times 224 / 5000 \approx 10$）。超过此阈值（如中高维 25–38 变量）时，变量折叠压缩导致像素混叠（aliasing）与细粒度细节丢失，引起性能回落；但在高相关性冗余数据集（如 59 变量的 SMAP）上，因通道间信息重合度高，该瓶颈影响显著减轻（Figure 9, Appendix C.3）[^src-2602-16681-vetime]。
+
 ## CI 内部的共享粒度：超参维度
 
 CI 只规定逐序列处理，不规定超参在序列间共享多少。[[searchcast]]（arXiv:2606.27282）用 $(g_h, g_s)$ 分组搜索测量了这一谱系：跨序列超参共享的最优程度是数据集属性——ETTh1/ETTh2 全共享最好（per-series 搜索退化 0.5–4%，论文推测物理相关序列互相正则），Weather 全 per-series 最好（全共享 $g_s = 21$ 时退化 10%，21 个通道量纲互不兼容），Electricity 偏好中间粒度 $g_s = 32$；且 Weather 的 per-series 收益来自 local ratio 与正则强度 $\alpha$ 的通道间分歧而非 lookback[^src-2606-27282-ltsf-linear-models]。论文同时发现 horizon 维度的分组几乎不敏感（退化 $\leq 0.4\%$），故默认 $g_h = 48$、把预算留给序列轴。详见 [[grouped-hyperparameter-search]]。
@@ -104,6 +118,7 @@ CI 只规定逐序列处理，不规定超参在序列间共享多少。[[search
 - **CVPE 折中**：CI backbone + patch 级 CD 注入，保留鲁棒性同时增加跨变量容量 [^src-cvpe-2025]
 - **CrossLinear 折中**：CI 时序骨干 + 1D conv 外生交叉相关残差注入（外生 many-to-one）[^src-crosslinear]
 - **Zeus**：CI + point tokenization + RevIN 的 tuning-free 多任务基础模型（ICML 2026），局限为未显式建模变量间相关 [^src-2607-01918]
+- **VETime**：CI 独立季-趋分解 + 实例自适应 Gamma 校正 + GCD 统一折叠周期的零样本多变量视觉增强架构，局限为缺少跨变量依赖建模且受制于固定画布物理容量（~10 变量）[^src-2602-16681-vetime]
 
 ## 相关技术
 
@@ -129,6 +144,8 @@ CI 只规定逐序列处理，不规定超参在序列间共享多少。[[search
 - 相关：[[trace]] — CIT + CbA 通道折中方案（NeurIPS 2025）[^src-trace-neurips2025]
 - 相关：[[grouped-hyperparameter-search]] — CI 内超参共享粒度的测量（全共享 ↔ per-series 谱系）[^src-2606-27282-ltsf-linear-models]
 - 相关：[[witran]] — 单通道评估的 RNN 周期模型（NeurIPS 2023）[^src-witran-jia-2023]
+- 相关：[[vetime]] — CI 架构在视觉增强零样本异常检测中的应用与容量边界分析[^src-2602-16681-vetime]
+- 相关：[[traceable-image-conversion]] — 包含 GCD 周期对齐的多变量复合热图转换技术[^src-2602-16681-vetime]
 
 [^src-simdiff]: [[source-simdiff]]
 [^src-patchtst]: [[source-patchtst]]
@@ -147,3 +164,4 @@ CI 只规定逐序列处理，不规定超参在序列间共享多少。[[search
 [^src-2606-27282-ltsf-linear-models]: [[source-2606-27282-ltsf-linear-models]]
 [^src-trace-neurips2025]: [[source-trace-neurips2025]]
 [^src-witran-jia-2023]: [[source-witran-jia-2023]]
+[^src-2602-16681-vetime]: [[source-2602-16681-vetime]]

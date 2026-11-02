@@ -9,7 +9,7 @@ tags:
   - zero-shot
   - arxiv-2026
 created: 2026-05-03
-last_updated: 2026-08-05
+last_updated: 2026-11-02
 source_count: 5
 confidence: high
 status: active
@@ -72,6 +72,12 @@ Aurora 在 Cross-domain Multimodal Time Series Corpus（>10 亿时间点，ERA5/
 - **[[vot|VoT]]** 使用 LLM 进行事件驱动推理，通过多级对齐融合文本与时间序列[^src-event-driven-ts-forecasting]
 - **Aurora** 通过 tokenization-encoding-distillation 提取领域知识，使用注意力引导注入时间建模[^src-aurora]
 
+### 与 VETime 的对比（任务边界：生成式预测 vs 密集异常定位）
+
+同为探索多模态时序基础模型的代表，两者在任务导向与跨模态对齐上展现出不同的设计路线：
+- **任务错位（Task Misalignment）**：VETime 论文指出，Aurora 专为通用多模态时序预测设计，依赖原型引导流匹配与模态引导注意力捕获宏观演变趋势；但预测任务关注未来宏观分布，缺乏密集体时间戳级（timestamp-level）判别能力，且预测-残差范式在零样本面对未知多样异常时难以泛化（§1）[^src-2602-16681-vetime]。
+- **跨模态交互与对齐粒度**：Aurora 在编码阶段通过可学习语义质心交叉注意力将视觉与文本知识蒸馏为少量精华 token 注入时序自注意力；而面向异常检测的 [[vetime|VETime]] 强调可逆共享时间轴，通过可追溯图像转换（TIC）和补丁级时序对齐（PTA）将冻结 ViT 的 2D 视觉补丁精确对齐回 1D 时间轴，并结合多尺度窗口对比学习与任务自适应门控，实现点异常与长上下文异常的密集定位（§1, §3.2）[^src-2602-16681-vetime]。
+
 ## 实验
 
 在 5 个基准上评估：TimeMMD、TSFM-Bench、ProbTS、TFB 和 EPF，作者报告单模态和多模态场景均取得 SOTA[^src-aurora]：
@@ -100,8 +106,12 @@ Aurora 在 Cross-domain Multimodal Time Series Corpus（>10 亿时间点，ERA5/
 - [[timesfm]] — 单模态 TSFM 对比
 - [[chronos]] — 单模态 TSFM 对比
 - [[uniextreme]] — UniExtreme 极端天气基础模型（Aurora: 通用 TS 多模态生成式；UniExtreme: 天气领域极端事件判别式）
+- [[vetime]] — 视觉增强零样本时序异常检测基础模型（对比多模态预测路线）
+- [[multimodal-time-series-anomaly-detection]] — 多模态时序异常检测概念
+- [[source-2602-16681-vetime]] — VETime 论文源摘要
 
 [^src-aurora]: [[source-aurora]]
 [^src-simdiff]: [[source-simdiff]]
 [^src-most]: [[source-most]]
 [^src-event-driven-ts-forecasting]: [[source-event-driven-ts-forecasting]]
+[^src-2602-16681-vetime]: [[source-2602-16681-vetime]]
