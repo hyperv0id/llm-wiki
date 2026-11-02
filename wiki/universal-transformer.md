@@ -8,8 +8,8 @@ tags:
   - weight-tying
   - language-model
 created: 2026-10-27
-last_updated: 2026-10-27
-source_count: 2
+last_updated: 2026-10-28
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -143,5 +143,8 @@ ACT 在机器翻译上轻度降低结果（§1）[^src-dehghani-2019-universal-t
 
 UT 定位于与 Neural GPU 及 Neural Turing Machine 同族的「并行 RNN 块」（§4）：与仅绑定自注意力层的 Recursive Transformer 相比，UT 连同 transition 一并绑定，同时在自然语言任务上具备竞争力[^src-dehghani-2019-universal-transformers]。后续循环深度路线见 [[recurrent-depth]]：Huginn 将 UT 列为 recurrent depth 重复发现的一环；两者差异在于 Huginn 采用块级共享、无停机且每轮重注入输入嵌入，UT 采用全层共享、ACT 逐位置停机并在每步重新叠加正弦位置-时间编码（对照见该页谱系段）。Ouro 也把 UT 列为这条线的源头，并在此之上加入每轮 LM head、退出门与均匀先验的熵正则深度分配（[[ouro]]）[^src-seed-2025-ouro]。逐位置编码见 [[sinusoidal-positional-encoding]]；长度外推见 [[position-extrapolation]]；基础对照见 [[transformer-architecture]]。
 
+理论侧：Xu & Sato（ICML 2025）对单层、权重绑定的复合 $L_2\circ\mathrm{TF}^{\circ r}\circ L_1$ 给出关于循环次数 $r$ 的逼近率，并把界里比标准 Transformer 多出的两项 modulus of continuity 归因于 weight-tying（详见 [[looped-transformer-approximation-rate]]）[^src-xu-2025-looped-transformers-timestep-encoding]。UT 固定 $T$ 步的设定正属于这一族——循环次数是唯一可调自由度、权重跨步共享。该分析限于单层、固定长度、$r>N$，排除 LayerNorm，多层情形在附录 D 里自述为 open question，因此不直接覆盖 UT 的多层栈与 ACT 停机[^src-xu-2025-looped-transformers-timestep-encoding]。该论文的构造不是对 UT 的复现，实验也不涉及 ACT 停机[^src-xu-2025-looped-transformers-timestep-encoding]。
+
 [^src-dehghani-2019-universal-transformers]: [[source-dehghani-2019-universal-transformers]]
 [^src-seed-2025-ouro]: [[source-seed-2025-ouro]]
+[^src-xu-2025-looped-transformers-timestep-encoding]: [[source-xu-2025-looped-transformers-timestep-encoding]]

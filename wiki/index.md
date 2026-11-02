@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-10-27
+last_updated: 2026-10-28
 tags:
   - meta
 source_count: 0
@@ -444,6 +444,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-worldts]] — WorldTS（Zhu et al., arXiv:2609.31162v1，2026-09-25）：多模态协变量直接条件化潜空间未来状态预测，两阶段训练；21 数据集上数值协变量 12/12 平均最优、Time-MMD 14/16 第一、MMSP 最低
 - [[source-xcpd]] — xCPD: graph spectral decomposition for channel-patch dependency routing (ICLR 2026)
 - [[source-xiong-2020-layernorm-placement]] — Xiong et al., ICML 2020：LN 放在残差和内外决定初始化梯度尺度，Post-LN 末层梯度 $\mathcal{O}(d\sqrt{\ln d})$ 与深度无关、Pre-LN 为 $\mathcal{O}(d\sqrt{\ln d/L})$，故 Pre-LN 可去 warmup
+- [[source-xu-2025-looped-transformers-timestep-encoding]] — On Expressive Power of Looped Transformers：单层 looped Transformer 的逼近率（Theorem 3.6，$\delta=((r-N)/2)^{-1/((N+1)d+1)}$，比标准 Transformer 多出 token/contextual 两个 modulus，归因 weight-tying）+ TMLT（timestep 编码生成逐 loop 缩放向量），ED(60) $r=100$ 47.7→88.3、LCS(60) 96.9→97.1（Xu & Sato, ICML 2025, PMLR 267；PDF raw/xu-2025-looped-transformers-timestep-encoding.pdf）
 - [[source-yang-2024-gated-delta]] — Gated Delta Networks: Improving Mamba2 with Delta Rule，gated delta rule（遗忘门 $\alpha_t$ 进 delta rule 转移矩阵）+ WY 表示扩展的 chunkwise 并行训练，1.3B/100B 上 LM 与常识推理超 Mamba2/DeltaNet（Avg 55.32 对 54.89/52.14），S-NIAH 三任务与混合架构证据（Yang, Kautz & Hatamizadeh, MIT/NVIDIA, ICLR 2025, arXiv:2412.06464；PDF raw/gated-delta-networks-2412-06464.pdf）
 - [[source-yang-consistency-fm-arxiv24]] — Consistency-FM: Defining Straight Flows with Velocity Consistency, 速度一致性直线流少步 FM，LOFT $L_{CT}$ 的方法来源 (arXiv 2024 preprint, v1)
 - [[source-yang-gsli-2025]] — GSLI: Graph Structure Learning for Spatial-Temporal Imputation Adapting to Node and Feature Scales (Yang et al., AAAI 2025)
@@ -817,6 +818,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[lomb-scargle-periodogram]] — Lomb–Scargle 周期图，非均匀采样数据的频谱估计方法
 - [[long-context-personalization]] — personalization under long context (1K-256K tokens) with constraint satisfaction
 - [[lookback-horizon-scaling]] — 最优回看长度与预测长度的幂律关系 $L^*=aH^b$，指数 +0.46 至 −0.19 挑战"长 horizon 需长历史"；仅变 $L$ 即有 36%–53% 降幅的 strong regime（arXiv:2606.27282）
+- [[looped-transformer-approximation-rate]] — 逼近率与三种 modulus of continuity：token / contextual / 序列连续性如何进入误差界，loop 预算 $r=\delta^{-1}+2\delta^{-(N+1)d}+N$ 与 weight-tying 的结构代价
 - [[low-dimensional-graph-adjacency]] — 低维图邻接建模，将 N×N 邻接矩阵的学习迁移到 C×C 压缩空间 (GSNet, PVLDB 2025)
 - [[lstf]] — Long Sequence Time-Series Forecasting, the problem setting formalized by Informer
 - [[mask-aware-imputation-no-prefilling]] — 无预填充的掩码感知填补，用可学习缺失嵌入直接表征缺失值而非零初始化 (MagiNet, arXiv 2024)
@@ -1370,6 +1372,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[timedit-masking]] — TimeDiT's unified masking mechanism: random/block/stride/reconstruction masks for multi-task time series SSL
 - [[timedit-physics-informed]] — TimeDiT's finetuning-free PDE-guided Langevin dynamics sampling for physics-informed generation
 - [[timeflow-loss]] — TimeFlow Loss，Sundial 基于 Flow Matching 的生成式训练目标 (ICML 2025)
+- [[timestep-modulated-looped-transformer]] — TMLT：timestep 编码经共享 MLP 生成 $\alpha_1,\alpha_2,\gamma_1,\gamma_2$ 四个缩放向量，调制 time-dependent RMSNorm 与两个子层输出，权重仍共享；Theorem 4.2 把逐点记忆误差从 $\le\varepsilon_i$ 压到 $=0$
 - [[topology-aware-graph-transformer]] — TGT, learnable blend of global self-attention and local graph topology (AAAI 2026)
 - [[topology-aware-node-embedding]] — 基于拉普拉斯特征向量的归纳式节点嵌入，支持跨图结构迁移 (AAAI 2025)
 - [[trace-as-state]] — Trace as State 主入口：问题例子、同轨迹前后置机制、主要实证与不能外推的结论

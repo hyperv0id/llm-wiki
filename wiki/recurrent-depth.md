@@ -8,8 +8,8 @@ tags:
   - latent-reasoning
   - language-model
 created: 2026-10-25
-last_updated: 2026-10-27
-source_count: 4
+last_updated: 2026-10-28
+source_count: 5
 confidence: medium
 status: active
 ---
@@ -128,6 +128,12 @@ $$\begin{aligned}
 - 代码落后专用模型：MBPP 24.80 vs StarCoder2-3B 43.00，HumanEval 23.17 vs 31.09（Table 3）[^src-2502-05171-recurrent-depth]。
 - 只做了单段循环；多段循环、把 CoT 内化进循环、按难度做 RL、与 MoE/线性注意力结合都列在 future work（§9）[^src-2502-05171-recurrent-depth]。
 
+## 表达力：逼近率与 timestep 调制
+
+这条路线的函数逼近性质有一份直接分析：Xu & Sato 对单层 looped Transformer 给出关于循环次数 $r$ 的逼近率（Theorem 3.6），$\delta=\left((r-N)/2\right)^{-1/((N+1)d+1)}$，误差随 $r$ 收缩，参数量固定为 $O(d)$、与目标精度和序列长度无关[^src-xu-2025-looped-transformers-timestep-encoding]。界里比标准 Transformer 多出 token 连续性与 contextual 连续性两个 modulus，论文把它归因于 weight-tied feed-forward：同一个 FF 迭代 $K-1$ 次，各步增量由同一组权重决定，无法逐 step 调步长（Lemma 4.1）[^src-xu-2025-looped-transformers-timestep-encoding]。修法是 [[timestep-modulated-looped-transformer|TMLT]]：用 timestep 编码经共享 MLP 生成逐 loop 的缩放向量，调制 RMSNorm 增益与两个子层输出[^src-xu-2025-looped-transformers-timestep-encoding]。
+
+与 Huginn 的一条口径差别要写清：Huginn 报告不加 step embedding，理由是试过 $s_i=R_i(e,s_{i-1})$ 与 path independence 冲突、模型无法外推（见上「结构」表）；TMLT 则把 loop 序号送进一个共享 MLP 生成 scale。两者不是对同一个量的分歧——Huginn 拒绝的是把步号写进状态更新，TMLT 条件化的是归一化与子层输出的缩放；任务也分别是语言模型预训练与序列到序列逼近[^src-2502-05171-recurrent-depth][^src-xu-2025-looped-transformers-timestep-encoding]。TMLT 的实验规模（4 头、256 维）远小于 Huginn，不足以反驳 Huginn 的经验结论。
+
 ## 谱系与相邻路线
 
 论文只在相关工作里提谱系：recurrent depth 被反复重新发现（RNN、扩散模型、universal/looped transformer）；Dehghani et al. 用循环深度追求图灵完备[^src-dehghani-2019-universal-transformers]——一手源核实（[[universal-transformer]]，§2、§4）：UT 把同一组自注意力 + transition 权重沿深度施加 $T$ 步、每步重加正弦位置-时间编码，固定 $T$ 即全层权重绑定的多层 Transformer，另配 ACT 逐位置停机，与 Huginn 的块级共享、无停机、每轮重注入输入嵌入不同；Lan et al. 在规模上用过但固定循环次数；直接同源的是「随机 unroll + 每步注入输入」能学可泛化算法的一线工作；与 deep equilibrium model 可视为同族的「学习一个不动点迭代」（§8）[^src-2502-05171-recurrent-depth]。论文没有给出与 Universal Transformer 的逐条对照（未讨论 ACT 式逐位置停机、层间共享与块级共享的差别），也没有引用其 halting 机制[^src-2502-05171-recurrent-depth]。
@@ -140,3 +146,4 @@ $$\begin{aligned}
 [^src-tosea-looped-transformer]: [[source-tosea-looped-transformer]]
 [^src-dehghani-2019-universal-transformers]: [[source-dehghani-2019-universal-transformers]]
 [^src-seed-2025-ouro]: [[source-seed-2025-ouro]]
+[^src-xu-2025-looped-transformers-timestep-encoding]: [[source-xu-2025-looped-transformers-timestep-encoding]]
