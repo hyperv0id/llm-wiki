@@ -8,8 +8,8 @@ tags:
   - robustness
   - machine-learning-theory
 created: 2026-06-08
-last_updated: 2026-09-16
-source_count: 4
+last_updated: 2026-11-07
+source_count: 5
 confidence: medium
 status: active
 ---
@@ -25,7 +25,7 @@ For [[traffic-forecasting|traffic]] and other spatio-temporal tasks, OOD arises 
 - **Temporal OOD (T-OOD)** — the distributional statistics (mean, variance, periodic patterns) of node signals evolve over time, so a model trained on one year degrades on later years.
 - **Structural OOD (S-OOD)** — the underlying graph itself changes: sensors are added, removed, or relocated, so the node set and adjacency at test time differ from training.
 
-Spatio-temporal graph neural networks (STGNNs) are especially brittle under S-OOD because their node-to-node message-passing weights are coupled to the training graph and cannot transfer to unseen structures; [[stop|STOP]] (ICML 2025) shows that *removing* node-to-node messaging can even improve OOD accuracy[^src-stop]. Closely related is **inductive learning** — producing accurate representations for nodes never seen during training — which is the structural-OOD challenge in its sharpest form[^src-stop]. A related cross-network setting is **train on city/region A, zero-shot test on B with a different sensor graph**: [[stunet|STUNet]] (KDD 2026) attacks this by **explicit adjacency-matrix tokenization** (frozen spatial tokens + query-aggregate fusion) rather than DRO or centralized messaging, and reports best zero-shot scores among STGCN/PatchSTG/STID-style baselines on LargeST splits[^src-stunet].
+Spatio-temporal graph neural networks (STGNNs) are especially brittle under S-OOD because their node-to-node message-passing weights are coupled to the training graph and cannot transfer to unseen structures; [[stop|STOP]] (ICML 2025) shows that *removing* node-to-node messaging can even improve OOD accuracy[^src-stop]. Closely related is **inductive learning** — producing accurate representations for nodes never seen during training — which is the structural-OOD challenge in its sharpest form[^src-stop]. [[stone|STONE]] (KDD 2024) 对同一设定走不变学习路线：把已学到的节点依赖（语义图）扰动成多个环境并最小化跨环境方差，同时用 Fréchet 锚点距离嵌入让新增传感器无需重训即获得表示[^src-stone]。 A related cross-network setting is **train on city/region A, zero-shot test on B with a different sensor graph**: [[stunet|STUNet]] (KDD 2026) attacks this by **explicit adjacency-matrix tokenization** (frozen spatial tokens + query-aggregate fusion) rather than DRO or centralized messaging, and reports best zero-shot scores among STGCN/PatchSTG/STID-style baselines on LargeST splits[^src-stunet].
 
 For **natural year-over-year T-OOD in real cities**, the [[st-ood|ST-OOD]] benchmark (IEEE TMC 2025) defines same-calendar IN vs next-year OUT splits across six urban scenarios (bike, taxi, pedestrians, speed, flow, 311). It finds RMSE degradation of about 40%–116% under OUT, with simple STID/MLP often beating complex STGNNs, and specialized OOD methods (CaST/CauSTG/STONE) looking robust mainly via underfitting rather than invariant features; moderate dropout (0.2–0.3) is a cheap OUT boost[^src-st-ood].
 
@@ -41,4 +41,5 @@ Strategies for ST-OOD include causal/invariant-learning frameworks (CauSTG, CaST
 [^src-stunet]: [[source-stunet]]
 [^src-st-ood]: [[source-st-ood]]
 [^src-dynastar]: [[source-dynastar]]
+[^src-stone]: [[source-stone]]
 

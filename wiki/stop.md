@@ -9,8 +9,8 @@ tags:
   - inductive-learning
   - graph-neural-network
 created: 2026-06-08
-last_updated: 2026-08-31
-source_count: 2
+last_updated: 2026-11-07
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -48,7 +48,7 @@ GenPU sampling (a multinomial mask) is non-differentiable, so STOP **alternates*
 
 ## Relationship to Other Work
 
-STOP is the successor to **STONE** (KDD 2024, same group), which used a causal graph structure for ST-OOD learning; STOP reframes the problem at the message-passing level instead[^src-stop]. It is evaluated against STONE, CaST, and continual-learning baselines ([[continual-spatio-temporal-forecasting|TrafficStream, PECPM, TFMoE]]), arguing the latter only work under near-IID fine-tuning and fail under true OOD[^src-stop]. It shares an OOD-robustness goal with [[rstib|RSTIB-MLP]] (ICML 2025), which instead uses an information-bottleneck objective; both are MLP-centric and target spatio-temporal distribution shift[^src-stop].
+STOP is the successor to **[[stone|STONE]]** (KDD 2024, same USTC group): STONE 在节点依赖（语义图）层面构造多环境、最小化跨环境方差以取得不变的聚合路径，STOP 改在 message-passing 层面切断 node-to-node 连接——两者同属 ST-OOD，但不变量作用的载体不同[^src-stop][^src-stone]。 It is evaluated against STONE, CaST, and continual-learning baselines ([[continual-spatio-temporal-forecasting|TrafficStream, PECPM, TFMoE]]), arguing the latter only work under near-IID fine-tuning and fail under true OOD[^src-stop]. It shares an OOD-robustness goal with [[rstib|RSTIB-MLP]] (ICML 2025), which instead uses an information-bottleneck objective; both are MLP-centric and target spatio-temporal distribution shift[^src-stop].
 
 [[stunet|STUNet]] (KDD 2026) attacks a related **cross-network** generalization setting (train on one LargeST subnetwork, zero-shot on another) by *explicitly* tokenizing adjacency and freezing those spatial tokens—complementary to STOP’s “block node-to-node messaging” thesis[^src-stunet].
 
@@ -62,3 +62,4 @@ Public implementation: `github.com/PoorOtterBob/STOP`[^src-stop].
 
 [^src-stop]: [[source-stop]]
 [^src-stunet]: [[source-stunet]]
+[^src-stone]: [[source-stone]]

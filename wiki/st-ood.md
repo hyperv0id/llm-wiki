@@ -9,8 +9,8 @@ tags:
   - benchmark
   - generalization
 created: 2026-07-27
-last_updated: 2026-07-27
-source_count: 1
+last_updated: 2026-11-07
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -44,6 +44,8 @@ DL-Traff、BasicTS+、LargeST、LibCity、UCTB 等侧重标准化与短跨度公
 
 标准模型平均归一化 MAE：IN 1.07 → OUT 1.68（**×1.57**）；专用 OOD：IN 1.47 → OUT 1.87（**×1.27** 但全程更高）[^src-st-ood]。
 
+STONE 原文补充一个方法侧边界：只保留时间断层（去掉节点增删）时与 GWNet 基本持平（MAE 18.26 vs 18.38、25.06 vs 25.84、34.46 vs 34.62），增益集中在新增节点场景（最多 −29.2%）[^src-stone]；同表中 12 步 MAE 达 60 以上的正是 CaST/CauSTG，与基准对专用方法欠拟合的观察一致[^src-st-ood][^src-stone]。
+
 ## 在方法谱系中的位置
 
 - 相对 [[source-cast|CaST]] / CauSTG / STONE：ST-OOD 是**评测器**，实证质疑“时空因果分离 / 不变学习”在真实多年城市数据上的交付——它们往往用降容量换稳健，而非不变表示[^src-st-ood]。
@@ -61,3 +63,4 @@ DL-Traff、BasicTS+、LargeST、LibCity、UCTB 等侧重标准化与短跨度公
 - [[source-cast]] · [[stop]] · [[stunet]] · [[gwnet]] · [[stgcn]]
 
 [^src-st-ood]: [[source-st-ood]]
+[^src-stone]: [[source-stone]]

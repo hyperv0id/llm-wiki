@@ -1,0 +1,945 @@
+STONE: A Spatio-temporal OOD Learning Framework Kills Both
+                 Spatial and Temporal Shifts
+                      Binwu Wang                                                     Jiaming Ma∗                                         Pengkun Wang
+    University of Science and Technology                            University of Science and Technology                         Suzhou Institute for Advanced
+                   of China                                                        of China                                    Research, University of Science and
+                Hefei, China                                                    Hefei, China                                          Technology of China
+        wbw1995@mail.ustc.edu.cn                                        jiamingma@mail.ustc.edu.cn                                       Suzhou, China
+                                                                                                                                   pengkun@mail.ustc.edu.cn
+
+                         Xu Wang                                                   Yudong Zhang                                         Zhengyang Zhou
+        Suzhou Institute for Advanced                               University of Science and Technology                         Suzhou Institute for Advanced
+      Research, University of Science and                                          of China                                    Research, University of Science and
+             Technology of China                                                Hefei, China                                          Technology of China
+                Suzhou, China                                            zyd2020@mail.ustc.edu.cn                                        Suzhou, China
+           wx309@mail.ustc.edu.cn                                                                                                  zzy0929@mail.ustc.edu.cn
+
+                                                                                     Yang Wang∗
+                                                                    University of Science and Technology
+                                                                                   of China
+                                                                                Hefei, China
+                                                                            angyan@ustc.edu.cn
+
+ABSTRACT                                                                                               from environments. Finally, we further introduce an explore-to-
+Traffic prediction is a crucial task in the Intelligent Transportation                                 extrapolate risk objective to enhance the variety of generated en-
+System (ITS), receiving significant attention from both industry                                       vironments. We conduct experiments on multiple traffic datasets,
+and academia. Numerous spatio-temporal graph convolutional net-                                        and the results demonstrate that our proposed model exhibits com-
+works have emerged for traffic prediction and achieved remarkable                                      petitive performance in terms of generalization and scalability.
+success. However, these models have limitations in terms of gen-
+eralization and scalability when dealing with Out-of-Distribution                                      CCS CONCEPTS
+(OOD) graph data with both structural and temporal shifts. To tackle                                   • Computing methodologies → Temporal reasoning; • Informa-
+the challenges of spatio-temporal shift, we propose a framework                                        tion systems → Data mining.
+called STONE by learning invariable node dependencies, which
+achieve stable performance in variable environments. STONE ini-                                        KEYWORDS
+tially employs gated-transformers to extract spatial and temporal
+                                                                                                       Spatio-temporal data mining, Out-of-distribution generalization,
+semantic graphs. These two kinds of graphs represent spatial and
+                                                                                                       Traffic prediction, Causal graph learning
+temporal dependencies, respectively. Then we design three tech-
+niques to address spatio-temporal shifts. Firstly, we introduce a                                      ACM Reference Format:
+Fréchet embedding method that is insensitive to structural shifts,                                     Binwu Wang, Jiaming Ma∗ , Pengkun Wang, Xu Wang, Yudong Zhang,
+and this embedding space can integrate loose position dependen-                                        Zhengyang Zhou, and Yang Wang∗ . 2024. STONE: A Spatio-temporal OOD
+cies of nodes within the graph. Secondly, we propose a graph in-                                       Learning Framework Kills Both Spatial and Temporal Shifts. In Proceedings
+tervention mechanism to generate multiple variant environments                                         of the 30th ACM SIGKDD Conference on Knowledge Discovery and Data
+                                                                                                       Mining (KDD ’24), August 25–29, 2024, Barcelona, Spain. ACM, New York,
+by perturbing two kinds of semantic graphs without any data aug-
+                                                                                                       NY, USA, 12 pages. https://doi.org/10.1145/3637528.3671680
+mentations, and STONE can explore invariant node representation
+Yang Wang and Jiaming Ma are corresponding authors.
+                                                                                                       1    INTRODUCTION
+Permission to make digital or hard copies of all or part of this work for personal or
+classroom use is granted without fee provided that copies are not made or distributed                  With the increasing prevalence of GPS-enabled mobile devices and
+for profit or commercial advantage and that copies bear this notice and the full citation              sensors, a significant amount of spatio-temporal data is being gath-
+on the first page. Copyrights for components of this work owned by others than the                     ered in various fields such as urban transportation and atmospheric
+author(s) must be honored. Abstracting with credit is permitted. To copy otherwise, or
+republish, to post on servers or to redistribute to lists, requires prior specific permission          conditions. This data has become a valuable asset, fueling progress
+and/or a fee. Request permissions from permissions@acm.org.                                            in the realm of urban computing [7, 22, 38, 41, 42, 54, 57, 63]. Among
+KDD ’24, August 25–29, 2024, Barcelona, Spain                                                          the many applications, predicting traffic flow is a standout task in
+© 2024 Copyright held by the owner/author(s). Publication rights licensed to ACM.
+ACM ISBN 979-8-4007-0490-1/24/08                                                                       urban computing, providing dependable future road insights and
+https://doi.org/10.1145/3637528.3671680                                                                enhancing traffic management systems [20, 26, 27, 56, 65].
+
+
+
+
+                                                                                                2948
+KDD ’24, August 25–29, 2024, Barcelona, Spain                                                                                                     Binwu Wang et al.
+
+
+    Current prevailing traffic flow prediction method processes data                     may emerge due to increasing sensors, while existing nodes may
+into graph-structured data incorporating relationship induction,                         disappear due to engineering renovations or equipment failures.
+namely spatio-temporal graphs (STG), and then spatio-temporal                                Further, we formally formalize the spatio-temporal OOD chal-
+graph convolutional networks are employed as engines to learn                            lenge as, 𝑒 tr : {Xtr, Gtr } ≠ 𝑒 te : {Xte, Gte } with P (Xte ) ≠ P (Xtr )
+spatio-temporal features and make prediction [25, 39, 43, 59]. Given                     and Gte ≠ Gtr . When dealing with the OOD challenge, we argue
+a graph G and training data X denoted as the training environment                        that existing models have two limitations: inflexible scalability and
+𝑒 : {X, G}, the goal of STG prediction is to learn a function F which                    unreliable generalization. One major reason behind these limitations
+can predict target label 𝑦 given associated input 𝑥:                                     is that they use GCN to learn node representations on pre-defined
+                                                                                         training graphs, and this learned knowledge is tied to these specific
+                  min E (𝑥,𝑦)∼P(𝑥,𝑦 |𝑒 ) [L (F (x), 𝑦)|𝑒].                  (1)
+                    F                                                                    graphs, which cannot accurately represent unseen graphs. In par-
+   While existing models have been highly successful, they heavily                       ticular, when dependencies between nodes change dynamically due
+depend on the IID assumption, which states that testing and train-                       to spatial-temporal shifts, such as the addition or removal of nodes,
+ing data are independently sourced from the same environment.                            the representations aggregated through the original dependency
+Unfortunately, many cutting-edge models like D2 STGNN [31] and                           paths fail to respond to these shifts, substantially impeding their
+PDFormer [9] are coupled with the training STG. However, this                            generalization ability in various environments. Moreover, GCN
+assumption does not always hold in real-world settings where spa-                        cannot effectively generalize the learned knowledge to emerging
+tial and temporal features of STG may change over time, leading to                       nodes that are unknown to the model during the training phase.
+varying testing environments and posing challenges related to Out-                       thus, the scalability of models in variable environments also poses
+of-Distribution (OOD) scenarios. A few recent studies [8, 48, 64]                        a significant challenge. Traffic management personnel might be
+have started exploring methods for OOD spatio-temporal learning.                         particularly interested in the traffic conditions of these nodes to
+Yet, these methods primarily focus on temporal shifts and overlook                       devise updated scheduling plans.
+significant spatial changes. In this paper, we first comprehensively                         Causal learning has garnered considerable attention in dealing
+define spatio-temporal shift from two concepts: temporal shift                           with OOD problems within the image and NLP fields [30, 62]. Cur-
+and spatial shift, as shown in Figure. 1.                                                rent approaches in these domains primarily focus on extracting
+                                                                                         stable knowledge that can consistently perform well across diverse
+                                                                                         data distributions. However, spatio-temporal OOD tasks present
+         Train Val                 Test                                                  two major challenges: (1) How to leverage GCN to learn reliable rep-
+                          Shift                                                          resentations that are resilient to spatio-temporal shifts. (2) How to
+                          ······                                                         devise intervention mechanisms to explicitly enhance environment
+                                                                                         environmental modeling for robust generalization.
+                                                                                             In this paper, we propose a novel causal graph learning frame-
+                                                                                         work for spatio-temporal OOD learning. The key idea is to ex-
+                           (a) Temporal shift
+                                                                                         tract invariant spatio-temporal dependencies among nodes that
+            Train /Val                            Test                                   can consistently represent the relationship of nodes across vari-
+                                                                                         ous STG distributions, enabling a reliable aggregation path that
+                                     Evolve                                              empowers GCN to learn generalizable representations irrespective
+                                                                                         of specific graphs. To generate a range of distributions, we model
+                                                                                         spatio-temporal shift by perturbing learned node dependencies
+                                                                                         instead of manipulating the spatio-temporal graph data.
+                                                New node     Removed node
+                            (b) Spatial shift                                                Specifically, we propose Spatio-Temporal OOD Graph Learning
+                                                                                         Networks with Fréchet Embedding (STONE) for spatio-temporal
+                                                                                         OOD learning. STONE comprises two main components: a semantic
+Figure 1: Spatio-temporal shift is interpreted into the tempo-                           graph learning component and a graph intervention mechanism.
+ral and spatial shifts. Temporal shift refers to the changes                             The first component of STONE utilizes a transformer with a gate
+in the distribution feature (such as mean and variance) of                               to effectively capture spatio-temporal heterogeneity and generate
+traffic data over time. Spatial shift refers to the evolution                            two kinds of semantic graphs that represent dependencies among
+of the graph structure, typically involving changes in the                               nodes in the dimensions of temporal and spatial, respectively. To
+graph’s size.                                                                            extract stable dependencies, we first employ a Fréchet embedding
+                                                                                         method to encode the topology information of the graphs. The
+(1) Temporal shift refers to the change in the temporal data distri-                     embedding space serves as a loose mapping of the global position
+bution (e.g., mean and variance), meaning that P(Xte ) is not equal                      of nodes within the graphs and exhibits flexibility for spatial shifts.
+to P(Xtr ). For example, Figure 1(a) shows the traffic flow of a node                    Secondly, we design a spatio-temporal graph intervention mecha-
+(sensor) in the PeMS system over a long period and reveals its                           nism that involves perturbing two generated semantic graphs. This
+shifted flow distribution.                                                               perturbation process effectively simulates spatio-temporal shifts,
+(2) Spatial shift refers to the evolution of underlying graph struc-                     thereby creating variable environments. By extracting invariant
+tures, as depicted in Figure 1(b). In a modern transportation system,                    spatio-temporal dependencies from these environments, the model
+the road network tends to gradually expand over time. New nodes
+
+
+
+
+                                                                                  2949
+STONE: A Spatio-temporal OOD Learning Framework Kills Both Spatial and Temporal Shifts                              KDD ’24, August 25–29, 2024, Barcelona, Spain
+
+
+is guided by these dependencies as aggregated paths to learn a ro-                   2.0.3 OOD learning in the time domain. There are some OOD
+bust representation. Finally, we introduce an explore-to-extrapolate                 learning models in the time domain to address shifts of time se-
+risk term to enhance the variety of generated environments, en-                      ries data. For example, AdaRNN [5] clusters historical time se-
+abling the model to explore and extrapolate beyond the observed                      quences into different classes and dynamically matches input data
+data, thereby improving its ability to handle unseen distributions.                  to these classes to identify contextual information. Other invariance
+Experiment results on various OOD traffic datasets demonstrate                       learning models for sequential data are commonly used to learn
+that our model achieves competitive performance in generalization                    disentangled seasonal-trend representations [44] or environment-
+performance and scalability. The main contribution of this paper                     specific representations [50]. DIVERSIFY [23] attempts to exploit
+can be summarized as follows:                                                        subdomains within a whole dataset to counteract issues induced
+                                                                                     by non-stationary generalized representation learning. However,
+     • To the best of our knowledge, we are the first to comprehen-                  these models fail to model spatial dependencies.
+       sively investigate spatio-temporal OOD learning, consider-                    2.0.4 Spatio-temporal OOD learning with temporal shift. Influenced
+       ing both temporal shift and structural shift.                                 by the advancements in OOD graph learning within the recommen-
+     • We propose a novel framework called STONE, which aims                         dation domain, researchers have recently moved their attention
+       to learn invariant node dependencies between nodes. This                      towards exploring the problem of OOD with temporal shifts. For
+       allows the model to maintain consistent prediction perfor-                    example, CauSTG [64] presents a causal framework that is capable
+       mance in variable environments.                                               of transferring local and global spatio-temporal invariant relations
+     • This framework incorporates several innovative components,                    to out-of-distribution scenarios. CaST [48] utilizes a causal model
+       including a novel Fréchet embedding, a graph intervention                     (SCM) to interpret the data generation process of spatio-temporal
+       mechanism, and an intervention loss term. These compo-                        graphs. It employs back-door adjustment to separate the invariant
+       nents are designed to enhance the generalization and scala-                   components from the temporal environment. STEVE [6] encodes
+       bility of the model.                                                          traffic data into two disentangled representations and utilizes spatio-
+     • Experimental results on multiple real-world traffic datasets                  temporal environments as self-supervised signals to incorporate
+       demonstrate that our model achieves competitive general-                      contextual information into these representations. This enhances
+       ization and scalability across various OOD scenarios.                         the generalization ability of the learned context-oriented representa-
+                                                                                     tions, thereby improving OOD generalization. However, the current
+                                                                                     research primarily focuses on investigating the effects of temporal
+2    RELATED WORK                                                                    drift and fails to consider the evolution of the graph structure.
+2.0.1 Spatiotemporal graph prediction. Traffic prediction plays
+a vital role in the intelligent transportation system domain [10–                    3    PROBLEM PRELIMINARIES
+12, 18, 40]. Currently, the prevalent approach transforms traffic
+                                                                                     3.0.1 Spatio-temporal graph. We use a graph structure to represent
+data into spatio-temporal graphs and employs cutting-edge spatio-
+                                                                                     spatio-temporal data denoted as G = (𝑉 , 𝐸, A), where 𝑉 means the
+temporal graph convolutional networks to handle intricate spatio-
+                                                                                     node set with 𝑁 nodes and 𝐸 means the set of edges, A ∈ R𝑁 ×𝑁 is
+temporal dynamics [14, 17, 34–37, 49, 55]. Notably, D2 STGNN [31]
+                                                                                     the adjacency matrix. We use 𝑥𝑡 ∈ R𝑁 ×𝑑 to represent the historical
+combines diffusion graph convolutional networks with RNNs to
+                                                                                     graph data of 𝑁 nodes at 𝑡-th time step, where 𝑑 means the number
+capture temporal patterns effectively. STGCN [53] utilizes TCN
+                                                                                     of features.
+to efficiently model time dependencies. HGC-RNN [52] leverages
+optimization techniques based on hypergraph convolution, while                       3.0.2 Spatio-temporal graph prediction. Given a training environ-
+STSGCN [33] employs local graph convolution to address large-                        ment 𝑒 comprising two parts: the graph G and the training data
+scale graph scenarios. Nevertheless, existing models may exhibit                     X, this task aims to learn a prediction function F that takes the
+suboptimal performance when dealing with OOD challenges. This                        observed data of the past 𝑇 time steps as input, x ∈ R𝑇 ×𝑁 ×𝑑 =
+limitation stems from their fundamental assumption that the test                     {𝑥 1, · · · , 𝑥𝑇 } sampled from X, to predict the future data in 𝑇𝑃 time
+and training environments are drawn from the same distribution.                      steps. The parameters of F are optimized by calculating the loss
+                                                                                     between the predicted value and the ground truth 𝑦 as follows:
+2.0.2 OOD graph learning. Several methods have been proposed                                          min E (x,𝑦)∼P(𝑥,𝑦 |𝑒 ) [L (F (x), 𝑦)].                 (2)
+in the field of graph representation learning to enhance gener-                                         F
+alization performance for OOD problems [28, 46]. For instance,                       3.0.3 Spatio-temporal OOD learning. The goal of spatio-temporal
+GAUG [58] improves downstream training and inference processes                       OOD learning is to find a function F that effectively makes predic-
+by modifying the input graph using an edge prediction module. Dis-                   tions for given input graph data from any of support environments
+enGCN [24] focuses on learning representations that disentangle                      E.
+distinct and informative factors within the graph data, assigning                                  min max   E (x,𝑦)∼P(x,𝑦 |𝑒 ∗ ) [L (F (x), 𝑦)].    (3)
+                                                                                                        ∗
+                                                                                                     F 𝑒 ∈E
+these factors to different parts of the factorized vector representa-
+tions. OOD-GNN [16] introduces a nonlinear graph representation                      Definition: Self-attention mechanism SA (·). Self-attention mech-
+decorrelation approach utilizing random Fourier features to elimi-                   anism can learn the global correlation between different positions
+nate statistical dependence between causal and noncausal graph                       in the input sequence, which is widely applied in the field of time
+representations generated by the graph encoder.                                      series analysis [61]. Given an input H ∈ R𝑁 ×𝑑ℎ , the self-attention
+
+
+
+
+                                                                              2950
+KDD ’24, August 25–29, 2024, Barcelona, Spain                                                                                                                                                          Binwu Wang et al.
+
+
+
+          Overview of STONE                       Training Data                                                                                                                               Testing Data
+
+
+
+
+                                                                                                    MLP MLP MLP MLP
+                                                                  Fréchet Embedding
+
+
+
+
+                                                                                                                          𝜎
+                                                                                                                                                                 Spatial
+                                                                                𝑽𝟏
+                                                                                                                                                              Semantic Graph
+
+
+
+
+                                                                                                                                      Normalization
+
+
+
+
+                                                                                                                                                                               Spatial GCN
+                                                                                                                          Scaled
+                                                                                             𝑺𝒊𝒏
+
+
+
+
+                                                                                                                      X
+             Adjacency matrix     Traffic Data
+                                                                      𝑽𝟐             𝑽𝟑
+
+
+
+
+                                                                                                                                                          +
+            Spatial Fréchet       Temporal                         Anchor set 𝑽𝟏 :
+              Embedding          Embedding                         Anchor set 𝑽𝟐 :
+                                                                   Anchor set 𝑽𝟑 :                 Local Gated Residual
+               Spatial
+            Semantic Graph
+                                   Temporal
+                                Semantic Graph
+                                                                                                                                                              Intervention
+                                                                  Temporal Embedding
+                                                                                                                                                                 Temporal
+                                                 Sample                                                                                                                                       Sample
+
+
+
+
+                                                                                                                                                                               Temporal GCN
+                                                                                                                                   Sigmoid
+                                                                        Day Type
+
+
+
+
+                                                                                                       Dilation
+                                                                                                                                                              Semantic Graph
+
+
+
+
+                                                                                                        TCN
+                          Graph
+                       Intervention                                                          𝑿𝒊𝒏
+
+
+
+
+                                                                                                                                                      X
+                                                                                                       Dilation
+                                                                                                        TCN
+                                                                           Holiday
+              ST Module             Joint
+                                   Tuning
+
+
+                    Extrapolate Risk
+                     Minimization                                                            Spatio-temporal Shift
+
+
+Figure 2: The details of the proposed model. Our framework first models spatio-temporal heterogeneity and extracts two
+semantic graphs, and then we perturb semantic graphs to create variable environments, enabling the model to learn invariant
+dependencies from these environments.
+
+
+mechanism SA (·) computes the attention coefficient by the dot                               We use spatiotemporal graph convolutional networks to aggregate
+product operation:                                                                           temporal and spatial information from these two semantic graphs
+                         "                                                                   separately, and the generated node representations are denoted as
+                           H𝑊𝑞 + 𝑏𝑞 (H𝑊𝑘 + 𝑏𝑘 ) ⊤
+                                                   #
+        SA (H) = Softmax            √                 .     (4)                              𝑋𝑜 and 𝑆𝑜 . Finally, a gated decoder is employed to decode 𝑋𝑜 and
+                                      𝑑𝑥                                                     𝑆𝑜 for making predictions.
+where 𝑊𝑞 , 𝑊𝑘 ∈ R𝑑ℎ ×𝑑𝑥 , 𝑏𝑞 , and 𝑏𝑘 are learnable parameters. We                           Graph intervention mechanism. We design a graph interference
+can obtain an attention matrix with size 𝑁 × 𝑁 .                                             mechanism for spatio-temporal OOD learning, and this mechanism
+                                                                                             perturbs two generated semantic graphs, 𝐷𝑠 and 𝐷𝑡 by randomly
+4     METHOD                                                                                 masking edges within them. In fact, This process simulates spatial
+                                                                                             and temporal shifts, resulting in the creation of diverse intervention
+In this section, we present the details of STONE, as illustrated in Fig-                     environments. By extracting invariant spatio-temporal dependen-
+ure 2 and Algorithm 25. We provide an overview of the framework                              cies from these environments, spatio-temporal graph convolutional
+and subsequently explain each component of the model individu-                               networks can generate generalizable node representations. Further,
+ally.                                                                                        we introduce an explore-to-extrapolate risk term to enhance the
+                                                                                             variety of intervention environments which can prompt the model
+4.1     Overview of STONE                                                                    to explore and extrapolate beyond the observed data.
+STONE consists of three main modules that contribute to its func-
+tionality: a semantic graph learning module for acquiring semantic
+graphs from input data and prior knowledge, a spatio-temporal                                4.2                          Spatial Semantic Graph Learning
+graph convolution module for consolidating information across se-                            4.2.1 Node embedding. Node embedding technique has been proven
+mantic graphs to make predictions, and a graph intervention mech-                            to enhance prediction performance by incorporating graph topol-
+anism that aims to create diverse spatio-temporal environments                               ogy information [60]. However, traditional node embedding meth-
+where the first two modules can extract invariable knowledge.                                ods struggle with spatial shifts. For instance, Random-walk based
+Spatio-temporal graph learning module. The input data x ∈                                    methods, such as node2vec, sample local substructure, and this is
+R𝑇 ×𝑁 ×𝑑 and the adjacency matrix A ∈ R𝑁 ×𝑁 of the graph are                                 sensitive to shifts.
+passed through embedding layers, which integrates static prior                                  To solve this problem, we develop a novel Fréchet embedding.
+information into the model. Subsequently, gated transformers are                             This method can preserve graph local and global context infor-
+employed to effectively model spatio-temporal heterogeneity. This                            mation by encoding the distance affinity between the nodes and
+process generates two types of semantic graphs: a spatial semantic                           the selected anchor points, which can well response to the dy-
+graph denoted as 𝐷𝑠 , and a temporal semantic graph denoted as                               namic nature of the graph. Specifically, given the adjacency matrix
+𝐷𝑡 . 𝐷𝑡 captures the similarity of time-varying features between                             A of a graph, this method can return a low-dimensional vector
+nodes, providing insights into their temporal dependencies. On the                           𝑆𝑖𝑛 ∈ R𝑁 ×𝑑𝑒 .
+other hand, 𝐷𝑠 encodes graph topology information, describing the                            Definition 1: Fréchet Embedding. For a metric space (𝑉 , 𝑑𝑉 ), we
+affinity between nodes based on their positions within the graph.                            define an function 𝑓 : 𝑉 → ℓ𝑝𝑑𝑒 as Fréchet embedding, if each of the
+
+
+
+
+                                                                                      2951
+STONE: A Spatio-temporal OOD Learning Framework Kills Both Spatial and Temporal Shifts                                          KDD ’24, August 25–29, 2024, Barcelona, Spain
+
+
+coordinates 𝑓𝑖 is proportional to the distance with anchor sets V,                            Theorem 1: Bourgain theorem. This tells us that the mapping
+that is,                                                                                      function 𝑓 in spatio-temporal graph Fréchet embedding constructed
+                                                                                              by the random sample algorithm satisfies:
+𝑓𝑖 (𝑢) = 𝛼𝑖 · 𝑑𝑉 (𝑢, V𝑖 ) = 𝛼𝑖 · min 𝑑𝑉 (𝑢, 𝑣),        ∀𝑢 ∈ 𝑉 , ∀𝑖 = 1, . . . , 𝑑𝑒 .
+                                     𝑣 ∈𝑉𝑖                                                         1       (𝑘 )                                 (𝑘 )
+                                                                        (5)                              𝑑      (𝑢, 𝑣) ≤ E 𝑓 ∥ 𝑓 𝑢 − 𝑓 𝑣 ∥𝑙𝑝 ≤ 𝑑𝑉 (𝑢, 𝑣) , ∀𝑢, 𝑣 ∈ 𝑉 .
+                                                                                               𝑂 (𝑙𝑜𝑔𝑁 ) 𝑚ℎ
+where V𝑖 means 𝑖-th anchor set with 𝑑𝑒 anchors, and 𝑎𝑖 is a numeric                                                                                                 (7)
+factor. 𝑉 is the node set, and a metric function 𝑑𝑉 (·) on the set 𝑉                          Thus, the distortion of the embedding is 𝑂 (𝑙𝑜𝑔𝑁 ).
+is called an ℓ𝑝 metric if there exists a natural number 𝑑𝑒 and an
+embedding of (𝑉 , 𝑑) into the space ℓ𝑝𝑑𝑒 . For 𝑝 = 2, ℓ2 would be an                          4.2.2 Spatial gated transformer for graph leanring. Given the out-
+Euclidean metric. A pseudometric ℓ𝑝 is defined similarly.                                     put from the spatial Fréchet embedding layer 𝑆𝑖𝑛 ∈ R𝑁 ×𝑑𝑒 where
+Proposition 1: Spatio-temporal graph Fréchet embedding. To                                    𝑑𝑒 = ⌈𝑙𝑜𝑔𝑁 ⌉ × 𝑅, we further propose a spatial gated transformer to
+define spatio-temporal graph Fréchet embedding, we select K-order                             extract deep embedding. Then, we use the self-attention mechanism
+Manhattan distance [29] as the metric 𝑑𝑉 with nodes set 𝑉 of 𝐺                                to generate a spatial semantic graph.
+to form the metric space (𝑉 , 𝑑𝑉 ). Each dimension of the Fréchet                                Specifically, we use two MLP layers to map 𝑆𝑖𝑛 into another
+embedding represents the minimum of the metric between nodes                                  dimensional feature space as follows:
+                                                                                                                                       
+concerning a fixed subset V of the set of nodes 𝑉 , and we call                                                               (0)   (0)    (0)
+                                                                                                          𝑆 (1) = 𝑅𝑒𝐿𝑈 𝑆𝑖𝑛𝑊1 + 𝑏 1 𝑊2 + 𝑏 2 .
+                                                                                                                                                  (0)
+                                                                                                                                                              (8)
+such a fixed subset the anchor sets. We obtain ⌈𝑙𝑜𝑔𝑁 ⌉ anchor sets
+for each resampling, and a total of 𝑅 rounds of resampling are                                            (0)   (0)    (0)       (0)
+                                                                                              where 𝑊1 , 𝑏 1 ,𝑊2 , and 𝑏 2 are learnable parameters. Then a
+                                                      𝑅× ⌈𝑙𝑜𝑔𝑁 ⌉
+performed to obtain 𝑅 × ⌈𝑙𝑜𝑔𝑁 ⌉ anchor sets {V}1
+                                                                                                                                                        SA (·) to
+                                                                 . In each                    spatial gated transformer uses the self-attention function
+                                         −
+                                                                                                                                                  
+round 𝑖 ∈ {1, . . . , 𝑅}, we sample 𝑁 ∗ 2 nodes into anchor set V𝑖 𝑗 1
+                                           𝑗                                                                                                  (𝑙 )
+                                                                                              calculate the similarity between nodes: 𝛼𝑆             = SA 𝑆 (𝑙 ) ∈ R𝑁 ×𝑁 ,
+for 𝑗 ∈ {1, 2, ..., ⌈𝑙𝑜𝑔𝑁 ⌉}, following a specific rule: for 𝑗-th anchor                                              (𝑙 )
+set V𝑖 𝑗 in 𝑖-th resampling round, any node 𝑢 in 𝑉 is selected as                             where 𝑆 (𝑙 ) ∈ R    𝑁 ×𝑑𝑠 means the input of 𝑙-th layer. The output
+anchor node in V𝑖 𝑗 with probability 2 − 𝑗 . Given the metric space                           vectors are then fused to obtain spatial representations with a gate:
+                      𝑅×⌈𝑙𝑜𝑔𝑁 ⌉                                                                            (𝑙 )
+                                                                                                                      h    
+                                                                                                                                      (𝑙 )     (𝑙 )
+                                                                                                                                                    i 
+                                                                                                                                                                (𝑙 )
+                                                                                                                                                                     
+(𝑉 , 𝑑𝑉 ) and {V}1                , we define spatio-temporal graph Fréchet                   𝑆 (𝑙+1) = 𝜎𝑆 ⊙ ReLU 𝛼 (𝑙 ) 𝑆 (𝑙 ) 𝑊𝑣 + 𝑏 𝑣              + 1 − 𝜎𝑆 ⊙ 𝑆 (𝑙 ) ,
+                         𝑅× ⌈𝑙𝑜𝑔𝑁 ⌉                          (𝑘 )        
+embedding as 𝑓 : 𝑉 → ℓ𝑝             , where 𝑓𝑖 𝑗 (𝑢) = 𝛼𝑖 𝑗 𝑑𝑉 𝑢, V𝑖 𝑗 ,                                    (𝑙 )
+                                                                                                                         h
+                                                                                                                                  (𝑙 )     (𝑙 )
+                                                                                                                                                i         (𝑙 +1)
+                                            Í𝑅 Í ⌈𝑙𝑜𝑔𝑁 ⌉ 𝑝                                               𝜎𝑆 = Sigmoid 𝑆 (𝑙 ) 𝑊𝜎 + 𝑏𝜎 ∈ R𝑁 ×𝑑𝑠 .
+where 𝛼𝑖 𝑗 is a learnable parameter with 𝑖=1          𝑗=1      𝛼𝑖 𝑗 =1 for
+                                                                                                                                                                       (9)
+given metric space ℓ𝑝 .                                                                                 (𝑙 ) (𝑙 ) (𝑙 )       (𝑙 )
+Property. The Fréchet embedding can preserve the structural in-                               where𝑊𝑣 , 𝑏 𝑣 ,𝑊𝜎 , and𝑊𝜎 are learnable parameters. 𝑆 (𝑙+1) ∈
+                                                                                                     (𝑙 +1)                                            (𝑙 )
+formation of the original metric space by the relative positions                              R𝑁 ×𝑑𝑒     is the output spatial representation. 𝜎𝑆 is a gate to filter
+between the perceptual nodes and the selected anchor set. This                                out redundant information. After two spatial gated transformer
+means that closely connected nodes within the graph also have                                 layers, the output embedding vector is denoted as 𝑆𝑠 . Then we use
+close embeddings, thus the embedding space has good generaliza-                               the attention mechanism to generate spatial semantic graphs 𝐷𝑠 :
+tion and scalability. On the one hand, spatial shifts do not lead
+                                                                                                                         𝐷𝑠 = SA (𝑆𝑠 ) ∈ R𝑁 ×𝑁 .                        (10)
+to significant deviations in this embedding space, hence the node
+dependencies are elastic; on the other hand, new nodes can easily                             where this spatial semantic graph 𝐷𝑠 encodes relative position
+obtain good initial embedding in this space by calculating their                              relationships of nodes.
+distances to the anchors, thereby enhancing the model’s scalability.
+We carefully illustrate this through ablation experiments in 5.4 and                          4.3     Temporal semantic graph learning
+visual studies in 5.5.                                                                        4.3.1 Temporal position embedding. This module encodes temporal
+   The Fréchet embedding, in reality, is not isometric; it undergoes                          prior information such as the date type and holiday type of the
+slight changes in distances while maintaining the graph structure                             input sequence into x ∈ R𝑇 ×𝑁 ×𝑑 , this information can help the
+to a certain extent. These alterations in the distances reflect the                           model better analyze temporal trends. The output of this layer is
+deviation between the embedding space and the original space. Sub-                            denoted as 𝑋𝑇0 ∈ R𝑇 ×𝑁 ×𝑑𝑡 .
+sequently, we will demonstrate that our embedding is characterized
+by a low distortion upper limit of 𝑂 (𝑙𝑜𝑔𝑁 ).                                                 4.3.2 Temporal gated convolution for graph learning. We use the
+Definition 2: Distortion. Given a metric space (𝑉 , 𝑑𝑉 ) and em-                              TCN architecture to extract temporal trends from spatio-temporal
+bedding metric space (𝑌 , 𝑑𝑌 ), an injective mapping 𝑓 : 𝑋 → 𝑌 is                             graph data of each node. TCN is configured with 𝐿𝑡 causal con-
+called a 𝐷-embedding, where 𝐷 ≥ 1 is a real number if there exists                            volution networks with different receptive fields to model long-
+a constant 𝑟 > 0, 𝑎 ≥ 1:                                                                      and short-term dependencies. We also introduce a gate to improve
+                                                                                              performance. Specifically, given the input 𝑋 (𝑙 ) ∈ R𝑁 ×𝑇𝑙 ×𝑑𝑡 in the
+ 𝑟 · 𝑑𝑉 (𝑢, 𝑣) ≤ 𝑑𝑌 (𝑓 (𝑢) , 𝑓 (𝑣)) ≤ 𝐷𝑟 · 𝑑𝑉 (𝑢, 𝑣) ,           ∀𝑢, 𝑣 ∈ 𝑉 . (6)              𝑙-the layer, where 𝑇𝑙 means the time-step length of input time series,
+The infimum of the numbers 𝐷 such that 𝑓 is a 𝐷-embedding is                                  the forward process is shown as follows:
+called the distortion of 𝑓 .                                                                                                             
+                                                                                                               (𝑙+1)                 (𝑙 )
+                                                                                                           𝑋𝑇        = 𝜎𝑡𝑙 ⊙ 𝜃𝑘𝑡 ∗𝑡 𝑋𝑇      ∈ R𝑁 ×𝑇𝑙 +1 ×𝑑𝑡 ,
+1 The value ⌈log 𝑁 ⌉ can guarantee that the expected number of anchor nodes per set                                         h             i                    (11)
+                                                                                                                                     (𝑙 )
+is greater than 1 and achieves less distortion.                                                             𝜎𝑇𝑙 = 𝑆𝑖𝑔𝑚𝑜𝑖𝑑 𝜃𝑘𝑑 ∗𝑡 𝑋𝑇         ∈ R𝑁 ×𝑇𝑙 +1 ×𝑑𝑡 .
+
+
+
+
+                                                                                       2952
+KDD ’24, August 25–29, 2024, Barcelona, Spain                                                                                              Binwu Wang et al.
+
+
+where 𝜃𝑘𝑡 and 𝜃𝑘𝑑 are learnable parameters, 𝑘𝑡 and 𝑘𝑑 are kernel                    4.5.2 Spatio-temporal graph intervention mechanism. To illustrate
+sizes of causal convolution networks. 𝜎𝑇𝑙 is a gated and the residual               the graph intervention mechanism, let’s consider the spatial se-
+connection technique is used for smooth learning. Finally, we splice                mantic 𝐷𝑠 as an example. We create an intervention matrix 𝑀𝑠 ∈
+the output of each layer to and merge information of all time-steps:                [0, 1] 𝑁 ×𝑁 , where each row 𝑢 follows a binomial distribution B (1, 𝑝 (𝑢)).
+                     h            i                                                 The probability 𝑝 (𝑢) is calculated using the softmax function with
+                       (0:𝐿 )
+         𝑋𝑡 = 𝑅𝑒𝐿𝑈 𝑋𝑇 𝑡 ×2 𝑊𝑡1 ×2 𝑊𝑡2 ∈ R𝑁 ×1×𝐶𝑡 ,                                  learnable parameters 𝜋𝑢 . Thus, its 𝑖-th row and 𝑗-th column 𝑀𝑆 [𝑖, 𝑗]
+                                                  Í
+                                                    𝐿𝑡
+                                                                 (12)              is a binary to indicate whether 𝐷𝑠 [𝑖, 𝑗] is masked. The setting that
+      (0:𝐿 )     (0)    (1)         (𝐿 )      𝑁 × 𝑙 =0 𝑇𝑙 ×𝐶𝑡
+    𝑋𝑇 𝑡 = 𝑋𝑇 ⊕ 𝑋𝑇 ⊕ . . . ⊕ 𝑋𝑇 𝑡 ∈ R                         .                     each row in 𝑀𝑆 is sampled from the same learnable binomial distri-
+                 Í
+                    𝐿𝑡
+                                                                                   bution is to improve computational efficiency. Then, By performing
+                       𝑇𝑙       ×𝑑 𝑡
+                          and 𝑊𝑡2 ∈ R𝑑 𝑤 ×1 are learnable parame-
+                                                    𝑡
+where 𝑊𝑡1 ∈ R 𝑙 =0     𝑤                                                            the dot product between 𝑀𝑆 and 𝐷𝑠 , we can generate a new adja-
+ters, ×2 means tensor multiplication in the second dimension and                    cency matrix 𝐷ˆ𝑠 , which would be used in the graph convolution
+⊕ means the concatenation of tensors. Finally, we also use the                      operation in Equ.14. This matrix can be viewed as a changed spatial
+attention mechanism to calculate the similarity between nodes:                      dependence caused by spatial shifts.
+                                                                                       In an ideal scenario, the training environment would encom-
+                            𝐷𝑡 = SA (𝑋𝑡 ) ∈ R𝑁 ×𝑁 .                   (13)          pass all possible data distributions. However, achieving such an
+where the similarity matrix 𝐷𝑡            ∈ R𝑁 ×𝑁 means the correlation of          exhaustive coverage is not impractical. To move towards this ob-
+the flow distribution between nodes.                                                jective, our aim is to enrich the training environment, enabling the
+                                                                                    model to learn from a broader spectrum of data distributions. This
+4.4     Spatio-temporal Graph Convolutional                                         enhancement facilitates better adaptation to unforeseen circum-
+                                                                                    stances.nSpecifically, weo create 𝐾𝑀 intervention matrices denoted
+        Network
+                                                                                    as M = 𝑀𝑠1, · · · , 𝑀𝑠𝐾𝑀 , where 𝐾𝑀 is a hyper-parameter. Similar
+GCN has been shown to be effective in processing graph data in
+multiple tasks [2? –4]. Given learned temporal feature vector 𝑋𝑡                    to the spatial semantic graph 𝐷𝑠 , we also perform a comparable
+with temporal semantic matrix 𝐷𝑡 and spatial feature vector 𝑆𝑖 with                 intervention strategy on the temporal semantic graph 𝐷𝑡 .
+the spatial semantic matrix 𝐷𝑠 , we use diffusion graph convolution
+with 𝑍 diffusion steps as spatio-temporal graph convolutional net-                  4.6     Decoder and optimization loss
+works to aggregate the information of two dimensions separately.                    We use a gate unit with MLP layers as a decoder to predict future
+We exchange the two matrices to fuse spatio-temporal information:                   graph data:
+
+                                                                                                                               ∈ R𝐾𝑀 ×𝑁 ×𝑑𝑜𝑢𝑡 ,
+                         𝑍                                                                                    𝑠           𝑖 
+                        ∑︁                                                                𝜎𝑜𝑢𝑡 = Sigmoid 𝑆𝑜𝑊𝑜𝑢𝑡    + 𝑋𝑜𝑊𝑜𝑢𝑡
+                 𝑋𝑜 =            𝜃𝑠 ∗𝑠 (𝐼𝑠 + 𝐷𝑠 )𝑖 𝑋𝑡 ∈ R𝑁 ×𝑑𝑜 ,                                                                                  (15)
+                                                                                                                             ∈ R𝐾𝑀 ×𝑁 ×𝑇𝑝 .
+                                                                                                                 𝑜     𝑜   
+                        𝑖=1                                                                     𝑌ˆ = 𝜎𝑜𝑢𝑡 ⊙ 𝑋𝑜𝑊𝑜𝑢𝑡  + 𝑏𝑜𝑢𝑡
+                                                                      (14)
+                         𝑍
+                        ∑︁
+                                 𝜃 𝑡 ∗𝑠 (𝐼𝑡 + 𝐷𝑡 )𝑖 𝑆𝑠 ∈ R𝑁 ×𝑑𝑜 .
+                                                                                             𝑠 , 𝑊 𝑖 , 𝑊 𝑜 , and 𝑏𝑜
+                 𝑆𝑜 =                                                               where 𝑊𝑜𝑢𝑡     𝑜𝑢𝑡   𝑜𝑢𝑡      𝑜𝑢𝑡 are learnable parameters. 𝑇𝑝
+                        𝑖=1                                                         means the prediction window length. The prediction loss between
+where 𝜃𝑠 and 𝜃 𝑡 are learnable kernel parameters. 𝐼𝑠 and 𝐼𝑡 denote                  predicted values 𝑌ˆ and ground-truth values 𝑦 ∈ R𝑁 ×𝑇𝑝 can be
+the identity matrices of 𝐷𝑡 and 𝐷𝑠 , respectively.                                  computed as follows:
+                                                                                                         𝐾𝑀                       𝐾𝑀
+                                                                                                      1 ∑︁                        1 ∑︁
+4.5     Spatio-temporal OOD learning                                                 L (𝑦|M, Θ) =             LΘ 𝑌ˆ [𝑚] , 𝑦 =             𝑌ˆ [𝑚] − 𝑦 𝑙 .
+                                                                                                    𝐾𝑀 𝑚=1                      𝐾𝑀 𝑚=1                1
+The traditional spatio-temporal learning process only allows the
+                                                                                                                                                      (16)
+model to adapt to the specific training environment, which limits
+                                                                                    where 𝑌ˆ [𝑚] ∈ R𝑁 ×𝑇𝑝 means the 𝑚-th row of 𝑌ˆ and Θ is the
+its ability to handle out-of-distribution data with spatio-temporal
+                                                                                    parameter set of prediction function F .
+shifts. To overcome this limitation, it is necessary to expose the
+                                                                                       To enhance the extraction of consistent representations from
+model to diverse training environments, enabling it to learn invari-
+                                                                                    various simulated environments, we propose the Invariant Risk
+ant node representations. However, directly generating variable
+                                                                                    Minimization (IRM) objective [1]. Furthermore, the presence of di-
+out-of-distribution spatio-temporal data is computationally com-
+                                                                                    verse environments can enhance the model’s capacity to generalize
+plex. To tackle this challenge, we propose a novel graph intervention
+                                                                                    to unfamiliar distributions. Therefore, we incorporate an Explore-
+mechanism that perturbs generated semantic graphs, thereby sim-
+                                                                                    to-Extrapolate risk [45] to increase the variance of the intervention
+ulating training data from variable environments. Additionally, we
+                                                                                    matrix, enabling thorough exploration of environments and pro-
+introduce a loss term that encourages the model to explore and
+                                                                                    moting robust learning of the models. Hence, the optimization loss
+extrapolate beyond the observed data, enhancing its capability to
+                                                                                    function we employ is:
+handle unseen scenarios.
+4.5.1 Noise disturbance. We randomly add noise 𝛾 ∼ 𝜋 (0, 1), which                              min Var L 𝑦 | M∗, Θ + 𝛽L 𝑦 | M∗, Θ ,
+                                                                                                                                
+is drawn from the standard normal distribution, into the output                                  Θ
+                                                                                                n                 o
+                                                                                            M∗ = 𝑀∗1, . . . , 𝑀∗𝐾𝑀 = argmax Var L 𝑦 | 𝑀𝑚 , Θ .
+vector 𝑆𝑠 from the Fréchet embedding layer. This process changes                                                                           
+                                                                                    𝑠.𝑡 .
+the spatial dependencies of nodes and simulates spatial shifts, which                                                𝑚∈ {1,··· ,𝐾𝑀 }
+can help the model explore a more robust embedding space.                                                                                              (17)
+
+
+
+
+                                                                             2953
+STONE: A Spatio-temporal OOD Learning Framework Kills Both Spatial and Temporal Shifts                                   KDD ’24, August 25–29, 2024, Barcelona, Spain
+
+
+where Var(·) means the loss variance, 𝛽 is a trade-off to balance two                     5.1.3 Model setting. We set the batch size to 64 and use the Adam
+loss terms.                                                                               optimizer [15] with a learning rate of 1𝑒 −3 . The trade-off parameter,
+                                                                                          𝛽, of the loss function is set to 1. We stacked two gated transformer
+5     EXPERIMENT                                                                          layers to generate the semantic graphs. In the intervention mech-
+In this section, we conduct a comprehensive evaluation of the gen-                        anism, we create two intervention matrices, i.e., 𝐾𝑚 = 2. In the
+eralization performance (Section 5.2) and scalability performance                         Fréchet embedding, we perform 10 sampling rounds in the STSD
+(Section 5.3) of STONE2 . We then perform ablation experiments                            dataset and 30 sampling rounds in the STGBA dataset. We evaluate
+in Section 5.4 to verify the validity of each component. Addition-                        the performance of the models using three widely used metrics:
+ally, we visualize the Fréchet embedding to study its properties in                       MAE, RMSE, and MAPE at 3, 6, and 9 horizon. Models are directly
+Section 5.5 and analyze the learned semantic graph in Section 5.6.                        tested on testing sets after training without further fine-tuning.
+                                                                                          5.1.4 Baselines. We compare our proposed method, STONE, with
+5.1     Datasets and setting                                                              SOTA traffic prediction models and spatio-temporal OOD learning
+5.1.1 Original dataset. In our experiments, we utilize two datasets,                      methods. However, it is important to note that some SOTA mod-
+namely the SD and GBA datasets, to evaluate the effectiveness of                          els cannot be run under the spatio-temporal shift setting, as their
+STONE. These datasets are subsets of the LargeST dataset [21],                            core component parameters are coupled to the scale of the graph,
+which records the traffic flow data from thousands of sensors span-                       such as D2 STGNN [31] and PDFormer [9]. The traffic prediction
+ning the period from 2017 to 2021 in the Caltrans Performance                             models include Historical Average (HL), GWNet [47], STGCN [53],
+Measurement System (PeMS). SD and GBA datasets collected traffic                          and STNN [51]. For spatio-temporal OOD learning methods, we
+information from 716 and 2352 sensors, respectively, where their                          compare against CauSTG [64] and CaST [48].
+spatio-temporal graphs are constructed based on the travel distance
+between sensors.                                                                          5.2    Generalization performance of models
+5.1.2 Data processing. We use two processing methods to process                           The prediction performance of all nodes on the STSD and STGBA
+SD and GBA to imitate both spatial and temporal shifts for testing.                       datasets with varying rates of new nodes is presented in Table 2.
+Temporal shift. We choose the data from 1/2019-8/2019 with 21010                              In the realm of various OOD spatio-temporal datasets, GWNet
+timestamps for training, 9/2019-10/2019 with 7003 timestamps as                           achieved relatively lower errors, likely attributed to its usage of
+validation data, and 11/2020-12/2020 with 7022 timestamps as test-                        diffusion graph convolutional networks. This enables bidirectional
+ing data. The ratio of these three subsets is about 6:2:2.                                modeling of spatio-temporal dependencies, thereby improving its
+Spatio-temporal shift. With the temporal shift, we select a certain                       capacity to adapt to shifts in space and time. Conversely, STGCN
+number of nodes for training, which amounts to 550 in the SD                              exhibited higher prediction errors by relying solely on information
+dataset and 1809 in the GBA dataset. For validation sets, We select                       aggregation according to a predetermined graph structure, making
+10% of the number of training nodes from the remaining nodes                              it vulnerable to spatial changes. Consequently, its predictive perfor-
+to add to training graphs and then mask 10% of them. For testing                          mance becomes increasingly limited with the increase in new nodes.
+sets, we consider three different ratios of new nodes compared to                         In contrast, STNN outperforms STGCN in prediction accuracy by
+training graphs: 10%, 15%, and 20%. Additionally, we also randomly                        incorporating attentional mechanisms to capture general spatio-
+mask 10% of nodes in testing sets to simulate node disappearance.                         temporal correlations independent of a specific training graph. Nev-
+Two spatio-temporal shift datasets with 𝑟 % new nodes are denoted                         ertheless, its prediction accuracy is somewhat compromised due to
+as STSD-r and STGBA-r, where 𝑟 ∈ {10, 15, 20}. The details of these                       the assumption of independently and identically distributed data.
+datasets are presented in Table 1.                                                        On the other hand, CaST is designed to address temporal shifts
+                                                                                          specifically but encounters challenges in effectively accommodating
+                                                                                          spatial shifts. These models demonstrate superior performance in
+            Table 1: Details of STSD and STGBA datasets.
+                                                                                          STGBA datasets with larger graphs, offering more comprehensive
+                                                                                          spatio-temporal insights.
+              Dataset                      STSD                 STGBA                         Our model achieved competitive prediction performance in vari-
+                  Time span           1/2019-8/2019         1/2019-8/2019                 ous OOD scenarios, with a maximum improvement of up to 18.13%
+ Training           Nodes                  550                  1809                      in terms of MAPE. This improvement can be attributed to our ap-
+                                                                                          proach of creating a range of training environments by perturbing
+                 Time span           9/2019-10/2019         9/2019-10/2019                the learned semantic graphs. By training on these distributions,
+      Val      Removed Nodes               55                    180                      STONE can effectively learn generalizable knowledge, which keeps
+                 New Nodes                 55                    180
+                                                                                          consistent performance across OOD scenarios.
+                 Time span           11/2020-12/2020       11/2020-12/2020
+    Test       Removed Nodes               55                    180                      5.3    Scalability performance of models
+                 New Nodes              55/82/110            180/270/360                  We evaluated the scalability of our model by reporting the predic-
+                                                                                          tion performance of new nodes in the testing datasets. The experi-
+                                                                                          ment results are shown in Table 3. We observe that GCN-based mod-
+2 The code is available at https://github.com/PoorOtterBob/STONE-KDD-2024, where          els can perform neighborhood aggregation mechanisms to generate
+also provides the pseudocode for STONE.                                                   representations for new nodes. However, models like STNN and
+
+
+
+
+                                                                                   2954
+KDD ’24, August 25–29, 2024, Barcelona, Spain                                                                                                         Binwu Wang et al.
+
+
+Table 2: Generalization performance of each model in OOD traffic datasets with spatio-temporal shifts. The best results are
+marked in bold and the second best results are underlined.
+
+                                                         STSD dataset with ratio of new nodes: (10%/15%/20%)
+        Model                    HL               STGCN [53]          GWNet [47]           STNN [51]           CaST [48]         CauSTG [64]              Ours
+                MAE       29.66/29.78/29.69     26.62/24.88/23.52   18.86/21.58/19.12   39.82/40.23/35.58   24.23/24.05/23.89   26.42/25.31/26.17   18.16/19.36/19.32
+  3 horizon     RMSE      44.55/44.66/44.52     36.49/34.55/34.84   29.40/30.25/34.27   58.02/58.66/54.59   38.42/38.06/37.75   40.01/40.17/39.89   29.67/31.42/31.40
+                MAPE      21.43/21.45/21.41     48.51/40.54/30.76   18.90/18.62/18.44   39.53/39.27/20.76   20.73/20.79/30.76   23.04/21.38/22.16   15.50/16.69/16.87
+                MAE       52.05/52.31/52.19     34.35/33.32/32.05   27.15/27.01/27.62   39.78/40.20/35.82   35.96/35.71/35.49   40.01/41.76/40.93   26.32/26.23/26.24
+  6 horizon     RMSE      75.30/75.51/75.34     40.38/42.82/45.97   42.89/41.70/41.35   57.77/58.43/54.91   55.47/55.00/54.63   60.34/66.21/66.31   41.76/40.79/40.91
+                MAPE      39.43/39.41/39.36     55.77/49.54/43.31   30.88/30.36/30.12   40.40/40.13/44.21   36.35/36.47/36.39   41.46/41.82/42.17   22.08/26.16/26.48
+                MAE      94.13/94.61/94.44      45.28/47.07/46.71   39.31/39.14/40.32   43.02/43.42/41.51   61.63/61.21/60.86   64.13/66.00/65.34   41.05/36.17/36.19
+  12 horizon    RMSE    128.11/128.59/128.36    64.04/64.67/65.64   58.09/57.63/59.60   62.31/62.89/63.39   90.39/89.74/89.19   89.42/90.16/91.02   55.26/53.79/54.10
+                MAPE     82.08/81.94/81.85      56.49/57.87/68.57   45.47/44.89/44.62   43.36/43.10/48.88   60.40/60.72/60.52   65.37/65.31/65.04   35.55/38.57/38.94
+
+                                                        STGBA dataset with ratio of new nodes: (10%/15%/20%)
+        Model                    HL               STGCN [53]          GWNet [47]           STNN [51]           CaST [48]         CauSTG [64]              Ours
+                MAE       27.09/26.94/26.97     19.36/25.19/35.65   19.23/17.56/18.53   37.48/37.33/37.55   26.86/26.78/26.82   30.14/30.41/31.13   17.67/18.73/18.83
+  3 horizon     RMSE      40.37/40.16/40.15     29.13/34.78/36.27   30.01/29.34/32.62   54.31/54.18/54.43   37.05/36.95/36.99   41.03/42.86/43.02   27.84/29.98/30.13
+                MAPE      18.90/18.86/18.83     15.82/26.85/30.33   13.71/14.77/12.86   31.78/31.94/31.96   34.83/35.20/37.94   36.13/37.40/36.93   12.82/12.84/12.91
+                MAE       47.04/46.80/46.85     25.68/33.73/35.86   28.10/25.24/26.71   37.07/36.93/37.15   36.89/36.78/36.85   40.35/41.14/41.66   25.35/25.16/25.37
+  6 horizon     RMSE      67.46/67.14/67.15     43.77/46.36/48.49   42.78/37.81/40.28   53.85/53.71/53.97   51.37/51.23/51.29   55.39/55.49/55.43   37.80/38.55/38.88
+                MAPE      34.53/34.45/34.41     21.38/34.40/39.09   20.88/20.41/19.09   31.55/31.69/31.73   43.37/43.80/43.50   46.15/46.18/46.24   18.17/18.21/18.39
+                MAE      84.85/84.45/84.50      34.50/48.59/50.90   39.91/38.94/39.24   41.16/41.03/41.23   58.87/58.67/58.79   63.15/64.28/64.05   36.35/36.04/36.51
+  12 horizon    RMSE    114.83/114.34/114.36    59.81/66.16/68.18   57.91/56.40/57.33   59.67/59.55/59.77   81.25/80.99/81.12   88.31/89.35/89.02   53.20/52.80/53.55
+                MAPE     70.53/70.73/70.25      33.18/46.94/51.19   30.53/32.80/28.83   34.16/34.31/34.36   65.61/66.31/65.79   70.14/70.64/70.64   28.38/28.47/28.74
+
+
+
+STGCN exhibited larger prediction errors, potentially because their
+parameters are coupled with the road network structure, resulting
+in insufficient information to generate accurate representations for
+emerging nodes. GWNet achieved better prediction performance by
+utilizing diffusion graph convolutional networks, which aggregate
+bidirectional information to provide more comprehensive insights.
+   In contrast, our proposed model achieved optimal scalability.
+This is because our model learns a robust spatio-temporal semantic
+graph structure, enabling accurate predictions by perceiving the
+semantic neighborhood information of unseen nodes.                                      Figure 3: Node position and Fréchet embedding visualization.
+
+5.4     Ablation experiment
+To evaluate the effectiveness of each contribution in the model,
+                                                                                        5.5    Fréchet embedding study
+we conducted ablation experiments on the STSD-10% dataset. We                           We selected several nodes from the STSD-10% dataset and extracted
+created three variations: (1) W/O IL, where we removed the inter-                       their embedding vectors from 𝑆𝑖𝑛 , which are the output of the
+vention loss term. (2) W/O Emb, where we removed the Fréchet                            Fréchet embedding module. Then, we applied the t-SNE technique
+embedding. (3) W/O Noi, where we no longer added random noise                           to reduce the dimensions of these vectors. Figure 3 visualizes the
+to the node embeddings after the Fréchet embedding layer.                               positions and embedding vectors of these nodes. It is evident that
+   The results of the 3-horizon prediction are shown in Table 4. W/O                    the Fréchet embedding effectively preserves the structural infor-
+IL achieved worse errors because the intervention loss term helps                       mation of the graph. Nodes that are close in the graph also have
+improve the diversity of the variable environment, thereby enhanc-                      close embeddings in space, indicating the preservation of proximity
+ing the model’s generalization performance. W/O Emb had higher                          relationships. Additionally, the Fréchet embedding space is elastic
+errors because the GCN, which is sensitive to structural shifts, failed                 to the shift of the graph structure, as the addition or removal of
+to generate accurate representations for the evolved graph. On the                      nodes does not cause significant changes in the embedding space.
+other hand, the Fréchet embedding space loosely preserves the
+graph’s structural information, making semantic neighbors more                          5.6    Semantic graph visualization study
+robust. This property also improves the scalability performance for                     We extracted optimized spatial and temporal semantic graphs from
+new nodes by perceiving their semantic neighbors. In summary,                           STONE trained in STSD-10%. Figure 4 displays the edge weights
+each variant performed inferior to the proposed model, demonstrat-                      of 10 nodes across these two graphs along with the predefined
+ing the effectiveness of each component.                                                graph based on geographic location. In the predefined graph, the
+
+
+
+
+                                                                                2955
+STONE: A Spatio-temporal OOD Learning Framework Kills Both Spatial and Temporal Shifts                                          KDD ’24, August 25–29, 2024, Barcelona, Spain
+
+
+Table 3: Scalability performance of each model in OOD traffic datasets with spatio-temporal shifts. The best results are marked
+in bold and the second best results are underlined.
+
+                                                        ST-SD dataset with ratio of new nodes: (10%/15%/20%)
+        Model                   HL                STGCN [53]           GWNet [47]               STNN [51]           CaST [48]          CauSTG [64]               Ours
+                MAE       29.64/30.57/29.85     36.19/34.46/29.59    19.58/19.58/19.58       42.56/44.52/36.37   23.37/22.24/21.75   42.56/44.52/39.37    17.22/18.92/18.51
+  3 Horzion     RMSE      43.26/44.51/43.69     48.46/42.91/41.29    30.11/30.05/29.76       61.74/65.06/55.62   36.11/34.11/33.27   61.74/65.06/59.62    26.85/30.43/29.83
+                MAPE      21.48/21.56/21.32     48.74/39.05/29.69    19.02/19.35/18.38       37.23/36.00/25.38   19.40/20.30/20.19   37.23/36.00/25.38    14.93/18.67/18.60
+                MAE       51.56/53.70/52.63     51.81/45.34/43.07    28.48/28.33/28.55    42.72/44.68/36.63      35.05/33.36/32.69   42.72/44.68/36.63    24.91/26.31/25.71
+  6 Horzion     RMSE      73.30/75.84/74.71     71.92/62.80/60.62    42.82/41.85/41.59    61.88/65.06/55.95      53.09/50.34/49.28   61.88/65.06/55.95    38.60/40.71/40.01
+                MAPE      40.63/39.79/39.39     61.74/53.30/42.74    30.42/31.71/29.10    38.11/36.70/25.19      32.96/34.98/34.88   38.11/36.70/25.19    22.03/30.77/30.43
+                MAE       93.11/97.12/95.46    76.75/68.71/66.13     41.98/41.40/42.12       45.01/47.31/42.13   59.80/57.15/56.06   45.01/47.31/42.13    39.53/37.78/36.74
+  12 Horzion    RMSE    125.86/130.04/128.33   109.81/95.18/92.64    63.23/60.96/61.35       65.25/68.45/64.07   86.98/83.12/81.46   65.21/68.42/64.03    59.37/56.51/55.37
+                MAPE      85.42/83.31/82.39    74.37/75.54/60.52     46.56/44.25/43.58       40.51/43.05/42.82   52.78/87.73/57.30   41.33/43.02/44.11    34.71/36.95/34.27
+                                                       ST-GBA dataset with ratio of new nodes: (10%/15%/20%)
+        Model                   HL                STGCN [53]           GWNet [47]               STNN [51]           CaST [48]          CauSTG [64]               Ours
+                MAE       26.67/25.65/26.16     26.14/32.97/35.14    21.64/18.00/21.39       36.98/36.41/37.70   25.88/25.60/26.17   30.15/27.21/29.87    17.64/18.25/19.59
+  3 Horzion     RMSE      39.20/37.91/38.44     35.91/46.41/46.11    32.79/28.59/32.98       52.98/52.94/54.37   35.19/34.98/35.72   40.04/39.15/40.61    27.03/29.73/30.16
+                MAPE      18.26/18.13/18.19     21.99/30.60/35.59    14.62/14.87/16.48       29.24/31.54/31.58   30.26/34.56/33.17   34.13/35.16/36.03    12.81/13.02/13.15
+                MAE       46.54/44.86/45.62     37.28/47.88/52.03    33.01/25.89/33.46       36.51/35.94/37.23   35.62/35.19/35.98   38.75/39.01/38.40    25.73/24.87/25.46
+  6 Horzion     RMSE      65.93/63.96/64.76     50.74/66.20/68.08    48.41/39.40/51.00       52.40/52.32/53.78   49.12/48.78/49.74   55.46/56.14/55.03    37.55/38.82/39.54
+                MAPE      33.55/33.29/33.31     32.07/42.58/51.97    22.99/20.55/27.13       29.01/31.27/31.34   37.31/42.68/41.14   40.14/47.43/43.27    18.61/18.69/19.08
+                MAE       84.24/81.34/82.46     57.31/74.33/80.60    49.10/39.92/53.09       39.89/39.46/40.86   56.85/55.97/57.40   61.24/64.39/65.15    38.24/36.50/37.60
+ 12 Horzion     RMSE    112.84/109.71/110.98   77.88/101.28/105.41   69.42/58.67/79.15       67.16/57.30/58.88   78.24/77.21/78.94   84.32/86.42/85.22    56.56/54.26/55.81
+                MAPE      68.55/70.37/67.85     47.28/63.89/74.58    35.51/32.68/43.06       31.04/33.31/33.67   54.58/63.70/61.18   59.10/68.91/64.32    29.86/29.84/30.23
+
+
+
+     Table 4: Ablation experiment on STSD-10% dataset.                                   6      CONCLUSION
+                                                                                         In this paper, we introduce a new framework STONE for spatio-
+                Generalization (All nodes)         Scalability (New nodes)               temporal OOD learning. STONE integrates a semantic graph learn-
+   Model        MAE       RMSE        MAPE         MAE       RMSE       MAPE             ing module to capture spatial heterogeneity and generate semantic
+                                                                                         graphs in both temporal and spatial dimensions. Then we pro-
+   Ours         18.17     29.67        15.51       17.23     26.85      14.93            pose a graph intervention mechanism to perturb the generated
+ W/O Emb        21.91     32.24        26.79       21.64     31.84      25.30            semantic graph to create diverse training environments. With an
+  W/O IL        19.66     31.29        17.83       20.49     32.23      20.49            Explore-to-Extrapolate loss term, STONE can extract stable spatio-
+ W/O Noi        19.36     31.43        16.69       18.92     30.43      18.67            temporal aggregation information paths, thereby generating in-
+                                                                                         variant spatio-temporal representations, which can generalize well
+                                                                                         to unknown environments. We conduct extensive experiments to
+correlations between nodes are scattered, which means that a spatio-
+                                                                                         evaluate the effectiveness of STONE. The results demonstrate that
+temporal shift can disrupt the aggregation of neighborhood infor-
+                                                                                         STONE achieves competitive performance in terms of both gener-
+mation and propagate through the entire graph via message passing
+                                                                                         alization and scalability.
+mechanisms. In learned semantic graphs, nodes primarily establish
+connections with a small number of crucial nodes. As a result, the
+addition or removal of nodes has minimal impact. Even if some cru-                       ACKNOWLEDGMENTS
+cial nodes are removed, the model can still aggregate information                        This paper is supported by the National Natural Science Foundation
+from the remaining nodes in both temporal and spatial dimensions,                        of China (No.62072427, No.12227901), the Project of Stable Support
+leading to the generation of accurate representations.                                   for Youth Teamin Basic Research Field, CAS (No.YSBR-005), and
+                                                                                         Academic Leaders Cultivation Program, USTC.
+
+                                                                                         REFERENCES
+                                                                                         [1] Arjovsky, M., Bottou, L., Gulrajani, I., and Lopez-Paz, D. Invariant risk
+                                                                                             minimization. arXiv preprint arXiv:1907.02893 (2019).
+                                                                                         [2] Chen, H., Xu, Y., Huang, F., Deng, Z., Huang, W., Wang, S., He, P., and
+                                                                                             Li, Z. Label-aware graph convolutional networks. In Proceedings of the 29th
+                                                                                             ACM International Conference on Information & Knowledge Management (2020),
+                                                                                             p. 1977–1980.
+                                                                                         [3] Du, W., Chen, L., Wang, H., Shan, Z., Zhou, Z., Li, W., and Wang, Y. Deciphering
+  Figure 4: Edge connectivity of 10 nodes in three graphs.                                   urban traffic impacts on air quality by deep learning and emission inventory.
+                                                                                             journal of environmental sciences 124 (2023), 745–757.
+                                                                                         [4] Du, W., Yang, X., Wu, D., Ma, F., Zhang, B., Bao, C., Huo, Y., Jiang, J., Chen, X.,
+
+
+
+
+                                                                                2956
+KDD ’24, August 25–29, 2024, Barcelona, Spain                                                                                                                             Binwu Wang et al.
+
+
+     and Wang, Y. Fusing 2d and 3d molecular graphs as unambiguous molecular de-                          mathematics and computation 201, 1-2 (2008), 319–332.
+     scriptors for conformational and chiral stereoisomers. Briefings in Bioinformatics              [30] Schölkopf, B., Locatello, F., Bauer, S., Ke, N. R., Kalchbrenner, N., Goyal,
+     24, 1 (2023), bbac560.                                                                               A., and Bengio, Y. Toward causal representation learning. Proceedings of the
+ [5] Du, Y., Wang, J., Feng, W., Pan, S., Qin, T., Xu, R., and Wang, C. Adarnn:                           IEEE 109, 5 (2021), 612–634.
+     Adaptive learning and forecasting of time series. In Proceedings of the 30th                    [31] Shao, Z., Zhang, Z., Wei, W., Wang, F., Xu, Y., Cao, X., and Jensen, C. S.
+     ACM international conference on information & knowledge management (2021),                           Decoupled dynamic spatial-temporal graph neural network for traffic forecasting.
+     pp. 402–411.                                                                                         arXiv preprint arXiv:2206.09112 (2022).
+ [6] Hu, J., Liang, Y., Fan, Z., Chen, H., Zheng, Y., and Zimmermann, R. Graph neural                [32] Shuman, D. I., Narang, S. K., Frossard, P., Ortega, A., and Vandergheynst, P.
+     processes for spatio-temporal extrapolation. arXiv preprint arXiv:2305.18719                         The emerging field of signal processing on graphs: Extending high-dimensional
+     (2023).                                                                                              data analysis to networks and other irregular domains. IEEE signal processing
+ [7] Huang, Q., Shen, L., Zhang, R., Cheng, J., Ding, S., Zhou, Z., and Wang, Y.                          magazine 30, 3 (2013), 83–98.
+     Hdmixer: Hierarchical dependency with extendable patch for multivariate time                    [33] Song, C., Lin, Y., Guo, S., and Wan, H. Spatial-temporal synchronous graph
+     series forecasting. In Proceedings of the AAAI Conference on Artificial Intelligence                 convolutional networks: A new framework for spatial-temporal network data
+     (2024), vol. 38, pp. 12608–12616.                                                                    forecasting. In Proceedings of the AAAI conference on artificial intelligence (2020),
+ [8] Ji, J., Zhang, W., Wang, J., He, Y., and Huang, C. Self-supervised decon-                            vol. 34, pp. 914–921.
+     founding against spatio-temporal shifts: Theory and modeling. arXiv preprint                    [34] Wang, B., Wang, P., Zhang, Y., Wang, X., Zhou, Z., Bai, L., and Wang, Y.
+     arXiv:2311.12472 (2023).                                                                             Towards dynamic spatial-temporal graph learning: A decoupled perspective.
+ [9] Jiang, J., Han, C., Zhao, W. X., and Wang, J. Pdformer: Propagation delay-                           In Proceedings of the AAAI Conference on Artificial Intelligence (2024), vol. 38,
+     aware dynamic long-range transformer for traffic flow prediction. arXiv preprint                     pp. 9089–9097.
+     arXiv:2301.07945 (2023).                                                                        [35] Wang, B., Wang, P., Zhang, Y., Wang, X., Zhou, Z., and Wang, Y. Condition-
+[10] Jin, G., Li, F., Zhang, J., Wang, M., and Huang, J. Automated dilated spatio-                        guided urban traffic co-prediction with multiple sparse surveillance data. IEEE
+     temporal synchronous graph modeling for traffic prediction. IEEE Transactions                        Transactions on Vehicular Technology (2024).
+     on Intelligent Transportation Systems (2022).                                                   [36] Wang, B., Zhang, Y., Wang, P., Wang, X., Bai, L., and Wang, Y. A knowledge-
+[11] Jin, G., Liang, Y., Fang, Y., Shao, Z., Huang, J., Zhang, J., and Zheng, Y. Spatio-                  driven memory system for traffic flow prediction. In International Conference on
+     temporal graph neural networks for predictive learning in urban computing: A                         Database Systems for Advanced Applications (2023), Springer, pp. 192–207.
+     survey. IEEE Transactions on Knowledge and Data Engineering (2023).                             [37] Wang, B., Zhang, Y., Wang, X., Wang, P., Zhou, Z., Bai, L., and Wang, Y. Pattern
+[12] Jin, G., Xi, Z., Sha, H., Feng, Y., and Huang, J. Deep multi-view graph-based                        expansion and consolidation on evolving graphs for continual traffic prediction.
+     network for citywide ride-hailing demand prediction. Neurocomputing 510 (2022),                      In Proceedings of the 29th ACM SIGKDD Conference on Knowledge Discovery and
+     79–94.                                                                                               Data Mining (2023), pp. 2223–2232.
+[13] Jin, W., Ma, Y., Liu, X., Tang, X., Wang, S., and Tang, J. Graph structure                      [38] Wang, J., Jiang, J., Jiang, W., Han, C., and Zhao, W. X. Towards efficient
+     learning for robust graph neural networks. In Proceedings of the 26th ACM                            and comprehensive urban spatial-temporal prediction: A unified library and
+     SIGKDD international conference on knowledge discovery & data mining (2020),                         performance benchmark. arXiv preprint arXiv:2304.14343 (2023).
+     pp. 66–74.                                                                                      [39] Wang, L., Guo, D., Wu, H., Li, K., and Yu, W. Tc-gcn: Triple cross-attention and
+[14] Jin, Y., Chen, K., and Yang, Q. Transferable graph structure learning for graph-                     graph convolutional network for traffic forecasting. Information Fusion (2024),
+     based traffic forecasting across cities. In Proceedings of the 29th ACM SIGKDD                       102229.
+     Conference on Knowledge Discovery and Data Mining (2023), pp. 1032–1043.                        [40] Wang, S., Cao, J., Chen, H., Peng, H., and Huang, Z. Seqst-gan: Seq2seq
+[15] Kingma, D. P., and Ba, J. Adam: A method for stochastic optimization. arXiv                          generative adversarial nets for multi-step urban crowd flow prediction. ACM
+     preprint arXiv:1412.6980 (2014).                                                                     Transactions on Spatial Algorithms and Systems (TSAS) 6, 4 (2020), 1–24.
+[16] Li, H., Wang, X., Zhang, Z., and Zhu, W. Ood-gnn: Out-of-distribution general-                  [41] Wang, S., Miao, H., Chen, H., and Huang, Z. Multi-task adversarial spatial-
+     ized graph neural network. IEEE Transactions on Knowledge and Data Engineering                       temporal networks for crowd flow prediction. In CIKM (2020), pp. 1555–1564.
+     (2022).                                                                                         [42] Wang, S., Miao, H., Li, J., and Cao, J. Spatio-temporal knowledge transfer for
+[17] Li, H., Zhao, Y., Mao, Z., Qin, Y., Xiao, Z., Feng, J., Gu, Y., Ju, W., Luo, X., and                 urban crowd flow prediction via deep attentive adaptation networks. TITS 23, 5
+     Zhang, M. A survey on graph neural networks in intelligent transportation                            (2021), 4695–4705.
+     systems. arXiv preprint arXiv:2401.00713 (2024).                                                [43] Wang, X., Wang, P., Wang, B., Zhang, Y., Zhou, Z., Bai, L., and Wang, Y.
+[18] Li, Z., Xia, L., Tang, J., Xu, Y., Shi, L., Xia, L., Yin, D., and Huang, C. Urbangpt:                Latent gaussian processes based graph learning for urban traffic prediction. IEEE
+     Spatio-temporal large language models. arXiv preprint arXiv:2403.00813 (2024).                       Transactions on Vehicular Technology (2023).
+[19] Liang, Y., Ouyang, K., Wang, Y., Liu, Y., Zhang, J., Zheng, Y., and Rosenblum,                  [44] Woo, G., Liu, C., Sahoo, D., Kumar, A., and Hoi, S. Cost: Contrastive learning
+     D. S. Revisiting convolutional neural networks for citywide crowd flow analytics.                    of disentangled seasonal-trend representations for time series forecasting. arXiv
+     In Machine Learning and Knowledge Discovery in Databases: European Conference,                       preprint arXiv:2202.01575 (2022).
+     ECML PKDD 2020, Ghent, Belgium, September 14–18, 2020, Proceedings, Part I                      [45] Wu, Q., Zhang, H., Yan, J., and Wipf, D. Handling distribution shifts on graphs:
+     (2021), Springer, pp. 578–594.                                                                       An invariance perspective. arXiv preprint arXiv:2202.02466 (2022).
+[20] Liu, C., Yang, S., Xu, Q., Li, Z., Long, C., Li, Z., and Zhao, R. Spatial-temporal              [46] Wu, Y.-X., Wang, X., Zhang, A., He, X., and Chua, T.-S. Discovering invariant
+     large language model for traffic prediction. arXiv preprint arXiv:2401.10134 (2024).                 rationales for graph neural networks. arXiv preprint arXiv:2201.12872 (2022).
+[21] Liu, X., Xia, Y., Liang, Y., Hu, J., Wang, Y., Bai, L., Huang, C., Liu, Z., Hooi,               [47] Wu, Z., Pan, S., Long, G., Jiang, J., and Zhang, C. Graph wavenet for deep
+     B., and Zimmermann, R. Largest: A benchmark dataset for large-scale traffic                          spatial-temporal graph modeling. arXiv preprint arXiv:1906.00121 (2019).
+     forecasting. arXiv preprint arXiv:2306.08259 (2023).                                            [48] Xia, Y., Liang, Y., Wen, H., Liu, X., Wang, K., Zhou, Z., and Zimmermann,
+[22] Liu, Z., Miao, H., Zhao, Y., Liu, C., Zheng, K., and Li, H. Lighttr: A lightweight                   R. Deciphering spatio-temporal graph forecasting: A causal lens and treatment.
+     framework for federated trajectory recovery. arXiv preprint arXiv:2405.03409                         arXiv preprint arXiv:2309.13378 (2023).
+     (2024).                                                                                         [49] Yan, H., and Li, Y. A survey of generative ai for intelligent transportation systems.
+[23] Lu, W., Wang, J., Sun, X., Chen, Y., Ji, X., Yang, Q., and Xie, X. Diversify: A gen-                 arXiv preprint arXiv:2312.08248 (2023).
+     eral framework for time series out-of-distribution detection and generalization.                [50] Yang, C., Wu, Q., Wen, Q., Zhou, Z., Sun, L., and Yan, J. Towards out-of-
+     IEEE Transactions on Pattern Analysis and Machine Intelligence (2024).                               distribution sequential event prediction: A causal treatment. Advances in neural
+[24] Ma, J., Cui, P., Kuang, K., Wang, X., and Zhu, W. Disentangled graph convolu-                        information processing systems 35 (2022), 22656–22670.
+     tional networks. In International conference on machine learning (2019), PMLR,                  [51] Yang, S., Liu, J., and Zhao, K. Space meets time: Local spacetime neural network
+     pp. 4212–4221.                                                                                       for traffic flow forecasting. In 2021 IEEE International Conference on Data Mining
+[25] Miao, H., Fei, Y., Wang, S., Wang, F., and Wen, D. Deep learning based origin-                       (ICDM) (2021), IEEE, pp. 817–826.
+     destination prediction via contextual information fusion. Multimedia Tools and                  [52] Yi, J., and Park, J. Hypergraph convolutional recurrent neural network. In Pro-
+     Applications (2022), 1–17.                                                                           ceedings of the 26th ACM SIGKDD international conference on knowledge discovery
+[26] Miao, H., Shen, J., Cao, J., Xia, J., and Wang, S. Mba-stnet: Bayes-enhanced                         & data mining (2020), pp. 3366–3376.
+     discriminative multi-task learning for flow prediction. TKDE (2022).                            [53] Yu, B., Yin, H., and Zhu, Z. Spatio-temporal graph convolutional networks: A
+[27] Miao, H., Zhao, Y., Guo, C., Yang, B., Kai, Z., Huang, F., Xie, J., and Jensen,                      deep learning framework for traffic forecasting. arXiv preprint arXiv:1709.04875
+     C. S. A unified replay-based continuous learning framework for spatio-temporal                       (2017).
+     prediction on streaming data. In ICDE (2024).                                                   [54] Zhang, G., Yi, J., Yuan, J., Li, Y., and Jin, D. Das: Efficient street view image
+[28] Park, H., Lee, S., Kim, S., Park, J., Jeong, J., Kim, K.-M., Ha, J.-W., and Kim, H. J.               sampling for urban prediction. ACM Transactions on Intelligent Systems and
+     Metropolis-hastings data augmentation for graph neural networks. Advances in                         Technology 14, 2 (2023), 1–20.
+     Neural Information Processing Systems 34 (2021), 19010–19020.                                   [55] Zhang, J., Zheng, Y., Qi, D., Li, R., and Yi, X. Dnn-based prediction model for
+[29] Peiravi, A., and Kheibari, H. T. A fast algorithm for connectivity graph ap-                         spatio-temporal data. In Proceedings of the 24th ACM SIGSPATIAL international
+     proximation using modified manhattan distance in dynamic networks. Applied                           conference on advances in geographic information systems (2016), pp. 1–4.
+
+
+
+
+                                                                                              2957
+STONE: A Spatio-temporal OOD Learning Framework Kills Both Spatial and Temporal Shifts                                                   KDD ’24, August 25–29, 2024, Barcelona, Spain
+
+
+[56] Zhang, W., Zhang, L., Han, J., Liu, H., Zhou, J., Mei, Y., and Xiong, H. Irregular                 Algorithm 1: STONE for spatio-temporal ODD prediction
+     traffic time series forecasting based on asynchronous spatio-temporal graph
+     convolutional network. arXiv preprint arXiv:2308.16818 (2023).                                       Input: Fréchet embedding 𝑆𝑖𝑛 ∈ R𝑁 ×𝑑𝑒 , observed sampled
+[57] Zhang, Y., Wang, P., Wang, B., Wang, X., Zhao, Z., Zhou, Z., Bai, L., and
+     Wang, Y. Adaptive and interactive multi-level spatio-temporal network for
+                                                                                                                   traffic flow data x ∈ R𝑇 ×𝑁 ×𝑑 , ST-module of STONE
+     traffic forecasting. IEEE Transactions on Intelligent Transportation Systems (2024).                          F with parameters Θ, masking operators
+[58] Zhao, T., Liu, Y., Neves, L., Woodford, O., Jiang, M., and Shah, N. Data                                      M ∈ R𝐾𝑀 ×𝑁 ×𝑁
+     augmentation for graph neural networks. In Proceedings of the aaai conference
+     on artificial intelligence (2021), vol. 35, pp. 11015–11023.                                         Output: Predicted traffic flow 𝑌ˆ
+[59] Zhao, Z., Shen, G., Wang, L., and Kong, X. Graph spatial-temporal transformer                      1 for 𝑙 = 1, 2, ..., 𝐿𝑠 do
+     network for traffic prediction. Big Data Research (2024), 100427.                                  2     if 𝑙 == 1 then
+[60] Zheng, C., Fan, X., Wang, C., and Qi, J. Gman: A graph multi-attention network
+     for traffic prediction. In Proceedings of the AAAI conference on artificial intelligence           3          𝑆 (1) ← 𝑆𝑖𝑛 in Eq. 8;            // Shallow encoding
+     (2020), vol. 34, pp. 1234–1241.                                                                    4     else
+[61] Zhou, H., Zhang, S., Peng, J., Zhang, S., Li, J., Xiong, H., and Zhang, W.
+     Informer: Beyond efficient transformer for long sequence time-series forecasting.                  5          𝑆 (𝑙 ) ← 𝑆 (𝑙 −1) in Eq. 9;     // Gated transformer
+     In Proceedings of the AAAI conference on artificial intelligence (2021), vol. 35,                  6     end
+     pp. 11106–11115.
+[62] Zhou, K., Liu, Z., Qiao, Y., Xiang, T., and Loy, C. C. Domain generalization:                      7 end
+     A survey. IEEE Transactions on Pattern Analysis and Machine Intelligence 45, 4                     8 𝐷𝑡 ← 𝑆 𝑠 ;
+                                                                                                                    (𝐿 )
+     (2022), 4396–4415.
+[63] Zhou, Z., Huang, Q., Wang, B., Hou, J., Yang, K., Liang, Y., and Wang, Y.                          9 𝐷𝑠 ← 𝑆𝑠 in Eq. 10;                 // Spatial semantic graph
+     Coms2t: A complementary spatiotemporal learning system for data-adaptive                          10 for 𝑙 = 0, 1, 2, ..., 𝐿𝑡 do
+     model evolution. arXiv preprint arXiv:2403.01738 (2024).
+[64] Zhou, Z., Huang, Q., Yang, K., Wang, K., Wang, X., Zhang, Y., Liang, Y., and                      11     if 𝑙 == 0 then
+     Wang, Y. Maintaining the status quo: Capturing invariant relations for ood                                       (0)
+                                                                                                       12          𝑋𝑇 ← pos-emb.(x);                // Shallow encoding
+     spatiotemporal learning.
+[65] Zhou, Z., Yang, K., Liang, Y., Wang, B., Chen, H., and Wang, Y. Predicting                        13     else
+     collective human mobility via countering spatiotemporal heterogeneity. IEEE                                      (𝑙 )       (𝑙 −1)
+     Transactions on Mobile Computing (2023).                                                          14          𝑋𝑇 ← 𝑋𝑇              in Eq. 11;      // Dilation TCN
+                                                                                                       15     end
+A      PSEUDO-CODE OF STONE                                                                            16 end
+                                                                                                                   (0)   (1)      (𝐿 )
+We provide the pseudo-code of STONE for spatio-temporal ODD                                            17 𝑋𝑡 ← 𝑋𝑇 , 𝑋𝑇 , ..., 𝑋𝑇 𝑡 in Eq. 12;         // Residual
+prediction in Algorithm 1.                                                                                  concatenation
+                                                                                                       18 𝐷𝑡 ← 𝑋𝑡 in Eq. 13;           // Temporal semantic graph
+B EXPERIMENT                                                                                           19 if Training phase then
+
+B.1 Setting                                                                                            20     𝐷𝑠 ← M ⊙ 𝐷𝑠 ;          // Masking temporal semantic
+                                                                                                               graph
+To define the graph topology, we utilized the common practice to
+construct the normalized geographic adjacency matrix N (A) ∈                                           21     𝐷𝑡 ← M ⊙ 𝐷𝑡 ; // Masking spatial semantic graph
+R𝑁 ×𝑁 for spatio-temporal graph Fréchet embedding computing                                            22 end
+
+via the Gaussian kernel [32] with threshold 0.1, whose entries are                                     23 𝑋𝑜 ← (𝐷𝑠 , 𝑋𝑡 ) in Eq. 14; // Temporal graph diffusion
+                   (                                                                               24 𝑆𝑜 ← (𝐷𝑡 , 𝑆𝑠 ) in Eq. 14;   // Spatial graph diffusion
+                     exp − 𝑑𝜎𝑢𝑣2 , if exp − 𝑑𝜎𝑢𝑣2 > 0.1,
+            A𝑢𝑣 =                                             (18)                                     25 𝑌ˆ ← (𝑋𝑜 , 𝑆𝑜 ) in Eq. 15;              // Gate decoder
+                     0,            otherwise.
+                                A𝑢𝑣
+             N (A) = Í                                                                 (19)
+                              𝑣 ∈𝑉 A𝑢𝑣
+Here, 𝑑𝑢𝑣 denotes the road network distance from sensors 𝑢 to 𝑣,                                            • GWNet [47] has removed the adaptive adjacency matrix due
+and 𝜎 is the standard deviation of all distances.                                                             to its lack of scalability. The dimensions for the initialization,
+   To optimize performance, we set the batch size to 64 and used                                              skip connections, and output are set to 32, 256, and 512
+the Adam [15] optimizer with a learning rate of 1𝑒 − 3 and weight                                             respectively.
+decay of 1𝑒 − 4. Additionally, we implemented a learning rate decay                                         • STGCN [53] consists of 2 ST-Blocks. Each ST-Block has two
+strategy where the learning rate is reduced by a factor of 0.95 every                                         layers of TCN with a dimension of 64 and a kernel size of 3,
+10 training steps, and a gradient clipping strategy with a threshold                                          and a ChebGCN layer with a dimension of 16. The dimension
+of 5. The loss function’s trade-off parameter, 𝛽, is set to 1. The                                            of the output block is 128.
+attention network dimension for the adaptive semantic graphs is                                             • STNN [51] has subgraph-conv with hidden layer dimension
+20. The TCN comprises 5 hidden layers with a dimension of 128.                                                32 and 64.
+There are 2 layers of gated transformer, with a hidden dimension                                            • CaST [48] has removed the random embedding features
+of 64 for the SD dataset and 128 for the GBA dataset. The decoder                                             of nodes, and set the hidden layer dimension to 64, with a
+network has a hidden dimension of 128.                                                                        granularity of 20 for the environment representation.
+                                                                                                            • CauSTG [64] has removed the node representation. The 4-
+B.2       Baseline setting                                                                                    layer TCNs have (5, 5, 6, 6) kernels with dimension of (12, 6,
+      • HL [19] selects the data from the last observation as the                                             3). We set the sub-environment partition number and model
+        predicted value for all future time points.                                                           number of the sub-environment with 6 and 4 respectively.
+
+
+
+
+                                                                                                2958
+KDD ’24, August 25–29, 2024, Barcelona, Spain                                                                                                                    Binwu Wang et al.
+
+
+B.3     Effect analysis for temporal shift                                                                 B.4    Discussion
+As shown in Table 5, we report the performance of each model on                                            In this section, we discuss the limitations and the future works:
+STSD with only temporal shift. GWNet achieved relatively lower er-                                              • When there are many random mask operators, the cost of
+rors, potentially because it inherited diffusion graph convolutional                                              training increases exponentially, and the time it takes to
+networks, enabling bidirectional modeling of spatio-temporal de-                                                  achieve convergence also increases, making it more challeng-
+pendencies and enhancing generalization to spatio-temporal shifts.                                                ing. This highlights the need for better theories of stochastic
+CaST had better performance than STGCN, because it specifically                                                   optimization. However, this topic is beyond the scope of our
+introduces causal learning to learn invariant patterns for temporal                                               work.
+shifts. STONE remained competitive in dealing with temporal shifts.                                             • We use gated-Transformers to learn the spatio-temporal se-
+This is because that the proposed graph intervention mechanism                                                    mantic graphs. In the future, inspired by the progress of
+can enable the model to learn the invariable pattern efficiently.                                                 graph structure learning [13], we will design more effective
+                                                                                                                  spatio-temporal semantic graph learning models.
+Table 5: Prediction performance of each model on datasets
+                                                                                                                • STONE is only experimented on the transportation dataset,
+with only temporal shift.
+                                                                                                                  and in the future, STONE will be deployed to other spatio-
+                                                                                                                  temporal computing domains, such as the atmospheric do-
+                          ST-SD dataset with only temporal shift
+                                                                                                                  main.
+                       3 horizon                   6 horizon                   12 horizon
+    Model      MAE      RMSE       MAPE    MAE      RMSE       MAPE    MAE      RMSE        MAPE
+     HL        29.42    44.26      21.48   51.71    74.81      39.55   93.65    127.43      82.48
+ STGCN [53]    24.94    38.23      36.93   31.95    47.36      44.09   38.70    55.49       51.25
+ GWNET [47]    18.38    29.46      15.70   25.84    40.21      25.31   34.62     53.10      35.70
+  STNN [51]    39.59    57.73      39.69   39.51    57.42      40.56   42.83     62.04      43.54
+  CaST [48]    22.83    35.37      27.09   35.45    53.86      41.65   61.00    88.11       70.58
+ CauSTG [64]   24.97    39.48      43.34   40.04    56.98      47.15   66.83     91.27      75.13
+    Ours       18.26    31.24      14.95   25.06    40.93      21.84   34.46    52.82       33.35
+
+
+
+
+                                                                                                    2959
+

@@ -8,8 +8,8 @@ tags:
   - generalization
   - distribution-shift
 created: 2026-07-23
-last_updated: 2026-09-16
-source_count: 6
+last_updated: 2026-11-07
+source_count: 7
 confidence: medium
 status: active
 ---
@@ -35,7 +35,7 @@ The core diagnosis from [[stop|STOP]] (ICML 2025) is that the **node-to-node mes
 
 | Approach | Representative Work | Key Mechanism |
 |----------|-------------------|---------------|
-| **Causal/Invariant Learning** | CaST (NeurIPS 2023), STONE (KDD 2024) | Structural causal models, invariant semantic relations |
+| **Causal/Invariant Learning** | [[cast|CaST]] (NeurIPS 2023)、CauSTG (KDD 2023)、[[stone|STONE]] (KDD 2024) | CaST/CauSTG 用 SCM + 后门调整分离时间环境中的不变成分；STONE 用语义图干预构造多环境 + 跨环境方差最小化，并以 Fréchet 锚点距离嵌入为新节点赋初值[^src-cast][^src-stone] |
 | **Centralized Messaging** | [[stop|STOP]] (ICML 2025) | Replace node-to-node with node↔ConAU interaction, block structural coupling |
 | **Information Bottleneck** | [[rstib-mlp|RSTIB-MLP]] (ICML 2025) | IB-guided MLPs for robust spatial-temporal features |
 | **Continual Fine-tuning** | [[continual-spatio-temporal-forecasting|CSTF methods]] | Freeze backbone, expand pattern bank; criticized as near-IID only[^src-stop] |
@@ -43,6 +43,8 @@ The core diagnosis from [[stop|STOP]] (ICML 2025) is that the **node-to-node mes
 | **Perturbation + DRO** | [[stop|STOP]] (ICML 2025) | GenPU-generated variant environments + worst-case optimization |
 | **Explicit Graph Tokenization** | [[stunet|STUNet]] (KDD 2026) | Adjacency-matrix patches as frozen spatial tokens + [[query-aggregate-attention|query-aggregate attention]]; cross-network zero-shot (train A → test B)[^src-stunet] |
 | **Dynamic Topology Tracking** | DynaSTar (IJCAI 2026) | Momentum-updated Bernoulli graph prototype + per-node neighborhood environment sampling + FiLM-modulated predictor; [[dynastar|DynaSTar]] frames this as out-of-time (OOT) generalization under continuously evolving topology[^src-dynastar] |
+
+STONE 的原始对照支持「空间漂移是主难点」：只保留时间断层（去掉节点增删）时它与 GWNet 基本持平（MAE 18.26 vs 18.38、25.06 vs 25.84、34.46 vs 34.62），增益集中在新增节点场景[^src-stone]。
 
 The field is moving toward unified frameworks that handle both temporal and structural OOD simultaneously. [[stop|STOP]]'s centralized messaging reframes the problem at the architecture level rather than treating OOD as a training objective alone[^src-stop]. [[stunet|STUNet]] takes the opposite architectural bet on structure: **keep** topology, but make it an explicit, time-invariant token basis and evaluate transfer across whole non-overlapping road networks rather than only within-graph node add/remove[^src-stunet].
 
@@ -69,4 +71,5 @@ A model-side data point for **same-graph year-shift (T-OOD)**: [[stgformer|STGfo
 [^src-st-ood]: [[source-st-ood]]
 [^src-dynastar]: [[source-dynastar]]
 [^src-stgformer]: [[source-stgformer]]
+[^src-stone]: [[source-stone]]
 

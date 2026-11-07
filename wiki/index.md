@@ -367,6 +367,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-stgformer]] — STGformer: Efficient Spatiotemporal Graph Transformer for Traffic Forecasting（Wang et al., arXiv:2410.00385v2，PDF 内核实；IEEE 期刊模板排版、未见接收 venue），SGC 式图传播保留 0..k 阶 + 空间/时间共享 QKV 转置复用 + 分解内积线性化（O(N+T)）+ 递归门控交互的单层架构，8600 节点 CA 图批量推理较 STAEformer 100× 加速 / 99.8% GPU 内存降，LargeST SD/BA/LA 与 PEMS03/04/07/08 及跨年 20192020 均报告优于 STAEformer
 - [[source-stllm]] — STLLM: Spatio-Temporal LLM for reasoning about environments and actions, point cloud + video + text fusion (arXiv 2025)
 - [[source-stochasticinterpolants]] — Building Normalizing Flows with Stochastic Interpolants / InterFlow: quadratic simulation-free CNF velocity from arbitrary interpolants, finite-time OT max-min, ICLR 2023
+- [[source-stone]] — STONE：时空 OOD 双漂移（时间 $P(X)$ 变化 + 空间 $G$ 演化）框架（Wang et al., 中科大, KDD 2024, DOI 10.1145/3637528.3671680；PDF raw/stone-wang-2024.pdf），Fréchet 锚点距离嵌入 + 空间/时间语义图 + $K_M{=}2$ 图干预环境 + 跨环境方差最小化（IRM + explore-to-extrapolate）；LargeST SD/GBA 全节点 36 格多数最优但 5 格 MAE 输 GWNet，纯时间漂移对照基本持平，增益集中在新增节点
 - [[source-stop]] — STOP: Robust Spatio-Temporal Centralized Interaction for OOD Learning (ICML 2025)
 - [[source-storminsight]] — StormInsight: Hierarchical Environmental Forcing and Vertical Coupling for Convective Systems Evolution, 3D 环境条件化对流临近预报，三分量编码 + Conditional Flow Matching + StormBench，ICML 2026
 - [[source-stpde]] — STPDE: PDE-inspired framework decoupling invariant diffusion operator + environment basis manifold for robust ST forecasting (ICML 2026)
@@ -634,6 +635,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[std-plm]] — STD-PLM, unified PLM-based ST forecasting+imputation with spatial+time dual tokenizer (AAAI 2025)
 - [[stgformer]] — STGformer，单层图传播 × 统一时空线性注意力的高效交通 Transformer，效率锚点与同图跨年泛化证据 (arXiv 2024)
 - [[stid]] — STID，仅用时空身份嵌入的轻量基线，常作效率参照、prompt 来源或频率分支 backbone
+- [[stone]] — STONE，时空 OOD 框架：Fréchet 锚点距离嵌入给新节点赋初值 + 空间/时间两条语义图 + 图干预构造 $K_M$ 个环境 + 跨环境方差最小化；含分阶段数据流、LargeST SD/GBA 逐格数字与纯时间漂移对照（KDD 2024）
 - [[stop]] — STOP (Spatio-Temporal OOD Processor), centralized ConAU messaging + GenPU perturbation + DRO for OOD traffic forecasting, +17.01% (ICML 2025)
 - [[stormbench]] — StormBench, 多源观测+ERA5 再分析对流临近预报基准，美法双区域 (ICML 2026)
 - [[storminsight]] — StormInsight, 环境条件化对流临近预报框架，三分量编码 + CFM 分层调制 (ICML 2026)

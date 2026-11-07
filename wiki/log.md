@@ -4577,12 +4577,15 @@ ingest 报告：[[ingest-reports/2026-11-02-2602-16681-vetime|WHY 报告]]
 数值备注：Table 2 报告 MSL 单序列耗时为 0.02s，附录 Table 11 详细运行时间表中 MSL 报告为 74.11 ms（约 0.07s），正文并列记录（0.02 s / 74.11 ms）；单变量全样本对比（Table 7）平均排名 2.02（基线池 6 个）与单变量零样本对比（Table 1）平均排名 2.05（基线池 8 个）为不同基线池口径，分别归因记录；附录 Table 17 模块消融显示 Power 数据集引入路由（V4）较时序分支（V3）出现异常回落（VUS-PR 21.48% 降至 11.54%），正文如实记录周期折叠引发的负迁移失效；附录 C.3 单点单像素容量上限约 10 变量为论文自述物理推断；pdftotext 文本层提取完整，无负号丢失或表格截断。
 
 ## [2026-11-07] ingest | UniST: A Prompt-Empowered Universal Model for Urban Spatio-Temporal Prediction (KDD 2024)
-
-Yuan et al.（清华 FIB Lab，KDD 2024 正式版 DOI 10.1145/3637528.3671662；PDF raw/unist-yuan-2024.pdf）解决逐数据集训练无法通用、朴素联合训练失效（PatchTST one-for-all 全线劣于专用版，Table 2）的问题：channel-independent Conv3D patch 化统一任意 $(T,H,W)$ 输入，random/tube/block/temporal 四路掩码重建预训练各练一种能力（arXiv Table 10：去 temporal 伤预测 0.781→1.44、去 block 伤空间外推 →1.02），再从输入提取空间近邻/层级、时间近邻/周期四类知识特征查询两个 512 条 key-value memory pool 生成逐样本 prompt 加进 mask token embedding。21 数据集（14 城 6 域）短期 7/7 最优（Crowd 3.00 vs PromptST 3.52、↓14.8%）、长期 TaxiNYC 19.83 vs SimVP 20.18；zero-shot Crowd 14.665 超 ACFM 1%-shot 21.166，但完整基准 4 数据集（TrafficBJ/TrafficWH/BikeNYC-2/TDrive）输基线、BikeNYC 与 TaxiBJ 的 zero-shot 输给多个 1% 基线——先前页面的「全数据集最优」「zero-shot 全面超 few-shot」均修正。12 页版不含附录 Table 5–16，few-shot/效率/噪声数字经 arXiv:2402.11838v5 网页核对，页面内逐条标注层级。
+单一网格模型用 21 数据集（14 城 6 域）掩码重建预训练 + 双 memory pool（512 条）知识 prompt 做 one-for-all 预测：短期 7/7 最优（Crowd 3.00 vs PromptST 3.52，×10³）、zero-shot Crowd 14.665 超 1% 基线，但完整基准 4 数据集（TrafficBJ/WH、BikeNYC-2、TDrive）输基线；同日修订删考据与免责，超参与损失按 arXiv 附录 Algorithm 1/2 与官方代码补齐（patch (2,2,2)、掩码率 0.5、预测即 temporal 掩码重建）。
 创建的页面：（无）
-更新的页面：[[unist]]（整页重写：分阶段数据流块 + 数字修正 + 删 4 处论文未写的细节，source_count 1→2）, [[source-unist]]（书目/问题/数字/局限按原文重写）, [[videomae]]（tube masking 移植一句，source_count 1→2）, [[unified-prompt-learning]]（对比表 UniST 行补引用与准确机制，source_count 1→2）, [[spatio-temporal-foundation-model]]（5 domains→21 datasets/6 域，zero-shot 限定口径）, [[index]]（两条摘要）
+更新的页面：[[unist]], [[source-unist]], [[videomae]], [[unified-prompt-learning]], [[spatio-temporal-foundation-model]], [[index]]
 ingest 报告：[[ingest-reports/2026-11-07-unist|WHY 报告]]
-数值备注：Crowd/Cellular 数值 ×10³ 口径已加注；Table 7 Best baseline 列与 Table 2 冲突（Crowd 3.85 vs PromptST 3.52）两处并列；§4.3 的 10.1% 平均改进按 Table 3 复算 7.9% 无法复现；block masking 公式 pdftotext 损坏只写语义；Table 14 的 ATFM 为 ACFM typo。
-## [2026-11-07] maintenance | UniST 页面二次修订：删考据噪音与免责、补齐附录与代码实现细节
-首版 ingest 页面带审稿式考据（Table 7 口径冲突、ATFM typo、10.1% 复算、Figure 13 口径、符号复用注记）与防御性免责，且未实质核查 arXiv 附录与官方代码——「每 mini-batch 随机选掩码策略」被误当论文未写细节删除（实际在附录 Algorithm 1），patch 超参与损失函数标「未给」。本次经 arXiv:2402.11838v5 附录与 tsinghua-fib-lab/UniST 代码补齐：patch (2,2,2)、掩码率 0.5、d=128/enc 6 层 8 头/dec 4 层 4 头（6.71M）、memory 512×128 softmax 检索、预训练被掩 patch MSE、Adam lr 3e-4/5e-5、微调掩码固定 temporal（预测即 temporal 掩码重建）、prompt 加在 decoder 末尾未来 token、官方代码未实现冻结；10.1% 口径已复现（RMSE+MAE 六项均值 10.14%）；block masking 按机制语义书写。统一符号 M/P/N。
-更新的页面：[[unist]], [[source-unist]], [[ingest-reports/2026-11-07-unist]]
+数值备注：Crowd/Cellular 数值 ×10³；Table 7 的 Best baseline 列与 Table 2 冲突（以 Table 2 为准）。
+
+## [2026-11-07] ingest | STONE: A Spatio-temporal OOD Learning Framework Kills Both Spatial and Temporal Shifts (KDD 2024)
+用 Fréchet 锚点距离嵌入（新节点免重训获表示）+ 空间/时间双语义图 + 可学习节点采样干预（原图 + 编辑图两环境）+ 对抗式方差目标，同时处理时间漂移与传感器增删；LargeST SD/GBA 36 格多数 MAE 最优（最大 −29.2%），但纯时间漂移时与 GWNet 持平、5 格落后，增益集中于新增节点，与独立 ST-OOD 评测「专用方法在自然跨年 T-OOD 上难胜常规基线」的观察一致。
+创建的页面：[[source-stone]], [[stone]]
+更新的页面：[[stop]]（修正机制描述）, [[spatio-temporal-ood-learning]], [[ood-generalization]], [[st-ood]], [[index]]
+ingest 报告：[[ingest-reports/2026-11-07-stone|WHY 报告]]
+数值备注：Table 3 CauSTG 列与 STNN 列相同疑复制错误；§5.1.3 写 3/6/9 步而表格为 3/6/12；输入窗口论文未给（代码默认 12）。
