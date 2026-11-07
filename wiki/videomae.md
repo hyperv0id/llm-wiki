@@ -9,8 +9,8 @@ tags:
   - spatiotemporal-modeling
   - pretraining
 created: 2026-05-31
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-11-07
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -44,6 +44,7 @@ VideoMAE 基于对视频数据三个特性的诊断[^src-videomae]：
 | frame masking | 87.5% | 61.5 | 76.5 |
 
 差距在运动中心数据集 SSV2 上尤为显著（+1.3%）——证明 tube masking 真正提升的是时空联合推理[^src-videomae]。
+tube masking 的机制随后被移植到城市网格数据：[[unist|UniST]]（KDD 2024）的四种掩码预训练策略包含同名 tube masking——同一空间位置沿全部时间步一起遮蔽，用于模拟传感器失效、训练空间外推[^src-unist]。
 
 ### 设计二：90%-95% 极高掩码比例 — 信息密度阶梯
 
@@ -126,5 +127,7 @@ VideoMAE ViT-L SSV2 75.4% 超越 BEVT（需 IN-1K+K400+DALL-E 多源预训练）
 - [[mae]] — MAE（图像掩码自编码器），VideoMAE 的直接方法论来源
 - [[std-mae]] — STD-MAE，时空解耦掩码自编码器（时序预测应用）
 - [[patchtst]] — PatchTST，masked patch autoencoder 用于时序预测
+
+[^src-unist]: [[source-unist]]
 
 [^src-videomae]: [[source-videomae]]

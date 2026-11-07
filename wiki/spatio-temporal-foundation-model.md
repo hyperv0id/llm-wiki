@@ -7,7 +7,7 @@ tags:
   - zero-shot
   - generalization
 created: 2026-05-03
-last_updated: 2026-08-09
+last_updated: 2026-11-07
 source_count: 18
 confidence: high
 status: active
@@ -37,7 +37,7 @@ Before the emergence of true foundation models, **[[gpt-st|GPT-ST]]** (NeurIPS 2
 - **[[opencity|OpenCity]]** (2024): Transformer + GNN architecture with instance normalization for zero-shot traffic prediction. Uses TimeShift Transformer (PTTM + DTP dual attention) to decouple periodic and dynamic patterns, and Laplacian eigenvectors for spatial context encoding. Pre-trained on 21 datasets (151M observations), achieves zero-shot performance surpassing full-shot baselines on 4/6 test datasets. Three scales: 2M (mini), 5M (base), 26M (plus)[^src-opencity].
 - **[[urbanpg|UrbanPG]]** (AAAI 2026): Prompt-backbone decoupled architecture with STCA linear attention (O(N·d²)), unifying large-scale, few-shot, and continual learning under one framework. Freeze general backbone, fine-tune/expand only personalized context prompts. SOTA on CA 8600 nodes with 48-72% efficiency gains over PatchSTG[^src-urbanpg].
 - **[[urbandit|UrbanDiT]]** (NeurIPS 2025): Diffusion Transformer (DiT) backbone with unified prompt learning (time/frequency/spatial memory pools). Unifies grid-based and graph-based spatio-temporal data, supports 5 tasks (forward/backward prediction, temporal interpolation, spatial extrapolation, spatio-temporal imputation). Uses rectified flow for 25× inference acceleration. Zero-shot outperforms nearly all trained baselines[^src-urbandit].
-- **[[unist|UniST]]** (KDD 2024): First one-for-all grid-based spatio-temporal foundation model using MAE pre-training + knowledge-guided memory-based prompt learning. Single model covers 20+ datasets across 5 domains with zero-shot capability surpassing few-shot baselines[^src-unist]. Same Tsinghua FIB Lab as [[urbandit|UrbanDiT]].
+- **[[unist|UniST]] (KDD 2024): First one-for-all grid-based spatio-temporal foundation model using MAE pre-training + knowledge-guided memory-based prompt learning. Single model covers 21 datasets (14 cities, 6 domains); zero-shot surpasses 1%-shot baselines on Crowd, though not uniformly across datasets (loses on BikeNYC/TaxiBJ)[^src-unist]. Same Tsinghua FIB Lab as [[urbandit|UrbanDiT]].
 - **[[uniflow|UniFlow]]** (arXiv 2024): First unified grid+graph foundation model using pure Transformer + ST-MRA (Spatio-Temporal Memory Retrieval Augmentation). Four structured learnable memory pools store shared spatio-temporal patterns for cross-learning. 9 datasets (6 grid + 3 graph), 9.1% avg RMSE improvement. Same Tsinghua FIB Lab as UrbanDiT and UniST[^src-uniflow].
 - **[[urbanfm|UrbanFM]]** (arXiv 2026): First scaling-centric ST foundation model with WorldST (100+ cities, 1B+ data points), MiniST (KD-Tree clustering tokenization), and minimalist factorized attention architecture. Achieves 39-70.2% zero-shot improvement over existing foundation models, surpasses full-shot experts. Imputation capability without any imputation training[^src-urbanfm].
 - **[[factost|FactoST]]** (NeurIPS 2025 / arXiv 2026): Factorized two-stage STFM — Universal Temporal Pretraining (UTP, encoder-only, 11B+ time points) + Spatio-Temporal Adaptation (STA, lightweight adapter). First STFM to achieve linear O(N) complexity through complete stage-level factorization. 4 model scales (2.5M-30.4M), SOTA on few-shot/full-shot/zero-shot across 9 benchmarks. Same HKUST-GZ group (Yuxuan Liang) as UrbanFM[^src-factost].

@@ -8,8 +8,8 @@ tags:
   - diffusion-transformer
   - foundation-model
 created: 2026-05-28
-last_updated: 2026-05-28
-source_count: 1
+last_updated: 2026-11-07
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -78,7 +78,7 @@ $$P_m = \text{Attention}(\text{Flatten}(M))$$
 | 方法 | Prompt 来源 | 适用场景 |
 |------|-----------|---------|
 | **Unified Prompt Learning** | Learnable memory pools（时域/频域/空域） + 任务掩码 | 多任务、多数据源的统一时空建模 |
-| UniST 的 prompt | 时空知识引导的 learnable prompts | 单任务预测 |
+| UniST 的 prompt | 两个 key-value memory pool（$KM_s$ 空间 / $KM_t$ 时间，各 512 条），以四类领域知识特征（空间近邻/层级、时间近邻/周期）为查询检索，逐样本相加进输入空间的 mask token embedding[^src-unist] | 多数据集网格预测 |
 | PromptST 的 prompt | 预训练 + prompt tuning | 多属性预测 |
 
 ## 相关页面
@@ -87,4 +87,5 @@ $$P_m = \text{Attention}(\text{Flatten}(M))$$
 - [[rectified-flow]] — 训练的加速框架
 - [[spatio-temporal-foundation-model]] — 时空基础模型概念
 
+[^src-unist]: [[source-unist]]
 [^src-urbandit]: [[source-urbandit]]

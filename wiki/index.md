@@ -421,7 +421,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-unica]] — UniCA: Unified Covariate Adaptation for Time Series Foundation Model (ICLR 2026)
 - [[source-uniextreme]] — UniExtreme: universal extreme weather forecasting foundation model (arXiv 2025)
 - [[source-uniflow]] — UniFlow: foundation model for unified urban spatio-temporal flow prediction (arXiv 2024)
-- [[source-unist]] — UniST: prompt-empowered universal model for urban spatio-temporal prediction (KDD 2024)
+- [[source-unist]] — UniST：one-for-all 城市时空预测（Yuan et al., 清华 FIB Lab, KDD 2024, DOI 10.1145/3637528.3671662；PDF raw/unist-yuan-2024.pdf），Conv3D patch 化 + 四路掩码 MAE 预训练 + 双 memory pool（512 条）知识引导 prompt；21 数据集短期 7/7 最优（Crowd 3.00 vs PromptST 3.52）、zero-shot Crowd 14.665 超 1% 基线，但完整基准 4 数据集输基线；few-shot/效率数字在 arXiv:2402.11838 附录
 - [[source-uomo]] — UoMo: A Universal Model of Mobile Traffic Forecasting for Wireless Network Optimization (KDD 2025 ADS Track)
 - [[source-urbandit]] — UrbanDiT: Diffusion Transformers as Open-World Spatiotemporal Foundation Models (NeurIPS 2025) 基于完整论文重写
 - [[source-urbanfm]] — UrbanFM: Scaling Urban Spatio-Temporal Foundation Models, WorldST+MiniST+minimalist Transformer (arXiv 2026)
@@ -1395,7 +1395,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[uncertainty-aware-rectification]] — 不确定性感知矫正，按样本不确定性与训练进度动态仲裁 CFM 精度与轨迹线性化的梯度冲突 (LOFT, KDD 2026)
 - [[unified-prompt-learning]] — UrbanDiT 的三个 memory pool（时域/频域/空域）+任务掩码 prompt 的自适应引导机制
 - [[uniflow]] — UniFlow, foundation model for unified grid+graph urban spatio-temporal flow prediction (arXiv 2024)
-- [[unist]] — UniST, one-for-all spatio-temporal foundation model with MAE pre-training and memory-based prompt learning (KDD 2024)
+- [[unist]] — UniST，网格 one-for-all 时空基础模型：channel-independent Conv3D patch 化、random/tube/block/temporal 四路掩码预训练、四类领域知识查询双 memory pool 生成逐样本 prompt 注入 mask token embedding；含分阶段数据流与 KDD 正文/arXiv 附录两层证据标注（KDD 2024）
 - [[universal-transformer]] — 同一组自注意力+transition 权重沿深度循环 $T$ 步、每步重加正弦位置-时间编码：步取 1 即 Transformer、固定 $T$ 即全层权重绑定的多层 Transformer；ACT 逐位置停机（阈值/余量/状态插值，按附录 C 伪代码转写），步数取长度函数是长度泛化与计算通用的前提；bAbI/LAMBADA/算法任务大幅超 Transformer、WMT +0.9 BLEU 但 ACT 在 MT 上略降（Dehghani et al., ICLR 2019）
 - [[urbangpt]] — UrbanGPT, spatio-temporal large language model with instruction-tuning paradigm (KDD 2024)
 - [[urbanmind]] — UrbanMind, multifaceted ST-LLM with Muffin-MAE and test-time adaptation for urban dynamics (KDD 2025)
