@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-10-28
+last_updated: 2026-11-09
 tags:
   - meta
 source_count: 0
@@ -121,7 +121,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-diffusion-traffic-flow-inference]] — DP-TFI: Diffusion Probabilistic Modeling for Fine-Grained Urban Traffic Flow Inference (ICASSP 2023), DPA 扩散增强 + RDU relaxed structural constraint, TaxiBJ 四时段 RMSE/MAE/MAPE 全最优
 - [[source-diffusion-ts-st-survey]] — A Survey on Diffusion Models for Time Series and Spatio-Temporal Data (arXiv 2024), 首篇 TS+ST diffusion 综述，四维分类（模型类别/任务/模态/领域），Table 1 汇总 60 个方法
 - [[source-diffusionblocks]] — DiffusionBlocks: Block-wise Neural Network Training via Diffusion Interpretation (Sakana AI, ICLR 2026)
-- [[source-distdf]] — DistDF: Distribution-aware Direct Forecast, joint-distribution Wasserstein alignment for training time-series forecasting models, 解决 MSE 的自相关偏差 (ICLR 2026)
+- [[source-distdf]] — DistDF: Time-Series Forecasting Needs Joint-Distribution Wasserstein Alignment，Theorem 3.1 条件自相关偏差 + 联合分布 Wasserstein 上界（Lemma 3.3 / Theorem 3.4）+ 高斯 Bures–Wasserstein 闭式解与 MSE 混合，推理零开销、训练开销 <1 ms（Wang et al., ICLR 2026, arXiv:2510.24574v3；raw/2510.24574-distdf.txt）
 - [[source-dit]] — DiT: Scalable Diffusion Models with Transformers, ViT replaces U-Net backbone (Peebles & Xie, ICCV 2023)
 - [[source-dits]] — DiTS: Multimodal Diffusion Transformers Are Time Series Forecasters (arXiv 2026)
 - [[source-doflow]] — DoFlow: Flow-based Generative Models for Interventional and Counterfactual Forecasting on Time Series (ICLR 2026)
@@ -502,6 +502,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[diffstg]] — DiffSTG, probabilistic spatio-temporal graph forecasting with denoising diffusion (AAAI 2023)
 - [[diffusionblocks]] — DiffusionBlocks, principled block-wise training framework via diffusion interpretation, 3× memory reduction with competitive performance (Sakana AI, ICLR 2026)
 - [[digital-typhoon-dataset]] — Digital Typhoon, largest open-source typhoon satellite image dataset (1978-2023)
+- [[distdf]] — DistDF，DF 的分布感知训练目标：联合分布 Wasserstein（高斯下 Bures–Wasserstein）对齐条件分布 + MSE 混合，绕开似然因式分解；<1 ms 训练开销、推理零开销（ICLR 2026）
 - [[dits]] — DiTS, MM-DiT dual-stream flow matching forecaster for covariate-aware time series (arXiv 2026)
 - [[doflow]] — DoFlow, flow-based generative model on a causal DAG with per-node time-conditioned CNFs unifying observational/interventional/counterfactual forecasting + likelihood anomaly detection (ICLR 2026)
 - [[dpgnet]] — DPGNet, dynamic graph prediction network with plug-and-play AGL + multi-scale ASL for spatiotemporal forecasting (ICLR 2026, under review)
@@ -975,7 +976,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[bigcity]] — BIGCity, first MTMD spatio-temporal model unifying trajectory + traffic state via GPT-2+LoRA+prompt (arXiv 2024)
 - [[brownian-bridge-diffusion]] — 布朗桥扩散，钉住数据与先验两端的扩散桥 + 后验方差缩放(s)切换确定性/概率采样 (S²DBM, arXiv 2024)
 - [[building-schrodinger-bridges]] — 六种 SB 构造方法综述：条件桥、时间反演、FBSDE、h-变换、IMF、随机插值
-- [[bures-wasserstein]] — Bures-Wasserstein discrepancy，高斯分布下 W₂ 的闭式解，均值+协方差对齐 (DistDF, ICLR 2026)
+- [[bures-wasserstein]] — Bures-Wasserstein discrepancy，高斯分布下 $W_2$ 的闭式解，均值+协方差对齐 (DistDF, ICLR 2026)
 - [[causal-counterfactual-recovery]] — abduction-action-prediction via CNF encode-decode with DoFlow's pointwise counterfactual recovery theorem under monotone SCMs (ICLR 2026)
 - [[centralized-message-passing]] — centralized message passing: nodes interact only with K shared Context-Aware Units via O(KN) low-rank attention, blocking node-to-node messages (STOP, ICML 2025)
 - [[channel-biased-attention]] — CbA, channel-disentangled attention mask allowing limited cross-channel interaction (TRACE, NeurIPS 2025)

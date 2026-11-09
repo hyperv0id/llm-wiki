@@ -4589,3 +4589,10 @@ ingest 报告：[[ingest-reports/2026-11-07-unist|WHY 报告]]
 更新的页面：[[stop]]（修正机制描述）, [[spatio-temporal-ood-learning]], [[ood-generalization]], [[st-ood]], [[index]]
 ingest 报告：[[ingest-reports/2026-11-07-stone|WHY 报告]]
 数值备注：Table 3 CauSTG 列与 STNN 列相同疑复制错误；§5.1.3 写 3/6/9 步而表格为 3/6/12；输入窗口论文未给（代码默认 12）。
+
+## [2026-11-09] ingest | DistDF: Time-Series Forecasting Needs Joint-Distribution Wasserstein Alignment (ICLR 2026, arXiv:2510.24574v3)
+DF 用 MSE 估计条件 NLL，等价于假设未来各步条件独立；论文把偏差写成条件协方差与单位阵之差的二次型（Theorem 3.1），并指 FreDF 的 Fourier 与 Time-o1 的 PCA 只对角化边缘协方差——Traffic（$T=192$）上条件偏相关矩阵逾 50.3% 非对角元 $|\rho|>0.1$，两种变换后残余相关仍在（Fig. 1b–c）。方法改用联合分布 Wasserstein 差异 $W_p(\mathbb{P}_{x,y},\mathbb{P}_{x,\hat{y}})$：Lemma 3.3 给出期望条件差异的上界，Theorem 3.4 由 Wasserstein 正定性得零差异蕴含条件分布相等，高斯假设下取 Bures–Wasserstein 闭式并与 MSE 按 $\gamma$ 混合。Table 1 的 8 组 4-horizon 均值 MSE 全部最低，Table 2 的均值/协方差两项消融与 Table 3 的度量替换均支持分布项有效，最优 $\gamma$ 落在 $0.001\text{--}0.1$，推理零开销、训练额外开销低于 1 ms。边界：BW 在高斯假设下只匹配一阶与二阶矩；接入需联合调 $\gamma$ 与学习率 $\eta$。
+创建的页面：[[distdf]]
+更新的页面：[[source-distdf]], [[joint-distribution-wasserstein-alignment]], [[bures-wasserstein]], [[autocorrelation-bias]], [[fredf]], [[source-fredf]], [[frequency-enhanced-direct-forecast]], [[qdf]], [[source-qdf]], [[quadratic-form-weighted-objective]], [[heterogeneous-task-weights]], [[label-autocorrelation]], [[direct-forecast]], [[optimal-transport]], [[index]]
+ingest 报告：[[ingest-reports/2026-11-09-distdf|WHY 报告]]
+数值备注：无。

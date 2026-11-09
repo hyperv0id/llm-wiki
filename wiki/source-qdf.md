@@ -9,7 +9,7 @@ tags:
   - quadratic-form
   - iclr-2026
 created: 2026-07-13
-last_updated: 2026-07-21
+last_updated: 2026-11-09
 source_count: 0
 confidence: low
 status: active
@@ -17,7 +17,7 @@ status: active
 
 ## Summary
 
-**QDF (Quadratic Direct Forecast)** is a model-agnostic training algorithm for multi-step time-series forecasting that learns a quadratic-form weighted objective with adaptive matrix $\Sigma$. By Hao Wang et al. (Xiaohongshu, PKU, ZJU et al.); arXiv:2511.00053 (ICLR 2026 preprint). Same author group as [[source-fredf|FreDF]] and [[source-distdf|DistDF]].
+**QDF (Quadratic Direct Forecast)** is a model-agnostic training algorithm for multi-step time-series forecasting that learns a quadratic-form weighted objective with adaptive matrix $\Sigma$. By Hao Wang et al. (Xiaohongshu, PKU, ZJU et al.); arXiv:2511.00053 (ICLR 2026 preprint). Same author group as [[fredf|FreDF]] ([[source-fredf]]) and [[distdf|DistDF]] ([[source-distdf]], arXiv:2510.24574).
 
 ## Core Arguments
 
@@ -33,7 +33,7 @@ On ETT×4, ECL, Weather, PEMS (input 96; horizons 96–720) with TQNet backbone,
 
 ## Limitations
 
-Static learned $\Sigma$ is inflexible (hypernetwork objectives suggested). Extension beyond time series is open. Second-order Gaussian form may miss non-Gaussian residuals—orthogonal to DistDF’s OT route.
+Static learned $\Sigma$ is inflexible (hypernetwork objectives suggested). Extension beyond time series is open. Second-order Gaussian form may miss non-Gaussian residuals—orthogonal to [[distdf|DistDF]]’s OT route ([[source-distdf]], arXiv:2510.24574).
 
 ## Key Terminology
 

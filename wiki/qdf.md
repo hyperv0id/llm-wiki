@@ -9,15 +9,15 @@ tags:
   - quadratic-form
   - iclr-2026
 created: 2026-07-13
-last_updated: 2026-07-21
-source_count: 1
+last_updated: 2026-11-09
+source_count: 2
 confidence: medium
 status: active
 ---
 
 # QDF
 
-**QDF (Quadratic Direct Forecast)** is a plug-and-play training algorithm that improves multi-step time-series forecasting by learning a quadratic-form weighted loss with an adaptive covariance-like matrix $\Sigma$. Proposed by Hao Wang et al. (Xiaohongshu / PKU / ZJU et al.), arXiv:2511.00053 (ICLR 2026 preprint). Overlapping author group with [[fredf|FreDF]] and [[source-distdf|DistDF]].[^src-qdf]
+**QDF (Quadratic Direct Forecast)** is a plug-and-play training algorithm that improves multi-step time-series forecasting by learning a quadratic-form weighted loss with an adaptive covariance-like matrix $\Sigma$. Proposed by Hao Wang et al. (Xiaohongshu / PKU / ZJU et al.), arXiv:2511.00053 (ICLR 2026 preprint). Overlapping author group with [[fredf|FreDF]] and [[distdf|DistDF]] ([[source-distdf]], arXiv:2510.24574).[^src-qdf]
 
 ## Motivation
 
@@ -43,18 +43,19 @@ See [[quadratic-form-weighted-objective]] for the technique-level formulation an
 | Method | Route | What it fixes |
 |--------|-------|----------------|
 | [[fredf\|FreDF]] | Frequency-domain likelihood alignment | Label autocorrelation via orthogonal bases (marginal) |
-| [[source-distdf\|DistDF]] | Joint-distribution Wasserstein alignment | Avoids likelihood factorization / residual [[autocorrelation-bias]] |
+| [[distdf\|DistDF]] ([[source-distdf]], arXiv:2510.24574) | Joint-distribution Wasserstein alignment | Avoids likelihood factorization / residual [[autocorrelation-bias]] |
 | **QDF** | Learned quadratic $L_\Sigma$ | Autocorrelation *and* heterogeneous horizon weights under NLL form |
 
-QDF stays in the likelihood family but *learns* $\Sigma$ for generalization, rather than fixing a Fourier/PCA transform or switching to OT.[^src-qdf]
+QDF stays in the likelihood family but *learns* $\Sigma$ for generalization, rather than fixing a Fourier/PCA transform or switching to OT.[^src-qdf] DistDF, by contrast, abandons the likelihood form altogether and matches the joint distribution $W_p(\mathbb{P}_{x,y},\mathbb{P}_{x,\hat y})$ under a Gaussian Bures–Wasserstein metric.[^src-distdf]
 
 ## Links
 
 - Source: [[source-qdf]]
 - Concepts: [[label-autocorrelation]], [[heterogeneous-task-weights]], [[direct-forecast]], [[autocorrelation-bias]]
 - Technique: [[quadratic-form-weighted-objective]]
-- Related: [[fredf]], [[source-fredf]], [[source-distdf]], [[joint-distribution-wasserstein-alignment]], [[tqn|TQNet]], [[itransformer]]
+- Related: [[fredf]], [[source-fredf]], [[distdf]], [[source-distdf]], [[joint-distribution-wasserstein-alignment]], [[bures-wasserstein]], [[tqn|TQNet]], [[itransformer]]
 
 ---
 
 [^src-qdf]: [[source-qdf]]
+[^src-distdf]: [[source-distdf]]

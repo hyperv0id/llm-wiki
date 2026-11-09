@@ -8,7 +8,7 @@ tags:
   - fft
   - learning-objective
 created: 2026-07-13
-last_updated: 2026-07-18
+last_updated: 2026-11-09
 source_count: 2
 confidence: high
 status: active
@@ -56,13 +56,14 @@ On ETTh1/ECL learning curves, frequency-domain supervision with ~30% of training
 
 ## Limitations and Follow-ups
 
-Fixed Fourier bases do not adapt to data geometry; PCA-style adaptive orthogonal bases are suggested.[^src-fredf] [[source-distdf|DistDF]] later argues that frequency/PCA transforms only ensure *marginal* decorrelation and residual [[autocorrelation-bias]] remains; DistDF replaces likelihood factorization with joint Wasserstein alignment.[^src-distdf]
+Fixed Fourier bases do not adapt to data geometry; PCA-style adaptive orthogonal bases are suggested.[^src-fredf] [[distdf|DistDF]] ([[source-distdf]], arXiv:2510.24574) later argues that frequency/PCA transforms only ensure *marginal* decorrelation and residual [[autocorrelation-bias]] remains: its Theorem 3.1 shows the MSE bias vanishes only when the conditional covariance $\Sigma_{|x}$ is the identity, while Fourier and PCA bases make the marginal covariance $\Sigma$ diagonal at best.[^src-distdf] The Traffic case study ($T=192$, partial correlation conditioning on history) reports over 50.3% of off-diagonal entries above 0.1, and Fig. 1b shows the FreDF frequency components still carry residual conditional correlation; on the objective comparison (Table 1), [[joint-distribution-wasserstein-alignment]] gives average MSE $0.383/0.434/0.172/0.248$ against FreDF's $0.386/0.439/0.175/0.254$ with TimeBridge, and $0.378/0.430/0.173/0.255$ against $0.384/0.438/0.179/0.256$ with Fredformer (ETTm1/ETTh1/ECL/Weather).[^src-distdf]
 
 ## Related
 
-- Entity: [[fredf]]
-- Concept: [[label-autocorrelation]]
-- Source: [[source-fredf]]
+- Entity: [[fredf]], [[distdf]]
+- Concept: [[label-autocorrelation]], [[autocorrelation-bias]]
+- Technique: [[joint-distribution-wasserstein-alignment]]
+- Source: [[source-fredf]], [[source-distdf]]
 - Frequency-domain low-frequency supervision: [[patch-low-frequency-forecasting]] (LoFT-LLM)
 
 ---

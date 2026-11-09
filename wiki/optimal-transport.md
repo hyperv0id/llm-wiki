@@ -7,8 +7,8 @@ tags:
   - probability
   - wasserstein-distance
 created: 2026-04-28
-last_updated: 2026-07-17
-source_count: 4
+last_updated: 2026-11-09
+source_count: 5
 confidence: medium
 status: active
 ---
@@ -109,7 +109,7 @@ OT 的求解方法可分为两大类：
 
 在路径空间层面，[[schrodinger-bridge|Schrödinger bridge (SB)]] 将 OT 推广为 **entropy-regularized optimal transport in path space**：最小化相对于 reference stochastic process 的 KL divergence，以 entropy 参数控制确定性与随机性之间的权衡[^src-schrodinger-bridges-generative-modeling]。经典 OT（$\varepsilon \to 0$）和纯扩散（$\varepsilon \to \infty$）是 SB 的两个极限。[[entropic-optimal-transport]] 给出了 static SB 的完整形式化，[[sinkhorn-algorithm|Sinkhorn/IPF 算法]] 是其核心求解器。
 
-## 在生成模型中的应用
+## 在生成模型与时序预测中的应用
 
 ### Flow Matching 与 Stochastic Interpolants
 
@@ -133,7 +133,21 @@ $$
 2. **恒定方向**：向量场可分离为 $g(t) \cdot h(x)$，更容易拟合
 3. **更快收敛**：实验表明 OT 路径训练更快、采样更高效
 
----
+### 时序预测：DistDF 的离散 Kantorovich 形式
+
+[[distdf|DistDF]] 把 Wasserstein 距离从生成模型搬到预测模型的训练目标上，直接在离散概率测度上使用 Kantorovich 形式（论文 Definition 3.2 / 附录 B）。给定随机变量 $\alpha,\beta$ 的经验样本 $S_\alpha=[\alpha_1,\dots,\alpha_n]$、$S_\beta=[\beta_1,\dots,\beta_m]$，传输代价 $d_{i,j}=\|\alpha_i-\beta_j\|_p^p$，则
+
+$$
+W_p(\mathbb{P}_\alpha,\mathbb{P}_\beta) := \min_{P\in\Pi(\mathbb{P}_\alpha,\mathbb{P}_\beta)} \langle D,P\rangle,
+$$
+
+其中 $\Pi$ 要求行和为 $a_i$、列和为 $b_j$ 且 $p_{i,j}\ge 0$。直接对齐条件分布 $W_p(\mathbb{P}_{y\mid x},\mathbb{P}_{\hat y\mid x})$ 不可行：固定 $x$ 时通常只有一个观测 $y$ 和一个预测 $\hat y$，两边的经验集各只有一个样本。DistDF 改用联合分布差异 $W_p(\mathbb{P}_{x,y},\mathbb{P}_{x,\hat y})$，它由 [[joint-distribution-wasserstein-alignment|联合分布 Wasserstein 对齐]]给出期望条件差异的上界：
+
+$$
+\int W_p(\mathbb{P}_{y\mid x},\mathbb{P}_{\hat y\mid x})\,\mathrm{d}\mathbb{P}(x) \le W_p(\mathbb{P}_{x,y},\mathbb{P}_{x,\hat y}),
+$$
+
+等式在 $p=1$ 或条件项对 $x$ 为常数时成立（Lemma 3.3，引自 Kim et al. 2022）。当联合分布取高斯假设时，平方 $W_2$ 化为闭式的 [[bures-wasserstein|Bures–Wasserstein]] 度量 $BW=\|\mu_{x,y}-\mu_{x,\hat y}\|_2^2+B(\Sigma_{x,y},\Sigma_{x,\hat y})$（Lemma 3.5），因此可以在 batch 上对拼接序列 $[X,Y]$ 与 $[X,\hat Y]$ 的均值、协方差求梯度，并与 MSE 混合成 $L=\gamma\,BW+(1-\gamma)L_{\mathrm{MSE}}$。[^src-distdf] 这里的角色与生成模型不同：OT 不是用来在噪声与数据之间搬运样本，而是把预测与标签的联合分布拉近，作为多步监督目标使用。
 
 ## 相关页面
 
@@ -148,7 +162,9 @@ $$
 - [[sinkhorn-algorithm]] — Sinkhorn/IPF 求解静态 SB 的迭代算法
 - [[stochastic-interpolant]] — 随机插值与二次速度目标
 - [[interflow]] — InterFlow 生成模型
-- [[joint-distribution-wasserstein-alignment]] — DistDF, Wasserstein alignment for time-series forecasting training
+- [[distdf]] — DistDF，把联合分布 Wasserstein 差异作为时序预测的训练目标
+- [[joint-distribution-wasserstein-alignment]] — DistDF 的联合分布 Wasserstein 对齐技术
+- [[source-distdf]] — 论文 Hao Wang et al., arXiv:2510.24574, ICLR 2026
 - [[bures-wasserstein]] — closed-form Gaussian W₂ metric
 
 ## 引用
@@ -157,3 +173,4 @@ $$
 [^src-benamou-brenier-blog]: [[source-benamou-brenier-blog]]
 [^src-schrodinger-bridges-generative-modeling]: [[source-schrodinger-bridges-generative-modeling]]
 [^src-stochasticinterpolants]: [[source-stochasticinterpolants]]
+[^src-distdf]: [[source-distdf]]

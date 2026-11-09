@@ -9,7 +9,7 @@ tags:
   - learning-objective
   - iclr
 created: 2026-07-13
-last_updated: 2026-07-18
+last_updated: 2026-11-09
 source_count: 0
 confidence: medium
 status: active
@@ -33,7 +33,7 @@ Long-term forecast (ETT×4, ECL, Traffic, Weather; horizons 96/192/336/720) uses
 
 ## Limitations
 
-Fourier bases are fixed and may not adapt to data geometry; data-adaptive orthogonal transforms (e.g., PCA) are suggested. Label-structure correlations beyond 1D series (images, speech, point clouds) are left open. Later [[source-distdf|DistDF]] argues that Fourier/PCA only guarantee *marginal* decorrelation, not the *conditional* independence needed to fully remove MSE likelihood bias; [[source-qdf|QDF]] (same author group) similarly shows residual partial correlations after FreDF/Time-o1 and instead learns a quadratic weighting matrix $\Sigma$.
+Fourier bases are fixed and may not adapt to data geometry; data-adaptive orthogonal transforms (e.g., PCA) are suggested. Label-structure correlations beyond 1D series (images, speech, point clouds) are left open. Later [[distdf|DistDF]] ([[source-distdf]], arXiv:2510.24574) argues that Fourier/PCA only guarantee *marginal* decorrelation, not the *conditional* independence needed to fully remove MSE likelihood bias; [[qdf|QDF]] ([[source-qdf]], same author group) similarly shows residual partial correlations after FreDF/Time-o1 and instead learns a quadratic weighting matrix $\Sigma$.
 
 ## Key Terminology
 
@@ -44,8 +44,8 @@ Fourier bases are fixed and may not adapt to data geometry; data-adaptive orthog
 
 ## Sibling Objectives
 
-- [[source-distdf|DistDF]] — joint-distribution Wasserstein alignment (ICLR 2026)
-- [[source-qdf|QDF]] — quadratic direct forecast with learned $\Sigma$ (ICLR 2026 preprint)
+- [[distdf|DistDF]] ([[source-distdf]], arXiv:2510.24574) — joint-distribution Wasserstein alignment, abandons likelihood estimation entirely (ICLR 2026)
+- [[qdf|QDF]] ([[source-qdf]]) — quadratic direct forecast with learned $\Sigma$ (ICLR 2026 preprint)
 
 ---
 

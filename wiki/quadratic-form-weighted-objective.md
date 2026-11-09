@@ -9,9 +9,9 @@ tags:
   - direct-forecast
   - iclr-2026
 created: 2026-07-13
-last_updated: 2026-07-21
-source_count: 1
-confidence: medium
+last_updated: 2026-11-09
+source_count: 2
+confidence: high
 status: active
 ---
 
@@ -56,6 +56,10 @@ No test leakage: only training data is used. Extra cost is training-only; infere
 
 Empirical synergy: both factors improve over DF; full matrix wins on ETT/ECL/Weather.[^src-qdf]
 
+## Contrast with DistDF
+
+[[distdf|DistDF]] ([[source-distdf]], arXiv:2510.24574) reaches the same diagnosis from the conditional side: its Theorem 3.1 derives the bias as $\|Y-\hat Y\|^2_{\Sigma_{|x}^{-1}}-\|Y-\hat Y\|^2_2$ from the conditional likelihood of $Y\mid X$, so the bias disappears only when the *conditional* covariance $\Sigma_{|x}$ is identity, which no fixed Fourier or PCA transform guarantees. The two routes then diverge: QDF keeps the likelihood form and *learns* a static $\Sigma$ by bilevel optimization, while DistDF drops likelihood estimation and minimizes the joint-distribution Wasserstein discrepancy $W_p(\mathbb{P}_{X,Y},\mathbb{P}_{X,\hat Y})$, implemented as a [[bures-wasserstein|Bures–Wasserstein]] term on mean and covariance plus an MSE anchor.[^src-distdf] The practical difference is the object being estimated: QDF learns a horizon-by-horizon weighting matrix, DistDF never forms $\Sigma^{-1}$ and instead aligns first- and second-order moments of the joint distribution.
+
 ## Relation to Meta-Learning
 
 Treating $\Sigma$ as learnable is related to MAML/Reptile-style bilevel optimization, but goals differ: QDF seeks a *static* forecasting objective for one task (with holdout from the same task), not fast adaptation across many tasks. MAML/iMAML/MAML++/Reptile can still optimize $\Sigma$ and beat DF, yet underperform QDF’s generalization-targeted outer loop on ECL.[^src-qdf]
@@ -64,9 +68,10 @@ Treating $\Sigma$ as learnable is related to MAML/Reptile-style bilevel optimiza
 
 - Entity: [[qdf]]
 - Source: [[source-qdf]]
-- Contrast: [[frequency-enhanced-direct-forecast]] (fixed Fourier mix), [[joint-distribution-wasserstein-alignment]] (OT, non-likelihood)
+- Contrast: [[frequency-enhanced-direct-forecast]] (fixed Fourier mix), [[joint-distribution-wasserstein-alignment]] (OT, non-likelihood), [[distdf]] (moment alignment instead of learned $\Sigma$)[^src-distdf]
 - Concepts: [[label-autocorrelation]], [[heterogeneous-task-weights]], [[autocorrelation-bias]]
 
 ---
 
 [^src-qdf]: [[source-qdf]]
+[^src-distdf]: [[source-distdf]]
