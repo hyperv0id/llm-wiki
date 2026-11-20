@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-11-09
+last_updated: 2026-11-20
 tags:
   - meta
 source_count: 0
@@ -21,6 +21,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-2312-08874-agent-attention]] — Agent attention: 在 (Q, A, K, V) 中加入 n 个 agent token，先聚合再广播，两次 softmax 等价于核化线性注意力（复杂度 O(N²)→O(Nnd)），视觉四骨干 + Stable Diffusion 加速（Han et al., 清华自动化系 + 快手, ECCV 2024, arXiv:2312.08874）
 - [[source-2401-08119-specstg]] — SpecSTG: A Fast Spectral Diffusion Framework for Probabilistic Spatio-Temporal Traffic Forecasting (arXiv 2024)
 - [[source-2404-02905-var]] — VAR: Visual Autoregressive Modeling，next-scale prediction（多尺度 VQVAE 粗到细逐尺度自回归、尺度内并行），ImageNet 256 FID 1.73 + LLM 式 power-law scaling（Pearson ≈ −0.998）+ 零样本 in/out-painting 与编辑（Keyu Tian et al., PKU/ByteDance, arXiv:2404.02905v2；PDF raw/2404.02905-var.pdf）
+- [[source-2405-12981-cla]] — CLA: Reducing Transformer KV Cache Size with Cross-Layer Attention，层间共享 KV——每 $f$ 层组首层算 K/V 投影、其余层复用，cache 份数 $L\to\lceil L/f\rceil$，MQA 上再省 2×；1B/3B 从零训练 ppl 至多退 0.04 点、3B 反降 0.18（Brandon*, Mishra* et al., MIT CSAIL + MIT-IBM, arXiv:2405.12981v1；PDF raw/2405.12981-cla.pdf）
 - [[source-2406-11838-mar]] — MAR: Autoregressive Image Generation without Vector Quantization，per-token 扩散头（Diffusion Loss）+ 广义自回归（随机顺序双向 MAR），ImageNet 256 w/CFG FID 1.55（Tianhong Li, Yonglong Tian, Kaiming He et al., NeurIPS 2024；PDF raw/2406.11838-mar.pdf）
 - [[source-2412-18730]] — Elucidating Flow Matching ODE Dynamics via Data Geometry and Denoisers, denoiser 吸引/吸收元定理 + FM ODE 三阶段轨迹 + 终端收敛（首个覆盖低维子流形支撑）+ 记忆几何理论 (Wan, Wang, Mishne, Wang, ICML 2025 Poster, arXiv:2412.18730 v4)
 - [[source-2502-05171-recurrent-depth]] — Huginn：Recurrent Depth + Latent Reasoning（Geiping et al., ELLIS Tübingen/UMD/LLNL, arXiv:2502.05171v2）；prelude/core/coda 三段、core 4 层块迭代 $r$ 次且每轮重注入输入嵌入，3.5B/0.8T、$\bar r=32$、截断反传 $k=8$；$r=1$ 时 GSM8K CoT 0.00，$r=32$ 时 ARC-E 69.91、MMLU 31.38，FLOP 口径等价 50B 固定深度
@@ -1010,6 +1011,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[cross-attention-conditioning]] — 跨注意力条件化，LDM 的通用条件生成机制
 - [[cross-correlation-embedding]] — CrossLinear 即插即用 1D conv 外生交叉相关残差嵌入，CI 骨干友好 (KDD 2025)
 - [[cross-gated-mechanism]] — 交叉门控机制，双向 sigmoid+tanh 门控实现时空嵌入的跨域特征选择与交互 (PAST, arXiv 2025)
+- [[cross-layer-attention]] — CLA：相邻层对共享一份 K/V 投影（共享因子 $f$，cache 份数 $\lceil L/f\rceil$），与 MHA/MQA/GQA 正交可组合；省容量不省每步带宽，MQA+CLA2 为论文推荐配置（arXiv:2405.12981）
 - [[cross-period-sparse-forecasting]] — cross-period downsampling for extreme model compression
 - [[cross-view-text-fusion]] — MindTS's cross-view attention fusing endogenous and exogenous text views (ICLR 2026)
 - [[crps-autoregressive-finetuning]] — CRPS 自回归微调，在多步 rollout 上以 CRPS 损失微调为集合校准 (Swift, arXiv 2025)

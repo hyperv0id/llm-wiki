@@ -4596,3 +4596,10 @@ DF 用 MSE 估计条件 NLL，等价于假设未来各步条件独立；论文�
 更新的页面：[[source-distdf]], [[joint-distribution-wasserstein-alignment]], [[bures-wasserstein]], [[autocorrelation-bias]], [[fredf]], [[source-fredf]], [[frequency-enhanced-direct-forecast]], [[qdf]], [[source-qdf]], [[quadratic-form-weighted-objective]], [[heterogeneous-task-weights]], [[label-autocorrelation]], [[direct-forecast]], [[optimal-transport]], [[index]]
 ingest 报告：[[ingest-reports/2026-11-09-distdf|WHY 报告]]
 数值备注：无。
+
+## [2026-11-20] ingest | CLA: Reducing Transformer Key-Value Cache Size with Cross-Layer Attention (arXiv:2405.12981v1)
+MIT CSAIL + MIT-IBM 把 MQA/GQA 的 head 间共享推到层间：每 $f$ 层只有组首层计算 K/V 投影、组内其余层删除 K/V 投影复用同份激活，KV cache 份数 $L\to\lceil L/f\rceil$，与 MHA/MQA/GQA 正交可组合。1B/3B 从零训练（SlimPajama 30B/100B token）证明 MQA+CLA2 以 2× 缩减换 ppl 至多退 0.04 点（Table 3），3B 第一组以一半缓存同时低于两个基线（val 9.34 对 9.52/9.48，Table 5）；sharing factor $>2$ 与 KeepEnds/DenseFront/DenseBack 全部非均匀模式被消融否定，CLA 偏好更高学习率。边界：收益是容量而非每步带宽（共享 KV 逐层仍重读），端到端服务效率未实测，全部从零训练、无 checkpoint 转换路径，规模止于 3B。
+创建的页面：[[cross-layer-attention]], [[source-2405-12981-cla]]
+更新的页面：[[multi-query-attention]]（相关页面补层维共享对照，source_count 1→2）、[[grouped-query-attention]]（补 CLA 正交性与 GQA+CLA2 消融，1→2）、[[kv-cache-compression]]（层数轴补温和变体，9→10）、[[yoco-architecture]]（层数轴对照补 CLA，3→4）、[[index]]
+ingest 报告：[[ingest-reports/2026-11-20-2405-12981-cla|WHY 报告]]
+数值备注：§3.2.1 称 CLA3/CLA4 匹配 H32/H46-MQA 内存但 Table 1 中 CLA3=3584 介于两者之间；同节「仅 GQA2-CLA2 打赢」与 Table 1 不符（H128-GQA4-CLA2 13.48 亦优于同内存 13.52）；§3.2.2 下游「1–5 个百分点」口径下 CLA2 对同 head 维度基线七项输五项；§3.3「H64-MQA-CLA2 baseline 重训」按上下文应为 H64-MQA 基线，疑笔误。

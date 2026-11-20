@@ -8,8 +8,8 @@ tags:
   - efficient-inference
   - long-context
 created: 2026-10-27
-last_updated: 2026-10-27
-source_count: 3
+last_updated: 2026-11-20
+source_count: 4
 confidence: medium
 status: active
 ---
@@ -130,6 +130,8 @@ KV 侧既有方法各压一个维度，YOCO 换掉的是**层数份数**这一�
 
 [[multi-query-attention]] 与 [[grouped-query-attention]] 压缩 K/V 头维：cache 从每头一份压至每 $G$ 组一份，但仍为每层一份并保留层数因子；YOCO 的 cross-attention 兼容 GQA（§2.2），YOCO-3B 按 24/8 配置叠加两轴 [^src-sun-2024-yoco]。[[multi-head-latent-attention]] 压缩每 token 缓存字节（KV 联合低秩 latent），cache 公式 $(d_c+d^R_h)l$ 中层数 $l$ 仍是乘积因子；YOCO 保持每行字节，将各层分别存储压为单份共享，两轴正交 [^src-deepseek-v2-2405-04434][^src-sun-2024-yoco]。[[native-sparse-attention]]、[[compressed-sparse-attention]]、[[deepseek-sparse-attention]] 改变每步读取集合（通过压缩、选择或滑窗重映射），cache 存储量仍随层数与长度增长；YOCO 的 cross 层保留对全部前序的 dense 全局注意力，减少存量而非读取集合（§2.2）[^src-sun-2024-yoco]。[[paged-attention]] 负责放置与共享（逻辑到物理块表、引用计数），不减少 KV 字节或份数；YOCO 减少份数，可与分页管理叠加 [^src-kwon-2023-pagedattention]。[[kv-cache-compression]] 汇总的淘汰与量化路线压缩时间维和数值精度，同样未触及层数轴。
 
+同期的 [[cross-layer-attention]]（CLA）同走层数轴但幅度温和：相邻层对共用一份 K/V 投影，cache 层数因子减半而非消除，并保留标准 block、注意力算子不动；其收益同头共享一样只在容量而非每步带宽（§2.3），与 YOCO 把 self 侧换成常数内存注意力后拿到的 prefill 线性化是不同性质的收益[^src-2405-12981-cla]。
+
 全局记忆仅有一份且固定由 $X^{L/2}$ 投影生成，cross 层只读不写，取消了 Transformer 中逐层独立写入 KV 的记忆分化。论文未做 self:cross 层数比例消融，$L/2{:}L/2$ 为论文采用值而非扫描结论 [^src-sun-2024-yoco]。
 
 ## 范围与边界
@@ -138,8 +140,9 @@ KV 侧既有方法各压一个维度，YOCO 换掉的是**层数份数**这一�
 
 ## 相关页面
 
-[[source-sun-2024-yoco]] 为源摘要；[[native-sparse-attention]] 与 [[compressed-sparse-attention]] 属「减读取」轴的训练期稀疏路线；[[multi-head-latent-attention]] 属「减每行字节」轴的低秩 latent 路线；[[multi-query-attention]] 与 [[grouped-query-attention]] 属「减头副本」轴；[[paged-attention]] 属「改放置」轴；[[kv-cache-compression]] 汇总各轴；[[flash-attention]] 属不改 cache 的 IO 路线，构成本文效率对照基线。
+[[source-sun-2024-yoco]] 为源摘要；[[native-sparse-attention]] 与 [[compressed-sparse-attention]] 属「减读取」轴的训练期稀疏路线；[[multi-head-latent-attention]] 属「减每行字节」轴的低秩 latent 路线；[[multi-query-attention]] 与 [[grouped-query-attention]] 属「减头副本」轴；[[cross-layer-attention]] 属「减层副本」轴的温和变体（相邻层对共享，$2\times$）；[[paged-attention]] 属「改放置」轴；[[kv-cache-compression]] 汇总各轴；[[flash-attention]] 属不改 cache 的 IO 路线，构成本文效率对照基线。
 
 [^src-sun-2024-yoco]: [[source-sun-2024-yoco]]
 [^src-deepseek-v2-2405-04434]: [[source-deepseek-v2-2405-04434]]
 [^src-kwon-2023-pagedattention]: [[source-kwon-2023-pagedattention]]
+[^src-2405-12981-cla]: [[source-2405-12981-cla]]

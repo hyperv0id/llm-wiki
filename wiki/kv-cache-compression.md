@@ -7,8 +7,8 @@ tags:
   - efficient-inference
   - attention
 created: 2026-08-30
-last_updated: 2026-10-27
-source_count: 9
+last_updated: 2026-11-20
+source_count: 10
 confidence: medium
 status: active
 ---
@@ -52,6 +52,8 @@ KV 压缩与 [[context-window-extension]]（扩展位置编码以支持更长输
 
 层数是另一条独立轴：[[yoco-architecture]] 把全局 KV 的写入收敛到 self-decoder 末端一次，$L/2$ 个 cross 层共享同一份 cache，层数因子从 cache 总量中消失（$O(LND)$ 对 $O((N+L)D)$，Table 1）；头共享、字节压缩、淘汰、分页各轴都可叠加在它之上[^src-sun-2024-yoco]。
 
+层数共享不必重构架构：[[cross-layer-attention|CLA]] 保留标准 Transformer block，只让每 $f$ 层的组首层计算 K/V 投影、组内其余层复用，cache 份数从 $L$ 降到 $\lceil L/f\rceil$；MQA + CLA2 在 1B/3B 从零训练下以 2× 缩减换至多 0.04 点 ppl 退化（Table 3、Table 5）。该收益与头共享一样落在容量而非每步带宽——共享的 KV 在每个注意力层仍要分别从主存重读（§2.3）[^src-2405-12981-cla]。
+
 [[trace-as-state|Trace as State]] 处理的是另一个约束：后出现的任务状态不能改变同一遍中已经形成的早期 token 表示。它把推理轨迹放在原文之前重新读取，不执行 KV 淘汰或压缩。论文 Appendix A 把位置、全部逐层 KV 条目及其他持久输入相关缓冲一并算入工作状态；“有限状态”并不等于“只保留一个固定大小向量”。[^src-trace-as-state]
 
 作者在 Limitations 指出，轨迹前置可能降低多轮场景的 KV cache 复用；Appendix F 分别报告 cached input、missed input 与 output，不能据理论中的最坏情况内存差距宣称实际显存指数下降。完整开销口径见 [[trace-as-state-reproduction]]。[^src-trace-as-state]
@@ -71,6 +73,7 @@ KV 压缩与 [[context-window-extension]]（扩展位置编码以支持更长输
 - [[deepseek-sparse-attention]] — 训练期 token 粒稀疏，不淘汰 KV
 - [[native-sparse-attention]] — 训练期块稀疏，三支路减少每步访存
 - [[grouped-query-attention]] — 头共享：改 K/V 头数而非缓存内容
+- [[cross-layer-attention]] — 层共享：相邻层对共用一份 K/V 投影，cache 层数因子除以 $f$
 - [[paged-attention]] — 分页放置：块级分配与共享，不压字节、不淘汰
 - [[source-triattention]] — 源摘要
 - [[trace-as-state]] / [[conditional-state-update]] — 条件可用时机与缓存容量的区别
@@ -84,3 +87,4 @@ KV 压缩与 [[context-window-extension]]（扩展位置编码以支持更长输
 [^src-shazeer-2019-mqa]: [[source-shazeer-2019-mqa]]
 [^src-pagedattention]: [[source-kwon-2023-pagedattention]]
 [^src-sun-2024-yoco]: [[source-sun-2024-yoco]]
+[^src-2405-12981-cla]: [[source-2405-12981-cla]]
