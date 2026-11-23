@@ -84,7 +84,7 @@ Unlike [[ratd|RATD]] (NeurIPS 2024), the first retrieval-augmented time series d
 - [[retrieval-based-condition-augmentation]] — RCA technique
 - [[cross-city-traffic-flow-generation]] — problem domain overview
 - [[rast]] — RAST, RAG for traffic prediction (AAAI 2026)
-- [[diffusion-models]] — diffusion model concept page
+- [[diffusion-model]] — diffusion model concept page
 - [[traffic-forecasting]] — general traffic forecasting
 - [[spatio-temporal-foundation-model]] — ST foundation model landscape
 

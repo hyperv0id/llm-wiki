@@ -9,8 +9,8 @@ tags:
   - foundation-model
   - traffic-forecasting
 created: 2026-05-31
-last_updated: 2026-09-05
-source_count: 4
+last_updated: 2026-11-22
+source_count: 5
 confidence: high
 status: active
 ---

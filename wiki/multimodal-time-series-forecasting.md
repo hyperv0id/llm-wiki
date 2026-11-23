@@ -259,7 +259,7 @@ UniCA 在多模态场景下的表现：
 
 ## 引用
 
-[^src-unca]: [[source-unca]]
+[^src-unca]: [[source-unica]]
 [^src-channelmts]: [[source-channelmts]]
 [^src-most]: [[source-most]]
 [^src-aurora]: [[source-aurora]]

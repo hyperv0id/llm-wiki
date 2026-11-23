@@ -82,7 +82,7 @@ TimesFM 可以通过 UniCA 框架适配到协变量感知预测任务：
 ## 引用
 
 [^src-timesfm]: [[source-timesfm]]
-[^src-unca]: [[source-unca]]
+[^src-unca]: [[source-unica]]
 [^src-timedit]: [[source-timedit]]
 [^src-sundial]: [[source-sundial]]
 [^src-probts]: [[source-probts]]

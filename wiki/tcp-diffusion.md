@@ -50,7 +50,7 @@ TCP-Diffusion（Tropical Cyclone Precipitation Diffusion）是论文自称（To 
 
 ## 相关页面
 
-- [[diffusion-models|扩散模型]]
+- [[diffusion-model|扩散模型]]
 - [[extreme-weather-forecasting|极端天气预测]]
 - [[precipitation-nowcasting|降水临近预报]]
 - [[tropical-cyclone-precipitation-forecasting|TC 降水预测]]

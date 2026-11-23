@@ -4603,3 +4603,11 @@ MIT CSAIL + MIT-IBM 把 MQA/GQA 的 head 间共享推到层间：每 $f$ 层只�
 更新的页面：[[multi-query-attention]]（相关页面补层维共享对照，source_count 1→2）、[[grouped-query-attention]]（补 CLA 正交性与 GQA+CLA2 消融，1→2）、[[kv-cache-compression]]（层数轴补温和变体，9→10）、[[yoco-architecture]]（层数轴对照补 CLA，3→4）、[[index]]
 ingest 报告：[[ingest-reports/2026-11-20-2405-12981-cla|WHY 报告]]
 数值备注：§3.2.1 称 CLA3/CLA4 匹配 H32/H46-MQA 内存但 Table 1 中 CLA3=3584 介于两者之间；同节「仅 GQA2-CLA2 打赢」与 Table 1 不符（H128-GQA4-CLA2 13.48 亦优于同内存 13.52）；§3.2.2 下游「1–5 个百分点」口径下 CLA2 对同 head 维度基线七项输五项；§3.3「H64-MQA-CLA2 baseline 重训」按上下文应为 H64-MQA 基线，疑笔误。
+
+## [2026-11-22] maintenance | 合并 4 组重复页并校正 source_count
+合并 [[diffusion-models]]→[[diffusion-model]]、[[source-unca]]→[[source-unica]]、[[source-chan-diffusion-tutorial]]→[[source-chan-2025-diffusion-tutorial]]、[[stochastic-optimal-control]]→[[stochastic-optimal-control-sb]] 四组同主题重复页：副页转为 superseded 重定向，主页面补入 SDE 统一视角与广义扩散、UniCA 形式化定义与实验数字、Chan 教程章节细节、SOC 损失族与相关页面，26 处 wikilink 改指主页，消除入链分裂；另校正 8 页 frontmatter 的 source_count 与实际脚注数不符。
+更新的页面：[[diffusion-model]], [[diffusion-models]], [[source-unica]], [[source-unca]], [[source-chan-2025-diffusion-tutorial]], [[source-chan-diffusion-tutorial]], [[stochastic-optimal-control-sb]], [[stochastic-optimal-control]], [[adaptive-season-learner]], [[spatial-temporal-tokenizer]], [[query-aggregate-attention]], [[motm-ridge-orchestrator]], [[multispans]], [[d3vae]], [[urbangpt]], [[contrastive-learning]], [[index]]
+
+## [2026-11-22] maintenance | 核心机制页脱水重写（Batch 2 前 8 页）
+按实验三行判词规范重写 8 个长页面：证据节整表照搬与两位小数流水删除、改为定位/归因/缺口三判词，句中源码坐标移句末，首段补人话大义；机制与数据流小节保留。mita-attention 255→161 行（旧证据大表与十条待查清单废止）、minimax-sparse-attention 203→131、ouro 276→160、vetime 235→140、agent-attention 195→132、cross-layer-attention 140→105、distdf 160→107、engram 265→179；证据节占比均从 32–44% 降到 3.7–16.2%。
+更新的页面：[[mita-attention]], [[minimax-sparse-attention]], [[ouro]], [[vetime]], [[agent-attention]], [[cross-layer-attention]], [[distdf]], [[engram]]

@@ -76,7 +76,7 @@ Swift 的 **[[crps-autoregressive-finetuning|CRPS 自回归微调]]** 是使其�
 - [[crps-autoregressive-finetuning]] — CRPS 微调技术
 - [[trigflow]] — TrigFlow 统一框架
 - [[generative-time-series-forecasting]] — 生成式时间序列预测
-- [[diffusion-models]] — 扩散模型
+- [[diffusion-model]] — 扩散模型
 - [[probability-flow-ode]] — 概率流 ODE
 - [[ensemble-forecasting-calibration]] — 集合预报校准
 - [[uniextreme]] — 通用极端天气基础模型

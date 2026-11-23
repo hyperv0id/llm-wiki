@@ -6,8 +6,8 @@ tags:
   - self-supervised
   - multimodal-alignment
 created: 2026-05-03
-last_updated: 2026-10-13
-source_count: 10
+last_updated: 2026-11-22
+source_count: 12
 confidence: medium
 status: active
 ---

@@ -47,6 +47,6 @@ status: active
 
 ## 与 Wiki 的关系
 
-本文作为基础参考，将 wiki 中已有的 [[diffusion-models]]、[[flow-matching]]、[[optimal-transport]]、[[score-based-generative-modeling]] 等概念统一在 SB 框架下，并引入大量新概念。
+本文作为基础参考，将 wiki 中已有的 [[diffusion-model]]、[[flow-matching]]、[[optimal-transport]]、[[score-based-generative-modeling]] 等概念统一在 SB 框架下，并引入大量新概念。
 
 [^src-schrodinger-bridges-generative-modeling]: [[source-schrodinger-bridges-generative-modeling]]

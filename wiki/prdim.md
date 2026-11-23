@@ -69,7 +69,7 @@ status: active
 - [[csdi]] — 条件扩散插补（MCAR 假设，PRDIM 基线）
 - [[mtsci]] — MTSCI（CIKM 2024），互补掩码对比 + mixup 相邻窗口条件的条件扩散插补，PRDIM 的扩散基线之一（其表中数字为 PRDIM 评测口径）[^src-mtsci]
 - [[diffputer]] — EM 交替式扩散插补（soft EM，本文 hard EM 的对照）
-- [[diffusion-models]] — 扩散模型总览
+- [[diffusion-model]] — 扩散模型总览
 - [[nuwats]] / [[t1]] — 假设随机缺失的插补方法（对照）
 
 [^src-prdim]: [[source-prdim]]

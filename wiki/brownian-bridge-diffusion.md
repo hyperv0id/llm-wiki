@@ -58,7 +58,7 @@ $$\hat\sigma_t^2 = s\cdot\frac{(1-\hat\alpha_{t-1})(\hat\alpha_{t-1}-\hat\alpha_
 ## 关联页面
 
 - [[s2dbm]] — S²DBM，将布朗桥扩散用于时序预测的模型
-- [[diffusion-models]] — 扩散模型统一框架
+- [[diffusion-model]] — 扩散模型统一框架
 - [[generative-time-series-forecasting]] — 生成式时间序列预测范式
 - [[probability-flow-ode]] — 确定性 ODE 采样（与 s=0 无噪声采样相呼应）
 - [[timegrad]] — TimeGrad，标准条件扩散时序预测（布朗桥要改进的范式）

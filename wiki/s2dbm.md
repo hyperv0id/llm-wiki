@@ -80,7 +80,7 @@ $$\hat\sigma_t^2 = s\cdot\frac{(1-\hat\alpha_{t-1})(\hat\alpha_{t-1}-\hat\alpha_
 ## 关联页面
 
 - [[brownian-bridge-diffusion]] — 布朗桥扩散桥技术（S²DBM 的核心机制）
-- [[diffusion-models]] — 扩散模型统一框架与应用总览
+- [[diffusion-model]] — 扩散模型统一框架与应用总览
 - [[generative-time-series-forecasting]] — 生成式时间序列预测范式
 - [[timegrad]] — TimeGrad，扩散时序预测奠基方法（S²DBM 框架收纳的前身之一）
 - [[csdi]] — CSDI，S²DBM 去噪网络的架构来源与主要基线

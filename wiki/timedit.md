@@ -89,7 +89,7 @@ F=Forecasting, I=Imputation, A=Anomaly Detection, G=Data Generation
 - [[timedit-masking]] — Unified masking mechanism
 - [[timedit-physics-informed]] — Physics-informed sampling
 - [[dit]] — DiT architecture TimeDiT is built upon
-- [[diffusion-models]] — Diffusion model fundamentals
+- [[diffusion-model]] — Diffusion model fundamentals
 - [[chronos]] — Chronos (competing time series FM)
 - [[timesfm]] — TimesFM (competing time series FM)
 - [[dits]] — DiTS, MM-DiT dual-stream approach with joint variate attention, a more advanced DiT-for-TS design (arXiv 2026)

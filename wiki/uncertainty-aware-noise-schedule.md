@@ -57,6 +57,6 @@ UANS 与 [[location-scale-noise-model|LSNM]] 构成对偶设计——LSNM 定义
 
 - [[nsdiff]] — NsDiff 模型，UANS 的提出者
 - [[location-scale-noise-model]] — LSNM，UANS 的对偶概念
-- [[diffusion-models]] — 扩散模型概念总览
+- [[diffusion-model]] — 扩散模型概念总览
 
 [^src-nsdiff]: [[source-nsdiff]]

@@ -7,8 +7,8 @@ tags:
   - vae
   - score-based
 created: 2026-04-28
-last_updated: 2026-07-16
-source_count: 17
+last_updated: 2026-11-22
+source_count: 29
 confidence: high
 status: active
 ---
@@ -97,6 +97,25 @@ $$
   $$
   其中 $w \geq 0$ 控制引导强度。无分类器引导是目前最广泛使用的条件生成方法。[^src-understanding-diffusion-models]
 
+## SDE 统一视角
+
+把离散步数推到连续时间，前向加噪与反向去噪都写成随机微分方程：[^src-chan-2025-diffusion-tutorial]
+
+$$
+dx = f(x,t)\,dt + g(t)\,dw
+$$
+
+离散侧的两条主线在此汇合：DDPM 在固定方差的高斯噪声链上学习去噪网络，训练目标等价于 ELBO；SMLD 在多尺度高斯扰动上用朗之万动力学采样，训练目标为多尺度得分匹配。两者分别对应方差保持（VP）与方差爆炸（VE）SDE，逆向过程是反向时间 SDE，其边际密度的演化由福克-普朗克方程描述。[^src-chan-2025-diffusion-tutorial]
+
+[[schrodinger-bridge|Schrödinger bridge]] 把这一族过程放进路径空间的变分框架：在两端边缘分布的约束下，最小化相对 reference path measure 的 KL 散度。扩散模型是前向过程固定（OU/VE/VP）的特例，SB 用 [[entropic-optimal-transport|熵正则最优传输]]把同一范式推广到可学习的路径。[^src-schrodinger-bridges-generative-modeling]
+
+## 非高斯扩散（广义扩散模型）
+
+Cold Diffusion（Bansal et al., 2022）把前向过程从高斯加噪换成任意退化算子 $\mathcal{D}$，反向过程学习逆转该退化，构成广义扩散模型框架[^src-dyffusion]。按退化算子的性质，这条支线分为两类：
+
+- **时序退化**：[[dyffusion|DYffusion]] 用时间插值作为前向、时序外推作为反向，把扩散步与物理时间步直接耦合；[[cold-sampling|Cold Sampling]] 是 DDIM 在广义框架上的推广，等价于用 Euler 法求解隐式动力系统的 ODE[^src-dyffusion]。[[armd|ARMD]] 更进一步，以"演化—去演化"取代"加噪—去噪"，用[[sliding-window-diffusion|滑动窗口]]产生的确定性中间态替代白高斯噪声，使采样过程本身即预测过程[^src-armd]。
+- **确定性桥**：扩散桥把前向过程的终点钉在确定性目标而非纯高斯噪声，[[brownian-bridge-diffusion|布朗桥扩散]]是代表；[[s2dbm|S²DBM]] 据此把后验方差缩为 0，得到无噪声确定性采样，用于时间序列点预测[^src-s2dbm]。
+
 ## 前向过程的归纳偏置塑造
 
 标准扩散模型的前向过程使用各向同性白噪声 $\boldsymbol{\epsilon} \sim \mathcal{N}(0, \mathbf{I})$，对所有频率成分均匀施加噪声：
@@ -123,6 +142,17 @@ Falck 等人（Microsoft Research, 2025）从 SNR 角度给出另一种频域解
 
 - **采样速度慢**：生成一个样本需要数十到数千步的迭代去噪过程，远慢于 GAN 或 VAE 的单步生成。加速方法包括知识蒸馏、快速 ODE 求解器和一致性模型。
 - **无压缩的潜变量表示**：由于潜变量维度等于数据维度，扩散模型不提供有意义的低维潜空间，难以进行语义编辑或插值操作。
+
+## 应用
+
+图像生成、音频合成、分子设计、逆问题求解（去模糊、超分辨率、修复）是扩散模型的主战场[^src-chan-2025-diffusion-tutorial]。时空预测上的两条代表路线：[[tcp-diffusion|TCP-Diffusion]] 用[[adjacent-residual-prediction|相邻残差]]替代绝对降水量作为扩散目标，作者报告在 TIGGE 上 ETS-6 0.412、ECMWF-IFS 0.302[^src-tcp]；[[craft|CRAFT]] 用 DDPM 主干叠加[[geographic-feature-alignment|地理特征对齐]]与[[retrieval-based-condition-augmentation|检索增强条件]]，实现零样本跨城市交通流生成[^src-craft]。
+
+## 前沿方向
+
+- **非平稳时序**：[[nsdiff|NsDiff]] 把 DDPM 的固定单位方差假设推广为[[location-scale-noise-model|LSNM]]，让扩散过程建模时变不确定性[^src-nsdiff]。
+- **调度学习**：[[stats|StaTS]] 联合优化噪声调度与去噪过程——[[spectral-trajectory-scheduler|STS]] 学数据自适应调度，[[frequency-guided-denoiser|FGD]] 估计调度诱导的频谱失真来调制去噪强度[^src-stats]。
+- **动态引导**：条件信息不足时固定 CFG 尺度会漂向先验分布，[[feedback-diffusion-guidance|反馈扩散引导]]按后验似然调节引导强度[^src-fence]。
+- **基础模型与加速**：[[timedit|TimeDiT]] 把 DiT 与扩散采样统一为时序基础模型，用统一掩码覆盖预测/插补/异常检测/数据生成，推理时以物理信息朗之万采样注入 PDE 约束[^src-timedit]；[[swift|Swift]] 用一阶一致性模型替换 PF-ODE，天气预测的 NfE 从 39 降到 1[^src-swift]。
 
 ## 关键实现
 
@@ -152,7 +182,13 @@ Falck 等人（Microsoft Research, 2025）从 SNR 角度给出另一种频域解
 - [[snr-t-bias]] — SNR-t Bias，扩散模型推理阶段的信噪比-时间步错配偏置（CVPR 2026）
 - [[dcw]] — DCW，小波域差分校正方法，缓解 SNR-t Bias 的无需训练方法
 - [[frequency-aware-conditioning]] — 频率感知条件化概念
-- [[diffusion-models]] — A broader overview of diffusion models covering DDPM, SMLD, SDE unification, and applications
+- [[dyffusion|DYffusion]] — 前向换成时间插值、反向换成时序外推的广义扩散特例
+- [[armd|ARMD]] — 滑动窗口确定性中间态替代白噪声的"演化—去演化"预测范式
+- [[s2dbm|S²DBM]] — 布朗桥扩散的后验方差归零特例，确定性时序点预测
+- [[nsdiff|NsDiff]] — 位置—尺度噪声模型把 DDPM 推广到非平稳时序
+- [[stats|StaTS]] — 联合学习噪声调度与去噪的频谱轨迹框架
+- [[timedit|TimeDiT]] — DiT + 扩散采样的时序基础模型
+- [[schrodinger-bridge|Schrödinger Bridge]] — 路径空间变分框架，扩散模型是其前向过程固定的特例
 - [[x-prediction]] — x-prediction，扩散模型中直接预测干净数据的参数化方式
 - [[jit|JiT]] — JiT (Just image Transformers)，基于 x-prediction 的像素空间扩散模型
 - [[dit]] — DiT，用 Transformer 替换 U-Net 的扩散模型架构
@@ -181,3 +217,15 @@ Falck 等人（Microsoft Research, 2025）从 SNR 角度给出另一种频域解
 [^src-instaflow]: [[source-instaflow]]
 [^src-ddim]: [[source-ddim]]
 [^src-ddim-ode-spaces-ac-cn]: [[source-ddim-ode-spaces-ac-cn]]
+[^src-chan-2025-diffusion-tutorial]: [[source-chan-2025-diffusion-tutorial]]
+[^src-schrodinger-bridges-generative-modeling]: [[source-schrodinger-bridges-generative-modeling]]
+[^src-dyffusion]: [[source-dyffusion]]
+[^src-armd]: [[source-armd]]
+[^src-s2dbm]: [[source-s2dbm]]
+[^src-tcp]: [[source-tcp]]
+[^src-craft]: [[source-craft]]
+[^src-nsdiff]: [[source-nsdiff]]
+[^src-stats]: [[source-stats]]
+[^src-fence]: [[source-fence]]
+[^src-timedit]: [[source-timedit]]
+[^src-swift]: [[source-swift]]

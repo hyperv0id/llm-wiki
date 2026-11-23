@@ -102,7 +102,7 @@ A single TimeDiT checkpoint with physics-informed sampling replaces 18 task-spec
 
 - [[timedit]] — TimeDiT model overview
 - [[timedit-masking]] — Unified masking mechanism
-- [[diffusion-models]] — Diffusion model fundamentals
+- [[diffusion-model]] — Diffusion model fundamentals
 - [[energy-based-model]] — Energy-based models
 - [[langevin-dynamics]] — Langevin dynamics for MCMC sampling
 - [[dyffusion]] — DYffusion, another physics-informed diffusion approach

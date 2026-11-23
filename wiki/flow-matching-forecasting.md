@@ -85,7 +85,7 @@ DiTS achieves the fewest inference steps among probabilistic forecasters while m
 
 - [[flow-matching|Flow Matching]] — the general generative framework
 - [[dits|DiTS]] — the model that applies flow matching to time series
-- [[diffusion-models|Diffusion Models]] — the broader class of generative models
+- [[diffusion-model|Diffusion Models]] — the broader class of generative models
 - [[generative-time-series-forecasting|Generative Time Series Forecasting]] — the forecasting paradigm
 - [[kite|KITE]] — exogenous-conditioned FM with history-conditional manifold source + knowledge-guided attention + CFG[^src-kite]
 - [[history-conditional-manifold]] / [[knowledge-guided-conditioning]] / [[kite-manifold-guidance-chain]]

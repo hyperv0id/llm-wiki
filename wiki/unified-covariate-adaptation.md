@@ -271,4 +271,4 @@ UniCA 适用于大多数主流 TSFMs：
 
 ## 引用
 
-[^src-unca]: [[source-unca]]
+[^src-unca]: [[source-unica]]

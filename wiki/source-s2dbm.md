@@ -41,7 +41,7 @@ status: active
 
 - [[s2dbm]] — S²DBM 方法详解页
 - [[brownian-bridge-diffusion]] — 布朗桥扩散桥技术
-- [[diffusion-models]] — 扩散模型总览
+- [[diffusion-model]] — 扩散模型总览
 - [[generative-time-series-forecasting]] — 生成式时间序列预测范式
 - [[timegrad]] — TimeGrad，扩散时序预测的奠基方法
 - [[csdi]] — CSDI，S²DBM 去噪网络的架构来源与基线

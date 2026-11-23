@@ -221,5 +221,5 @@ WorldTS 采用非同质化设计，不将异构输入转换为统一形态，而
 
 ## 引用
 
-[^src-unca]: [[source-unca]]
+[^src-unca]: [[source-unica]]
 [^src-worldts]: [[source-worldts]]

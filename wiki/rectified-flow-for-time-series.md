@@ -79,6 +79,6 @@ $$\hat{Z}_1 \leftarrow \hat{Z}_1 \odot (1 - M) + Z_1 \odot M$$
 - [[flowts]] — FlowTS 模型实体
 - [[flow-matching]] — Flow Matching 理论基础
 - [[generative-time-series-forecasting]] — 生成式时间序列预测
-- [[diffusion-models]] — Diffusion Models
+- [[diffusion-model]] — Diffusion Models
 
 [^src-flowts]: [[source-flowts]]

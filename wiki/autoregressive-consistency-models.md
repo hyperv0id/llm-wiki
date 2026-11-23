@@ -77,7 +77,7 @@ $$
 - [[consistency-models]] — 一致性模型基础
 - [[crps-autoregressive-finetuning]] — CRPS 微调技术
 - [[trigflow]] — TrigFlow 框架
-- [[diffusion-models]] — 扩散模型（被加速的基线）
+- [[diffusion-model]] — 扩散模型（被加速的基线）
 - [[probability-flow-ode]] — 概率流 ODE
 - [[generative-time-series-forecasting]] — 生成式时间序列预测
 - [[ensemble-forecasting-calibration]] — 集合预报校准

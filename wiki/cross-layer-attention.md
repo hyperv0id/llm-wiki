@@ -8,7 +8,7 @@ tags:
   - llm
   - transformer
 created: 2026-11-20
-last_updated: 2026-11-20
+last_updated: 2026-11-22
 source_count: 1
 confidence: medium
 status: active
@@ -16,7 +16,7 @@ status: active
 
 # Cross-Layer Attention（CLA）
 
-只在模型的一个层子集中计算 K/V 投影，没有 K/V 投影的层复用前面层的 KV 激活；只有做投影的层往 KV cache 写数据（§2.2）[^src-2405-12981-cla]。一份 K/V 投影被多少层共用称为共享因子（sharing factor）$f$：CLA2 即相邻两层一对（$f=2$），CLA3 为三层一组，依此类推（§2.2）[^src-2405-12981-cla]。论文将其定位为 MQA/GQA 的直接延伸——把「query head 之间共享 K/V」推到「层之间共享 K/V」，在 MQA 之上再把 KV cache 缩 $f$ 倍（Abstract、§2.2）[^src-2405-12981-cla]。CLA 与 MHA/MQA/GQA 正交，可与其任意组合（§2.2）[^src-2405-12981-cla]。
+CLA 只在一部分层计算 K/V 投影，其余层直接复用所属组第一层的 KV 激活，因此只有做投影的层往 KV cache 写数据。一份 K/V 投影被多少层共用是共享因子（sharing factor）$f$：CLA2 为相邻两层一对，CLA3 为三层一组，依此类推。论文把它定位为 MQA/GQA 的直接延伸——从「query head 之间共享 K/V」推到「层之间共享 K/V」，在 MQA 之上再把 cache 缩 $f$ 倍，且与 MHA/MQA/GQA 正交、可任意组合（Abstract、§2.2）[^src-2405-12981-cla]。
 
 ## 问题定位
 
@@ -76,62 +76,27 @@ B_{\text{CLA}} &= 4\,n_{kv}\, d_{head}\,\lceil L/f\rceil \ \text{bytes/token} &&
 
 ## 证据
 
-**设置**（§3.1、Table 2）[^src-2405-12981-cla]：1B（hidden 2048、FFN 5472、20 层、30B token）与 3B（hidden 3072、FFN 8192、32 层、100B token）从零训练于 SlimPajama（GPT-NeoX tokenizer），Llama-like 架构（pre-norm、SwiGLU、RoPE、无 dropout），AdamW、batch $2048\times2048\approx 4$M token/step、seq 2048，H100 + PyTorch BF16。指标为 SlimPajama held-out $\approx$4M token 验证 ppl、Wikitext ppl 与 LM Eval Harness 七个下游任务（Hellaswag/PIQA/WG/SciQ/OBQA/BoolQ/ARC-E）。设计空间探索统一 LR $3\times10^{-4}$。
+**设置**：1B（hidden 2048、20 层）与 3B（hidden 3072、32 层）两组 Llama-like 模型从零预训练于 SlimPajama（1B 30B token、3B 100B token），指标是 held-out ppl 加 LM Eval Harness 七个下游任务；设计空间统一 LR $3\times10^{-4}$，最终结论按各自调优 LR 给出 [^src-2405-12981-cla]。
 
-**Table 1**（1B 设计空间，LR $3\times10^{-4}$）[^src-2405-12981-cla]：
+**定位与主结论**：不是精度超越，而是同等精度下把 KV cache 再减一半。1B 上 H128-MQA-CLA2 以 5120 bytes/token 对 H128-MQA 的 10240 取得 13.60 对 13.54，学习率调优后 12.43 对 12.39，Wikitext 上反而持平（19.29 对 19.30）；同内存的 H64-MQA（5120）被拉开 0.2 点（13.81），head 维度更小时差距到 0.48 点（13.89 对 14.37）。3B 第一组反过来：CLA2 以一半缓存同时低于 H128-MQA 与 H64-MQA（9.34 对 9.52 / 9.48），只是同组 H64-MQA 的参数更少却高于 H128-MQA（论文如实报告的异常），说明该规模下的差距已在训练噪声量级 [^src-2405-12981-cla]。
 
-| 模型 | $d_{head}$ | Q heads | KV heads | KV layers | B/token | Val ppl |
-|---|---|---|---|---|---|---|
-| H128-MHA | 128 | 16 | 16 | 20 | 163 840 | 13.15 |
-| H128-GQA4 | 128 | 16 | 4 | 20 | 40 960 | 13.36 |
-| H128-GQA2 | 128 | 16 | 2 | 20 | 20 480 | 13.52 |
-| H128-MQA | 128 | 16 | 1 | 20 | 10 240 | 13.54 |
-| H64-MQA | 64 | 32 | 1 | 20 | 5120 | 13.81 |
-| H46-MQA | 46 | 45 | 1 | 20 | 3680 | 13.96 |
-| H32-MQA | 32 | 64 | 1 | 20 | 2560 | 14.37 |
-| H512-MQA-CLA2 | 512 | 4 | 1 | 10 | 20 480 | 13.49 |
-| H256-MQA-CLA2 | 256 | 8 | 1 | 10 | 10 240 | 13.51 |
-| H128-MQA-CLA2 | 128 | 16 | 1 | 10 | 5120 | 13.60 |
-| H90-MQA-CLA2 | 90 | 22 | 1 | 10 | 3600 | 13.73 |
-| H64-MQA-CLA2 | 64 | 32 | 1 | 10 | 2560 | 13.89 |
-| H256-GQA4-CLA2 | 256 | 8 | 4 | 10 | 40 960 | 13.38 |
-| H128-GQA4-CLA2 | 128 | 16 | 4 | 10 | 20 480 | 13.48 |
-| H128-GQA2-CLA2 | 128 | 16 | 2 | 10 | 10 240 | 13.59 |
-| H128-MQA-CLA3 | 128 | 16 | 1 | 7 | 3584 | 13.77 |
-| H128-MQA-CLA4 | 128 | 16 | 1 | 5 | 2560 | 13.95 |
-| H128-MQA-CLA2-KeepEnds | 128 | 16 | 1 | 11 | 5632 | 13.62 |
-| H128-MQA-CLA2-DenseFront | 128 | 16 | 1 | 11 | 5632 | 13.75 |
-| H128-MQA-CLA2-DenseBack | 128 | 16 | 1 | 11 | 5632 | 14.03 |
+| 模型 | B/token | Val ppl（1B） |
+|---|---:|---:|
+| H128-MHA | 163 840 | 13.15 |
+| H128-MQA | 10 240 | 13.54 |
+| H128-MQA-CLA2 | 5120 | 13.60 |
+| H128-MQA-CLA3 | 3584 | 13.77 |
+| H128-MQA-CLA4 | 2560 | 13.95 |
 
-读法（§3.2.1）[^src-2405-12981-cla]：非 CLA 基线 ppl 随 KV cache 容量单调恶化（13.15→14.37）；$d_{head}\in\{64,90,128\}$ 的 MQA-CLA2 对齐 $\{32,46,64\}$ 的 MQA 内存，ppl 改善 0.21–0.48 点（如 13.60 vs 13.81、13.89 vs 14.37）；$d_{head}\in\{256,512\}$ 的 CLA2 对齐 $d_{head}=128$ 的 MQA/GQA2 内存，仍改善 0.03 点——省下的层预算换成更大 head 维度是正收益。Figure 3 为该表的 Pareto 前沿绘图（红点 CLA 整体位于蓝点左下）。
+**涨点归因**：收益来自「省下的层预算换更大的 head 维度」，不是加深共享——CLA2/CLA3/CLA4 依次 13.60/13.77/13.95，$f>2$ 仍 Pareto 优于纯 MQA 但同内存输给 CLA2；$d_{head}=128$ 时 CLA2 比同内存 MQA 好 0.2 点，head 更小时好 0.48 点，到 $d_{head}=256/512$ 对齐 $d_{head}=128$ 基线的内存时只剩 0.03 点。三个非均匀模式（KeepEnds 13.62、DenseFront 13.75、DenseBack 14.03）全部更差且多占内存，首尾层特殊待遇没有收益。CLA 模型的最优学习率也高于纯 MQA（$2.25\times10^{-3}$ 对 $1.5\times10^{-3}$），论文称其为 preliminary evidence [^src-2405-12981-cla]。
 
-**学习率调优**（§3.2.2、Table 3/4；LR 从 $3\times10^{-4}$ 起按 1.5× 递增扫描）[^src-2405-12981-cla]：
-
-| 模型 | B/token | 最优 LR | Val ppl | Wikitext ppl |
-|---|---|---|---|---|
-| H128-MQA | 10 240 | $1.5\times10^{-3}$ | 12.39 | 19.30 |
-| H128-MQA-CLA2 | 5120 | $2.25\times10^{-3}$ | 12.43 | 19.29 |
-| H64-MQA | 5120 | $2.25\times10^{-3}$ | 12.74 | 20.00 |
-
-调优后定性结论不变：CLA2 以 2× 更小缓存对同 $d_{head}$ 基线仅退 0.04 点，对同内存基线改善 0.31 点（Wikitext 上分别为 −0.01 与 +0.71）。CLA 模型的最优学习率更高（论文称 preliminary evidence，§3）。1B 下游（Table 4）三模型互有胜负、相差 1–5 个百分点；CLA2 相对 H128-MQA 在 7 项中输 5 项（BoolQ −4.19 最大），仅 OBQA +2.4、PIQA 平。
-
-**3B 第一组**（§3.3、Table 5/6，LR 各自调优）[^src-2405-12981-cla]：
-
-| 模型 | B/token | 最优 LR | Val ppl | Wikitext ppl |
-|---|---|---|---|---|
-| H128-MQA | 16 384 | $6.75\times10^{-4}$ | 9.52 | 13.63 |
-| H128-MQA-CLA2 | 8192 | $2.25\times10^{-3}$ | 9.34 | 13.25 |
-| H64-MQA | 8192 | $1.0\times10^{-3}$ | 9.48 | 13.49 |
-
-与 1B 预期不同：CLA2 以一半缓存同时低于两个基线（val 9.34 对 9.52/9.48），且 H64-MQA 反超 H128-MQA（论文如实报告该异常）。下游（Table 6）CLA2 在 7 项中赢 4 项（Hellaswag 47.12、PIQA 74.32、WG 60.69、SciQ 89.2）。
-
-**3B 第二组**（§3.3、Table 7/8；换训练集群、软件栈与数据顺序，统一 LR $10^{-3}$，基线重训以对齐环境）[^src-2405-12981-cla]：H64-MQA 12.94 / H64-MQA-CLA2 12.99（4096 B，−0.05 点）/ H32-MQA 13.34——同内存 +0.35 点、同 head 维度 −0.05 点，Wikitext 口径与 1B 一致；下游三模型仍无一致胜负（WG 掉 3.0 点为最大单项差异）。
-
-**配置结论**（§4）[^src-2405-12981-cla]：测试范围内 MQA-CLA2 在给定内存预算与模型规模下持续取得最低验证 ppl（0.01 点以内）；$f>2$（CLA3 起）仍 Pareto 优于纯 MQA 但同内存输给 CLA2——加深共享不如维持 $f=2$ 并调 head 维度；三个非均匀模式全部更差且更费内存，首尾层特殊待遇无收益；对 $d_{head}$ 为 64/128 的 MQA，CLA2 以低于 1% 的 ppl 变化换 2× 缩减，论文将其推荐为对现有 MQA 架构的低风险保守改动。
+**证据缺口与负结果**：七个下游任务的差异只有 1–5 个百分点且无一致胜负——1B 上 CLA2 相对 H128-MQA 输 5 项、赢 1 项、平 1 项（BoolQ −4.19 为最大负项，仅 OBQA +2.4）；3B 第二组换训练集群与软件栈后，同 head 维度退 0.05 点，同内存优势缩到 0.35 点。全文没有服务实测：吞吐、延迟与实际可达的 batch/序列长度都是容量推算而非测量；也没有从已有 MQA checkpoint 改造 CLA 的实验；规模止于 3B / 100B token、单 seed，CLA 与量化、驱逐的组合只有论证没有实验 [^src-2405-12981-cla]。
 
 ## 边界
 
-端到端推理效率（吞吐、延迟、实际可达 batch/序列长度）留作未来工作，全文无服务实测——"enabling inference with longer sequence lengths and larger batch sizes" 是容量推算而非测量（§4、Abstract）[^src-2405-12981-cla]。全部结论来自从零预训练，没有从已有 MQA checkpoint 改造 CLA 的实验（GQA 的 uptraining 转换在此无对应物；§3）[^src-2405-12981-cla]。规模止于 3B / 100B token；单 seed、1B 固定数据顺序、等 FLOPs 为近似口径；3B 第二组已出现环境漂移量级（0.05 ppl）与部分结论数字同量级。下游七任务分辨率弱（差异 0–5 点、无一致胜负），正当性主要依赖 ppl 与内存两轴。与量化、驱逐的正交性只是论证层面，无 CLA + KVQuant / CLA + H2O 组合实验（§1、§5.1）[^src-2405-12981-cla]。未说明下游评测的 few-shot 设置。层数加深（1B 20 层 / 3B 32 层之外）时收益如何变化无受控消融，只能由 cache 份数 $\lceil L/f\rceil$ 随 $L$ 线性缩减的结构性质外推 [INFERENCE]。
+- 1B 固定数据顺序，等 FLOPs 对照只是近似口径（§3.2）；下游评测的 few-shot 设置未说明。
+- 层数继续加深（超过 1B 的 20 层 / 3B 的 32 层）时收益如何变化没有受控消融，只能由 cache 份数 $\lceil L/f\rceil$ 随 $L$ 线性缩减的结构性质外推 [INFERENCE]。
+- 论文把 CLA 推荐为对现有 MQA 架构的低风险改动，依据是 ppl 与内存两轴，下游任务不承担这个判断 [^src-2405-12981-cla]。
 
 ## 相关页面
 

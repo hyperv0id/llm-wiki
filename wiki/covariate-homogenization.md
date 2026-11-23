@@ -218,4 +218,4 @@ UniCA 的融合模块通过注意力机制动态选择协变量：
 
 ## 引用
 
-[^src-unca]: [[source-unca]]
+[^src-unca]: [[source-unica]]

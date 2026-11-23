@@ -245,4 +245,4 @@ CAP 的注意力权重揭示了模型如何动态选择协变量：
 
 ## 引用
 
-[^src-unca]: [[source-unca]]
+[^src-unca]: [[source-unica]]

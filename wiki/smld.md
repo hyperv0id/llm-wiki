@@ -113,4 +113,4 @@ $$
 
 ---
 
-[^src-chan-diffusion-tutorial]: [[source-chan-diffusion-tutorial]]
+[^src-chan-diffusion-tutorial]: [[source-chan-2025-diffusion-tutorial]]

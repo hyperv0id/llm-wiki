@@ -10,7 +10,7 @@ tags:
   - plug-and-play
   - iclr-2026
 created: 2026-11-09
-last_updated: 2026-11-09
+last_updated: 2026-11-22
 source_count: 3
 confidence: high
 status: active
@@ -18,11 +18,11 @@ status: active
 
 # DistDF
 
-**DistDF（Distribution-aware Direct Forecast）** 是一套训练目标框架：保留 [[direct-forecast|Direct Forecast (DF)]] 一次前向输出全部 $T$ 步的结构，把逐点 MSE 换成「预测序列与标签序列在给定历史 $x$ 下的条件分布对齐」，并可与 MSE 混合成 plug-and-play 正则项接到任意骨干上。作者 Hao Wang、Licheng Pan、Yuan Lu、Zhixuan Chu、Xiaoxi Li、Shuting He、Zhichao Chen、Qingsong Wen、Haoxuan Li、Zhouchen Lin（小红书、浙江大学、上海财经大学、北京大学、Squirrel AI），ICLR 2026，arXiv:2510.24574v3，代码 `github.com/Master-PLC/DistDF`[^src-distdf]。
+**DistDF（Distribution-aware Direct Forecast）** 是一套训练目标框架，针对的是 [[direct-forecast|Direct Forecast (DF)]] 用逐点 MSE 顶替条件负对数似然而来的偏差：MSE 把 $T$ 个未来步当作独立，等价于假设条件协方差为单位阵，而真实标签存在自相关。它不再修似然估计，改为直接对齐模型输出与标签在给定历史 $x$ 下的条件分布，用联合分布的 Wasserstein 差异给出可估计的上界；落地只是一个可与 MSE 加权混合的 plug-and-play 正则项，能接到任意骨干上，推理零开销。作者 Hao Wang、Licheng Pan、Yuan Lu、Zhixuan Chu、Xiaoxi Li、Shuting He、Zhichao Chen、Qingsong Wen、Haoxuan Li、Zhouchen Lin（小红书、浙江大学、上海财经大学、北京大学、Squirrel AI），ICLR 2026，arXiv:2510.24574v3，代码 `github.com/Master-PLC/DistDF`[^src-distdf]。
 
 ## 问题定位
 
-DF 的学习目标是标签序列的条件负对数似然，实践中用 MSE 估计：$\mathcal{L}_{\mathrm{MSE}}=\lVert y_{\mid x}-\hat{y}_{\mid x}\rVert_2^2$[^src-distdf]。论文指出该估计在标签序列存在自相关时有偏：MSE 把 $T$ 个未来步当作独立，等价于假设条件协方差 $\Sigma_{\mid x}=I$，而真实标签满足 $y_t$ 依赖 $y_{<t}$，于是 MSE 与条件 NLL 之间存在偏差，即 [[autocorrelation-bias|自相关偏差]]（Theorem 3.1，Eq. 2）[^src-distdf]。
+DF 的学习目标是标签序列的条件负对数似然，实践中用 MSE 估计：$\mathcal{L}_{\mathrm{MSE}}=\lVert y_{\mid x}-\hat{y}_{\mid x}\rVert_2^2$。这个估计等价于取条件协方差 $\Sigma_{\mid x}=I$，而真实标签满足 $y_t$ 依赖 $y_{<t}$，两者之间的差就是 [[autocorrelation-bias|自相关偏差]]（Theorem 3.1，Eq. 2）[^src-distdf]。
 
 前作的处理路线是先把标签变换到「条件去相关」的分量再逐点算误差：[[fredf|FreDF]] 用 Fourier 变换取频域分量，Time-o1 用 PCA 取主成分。论文承认这类变换能消除偏差的前提是分量真的条件去相关，但 Fourier 与 PCA 只保证边缘去相关（$\Sigma$ 对角），不保证给定 $x$ 后条件去相关（$\Sigma_{\mid x}$ 对角），偏差因此残留（§3.1）[^src-distdf]。FreDF 自身对频域分量的论证也止于边缘层面：正交基下用 DML 测得的频率分量依赖约为 $3.6\%$ 非对角元超过 $0.1$（Weather，$T=192$），对应的是分量间边缘结构，而非条件结构[^src-fredf]。
 
@@ -76,68 +76,15 @@ $$
 
 ## 实验证据
 
-设置：ETT、ECL、Weather 为主，$H=96$，$T\in\{96,192,336,720\}$，关闭 drop-last；Adam + 早停（验证损失连续 3 轮不降），骨干超参保留原设定，只调 $\gamma\in(0,1]$ 与学习率 $\eta\in[5\times10^{-5},10^{-3}]$；硬件为 Intel Xeon Platinum 8383C + RTX H100（§4.1）[^src-distdf]。
+**设置**：ETT、ECL、Weather 为主，$H=96$、$T\in\{96,192,336,720\}$，骨干超参保留原设定，只调 $\gamma$ 与学习率；单卡 H100（§4.1）[^src-distdf]。
 
-### 学习目标对比（Table 1）
+**定位与主结论**：这是学习目标层的插件式替换，在同骨干同配方下真提升精度，不靠额外容量。2 个骨干 × 4 个数据集的 8 组 4-horizon 均值里 MSE 全部最低、MAE 同向（TimeBridge/Weather 0.248 对纯 DF 0.252，Fredformer/ECL 0.173 对 0.191）；FreDF 与 Time-o1 两类似然变换目标次之，DILATE、Soft-DTW 这类形状对齐目标相对纯 MSE 提升有限。经典模型横比 9 个数据集拿到 40 项 MSE 第一、41 项 MAE 第一（Traffic 平均 0.417 对 TimeBridge 0.426，PEMS08 0.123 对 0.139）。开销只有每步 $(H+T)\times(H+T)$ 的协方差与矩阵平方根，训练单步前向与反向都在 1 ms 以内，推理不跑分布项 [^src-distdf]。
 
-Table 1 是 4 个 horizon 的均值，单元格为 MSE / MAE：
+**涨点归因**：涨点来自两个矩的对齐，不是工程 trick。仅均值对齐与仅协方差对齐单独接入都降 MSE（ETTh1 的 0.447 → 0.435 / 0.439），两项合成的完整 DistDF 再降到 0.430，四个数据集上 MSE 与 MAE 都最低；换分布度量也不改变结论——EMD、MMD（Linear/RBF）、KL 都不劣于纯 MSE，Bures–Wasserstein 在 16 组中 14 组最优。真正的调参负担在 $\gamma$：最优值随数据集落在 0.001–0.1，$\gamma=1$ 即只留矩统计时 ECL 退化到 0.197，混合项不是可选项 [^src-distdf]。
 
-| 骨干 | 数据集 | DistDF | Time-o1 | FreDF | Koopman | DILATE | Soft-DTW | DF |
-|---|---|---|---|---|---|---|---|---|
-| TimeBridge | ETTm1 | 0.383 / 0.397 | 0.383 / 0.397 | 0.386 / 0.398 | 0.460 / 0.438 | 0.387 / 0.400 | 0.395 / 0.402 | 0.387 / 0.400 |
-| TimeBridge | ETTh1 | 0.434 / 0.436 | 0.439 / 0.438 | 0.439 / 0.436 | 0.459 / 0.449 | 0.464 / 0.452 | 0.452 / 0.445 | 0.442 / 0.440 |
-| TimeBridge | ECL | 0.172 / 0.267 | 0.175 / 0.268 | 0.175 / 0.267 | 0.182 / 0.277 | 0.176 / 0.271 | 0.173 / 0.268 | 0.176 / 0.271 |
-| TimeBridge | Weather | 0.248 / 0.275 | 0.250 / 0.275 | 0.254 / 0.276 | 0.269 / 0.293 | 0.252 / 0.277 | 0.260 / 0.280 | 0.252 / 0.277 |
-| Fredformer | ETTm1 | 0.378 / 0.394 | 0.379 / 0.393 | 0.384 / 0.394 | 0.389 / 0.400 | 0.389 / 0.400 | 0.397 / 0.402 | 0.387 / 0.398 |
-| Fredformer | ETTh1 | 0.430 / 0.429 | 0.431 / 0.429 | 0.438 / 0.434 | 0.452 / 0.443 | 0.453 / 0.442 | 0.460 / 0.449 | 0.447 / 0.434 |
-| Fredformer | ECL | 0.173 / 0.266 | 0.178 / 0.270 | 0.179 / 0.272 | 0.190 / 0.282 | 0.187 / 0.280 | 0.206 / 0.298 | 0.191 / 0.284 |
-| Fredformer | Weather | 0.255 / 0.277 | 0.255 / 0.276 | 0.256 / 0.277 | 0.257 / 0.279 | 0.258 / 0.280 | 0.261 / 0.280 | 0.261 / 0.282 |
+**证据缺口与负结果**：并不是所有设置都赢——FreTS 接入后在 ECL 上 MSE 持平（0.199 → 0.199，只有 MAE 从 0.288 到 0.287），概率预测里 ETTm1 的 CRPS 保持 0.293 未动（同期 $\text{CRPS}_{\text{sum}}$ 从 0.776 降到 0.762）。边界也清楚：高斯假设下 Bures–Wasserstein 只匹配一阶与二阶矩，非高斯条件分布要更高阶统计量；主实验统一 $H=96$，变历史长度只在 Weather 上测；概率预测只接 D3U、多尺度架构只接 TimeMixer 与 SCINet，属附加验证；$\gamma$ 与学习率需联合调节，其有效区间跨数据集相差两个数量级 [^src-distdf]。
 
-在 2 个骨干 × 4 个数据集的 8 组 4-horizon 均值对比中，DistDF 的 MSE 全部最低（完整单步结果见 Appendix Table 7），FreDF 与 Time-o1 两类似然变换目标次之，DILATE 与 Soft-DTW 等形状对齐目标相对于纯 MSE 提升有限[^src-distdf]。
-
-### 均值与协方差消融（Table 2）
-
-| 数据集 | DF | $\text{DistDF}^\dagger$（仅均值） | $\text{DistDF}^\ddagger$（仅协方差） | DistDF |
-|---|---|---|---|---|
-| ETTm1 | 0.387 / 0.398 | 0.381 / 0.396 | 0.386 / 0.399 | 0.379 / 0.395 |
-| ETTh1 | 0.447 / 0.434 | 0.435 / 0.430 | 0.439 / 0.437 | 0.430 / 0.429 |
-| ECL | 0.176 / 0.271 | 0.175 / 0.269 | 0.174 / 0.269 | 0.172 / 0.267 |
-| Weather | 0.252 / 0.277 | 0.251 / 0.277 | 0.251 / 0.277 | 0.248 / 0.275 |
-
-仅对齐均值（$\mathrm{DistDF}^\dagger$）与仅对齐协方差（$\mathrm{DistDF}^\ddagger$）单独接入时均降低 MSE，两项组合的完整 DistDF 在四个数据集上 MSE 与 MAE 均最低[^src-distdf]。
-
-### 分布差异度量对比（Table 3）
-
-| 骨干 | 数据集 | Ours（BW） | EMD | MMD@Linear | MMD@RBF | KL | DF |
-|---|---|---|---|---|---|---|---|
-| TimeBridge | ETTm1 | 0.383 / 0.398 | 0.388 / 0.400 | 0.385 / 0.400 | 0.387 / 0.399 | 0.387 / 0.400 | 0.387 / 0.400 |
-| TimeBridge | ETTh1 | 0.433 / 0.437 | 0.441 / 0.439 | 0.438 / 0.437 | 0.441 / 0.440 | 0.437 / 0.438 | 0.442 / 0.440 |
-| TimeBridge | ECL | 0.172 / 0.267 | 0.177 / 0.272 | 0.174 / 0.269 | 0.172 / 0.266 | 0.176 / 0.271 | 0.176 / 0.271 |
-| TimeBridge | Weather | 0.248 / 0.275 | 0.251 / 0.276 | 0.253 / 0.278 | 0.250 / 0.276 | 0.253 / 0.277 | 0.252 / 0.277 |
-| Fredformer | ETTm1 | 0.379 / 0.395 | 0.386 / 0.397 | 0.380 / 0.395 | 0.385 / 0.397 | 0.385 / 0.397 | 0.387 / 0.398 |
-| Fredformer | ETTh1 | 0.429 / 0.431 | 0.445 / 0.435 | 0.437 / 0.432 | 0.444 / 0.435 | 0.444 / 0.435 | 0.447 / 0.434 |
-| Fredformer | ECL | 0.183 / 0.275 | 0.187 / 0.280 | 0.188 / 0.280 | 0.187 / 0.280 | 0.187 / 0.279 | 0.191 / 0.284 |
-| Fredformer | Weather | 0.257 / 0.279 | 0.261 / 0.282 | 0.262 / 0.282 | 0.262 / 0.282 | 0.261 / 0.282 | 0.261 / 0.282 |
-
-各分布差异度量均不劣于纯 MSE（DF），其中 Bures–Wasserstein（Ours）在 16 组对比中取得 14 组最优[^src-distdf]。
-
-### 超参 $\gamma$ 敏感性（Table 4、Table 5）
-
-$0\to1$ 扫描显示最优点远小于 $1$：TimeBridge 在 ECL 上 $\gamma=0.001\text{--}0.01$ 落在 $0.172\text{--}0.173/0.267$，$\gamma=1$ 退化到 $0.197/0.282$；Weather 从 $\gamma=0.01$ 的 $0.249/0.276$ 退到 $\gamma=1$ 的 $0.265/0.286$；ETTh2 的最优点后移到 $\gamma=0.05\text{--}0.1$（$0.375/0.399$）。Fredformer 在 ECL 上 $\gamma=0$ 为 $0.191/0.284$，$\gamma=0.002$ 为 $0.181/0.274$，$\gamma=1$ 为 $0.239/0.326$[^src-distdf]。按数据集不同，最优 $\gamma$ 落在 $0.001\text{--}0.1$；$\gamma=1$ 即丢弃样本级逐点对应、只用矩统计，性能一致退化[^src-distdf]。
-
-### 跨模型、跨范式与扩展实验（Appendix Table 6、8–13）
-
-| 实验 | 设置 | 报告结果 |
-|---|---|---|
-| Table 6 经典模型横比 | 9 数据集（ETT 四套、ECL、Traffic、Weather、PEMS03、PEMS08）× 10 模型；DistDF 接各数据集平均最优骨干 | 40 项 MSE 第一、41 项 MAE 第一；Traffic 平均 $0.417/0.279$ vs TimeBridge $0.426/0.282$、PEMS03 $0.104/0.215$ vs $0.112/0.223$、PEMS08 $0.123/0.223$ vs $0.139/0.239$ |
-| Table 8 骨干通用性 | [[tqn\|TQNet]]、TimeBridge、Fredformer、[[itransformer\|iTransformer]]、[[source-frets\|FreTS]]，6 数据集 | 平均 MSE 均下降或持平：TQNet ETTh1 $0.449\to0.438$、TimeBridge ETTm1 $0.387\to0.383$、Fredformer ECL $0.191\to0.173$、iTransformer Weather $0.269\to0.258$、FreTS ETTh2 $0.524\to0.466$；FreTS+ECL 为 $0.199\to0.199$（MAE $0.288\to0.287$） |
-| Table 9 自回归多步滚动 | TimeBridge、Fredformer，$H=96$ | 抑制长程误差累积：TimeBridge Weather $T=720$ 由 $9.363/1.374$ 降至 $0.461/0.421$，平均 MSE $3.970\to0.344$；Fredformer ETTm1 $T=720$ 由 $1.821/0.837$ 降至 $0.833/0.563$ |
-| Table 10 概率预测 | D3U，指标含 [[crps\|CRPS]]、$\text{CRPS}_{\text{sum}}$ | Weather 平均 MSE $0.259\to0.255$、MAE $0.295\to0.290$、CRPS $0.221\to0.218$、$\text{CRPS}_{\text{sum}}$ $0.275\to0.255$；ETTm1 平均 MSE $0.383\to0.380$、CRPS 同为 $0.293$、$\text{CRPS}_{\text{sum}}$ $0.776\to0.762$ |
-| Table 11 多尺度架构 | [[timemixer\|TimeMixer]]、SCINet，4 数据集 | 均获改善：TimeMixer ETTh1 平均 $0.501/0.476\to0.456/0.446$；SCINet ETTh1 $0.467/0.450\to0.459/0.443$；TimeMixer Weather $0.262/0.285\to0.252/0.280$ |
-| Table 12 变历史长度 | Weather，$H\in\{96,192,336,720\}$ | [[patchtst\|PatchTST]] 在 $H=192,T=720$ 的退化（$0.511/0.451$）经 DistDF 降至 $0.335/0.338$；$H=336,T=192$ 由 $0.235/0.291$ 降至 $0.200/0.249$；TimeBridge 同设置 $0.338/0.344\to0.335/0.342$ |
-| Table 13 随机种子 | ECL、Weather，种子 2021–2025 | ECL 平均 $0.172\pm0.000/0.266\pm0.001$ vs DF $0.177\pm0.002/0.272\pm0.001$；Weather $0.250\pm0.001/0.276\pm0.001$ vs $0.252\pm0.001/0.277\pm0.000$ |
-
-补充证据：ECL 上 iTransformer 与 Fredformer 接 DistDF 后 MSE 降幅最高分别为 $2.7\%$ 与 $4.3\%$（§4.4、Fig. 3）；论文报告 BW 目标单调下降并在若干 epoch 后进入平台，验证集 MAE/MSE 与 BW 曲线同向变化（Appendix D.7、Fig. 8）[^src-distdf]。主实验统一取 $H=96$，变历史长度只在 Weather 上测（Table 12）；全部结果来自单卡 H100，不涉及分布式设定。
+**扩展设置**：骨干通用性覆盖 TQNet、TimeBridge、Fredformer、iTransformer、FreTS，6 个数据集的平均 MSE 均下降或持平（iTransformer/Weather 0.269 → 0.258、FreTS/ETTh2 0.524 → 0.466，ECL 上 iTransformer 与 Fredformer 的降幅最高为 2.7% 与 4.3%）；自回归多步滚动下收益放大，TimeBridge 在 Weather $T=720$ 上把累计误差从 9.363/1.374 压到 0.461/0.421；概率、多尺度、变历史长度与 5 个随机种子同向改善 [^src-distdf]。
 
 ## 局限性与同组演进关系
 

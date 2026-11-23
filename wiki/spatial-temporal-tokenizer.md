@@ -7,8 +7,8 @@ tags:
   - plm
   - foundation-model
 created: 2026-06-15
-last_updated: 2026-09-05
-source_count: 1
+last_updated: 2026-11-22
+source_count: 2
 confidence: high
 status: active
 ---

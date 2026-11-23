@@ -45,7 +45,7 @@ LSNM 将两者统一为特例——TMDM 是 $g_\psi(X)=I$ 的 LSNM，$\mathcal{N
 
 - [[nsdiff]] — NsDiff 模型，LSNM 的主要应用
 - [[uncertainty-aware-noise-schedule]] — UANS，LSNM 的对偶设计
-- [[diffusion-models]] — 扩散模型概念总览
+- [[diffusion-model]] — 扩散模型概念总览
 - [[non-stationary-time-series]] — 非平稳时间序列建模
 
 [^src-nsdiff]: [[source-nsdiff]]

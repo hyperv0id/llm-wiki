@@ -8,7 +8,7 @@ tags:
   - llm
   - gpu-kernel
 created: 2026-10-27
-last_updated: 2026-10-27
+last_updated: 2026-11-22
 source_count: 7
 confidence: medium
 status: active
@@ -16,11 +16,11 @@ status: active
 
 # MiniMax Sparse Attention (MSA)
 
-MiniMax（arXiv:2606.13392v2，2026-06）提出 GQA 原生块稀疏注意力：轻量 Index Branch 对 KV 块打分，为每个 GQA 组独立选 top-$k$ 块；Main Branch 只在选中块的因果可见 token 上做精确 softmax 注意力。相比标准 GQA 只增加索引 $Q/K$ 两个投影矩阵，支持从头稀疏预训练与 GQA checkpoint 转换两条路线（§1、§3、§3.2）[^src-minimax-sparse-attention-2606-13392]。
+长上下文要在数十万到百万 token 上联合注意，全量 softmax 的 $\mathcal{O}(N^2)$ 成本不可行；但稀疏化本身也不等于加速——打分、top-$k$、按索引 gather 与负载不均都会吃掉收益。MSA 的做法是给每个 GQA 组配一个轻量索引头，对 KV 块打分后独立选 top-$k$ 块，主支路只在选中块的因果可见 token 上做标准 softmax；相对标准 GQA 只多出索引 $Q/K$ 两个投影，算法与 GPU 执行路径配套设计，并同时支持从头稀疏预训练与 GQA checkpoint 转换[^src-minimax-sparse-attention-2606-13392]。
 
 ## 问题定位
 
-超长上下文负载（agentic 工作流、仓库级代码推理、持久记忆）要求模型在数十万到百万 token 上联合注意，$\Theta(2H_qN^2d_h)$ 的注意力成本不可行（§1、§2.1）[^src-minimax-sparse-attention-2606-13392]。设计上按 Occam's razor 削减至必要组件，沿用 softmax 注意力范式以最大限度复用软硬件基础设施；块级选择搭配小 top-$k$，放宽 token 级细粒度设计对 head 维的约束，适配更广的 GPU（§1）[^src-minimax-sparse-attention-2606-13392]。同时，理论稀疏不等于实际加速：索引构建、top-$k$、反向索引、query gather 与负载均衡都有开销，需要算法与 GPU 执行路径协同设计（§1、§5.4）[^src-minimax-sparse-attention-2606-13392]。
+设计上按 Occam's razor 砍到必要组件：沿用 softmax 注意力范式以复用软硬件基础设施，块级选择配小 top-$k$ 放宽 token 级细粒度对 head 维的约束，从而适配更广的 GPU。代价是索引构建、top-$k$、反向索引、query gather 与负载均衡各有开销，必须让算法与执行路径协同设计（§1、§2.1、§5.4）[^src-minimax-sparse-attention-2606-13392]。
 
 ## 机制
 
@@ -46,7 +46,7 @@ $$O^{(h)}_i = \operatorname{softmax}\!\left(Q^{(h)}_i {K^{(r)}[\mathcal{I}^{(r)}
 
 top-$k$ 不可微，索引 $Q/K$ 投影无法获得语言建模损失梯度，训练信号与三项稳定设计为（§3.2）[^src-minimax-sparse-attention-2606-13392]：
 
-式 9–10 的 KL 损失在选中 token 集上将索引分布对齐「教师」——即组内 $G$ 个主支路注意力分布在概率级的平均；$L_{KL}=\tfrac{1}{NH_{kv}}\sum_i\sum_r D_{KL}(\operatorname{stopgrad}(P_{i,\cdot}^{(r)})\,\|\,P^{idx,(r)}_{i,\cdot})$，教师 stopgrad。总损失 $\mathcal{L} = \mathcal{L}_{LM} + \lambda\sum_{\text{layers}} L_{KL}$，$\lambda$ 数值未给[^src-minimax-sparse-attention-2606-13392]。式 11 中索引输入走 $\operatorname{stopgrad}(X)$ 截断梯度，KL 梯度只更新 $W^{idx}_q, W^{idx}_k$，不进骨干[^src-minimax-sparse-attention-2606-13392]。索引预热（Indexer warmup）先以全注意力跑两支且只训索引投影，再切换稀疏；从头训练与 checkpoint 转换都用同一日程（§3.2），全规模实验 warmup 长 40B token（§5.1）[^src-minimax-sparse-attention-2606-13392]。包含 query 的 local block 固定占一个槽位；附录 C.2 消融显示，更激进的强制 sink 块与大固定局部窗在最终配方中都不需要，模型自己学出这两个模式（§C.2）[^src-minimax-sparse-attention-2606-13392]。
+KL 对齐损失在选中 token 集上把索引分布拉向「教师」——组内 $G$ 个主支路注意力分布在概率级的平均，教师 stopgrad：$L_{KL}=\tfrac{1}{NH_{kv}}\sum_i\sum_r D_{KL}(\operatorname{stopgrad}(P_{i,\cdot}^{(r)})\,\|\,P^{idx,(r)}_{i,\cdot})$。总损失 $\mathcal{L} = \mathcal{L}_{LM} + \lambda\sum_{\text{layers}} L_{KL}$，$\lambda$ 数值未给（式 9–10）[^src-minimax-sparse-attention-2606-13392]。索引输入走 $\operatorname{stopgrad}(X)$ 截断梯度，KL 梯度只更新 $W^{idx}_q, W^{idx}_k$，不进骨干（式 11）[^src-minimax-sparse-attention-2606-13392]。索引预热（Indexer warmup）先以全注意力跑两支且只训索引投影，再切换稀疏；从头训练与 checkpoint 转换都用同一日程（§3.2），全规模实验 warmup 长 40B token（§5.1）[^src-minimax-sparse-attention-2606-13392]。包含 query 的 local block 固定占一个槽位；附录 C.2 消融显示，更激进的强制 sink 块与大固定局部窗在最终配方中都不需要，模型自己学出这两个模式（§C.2）[^src-minimax-sparse-attention-2606-13392]。
 
 ### 复杂度（式 12）
 
@@ -98,85 +98,13 @@ L_{KL} &= \tfrac{1}{NH_{kv}}\textstyle\sum_{i}\sum_{r}D_{KL}\!\left(\operatornam
 
 ## Kernel 设计（§4）
 
-exp-free top-$k$ 利用 softmax 保序直接在原始分上排序选块，跳过 max/exp/sum；因 $B_k=128$、$k=16$ 组合落在通用 top-$k$ 内核弱区（radix 选择 amortize 在大 $B$、bitonic 为 $O(B\log^2 B)$），故每 warp 32 lane 各流 1/32 步长、共享内存维护 $k$ 元素 min-heap、经 $k$ 轮 shuffle 合并。Table 1（H800，fp32，(N,B) 输入，50 次中位延迟）：128K/1024/$k{=}16$ 时 779 µs 对 torch 3970（5.1×）与 TileLang 2864（3.7×）；512K/4096/$k{=}16$ 时 7880 对 33810（4.3×）与 17779（2.3×）；$k{=}32$ 档加速降至 1.2–2.7×[^src-minimax-sparse-attention-2606-13392]。KV-outer 遍历（式 13–16）中，Q-outer 的 FLOPs/IO 约 $G$，KV-outer 配 query gather 需中间输出缓冲且 FLOPs/IO 约 $\tfrac{2}{3}B_k$；因实践中 $\tfrac{2}{3}B_k\gg G$（85.3 对 16），故选 KV-outer：persistent grid 按 (kv_block, kv_head) 切瓦片，反向稀疏索引找出选中该块的 query 并由 TMA 拷入[^src-minimax-sparse-attention-2606-13392]。针对 sink 类热块（几乎每个 query 都选的早期块）使一 CTA 一瓦片失衡，调度 kernel 把每个 KV 瓦片沿 query 维切成至多约 $2kB_k$ 个 query 的块，热瓦片摊到多个 CTA 共享同一份 K/V 载入；每个 (query, chunk) 预分配槽位 $s\in[0,k)$ 并与 query 下标打包成 32-bit 句柄，注意力 kernel 直接写预定偏移，无需原子操作[^src-minimax-sparse-attention-2606-13392]。两阶段 forward 由 attention kernel 写局部归一化部分和 $O_{buf}\in\mathbb{R}^{k\times n\times H_q\times d}$ 与各部分 $\operatorname{LSE}$，combine kernel 按 split-K 权重 $w_s=\exp(\operatorname{LSE}_s-\operatorname{LSE}[i,h])$ 合并，两 kernel 借 Programmatic Dependent Launch 掩盖启动延迟[^src-minimax-sparse-attention-2606-13392]。query 拼接利用 KV-outer 下同一瓦片所有 gather 位置共享 K/V 操作数，内核把 $\lceil 128/G\rceil$ 个位置连同各组 $G$ 个 head 打包成 $128\times128$ 打分 MMA（Q-outer 因不同位置选的 KV 子集不同而无法实现）[^src-minimax-sparse-attention-2606-13392]。KL 损失 LSE 融合由主 pass 直接向全局内存输出 $LSE_{main}$ 与块级 $LSE_{idx}$，省去 KL 前向 kernel，反向直接读标量送入 softmax[^src-minimax-sparse-attention-2606-13392]。动态负载均衡则由 persistent grid 上 CTA 经全局原子计数器获取任务，子瓦片数随每瓦片 query 数伸缩（§4.3）[^src-minimax-sparse-attention-2606-13392]。
+exp-free top-$k$ 利用 softmax 保序直接在原始分上排序选块，跳过 max/exp/sum；因 $B_k=128$、$k=16$ 组合落在通用 top-$k$ 内核弱区（radix 选择 amortize 在大 $B$、bitonic 为 $O(B\log^2 B)$），故每 warp 32 lane 各流 1/32 步长、共享内存维护 $k$ 元素 min-heap、经 $k$ 轮 shuffle 合并。H800 上的 fp32 中位延迟显示 128K 序列 779 µs 对 torch 的 3970（5.1×）、TileLang 的 2864（3.7×），512K 时 7880 对 33810（4.3×），$k{=}32$ 档加速降到 1.2–2.7×（Table 1）[^src-minimax-sparse-attention-2606-13392]。两种遍历中，Q-outer 的 FLOPs/IO 约 $G$，KV-outer 配 query gather 需中间输出缓冲且 FLOPs/IO 约 $\tfrac{2}{3}B_k$（式 13–16）；因实践中 $\tfrac{2}{3}B_k\gg G$（85.3 对 16），故选 KV-outer：persistent grid 按 (kv_block, kv_head) 切瓦片，反向稀疏索引找出选中该块的 query 并由 TMA 拷入[^src-minimax-sparse-attention-2606-13392]。针对 sink 类热块（几乎每个 query 都选的早期块）使一 CTA 一瓦片失衡，调度 kernel 把每个 KV 瓦片沿 query 维切成至多约 $2kB_k$ 个 query 的块，热瓦片摊到多个 CTA 共享同一份 K/V 载入；每个 (query, chunk) 预分配槽位 $s\in[0,k)$ 并与 query 下标打包成 32-bit 句柄，注意力 kernel 直接写预定偏移，无需原子操作[^src-minimax-sparse-attention-2606-13392]。两阶段 forward 由 attention kernel 写局部归一化部分和 $O_{buf}\in\mathbb{R}^{k\times n\times H_q\times d}$ 与各部分 $\operatorname{LSE}$，combine kernel 按 split-K 权重 $w_s=\exp(\operatorname{LSE}_s-\operatorname{LSE}[i,h])$ 合并，两 kernel 借 Programmatic Dependent Launch 掩盖启动延迟[^src-minimax-sparse-attention-2606-13392]。query 拼接利用 KV-outer 下同一瓦片所有 gather 位置共享 K/V 操作数，内核把 $\lceil 128/G\rceil$ 个位置连同各组 $G$ 个 head 打包成 $128\times128$ 打分 MMA（Q-outer 因不同位置选的 KV 子集不同而无法实现）[^src-minimax-sparse-attention-2606-13392]。KL 损失 LSE 融合由主 pass 直接向全局内存输出 $LSE_{main}$ 与块级 $LSE_{idx}$，省去 KL 前向 kernel，反向直接读标量送入 softmax[^src-minimax-sparse-attention-2606-13392]。动态负载均衡则由 persistent grid 上 CTA 经全局原子计数器获取任务，子瓦片数随每瓦片 query 数伸缩（§4.3）[^src-minimax-sparse-attention-2606-13392]。
 
 ## 证据
 
-### 实验设置（§5.1）
-
-109B 总参/6B 激活 MoE，41 层（3 dense + 38 MoE），$d_{model}=3072$，注意力 64 query head / 4 KV head / 头维 128 / RoPE 64，MoE 128 routed + 1 shared、top-4；$B_k=128$、$k=16$。3T token 预算：MSA-PT 从头训练（40B warmup 后稀疏）；MSA-CPT 从 2.6T token 的 GQA checkpoint 换层后续训 400B（40B warmup + 稀疏）[^src-minimax-sparse-attention-2606-13392]。
-
-### 训练动态（Figure 2、Figure 3）
-
-3T 全程 MSA-PT 与 Full Attention 的 LM loss 曲线几乎重合（末 50B 窗口 1.21 对 1.22），梯度范数处于同区间（Figure 2）[^src-minimax-sparse-attention-2606-13392]。CPT 的 KL 在 warmup 期从约 0.40 快速下降，切至稀疏后保持低位；块 recall 与分数 recall 曲线处于 0.70–0.95 区间，分数 recall 高于块 recall（Figure 3，曲线逐点数值图内不可读）[^src-minimax-sparse-attention-2606-13392]。
-
-### 下游评测（Table 2，3T 预算，Full / MSA-PT / MSA-CPT）
-
-| 组 | 基准 | Full | MSA-PT | MSA-CPT |
-|---|---|---|---|---|
-| General | MMLU | 67.0 | 67.2 | 66.8 |
-| General | MMLU-Pro | 38.5 | 38.8 | 39.1 |
-| General | BBH | 67.7 | 66.6 | 66.1 |
-| General | GPQA Hard | 25.9 | 26.3 | 26.3 |
-| General | ARC Challenge | 82.7 | 82.5 | 82.9 |
-| General | TriviaQA | 66.0 | 65.5 | 67.7 |
-| General | WinoGrande | 58.3 | 60.9 | 62.0 |
-| Math | GSM8K | 76.2 | 77.7 | 73.7 |
-| Math | MGSM | 44.1 | 46.0 | 44.2 |
-| Math | MathVista | 43.8 | 46.8 | 44.5 |
-| Math | OlymMATH Easy P@100 | 23.0 | 26.0 | 22.0 |
-| Code | HumanEval | 61.0 | 64.0 | 57.9 |
-| Code | EvalPlus | 59.4 | 61.8 | 60.0 |
-| Code | BigCodeBench | 44.8 | 44.0 | 45.7 |
-| Code | MultiPL-E MBPP P@10 | 82.1 | 81.6 | 81.1 |
-| Retrieval | RULER-8K | 79.8 | 84.2 | 77.2 |
-| Retrieval | RULER-32K | 75.0 | 77.5 | 75.7 |
-| Image | AI2D | 68.3 | 70.6 | 67.3 |
-| Image | ChartQA | 75.0 | 75.4 | 71.4 |
-| Image | MMMU | 46.8 | 45.9 | 44.5 |
-| Image | OCRBench v2 | 55.0 | 55.7 | 54.3 |
-| Image | CharXiv | 37.55 | 41.55 | 37.15 |
-| Image | VisualWebBench | 55.6 | 68.4 | 59.4 |
-| Image | CVBench | 57.0 | 59.7 | 58.8 |
-| Video | EgoSchema | 29.6 | 37.6 | 25.8 |
-| Video | LongVideoBench | 38.5 | 41.8 | 38.9 |
-| Video | MLVU | 44.14 | 46.94 | 43.68 |
-| Video | MMVU | 45.8 | 47.5 | 45.8 |
-| Video | VideoMME | 41.11 | 45.48 | 39.65 |
-| Video | TemporalBench | 49.4 | 53.4 | 50.6 |
-| PPL ↓ | TAU2 | 1.155 | 1.148 | 1.150 |
-| PPL ↓ | AgentCompany | 1.248 | 1.249 | 1.247 |
-| PPL ↓ | HLE | 1.275 | 1.278 | 1.275 |
-| PPL ↓ | SWE | 1.216 | 1.218 | 1.216 |
-
-两个稀疏模型整体保持竞争力：MSA-PT 在多数数学、图像、视频与长上下文检索上最强，MSA-CPT 更保守，在文本/代码/PPL 上贴近 Full Attention（§5.3）[^src-minimax-sparse-attention-2606-13392]。
-
-### 长上下文扩展（Table 3，MSA-CPT 再训约 140B 后）
-
-| 基准 | 子集 | Full | MSA-CPT | Δ |
-|---|---|---|---|---|
-| HELMET-128K | Overall | 46.53 | 45.93 | −0.60 |
-| HELMET-128K | ICL | 70.40 | 72.80 | +2.40 |
-| HELMET-128K | Rerank/RAG | 34.60 | 32.50 | −2.10 |
-| RULER-128K | Overall | 72.00 | 72.12 | +0.12 |
-| RULER-128K | CWE/FWE | 46.35 | 45.00 | −1.35 |
-| RULER-128K | MK/MQ/MV | 96.63 | 98.87 | +2.24 |
-| RULER-128K | QA1/QA2 | 47.80 | 46.80 | −1.00 |
-| RULER-128K | VT | 97.80 | 96.80 | −1.00 |
-
-每 query 每组仍只看 $kB_k=2048$ 个 KV token，在紧预算下保持长上下文能力（§5.3）[^src-minimax-sparse-attention-2606-13392]。
-
-### 效率（Figure 4，64/4 头、头维 128，H800）
-
-在 1M 上下文处，每 token 注意力 FLOPs 降低 28.4×，实测 prefill 加速 14.2×（GQA 约 30 s 档）、decode 加速 7.6×（GQA 约 0.9 ms 档）。因索引构建、top-$k$、反向索引、query gather、负载均衡开销与更不规则的访存，运行时加速低于 FLOPs 降幅，差距随上下文变长而收敛[^src-minimax-sparse-attention-2606-13392]。
-
-### 消融（附录 B/C）
-
-梯度来源对比（B.2，10B 试点，Figure 7）显示，LM-only 保持短上下文但长程检索差，KL-only 提升检索却因去掉 $O^{idx}$ 削减注意力容量而使短上下文衰退，LM+KL 最为平衡；后续 C.3 显示 warmup 就位后可省去索引 value 头，最终配方仅保留 KL 监督（§C.3）[^src-minimax-sparse-attention-2606-13392]。KL 梯度隔离实验（B.3，Figure 8/9）中，不 detach 时大 KL 系数会在数百步内引发梯度尖峰而发散，稳定系数下短上下文基准渐进退化，源于骨干靠简化主支路分布降低 KL 的自蒸馏效应；detach 后两类失效均消除[^src-minimax-sparse-attention-2606-13392]。关于 warmup（B.4，Figure 10/11），主支路注意力熵在训练最初数百步骤降，零步开启稀疏使索引追赶快速移动的目标，warmup 则兼顾提升短上下文与长程检索[^src-minimax-sparse-attention-2606-13392]。可学习 sink 实验（B.5，Figure 12/13）表明，GPT-OSS 式 sink logit 未完全消除首 token sink，且 PPL 无一致收益，未进最终配方[^src-minimax-sparse-attention-2606-13392]。动态选择与滑窗对比（B.6，Figure 14）显示，FLOP 匹配的「首块 + 局部窗」固定模式在 agent 任务中 PPL 全程高于 MSA，同等预算下内容依赖选择优于位置固定模式（曲线数值图内不可读）[^src-minimax-sparse-attention-2606-13392]。在总选中 token 数不变的块长测试中（C.1，Table 4），PPL 基本持平，RULER-8K 为 72.5/72.8/73.8（$B_k$=32/64/128），RULER-32K 为 66.1/65.3/64.6，大块以有限质量损失换取了 kernel 效率[^src-minimax-sparse-attention-2606-13392]。针对强制 sink 与局部窗（C.2，Table 5），去掉强制后多数指标基本持平（MMLU 60.5 对 60.5、GSM8K 66.0 对 66.9、PPL 持平），但 RULER-32K 从 65.8 降至 61.5 差 4.3 分，正文仍记长程检索「comparable」，两处并列于此[^src-minimax-sparse-attention-2606-13392]。至于索引 value 头（C.3，Table 6），有无 value 头互有微弱优劣而无一方持续主导，最终为效率予以移除；推理期索引只需 $Q^{idx}{K^{idx}}^{\top}$ 的块内 max，完全绕开 value 聚合与指数（§C.3）[^src-minimax-sparse-attention-2606-13392]。
-
-### 学到的模式（附录 A，Figure 5/6）
-
-各 GQA 组都选局部对角与 sink 列，但长程条纹组间不同——索引学到的是组特异模式而非单一全局选择；且不强制时首 token 的 sink 现象在各层各 head 自然涌现[^src-minimax-sparse-attention-2606-13392]。
+1. **定位：以更低开销逼近自家 Full Attention，不是在精度上超越它。** 3T token 预算下 MSA-PT 与 GQA Full Attention 的训练 LM loss 曲线几乎重合（末 50B 窗口 1.21 对 1.22），下游多数数学、图像、视频与长上下文检索指标略高（视频侧提升最明显，EgoSchema 29.6→37.6、VideoMME 41.11→45.48），MSA-CPT 更保守、在文本与代码及 PPL 上贴近 Full；1M 上下文每 token 注意力 FLOPs 降 28.4×，实测 prefill 加速 14.2×、decode 7.6×，索引构建、top-$k$、gather 与负载均衡的开销让实测加速低于 FLOPs 降幅（Figure 2、4）[^src-minimax-sparse-attention-2606-13392]。
+2. **归因：KL 对齐与索引预热是必需件，强制局部块主要保长程检索。** 梯度来源对比里 LM-only 保持短上下文但长程检索差，KL-only 提升检索却让短上下文衰退，两者合用最平衡；KL 不 detach 时骨干靠简化主支路分布自蒸馏，数百步内梯度尖峰发散，稳定系数下则短上下文渐进退化；warmup 就位后可去掉索引 value 头。去掉强制的 sink 块与局部窗后 MMLU、GSM8K 基本持平，但 RULER-32K 从 65.8 掉到 61.5；FLOP 匹配的「首块 + 局部窗」固定模式在 agent 任务上 PPL 全程高于 MSA。不强制时首 token 的 sink 与局部对角仍在各层自然涌现，索引学到的是组特异模式（附录 A、B.2–B.6、C.2–C.3）[^src-minimax-sparse-attention-2606-13392]。
+3. **缺口与负结果：没有与其他稀疏注意力方法同台。** 全部对照都是自家 GQA Full Attention，与 NSA、MoBA、DSA 只有定性定位，唯一的稀疏结构对照是 10B 试点上的滑窗基线；消融多在 10B 试点，部分用更少迭代与评测子集，$d_{idx}$ 与 $\lambda$ 数值未给，$k$ 无敏感性曲线。长上下文扩展的收益也薄：MSA-CPT 在 HELMET-128K 整体 −0.6、RULER-128K +0.12，子项互有胜负；视频侧 EgoSchema 25.8 对 Full 的 29.6 明显落后（附录 B.1、C.1、Table 3）[^src-minimax-sparse-attention-2606-13392]。
 
 ## 谱系
 
@@ -188,7 +116,7 @@ exp-free top-$k$ 利用 softmax 保序直接在原始分上排序选块，跳过
 
 ## 边界
 
-残差长程检索缺口需靠更长稀疏训练、更大推理时预算或更强打分函数解决（Outlook，§7）[^src-minimax-sparse-attention-2606-13392]。运行时加速低于 FLOPs 减少，索引、gather 与负载均衡等差距构成已列出但未逐项定量（§5.4）[^src-minimax-sparse-attention-2606-13392]。实验未与其他稀疏注意力方法同台，全部对照均采用自家的 GQA Full Attention 基线，与 NSA/MoBA/DSA 仅有 §6 的定性定位，唯一的稀疏结构对照是 10B 试点上的滑窗基线（B.6）[^src-minimax-sparse-attention-2606-13392]。附录消融多采用 10B 试点模型（B.1），C.1 明确使用更少迭代与评测子集，C.2 与 C.3 未说明模型规模[^src-minimax-sparse-attention-2606-13392]。$d_{idx}$ 与 $\lambda$ 数值未给，$k$ 无敏感性曲线（C.1 固定总预算只扫块长）[^src-minimax-sparse-attention-2606-13392]。MSA-CPT 在部分视频基准上低于 Full（EgoSchema 25.8 对 29.6），论文归因为基准依赖而非集中在单一能力域（§5.3）[^src-minimax-sparse-attention-2606-13392]。
+残差长程检索缺口需靠更长稀疏训练、更大推理时预算或更强打分函数解决（Outlook，§7）[^src-minimax-sparse-attention-2606-13392]。运行时加速低于 FLOPs 减少，索引、gather 与负载均衡等差距构成已列出但未逐项定量（§5.4）[^src-minimax-sparse-attention-2606-13392]。实验未与其他稀疏注意力方法同台，全部对照均采用自家的 GQA Full Attention 基线，与 NSA/MoBA/DSA 仅有 §6 的定性定位，唯一的稀疏结构对照是 10B 试点上的滑窗基线（B.6）[^src-minimax-sparse-attention-2606-13392]。附录消融多采用 10B 试点模型（B.1），C.1 明确使用更少迭代与评测子集，C.2 与 C.3 未说明模型规模[^src-minimax-sparse-attention-2606-13392]。$d_{idx}$ 与 $\lambda$ 数值未给，$k$ 无敏感性曲线（C.1 固定总预算只扫块长）[^src-minimax-sparse-attention-2606-13392]。论文把 MSA-CPT 的视频侧落后归因为基准依赖而非集中在单一能力域（§5.3）[^src-minimax-sparse-attention-2606-13392]。
 
 ## 相关页面
 

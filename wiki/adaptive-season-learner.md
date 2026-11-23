@@ -8,8 +8,8 @@ tags:
   - frequency-domain
   - graph-neural-networks
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-11-22
+source_count: 2
 confidence: medium
 status: active
 ---

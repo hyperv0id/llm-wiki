@@ -87,7 +87,7 @@ FlowTS 的无条件生成模型可以在推理时直接适应条件任务（预�
 - [[adaptive-sampling-flow-matching]] — 自适应采样策略
 - [[flow-matching]] — Flow Matching 理论基础
 - [[generative-time-series-forecasting]] — 生成式时间序列预测
-- [[diffusion-models]] — Diffusion Models 理论基础
+- [[diffusion-model]] — Diffusion Models 理论基础
 - [[tsflow]] — TSFlow，首个 CFM 时间序列预测模型 (ICLR 2025)
 - [[dits]] — DiTS，Rectified Flow + MM-DiT 双流架构用于 TS 预测 (arXiv 2026)
 - [[rope-time-series]] — RoPE 在时间序列中的应用

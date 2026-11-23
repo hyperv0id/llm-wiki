@@ -100,7 +100,7 @@ $$L_{t-1} = \gamma_t \| x_0 - \hat{x}_0 \|^2$$
 ## 关联页面
 
 - [[source-ratd]] — 完整源文件摘要
-- [[diffusion-models]] — 扩散模型概念总览
+- [[diffusion-model]] — 扩散模型概念总览
 - [[csdi|CSDI]] — RATD 的架构基础（双轴 Transformer），同时是主要扩散基线 (NeurIPS 2021)
 - [[timegrad|TimeGrad]] — 首个时序扩散预测模型，RATD 引用的奠基工作 (ICML 2021)
 - [[generative-time-series-forecasting]] — 生成式时间序列预测范式

@@ -106,7 +106,7 @@ Sundial 团队在 Table 8 中报告：使用相同 94B 预训练数据子集时�
 ## 引用
 
 [^src-chronos]: [[source-chronos]]
-[^src-unca]: [[source-unca]]
+[^src-unca]: [[source-unica]]
 [^src-sundial]: [[source-sundial]]
 [^src-probts]: [[source-probts]]
 [^src-dynamix]: [[source-dynamix]]

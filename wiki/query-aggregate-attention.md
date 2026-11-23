@@ -8,8 +8,8 @@ tags:
   - rope
   - transformer
 created: 2026-07-27
-last_updated: 2026-09-05
-source_count: 1
+last_updated: 2026-11-22
+source_count: 2
 confidence: medium
 status: active
 ---

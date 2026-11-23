@@ -63,7 +63,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-causalx]] — CausalX: causally-interpretable plug-and-play multi-modal ST forecasting, multi-source causal constraints (Granger/do-calculus/TDMI/VAE) + diffusion graph refinement, ICML 2026
 - [[source-cbsa]] — CBSA: Towards Interpretable and Efficient Attention (NeurIPS 2025)
 - [[source-chan-2025-diffusion-tutorial]] — Diffusion model comprehensive tutorial (Chan, 2025)
-- [[source-chan-diffusion-tutorial]] — Diffusion model tutorial (Chan, earlier version)
+- [[source-chan-diffusion-tutorial]] — Diffusion model tutorial (Chan, earlier version) superseded by [[source-chan-2025-diffusion-tutorial]]
 - [[source-channelmts]] — ChannelMTS: Multi-modal Time-Series Framework for High-Speed Railway Channel Prediction (KDD 2026)
 - [[source-chapter-1-basic-concepts]] — 第 1 章：强化学习基础概念与 MDP 形式化
 - [[source-chapter-2-state-values-and-bellman-equation]] — 第 2 章：状态值、动作值与贝尔曼方程
@@ -418,7 +418,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-ts-vl-alignment]] — TS–VL Alignment: near-orthogonal frozen TS/V/L; post-hoc contrastive projection limits (arXiv:2602.19367)
 - [[source-tsflow]] — TSFlow: Flow Matching with Gaussian Process Priors for Probabilistic Time Series Forecasting (ICLR 2025)
 - [[source-tsrag]] — TS-RAG: Retrieval-Augmented Generation based Time Series Foundation Models are Stronger Zero-Shot Forecasters，把检索嵌入当专家的 MoE 增强模块（稠密 softmax）
-- [[source-unca]] — UniCA: Unified Covariate Adaptation (alternate source page)
+- [[source-unca]] — UniCA: Unified Covariate Adaptation (alternate source page) superseded by [[source-unica]]
 - [[source-understanding-diffusion-models]] — Understanding Diffusion Models: A Unified Perspective (Luo, 2022)
 - [[source-unica]] — UniCA: Unified Covariate Adaptation for Time Series Foundation Model (ICLR 2026)
 - [[source-uniextreme]] — UniExtreme: universal extreme weather forecasting foundation model (arXiv 2025)
@@ -748,7 +748,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[diffsequence]] — Diffsequence（差序列），Ramsey 理论中 gaps 落在指定集合的递增整数序列，van der Waerden 定理的自然推广
 - [[diffusion-memorization-geometry]] — 记忆现象的几何理论：Voronoi 单元吸收强度 σ₀（重复样本抬权重）、渐近最优 denoiser 必然重现训练点、泛化要求终端 denoiser 逼近真实流形投影
 - [[diffusion-model]] — 扩散模型，通过逐步加噪和去噪学习的生成模型
-- [[diffusion-models]] — 扩散模型 (Diffusion Models)，包含 DDPM、SMLD、SDE 统一框架与应用
+- [[diffusion-models]] — 扩散模型 (Diffusion Models)，包含 DDPM、SMLD、SDE 统一框架与应用 superseded by [[diffusion-model]]
 - [[direct-forecast]] — Direct Forecast 多输出多步预测范式，与 iterative forecast 相对 (FreDF)
 - [[discrete-schrodinger-bridge]] — 离散 SB，将 SB 扩展到 CTMC 有限状态空间，用转移速率矩阵替代 drift
 - [[distributionally-robust-optimization]] — DRO, worst-case optimization over an uncertainty set of distributions; equivalent to ERM + variance regularization for OOD robustness
@@ -1359,7 +1359,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[stgcl]] — STGCL：时空图对比学习系统实证框架，联合学习 + 图级对比 + 时空多域增强 + 时域负样本过滤（SIGSPATIAL 2022）
 - [[stgcn]] — STGCN, pure convolutional spatial-temporal graph network, "sandwich" ST-Conv Block (IJCAI 2018)
 - [[stochastic-fisher-guided-adaptive-selection]] — SFAS，Fisher 信息 + 退火随机性选择 Top-k 关键参数更新的 PEFT 技术（WeatherPEFT, ICLR 2026）
-- [[stochastic-optimal-control]] — TODO
+- [[stochastic-optimal-control]] — SB 的 SOC 视角（HJB 方程、值函数、三种损失族）superseded by [[stochastic-optimal-control-sb]]
 - [[stochastic-shared-embedding]] — SSE, stochastic shared embedding regularization for graph node embeddings (NeurIPS 2019, adapted 2026)
 - [[structural-token-sorting]] — STS，lead–lag 图上消息传递求 patch 重要性并重排 token，把图结构转译为自回归序列顺序 (LagLLM, ICML 2026)
 - [[swiglu]] — SwiGLU 及 GLU 变体前馈层：门控激活谱系、$d_{ff}$ 折算与 T5-base 对照结果

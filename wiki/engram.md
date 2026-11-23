@@ -10,7 +10,7 @@ tags:
   - long-context
   - deepseek
 created: 2026-10-27
-last_updated: 2026-10-27
+last_updated: 2026-11-22
 source_count: 1
 confidence: medium
 status: active
@@ -26,10 +26,7 @@ Engram 是 DeepSeek-AI 与北京大学（arXiv:2601.07372v2，2026-07-12 版；a
 
 论文将语言建模拆为两类子任务：组合推理依赖深层动态计算；而命名实体、固定搭配等文本多为局部、静态且高度模式化，经典 $N$-gram 即可捕捉[^src-deepseek-2026-engram]。标准 Transformer 缺乏原生查表原语，只能由早期注意力与 FFN 逐层重新计算静态查表[^src-deepseek-2026-engram]。
 
-论文在 §1 对照了两条稀疏轴：条件计算（conditional computation）通过稀疏激活参数处理动态逻辑，条件记忆（conditional memory）通过稀疏查表取回固定知识的静态嵌入[^src-deepseek-2026-engram]。Engram 是后者的具体实例，定义见摘要、§1 与 §2.1：检索阶段将局部上下文映射为静态记忆条目，融合阶段由隐藏状态调制检索结果[^src-deepseek-2026-engram]。
-
-> [!note] 定义出处
-> “条件记忆”的散文定义在摘要与 §1 第 3 段；模块的两阶段定义在 §2.1；查表、门控、卷积与残差注入的形式化分别在式 (1)–(5) 与 §2.3–§2.4。
+论文对照了两条稀疏轴：条件计算（conditional computation）用稀疏激活参数处理动态逻辑，条件记忆（conditional memory）用稀疏查表取回固定知识的静态嵌入；Engram 是后者的实例，检索阶段把局部上下文映射为静态记忆条目，融合阶段由隐藏状态调制检索结果（摘要、§1、§2.1）[^src-deepseek-2026-engram]。
 
 ### 与 MoE、注意力稀疏的分工
 
@@ -94,15 +91,13 @@ H^{(b,\ell)} &\leftarrow H^{(b,\ell)}+Y^{(b)} && \text{// } [T,d]+[T,d]\to[T,d]\
 
 ## 查表式、梯度与记账
 
-### 为什么是 $O(1)$
-
-键来自离散 token ID 而非隐藏状态：同一段上下文在训练与推理时得到同一组下标，单 token 查表次数固定为 $(N-1)K$，与表槽位数 $M_{n,k}$ 无关[^src-deepseek-2026-engram]。因此增大表只增加 $P_{\mathrm{tot}}$，不增加每 token 的 FLOPs，这构成了“稀疏参数预算”的前提（§3.1）[^src-deepseek-2026-engram]。
+**为什么是 $O(1)$**：键来自离散 token ID 而非隐藏状态：同一段上下文在训练与推理时得到同一组下标，单 token 查表次数固定为 $(N-1)K$，与表槽位数 $M_{n,k}$ 无关[^src-deepseek-2026-engram]。因此增大表只增加 $P_{\mathrm{tot}}$，不增加每 token 的 FLOPs，这构成了“稀疏参数预算”的前提（§3.1）[^src-deepseek-2026-engram]。
 
 ### 梯度怎么走
 
 未使用直通估计（STE），也未重参数化查表：哈希函数 $\varphi_{n,k}$ 是固定的乘法-XOR，不含可学习参数，下标由输入决定[^src-deepseek-2026-engram]。前向按 gather 取行，反向把梯度 scatter 回被选中的行；单步内未被任何 token 选中的行不更新[INFERENCE]。训练时表按 GPU 分片，前向用 All-to-All 收集活跃行、反向用 All-to-All 派发梯度（§2.5）[^src-deepseek-2026-engram]。
 
-表参数用 Adam 优化，学习率为基线的 5 倍、weight decay 为 0；卷积零初始化；主干仍用 Muon（Table 5、§4.1）[^src-deepseek-2026-engram]。门控采用 sigmoid，梯度正常回传；式 (4) 的 RMSNorm 稳定门控梯度，而非离散下标可微化[^src-deepseek-2026-engram]。
+门控采用 sigmoid，梯度正常回传；式 (4) 的 RMSNorm 稳定门控梯度，而非把离散下标可微化[^src-deepseek-2026-engram]。
 
 ### 参数与带宽记账
 
@@ -113,7 +108,7 @@ P_{\mathrm{Engram}}^{27\mathrm{B}} &= 2\times16\times2{,}262{,}400\times80\appro
 P_{\mathrm{Engram}}^{40\mathrm{B}} &= 2\times16\times7{,}239{,}680\times80\approx18.53\mathrm{B} && \text{// 论文报 18.5B}
 \end{aligned}$$
 
-按 Table 5 的 27B 配置，$M=2{,}262{,}400$ 为单个 $(n,k)$ 表的槽数；两层各 16 张表，相乘得 5.79B，比论文所报 5.7B 高 0.09B[INFERENCE]。单 token 每层读 16 行、两层共 32 行，即 $32\times80=2{,}560$ 个标量，与 $M$ 无关[INFERENCE]。5.7B 占 26.7B 总参数约 21.3%，18.5B 占 39.5B 约 46.8%；激活参数始终为 3.8B[^src-deepseek-2026-engram]。
+27B 配置下 $M=2{,}262{,}400$ 为单个 $(n,k)$ 表的槽数，两层各 16 张表乘出 5.79B（论文报 5.7B）[INFERENCE]；单 token 每层读 16 行，两层共 $32\times80=2{,}560$ 个标量，与 $M$ 无关。5.7B 约占 26.7B 总参的 21.3%，18.5B 占 39.5B 的 46.8%，激活参数始终为 3.8B[^src-deepseek-2026-engram]。
 
 论文未给出记忆表的数值位宽，Table 4 仅按“100B 参数表”测试吞吐[^src-deepseek-2026-engram]。推理时表可整体置于主机 DRAM，按确定性下标提前预取，并按 Zipf 分布构建多级缓存（§2.5）[^src-deepseek-2026-engram]。
 
@@ -128,90 +123,38 @@ P_{\mathrm{MoE}}^{(\mathrm{sparse})} &= \rho P_{\mathrm{sparse}},\qquad P_{\math
 
 $\rho=1$ 是纯 MoE；调小 $\rho$ 会减少 routed experts，将腾出的参数分给 Engram 槽位[^src-deepseek-2026-engram]。27B 模型把 routed experts 从 72 降至 55，腾出 5.7B 给记忆 $\rho=74.3\%$；top-6 激活专家数不变，激活参数仍是 3.8B（Table 1、§4.1）[^src-deepseek-2026-engram]。
 
-该组合并非“正交可叠加”：论文在两档计算预算下均得到 U 形曲线，纯 MoE 与纯 Engram 都不如混合[^src-deepseek-2026-engram]。MoE 占满时缺少静态记忆，模型只能用深度重建模式；Engram 占满时失去条件计算，动态推理受损[^src-deepseek-2026-engram]。因此这里的“互补”是功能互补与预算竞争，而非两项收益直接相加。
+这条轴并非“正交可叠加”：MoE 占满时缺少静态记忆，模型只能用深度重建模式；Engram 占满时失去条件计算，动态推理受损[^src-deepseek-2026-engram]。互补是功能互补加预算竞争，不是两项收益直接相加。
 
-## 稀疏容量分配
+## 证据
 
-实验固定 $P_{\mathrm{tot}}$ 与 $P_{\mathrm{act}}$，稀疏比 $P_{\mathrm{tot}}/P_{\mathrm{act}}\approx10$，只改 routed experts 数与 Engram 槽位数[^src-deepseek-2026-engram]：
+**设置**：四个模型同数据课程、同 262B token、激活参数均为 3.8B，区别只在稀疏预算怎么花：Dense-4B、MoE-27B（2 共享 + 72 routed，top-6）、Engram-27B（2 + 55，top-6，5.7B 表）、Engram-40B（18.5B 表）[^src-deepseek-2026-engram]。
 
-$C=2\times10^{20}$ FLOPs 对应 $P_{\mathrm{tot}}\approx5.7$B、$P_{\mathrm{act}}=568$M，$\rho=1$ 基线 106 个专家；$C=6\times10^{20}$ FLOPs 对应 $P_{\mathrm{tot}}\approx9.9$B、$P_{\mathrm{act}}=993$M，基线 99 个专家。
+**定位与主结论**：Engram 是纯增容——激活参数与每 token FLOPs 都不变，只把稀疏参数预算从 routed experts 挪给查表。Engram-27B 在 27 项下游基准上全部高于同参同 FLOPs 的 MoE-27B，两个 loss 都更低（验证 1.622 对 1.634）：知识类 +3 上下（MMLU +3.0、CMMLU +4.0），推理与代码 +2 到 +5（BBH +5.0、HumanEval +3.0、MATH +2.4）。摘要与 §1 却写 MMLU +3.4，与 Table 1 的 57.4 → 60.4 差 0.4，两处并列照录。容量一侧收益单调：3B 主干上槽位从 $2.58\times10^5$ 扫到 $1.0\times10^7$（最多约 13B 参数），验证损失随槽位数在 log 空间线性下降，且比同预算的 OverEncoding 更陡 [^src-deepseek-2026-engram]。
 
-结果（Figure 3 左）[^src-deepseek-2026-engram]：
+| 模型 | 总参 / 激活 | 验证 loss | MMLU | BBH | HumanEval |
+|---|---|---|---|---|---|
+| Dense-4B | 4.1B / 3.8B | 1.768 | 48.6 | 42.8 | 26.8 |
+| MoE-27B | 26.7B / 3.8B | 1.634 | 57.4 | 50.9 | 37.8 |
+| Engram-27B | 26.7B / 3.8B | 1.622 | 60.4 | 55.9 | 40.8 |
+| Engram-40B | 39.5B / 3.8B | 1.610 | 60.6 | 57.5 | 38.4 |
 
-两档曲线均呈 U 形。把 MoE 份额降到 $\rho\approx40\%$（5.7B 档 46 个专家、9.9B 档 43 个）时，Engram 仍与纯 MoE 持平。最优在 $\rho\approx75\%$–$80\%$，即约 20%–25% 的稀疏预算给 Engram；固定稀疏度下，该位置在两档间保持稳定。9.9B 档验证损失从 $\rho=100\%$ 的 1.7248 降到最优附近的 1.7109，差 0.0139。
+**涨点归因**：增益来自记忆容量与门控本身，不是工程修补。稀疏预算的分配比总容量更关键：两档计算预算（总参 5.7B / 9.9B，激活 568M / 993M，稀疏比约 10）的曲线都是 U 形，最优在 $\rho\approx75\%$–$80\%$，即约五分之一的稀疏预算给 Engram；MoE 份额压到 $\rho\approx40\%$ 时 Engram 仍与纯 MoE 持平，纯 MoE 与纯 Engram 两端都更差。组件侧，去掉多分支逐支路融合、上下文门控与 tokenizer 压缩的回归最大，去掉 depthwise 卷积只有边际影响；插入位置在 12 层主干上第 2 层最优（早插趁主干耗掉深度前接管局部模式，晚插门控更准但卸载变弱），1.6B 预算拆到第 2、6 层优于集中在单层 [^src-deepseek-2026-engram]。
 
-无限内存一侧（Figure 3 右）：固定 3B MoE 主干（$P_{\mathrm{act}}=568$M）、训练 100B token，槽位数从 $2.58\times10^5$ 扫到 $1.0\times10^7$，最多增至约 13B 参数；验证损失随槽位数在 log 空间线性下降[^src-deepseek-2026-engram]。同预算下与 OverEncoding 的直接平均相比，Engram 的曲线更陡[^src-deepseek-2026-engram]。论文仅给出趋势，未提供幂律指数或外推公式。
+**证据缺口与负结果**：Engram-40B 并未全面占优——MBPP 46.2 低于 MoE-27B 的 46.6，C3、HumanEval、MATH 也低于 Engram-27B，作者归因于欠训练；长上下文里单针 NIAH 在 iso-loss 点掉到 97.6（50k 回到 99.3），CWE 一列两侧都低（4.5 对 5.9）且论文没有解释。规模止于 40B 总参、262B token；组件消融只有曲线与标记，正文没有逐项数值差；只系统测 $\{2,3\}$-gram；长上下文只到 32k [^src-deepseek-2026-engram]。
 
-## 预训练主结果（Table 1）
+### 长上下文
 
-四个模型同数据课程、同 262B token、激活参数均为 3.8B：Dense-4B、MoE-27B（2 共享 + 72 routed，top-6）、Engram-27B（2 + 55，top-6，5.7B Engram）、Engram-40B（18.5B Engram）[^src-deepseek-2026-engram]。
+32k 扩展（YaRN，5,000 步、30B token）后，iso-loss 的 46k 检查点（预训练 loss 与 MoE-27B 50k 相同）LongPPL 四项全部更低（4.19/2.84/2.45/13.59 对 4.38/2.91/2.49/14.16），RULER 多针差距更大（MQ 97.0 对 84.2、VT 87.2 对 77.0、FWE 98.6 对 73.0、QA 37.5 对 34.5）；41k 只有 82% 预训练 FLOPs 时 LongPPL 三项略高（2.92/2.50/14.26 对 2.91/2.49/14.16）而 RULER 已全面更高（MQ 89.5、VT 83.2），论文概括为 "matches"。论文把增益归因于局部依赖被查表接管、注意力容量腾给全局上下文 [^src-deepseek-2026-engram]。
 
-| Benchmark（Metric） | Shots | Dense-4B | MoE-27B | Engram-27B | Engram-40B |
-|---|---:|---:|---:|---:|---:|
-| 总参数 | - | 4.1B | 26.7B | 26.7B | 39.5B |
-| 激活参数（不含 token embed） | - | 3.8B | 3.8B | 3.8B | 3.8B |
-| 训练 token | - | 262B | 262B | 262B | 262B |
-| 专家（共享 + routed，top-$k$） | - | - | 2 + 72 (top-6) | 2 + 55 (top-6) | 2 + 55 (top-6) |
-| Engram 参数 | - | - | - | 5.7B | 18.5B |
-| Pile (loss) | - | 2.091 | 1.960 | 1.950 | 1.942 |
-| 验证集 (loss) | - | 1.768 | 1.634 | 1.622 | 1.610 |
-| MMLU (Acc.) | 5 | 48.6 | 57.4 | 60.4 | 60.6 |
-| MMLU-Redux (Acc.) | 5 | 50.7 | 60.6 | 64.0 | 64.5 |
-| MMLU-Pro (Acc.) | 5 | 21.1 | 28.3 | 30.1 | 31.3 |
-| CMMLU (Acc.) | 5 | 47.9 | 57.9 | 61.9 | 63.4 |
-| C-Eval (Acc.) | 5 | 46.9 | 58.0 | 62.7 | 63.3 |
-| AGIEval (Acc.) | 0 | 29.1 | 38.6 | 41.8 | 45.9 |
-| ARC-Easy (Acc.) | 25 | 76.8 | 86.5 | 89.0 | 90.1 |
-| ARC-Challenge (Acc.) | 25 | 59.3 | 70.1 | 73.8 | 76.4 |
-| TriviaQA (EM) | 5 | 33.0 | 48.8 | 50.7 | 51.8 |
-| TriviaQA-ZH (EM) | 5 | 62.8 | 74.8 | 76.3 | 77.9 |
-| PopQA (EM) | 15 | 15.1 | 19.2 | 19.4 | 21.2 |
-| CCPM (Acc.) | 0 | 72.2 | 79.6 | 87.1 | 87.7 |
-| BBH (EM) | 3 | 42.8 | 50.9 | 55.9 | 57.5 |
-| HellaSwag (Acc.) | 0 | 64.3 | 71.8 | 72.7 | 73.1 |
-| PIQA (Acc.) | 0 | 63.8 | 71.9 | 73.5 | 76.5 |
-| WinoGrande (Acc.) | 5 | 64.0 | 67.6 | 67.8 | 68.1 |
-| DROP (F1) | 1 | 41.6 | 55.7 | 59.0 | 60.7 |
-| RACE-Middle (Acc.) | 5 | 72.4 | 80.9 | 82.8 | 83.3 |
-| RACE-High (Acc.) | 5 | 66.0 | 75.4 | 78.2 | 79.2 |
-| C3 (Acc.) | 0 | 57.7 | 60.1 | 63.6 | 61.8 |
-| HumanEval (Pass@1) | 0 | 26.8 | 37.8 | 40.8 | 38.4 |
-| MBPP (Pass@1) | 3 | 35.4 | 46.6 | 48.2 | 46.2 |
-| CruxEval-i (EM) | 0 | 27.6 | 30.7 | 32.2 | 36.2 |
-| CruxEval-o (EM) | 0 | 28.7 | 34.1 | 35.0 | 35.3 |
-| GSM8K (EM) | 8 | 35.5 | 58.4 | 60.6 | 62.6 |
-| MGSM (EM) | 8 | 27.0 | 46.8 | 49.4 | 52.4 |
-| MATH (EM) | 4 | 15.2 | 28.3 | 30.7 | 30.6 |
+### 推理系统
 
-相比同参同 FLOPs 的 MoE-27B，Engram-27B 在 Table 1 的 27 项下游基准全部更高，两个 loss 更低[^src-deepseek-2026-engram]。增益不只在知识类任务：MMLU +3.0、CMMLU +4.0、MMLU-Pro +1.8；推理与代码数学增益更大：BBH +5.0、ARC-Challenge +3.7、DROP +3.3、HumanEval +3.0、GSM8K +2.2、MATH +2.4[^src-deepseek-2026-engram]。
-
-> [!warning] 摘要与表格的 MMLU 增益不一致
-> 摘要与 §1 写 MMLU +3.4，§4.2 与 Table 1 的 57.4→60.4 给出 +3.0。两处并列照录，不替论文选一个数字。
-
-Engram-40B 继续降低 Pile 与验证 loss，并在多数基准上高于 27B，但并未全面占优：MBPP 46.2 低于 MoE-27B 的 46.6，C3 61.8、HumanEval 38.4、MATH 30.6 低于 Engram-27B 的 63.6、40.8、30.7[^src-deepseek-2026-engram]。这源于欠训练：40B 与基线的训练 loss 差距在训练末段仍在扩大[^src-deepseek-2026-engram]。
-
-## 长上下文（Table 2）
-
-预训练后统一做 32k 上下文扩展：YaRN，$s=10$、$\alpha=1$、$\beta=32$、$f=0.707$，5,000 步、30B 长上下文 token[^src-deepseek-2026-engram]。比较四种配置：MoE-27B 50k 步；Engram-27B 的 41k、46k、50k 检查点。46k 被选为 iso-loss 点，其预训练 loss 与 MoE-27B 50k 相同[^src-deepseek-2026-engram]。
-
-| 模型 | LongPPL Book | Paper | Code | L-CoT | NIAH S | MK | MV | MQ | VT | CWE | FWE | QA |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| MoE-27B (50k, 1.63) | 4.38 | 2.91 | 2.49 | 14.16 | 100.0 | 88.0 | 92.7 | 84.2 | 77.0 | 4.5 | 73.0 | 34.5 |
-| Engram-27B (41k, 1.66) | 4.37 | 2.92 | 2.50 | 14.26 | 99.6 | 88.3 | 93.0 | 89.5 | 83.2 | 3.8 | 99.6 | 44.0 |
-| Engram-27B (46k, 1.63) | 4.19 | 2.84 | 2.45 | 13.59 | 97.6 | 89.0 | 95.5 | 97.0 | 87.2 | 4.3 | 98.6 | 37.5 |
-| Engram-27B (50k, 1.62) | 4.14 | 2.82 | 2.44 | 13.41 | 99.3 | 89.3 | 96.5 | 97.0 | 89.0 | 5.9 | 99.3 | 40.5 |
-
-- 41k 只有 82% 的预训练 FLOPs（41k 对 50k），LongPPL 四项中三项略高于 MoE-27B 50k（Paper 2.92 对 2.91、Code 2.50 对 2.49、L-CoT 14.26 对 14.16），Book 略低（4.37 对 4.38），论文概括为“matches”；RULER 已更高：MQ 89.5 对 84.2、VT 83.2 对 77.0、FWE 99.6 对 73.0[^src-deepseek-2026-engram]。
-- iso-loss（46k）下，MQ 97.0 对 84.2、VT 87.2 对 77.0；iso-FLOPs（50k）下进一步到 MQ 97.0、VT 89.0[^src-deepseek-2026-engram]。
-- 单针 NIAH 从 100.0 降到 46k 的 97.6，再回到 50k 的 99.3；CWE 一列两侧都低（4.5 对 5.9），论文没有单独解释[^src-deepseek-2026-engram]。
-
-论文把长上下文增益归因于局部依赖被查表接管，注意力容量腾给全局上下文[^src-deepseek-2026-engram]。该论断的证据来自上述对照分析。
+100B 参数的 Engram 层整体放主机 DRAM、插在第二个 block，按确定性下标异步预取并与第一个 block 的计算重叠：nano-vLLM + H800 上 Dense-4B 吞吐从 9,031.62 降到 8,858.28 tok/s（−1.92%）、Dense-8B 从 6,315.52 降到 6,140.02（−2.78%），论文概括为最高 2.8%。每步通信量随激活槽位数而非表大小增长；实验让读取全走 PCIe、不用 HBM 缓存，作为保守下界 [^src-deepseek-2026-engram]。
 
 ## 机制分析
 
 ### 实体消解需要多层计算（Table 3）
 
-Table 3 转引 Ghandeharioun et al. (2024) 的 PatchScope 案例：对 “Diana, Princess of Wales”，第 1–2 层只解析到 “Country in the United Kingdom / Wales”，第 3–5 层逐步解析出 “Princess of Wales” 称谓，第 6 层才出现完整实体与生平[^src-deepseek-2026-engram]。论文借此说明，静态实体需经多层 Attention 与 FFN 逐级组合，而查表可以直接替代该过程[^src-deepseek-2026-engram]。
+Table 3 转引 Ghandeharioun et al. (2024) 的 PatchScope 案例：对 “Diana, Princess of Wales”，第 1–2 层只解析到 “Country in the United Kingdom / Wales”，第 3–5 层解析出 “Princess of Wales” 称谓，第 6 层才出现完整实体与生平；论文借此说明静态实体需经多层 Attention 与 FFN 逐级组合，而查表可以直接替代该过程[^src-deepseek-2026-engram]。
 
 ### LogitLens 与 CKA
 
@@ -219,44 +162,15 @@ LogitLens 将每层隐藏状态输入最终 LM head，计算与最终输出分�
 
 ### 抑制 Engram 输出后的保留率（Figure 6）
 
-推理时置零稀疏嵌入输出且保持主干不动，会造成训练–推理不一致；论文重点报告信噪比较高的两类任务[^src-deepseek-2026-engram]：
-
-事实知识只剩 29%–44%，例如 TriviaQA 29%[^src-deepseek-2026-engram]；阅读理解保留 81%–93%，例如 C3 93%[^src-deepseek-2026-engram]。
-
-这组对照说明记忆模块主要承载静态事实知识，上下文 grounding 仍主要依靠主干注意力；此处属于后验抑制，并非正常推理路径[^src-deepseek-2026-engram]。
-
-## 消融与插入位置（Figure 5）
-
-消融主干为 12 层、3B MoE、0.56B 激活，训练 100B token；MoE 基线验证 loss 1.808[^src-deepseek-2026-engram]。参考配置加 1.6B Engram、$\{2,3\}$-gram，插入第 2 与第 6 层，验证 loss 1.768（$\Delta=0.04$）[^src-deepseek-2026-engram]。
-
-将 1.6B 集中为单个模块从第 1 层扫到第 12 层，第 2 层最优（1.770），第 1 层与更深层均变差[^src-deepseek-2026-engram]。其权衡在于：早插能在主干消耗深度前接管局部模式，但早期隐藏状态尚未聚合足够全局上下文，门控更粗；晚插门控更准但卸载效果减弱[^src-deepseek-2026-engram]。把同样 1.6B 预算拆到第 2、6 层，效果优于单层 1.770，达到 1.768，且分层插入有利于铺开预取窗口[^src-deepseek-2026-engram]。组件消融中，去掉多分支逐支路融合、上下文门控、tokenizer 压缩导致的回归最大；去掉轻量 depthwise 卷积只有边际影响；在固定 1.6B 预算下把容量分给 4-gram 略差，原因在于稀释了更常见的 2/3-gram，而在更大记忆下高阶 $N$-gram 仍有用[^src-deepseek-2026-engram]。
-
-Figure 5 仅给出曲线与标记，正文未提供逐项消融的数值差[^src-deepseek-2026-engram]。
-
-## 推理系统（Table 4）
-
-实验基于 nano-vLLM 与 H800，测试 512 条序列，长度 $\mathrm{Uniform}(100,1024)$；100B 参数的 Engram 层整体放在主机 DRAM，插入第二个 Transformer block，按确定性下标异步预取，与第一个 block 的计算重叠[^src-deepseek-2026-engram]。
-
-| 主干 | 配置 | 吞吐（tok/s） |
-|---|---|---:|
-| Dense-4B | 基线 | 9,031.62 |
-| Dense-4B | + 100B Engram（CPU offload） | 8,858.28 |
-| Dense-8B | 基线 | 6,315.52 |
-| Dense-8B | + 100B Engram（CPU offload） | 6,140.02 |
-
-吞吐损失分别为 1.92% 与 2.78%，论文概括为最高 2.8%[^src-deepseek-2026-engram]。每步通信量随激活槽位数而非表大小增长；实验让所有读取均走 PCIe 且不使用 HBM 缓存，以此作为保守下界[^src-deepseek-2026-engram]。该实验基于 dense 主干，而非 MoE 与 Engram 联合服务。
+推理时置零稀疏嵌入输出、主干不动，会造成训练–推理不一致；论文只报告信噪比较高的两类任务：事实知识只剩 29%–44%（TriviaQA 29%），阅读理解保留 81%–93%（C3 93%）[^src-deepseek-2026-engram]。记忆模块主要承载静态事实知识，上下文 grounding 仍靠主干注意力；这是后验抑制，不是正常推理路径[^src-deepseek-2026-engram]。
 
 ## 与同期查表路线
 
-论文从两点区分自身与 $N$-gram 嵌入/大表路线（§7）[^src-deepseek-2026-engram]：
-
-评测口径上，SCONE 面向推理且带额外模块与训练 FLOPs，不满足严格 iso-compute；OverEncoding 在稀疏 MoE 主干上即使不控参数也无明显收益；Engram 则在严格同参同 FLOPs 下与 MoE 对比，并给出分配律[^src-deepseek-2026-engram]。系统位置上，已有做法多把嵌入放在第 0 层，访存与计算串行；Engram 插到更深层，用前序层计算掩盖预取，并利用 $N$-gram 的 Zipf 分布做多级缓存[^src-deepseek-2026-engram]。
-
-更早的谱系包括 FastText 式子词嵌入、N-Grammer、BLT 的哈希 $N$-gram，以及 PKM/PEER 一类参数化记忆网络。论文将自身与它们的区别归结为两处：严格同参同 FLOPs 的评测口径，以及把嵌入放到更深层、用前序层计算掩盖预取的系统位置（§7）[^src-deepseek-2026-engram]。
+论文从两点区分自身与 $N$-gram 嵌入/大表路线：评测口径上，SCONE 面向推理且带额外模块与训练 FLOPs，不满足严格 iso-compute；OverEncoding 在稀疏 MoE 主干上即使不控参数也无明显收益；Engram 则在严格同参同 FLOPs 下与 MoE 对比，并给出分配律[^src-deepseek-2026-engram]。系统位置上，已有做法多把嵌入放在第 0 层，访存与计算串行；Engram 插到更深层，用前序层计算掩盖预取，并利用 $N$-gram 的 Zipf 分布做多级缓存（§7）[^src-deepseek-2026-engram]。更早的谱系包括 FastText 式子词嵌入、N-Grammer、BLT 的哈希 $N$-gram，以及 PKM/PEER 一类参数化记忆网络。论文将自身与它们的区别归结为两处：严格同参同 FLOPs 的评测口径，以及把嵌入放到更深层、用前序层计算掩盖预取的系统位置（§7）[^src-deepseek-2026-engram]。
 
 ## 边界
 
-规模只到 27B/40B 总参、3.8B 激活与 262B token；40B 未严格全面超过 27B，论文推测欠训练[^src-deepseek-2026-engram]。插入位置只在 12 层 3B 主干、100B token 上扫描；27B 固定第 2、15 层，缺少更大模型的位置扫描[^src-deepseek-2026-engram]。实验只系统测 $\{2,3\}$-gram；4-gram 仅在 1.6B 固定预算下略差，更大记忆预算下的高阶 $N$-gram 未验证[^src-deepseek-2026-engram]。长上下文只扩展到 32k，缺少 128k 或更长序列的结果[^src-deepseek-2026-engram]。文中未给出哈希碰撞率、碰撞对性能影响、表项数值精度或量化实验；Table 4 的 100B 表实验也未报告表的数据类型[^src-deepseek-2026-engram]。评测缺少训练吞吐与显存数字；推理吞吐只在 Dense-4B/8B 上测，不是 MoE 主干与 Engram 同时服务的场景[^src-deepseek-2026-engram]。U 形分配只在两个计算预算上测，未拟合函数形式；最优 $\rho\approx75\%$–$80\%$ 是在固定稀疏比约 10 下的结论[^src-deepseek-2026-engram]。方法未与 NSA/DSA 等注意力稀疏方法同台；“第三条稀疏轴”是定位与分配实验，不是跨轴对照实验[^src-deepseek-2026-engram]。全部实验均为预训练与上下文扩展评测，缺少下游指令微调、RLHF 或 agentic 任务结果[^src-deepseek-2026-engram]。Table 3 为转引；LogitLens/CKA 属表示层面的相关性证据，论文未做因果干预[^src-deepseek-2026-engram]。
+27B 只把 Engram 固定在第 2、15 层，更大模型没有位置扫描；4-gram 仅在 1.6B 固定预算下略差，更大记忆预算下的高阶 $N$-gram 未验证。未给哈希碰撞率、碰撞对性能的影响、表项位宽或量化实验，Table 4 的 100B 表也未报数据类型；推理吞吐只在 Dense-4B/8B 上测，不是 MoE 主干与 Engram 同时服务的场景，训练吞吐与显存数字也缺失。U 形分配只在两个计算预算上测、未拟合函数形式，最优 $\rho\approx75\%$–$80\%$ 是固定稀疏比约 10 下的结论；未与 NSA、DSA 同台，「第三条稀疏轴」来自定位与分配实验而非跨轴对照。全部实验为预训练与上下文扩展，缺少指令微调、RLHF 与 agentic 任务；Table 3 为转引，LogitLens/CKA 只是表示层面的相关性证据，没有因果干预 [^src-deepseek-2026-engram]。
 
 ## 相关页面
 

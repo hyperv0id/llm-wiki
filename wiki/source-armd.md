@@ -41,6 +41,6 @@ status: active
 - [[sliding-window-diffusion]] — 滑动窗口替代加噪的中间态生成
 - [[arma-inspired-diffusion]] — ARMA 启发的扩散范式
 - [[distance-based-devolution]] — 基于距离的线性去演化网络
-- [[timegrad]]、[[d3vae]]、[[diffusion-models]] — 对比与背景
+- [[timegrad]]、[[d3vae]]、[[diffusion-model]] — 对比与背景
 
 [^src-armd]: [[source-armd]]
