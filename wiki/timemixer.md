@@ -9,7 +9,7 @@ tags:
   - iclr-2024
 created: 2026-05-31
 last_updated: 2026-11-24
-source_count: 4
+source_count: 5
 confidence: medium
 status: active
 ---
@@ -91,6 +91,7 @@ GPU 内存和运行时间均优于 PatchTST，在输入长度 192–3072 范围�
 - **[[hephestus|HEPHAESTUS]]**：HEPHAESTUS（ICLR 2026 审稿中）将 TimeMixer 的固定下采样多尺度混合替换为输入自适应的 [[ams-moe|AMS-MoE]] 动态路由，并通过 [[periodic-temporal-attention|PTA]] 显式建模日/周周期。两者共享多尺度混合的基本思想，但 HEPHAESTUS 以 MoE 路由取代固定分解策略[^src-timemixer]。
 - **[[pir|PIR]]**：PIR（NeurIPS 2025）以 TimeMixer 为 channel-dependent 骨干测试后处理修订，论文报告 48 个设置平均 MSE 降 2.34%，作者将较小收益归因于 CD 模型已利用协变量信息[^src-pir]。
 - **[[source-timeseed|TimeSeed]]（同构反转）**：TimeMixer 对完整历史作 `AvgPool` 下采样并用全部尺度的线性预测器求和集成；面向极稀疏内生（4% 或单点）+ 稠密外生场景，TimeSeed（ICML 2026）反转多尺度方向——对稀疏内生作 $2^q$（$q=1..3$）上采样并过 MLP 专家，以 `Dense + Gumbel-Softmax` 选出单一最优分辨率重建历史，再与时频外生上下文合流预测[^src-timeseed]。
+- **[[source-tailfix|TailFix]]（同槽位对照）**：TimeMixer 采用确定性多尺度季节/趋势方向混合，而 TailFix（NeurIPS 2026）在 WPMixer 小波骨干上于尺度混合、通道增强与末端精修三处叠加零初始化门控残差（ETT 单组件消融仅变动 $0.004\text{–}0.009$）[^src-tailfix]。
 
 ## 局限性
 
@@ -104,3 +105,4 @@ GPU 内存和运行时间均优于 PatchTST，在输入长度 192–3072 范围�
 [^src-rstib]: [[source-rstib-mlp]]
 [^src-pir]: [[source-pir]]
 [^src-timeseed]: [[source-timeseed]]
+[^src-tailfix]: [[source-tailfix]]

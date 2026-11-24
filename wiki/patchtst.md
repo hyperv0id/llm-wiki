@@ -11,7 +11,7 @@ tags:
   - ICLR-2023
 created: 2026-05-30
 last_updated: 2026-11-24
-source_count: 13
+source_count: 14
 confidence: medium
 status: active
 ---
@@ -113,6 +113,7 @@ PatchTST 是 LSTF 领域的关键转折点 [^src-patchtst]：
 - **跨槽位正交（视觉-数值分解框架中的数值主干消融）**：[[source-dmmv|$\mathrm{D_{MMV}}$]]（NeurIPS 2025）在其「MAE 周期分支 + 线性趋势残差门控」消融中，将线性数值分支替换为 PatchTST，整体精度几乎不变（仅 ETTm1 略微改善），表明该双视图框架的增益源自回测残差分解与归一化层微调分工，而非数值主干本身的复杂度[^src-dmmv]
 - **窗外母题外推（瓶颈接力 $\Delta$）**：[[source-cometnet|CometNet]]（AAAI 2026）针对 PatchTST 在固定短回看窗（$L=96$）内仅做局部 patch 编码、无法捕捉跨数千步重现规律的视野瓶颈，在预测前从全训练集离线以 `MovingAvg + FFT + DTW` 聚类抽取 $K$ 个跨尺度母题原型，在线以 Dense MoE 内容门控匹配母题并注入生命周期相对相位信号；在 8 个标准 LTSF 基准（$L=96$）中 7 项平均 MSE/MAE 优于包括 PatchTST 在内的基线（但 862 维 Traffic 排第二，且引入离线建库开销与数据集绑定约束）[^src-cometnet]
 - **前置 token 压缩插件（跨槽位正交）**：[[source-timebase|TimeBase]]（ICML 2025）在 PatchTST 完成序列切分后、送入 Transformer 编码器前接入正交约束低秩基提取投影（将输入分段压缩为默认 $R=6$ 个时间基），可削减 PatchTST $77.7\%\text{–}93.0\%$ 的 MACs 且整体精度大体持平，但在 ETTh1/ETTh2（$H=720$）与 Weather（$H=336$）等设置上 MSE 轻微退回，且引入主周期 $P$ 先验[^src-timebase]
+- **被对比骨干（实证复现对齐）**：[[source-tailfix|TailFix]]（NeurIPS 2026）在 WPMixer 骨干外叠加零初始化门控残差以修正末端退化，但 Traffic（$L=1200$）实测 MSE $0.410$ 逊于 PatchTST（$0.391$）与原版 WPMixer（$0.403$）[^src-tailfix]
 - **核心概念**：[[patch-based-tokenization]], [[channel-independence]], [[instance-normalization]], [[lstf]]
 - **自监督/预训练**：[[mae|MAE]], [[videomae]], [[timesfm|TimesFM]], [[chronos]]
 
@@ -129,3 +130,4 @@ PatchTST 是 LSTF 领域的关键转折点 [^src-patchtst]：
 [^src-dmmv]: [[source-dmmv]]
 [^src-cometnet]: [[source-cometnet]]
 [^src-timebase]: [[source-timebase]]
+[^src-tailfix]: [[source-tailfix]]

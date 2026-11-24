@@ -387,6 +387,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-swift]] — Swift: An Autoregressive Consistency Model for Efficient Weather Forecasting (arXiv 2025)
 - [[source-t1]] — T1: One-to-One Channel-Head Binding for Multivariate Time-Series Imputation, CNN-Transformer hybrid (ICLR 2026)
 - [[source-tadiff]] — TADiff：前向 DDIM 条件剥离归因初始化隐态 + 目标文本去噪 + DTTC 对比微调的反事实预测（核心切片未标会议年份；仓库调研记 ICML 2026）
+- [[source-tailfix]] — TailFix：在 WPMixer 骨干外添加 3 处零初始化近恒等门控残差缓解 DF 尾部退化（NeurIPS 2026；ETT 消融仅变动 $0.004\text{–}0.009$，Traffic 实测逊于原版 WPMixer 与 PatchTST）
 - [[source-tcp]] — TCP-Diffusion: 多模态扩散模型全球 TC 降水预测，ARP 机制 + 多编码器 + NWP 集成，ICML 2025
 - [[source-team]] — TEAM: Topological Evolution-aware Framework for Traffic Forecasting (PVLDB 2024)
 - [[source-tedm]] — TEDM: first EDM-based TS forecasting framework with O(H) sampling via diffusion-physical time alignment (ICLR 2026)

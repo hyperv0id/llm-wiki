@@ -9,7 +9,7 @@ tags:
   - foundation-model
 created: 2026-07-13
 last_updated: 2026-11-24
-source_count: 6
+source_count: 7
 confidence: medium
 status: active
 ---
@@ -64,6 +64,7 @@ status: active
 - [[manf]] — NAR + 条件 RealNVP
 - [[multi-scale-attention]] — MANF 编码器技术
 - [[detr]] / [[object-queries]] — 视觉集合预测的并行解码（NAR 跨领域锚点）
+- [[source-tailfix|TailFix]] — 同槽位互斥（在 WPMixer 骨干后以门控 1D 深度可分离卷积对末端预测做一次前向非自回归精修）[^src-tailfix]
 
 [^src-probts]: [[source-probts]]
 [^src-maf]: [[source-maf]]
@@ -71,3 +72,4 @@ status: active
 [^src-detr]: [[source-detr]]
 [^src-tirex]: [[source-tirex]]
 [^src-timer-xl]: [[source-timer-xl]]
+[^src-tailfix]: [[source-tailfix]]

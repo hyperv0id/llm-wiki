@@ -4718,3 +4718,10 @@ Tier 2 轻量化入库（NeurIPS 2026；在 [[sparsetsf|SparseTSF]]「周期分�
 创建的页面：[[source-dsr-tsf]]
 更新的页面：[[sparsetsf]]（补瓶颈接力 Δ 与 Traffic 复现口径矛盾注记，source_count 3→4）, [[cross-period-sparse-forecasting]]（补瓶颈接力 Δ 与 Traffic 复现对照，source_count 2→3）, [[frequency-pathway-routing]]（补同构对比及对比矩阵行，source_count 2→3）, [[mixture-of-experts]]（补谱条件软路由前置残差特例与二维矩阵行，source_count 22→23）, [[cyclenet]]（补跨槽位正交对照，source_count 2→3）, [[hybrid-periodicity-decoupling]]（补跨槽位正交对照，source_count 2→3）, [[index]]
 ingest 报告：[[ingest-reports/2026-11-24-dsr-tsf|WHY 报告]]
+
+
+## [2026-11-24] ingest | TailFix: Mitigating Error Accumulation and Correcting Tail Deterioration in Long-Horizon Forecasting
+Tier 3 边缘轻量化入库（NeurIPS 2026；仅在既有 WPMixer 骨干的尺度混合、通道增强与末端精修三处叠加零初始化近恒等门控残差，未为方法或内部模块/指标新建独立页）。针对直接多步预测（DF）误差向预测窗口末端放大的现象，TailFix 用恒等直连加零初始化门控残差（`AvgPool` + 两层 MLP 尺度门控、两层 MLP 通道门控、末端 1D 深度可分离卷积精修）作温和修正并定义尾/头误差比指标 TAF（$\rho=0.25$）。7 个标准基准中 5 个平均 MSE 最优，但 ETT 上单组件消融仅变动 $0.004\text{–}0.009$（$1\%\text{–}3\%$）且未排除仅靠门控平滑优化的可能；Traffic（$L=1200$）MSE $0.410$ 实际逊于原版 WPMixer（$0.403$）与 PatchTST（$0.391$），Electricity 上未居首，TAF 为自造指标且缺下游相关性验证。
+创建的页面：[[source-tailfix]]
+更新的页面：[[direct-forecast]]（补设定归属与 TAF 引用，source_count 6→7）, [[timemixer]]（补同槽位对照引用，source_count 4→5）, [[ar-vs-nar-decoding]]（补同槽位互斥引用，source_count 6→7）, [[patchtst]]（补 Traffic 实测对比口径，source_count 13→14）, [[index]]
+ingest 报告：[[ingest-reports/2026-11-24-tailfix|WHY 报告]]
