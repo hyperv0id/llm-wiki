@@ -4704,3 +4704,10 @@ Tier 2 轻量化入库（ICML 2025, PMLR 267；由周期分段重排、正交正
 创建的页面：[[source-timebase]]
 更新的页面：[[sparsetsf]]（补同槽位互斥对照，source_count 2→3）, [[cyclenet]]（补同槽位对照，source_count 1→2）, [[patchtst]]（补跨槽位前置压缩宿主关系，source_count 12→13）, [[ltsf-linear]]（补瓶颈接力 Δ，source_count 4→5）, [[large-scale-spatial-temporal-graph]]（补 8,600 维 CA 纯时间算力对照参考，source_count 8→9）, [[index]]
 ingest 报告：[[ingest-reports/2026-11-24-timebase|WHY 报告]]
+
+
+## [2026-11-24] ingest | Baguan-TS: A Sequence-Native In-Context Learning Model for Time Series Forecasting with Covariates
+Tier 1 入库（ICML 2026, PMLR 306；建立机制页与源摘要页，未为 RBfcst 等内部组件建独立页）。针对表格化 ICL（如 [[tabpfn-ts|TabPFN-TS]]）依赖人工特征且延迟较高、而 [[timesfm|TimesFM]]/[[chronos|Chronos]] 等端到端序列模型缺乏推理期免梯度多示例 ICL 能力的断点，Baguan-TS 在序列原生四维张量 $[C{+}1, S, M{+}1, D]$ 上沿时间（RoPE）、变量、上下文三轴依次分解注意力，配合目标空间近邻检索校准（RBfcst）、训练期上下文过拟合辅助目标与 $[-10,10]$ 5,000 分箱 2D/3D 集成，单次前向约 $0.43\text{ s}$（约为 TabPFN-TS 延迟的 $1/10$）。在 `fev-bench-cov` 30 项任务上点预测（SQL $0.7997$、MASE）领先 TabPFN-TS（$0.8404$）与 TimesFM-2.5（$0.8276$），27 能源集居首，但概率校准 WQL 落后于 TabPFN-TS（$0.1724$ vs $0.1643$）；消融显示去掉 RBfcst 掉点最明显（$0.3859\to 0.4284$），而 X-space 检索已达 $0.4005$，表明主涨点在局部校准而非 Y-space 宣称。证据缺口：仅支持单目标+多元协变量预测；context-overfitting 缺下游指标表且 3D 三轴未逐轴消融；22.4M 参数量明细未见核心切片正文，全文无专设 Limitations 节。
+创建的页面：[[baguan-ts]], [[source-baguan-ts]]
+更新的页面：[[tsfm-covariate-adaptation-comparison]]（增补序列原生多样例 ICL 路线及对比矩阵列，source_count 10→11）, [[unified-covariate-adaptation]]（补同槽位互斥对照并清理 5 处禁用 emoji，source_count 1→2）, [[timesfm]]（补 `fev-bench-cov` 复现对齐与范式对照，source_count 12→13）, [[chronos]]（补离散分箱概率输出与协变量 ICL 分化对照，source_count 10→11）, [[tirex]]（补同词异构 ICL 与单/多变量边界对照，source_count 4→5）, [[in-context-learning]]（补序列原生多元 ICL 章节与对比矩阵行，source_count 4→5）, [[retrieval-based-condition-augmentation]]（补 RBfcst 与 RCA 跨槽位检索对照，source_count 1→2）, [[tabpfn-ts]]（补同槽位互斥与 `fev-bench-cov` 复现对齐，source_count 1→2）, [[index]]
+ingest 报告：[[ingest-reports/2026-11-24-baguan-ts|WHY 报告]]

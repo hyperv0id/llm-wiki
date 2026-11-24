@@ -8,8 +8,8 @@ tags:
   - covariate
   - iclr2026
 created: 2026-04-29
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-11-24
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -250,11 +250,17 @@ UniCA 适用于大多数主流 TSFMs：
 
 | TSFM | 架构类型 | 支持状态 |
 |------|----------|----------|
-| Chronos / Chronos-Bolt | Patch-based Transformer | ✓ |
-| TimesFM | Patch-based Decoder | ✓ |
-| Time-MoE | Mixture of Experts | ✓ |
-| Moirai | Patch-based T5 | ✓ |
-| MOMENT | Patch-based Transformer | ✓ |
+| Chronos / Chronos-Bolt | Patch-based Transformer | 支持 |
+| TimesFM | Patch-based Decoder | 支持 |
+| Time-MoE | Mixture of Experts | 支持 |
+| Moirai | Patch-based T5 | 支持 |
+| MOMENT | Patch-based Transformer | 支持 |
+
+---
+
+## 与序列原生 ICL 路线的对照
+
+在协变量接入槽位上，[[baguan-ts|Baguan-TS]]（ICML 2026）与 UniCA 构成**同槽位互斥**：UniCA 保留预训练单变量 TSFM 主干并借助协变量同质化（CH）与 Pre/Post 条件注意力池化（CAP）双融合适配异构协变量，优势在于支持文本、图像、分类等异构模态，代价是需要下游数据适配微调[^src-unca]；Baguan-TS 则不冻结外部单变量 TSFM，而是直接预训练时间–变量–上下文 3D 轴分解主干并辅以 Y-space 近邻检索，使推理期可通过多示例上下文学习免梯度利用多元协变量，但目前仅支持单目标预测与同质数值协变量[^src-baguan-ts]。
 
 ---
 
@@ -266,9 +272,11 @@ UniCA 适用于大多数主流 TSFMs：
 - [[covariate-homogenization]] — 协变量同质化
 - [[multimodal-time-series-forecasting]] — 多模态时间序列预测
 - [[most]] — MoST 原生多模态时空基础模型（对比：UniCA 适配现有 TSFMs，MoST 从零训练多模态）
+- [[baguan-ts]] — 序列原生 3D 轴分解 ICL 路线（同槽位互斥：免下游适配训练 vs 冻结 TSFM 异构适配）
 
 ---
 
 ## 引用
 
 [^src-unca]: [[source-unica]]
+[^src-baguan-ts]: [[source-baguan-ts]]

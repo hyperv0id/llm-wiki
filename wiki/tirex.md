@@ -11,7 +11,7 @@ tags:
   - neurips-2025
 created: 2026-11-24
 last_updated: 2026-11-24
-source_count: 4
+source_count: 5
 confidence: medium
 status: active
 ---
@@ -84,6 +84,7 @@ $$\begin{aligned}
 - **同槽位互斥对照与实证复现对齐（vs [[timesfm|TimesFM]] / [[chronos|Chronos-Bolt]]）**：在序列主干与多步展开两个槽位上，TiRex 用纯 sLSTM 与 CPM 占位延续替换了 Transformer 注意力和自回归点估计回喂，参数量从 200M/500M 压缩至 35M[^src-tirex][^src-timesfm][^src-chronos]。论文在相同预训练数据与相同增强下重新训练 Chronos-Bolt 作为受控对照，验证了纯架构与解码机制带来的长程优势[^src-tirex]。
 - **实证复现对齐（vs [[zeus|Zeus]]）**：TiRex 原文在剔除 16 个重叠设置的 81 项 GiftEval-ZS 上报告排名第一[^src-tirex]；而后续 [[zeus|Zeus]] 在完整 97 项 GIFT-Eval 上同台评测，报告 Zeus 取得 MASE 0.693 / CRPS 0.480、优于 TiRex 的 0.716 / 0.488，两份报告评测子集覆盖范围不同[^src-2607-01918]。
 - **跨槽位架构差分（vs 混合 xLSTM）**：TiRex 在循环算子选择上彻底剔除 mLSTM、只保留纯 sLSTM；消融表明一旦反向改为纯 mLSTM，长程预测性能会急剧退化，而只要混入 1 层 sLSTM 即可大幅恢复[^src-tirex]。
+- **同词异构与多变量能力对照（vs [[baguan-ts|Baguan-TS]]）**：TiRex 仅支持单变量输入，其「上下文学习」实为依靠纯 `sLSTM` 隐状态追踪单条历史窗口；[[baguan-ts|Baguan-TS]]（ICML 2026）则构建多示例跨样本 ICL，以时间–变量–上下文 3D 轴分解与 Y-space 近邻检索支持单目标加多元协变量预测，并在 `fev-bench-cov` 上将 TiRex 纳入同台对照[^src-baguan-ts]。
 
 | 模型 | 主干算子 | 多步预测展开 | 输出形式 | 代表参数规模 |
 |---|---|---|---|---|
@@ -109,8 +110,10 @@ $$\begin{aligned}
 - [[ar-vs-nar-decoding]] — 自回归、非自回归与占位式状态延续解码取舍
 - [[in-context-learning]] — 单序列上下文条件化与少样本演示的边界辨析
 - [[patchtst]] / [[tft]] — 长程零样本评测中超越的监督基线
+- [[baguan-ts]] — 序列原生多示例协变量 ICL 对照（跨样本检索 vs 单序列 sLSTM 隐状态延续）
 
 [^src-tirex]: [[source-tirex]]
 [^src-timesfm]: [[source-timesfm]]
 [^src-chronos]: [[source-chronos]]
 [^src-2607-01918]: [[source-2607-01918]]
+[^src-baguan-ts]: [[source-baguan-ts]]

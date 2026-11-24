@@ -8,7 +8,7 @@ tags:
   - prompting
 created: 2026-06-09
 last_updated: 2026-11-24
-source_count: 4
+source_count: 5
 confidence: medium
 status: active
 ---
@@ -35,14 +35,21 @@ status: active
 
 在多模态预测后修订（post-forecasting revision）槽位上，[[timesx|TimesX]] 的 `TextRev-ICL` 与上述直接条件化主干的用法呈**跨槽位正交**关系[^src-timesx]。免训练的直接文本修订代理（`TextRev`）容易放大预测方差与尾部误差，整体弱于简单的等权集成 `AvgEns`；`TextRev-ICL` 则在推理上下文中为大语言模型提供历史修订示例，并显式加入「保守不改」的回退选项，从而抑制过度修订并超越等权集成表现[^src-timesx]。
 
+## 序列原生多元时序与检索校准 ICL
+
+针对 [[tabpfn-ts|TabPFN-TS]] 需手工构造表格特征且延迟较高、而 [[tirex|TiRex]] 仅依托单序列 `sLSTM` 隐状态做「同词异构」上下文条件化的局面，[[baguan-ts|Baguan-TS]]（ICML 2026）在含协变量预测中引入了序列原生多示例 ICL[^src-baguan-ts]。它直接把目标历史、多元协变量与从归一化目标空间检索到的 $C$ 个近邻历史–未来片段（RBfcst）组织为四维张量 $[C{+}1, S, M{+}1, D]$，沿时间（带 RoPE）、变量、上下文三轴依次分解做自注意力；训练期还通过将上下文片段原样复制进 query 并施加自检索辅助损失（context overfitting），抑制高容量 ICL 模型输出坍缩为平滑均值[^src-baguan-ts]。
+
 | 方法代表 | 作用槽位 | 上下文内容来源 | 参数更新 | 控制稳定性/防退化机制 |
 |---|---|---|---|---|
 | [[weathergfm\|WeatherGFM]] | 主干预测（视觉输入端） | 多题「输入帧–目标帧」演示对与视觉提示 | 推理冻结（需混合模态预训练） | 统一掩码重建目标[^src-weathergfm] |
 | [[trace-as-state\|Trace as State]] | 同题第二遍推理输入端 | 同一道题的首轮推理轨迹文本 | 推理冻结 | 仅保留轨迹状态代理，隔离首轮答案[^src-trace-as-state] |
 | [[tirex\|TiRex]] | 单序列预测（隐状态递推） | 单条历史观测窗口与末尾缺失占位 | 推理冻结（需 CPM 预训练） | `sLSTM` 递推状态连续延续[^src-tirex] |
 | [[timesx\|TimesX (TextRev-ICL)]] | 预测后文本修订槽位 | 历史修订示例 + 四类真实时钟上下文 | 推理免训练 | 显式「保守不改」回退选项以抑制修订方差[^src-timesx] |
+| [[baguan-ts\|Baguan-TS]] | 序列原生主干预测（单目标+多元协变量） | 归一化目标空间检索的 $C$ 条近邻历史–未来片段（RBfcst） | 推理冻结（原生 3D 预训练） | 训练期上下文过拟合自检索辅助损失防均值坍缩[^src-baguan-ts] |
 
 ## 与相关范式的关系
+
+- [[baguan-ts]] — 序列原生 3D 轴分解与目标空间近邻检索驱动的多示例协变量 ICL（区别于 TiRex 单序列隐状态条件化与 TabPFN-TS 表格特征转换）
 
 - [[timesx]] — `TextRev-ICL` 在预测后文本修订槽位引入历史修订示例与保守回退（跨槽位正交）
 - [[tirex]] — 以单序列历史窗口与连续块掩码驱动零样本预测（同词异构的时序上下文条件化）
@@ -58,3 +65,4 @@ status: active
 [^src-trace-as-state]: [[source-trace-as-state]]
 [^src-tirex]: [[source-tirex]]
 [^src-timesx]: [[source-timesx]]
+[^src-baguan-ts]: [[source-baguan-ts]]

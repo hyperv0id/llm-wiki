@@ -8,7 +8,7 @@ tags:
   - iclr2024
 created: 2026-04-29
 last_updated: 2026-11-24
-source_count: 12
+source_count: 13
 confidence: high
 status: active
 ---
@@ -66,6 +66,7 @@ TimesFM 可以通过 UniCA 框架适配到协变量感知预测任务：
 - [[tirex]] — **同槽位互斥对照**：TiRex (NeurIPS 2025) 用 35M 纯 sLSTM + 连续块掩码（CPM）替换 Transformer 注意力与自回归点估计回喂，在 GiftEval-ZS（81 项设置）与 Chronos-ZS 上排名居首，且推理速度较 TimesFM-2.0 快 11 倍以上[^src-tirex]
 - [[timer-xl]] — **瓶颈接力 $\Delta$**：针对 TimesFM / 原版 Timer 等单变量自回归基础模型丢失跨通道交互的局限，Timer-XL 将非重叠时间块展平至 $NT$ 维上下文并引入 Kronecker 因果图掩码与置换等变偏置 $(u, v)$，统一单/多变量与协变量长上下文预测[^src-timer-xl]
 - [[timesx]] — **实证复现对齐**：在合成基准 CiK 上，TimesFM 排名落后于通用 LLM 与代码修订代理 `CodeRev`；而在 [[timesx|TimesX]] 的 19 域真实数值、真实时钟上下文且严格隔离 2024-07-01 模型知识截断的评测中，TimesFM 转为稳健领先于 Gemini 与 `CodeRev`[^src-timesx]
+- [[baguan-ts]] — **实证复现对齐与范式对照**：[[baguan-ts|Baguan-TS]]（ICML 2026）将 TimesFM-2.5 纳入 `fev-bench-cov`（30 项含协变量任务）同台对比，报告 Baguan-TS 点预测（SQL $0.7997$）领先于 TimesFM-2.5（$0.8276$）；机制上 TimesFM 需靠 UniCA 或 TimesFMX 等外部适配器扩展协变量，而 Baguan-TS 通过 3D 轴分解与 Y-space 检索在推理期实现免梯度多示例 ICL[^src-baguan-ts]
 
 ## DynaMix 对比
 
@@ -96,3 +97,4 @@ TimesFM 可以通过 UniCA 框架适配到协变量感知预测任务：
 [^src-tirex]: [[source-tirex]]
 [^src-timer-xl]: [[source-timer-xl]]
 [^src-timesx]: [[source-timesx]]
+[^src-baguan-ts]: [[source-baguan-ts]]

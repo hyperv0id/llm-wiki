@@ -7,8 +7,8 @@ tags:
   - cross-city-transfer
   - time-series
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-11-24
+source_count: 2
 confidence: high
 status: active
 ---
@@ -75,12 +75,15 @@ Three information sources are combined: geographic context ($h_i$), retrieved dy
 - **vs. standard RAG** (NLP): RCA retrieves from source cities' historical flow rather than a text corpus; filtering is dual-dimension (temporal + spatial similarity)[^src-craft]
 - **vs. [[rast|RAST]]** (AAAI 2026): RAST uses RAG for traffic **prediction** with FAISS-indexed spatio-temporal memory banks; RCA is designed for cross-city flow **generation** with geographic representation-based retrieval[^src-craft]
 - **vs. [[retrieval-guidance|MiDDiR retrieval guidance]]**: MiDDiR uses retrieval at diffusion inference time for score tilting; RCA uses retrieval at condition construction time for input augmentation[^src-craft]
+- **vs. [[baguan-ts|Baguan-TS]] (RBfcst)**: While RCA performs dual-filter (temporal + geographic similarity) retrieval to augment diffusion conditioning for unseen cities[^src-craft], Baguan-TS retrieves $K_{\text{ctx}}$ nearest neighbors in $z$-score normalized target space (Y-space RBfcst) to assemble in-context demonstrations for zero-shot covariate forecasting; ablation further shows X-space retrieval performs close to Y-space, indicating the gain stems primarily from local neighborhood calibration[^src-baguan-ts]
 
 ## See Also
 
 - [[craft]] — CRAFT model overview
+- [[baguan-ts]] — sequence-native ICL using Y-space RBfcst local calibration
 - [[geographic-feature-alignment]] — GFA, complement to RCA
 - [[cross-city-traffic-flow-generation]] — problem domain
 - [[retrieval-augmented-spatio-temporal-forecasting]] — RAG-for-STF paradigm
 
 [^src-craft]: [[source-craft]]
+[^src-baguan-ts]: [[source-baguan-ts]]

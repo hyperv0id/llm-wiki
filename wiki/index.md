@@ -50,6 +50,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-autoformer]] — Autoformer: decomposition transformers with auto-correlation (NeurIPS 2021)
 - [[source-autonomous-machine-intelligence]] — LeCun《A Path Towards Autonomous Machine Intelligence》v0.9.2（2022-06-27，62 页）立场论文：可配置认知架构 + JEPA/H-JEPA + 非对比 SSL 四项自述贡献与 8.1 节自述缺口（证据源为 PDF 全文，不在 raw/）
 - [[source-back-to-basics-let-denoising-generative-models-denoise]] — Back to Basics: Let Denoising Generative Models Denoise, x-prediction via plain ViT on pixel patches (Li & He, MIT, arXiv 2025)
+- [[source-baguan-ts]] — Baguan-TS: 序列原生时间–变量–上下文 3D 轴分解 + Y-space 近邻检索校准（RBfcst）+ 5,000 分箱 2D/3D 集成的多元协变量 ICL 基础模型，`fev-bench-cov` 点预测领先而 WQL 落后 TabPFN-TS（0.1724 vs 0.1643）（Yang et al., DAMO Academy, ICML 2026, PMLR 306）
 - [[source-beltagy-2020-longformer]] — Longformer: The Long-Document Transformer，滑动窗口 + 空洞 + 任务驱动 global 的 O(n) 稀疏注意力；RoBERTa 复制位置嵌入继续 MLM，六下游任务 dev 一致超 RoBERTa-base，WikiHop 81.9 / TriviaQA 77.3 提交时点 SOTA + LED 摘要变体（Beltagy, Peters & Cohan, AI2, arXiv:2004.05150v2；PDF raw/longformer-2004-05150.pdf）
 - [[source-benamou-brenier-blog]] — Benamou-Brenier 算法（博客笔记），最优传输的动态公式化与增广拉格朗日求解
 - [[source-beyond-imitation-mobility]] — Beyond Imitation: Generating Human Mobility from Context-aware Reasoning with LLMs (MobiGeaR)
@@ -477,6 +478,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[armd]] — ARMD, first continuous sequential diffusion TSF model; sliding-window evolution + linear distance-based devolution, unconditional, >10x faster (AAAI 2025)
 - [[aurora]] — Aurora, universal generative multimodal time series foundation model (ICLR 2026)
 - [[autoformer]] — Autoformer, decomposition transformer with auto-correlation (NeurIPS 2021)
+- [[baguan-ts]] — Baguan-TS，序列原生时间–变量–上下文 3D 轴分解 + Y-space 近邻检索（RBfcst）+ 5,000 分箱 2D/3D 集成的多元协变量 ICL 基础模型（ICML 2026）
 - [[bigst]] — BigST, linear-complexity STGNN scaling to ~100K nodes via PRF-kernel linearized spatial conv + cached long-sequence features (PVLDB 2024)
 - [[bist]] — BiST, lightweight bidirectional spatio-temporal prediction with MLP backbone + residual correction (PVLDB 2025)
 - [[causalx]] — CausalX, causally-interpretable plug-and-play multi-modal ST forecasting with multi-source causal constraints + diffusion graph refinement, ICML 2026
