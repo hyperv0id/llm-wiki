@@ -409,6 +409,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-time-moe]] — Time-MoE: 论文称首个稀疏 MoE 时序基础模型，decoder-only + 逐点 token 化 + 多分辨率预测头，2.4B 参数，Time-300B (309B pts)，ICLR 2025
 - [[source-time-vlm]] — Time-VLM: frozen VLM bridges temporal/visual/textual via RAL+VAL+TAL; few/zero-shot strong (ICML 2025, arXiv:2502.04395)
 - [[source-timebase]] — TimeBase: 按主周期切段提取正交约束低秩时间基（$R=6$，$0.39\text{K}$ 参数）线性重构未来并作 PatchTST 前置 token 压缩插件，17 常规集 16 项 Top-2、PatchTST MACs 降 $77.7\%\text{–}93.0\%$（ICML 2025, PMLR 267）
+- [[source-timebridge]] — TimeBridge: 按作用域正交解耦非平稳性——变量内 `Pad+AvgPool` 去趋势供 $Q,K$、$V$ 保留原始表示，MLP 压缩时间槽后做跨变量非平稳注意力，9 项 LTSF 8 项最优（ICML 2025, PMLR 267）
 - [[source-timecap]] — TimeCAP: contextualize, augment, and predict time series events with LLM agents (AAAI 2025 Oral)
 - [[source-timedit]] — TimeDiT: General-purpose Diffusion Transformers for Time Series Foundation Model (KDD 2025)
 - [[source-timegrad]] — TimeGrad: autoregressive denoising diffusion for probabilistic time series forecasting (ICML 2021)
@@ -686,6 +687,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[time-moe]] — Time-MoE, 论文称首个稀疏 MoE 时序基础模型系列，decoder-only + 逐点 token 化 + 多分辨率预测，最高 2.4B 参数，ICLR 2025
 - [[time-vlm]] — Time-VLM, endogenous multimodal TS forecasting with retrieval memory + VLM (ICML 2025)
 - [[timebench]] — TimeBench，Sundial 的万亿级 (1.032T) 时间序列预训练数据集
+- [[timebridge]] — TimeBridge，作用域正交非平稳长时预测模型：变量内 `Pad+AvgPool` 去趋势稳态 $Q,K$（$V$ 留非平稳）+ MLP 压缩时间槽后跨变量非平稳注意力（ICML 2025）
 - [[timecap]] — TimeCAP, dual LLM agent + multi-modal encoder framework for time series event prediction (AAAI 2025 Oral)
 - [[timedit]] — TimeDiT, general-purpose diffusion transformer for time series foundation model (KDD 2025)
 - [[timegrad]] — TimeGrad, first diffusion model for multivariate probabilistic time series forecasting (ICML 2021)

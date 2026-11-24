@@ -8,7 +8,7 @@ tags:
   - multivariate
 created: 2026-04-28
 last_updated: 2026-11-24
-source_count: 20
+source_count: 21
 confidence: high
 status: active
 ---
@@ -77,6 +77,10 @@ CPiRi 的通道打乱测试暴露了一个关键问题：大多数 CD 模型在�
 ### PESD-TSF：前段 CI 后段池化 CD 的跨槽位正交串行
 
 [[source-pesd-tsf|PESD-TSF]]（ICML 2026）与通道独立策略形成**跨槽位正交**分工：Stage 1 与 Stage 2 按 $(B\cdot C)$ 展平严格保持通道独立，完成日历周期乘性调制与去趋势稳态 $Q/K$ 时间注意力；Stage 3 经双分支下采样后先沿时间维做全局平均池化（GAP），再沿变量维引入时不变跨变量协同（CSCA）[^src-pesd-tsf]。ETTh1（$H=720$）消融显示，精度主要源于多尺度层级与串行顺序（跳过下采样升至 $0.452$、去 CSCA 仅升至 $0.447$ vs 满配 $0.437$），后端 CD 分支主要贡献在于 5,826 维高维场景下的单卡显存可行性[^src-pesd-tsf]。
+
+### TimeBridge：变量内 CI 去趋势与压缩后跨变量非平稳协同
+
+[[timebridge|TimeBridge]]（ICML 2025）同样采用「前段 CI、后段 CD」的**跨槽位正交**分工，并将非平稳性处理绑定至两个阶段：变量内时间注意力（Integrated Attention）严格保持通道独立，仅对 $Q,K$ 做 patch 级平滑去趋势以防短期伪相关、$V$ 保留原始趋势；经 MLP 将时间块数压至 $M$ 后，在压缩时间槽上切换为通道依赖的跨变量非平稳注意力（Cointegrated Attention）以捕获长期协整[^src-timebridge]。消融实验显示颠倒两阶段先后顺序（先跨变量再变量内压缩）或放反去趋势作用域，Traffic MSE 分别从 $0.360$ 退化至 $0.396$ 与 $0.381$[^src-timebridge]。
 
 ## 在 UniFlow 中的应用
 
@@ -155,6 +159,7 @@ CI 只规定逐序列处理，不规定超参在序列间共享多少。[[search
 - 相关：[[traceable-image-conversion]] — 包含 GCD 周期对齐的多变量复合热图转换技术[^src-2602-16681-vetime]
 - 相关：[[source-xlinear|XLinear]] — 单全局 token 门控注入外生变量的线性级折中方案（AAAI 2026）[^src-xlinear]
 - 相关：[[source-pesd-tsf|PESD-TSF]] — 跨槽位正交（前段保持 CI 去趋势时间注意力，后段经时间 GAP 引入变量维协同，ICML 2026）[^src-pesd-tsf]
+- 相关：[[timebridge|TimeBridge]] — 跨槽位正交（变量内 CI 去趋势稳态 $Q/K$ 注意力，压缩后切换跨变量非平稳注意力，ICML 2025）[^src-timebridge]
 
 [^src-simdiff]: [[source-simdiff]]
 [^src-patchtst]: [[source-patchtst]]
@@ -176,3 +181,4 @@ CI 只规定逐序列处理，不规定超参在序列间共享多少。[[search
 [^src-2602-16681-vetime]: [[source-2602-16681-vetime]]
 [^src-xlinear]: [[source-xlinear]]
 [^src-pesd-tsf]: [[source-pesd-tsf]]
+[^src-timebridge]: [[source-timebridge]]

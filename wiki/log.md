@@ -4754,3 +4754,11 @@ Tier 2 轻量化入库（核心切片正文未印具体会议名称、采用 PML
 创建的页面：[[source-renf]]
 更新的页面：[[direct-forecast]]（补 DF 特例与机制改良，source_count 7→8）, [[timemixer]]（补纯 MLP 同槽位互斥对照，source_count 5→6）, [[distdf]]（补跨槽位正交对照，source_count 3→4）, [[fredf]]（补时频 MAE 损失复用口径对照，source_count 3→4）, [[patchtst]]（补 8 项 LTSF 基准实证复现对齐，source_count 15→16）, [[median-of-means-ensemble]]（补跨槽位方差缩减与 VRH 启发边界对照，source_count 1→2）, [[index]]
 ingest 报告：[[ingest-reports/2026-11-24-renf|WHY 报告]]
+
+
+
+## [2026-11-24] ingest | TimeBridge: Non-Stationarity Matters for Long-term Time Series Forecasting
+Tier 1 入库（ICML 2025, PMLR 267；建立独立机制页与源摘要页，未为内部组件 `Integrated Attention` / `Cointegrated Attention` 建独立页）。针对时序预测中全局去平稳抹平跨变量趋势而全量保留又在短期变量内诱发伪相关的矛盾，TimeBridge 将序列切分为 patch 后以 `Pad + AvgPool` 作平滑差，在变量内通道独立注意力中仅将去趋势稳态分量送入 $Q,K$、$V$ 保留原始表示（免去反归一化），随后经 MLP 将时间块压至 $M$ 个时间槽并在各槽位上保留非平稳性执行跨变量自注意力，最后展平线性输出。主实验（固定 $L=720$ vs 基线调优 $L$ 口径）在 9 个 LTSF 基准中取得 8 项最优（较 TimeMixer 平均降 MSE $13.66\%$、较 ModernTCN 降 $5.56\%$），PeMS 亦领先，但在 ETTh2 上逊于 ModernTCN（$0.341$ vs $0.322$）与 PatchTST、PeMS04 MAE 略逊 TimeMixer，金融集 ARR 提升但波动与最大回撤更差；消融显示最大掉点来自放反去平稳作用域（Traffic $0.360\to 0.381$）或颠倒阶段顺序（$0.360\to 0.396$），单独去趋势贡献仅 $0.001\text{–}0.02$；协整假说在正文缺形式化定理（仅附录 OLS/ADF 定性佐证），且全文无独立 Limitations 节。
+创建的页面：[[timebridge]], [[source-timebridge]]
+更新的页面：[[source-pesd-tsf]]（补 `IntAttention` 继承关系与瓶颈接力 Δ，source_count 1→2）, [[source-renf]]（补时频 MAE 损失复用与 Traffic 0.357 vs 0.365 / FLOPs 复现对照，source_count 1→2）, [[itransformer]]（补同槽位互斥对照，source_count 5→6）, [[patchtst]]（补瓶颈接力 Δ，source_count 16→17）, [[timemixer]]（补同槽位互斥与复现口径对照，source_count 6→7）, [[channel-independence]]（补跨槽位正交阶段分工，source_count 20→21）, [[instance-normalization]]（补特例演进对照，source_count 10→11）, [[dataset-stationarity-estimation]]（补跨槽位正交对照，source_count 1→2）, [[index]]
+ingest 报告：[[ingest-reports/2026-11-24-timebridge|WHY 报告]]

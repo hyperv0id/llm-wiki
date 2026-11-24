@@ -11,7 +11,7 @@ tags:
   - ICLR-2023
 created: 2026-05-30
 last_updated: 2026-11-24
-source_count: 16
+source_count: 17
 confidence: medium
 status: active
 ---
@@ -115,7 +115,8 @@ PatchTST 是 LSTF 领域的关键转折点 [^src-patchtst]：
 - **前置 token 压缩插件（跨槽位正交）**：[[source-timebase|TimeBase]]（ICML 2025）在 PatchTST 完成序列切分后、送入 Transformer 编码器前接入正交约束低秩基提取投影（将输入分段压缩为默认 $R=6$ 个时间基），可削减 PatchTST $77.7\%\text{–}93.0\%$ 的 MACs 且整体精度大体持平，但在 ETTh1/ETTh2（$H=720$）与 Weather（$H=336$）等设置上 MSE 轻微退回，且引入主周期 $P$ 先验[^src-timebase]
 - **被对比骨干（实证复现对齐）**：[[source-tailfix|TailFix]]（NeurIPS 2026）在 WPMixer 骨干外叠加零初始化门控残差以修正末端退化，但 Traffic（$L=1200$）实测 MSE $0.410$ 逊于 PatchTST（$0.391$）与原版 WPMixer（$0.403$）[^src-tailfix]
 - **去趋势注意力与多尺度下采样（瓶颈接力 $\Delta$）**：[[source-pesd-tsf|PESD-TSF]]（ICML 2026）沿用通道独立时间注意力骨架，先用日历周期乘性门控调制输入，再将注意力 $Q,K$ 替换为 $3\times 1$ 平滑卷积去趋势后的稳态分量（$V$ 保留原始趋势），并接双分支多尺度下采样与池化跨变量注意力；ETTh1（$H=720$）消融表明其主要精度增益源自多尺度层级与串行顺序，而非后端跨变量协同[^src-pesd-tsf]
-- **纯时间 MLP 逐段拼接对比（实证复现对齐）**：[[source-renf|ReNF]] 在 8 个标准 LTSF 基准的同台实证对比中纳入 PatchTST 等基线（作者报告 ReNF 在其中 6 个数据集取得最优 MSE/MAE）；不同于 PatchTST 采用通道独立（CI）与 patch token 注意力[^src-patchtst]，ReNF 以纯时间维深度 MLP 堆叠与由短到长逐段拼接（BDO）实现预测，并沿用 TimeBridge 的 $1/n$ 短程加权时频 MAE 与 EMA 早停[^src-renf]。
+- **纯时间 MLP 逐段拼接对比（实证复现对齐）**：[[source-renf|ReNF]] 在 8 个标准 LTSF 基准的同台实证对比中纳入 PatchTST 等基线（作者报告 ReNF 在其中 6 个数据集取得最优 MSE/MAE）；不同于 PatchTST 采用通道独立（CI）与 patch token 注意力[^src-patchtst]，ReNF 以纯时间维深度 MLP 堆叠与由短到长逐段拼接（BDO）实现预测，并沿用 [[timebridge|TimeBridge]] 的 $1/n$ 短程加权时频 MAE 与 EMA 早停[^src-renf]。
+- **非对称去平稳与跨变量协同（瓶颈接力 $\Delta$）**：[[timebridge|TimeBridge]]（ICML 2025）沿用 PatchTST 的分块与变量内通道独立时间注意力骨架，但将同质 $Q/K/V$ 改为「$Q,K$ 取 patch 级平滑去趋势稳态分量、$V$ 保留未去趋势原始表示」以消除短期伪相关并省去反归一化，随后经 MLP 压缩至 $M$ 个时间槽并补入保留非平稳性的跨变量注意力；在 9 个标准 LTSF 基准中 8 项最优，但在 ETTh2 上仍逊于 ModernTCN（$0.341$ vs $0.322$）与 PatchTST[^src-timebridge]。
 - **核心概念**：[[patch-based-tokenization]], [[channel-independence]], [[instance-normalization]], [[lstf]]
 - **自监督/预训练**：[[mae|MAE]], [[videomae]], [[timesfm|TimesFM]], [[chronos]]
 
@@ -135,3 +136,4 @@ PatchTST 是 LSTF 领域的关键转折点 [^src-patchtst]：
 [^src-tailfix]: [[source-tailfix]]
 [^src-pesd-tsf]: [[source-pesd-tsf]]
 [^src-renf]: [[source-renf]]
+[^src-timebridge]: [[source-timebridge]]

@@ -5,8 +5,8 @@ tags:
   - time-series-forecasting
   - normalization
   - distribution-shift
-last_updated: 2026-10-24
-source_count: 10
+last_updated: 2026-11-24
+source_count: 11
 confidence: high
 status: active
 ---
@@ -76,6 +76,10 @@ RevIN 已被多种主流模型采用：iTransformer、PatchTST、SparseTSF 等[^
 
 [[searchcast|SearchCast]]（arXiv:2606.27282）在 Ridge 测试床上对归一化轴做联合搜索，发现 local normalization 在 ETTh1/ETTm2/Weather/Exchange 的 62–100% dataset–horizon 单元被选中，且最优作用域是窗口尾部 0.3%–30% 的分数（$\log_{10} r \in [-2.5, -0.5]$）——**full-window 归一化（即 RevIN 的整窗统计）几乎从不被选中**；ETTm2 与 Exchange 上最优尾部分数低至百分之几，论文归因于全窗口统计模糊了非平稳序列的 regime 边界[^src-2606-27282-ltsf-linear-models]。该结论口径为超参选择频率（Ridge + 四轴搜索、四数据集），非跨模型对照实验；机制详见 [[trailing-fraction-local-normalization]]。
 
+### 非对称局部去平稳替代全局 RevIN：TimeBridge 的 $Q/K$ 去趋势分工
+
+[[timebridge|TimeBridge]]（ICML 2025）构成了对全局 RevIN 的**特例演进**对照：RevIN 在序列入口整窗剥离统计量并在末端恢复，而 TimeBridge 指出非平稳趋势仅在单变量短程时间片内诱发伪相关、在跨变量之间却承载长期协整，因此将去平稳下沉至 patch 级平滑作差且**仅作用于变量内注意力的 $Q,K$**，$V$ 与压缩后的跨变量阶段保留原始非平稳性，从而省去末端反归一化[^src-timebridge]。
+
 ## 相关页面
 
 - [[unica|UniCA]] — 统一的协变量适应框架，被设计为RevIN的广义扩展，可处理异构协变量（分类/图像/文本）而不仅是数值序列的分布漂移[^src-unica]
@@ -86,6 +90,7 @@ RevIN 已被多种主流模型采用：iTransformer、PatchTST、SparseTSF 等[^
 - [[probts|ProbTS]] — 统一基准下 RevIN vs 均值缩放的系统对比[^src-probts]
 - [[ar-vs-nar-decoding]] — 与归一化交互的解码方案轴
 - [[zeus|Zeus]] — 论文自述在 point tokenization 前用 RevIN 去尺度变化 (ICML 2026)[^src-2607-01918]
+- [[timebridge|TimeBridge]] — 特例演进（patch 级去趋势仅作用于变量内 $Q/K$，保留 $V$ 与跨变量非平稳性，省去末端反归一化）[^src-timebridge]
 
 ## 引用
 
@@ -99,3 +104,4 @@ RevIN 已被多种主流模型采用：iTransformer、PatchTST、SparseTSF 等[^
 [^src-pir]: [[source-pir]]
 [^src-2606-27282-ltsf-linear-models]: [[source-2606-27282-ltsf-linear-models]]
 [^src-2607-01918]: [[source-2607-01918]]
+[^src-timebridge]: [[source-timebridge]]

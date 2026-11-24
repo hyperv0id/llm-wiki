@@ -7,8 +7,8 @@ tags:
   - time-series-forecasting
   - adaptive-retrieval
 created: 2026-08-19
-last_updated: 2026-08-19
-source_count: 1
+last_updated: 2026-11-24
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -64,11 +64,17 @@ s̄ 驱动两个自适应机制[^src-stationarity-aware-retrieval-augmented-fore
 
 来源：SARAF 论文 Table 1[^src-stationarity-aware-retrieval-augmented-forecasting-kdd26]。
 
+## 与模型内作用域分层非平稳建模的对照
+
+[[saraf|SARAF]] 的数据集级平稳性估计将非平稳性度量作为检索管线的外部控制信号，用于调节多样性与核带宽[^src-stationarity-aware-retrieval-augmented-forecasting-kdd26]。与之形成**跨槽位正交**对照，[[timebridge|TimeBridge]]（ICML 2025）不依赖前置统计检验，而是在网络内部按作用域分层处置非平稳信号：变量内短程时间注意力的 $Q,K$ 去趋势保持稳态以防伪相关，$V$ 与压缩后的跨变量注意力则保留非平稳性以捕获长期协整（协整假说在正文未作形式化定理证明，仅附录以 OLS 残差与 ADF 检验定性佐证）[^src-timebridge]。
+
 ## 相关概念
 
 - [[stationarity-aware-retrieval]] — 平稳性感知检索
 - [[diversity-based-retrieval-selection]] — 多样性选择由 s̄ 驱动
 - [[saraf]] — 使用该方法的框架
 - [[nsdiff]] — 另一种处理非平稳性的方法（概率扩散视角）
+- [[timebridge]] — 跨槽位正交对照（模型内按变量内去平稳 / 跨变量留非平稳分层处理）[^src-timebridge]
 
 [^src-stationarity-aware-retrieval-augmented-forecasting-kdd26]: [[source-stationarity-aware-retrieval-augmented-forecasting-kdd26]]
+[^src-timebridge]: [[source-timebridge]]
