@@ -10,7 +10,7 @@ tags:
   - iclr-2025
 created: 2026-11-24
 last_updated: 2026-11-24
-source_count: 6
+source_count: 7
 confidence: medium
 status: active
 ---
@@ -73,6 +73,7 @@ Timer-XL 在长上下文时序基础模型与多变量 Transformer 谱系中处�
 - **同槽位互斥对照（vs [[itransformer|iTransformer]]）**：同出清华大学团队的 [[itransformer|iTransformer]] 将整条序列压为 1 个 variate token、用 FFN 隐式处理时间，Timer-XL 则保留 patch 级因果时序依赖，用更高的 $\mathcal{O}(N^2 T^2)$ 联合注意力开销换取时间维上的细粒度因果建模与变长滚动能力[^src-timer-xl][^src-itransformer]。
 - **实证复现对齐与瓶颈接力 $\Delta$（vs [[cpiri|CPiRi]] 与 [[dits|DiTS]]）**：后续工作验证了展平单流注意力的扩展边界。[[cpiri|CPiRi]]（ICLR 2026）在 8,600 通道的 LargeST CA 基准上实测报告 Timer-XL 发生显存溢出（OOM），而采用时空解耦与通道打乱后复杂度降至 $\mathcal{O}(T^2 + N^2)$ 并可在 8GB 显存运行[^src-cpiri]；[[dits|DiTS]]（arXiv 2026）在协变量注意力消融中报告双流联合 variate attention 优于 Timer-XL 式展平单流注意力[^src-dits]。
 - **跨槽位正交（vs [[trace|TRACE]]）**：多模态检索器 [[trace|TRACE]]（NeurIPS 2025）将检索对压缩为软提示前置于冻结的 Timer-XL 上下文，实验表明包括 Timer-XL 在内的 decoder-only 基础模型对检索模态丰富度（数值加文本优于纯数值）比 encoder-only 模型更敏感[^src-trace-neurips2025]。
+- **同槽位互斥（vs [[source-pesd-tsf|PESD-TSF]]）**：面对高维多变量长序列下的显存瓶颈，Timer-XL 选择将全部变量与时间块展平做联合因果时空注意力（依赖 FlashAttention 压显存但 8,600 通道仍触发 OOM），而 PESD-TSF（ICML 2026）则在通道独立阶段完成去趋势时间注意力与多尺度下采样后，先沿时间维做全局平均池化（GAP）再执行变量维自注意力；该解耦设计在 5,826 维 Mobility 上保持 $8.37\text{ GB}$ 单卡显存可行，代价是抹平时间分辨率且失去 patch 级跨变量因果交互（且未在 Mobility 上报告预测精度）[^src-pesd-tsf][^src-cpiri]。
 
 | 架构代表 | 令牌粒度 | 跨变量交互方式 | 时序方向与解码 | 注意力理论复杂度 |
 |---|---|---|---|---|
@@ -100,6 +101,7 @@ Timer-XL 在长上下文时序基础模型与多变量 Transformer 谱系中处�
 - [[cpiri]] — 高维场景下针对展平耦合复杂度 OOM 的解耦对照
 - [[dits]] — 双流流匹配协变量注意力的同槽位消融对照
 - [[trace]] — 检索增强软提示注入冻结 Timer-XL 的正交插件
+- [[source-pesd-tsf|PESD-TSF]] — 同槽位互斥（高维先时间 GAP 聚合再变量解耦 vs 展平联合时空注意力，ICML 2026）
 - [[rope]] · [[flash-attention]] — 时序相对位置编码与线性显存实现基础
 
 [^src-timer-xl]: [[source-timer-xl]]
@@ -108,3 +110,4 @@ Timer-XL 在长上下文时序基础模型与多变量 Transformer 谱系中处�
 [^src-cpiri]: [[source-cpiri]]
 [^src-dits]: [[source-dits]]
 [^src-trace-neurips2025]: [[source-trace-neurips2025]]
+[^src-pesd-tsf]: [[source-pesd-tsf]]

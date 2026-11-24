@@ -283,6 +283,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-pdformer-jiang-2023]] — PDFormer: Propagation Delay-Aware Dynamic Long-Range Transformer for Traffic Flow Prediction（AAAI 2023），地理/语义双 mask 空间自注意力 + DFT 显式建模传播时延，6 数据集 17 基线
 - [[source-penguin]] — PENGUIN: 把 ALiBi 距离惩罚按 patch 后周期折叠成加性注意力偏置 + 一组一周期、组内共享 KV，9 数据集均值 0.300 vs CycleNet 0.317 / CATS 0.319，但 MSE 只在 ETT、Solar、Traffic 上最低（Sun, Chen & Sun, Fudan/小红书, AISTATS 2026, PMLR 300）
 - [[source-performer]] — Rethinking Attention with Performers（Choromanski et al., Google/Cambridge/DeepMind/Alan Turing Institute, ICLR 2021，会议标识 PDF 内核实；arXiv:2009.14794v4），FAVOR+：正随机特征无偏估计 softmax 核 + 正交化降方差，线性时空复杂度近似全秩 softmax 注意力（论文自述首个此类架构），MSE/尾界/一致收敛定理与 TrEMBL/ImageNet64/PG-19/LRA 实验
+- [[source-pesd-tsf]] — PESD-TSF: 日历周期乘性门控 + 去趋势稳态 Q/K 注意力 + 双分支下采样与时间 GAP 跨变量协同（三阶段串行），19 基准多数前二且 5,826 维 Mobility 单卡 8.37 GB 可行，ETTh1 消融表明精度主由层级与串行顺序驱动、Mobility 仅报工程指标未报精度（Wang et al., ICML 2026, PMLR 306）
 - [[source-phat]] — PHAT: period heterogeneity-aware Transformer with 3D bucket + PNA for MTSF (ICLR 2026)
 - [[source-physics-aware-reprogramming]] — REPST: Language Model Empowered ST Forecasting via Physics-Aware Reprogramming (arXiv 2024), Koopman 分解 + Gumbel-Softmax selective discrete reprogramming, METR-LA MAE 3.63
 - [[source-pi-mfm]] — PI-MFM: Physics-informed multimodal foundation model for solving PDEs, PDE-encoding MOL with physics losses in pretraining and adaptation (arXiv 2025)

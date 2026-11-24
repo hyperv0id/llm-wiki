@@ -8,7 +8,7 @@ tags:
   - multivariate
 created: 2026-04-28
 last_updated: 2026-11-24
-source_count: 19
+source_count: 20
 confidence: high
 status: active
 ---
@@ -73,6 +73,10 @@ CVPE (Cross-Variate Patch Embedding) 提出一种折中策略——仅在最轻�
 [[cpiri|CPiRi]] (ICLR 2026) 提出了一种更彻底的 CI-CD 融合方案——**时空解耦 + 排列不变正则化**[^src-cpiri]。其架构由三阶段组成：冻结局模型 (Sundial) 独立提取时间特征（CI 端）、可训练的空间模块通过 multi-head self-attention 学习内容驱动的跨通道关系（CD 端）、冻结局模型独立生成预测。关键创新在于训练策略：每次训练步随机打乱通道顺序，迫使空间模块基于时间特征的内容而非位置索引来推断通道间关系 [^src-cpiri]。
 
 CPiRi 的通道打乱测试暴露了一个关键问题：大多数 CD 模型在通道排列下的错误率飙升超过 100%（如 Informer 在 PEMS-08 上 WAPE 从 13.02% 升至 118.19%），揭示了它们依赖位置记忆而非内容推理 [^src-cpiri]。而 CPiRi 在所有打乱率下保持稳定（9.43% WAPE 不变），且在仅用 25% 通道训练时能以 ~70% 的训练时间成本泛化到全通道集合 [^src-cpiri]。
+
+### PESD-TSF：前段 CI 后段池化 CD 的跨槽位正交串行
+
+[[source-pesd-tsf|PESD-TSF]]（ICML 2026）与通道独立策略形成**跨槽位正交**分工：Stage 1 与 Stage 2 按 $(B\cdot C)$ 展平严格保持通道独立，完成日历周期乘性调制与去趋势稳态 $Q/K$ 时间注意力；Stage 3 经双分支下采样后先沿时间维做全局平均池化（GAP），再沿变量维引入时不变跨变量协同（CSCA）[^src-pesd-tsf]。ETTh1（$H=720$）消融显示，精度主要源于多尺度层级与串行顺序（跳过下采样升至 $0.452$、去 CSCA 仅升至 $0.447$ vs 满配 $0.437$），后端 CD 分支主要贡献在于 5,826 维高维场景下的单卡显存可行性[^src-pesd-tsf]。
 
 ## 在 UniFlow 中的应用
 
@@ -150,6 +154,7 @@ CI 只规定逐序列处理，不规定超参在序列间共享多少。[[search
 - 相关：[[vetime]] — CI 架构在视觉增强零样本异常检测中的应用与容量边界分析[^src-2602-16681-vetime]
 - 相关：[[traceable-image-conversion]] — 包含 GCD 周期对齐的多变量复合热图转换技术[^src-2602-16681-vetime]
 - 相关：[[source-xlinear|XLinear]] — 单全局 token 门控注入外生变量的线性级折中方案（AAAI 2026）[^src-xlinear]
+- 相关：[[source-pesd-tsf|PESD-TSF]] — 跨槽位正交（前段保持 CI 去趋势时间注意力，后段经时间 GAP 引入变量维协同，ICML 2026）[^src-pesd-tsf]
 
 [^src-simdiff]: [[source-simdiff]]
 [^src-patchtst]: [[source-patchtst]]
@@ -170,3 +175,4 @@ CI 只规定逐序列处理，不规定超参在序列间共享多少。[[search
 [^src-witran-jia-2023]: [[source-witran-jia-2023]]
 [^src-2602-16681-vetime]: [[source-2602-16681-vetime]]
 [^src-xlinear]: [[source-xlinear]]
+[^src-pesd-tsf]: [[source-pesd-tsf]]

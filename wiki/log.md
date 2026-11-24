@@ -4732,3 +4732,10 @@ Tier 3 边缘轻量化入库（NeurIPS 2026；仅在既有 WPMixer 骨干的尺�
 创建的页面：[[source-tailfix]]
 更新的页面：[[direct-forecast]]（补设定归属与 TAF 引用，source_count 6→7）, [[timemixer]]（补同槽位对照引用，source_count 4→5）, [[ar-vs-nar-decoding]]（补同槽位互斥引用，source_count 6→7）, [[patchtst]]（补 Traffic 实测对比口径，source_count 13→14）, [[index]]
 ingest 报告：[[ingest-reports/2026-11-24-tailfix|WHY 报告]]
+
+
+## [2026-11-24] ingest | PESD-TSF: A Period-Aware and Explicit Structured Decomposition Framework for Long-Term Time Series Forecasting
+Tier 2 轻量化入库（ICML 2026, PMLR 306；按三阶段串行重组日历周期乘性门控、$3\times 1$ 平滑去趋势非对称时间注意力、双分支下采样与时间 GAP 跨变量注意力及正交隐分量正则，未为 `pesd-tsf`、`IntAttention`、`CSCA`、`RLC` 新建 `source_count: 1` 独立页）。针对深层架构稀释日历先验与纯通道独立（CI）模型忽略跨变量协同的矛盾，PESD-TSF 前端以已知月/日/时日历编码做乘性调制 $(1+\gamma G)\odot X$，中段保持 CI 并将去趋势分量送入 $Q/K$（$V$ 保留趋势），后端经 `Conv1d+MaxPool` 下采样后沿时间维 GAP 压缩再做变量自注意力。实验在 19 个常规与跨领域基准多数进前二，但 ETTh1（$H=720$）消融揭示满配 $0.437$ 在跳过 Stage 2 跌至 $0.452$、重排顺序跌至 $0.448$ 而去 CSCA 仅升至 $0.447$，说明精度收益主由多尺度层级与串行顺序驱动，CSCA 主要价值在于 5,826 维高维显存可行性（Mobility $8.37\text{ GB}$ / $15.56\text{ s}$ vs iTransformer $19.30\text{ GB}$ / $30.76\text{ s}$）。缺口：不含通用动态外生协变量（仅利用已知日历先验），GAP 抹平时间分辨率且缺弱周期数据主表对照，Mobility 仅报显存与耗时工程指标而未报预测精度。
+创建的页面：[[source-pesd-tsf]]
+更新的页面：[[itransformer]]（补同构退化特例与 Mobility 显存/耗时对照，source_count 4→5）, [[patchtst]]（补瓶颈接力 Δ 与消融归因，source_count 14→15）, [[cross-dimension-dependency]]（二维矩阵收录前段 CI 后段 GAP 协同，source_count 7→8）, [[channel-independence]]（补跨槽位正交串行分工，source_count 19→20）, [[timer-xl]]（补高维同槽位互斥对照，source_count 6→7）, [[hybrid-periodicity-decoupling]]（补前置日历乘性门控跨槽位正交对照，source_count 3→4）, [[index]]
+ingest 报告：[[ingest-reports/2026-11-24-pesd-tsf|WHY 报告]]

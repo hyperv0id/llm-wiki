@@ -8,7 +8,7 @@ tags:
   - dependency
 created: 2026-05-30
 last_updated: 2026-11-24
-source_count: 7
+source_count: 8
 confidence: medium
 status: active
 ---
@@ -54,6 +54,10 @@ Cross-dimension dependency（跨维度依赖）是多变量时间序列 (MTS) �
 
 [[timer-xl|Timer-XL]]（ICLR 2025）与 [[itransformer|iTransformer]]、[[cpiri|CPiRi]] 构成**同槽位互斥**与**瓶颈接力 $\Delta$**对照：它将所有变量的非重叠时间块按时间优先展平为 $NT$ 个 token，在单流因果解码器内用时序 RoPE、变量轴置换等变标量偏置 $(u, v)$ 与 Kronecker 积掩码 $M = C \otimes T$ 同时建模跨时间与跨维度依赖（并借变量图 $C$ 兼容协变量输入）[^src-timer-xl]。这保留了 patch 级因果时序、避免了 iTransformer 将整条历史压成单 token 的信息损失，但理论计算复杂度升至 $\mathcal{O}(N^2 T^2)$；[[cpiri|CPiRi]] 在 8,600 通道 LargeST CA 上实测 Timer-XL 发生 OOM，反向印证了超高维下时空解耦的必要性[^src-cpiri]。
 
+### PESD-TSF：前段 CI 后段池化跨变量协同
+
+[[source-pesd-tsf|PESD-TSF]]（ICML 2026）在前端日历周期乘性门控与去趋势稳态 $Q/K$ 时间注意力阶段严格按通道独立处理，经双分支下采样后先沿时间维做全局平均池化（GAP），再沿变量维执行自注意力以规避高维 $\mathcal{O}(C^2 T^2)$ 复杂度爆炸[^src-pesd-tsf]。与 [[itransformer|iTransformer]] 相比，它属于**同构退化特例**（GAP 压缩版变量注意力，在 5,826 维 Mobility 上显存由 $19.30\text{ GB}$ 降至 $8.37\text{ GB}$），代价是抹平时间分辨率且仅能捕获时不变协同；与 [[timer-xl|Timer-XL]] 则属高维解耦与展平耦合的**同槽位互斥**对照[^src-pesd-tsf]。
+
 ## 正交设计决策轴对照
 
 | 代表方法 | Token 粒度 | 跨维度交互方式 | 时序建模与因果性 | 变量置换对称性 | 注意力理论复杂度 |
@@ -63,6 +67,7 @@ Cross-dimension dependency（跨维度依赖）是多变量时间序列 (MTS) �
 | [[itransformer\|iTransformer]] | 整序列 Variate Token | 变量维自注意力 | FFN 隐式映射时间[^src-itransformer] | 等变（无位置编码） | $\mathcal{O}(N^2)$ |
 | [[timer-xl\|Timer-XL]] | 多变量展平 Patch | 单流统一注意力 + 偏置 $(u,v)$ + 图掩码 $C$ | 因果解码器（$M = C \otimes T$）[^src-timer-xl] | 等变（双偏置 $u,v$） | $\mathcal{O}(N^2 T^2)$ |
 | [[cpiri\|CPiRi]] | 时空解耦通道表示 | 冻结时序编码 + 排列不变空间注意力 | 冻结编码器提取时间[^src-cpiri] | 等变（通道打乱正则） | $\mathcal{O}(T^2 + N^2)$ |
+| [[source-pesd-tsf\|PESD-TSF]] | 下采样后时间 GAP 变量向量 | 前段 CI，后段 GAP 池化变量维自注意力 | 日历门控 + 去趋势稳态 $Q/K$ 双向注意力[^src-pesd-tsf] | 等变（无变量位置编码） | 时间 CI + 变量自注意力（规避 $\mathcal{O}(C^2 T^2)$） |
 
 ## 与 Cross-Time Dependency 的关系
 
@@ -87,6 +92,7 @@ MTS 预测需要同时建模两种依赖 [^src-crossformer-2023]：
 - [[router-mechanism-for-cross-dimension]] — 降低跨维度注意力复杂度的路由机制
 - [[itransformer]] — 反转范式：attention 作用于 variate token 维度
 - [[multivariate-correlation-attention]] — iTransformer 的变量间注意力
+- [[source-pesd-tsf|PESD-TSF]] — 前段 CI 去趋势时间注意力 + 后段 GAP 池化跨变量协同（同构退化特例，ICML 2026）
 
 [^src-lstnet]: [[source-lstnet]]
 [^src-crossformer-2023]: [[source-crossformer-2023]]
@@ -95,3 +101,4 @@ MTS 预测需要同时建模两种依赖 [^src-crossformer-2023]：
 [^src-cpiri]: [[source-cpiri]]
 [^src-patchtst]: [[source-patchtst]]
 [^src-timer-xl]: [[source-timer-xl]]
+[^src-pesd-tsf]: [[source-pesd-tsf]]
