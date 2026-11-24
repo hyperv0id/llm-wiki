@@ -4805,3 +4805,10 @@ Tier 2 轻量化入库（ICML 2024, PMLR 235；基于八类异构 `Conv1d`/线�
 创建的页面：[[source-cats]]
 更新的页面：[[source-timexer]]（补真实外部外生 vs 内部自造 ATS 同槽位互斥，source_count 5→6）, [[crosslinear]]（补同槽位互斥对照与 Links，source_count 4→5）, [[channel-independence]]（补 CI/CD 演进折衷与强弱耦合反转消融，source_count 21→22）, [[patchtst]]（补同槽位对比与窗口口径差异，source_count 18→19）, [[ltsf-linear]]（补 DLinear 插件宿主增益与输入口径对照，source_count 6→7）, [[index]]
 ingest 报告：[[ingest-reports/2026-11-24-cats|WHY 报告]]
+
+
+## [2026-11-24] ingest | Enhancing the Maximum Effective Window for Long-Term Time Series Forecasting (PIH)
+Tier 2 轻量化入库（核心切片未见明确会议标识、仅 checklist 为 AAAI 模板，本仓库 OpenReview CCF-A 调研记录其录用于 NeurIPS 2025 Poster；基于 PatchTST + `MLP + Sigmoid` / `Gumbel-Sigmoid` 变分信息瓶颈加噪（IBF）+ Mamba 长程滤波与分块短序列 Transformer（HTM），未为 `pih`、`maximum-effective-window`、`IBF`、`HTM` 新建 `source_count: 1` 独立页）。针对长回看窗历史冗余诱发注意力摊薄与过拟合的问题，PIH 形式化定义最大有效窗口（MEW）并通过 IBF 与 HTM 联合推长有效窗口；在 $L=1024$ 下总体优于 PatchTST、Bi-Mamba 与 DLinear 且显存与耗时降为 PatchTST 的 $1/2\text{–}1/3$，但在短窗 $L=96$ 反而落后 PatchTST。Ablation 与边界：正文唯一消融仅给出柱/折线图而无数值表，无法量化拆出单个组件的精确掉点量级；对 PatchTST 的 MEW 扩张较温和（ETTh1/ECL $512\to 1024$、ETTm1 $1024\to 1440$，Traffic/ETTh2 基本持平或触顶、Weather 拉长后 MSE 仍微升）；与 [[lookback-horizon-scaling]] / [[source-2606-27282-ltsf-linear-models|SearchCast]]（按单序列-单步长搜索最优 $L^*$ 且可呈负斜率）形成视角张力对照；缺 Exchange 数据集、统计显著性检验与 LLM/TSFM 基线，且 MEW 取整依赖离散粗网格。
+创建的页面：[[source-pih]]
+更新的页面：[[patchtst]]（补长窗滤波与 MEW 温和扩窗及 $L=96$ 落后瓶颈接力 Δ，source_count 19→20）, [[lookback-horizon-scaling]]（补架构滤波推长 MEW vs 逐序列步长幂律 $L^*$ 视角张力，source_count 2→3）, [[source-2606-27282-ltsf-linear-models]]（补 SearchCast 跨源视角张力与去正文中开篇章节坐标，source_count 1→2）, [[information-bottleneck-principle]]（补长程时序窗口滤波 `Gumbel-Sigmoid` 同构应用，source_count 1→2）, [[mamba]]（补 Mamba 长程滤波 + 分块 Transformer 跨槽位正交混合，source_count 5→6）, [[index]]
+ingest 报告：[[ingest-reports/2026-11-24-pih|WHY 报告]]

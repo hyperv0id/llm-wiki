@@ -11,7 +11,7 @@ tags:
   - ICLR-2023
 created: 2026-05-30
 last_updated: 2026-11-24
-source_count: 19
+source_count: 20
 confidence: medium
 status: active
 ---
@@ -119,6 +119,7 @@ PatchTST 是 LSTF 领域的关键转折点 [^src-patchtst]：
 - **非对称去平稳与跨变量协同（瓶颈接力 $\Delta$）**：[[timebridge|TimeBridge]]（ICML 2025）沿用 PatchTST 的分块与变量内通道独立时间注意力骨架，但将同质 $Q/K/V$ 改为「$Q,K$ 取 patch 级平滑去趋势稳态分量、$V$ 保留未去趋势原始表示」以消除短期伪相关并省去反归一化，随后经 MLP 压缩至 $M$ 个时间槽并补入保留非平稳性的跨变量注意力；在 9 个标准 LTSF 基准中 8 项最优，但在 ETTh2 上仍逊于 ModernTCN（$0.341$ vs $0.322$）与 PatchTST[^src-timebridge]。
 - **跨窗口一致性正则对照（实证复现对齐）**：[[source-alio|AliO]]（NeurIPS 2025）在 7 类 CI/CD 骨干上验证相邻滚动窗口重叠输出一致性损失，其中 PatchTST 沿用官方 $L=336$ 回看配置参与主表复现对齐；接入 AliO 可大幅压低跨窗口重叠差异 TAM，但常规 MSE 在 ECL/Weather 基本持平、主要在初始一致性极差的 ILI 上降低（17.4%），且论文缺独立组件消融表[^src-alio]。
 - **同槽位对比（虚拟辅助外生通道 + 共享 MLP）**：[[source-cats|CATS]]（ICML 2024）同样规避纯通道混合对单序列时序建模的噪声污染，但放弃局部 patch 自注意力，改为从原始序列内部以 8 类异构构造器生成虚拟辅助外生序列（ATS）并与原序列共用 2 层 MLP 并行预测，配合 OTS 残差捷径、连续性平滑损失与通道/时间稀疏截断；作者报告 CATS 在 9 个标准集平均相对 Repeat MSE 为 43.9%（PatchTST 为 55.4%），但 CATS 固定 $L_I=720$ 配时间稀疏截断，而基线从 $\{96,192,336,720\}$ 调优[^src-cats]。
+- **长窗滤波与 MEW 外推（瓶颈接力 $\Delta$）**：[[source-pih|PIH]] 以 PatchTST 为宿主串联变分信息瓶颈门控加噪（IBF）与「Mamba 长程滤波 + 分块短序列 Transformer」（HTM），在 $L=1024$ 下将显存与耗时压至 PatchTST 的 $1/2\text{–}1/3$，但对 PatchTST 的最大有效窗口（MEW）扩张较为温和（ETTh1/ECL $512\to 1024$、ETTm1 $1024\to 1440$，Traffic 与 ETTh2 基本持平或触顶、Weather 拉长后 MSE 仍微升），在短窗 $L=96$ 下反而落后 PatchTST，且正文消融仅有图示无量化数值表[^src-pih]。
 - **核心概念**：[[patch-based-tokenization]], [[channel-independence]], [[instance-normalization]], [[lstf]]
 - **自监督/预训练**：[[mae|MAE]], [[videomae]], [[timesfm|TimesFM]], [[chronos]]
 
@@ -141,3 +142,4 @@ PatchTST 是 LSTF 领域的关键转折点 [^src-patchtst]：
 [^src-timebridge]: [[source-timebridge]]
 [^src-alio]: [[source-alio]]
 [^src-cats]: [[source-cats]]
+[^src-pih]: [[source-pih]]

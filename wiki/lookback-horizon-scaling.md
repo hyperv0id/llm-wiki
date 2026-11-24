@@ -8,7 +8,7 @@ tags:
   - ltsf
 created: 2026-10-24
 last_updated: 2026-11-24
-source_count: 2
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -58,14 +58,17 @@ Weather 是唯一 per-series 指数紧密聚在中位数附近的数据集；ETT
 - [[lstf]] 既有论断："Transformer 随回看窗口增长性能不提升、LTSF-Linear 显著提升"（Zeng et al. 2022）；PatchTST 是唯一随 lookback 增大持续降 MSE 的 Transformer。本页补充：即便在线性模型内部，最优 $L$ 也不是常数，而是 series-specific 且对 horizon 非单调[^src-2606-27282-ltsf-linear-models]。
 - 该结论口径在 Ridge + 搜索式预处理下测得（论文自述局限），推广到其他模型类属 future work[^src-2606-27282-ltsf-linear-models]。
 - **绕开长回看约束的外置记忆路线**：[[source-cometnet|CometNet]]（AAAI 2026）与直接拉长输入回看长度 $L$ 形成路线对照——它保持固定短回看窗（$L=96$），改在训练前通过 `MovingAvg + FFT + DTW` 聚类从全训练序列离线抽取 $K$ 个跨尺度母题原型，在线以 Dense MoE 内容门控与生命周期相对相位信号补足长程上下文，在固定 $L=96$ 的 8 个基准上取得 7 项平均 MSE/MAE 最优（862 维 Traffic 逊于 TimeMixer++ 排第二），但母题库绑定训练集，缺乏与搜索长 $L^*$ 线性基线的对照及跨库迁移评测[^src-cometnet]。
+- **架构滤波外推 MEW 的视角张力对照**：[[source-pih|PIH]] 将「继续拉长回看窗口不再改善 MSE 的临界长度」定义为最大有效窗口（MEW），试图以变分信息瓶颈门控加噪（IBF）与 Mamba 分块混合（HTM）统一外推有效回看上限；这与本页「按单序列、单步长搜索最优 $L^*$ 且斜率 $b$ 可为负（Exchange/Traffic 为 $-0.19$）」形成直接视角对照——PIH 的 MEW 取整依赖离散粗网格、缺 Exchange 与统计显著性检验，且实测对 PatchTST 仅在 ETTh1/ECL（$512\to 1024$）与 ETTm1（$1024\to 1440$）温和扩窗，Traffic/ETTh2 基本持平或触顶、Weather 拉长后 MSE 仍微升[^src-pih]。
 
 ## 关联页面
 
 - [[searchcast]] — 测得该规律的管线
 - [[source-2606-27282-ltsf-linear-models]] — 源摘要
 - [[source-cometnet]] — 固定短回看窗 + 离线母题库检索的绕行路线对照
+- [[source-pih]] — 架构滤波外推 MEW 与本页逐序列-步长幂律 $L^*$ 的视角张力对照
 - [[ltsf-linear]] / [[patchtst]] — lookback 敏感性的既有对照
 - [[lstf]] — LSTF 问题设定
 
 [^src-2606-27282-ltsf-linear-models]: [[source-2606-27282-ltsf-linear-models]]
 [^src-cometnet]: [[source-cometnet]]
+[^src-pih]: [[source-pih]]

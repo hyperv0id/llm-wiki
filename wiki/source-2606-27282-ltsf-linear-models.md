@@ -7,8 +7,8 @@ tags:
   - hyperparameter-search
   - preprocessing
 created: 2026-10-24
-last_updated: 2026-10-24
-source_count: 1
+last_updated: 2026-11-24
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -20,15 +20,15 @@ status: active
 
 ## 核心论点
 
-论文反对"更大架构解锁精度"的领域趋势（从专用 Transformer 到 foundation model），主张大部分精度差距可通过调预处理而非扩模型在远低成本下弥合（Abstract）[^src-2606-27282-ltsf-linear-models]。因果解释：固定一套预处理超参的评测惯例系统性不利于低容量模型——百万参数 Transformer 能部分吸收糟糕的 lookback 或归一化选择，线性模型不能，导致线性方法"看起来比实际弱"（§1）[^src-2606-27282-ltsf-linear-models]。
+论文反对"更大架构解锁精度"的领域趋势（从专用 Transformer 到 foundation model），主张大部分精度差距可通过调预处理而非扩模型在远低成本下弥合。因果解释：固定一套预处理超参的评测惯例系统性不利于低容量模型——百万参数 Transformer 能部分吸收糟糕的 lookback 或归一化选择，线性模型不能，导致线性方法"看起来比实际弱"[^src-2606-27282-ltsf-linear-models]。
 
 ## 方法
 
-以 Toner & Darlow 统一结论（DLinear/NLinear 等变体等价于增强特征上的无约束线性回归）为起点，模型固定为闭式解 Ridge 回归、逐 variate 独立（channel-independent），预算全部投向四条预处理轴：context length $L \in [32, 2048]$（log）、local normalization（尾部分数 $r \in [0.001, 1]$）、augmentation（时/频域加噪 $\sigma \in [0.001, 0.5]$）、正则 $\alpha$ 内层 21 点网格；通过 $(g_h, g_s)$ 分组搜索在"全局共享"与"逐 horizon 逐序列"两极端间连续移动（§3）[^src-2606-27282-ltsf-linear-models]。详见 [[searchcast]]。
+以 Toner & Darlow 统一结论（DLinear/NLinear 等变体等价于增强特征上的无约束线性回归）为起点，模型固定为闭式解 Ridge 回归、逐 variate 独立（channel-independent），预算全部投向四条预处理轴：context length $L \in [32, 2048]$（log）、local normalization（尾部分数 $r \in [0.001, 1]$）、augmentation（时/频域加噪 $\sigma \in [0.001, 0.5]$）、正则 $\alpha$ 内层 21 点网格；通过 $(g_h, g_s)$ 分组搜索在"全局共享"与"逐 horizon 逐序列"两极端间连续移动[^src-2606-27282-ltsf-linear-models]。详见 [[searchcast]]。
 
 ## 关键证据
 
-8 个 benchmark 上（§4.2，Table 1）：线性类内 7/8 数据集平均 MSE 最优（ETTh2 与 FITS 打平 0.334 vs 0.333），对 OLS 降幅 ETTm2 4.8%、ETTh1 4.3%、Exchange 14.8%；对非线性基线（PatchTST/iTransformer/TimeMixer/TimesNet/Autoformer）6/8 平均最优，两处失利均输给 PatchTST 且集中于最大两数据集（Electricity 0.159 平、Traffic 0.404 vs 0.391）[^src-2606-27282-ltsf-linear-models]。三项诊断发现：最优 lookback 与 horizon 的幂律指数从 +0.46（ETTm2）到 −0.19（Exchange/Traffic）（§5.1）；局部归一化在 62–100% 单元被选中且最优尾部分数 0.3%–30%，全窗口归一化几乎从未被选中（§5.4）；跨序列超参共享的最优程度因数据集而异（§5.2）[^src-2606-27282-ltsf-linear-models]。
+8 个 benchmark 上：线性类内 7/8 数据集平均 MSE 最优（ETTh2 与 FITS 打平 0.334 vs 0.333），对 OLS 降幅 ETTm2 4.8%、ETTh1 4.3%、Exchange 14.8%；对非线性基线（PatchTST/iTransformer/TimeMixer/TimesNet/Autoformer）6/8 平均最优，两处失利均输给 PatchTST 且集中于最大两数据集（Electricity 0.159 平、Traffic 0.404 vs 0.391）[^src-2606-27282-ltsf-linear-models]。三项诊断发现：最优 lookback 与 horizon 的幂律指数从 +0.46（ETTm2）到 −0.19（Exchange/Traffic）；局部归一化在 62–100% 单元被选中且最优尾部分数 0.3%–30%，全窗口归一化几乎从未被选中；跨序列超参共享的最优程度因数据集而异[^src-2606-27282-ltsf-linear-models]。
 
 ## 局限（论文自述，Appendix D）
 
@@ -40,5 +40,7 @@ status: active
 - lookback–horizon 幂律与长程自相关证据 → [[lookback-horizon-scaling]]
 - 尾部比例局部归一化 → [[trailing-fraction-local-normalization]]
 - 分组超参搜索 → [[grouped-hyperparameter-search]]
+- 跨源视角张力对照 → [[source-pih|PIH]]（固定离散粗网格 + 变分信息瓶颈/Mamba 分块滤波试图统一推长 MEW，与本文闭式 Ridge 逐序列步长搜索 $L^*$ 且可呈负斜率形成视角对照；PIH 缺 Exchange 集与显著性检验，且短窗 $L=96$ 落后 PatchTST）[^src-pih]
 
 [^src-2606-27282-ltsf-linear-models]: [[source-2606-27282-ltsf-linear-models]]
+[^src-pih]: [[source-pih]]

@@ -6,8 +6,8 @@ tags:
   - sequence-modeling
   - linear-complexity
 created: 2026-05-08
-last_updated: 2026-10-27
-source_count: 5
+last_updated: 2026-11-24
+source_count: 6
 confidence: high
 status: active
 ---
@@ -71,9 +71,11 @@ SSD-TS introduces BAM (bidirectional Mamba + temporal attention for intra-channe
 - [[source-gu-dao-2023-mamba|Mamba 原始论文摘要]]
 - [[e2-cstp|E²-CSTP]] — GCN+Mamba 混合时空编码器，17-56% 效率提升 vs Transformer (NeurIPS 2025)
 - [[rivermamba|RiverMamba]] — 首个全球 0.05° 河流流量和洪水预报 Mamba 模型，空间填充曲线 + LOAN + Hindcast-Forecast 架构 (NeurIPS 2025)
+- [[source-pih|PIH]] — 跨槽位正交混合：在 `Patch Embedding` 后先用 Mamba 承担长程滤波，再经变分信息瓶颈门控加噪（IBF）与分块切分（HTM）交由短序列 Transformer 处理局部交互，$L=1024$ 下显存与耗时降至 PatchTST 的 $1/2\text{–}1/3$，但短窗 $L=96$ 落后 PatchTST 且正文消融仅有图示无量化表[^src-pih]
 
 [^src-demystify-mamba-linear-attention-2024]: [[source-demystify-mamba-linear-attention-2024]]
 [^src-gu-dao-2023-mamba]: [[source-gu-dao-2023-mamba]]
 [^src-ssdts]: [[source-ssdts]]
 [^src-rivermamba]: [[source-rivermamba]]
 [^src-moonshot-2025-kimi-linear]: [[source-moonshot-2025-kimi-linear]]
+[^src-pih]: [[source-pih]]

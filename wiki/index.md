@@ -291,6 +291,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-phat]] — PHAT: period heterogeneity-aware Transformer with 3D bucket + PNA for MTSF (ICLR 2026)
 - [[source-physics-aware-reprogramming]] — REPST: Language Model Empowered ST Forecasting via Physics-Aware Reprogramming (arXiv 2024), Koopman 分解 + Gumbel-Softmax selective discrete reprogramming, METR-LA MAE 3.63
 - [[source-pi-mfm]] — PI-MFM: Physics-informed multimodal foundation model for solving PDEs, PDE-encoding MOL with physics losses in pretraining and adaptation (arXiv 2025)
+- [[source-pih]] — PIH: 变分信息瓶颈门控加噪（IBF）+ Mamba 长程滤波与分块短序列 Transformer（HTM）外推最大有效窗口 MEW；$L=1024$ 降显存耗时至 PatchTST 的 $1/2\text{–}1/3$ 但对 PatchTST 的 MEW 扩张温和且短窗 $L=96$ 落后，正文消融仅给图示无量化表（核心切片未见明确会议标识，仅 checklist 为 AAAI 模板）
 - [[source-pipe]] — PIPE: Physics-Informed Position Encoding for satellite image-time series alignment in typhoon forecasting (NeurIPS 2025)
 - [[source-pir]] — PIR: Improving Time Series Forecasting via Instance-aware Post-hoc Revision，模型无关预测后识别-修订框架，误差估计识别失败实例 + 局部/全局上下文修订（NeurIPS 2025）
 - [[source-pn-train]] — PN-Train: perturbation-based pattern neuron detector + optimizer for urban time series forecasting, identifies and fine-tunes <10% neurons to boost low-frequency pattern accuracy, ICLR 2025
