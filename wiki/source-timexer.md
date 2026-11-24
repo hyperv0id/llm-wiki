@@ -7,8 +7,8 @@ tags:
   - time-series
   - 2024
 created: 2026-07-07
-last_updated: 2026-07-13
-source_count: 1
+last_updated: 2026-11-24
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -65,5 +65,7 @@ TimeXer 的核心洞见在于：内生变量和外生变量需要不同粒度的
 - [[source-crosslinear|CrossLinear]] — KDD 2025 Linear 外生模型：1D conv 交叉相关嵌入 + patch/linear head，同协议 many-to-one 基准上与 TimeXer 对照且更轻量
 - [[source-nbeatsx|NBEATSx]] — 早期可解释外生神经基扩展（IJF 2022 EPF）；TimeXer 在同族 EPF 市场上用 Transformer 外生融合刷新
 - [[source-tft|TFT]] — 早期可解释 multi-horizon Transformer（static/known/observed + 分位数，2020）；TimeXer 更聚焦 endo/exo token 粒度与 irregular 外生
+- [[source-timeseed|TimeSeed]] — **同槽位互斥与场景分支**（ICML 2026）：TimeXer 默认内生历史完整并用交叉注意力融合外生；当内生极度稀疏（4% 或单点）时，TimeSeed 改为先用稠密外生重建完整内生历史再预测，并用时/频域纯 Linear 聚合替代交叉注意力，显存降至 10.5 MB（vs TimeXer 14.69 MB）、训练快约 30%，但在 ETTm1 上被两步「插补+PatchTST」胜过（0.041 vs 0.068）[^src-timeseed]
 
 [^src-timexer]: [[source-timexer]]
+[^src-timeseed]: [[source-timeseed]]

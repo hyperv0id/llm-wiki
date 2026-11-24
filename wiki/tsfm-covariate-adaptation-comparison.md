@@ -7,8 +7,8 @@ tags:
   - time-series-foundation-model
   - iclr-2026
 created: 2026-07-04
-last_updated: 2026-08-19
-source_count: 9
+last_updated: 2026-11-24
+source_count: 10
 confidence: high
 status: active
 ---
@@ -32,16 +32,16 @@ status: active
 
 ## 六方法系统对比
 
-| 维度 | CoRA | UniCA | DiTS | ChronosX | AdaPTS | Gen-P-Tuning |
-|------|------|-------|------|----------|--------|-------------|
-| **注入位置** | 预测头（adaLN） | 编码器前+后 | 双流 cross-attn | IIB 前 + OIB 后 | 编码器前 | 上下文前缀 |
-| **backbone 处理** | 完全冻结 | 冻结 | 双流并行 | 冻结 | 冻结 | 冻结 |
-| **协变量选择** | Causality Embedding（可解释） | CAP 注意力池化（黑盒） | Token-level conditioning | 无显式选择 | 无显式选择 | Prompt 学习 |
-| **零初始化** | ✅ 全部新增参数 | ❌ | ❌（MM-DiT 标准初始化） | ❌ | ❌ | 部分 |
-| **多模态支持** | TS + 文本 + 图像 | TS 为主 | TS 协变量流 | TS 协变量 | TS 协变量 | TS 协变量 |
-| **核心优势** | 渐进式融合、可解释选择 | 双阶段融合、同质化处理 | Token 级细粒度控制 | IIB past + OIB future 模块化；32 合成基准 | 概率化多元适配 | 最小结构改动 |
-| **核心局限** | 协变量数量可扩展性未讨论 | 前置注入扰乱嵌入空间 | 计算开销（双流 attention） | 无零初始化；IIB 改嵌入；需适配训练失零样本 | 无零初始化 | 仅前缀级信息注入 |
-| **backbone 兼容** | Sundial/TimesFM/Chronos-Bolt/FlowState/Moirai | Chronos-Bolt/TimesFM/Moirai | 自有 MM-DiT backbone | Chronos | 自有 | TimesFM/Lag-Llama |
+| 维度 | CoRA | UniCA | DiTS | ChronosX | AdaPTS | Gen-P-Tuning | [[source-timeseed\|TimeSeed]]（监督对照） |
+|------|------|-------|------|----------|--------|-------------|-------------------------------------------|
+| **注入位置** | 预测头（adaLN） | 编码器前+后 | 双流 cross-attn | IIB 前 + OIB 后 | 编码器前 | 上下文前缀 | 输入侧历史重构（先重建内生再预测） |
+| **backbone 处理** | 完全冻结 | 冻结 | 双流并行 | 冻结 | 冻结 | 冻结 | 从头监督（非 TSFM，约 0.19M） |
+| **协变量选择** | Causality Embedding（可解释） | CAP 注意力池化（黑盒） | Token-level conditioning | 无显式选择 | 无显式选择 | Prompt 学习 | 时频线性聚合 + Gumbel 多尺度选择 |
+| **零初始化** | 是（全部新增参数） | 否 | 否（MM-DiT 标准初始化） | 否 | 否 | 部分 | 不适用（非冻结适配） |
+| **多模态支持** | TS + 文本 + 图像 | TS 为主 | TS 协变量流 | TS 协变量 | TS 协变量 | TS 协变量 | 稠密数值外生变量 |
+| **核心优势** | 渐进式融合、可解释选择 | 双阶段融合、同质化处理 | Token 级细粒度控制 | IIB past + OIB future 模块化；32 合成基准 | 概率化多元适配 | 最小结构改动 | 适应极稀疏内生（4%/单点），低显存（10.5 MB） |
+| **核心局限** | 协变量数量可扩展性未讨论 | 前置注入扰乱嵌入空间 | 计算开销（双流 attention） | 无零初始化；IIB 改嵌入；需适配训练失零样本 | 无零初始化 | 仅前缀级信息注入 | ETTm1 负于插补+PatchTST；漏测 TSFM；依赖外生数量与长度 |
+| **backbone 兼容** | Sundial/TimesFM/Chronos-Bolt/FlowState/Moirai | Chronos-Bolt/TimesFM/Moirai | 自有 MM-DiT backbone | Chronos | 自有 | TimesFM/Lag-Llama | 自有轻量时频线性结构 |
 
 ## 性能对比
 
@@ -79,6 +79,7 @@ DiTS 代表了与前两者不同的范式：它不使用现有 TSFM，而是从�
 - **零初始化的理论分析**：零初始化的有效性在经验上被反复验证（LoRA、DiT、CoRA），但缺乏严格的理论解释——为什么零比小随机值更好？
 - **模态间结构性先验**：adaLN 将所有模态压缩为统一的 scale/shift 参数，损失了模态特有的结构性信息。DiTS 的 token-level 双流交互可能是更好的方向，但计算代价更高。
 - **协变量因果 vs 相关**：Granger 因果 ≠ 真实因果。当协变量与目标变量共享潜在驱动因子时，Granger 因果检验可能高估协变量的预测价值。
+- **极稀疏内生设定与漏测 TSFM 缺口**：[[source-timeseed|TimeSeed]]（ICML 2026）针对内生仅剩 4% 或单点、外生稠密的设定，采用输入侧历史重构（先以稠密外生与多尺度上采样重建内生历史再预测）而非直接映射；但在 ETTm1 上两步「插补+PatchTST」基线（0.041）胜过 TimeSeed（0.068），且该文未与任何 TSFM 协变量适配方案同台评测，TSFM 在极稀疏内生输入下的适配能力尚缺实证[^src-timeseed]。
 
 ## 相关页面
 
@@ -98,6 +99,7 @@ DiTS 代表了与前两者不同的范式：它不使用现有 TSFM，而是从�
 - [[source-time-mmd]] — Time-MMD 源摘要
 - [[timesfm]] — TimesFM；同框架扩展 TimesFMX
 - [[ts-memory]] — TS-Memory (KDD 2026)：正交于协变量适配，通过参数记忆蒸馏将检索知识内化为轻量模块，推理 $O(1)$ 无检索[^src-ts-memory-time-series-foundation-models-kdd26]
+- [[source-timeseed]] — TimeSeed (ICML 2026)：极稀疏内生（4%/单点）+ 稠密外生输入侧历史重构对照，补出该设定漏测 TSFM 的评测缺口[^src-timeseed]
 
 [^src-cora]: [[source-cora]]
 [^src-unica]: [[source-unica]]
@@ -108,3 +110,4 @@ DiTS 代表了与前两者不同的范式：它不使用现有 TSFM，而是从�
 [^src-chronosx]: [[source-chronosx]]
 [^src-time-mmd]: [[source-time-mmd]]
 [^src-ts-memory-time-series-foundation-models-kdd26]: [[source-ts-memory-time-series-foundation-models-kdd26]]
+[^src-timeseed]: [[source-timeseed]]

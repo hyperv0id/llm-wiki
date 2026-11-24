@@ -4660,3 +4660,10 @@ Tier 1 入库（提取核心切片未带会议水印与机构名，本仓库 Ope
 创建的页面：[[source-timesx]], [[timesx]]
 更新的页面：[[multimodal-time-series-forecasting]]（补 TimesX 基准行与要点，source_count 23→24）, [[time-mmd]]（补瓶颈接力 Δ 与事件替换复现对齐，source_count 7→8）, [[timesfm]]（补排序反转实证对齐，source_count 11→12）, [[in-context-learning]]（补 TextRev-ICL 跨槽位正交节与二维设计矩阵，source_count 3→4）, [[source-time-imm]]（补同槽位基准对照，source_count 1→2）, [[doublecast]]（补同生态位数据构建对照，source_count 6→7）, [[index]]
 ingest 报告：[[ingest-reports/2026-11-24-timesx|WHY 报告]]
+
+
+## [2026-11-24] ingest | TimeSeed: Effective Time Series Forecasting with Sparse Endogenous Variables
+Tier 2 轻量化入库（ICML 2026；全由 MovingAvg、RFFT 能量分带线性、多倍率上采样 MLP 与 Gumbel-Softmax 等既有标准算子组合，未为方法或内部缩写新建 `source_count: 1` 独立页）。针对内生观测稀疏至 4% 甚至单点时外生→内生直接映射的尺度与因果失配，TimeSeed 改写任务为「先借助稠密外生时频线性上下文与多尺度内生上采样重建完整内生历史，再做线性预测」，参数约 0.19M、显存 10.5 MB（vs TimeXer 14.69 MB）。7 个 LTSF 基准与 PhysioNet 上整体优于 11 个线性/Transformer 基线及两步插补管线，但真实主要涨点来自「先重建历史再预测」对直接多步预测的范式改写（ETTh2/ETTm2 平均降 MSE 27.4%、降 MAE 14.2%），频域高能分带单独贡献最弱（约 5.31%）。缺口：ETTm1 上两步「插补+PatchTST」（0.041）胜过 TimeSeed（0.068）；全文漏测时间序列基础模型（TSFM）；对外生数量与长度高度敏感；零样本冷启动留待后续。
+创建的页面：[[source-timeseed]]
+更新的页面：[[tsfm-covariate-adaptation-comparison]]（补极稀疏内生输入侧历史重构对照列与漏测 TSFM 缺口并清理禁用 emoji，source_count 9→10）, [[source-timexer]]（补同槽位互斥与显存/速度对比，source_count 1→2）, [[crosslinear]]（补同槽位互斥与场景分支，source_count 1→2）, [[timemixer]]（补多尺度方向与选择同构反转并精简实验表至 $\le 5$ 行，source_count 3→4）, [[tide]]（补同槽位互斥对照，source_count 1→2）, [[direct-forecast]]（补稀疏内生下两阶段历史重构范式对照，source_count 5→6）, [[index]]
+ingest 报告：[[ingest-reports/2026-11-24-timeseed|WHY 报告]]

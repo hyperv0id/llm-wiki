@@ -8,8 +8,8 @@ tags:
   - mlp
   - iclr-2024
 created: 2026-05-31
-last_updated: 2026-08-06
-source_count: 3
+last_updated: 2026-11-24
+source_count: 4
 confidence: medium
 status: active
 ---
@@ -52,11 +52,8 @@ Loss 基于集成结果计算（$\|x - \hat{x}\|$），而非对各预测器单�
 | Electricity | 0.182 | 0.216 | -15.7% |
 | Traffic | 0.484 | 0.529 | -8.5% |
 | ETTh1 | 0.447 | 0.516 | -13.4% |
-| ETTh2 | 0.364 | 0.391 | -6.9% |
-| ETTm1 | 0.381 | 0.406 | -6.2% |
-| ETTm2 | 0.275 | 0.290 | -5.2% |
 
-输入长度统一为 96[^src-timemixer]。
+输入长度统一为 96（其余三项 ETT 基准同向占优：ETTh2 0.364 vs 0.391 降 6.9%，ETTm1 0.381 vs 0.406 降 6.2%，ETTm2 0.275 vs 0.290 降 5.2%）[^src-timemixer]。
 
 ### 短期预测
 
@@ -69,9 +66,10 @@ GPU 内存和运行时间均优于 PatchTST，在输入长度 192–3072 范围�
 
 ### 消融实验
 
+完整 TimeMixer ① 基线为 M4 SMAPE 11.723、PEMS04 MAE 19.21、ETTm1 MSE 0.390；各消融退化如下[^src-timemixer]：
+
 | 消融 | M4 SMAPE | PEMS04 MAE | ETTm1 MSE |
 |------|----------|-----------|----------|
-| 完整 TimeMixer ① | 11.723 | 19.21 | 0.390 |
 | 去除 FMM ② | 12.503 (+6.7%) | 21.67 (+12.8%) | 0.402 (+3.1%) |
 | 去除 Seasonal Mixing ③ | 13.051 (+11.3%) | 24.49 (+27.5%) | 0.411 (+5.4%) |
 | 去除 Trend Mixing ④ | 12.911 (+10.1%) | 22.91 (+19.3%) | 0.405 (+3.8%) |
@@ -92,6 +90,7 @@ GPU 内存和运行时间均优于 PatchTST，在输入长度 192–3072 范围�
 - **[[lstf|LSTF]]**：TimeMixer 在 LSTF 的所有 8 个 benchmark 上均取得 SOTA，是该问题当前最优模型之一[^src-timemixer]。
 - **[[hephestus|HEPHAESTUS]]**：HEPHAESTUS（ICLR 2026 审稿中）将 TimeMixer 的固定下采样多尺度混合替换为输入自适应的 [[ams-moe|AMS-MoE]] 动态路由，并通过 [[periodic-temporal-attention|PTA]] 显式建模日/周周期。两者共享多尺度混合的基本思想，但 HEPHAESTUS 以 MoE 路由取代固定分解策略[^src-timemixer]。
 - **[[pir|PIR]]**：PIR（NeurIPS 2025）以 TimeMixer 为 channel-dependent 骨干测试后处理修订，论文报告 48 个设置平均 MSE 降 2.34%，作者将较小收益归因于 CD 模型已利用协变量信息[^src-pir]。
+- **[[source-timeseed|TimeSeed]]（同构反转）**：TimeMixer 对完整历史作 `AvgPool` 下采样并用全部尺度的线性预测器求和集成；面向极稀疏内生（4% 或单点）+ 稠密外生场景，TimeSeed（ICML 2026）反转多尺度方向——对稀疏内生作 $2^q$（$q=1..3$）上采样并过 MLP 专家，以 `Dense + Gumbel-Softmax` 选出单一最优分辨率重建历史，再与时频外生上下文合流预测[^src-timeseed]。
 
 ## 局限性
 
@@ -104,3 +103,4 @@ GPU 内存和运行时间均优于 PatchTST，在输入长度 192–3072 范围�
 [^src-timemixer]: [[source-timemixer]]
 [^src-rstib]: [[source-rstib-mlp]]
 [^src-pir]: [[source-pir]]
+[^src-timeseed]: [[source-timeseed]]

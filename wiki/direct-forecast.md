@@ -6,8 +6,8 @@ tags:
   - multi-step-forecast
   - learning-objective
 created: 2026-07-13
-last_updated: 2026-11-09
-source_count: 5
+last_updated: 2026-11-24
+source_count: 6
 confidence: high
 status: active
 ---
@@ -33,12 +33,16 @@ FreDF's Theorem 3.1: the DF MSE objective equals the conditional negative log-li
 
 [[distdf|DistDF]] ([[source-distdf]], arXiv:2510.24574, ICLR 2026) sharpens the statement: the bias is $\|Y-\hat Y\|^2_{\Sigma_{|x}^{-1}}-\|Y-\hat Y\|^2_2$ under the *conditional* covariance $\Sigma_{|x}$, so it disappears only when future steps are conditionally independent given history, and Fourier/PCA transforms that diagonalize only the marginal covariance leave it in place. DistDF therefore keeps the DF multi-output head but replaces the likelihood objective with [[joint-distribution-wasserstein-alignment|joint-distribution Wasserstein alignment]] between $\mathbb{P}_{Y\mid X}$ and $\mathbb{P}_{\hat Y\mid X}$, using a [[bures-wasserstein|Bures–Wasserstein]] term on joint mean and covariance plus an MSE anchor; inference stays a single forward pass.[^src-distdf] See [[autocorrelation-bias]] for the formal bias and the Traffic case study behind this argument.
 
+## Paradigm Contrast Under Sparse Endogenous Inputs
+
+When endogenous history is extremely sparse (4% or single point) while exogenous variables remain dense, direct multi-step mapping from sparse endogenous points to future horizons suffers severe scale and causality mismatch. **范式对照（[[source-timeseed|TimeSeed]], ICML 2026）**：replacing direct forecasting with two-stage input-side history reconstruction (using dense exogenous priors and multi-scale upsampling to restore complete endogenous history before linear forecasting) drives its primary gain—reducing MSE by ~27.4% and MAE by ~14.2% on average on ETTh2/ETTm2 over direct forecasting—though two-step imputation + PatchTST still outperforms TimeSeed on ETTm1 (0.041 vs 0.068) and TSFMs are not evaluated.[^src-timeseed]
+
 ## Related
 
 - [[label-autocorrelation]], [[heterogeneous-task-weights]]
 - [[frequency-enhanced-direct-forecast]], [[quadratic-form-weighted-objective]], [[joint-distribution-wasserstein-alignment]], [[bures-wasserstein]]
 - [[fredf]], [[qdf]], [[distdf]], [[tide]], [[tft]]
-- [[source-fredf]], [[source-qdf]], [[source-distdf]], [[source-tide]], [[source-tft]]
+- [[source-fredf]], [[source-qdf]], [[source-distdf]], [[source-tide]], [[source-tft]], [[source-timeseed]]
 
 ---
 
@@ -47,3 +51,4 @@ FreDF's Theorem 3.1: the DF MSE objective equals the conditional negative log-li
 [^src-tide]: [[source-tide]]
 [^src-tft]: [[source-tft]]
 [^src-distdf]: [[source-distdf]]
+[^src-timeseed]: [[source-timeseed]]

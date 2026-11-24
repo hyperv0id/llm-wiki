@@ -403,6 +403,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-timegrad]] — TimeGrad: autoregressive denoising diffusion for probabilistic time series forecasting (ICML 2021)
 - [[source-timemixer]] — TimeMixer: decomposable multiscale mixing for time series forecasting (ICLR 2024)
 - [[source-timer-xl]] — Timer-XL: 统一长上下文时间序列预测解码器（TimeAttention = 时序 RoPE + 变量偏置 u,v + Kronecker 因果掩码 M=C⊗T），ICLR 2025（清华大学）
+- [[source-timeseed]] — TimeSeed: 极稀疏内生（4%/单点）+ 稠密外生输入侧历史重构再预测，MovingAvg + RFFT 分带线性 + 多倍率上采样 Gumbel 选尺度（ICML 2026）
 - [[source-timesfm]] — TimesFM: Decoder-Only Foundation Model for Time-Series Forecasting (ICLR 2024)
 - [[source-timesnet]] — TimesNet: temporal 2D-variation modeling for general time series analysis (ICLR 2023)
 - [[source-timesx]] — TimesX: 19 域 190 变量真实时钟无泄露多模态时序基准 + 4-Agent 事件核查，实证合成/无 cutoff 基准反转 TSFM 与 LLM 排序（提取核心切片未带会议水印；仓库调研记 ICML 2026）
