@@ -7,8 +7,8 @@ tags:
   - point-estimation
   - robust-statistics
 created: 2026-04-28
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-11-24
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -66,4 +66,9 @@ MoM 估计器源自统计学方法，SimDiff 将其重新引入模型作为从�
 
 将预训练-条件扩散模型中使用的单次确定性路径替换为 MoM 集成，SimDiff 充分利用了扩散的完整概率轨迹，同时保持数值稳定性 [^src-simdiff]。
 
+## 与其他方差缩减路线的关系
+
+- **跨槽位方差缩减对照（[[source-renf|ReNF]]）**：MoM 是在推理期对同一概率扩散模型的多次采样轨迹分组求均值后再取中位数，以鲁棒统计聚合压低采样方差[^src-simdiff]；ReNF 则在确定性直接预测训练期提出方差缩减假设（VRH），通过由短到长逐段拼接（BDO）生成多段子预测并在输出端只取末层最长段。ReNF 在 ETTh1 上子预测 oracle 组合（$0.270$）与实得（$0.391$）差距较大，表明其收益主要来自 BDO 抑制深层 MLP 退化与 EMA 影子早停，而非多子段集成聚合[^src-renf]。
+
 [^src-simdiff]: [[source-simdiff]]
+[^src-renf]: [[source-renf]]

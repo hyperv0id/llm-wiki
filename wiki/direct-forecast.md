@@ -7,7 +7,7 @@ tags:
   - learning-objective
 created: 2026-07-13
 last_updated: 2026-11-24
-source_count: 7
+source_count: 8
 confidence: high
 status: active
 ---
@@ -34,6 +34,7 @@ FreDF's Theorem 3.1: the DF MSE objective equals the conditional negative log-li
 [[distdf|DistDF]] ([[source-distdf]], arXiv:2510.24574, ICLR 2026) sharpens the statement: the bias is $\|Y-\hat Y\|^2_{\Sigma_{|x}^{-1}}-\|Y-\hat Y\|^2_2$ under the *conditional* covariance $\Sigma_{|x}$, so it disappears only when future steps are conditionally independent given history, and Fourier/PCA transforms that diagonalize only the marginal covariance leave it in place. DistDF therefore keeps the DF multi-output head but replaces the likelihood objective with [[joint-distribution-wasserstein-alignment|joint-distribution Wasserstein alignment]] between $\mathbb{P}_{Y\mid X}$ and $\mathbb{P}_{\hat Y\mid X}$, using a [[bures-wasserstein|Bures–Wasserstein]] term on joint mean and covariance plus an MSE anchor; inference stays a single forward pass.[^src-distdf] See [[autocorrelation-bias]] for the formal bias and the Traffic case study behind this argument.
 
 - **设定归属与末端退化修补（[[source-tailfix|TailFix]], NeurIPS 2026）**：针对 DF 误差沿预测步长向末端放大的现象，在 WPMixer 骨干外叠加三处零初始化近恒等门控残差并提出尾/头误差比指标 TAF（$\rho=0.25$），但 ETT 单组件消融仅变动 $0.004\text{–}0.009$（$1\%\text{–}3\%$）且 Traffic（$L=1200$）MSE $0.410$ 逊于原版 WPMixer（$0.403$）与 [[patchtst|PatchTST]]（$0.391$）[^src-tailfix]。
+- **特例与机制改良（[[source-renf|ReNF]]）**：针对 DF 一次前向监督稀疏与深层时间维网络退化，提出将历史与上一层较短子预测拼接输入下一层、由短到长逐段递进输出（BDO），并沿用 TimeBridge 的 $1/n$ 短程加权时频 MAE 损失与高衰减 EMA 早停；消融显示主要收益来自 BDO 抑制深层 MLP 退化与 EMA 稳定泛化，而非独立验证的新损失[^src-renf]。
 
 ## Paradigm Contrast Under Sparse Endogenous Inputs
 
@@ -44,7 +45,7 @@ When endogenous history is extremely sparse (4% or single point) while exogenous
 - [[label-autocorrelation]], [[heterogeneous-task-weights]]
 - [[frequency-enhanced-direct-forecast]], [[quadratic-form-weighted-objective]], [[joint-distribution-wasserstein-alignment]], [[bures-wasserstein]]
 - [[fredf]], [[qdf]], [[distdf]], [[tide]], [[tft]]
-- [[source-fredf]], [[source-qdf]], [[source-distdf]], [[source-tide]], [[source-tft]], [[source-timeseed]], [[source-tailfix]]
+- [[source-fredf]], [[source-qdf]], [[source-distdf]], [[source-tide]], [[source-tft]], [[source-timeseed]], [[source-tailfix]], [[source-renf]]
 
 ---
 
@@ -55,3 +56,4 @@ When endogenous history is extremely sparse (4% or single point) while exogenous
 [^src-distdf]: [[source-distdf]]
 [^src-timeseed]: [[source-timeseed]]
 [^src-tailfix]: [[source-tailfix]]
+[^src-renf]: [[source-renf]]

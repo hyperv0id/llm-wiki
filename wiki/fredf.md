@@ -8,8 +8,8 @@ tags:
   - learning-objective
   - plug-and-play
 created: 2026-07-13
-last_updated: 2026-11-09
-source_count: 3
+last_updated: 2026-11-24
+source_count: 4
 confidence: high
 status: active
 ---
@@ -50,17 +50,20 @@ The theoretical split is the covariance being decorrelated. DistDF's Theorem 3.1
 
 Empirically, DistDF reports lower average MSE than FreDF across the four main datasets (Table 1, averaged over $T\in\{96,192,336,720\}$): with TimeBridge, DistDF gives $0.383/0.434/0.172/0.248$ versus FreDF $0.386/0.439/0.175/0.254$ on ETTm1/ETTh1/ECL/Weather; with Fredformer, $0.378/0.430/0.173/0.255$ versus $0.384/0.438/0.179/0.256$.[^src-distdf] [[source-qdf|QDF]] (same author group, ICLR 2026 preprint) similarly argues FreDF/Time-o1 leave residual conditional dependence and equal component weights, and instead learns a quadratic $L_\Sigma$ with adaptive $\Sigma$.[^src-qdf]
 
+- **Loss-reuse comparison（复用口径对照，[[source-renf|ReNF]]）**：ReNF directly adopts TimeBridge's time–frequency mixed MAE objective (following FreDF's Fourier-domain alignment paradigm) with $1/n$ short-horizon weighting, without ablating the loss separately in the main text. Its empirical improvements stem from short-to-long boosted direct output (BDO) concatenation—preventing deep temporal MLP degradation—and high-decay EMA early stopping rather than a new loss design.[^src-renf]
+
 ## Links
 
 - Source: [[source-fredf]]
 - Concepts: [[label-autocorrelation]], [[autocorrelation-bias]], [[direct-forecast]]
 - Technique: [[frequency-enhanced-direct-forecast]]
 - Related models: [[itransformer]], [[fedformer]], [[source-frets]], [[autoformer]]
-- Sibling objectives: [[distdf]], [[joint-distribution-wasserstein-alignment]], [[bures-wasserstein]], [[qdf]], [[source-qdf]], [[source-distdf]]
+- Sibling objectives: [[distdf]], [[joint-distribution-wasserstein-alignment]], [[bures-wasserstein]], [[qdf]], [[source-qdf]], [[source-distdf]], [[source-renf]]
 
 ---
 
 [^src-fredf]: [[source-fredf]]
 [^src-distdf]: [[source-distdf]]
 [^src-qdf]: [[source-qdf]]
+[^src-renf]: [[source-renf]]
 

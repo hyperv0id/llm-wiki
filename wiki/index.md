@@ -315,6 +315,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-re-reading-improves-reasoning]] — Re2：在单条 prompt 中重复任务输入，与思维激发提示组合（EMNLP 2024）
 - [[source-recontext]] — ReContext：内部相关性选择原文证据，递归回放后生成；白盒接口与完整上下文保留（arXiv 2026）
 - [[source-rectified-flow]] — Rectified Flow: Flow Straight and Fast, ODE-based generation with few-step sampling (arXiv 2022)
+- [[source-renf]] — ReNF: 纯时间维 MLP 由短到长逐段拼接（BDO）+ EMA 早停，沿用 TimeBridge $1/n$ 短程加权时频 MAE（核心切片未印具体会议名，PMLR 格式；仓库调研记 ICML 2026）
 - [[source-resnets-route-without-routers]] — Do ResNets Route? Sparse Interaction Experts in Residual Networks：Möbius 反演把 ResNet 输出精确拆成残差修正与高阶 interaction，阶谱峰在 $k=5/10$，Top-$K$ 支撑类内更相似但围绕共享核变化（arXiv:2610.02907，preprint）
 - [[source-retrieval-augmented-st-traffic]] — RAST: Retrieval-Augmented Spatio-Temporal Traffic Forecasting
 - [[source-retrieval-augmented-statistical-channel]] — TODO

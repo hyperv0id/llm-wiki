@@ -4747,3 +4747,10 @@ Tier 2 轻量化入库（NeurIPS 2026；基于冻结 [[timesfm|TimesFM-2.5]] 数
 创建的页面：[[source-posttime]]
 更新的页面：[[timesx]]（补严防泄露刷新版基准延续与复现对照，source_count 4→5）, [[post-hoc-forecast-revision]]（补文本上下文 LLM 预测后修订特例，source_count 2→3）, [[timesfm]]（补下游后修订强先验依赖与未测弱先验边界，source_count 13→14）, [[grpo-for-forecasting]]（补固定尺度 NRMSE vs ImpRatio 同槽位互斥对照，source_count 1→2）, [[in-context-learning]]（补从 TextRev-ICL 到权重内化的瓶颈接力 Δ 及对照表行，source_count 5→6）, [[multimodal-time-series-forecasting]]（补预测后文本修订二维对照矩阵并收录，source_count 28→29）, [[index]]
 ingest 报告：[[ingest-reports/2026-11-24-posttime|WHY 报告]]
+
+
+## [2026-11-24] ingest | ReNF: Rethinking the Design of Neural Long-Term Time Series Forecasters
+Tier 2 轻量化入库（核心切片正文未印具体会议名称、采用 PMLR 格式，本仓库 OpenReview CCF-A 调研记录其录用于 ICML 2026；基于 `RevIN + Dropout + 时间维 Linear + MLP Block` 迭代拼接与沿用 TimeBridge 的 $1/n$ 短程加权时频 MAE 损失及 EMA 早停，未为 `renf`、`VRH`、`BDO` 新建 `source_count: 1` 独立页）。针对直接多步预测（DF）单次监督稀疏、深层时间维 MLP 易高方差退化的问题，ReNF 提出方差缩减假设（VRH），将纯时间维 MLP 重构为由短到长逐段拼接输入「历史 + 上层子预测」的层级结构（BDO），配高衰减率 EMA（$0.99\text{–}0.999$）早停。主文在 8 个 LTSF 基准上 6 集 MSE/MAE 最优；Traffic 上 MSE（$0.365$）略逊 TimeBridge（$0.357$）而 MAE（$0.245$）最优，FLOPs 约为 TimeBridge 的 $1/20$（$22.8$ vs $479.2$），但参数量反而更高（$21.5\text{M}$ vs $12.4\text{M}$）。Ablation 与边界：去掉 BDO 递归拼接（退化为普通 DO）掉点最狠，实质作用是让深度 MLP 不再随加深而退化，EMA 早停次之（ETTh2/Electricity 决定早停与泛化）；时频 MAE 损失与 $1/n$ 短程加权整段沿用 TimeBridge 且从未在主文单独消融；VRH 依赖 i.i.d. 启发假设而非严格证明，ETTh1 子预测 oracle 组合（$0.270$）与实得（$0.391$）差距显示收益主在深度可用化与 EMA；仅在 MLP 骨干验证且短程任务未展开。
+创建的页面：[[source-renf]]
+更新的页面：[[direct-forecast]]（补 DF 特例与机制改良，source_count 7→8）, [[timemixer]]（补纯 MLP 同槽位互斥对照，source_count 5→6）, [[distdf]]（补跨槽位正交对照，source_count 3→4）, [[fredf]]（补时频 MAE 损失复用口径对照，source_count 3→4）, [[patchtst]]（补 8 项 LTSF 基准实证复现对齐，source_count 15→16）, [[median-of-means-ensemble]]（补跨槽位方差缩减与 VRH 启发边界对照，source_count 1→2）, [[index]]
+ingest 报告：[[ingest-reports/2026-11-24-renf|WHY 报告]]

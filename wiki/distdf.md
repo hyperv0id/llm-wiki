@@ -11,7 +11,7 @@ tags:
   - iclr-2026
 created: 2026-11-09
 last_updated: 2026-11-24
-source_count: 3
+source_count: 4
 confidence: high
 status: active
 ---
@@ -73,6 +73,8 @@ $$\begin{aligned}
 | **DistDF** | 正交基仅消除边缘相关，条件相关残留 | 联合分布 Bures–Wasserstein + MSE 混合 | 绕开似然分解，用联合分布上界逼近条件分布 | $(H+T)$ 阶协方差与矩阵平方根（$<1\text{ ms}$）[^src-distdf] |
 | [[qdf\|QDF]] | MSE 等价于固定 $\Sigma=I$，忽略步间依赖与异构权重 | 双层元学习二次型似然 $\lVert Y-\hat{Y}\rVert_{\Sigma^{-1}}^2$ | $\Sigma^{-1}$ 非对角元显式建模条件依赖，对角元赋[[heterogeneous-task-weights\|异构任务权重]] | 双层优化 + $T\times T$ Cholesky 参数化[^src-qdf] |
 
+- **跨槽位正交（DistDF vs [[source-renf|ReNF]]）**：两者同以 DF 下未来步条件独立引起的误差与方差为切入点，但作用槽位正交——DistDF 不改骨干，在损失侧以联合分布 [[bures-wasserstein|BW]] 散度混合 MSE 对齐条件分布[^src-distdf]；ReNF 则在架构侧用由短到长逐段拼接（BDO）引入递进约束并配高衰减 EMA 早停，损失仅沿用 TimeBridge 的 $1/n$ 短程加权时频 MAE[^src-renf]。
+
 ## 证据
 
 论文在 ETT、ECL、Weather、Traffic、PEMS 等基准与多类预测骨干上报告了实证结果（均采用作者报告口径）[^src-distdf]：
@@ -89,7 +91,9 @@ $$\begin{aligned}
 - [[autocorrelation-bias]] — 多步预测中逐点 MSE 的自相关偏差分析
 - [[fredf]] · [[frequency-enhanced-direct-forecast]] — 频域边缘去相关的前序路线
 - [[qdf]] · [[quadratic-form-weighted-objective]] — 可学习协方差二次型似然的同槽位对照
+- [[source-renf]] — 由短到长逐段拼接（BDO）与 EMA 架构侧改良的跨槽位正交对照
 
 [^src-distdf]: [[source-distdf]]
 [^src-fredf]: [[source-fredf]]
 [^src-qdf]: [[source-qdf]]
+[^src-renf]: [[source-renf]]

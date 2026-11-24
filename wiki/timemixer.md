@@ -9,7 +9,7 @@ tags:
   - iclr-2024
 created: 2026-05-31
 last_updated: 2026-11-24
-source_count: 5
+source_count: 6
 confidence: medium
 status: active
 ---
@@ -92,6 +92,7 @@ GPU 内存和运行时间均优于 PatchTST，在输入长度 192–3072 范围�
 - **[[pir|PIR]]**：PIR（NeurIPS 2025）以 TimeMixer 为 channel-dependent 骨干测试后处理修订，论文报告 48 个设置平均 MSE 降 2.34%，作者将较小收益归因于 CD 模型已利用协变量信息[^src-pir]。
 - **[[source-timeseed|TimeSeed]]（同构反转）**：TimeMixer 对完整历史作 `AvgPool` 下采样并用全部尺度的线性预测器求和集成；面向极稀疏内生（4% 或单点）+ 稠密外生场景，TimeSeed（ICML 2026）反转多尺度方向——对稀疏内生作 $2^q$（$q=1..3$）上采样并过 MLP 专家，以 `Dense + Gumbel-Softmax` 选出单一最优分辨率重建历史，再与时频外生上下文合流预测[^src-timeseed]。
 - **[[source-tailfix|TailFix]]（同槽位对照）**：TimeMixer 采用确定性多尺度季节/趋势方向混合，而 TailFix（NeurIPS 2026）在 WPMixer 小波骨干上于尺度混合、通道增强与末端精修三处叠加零初始化门控残差（ETT 单组件消融仅变动 $0.004\text{–}0.009$）[^src-tailfix]。
+- **[[source-renf|ReNF]]（同槽位互斥）**：同属纯时间维 MLP 阵营，TimeMixer 通过 `AvgPool` 下采样、季节/趋势分解与多尺度线性预测器集成建模时序变化[^src-timemixer]；ReNF 则放弃显式多尺度池化与分解，改为将历史与上层较短子预测逐段递归拼接（BDO）并辅以高衰减 EMA 早停，抑制深层时间 MLP 退化[^src-renf]。
 
 ## 局限性
 
@@ -106,3 +107,4 @@ GPU 内存和运行时间均优于 PatchTST，在输入长度 192–3072 范围�
 [^src-pir]: [[source-pir]]
 [^src-timeseed]: [[source-timeseed]]
 [^src-tailfix]: [[source-tailfix]]
+[^src-renf]: [[source-renf]]
