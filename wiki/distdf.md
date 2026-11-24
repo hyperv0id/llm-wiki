@@ -10,7 +10,7 @@ tags:
   - plug-and-play
   - iclr-2026
 created: 2026-11-09
-last_updated: 2026-11-22
+last_updated: 2026-11-24
 source_count: 3
 confidence: high
 status: active
@@ -18,89 +18,77 @@ status: active
 
 # DistDF
 
-**DistDF（Distribution-aware Direct Forecast）** 是一套训练目标框架，针对的是 [[direct-forecast|Direct Forecast (DF)]] 用逐点 MSE 顶替条件负对数似然而来的偏差：MSE 把 $T$ 个未来步当作独立，等价于假设条件协方差为单位阵，而真实标签存在自相关。它不再修似然估计，改为直接对齐模型输出与标签在给定历史 $x$ 下的条件分布，用联合分布的 Wasserstein 差异给出可估计的上界；落地只是一个可与 MSE 加权混合的 plug-and-play 正则项，能接到任意骨干上，推理零开销。作者 Hao Wang、Licheng Pan、Yuan Lu、Zhixuan Chu、Xiaoxi Li、Shuting He、Zhichao Chen、Qingsong Wen、Haoxuan Li、Zhouchen Lin（小红书、浙江大学、上海财经大学、北京大学、Squirrel AI），ICLR 2026，arXiv:2510.24574v3，代码 `github.com/Master-PLC/DistDF`[^src-distdf]。
+DistDF（Distribution-aware Direct Forecast）是一套面向直接多步预测的即插即用训练目标。它不改动预测骨干、推理零额外开销，核心思路是用「历史与未来的联合分布对齐」替代单纯的逐点 MSE 回归：把原本因假设未来各步彼此独立而产生的自相关偏差，转化为一个只需在 batch 内对齐均值与协方差的可微分布正则项[^src-distdf]。
 
 ## 问题定位
 
-DF 的学习目标是标签序列的条件负对数似然，实践中用 MSE 估计：$\mathcal{L}_{\mathrm{MSE}}=\lVert y_{\mid x}-\hat{y}_{\mid x}\rVert_2^2$。这个估计等价于取条件协方差 $\Sigma_{\mid x}=I$，而真实标签满足 $y_t$ 依赖 $y_{<t}$，两者之间的差就是 [[autocorrelation-bias|自相关偏差]]（Theorem 3.1，Eq. 2）[^src-distdf]。
+[[direct-forecast|Direct Forecast（DF）]] 一次前向输出全部未来步，实践中默认以逐点 MSE 作为条件负对数似然的近似。论文指出，MSE 等价于假设给定历史后未来各步彼此条件独立；但真实时间序列的未来标签之间存在显著[[autocorrelation-bias|自相关偏差]]，因此逐点 MSE 对条件似然是有偏估计[^src-distdf]。
 
-前作的处理路线是先把标签变换到「条件去相关」的分量再逐点算误差：[[fredf|FreDF]] 用 Fourier 变换取频域分量，Time-o1 用 PCA 取主成分。论文承认这类变换能消除偏差的前提是分量真的条件去相关，但 Fourier 与 PCA 只保证边缘去相关（$\Sigma$ 对角），不保证给定 $x$ 后条件去相关（$\Sigma_{\mid x}$ 对角），偏差因此残留（§3.1）[^src-distdf]。FreDF 自身对频域分量的论证也止于边缘层面：正交基下用 DML 测得的频率分量依赖约为 $3.6\%$ 非对角元超过 $0.1$（Weather，$T=192$），对应的是分量间边缘结构，而非条件结构[^src-fredf]。
+此前的改进路线试图先把标签投影到正交基再逐点回归，例如 [[fredf|FreDF]] 转到傅里叶频域、Time-o1 转到 PCA 主成分。论文点出了这条路线的理论漏洞：傅里叶与 PCA 只能保证标签的**边缘协方差**近似对角，并不能保证给定历史后的**条件协方差**对角。作者在交通数据上用条件偏相关矩阵直接实测，证实即便经过频域或主成分变换，未来步之间的残余条件相关依然明显[^src-distdf][^src-fredf]。
 
-论文给出一组交通数据上的直接测量：Traffic（$T=192$）原始标签的偏相关矩阵中逾 $50.3\%$ 的非对角元 $|\rho|>0.1$；换成 FreDF 的频率分量、Time-o1 的主成分后，非对角元量级下降但仍留有不可忽略的残余相关（Fig. 1(a)–(c)、Appendix C）[^src-distdf]。偏相关的计算方式是给定历史序列 $x$ 后求未来步两两相关（等价于 MATLAB `partialcorr` 的做法），目的是剔除「$y_t\leftarrow x\rightarrow y_{t'}$」这条共因路径带来的伪相关[^src-distdf]。
+## 核心理论与机制
 
-## 方法与核心定理
+既然条件似然的因式分解本身站不住脚，DistDF 选择直接对齐预测与真实标签的条件分布 $\mathbb{P}_{\hat{y}\mid x}$ 与 $\mathbb{P}_{y\mid x}$。但直接最小化条件 Wasserstein 距离在经验上无法估计——因为给定一条历史序列 $x$ 通常只对应一条真实未来 $y$，单样本撑不起分布度量[^src-distdf]。
 
-框架目标换成直接最小化条件分布差异：让 $\mathbb{P}_{\hat{y}\mid x}$ 逼近 $\mathbb{P}_{y\mid x}$，绕开似然估计的因式分解[^src-distdf]。直接做法 $\min W_p(\mathbb{P}_{y\mid x},\mathbb{P}_{\hat{y}\mid x})$ 无法估计：给定 $x$ 通常只有一条 $y$，模型也只输出一条 $\hat{y}$，两侧经验集各只有一个样本，任何分布差异度量都会退化成无信息量（Footnote 3）[^src-distdf]。
+论文用三条递进性质绕开了这个死结，把不可估的条件分布差异转化为可估的[[joint-distribution-wasserstein-alignment|联合分布 Wasserstein 差异]] $W_p(\mathbb{P}_{x,y},\mathbb{P}_{x,\hat{y}})$[^src-distdf]：
 
-论文的替代量是 [[joint-distribution-wasserstein-alignment|联合分布 Wasserstein 差异]] $W_p(\mathbb{P}_{x,y},\mathbb{P}_{x,\hat{y}})$，三件性质构成整条论证链：
+1. **上界控制**：联合分布距离控制期望条件分布距离，压低右侧即可压低左侧：
+   $$\int W_p\!\left(\mathbb{P}_{y\mid x},\mathbb{P}_{\hat{y}\mid x}\right)d\mathbb{P}(x) \;\leq\; W_p\!\left(\mathbb{P}_{x,y},\mathbb{P}_{x,\hat{y}}\right)$$
+2. **跨样本可估计**：把历史与未来拼成联合样本 $(x_b,y_b)$ 与 $(x_b,\hat{y}_b)$ 后，可以在整个 mini-batch 上统一估计分布，不再受限于单条历史只有一条标签。
+3. **零差异等价性**：当联合分布距离降到 $0$ 时，几乎处处有 $\mathbb{P}_{y\mid x}=\mathbb{P}_{\hat{y}\mid x}$，说明该上界不会在最优解处松弛。
 
-1. **上界性**（Lemma 3.3，引自 Kim et al. 2022）：对任意 $p\geq 1$，
+落到可微实现时，论文引入高斯近似，把平方 $W_2$ 距离化为闭式 [[bures-wasserstein|Bures–Wasserstein（BW）]] 散度；由于分布对齐只看 batch 级别的均值与协方差、丢弃了样本与标签之间的一一对应关系，最终目标必须与逐点 MSE 加权混合[^src-distdf]。论文同时区分了这一做法与领域自适应中的联合最优传输：后者对齐输入边缘分布以跨城/跨域迁移，前者对齐输出条件分布，属于监督训练损失设计[^src-distdf]。
 
-$$
-\int W_p\!\left(\mathbb{P}_{y\mid x},\mathbb{P}_{\hat{y}\mid x}\right)d\mathbb{P}(x)\ \leq\ W_p\!\left(\mathbb{P}_{x,y},\mathbb{P}_{x,\hat{y}}\right),
-$$
+## 计算流程与开销
 
-$p=1$ 或条件项对 $x$ 为常数时取等。因此压低右侧就压低了左侧的期望条件差异[^src-distdf]。
+> **维度符号**：$B$ batch 大小；$H$ 回看长度；$T$ 预测长度（多变量时将通道维并入样本轴或逐变量计算）。推理阶段只执行骨干 $\hat{Y}=g(X)$，损失模块完全移除[^src-distdf]。
 
-2. **可估计性**：联合样本 $(x_b,y_b)$ 与 $(x_b,\hat{y}_b)$ 可从整个数据集构造，样本量不受「单个 $x$ 只有一条 $y$」的限制[^src-distdf]。
+### Stage 1 · 拼接联合轨迹并估计一、二阶矩
 
-3. **零差异即条件分布相等**（Theorem 3.4）：若 $W_p(\mathbb{P}_{x,y},\mathbb{P}_{x,\hat{y}})=0$，则由 Lemma 3.3 得 $\int W_p(\mathbb{P}_{y\mid x},\mathbb{P}_{\hat{y}\mid x})d\mathbb{P}(x)=0$，几乎处处 $W_p(\mathbb{P}_{y\mid x},\mathbb{P}_{\hat{y}\mid x})=0$，进而几乎处处 $\mathbb{P}_{y\mid x}=\mathbb{P}_{\hat{y}\mid x}$（Appendix A.3 用离散传输计划证明 $W_p=0\Rightarrow$ 两分布质量函数逐点相等）[^src-distdf]。
+$$\begin{aligned}
+Z &= [X,\, Y],\quad \hat{Z} = [X,\, \hat{Y}] && \text{// } [B, H]\oplus[B, T]\to[B, H{+}T]\ \text{——构造真实与预测的联合序列样本}\\
+\mu_Z, \Sigma_Z &= \operatorname{Mean}_B(Z),\ \operatorname{Cov}_B(Z) && \text{// } [B, H{+}T] \xrightarrow{\text{沿 } B \text{ 维统计}} [H{+}T],\ [H{+}T, H{+}T]\ \text{——观测常量，不传梯度}\\
+\mu_{\hat{Z}}, \Sigma_{\hat{Z}} &= \operatorname{Mean}_B(\hat{Z}),\ \operatorname{Cov}_B(\hat{Z}) && \text{// } [B, H{+}T] \xrightarrow{\text{沿 } B \text{ 维统计}} [H{+}T],\ [H{+}T, H{+}T]\ \text{——承载预测输出梯度}
+\end{aligned}$$
 
-落到可微实现时加高斯假设：$\mathbb{P}_{x,y}$ 与 $\mathbb{P}_{x,\hat{y}}$ 分别为 $\mathcal{N}(\mu_{x,y},\Sigma_{x,y})$、$\mathcal{N}(\mu_{x,\hat{y}},\Sigma_{x,\hat{y}})$，平方 $W_2$ 有闭式 [[bures-wasserstein|Bures–Wasserstein]] 解（Lemma 3.5，引自 Peyré & Cuturi 2019 的 Remark 2.31）[^src-distdf]：
+### Stage 2 · Bures–Wasserstein 与逐点 MSE 混合
 
-$$
-\mathrm{BW}=\lVert\mu_{x,y}-\mu_{x,\hat{y}}\rVert_2^2+\mathcal{B}(\Sigma_{x,y},\Sigma_{x,\hat{y}}),\qquad
-\mathcal{B}(\Sigma_1,\Sigma_2)=\operatorname{Tr}\!\left(\Sigma_1+\Sigma_2-2\left(\Sigma_1^{1/2}\Sigma_2\Sigma_1^{1/2}\right)^{1/2}\right).
-$$
+$$\begin{aligned}
+\mathcal{L}_{\mathrm{Dist}} &= \lVert\mu_Z-\mu_{\hat{Z}}\rVert_2^2 + \operatorname{Tr}\!\left(\Sigma_Z + \Sigma_{\hat{Z}} - 2\left(\Sigma_Z^{1/2}\Sigma_{\hat{Z}}\Sigma_Z^{1/2}\right)^{1/2}\right) && \text{// 闭式高斯 } W_2^2\text{：同时对齐均值与协方差结构}\\
+\mathcal{L}_{\mathrm{DistDF}} &= \gamma\,\mathcal{L}_{\mathrm{Dist}} + (1-\gamma)\,\lVert Y - \hat{Y}\rVert_2^2 && \text{// } 0 \le \gamma \le 1\text{：分布正则与逐点锚定加权}
+\end{aligned}$$
 
-BW 只对齐一阶与二阶矩，丢弃了 batch 内样本与标签的逐元素对应；因此最终目标是两项加权（Eq. 6、Algorithm 1）：
+额外计算仅集中在 $(H+T)\times(H+T)$ 协方差及矩阵平方根上：论文报告在 $T=1024$ 规模下单步训练前向与反向附加耗时均低于 $1\text{ ms}$，推理阶段零开销[^src-distdf]。
 
-$$
-\mathcal{L}_{\mathrm{DistDF}}=\gamma\,\mathcal{L}_{\mathrm{Dist}}+(1-\gamma)\,\mathcal{L}_{\mathrm{MSE}},\qquad 0\leq\gamma\leq1 .
-$$
+## 与既有工作的关系
 
-论文把这一路线与领域自适应（Domain Adaptation）里的联合分布最优传输区分开：领域自适应对齐的是输入侧的边缘分布，服务于跨域泛化；DistDF 对齐的是模型输出与标签的条件分布，属于多任务监督学习下的训练目标设计（§3.2）[^src-distdf]。
+同一作者组围绕「DF 中逐点 MSE 的自相关偏差」演进出三条同槽位损失路线，构成清晰的**瓶颈接力 $\Delta$** 与 **同槽位互斥取舍**：
 
-## 算法实现与计算开销
+- **瓶颈接力 $\Delta$（[[fredf|FreDF]] → DistDF）**：FreDF 把标签做 FFT 后在频域加权回归，只缓解了**边缘**相关；DistDF 指出给定历史后的**条件**相关仍在，因此跳过正交基变换，直接通过联合分布上界对齐条件分布[^src-fredf][^src-distdf]。
+- **同槽位互斥对照（DistDF vs [[qdf|QDF]]）**：两者都直面条件协方差非对角的问题，但走了相反的数学路径——DistDF 放弃似然形式改为非参数/矩对齐的分布距离，QDF 则保留二次型似然并把协方差矩阵 $\Sigma$ 参数化为双层元学习对象[^src-distdf][^src-qdf]。
 
-给定 batch $X\in\mathbb{R}^{B\times H}$、$Y\in\mathbb{R}^{B\times T}$（论文按单变量书写，多变量把通道维并入 batch/样本轴或逐变量计算），Algorithm 1 的步骤为[^src-distdf]：
-
-1. 骨干前向：$\hat{Y}=g(X)$，一次输出全部 $T$ 步；
-2. 沿时间轴拼接：$Z=[X,Y]\in\mathbb{R}^{B\times(H+T)}$、$\hat{Z}=[X,\hat{Y}]\in\mathbb{R}^{B\times(H+T)}$；
-3. 在 batch 维估计一阶与二阶矩：均值 $\mu_Z,\mu_{\hat{Z}}\in\mathbb{R}^{H+T}$、样本协方差 $\Sigma_Z,\Sigma_{\hat{Z}}\in\mathbb{R}^{(H+T)\times(H+T)}$；
-4. 分布项与逐点项：$\mathcal{L}_{\mathrm{Dist}}=\mathrm{BW}(\mu_Z,\mu_{\hat{Z}},\Sigma_Z,\Sigma_{\hat{Z}})$、$\mathcal{L}_{\mathrm{MSE}}=\lVert Y-\hat{Y}\rVert_2^2$；
-5. 混合：$\mathcal{L}_{\mathrm{DistDF}}=\gamma\,\mathcal{L}_{\mathrm{Dist}}+(1-\gamma)\,\mathcal{L}_{\mathrm{MSE}}$；
-6. 反向传播：$Z=[X,Y]$ 全为观测常量，$\mu_Z$ 与 $\Sigma_Z^{1/2}$ 不含可学习参数、也不接收梯度；梯度只经依赖模型输出 $\hat{Y}=g(X)$ 的 $\mu_{\hat{Z}}$ 与 $\Sigma_{\hat{Z}}$（即通过 $(\Sigma_Z^{1/2}\Sigma_{\hat{Z}}\Sigma_Z^{1/2})^{1/2}$ 与 $\mathcal{L}_{\mathrm{MSE}}$）回传，按 Adam 更新模型参数[^src-distdf]。
-
-推理阶段只运行 $\hat{Y}=g(X)$，分布项不参与[^src-distdf]。额外计算集中在 $(H+T)\times(H+T)$ 的协方差与矩阵平方根上：论文在 $B=128$、$D=21$、$T=1024$ 下测得训练单步前向 $0.74\text{--}0.80\text{ ms}$、反向 $0.58\text{--}0.64\text{ ms}$，均低于 $1\text{ ms}$（Appendix D.5、Fig. 7）[^src-distdf]。
-
-## 实验证据
-
-**设置**：ETT、ECL、Weather 为主，$H=96$、$T\in\{96,192,336,720\}$，骨干超参保留原设定，只调 $\gamma$ 与学习率；单卡 H100（§4.1）[^src-distdf]。
-
-**定位与主结论**：这是学习目标层的插件式替换，在同骨干同配方下真提升精度，不靠额外容量。2 个骨干 × 4 个数据集的 8 组 4-horizon 均值里 MSE 全部最低、MAE 同向（TimeBridge/Weather 0.248 对纯 DF 0.252，Fredformer/ECL 0.173 对 0.191）；FreDF 与 Time-o1 两类似然变换目标次之，DILATE、Soft-DTW 这类形状对齐目标相对纯 MSE 提升有限。经典模型横比 9 个数据集拿到 40 项 MSE 第一、41 项 MAE 第一（Traffic 平均 0.417 对 TimeBridge 0.426，PEMS08 0.123 对 0.139）。开销只有每步 $(H+T)\times(H+T)$ 的协方差与矩阵平方根，训练单步前向与反向都在 1 ms 以内，推理不跑分布项 [^src-distdf]。
-
-**涨点归因**：涨点来自两个矩的对齐，不是工程 trick。仅均值对齐与仅协方差对齐单独接入都降 MSE（ETTh1 的 0.447 → 0.435 / 0.439），两项合成的完整 DistDF 再降到 0.430，四个数据集上 MSE 与 MAE 都最低；换分布度量也不改变结论——EMD、MMD（Linear/RBF）、KL 都不劣于纯 MSE，Bures–Wasserstein 在 16 组中 14 组最优。真正的调参负担在 $\gamma$：最优值随数据集落在 0.001–0.1，$\gamma=1$ 即只留矩统计时 ECL 退化到 0.197，混合项不是可选项 [^src-distdf]。
-
-**证据缺口与负结果**：并不是所有设置都赢——FreTS 接入后在 ECL 上 MSE 持平（0.199 → 0.199，只有 MAE 从 0.288 到 0.287），概率预测里 ETTm1 的 CRPS 保持 0.293 未动（同期 $\text{CRPS}_{\text{sum}}$ 从 0.776 降到 0.762）。边界也清楚：高斯假设下 Bures–Wasserstein 只匹配一阶与二阶矩，非高斯条件分布要更高阶统计量；主实验统一 $H=96$，变历史长度只在 Weather 上测；概率预测只接 D3U、多尺度架构只接 TimeMixer 与 SCINet，属附加验证；$\gamma$ 与学习率需联合调节，其有效区间跨数据集相差两个数量级 [^src-distdf]。
-
-**扩展设置**：骨干通用性覆盖 TQNet、TimeBridge、Fredformer、iTransformer、FreTS，6 个数据集的平均 MSE 均下降或持平（iTransformer/Weather 0.269 → 0.258、FreTS/ETTh2 0.524 → 0.466，ECL 上 iTransformer 与 Fredformer 的降幅最高为 2.7% 与 4.3%）；自回归多步滚动下收益放大，TimeBridge 在 Weather $T=720$ 上把累计误差从 9.363/1.374 压到 0.461/0.421；概率、多尺度、变历史长度与 5 个随机种子同向改善 [^src-distdf]。
-
-## 局限性与同组演进关系
-
-高斯假设下 Bures–Wasserstein 只匹配一阶与二阶矩，非高斯分布需要高阶统计量才能完整刻画条件分布；作者把「引入高阶统计量且保持可计算」列为后续方向（Conclusion）。接入新数据集时需联合调节学习率 $\eta$ 与权重 $\gamma$：分布项的尺度与梯度动态随数据集变化，$\gamma$ 的有效区间跨数据集相差两个数量级（$\gamma\in[0.001,0.1]$，§4.1、Table 4–5）[^src-distdf]。
-
-同一作者组沿「MSE 的似然偏差」这条线留下三种解法，路线互不相同：
-
-| 方法 | 问题切入点 | 数学路线 | 去相关性质 | 训练代价 |
+| 方法 | 诊断切入点 | 数学路线（替换 MSE 的方式） | 去相关机制 | 附加训练代价 |
 |---|---|---|---|---|
-| [[fredf\|FreDF]] | DF 的 MSE 隐含未来步条件独立 | 正交频域分量上的模长似然 + 时域 MSE 混合 | 边缘去相关：频域分量依赖降到约 $3.6\%$ 非对角元 $>0.1$（Weather，$T=192$） | 一次 FFT，无新增参数[^src-fredf] |
-| **DistDF** | 条件 NLL 的因式分解本身不可靠 | 联合分布 Wasserstein（高斯下 BW）差异 + MSE 混合 | 不做因式分解，用联合差异上界直接逼条件分布；$W_p=0\Rightarrow\mathbb{P}_{y\mid x}=\mathbb{P}_{\hat{y}\mid x}$ | 每步 $(H+T)\times(H+T)$ 协方差与矩阵平方根，$<1$ ms，推理零开销[^src-distdf] |
-| [[qdf\|QDF]] | DF 的二次型似然等价于取 $\Sigma=I$，条件依赖与步间权重都无从表达 | 双层学习 PSD 矩阵 $\Sigma$ 的二次型似然 $L_\Sigma=\lVert Y-\hat{Y}\rVert_{\Sigma^{-1}}^2$ | $\Sigma^{-1}$ 非对角元显式建模条件依赖，对角元建模 [[heterogeneous-task-weights\|异构任务权重]] | 双层元学习 + $T\times T$ Cholesky 参数化[^src-qdf] |
+| [[fredf\|FreDF]] | MSE 隐含未来步独立 | 正交频域模长损失 + 时域 MSE 混合 | 边缘去相关（频域基） | 一次 FFT，零新增参数[^src-fredf] |
+| **DistDF** | 正交基仅消除边缘相关，条件相关残留 | 联合分布 Bures–Wasserstein + MSE 混合 | 绕开似然分解，用联合分布上界逼近条件分布 | $(H+T)$ 阶协方差与矩阵平方根（$<1\text{ ms}$）[^src-distdf] |
+| [[qdf\|QDF]] | MSE 等价于固定 $\Sigma=I$，忽略步间依赖与异构权重 | 双层元学习二次型似然 $\lVert Y-\hat{Y}\rVert_{\Sigma^{-1}}^2$ | $\Sigma^{-1}$ 非对角元显式建模条件依赖，对角元赋[[heterogeneous-task-weights\|异构任务权重]] | 双层优化 + $T\times T$ Cholesky 参数化[^src-qdf] |
 
-三者的关系是同一诊断下的三种取舍：FreDF 换坐标系但不换似然形式，DistDF 换掉似然估计改为分布对齐，QDF 保留二次型似然但把 $\Sigma$ 变成可学习量。技术细节见 [[joint-distribution-wasserstein-alignment]]、[[bures-wasserstein]]、[[frequency-enhanced-direct-forecast]]、[[quadratic-form-weighted-objective]]。
+## 证据
 
----
+论文在 ETT、ECL、Weather、Traffic、PEMS 等基准与多类预测骨干上报告了实证结果（均采用作者报告口径）[^src-distdf]：
+
+1. **定位与主结论**：作为零推理开销的即插即用训练损失，DistDF 在多个主流骨干（TimeBridge、Fredformer、[[itransformer|iTransformer]]、[[patchtst|PatchTST]]、[[timemixer|TimeMixer]] 等）上相对纯 MSE 带来一致精度改进，总体优于 FreDF、Time-o1 等变换类目标及 DILATE、Soft-DTW 等形状对齐目标；在自回归多步滚动预测中，对长程误差累积的抑制尤为显著。
+2. **真实涨点归因**：消融验证表明，仅对齐均值或仅对齐协方差单独接入均有效，两者合用最优；将 BW 替换为 EMD、MMD 或 KL 同样不劣于纯 MSE，但闭式 BW 综合最稳。超参敏感性测试揭示了一条关键边界：**最优权重 $\gamma$ 落在 $0.001\sim 0.1$ 之间，一旦取 $\gamma=1$ 去掉逐点 MSE，性能在所有测试集上一致退化**——说明其增益来自「逐点对应 + 分布矩正则」的协同，不能独立替代 MSE。
+3. **证据缺口与负结果**：其一，高斯近似使 BW 只能匹配一阶与二阶矩，对偏态或多峰等高阶条件分布结构无能为力；其二，最优 $\gamma$ 跨数据集相差两个数量级且需与学习率 $\eta$ 联合调参，缺乏自适应调度；其三，主实验集中在 $H=96$ 设定（变历史长度仅在 Weather 上验证），且在个别组合（如 [[source-frets|FreTS]] 配合 ECL）上几乎没有增益。
+
+## 相关页面
+
+- [[source-distdf]] — 论文源摘要
+- [[joint-distribution-wasserstein-alignment]] — 联合分布 Wasserstein 上界与等价性原理
+- [[bures-wasserstein]] — 高斯分布下 $W_2$ 的闭式散度
+- [[autocorrelation-bias]] — 多步预测中逐点 MSE 的自相关偏差分析
+- [[fredf]] · [[frequency-enhanced-direct-forecast]] — 频域边缘去相关的前序路线
+- [[qdf]] · [[quadratic-form-weighted-objective]] — 可学习协方差二次型似然的同槽位对照
 
 [^src-distdf]: [[source-distdf]]
 [^src-fredf]: [[source-fredf]]

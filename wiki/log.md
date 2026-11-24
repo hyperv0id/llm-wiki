@@ -4611,3 +4611,11 @@ ingest 报告：[[ingest-reports/2026-11-20-2405-12981-cla|WHY 报告]]
 ## [2026-11-22] maintenance | 核心机制页脱水重写（Batch 2 前 8 页）
 按实验三行判词规范重写 8 个长页面：证据节整表照搬与两位小数流水删除、改为定位/归因/缺口三判词，句中源码坐标移句末，首段补人话大义；机制与数据流小节保留。mita-attention 255→161 行（旧证据大表与十条待查清单废止）、minimax-sparse-attention 203→131、ouro 276→160、vetime 235→140、agent-attention 195→132、cross-layer-attention 140→105、distdf 160→107、engram 265→179；证据节占比均从 32–44% 降到 3.7–16.2%。
 更新的页面：[[mita-attention]], [[minimax-sparse-attention]], [[ouro]], [[vetime]], [[agent-attention]], [[cross-layer-attention]], [[distdf]], [[engram]]
+
+## [2026-11-24] maintenance | 重构 MiTA Attention 为 Tier 1 标杆范例页并接入质量门禁脚本
+按新版最小信息原则与可读性规范重写 [[mita-attention]]：首段改为无公式碎片的纯人话大义、剥离句中源码坐标、保留 4 阶段 `aligned` 维度流、显式标明与 [[agent-attention]] 的数学同构及与 [[native-sparse-attention]] 的同槽位对照，并将原 95 行四张实验大表与 10 条排版瑕疵清单压缩为 3 条定性实验判词（`scripts/lint.py --quality` 零告警）。
+更新的页面：[[mita-attention]]
+
+## [2026-11-24] maintenance | 重构 DistDF 为 Tier 1 时序理论/损失类标杆范例页
+按最小信息原则与可读性规范重写 [[distdf]]：首段纯人话大义、剥离全部句中公式/章节坐标、将算法步骤改写为两阶段 `aligned` 损失计算流、明确与 [[fredf]] 的瓶颈接力 $\Delta$ 及与 [[qdf]] 的同槽位对照矩阵，并将占全文 48% 的 Table 1–3 与附录 Table 6–13 跑分大表压缩为 3 条定性实验判词（`scripts/lint.py --quality` 零告警）。
+更新的页面：[[distdf]]
