@@ -8,8 +8,8 @@ tags:
   - graph-pde
   - iclr
 created: 2026-06-08
-last_updated: 2026-06-09
-source_count: 2
+last_updated: 2026-11-24
+source_count: 3
 confidence: high
 status: active
 ---
@@ -46,8 +46,12 @@ SOTA history-free trajectory prediction on NGSIM and HighD, matching history-dep
 - [[vehicle-centric-graph-traffic-pde]] — Lagrangian PDE discretization on vehicle graphs
 - [[micro-macro-coupled-koopman-modeling]] — unified Koopman framework
 - [[intent-discriminator-koopman]] — MoE-based driving mode selection
+- [[slide|SLiDE]] — linear additive special-case counterpart for exogenous forecasting
 
 另一种基于 Koopman 的时间序列模型是 [[k2vae|K²VAE]]（ICML 2025），它用 KoopmanNet（MLP 测量函数 + one-step eDMD）+ KalmanNet 做通用长期概率预测，与 MMCKM 一样在 Koopman 演化中引入可学习控制输入 $B u$，但目标是精炼不确定性而非耦合双尺度交通动力学[^src-k2vae]。
 
+在一般外生时序预测场景下，[[slide|SLiDE]]（NeurIPS 2026）可视作状态相关/多模态控制 Koopman 模型（即 MMCKM 的 $z_{t+1}=K_z z_t + B_z u_t$ 配合 CrossAttention 控制与 5 模态 [[intent-discriminator-koopman|Intent Discriminator]]）的**简化特例**：SLiDE 放弃状态耦合控制项 $B(z,u)$ 与多模态动态切换，强制历史编码与未来滚动共享同一 $N=2$ 分块对角线性矩阵 $W$ 及纯加性外生推力 $\operatorname{MLP}_u(u_\tau)$，以牺牲微观多模态动力学切换换取分布外（OOR）泛化稳健性[^src-mmckm][^src-slide]。
+
 [^src-mmckm]: [[source-mmckm]]
 [^src-k2vae]: [[source-k2vae]]
+[^src-slide]: [[source-slide]]

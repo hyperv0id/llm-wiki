@@ -7,8 +7,8 @@ tags:
   - driving-mode-classification
   - trajectory-prediction
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-11-24
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -59,4 +59,7 @@ On HighD at 0.2s operator interval, removing the Intent Discriminator (MMCKM-I) 
 
 This technique avoids the high computational cost of a single over-generalized Koopman operator by leveraging a structured ensemble of specialized operators. The Intent Discriminator serves as a lightweight gating mechanism that adaptively aligns operator selection with underlying driving intent, enabling efficient multi-regime dynamics modeling without eigendecomposition at inference time[^src-mmckm].
 
+与本页通过 MoE 门控在多枚参数有界 Koopman 算子间动态切换、并配以状态耦合控制输入的设计相对，[[slide|SLiDE]]（NeurIPS 2026）作为线性加性**简化特例**，仅保留单一分块对角线性矩阵 $W$（$N=2$ 块）且在历史编码与未来滚动间完全共享，通过放弃状态相关切换来约束模型容量、抑制分布外过拟合[^src-mmckm][^src-slide]。
+
 [^src-mmckm]: [[source-mmckm]]
+[^src-slide]: [[source-slide]]

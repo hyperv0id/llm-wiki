@@ -12,7 +12,7 @@ tags:
   - channel-independence
 created: 2026-07-13
 last_updated: 2026-11-24
-source_count: 3
+source_count: 4
 confidence: medium
 status: active
 ---
@@ -71,6 +71,7 @@ TiDE sits between the [[ltsf-linear|LTSF-Linear / DLinear]] challenge to Transfo
 
 - **同槽位互斥对照（vs [[source-timeseed|TimeSeed]], ICML 2026）**：TiDE assumes complete look-back $y_{1:L}$ and projects covariates directly to multi-step horizons; under extreme endogenous sparsity (4% or single point with dense exogenous covariates), TimeSeed argues direct projection suffers scale and causality mismatch, replacing it with two-stage input-side history reconstruction via multi-scale upsampling + time/frequency exogenous linear aggregation before forecasting (though two-step imputation + PatchTST beats TimeSeed on ETTm1, 0.041 vs 0.068)[^src-timeseed].
 - **复现口径与机制对照（vs [[source-xlinear|XLinear]], AAAI 2026）**：同属纯 MLP 协变量/外生预测阵营，TiDE 采用通道独立（CI）残差块并通过 temporal decoder 直连已知未来协变量；XLinear 则引入可学习全局 token 与时间/变量双 MLP 门控从历史外生变量跨通道注入信号，以 $O(Td)$ 线性开销在多数常规外生基准占优，但在 862 维 Traffic Many-to-Many 上因单全局 token 容量受限落后于 TimeXer（$0.432$ vs $0.428$）与 [[itransformer|iTransformer]][^src-xlinear]。
+- **机制增量 $\Delta$（vs [[slide|SLiDE]], NeurIPS 2026）**：TiDE 将历史序列与展平后的过去/未来协变量一同送入 dense residual MLP 编码，再经 [[temporal-decoder|Temporal Decoder]] 逐预测步并入未来协变量；SLiDE 则将时序演化抽离为历史编码与未来滚动共享的分块线性递推 $W$，外生变量仅作为跨步共享 $\operatorname{MLP}_u$ 产生的纯加性推力进入潜状态，在 EPF-DE OOR 与跨驱动迁移上显著降低偏移误差，且推理速度接近 TSMixer[^src-tide][^src-slide]。
 
 ## Limitations
 
@@ -82,7 +83,7 @@ TiDE sits between the [[ltsf-linear|LTSF-Linear / DLinear]] challenge to Transfo
 
 - Paper: [[source-tide]]
 - Technique: [[temporal-decoder]]
-- Related models: [[ltsf-linear]], [[patchtst]], [[nbeatsx]], [[tft]], [[informer]], [[autoformer]], [[fedformer]], [[deepar]], [[source-timeseed]], [[source-xlinear]]
+- Related models: [[ltsf-linear]], [[patchtst]], [[nbeatsx]], [[tft]], [[informer]], [[autoformer]], [[fedformer]], [[deepar]], [[source-timeseed]], [[source-xlinear]], [[slide]]
 - Concepts: [[lstf]], [[channel-independence]], [[direct-forecast]], [[instance-normalization]]
 
 ---
@@ -90,3 +91,4 @@ TiDE sits between the [[ltsf-linear|LTSF-Linear / DLinear]] challenge to Transfo
 [^src-tide]: [[source-tide]]
 [^src-timeseed]: [[source-timeseed]]
 [^src-xlinear]: [[source-xlinear]]
+[^src-slide]: [[source-slide]]

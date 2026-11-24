@@ -341,6 +341,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-sifusion]] — SIFusion: 统一多粒度北极海冰预测框架，Swin V2 空间编码 + granularity variate 跨粒度融合 (NeurIPS 2025)
 - [[source-simdiff]] — SimDiff: simpler yet better diffusion model for time series point forecasting (AAAI 2026)
 - [[source-siren-rope]] — Learning to Rotate: Temporal and Semantic Rotary Encoding for Sequential Modeling (arXiv 2026)
+- [[source-slide]] — SLiDE: 历史滞后不变编码与未来滚动共享分块线性算子 $W$ + 纯加性外生推力 $\operatorname{MLP}_u$，8 项任务平均排名 1.87、OOR/跨驱动显著降错（Pütz et al., NeurIPS 2026）
 - [[source-smartraj2]] — SMARTraj2: A Stable Multi-City Adaptive Method for Multi-View Spatio-Temporal Trajectory Representation（NeurIPS 2025），城市/轨迹级 sigmoid 特征门控，正文无专家集合
 - [[source-snr-t-bias]] — Elucidating the SNR-t Bias of Diffusion Probabilistic Models (Yu et al., CVPR 2026, AMAP Alibaba + LZU)
 - [[source-soft-shape]] — SoftShape: Learning Soft Sparse Shapes for Efficient Time-Series Classification（ICML 2025），shape 级 MoE（k=1、专家数=类别数）+ Inception 共享专家 + 变异系数负载均衡
@@ -638,6 +639,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[sifusion]] — SIFusion，统一多粒度北极海冰预测 Transformer，Swin V2 + granularity variate attention (NeurIPS 2025)
 - [[simdiff]] — SimDiff, end-to-end diffusion model for time series point forecasting (AAAI 2026)
 - [[siren-rope]] — SIREN-RoPE, learnable temporal rotary encoding for sequential modeling (2026)
+- [[slide]] — SLiDE: 编码与滚动共享分块对角线性算子 $W$ + 纯加性外生推力，压低自由度服务 OOR 与跨驱动泛化（NeurIPS 2026）
 - [[sparsetsf]] — SparseTSF, lightweight LTSF with <1k parameters (TPAMI 2026)
 - [[specstg]] — SpecSTG, spectral diffusion framework for probabilistic STG traffic forecasting (arXiv 2024)
 - [[srsnet]] — SRSNet, SRS + MLP for long-term MTS forecasting via adaptive patch representation spaces (NeurIPS 2025, ECNU)

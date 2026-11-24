@@ -8,7 +8,7 @@ tags:
   - 2024
 created: 2026-07-07
 last_updated: 2026-11-24
-source_count: 3
+source_count: 4
 confidence: medium
 status: active
 ---
@@ -67,7 +67,9 @@ TimeXer 的核心洞见在于：内生变量和外生变量需要不同粒度的
 - [[source-tft|TFT]] — 早期可解释 multi-horizon Transformer（static/known/observed + 分位数，2020）；TimeXer 更聚焦 endo/exo token 粒度与 irregular 外生
 - [[source-timeseed|TimeSeed]] — **同槽位互斥与场景分支**（ICML 2026）：TimeXer 默认内生历史完整并用交叉注意力融合外生；当内生极度稀疏（4% 或单点）时，TimeSeed 改为先用稠密外生重建完整内生历史再预测，并用时/频域纯 Linear 聚合替代交叉注意力，显存降至 10.5 MB（vs TimeXer 14.69 MB）、训练快约 30%，但在 ETTm1 上被两步「插补+PatchTST」胜过（0.041 vs 0.068）[^src-timeseed]
 - [[source-xlinear|XLinear]] — **同槽位互斥**（AAAI 2026）：沿用 TimeXer 的可学习全局 token 桥梁设计，但将 patch 自注意力与交叉注意力全部替换为时间/变量双层 `MLP + Sigmoid` 门控，复杂度降至 $O(Td)$（Weather 上提速 $\ge 39.3\%$、降显存约 $43.7\%$），多数设置逼近或胜过 TimeXer，但在 862 维 Traffic Many-to-Many 上落后于 TimeXer（$0.432$ vs $0.428$）[^src-xlinear]
+- [[slide|SLiDE]] — **同生态位对照**（NeurIPS 2026）：去掉 TimeXer 的内生 patch 自注意力与外生交叉注意力，改用历史编码与未来滚动共享的分块线性转移阵 $W$ 加纯加性外生推力 $\operatorname{MLP}_u(u_\tau)$；推理速度明显快于 TimeXer（接近 TSMixer），在 EPF-5、Favorita 与 Bouc-Wen 8 项任务中平均排名 1.87 居首，并在 EPF-DE OOR 上相对降错约 20%[^src-slide]
 
 [^src-timexer]: [[source-timexer]]
 [^src-timeseed]: [[source-timeseed]]
 [^src-xlinear]: [[source-xlinear]]
+[^src-slide]: [[source-slide]]

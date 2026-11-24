@@ -9,8 +9,8 @@ tags:
   - categorical
   - multimodal
 created: 2026-04-29
-last_updated: 2026-10-13
-source_count: 2
+last_updated: 2026-11-24
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -175,13 +175,13 @@ $$C^{(hom)}_{1:T+H} \in \mathbb{R}^{(T+H) \times M_{hom}}$$
 
 | 方法 | 同质支持 | 异构支持 | 训练方式 |
 |------|---------|---------|----------|
-| DeepAR | ✓ | ✗ | 从零训练 |
-| [[tft|TFT]] | ✓ | ✗ | 从零训练 |
-| [[nbeatsx|N-BEATSx]] | ✓ | ✗ | 从零训练 |
-| TimesFM | ✗ | ✗ | 预训练 |
-| Chronos | ✗ | ✗ | 预训练 |
-| Moirai | 有限 | ✗ | 预训练 |
-| **UniCA** | ✓ | ✓ | 适配器 |
+| DeepAR | 支持 | 不支持 | 从零训练 |
+| [[tft|TFT]] | 支持 | 不支持 | 从零训练 |
+| [[nbeatsx|N-BEATSx]] | 支持 | 不支持 | 从零训练 |
+| TimesFM | 不支持 | 不支持 | 预训练 |
+| Chronos | 不支持 | 不支持 | 预训练 |
+| Moirai | 有限 | 不支持 | 预训练 |
+| **UniCA** | 支持 | 支持 | 适配器 |
 
 > **关键问题**：虽然专用模型可以处理异构协变量，但它们缺乏预训练 TSFMs 的泛化能力。UniCA 旨在**兼得两全**：保留 TSFMs 的泛化能力，同时支持异构协变量[^src-unca]。
 
@@ -203,8 +203,25 @@ WorldTS 采用非同质化设计，不将异构输入转换为统一形态，而
 
 ---
 
+## 时序可用性与角色异构：Future-known / Past-only / Static 协变量
+
+除数据模态异构（分类/图像/文本 vs 数值序列）外，实际外生预测还存在**时序可用性异构**——同一任务往往同时包含未来已知动态协变量（future-known，如日历、电价/促销计划）、仅历史可见动态协变量（past-only，如历史气象实测或相关站流量）与不随时间变化的静态属性（static，如站点/商品元信息）[^src-slide]。
+
+[[slide|SLiDE]]（NeurIPS 2026）在 EPF-5、Favorita 与 Bouc-Wen 基准上针对这三类协变量角色提供了受控对比：它不按注意力或残差堆叠对三类协变量做高自由度柔性交互，而是通过跨历史与未来步共享的 $\operatorname{MLP}_u(u_\tau)$ 将外生信号编码为潜空间纯加性推力，同时由历史编码与未来滚动共享同一分块线性算子 $W$[^src-slide]。在同生态位外生模型对比中，SLiDE 指出柔性融合虽在平稳同分布下表现稳定，但在外生变量超出训练取值范围（OOR）或跨驱动迁移时容易过拟合伪相关；反之 SLiDE 对缺失或时间错位的外生输入更为敏感，因为任何异常推力都会直接带入线性滚动轨迹[^src-slide]。
+
+| 模型 | 协变量角色支持 | 核心融合方式 | OOR / 分布偏移抗性要点 |
+|---|---|---|---|
+| [[tft\|TFT]] | static + known + observed | GRN + 变量选择网络 + 注意力 | 柔性可解释选择，参数与推理开销较大 |
+| [[tide\|TiDE]] | static + past/future dynamic | 展平 dense MLP + Temporal Decoder | 保留全局线性残差，同分布强但无共享线性动力学 |
+| [[source-timexer\|TimeXer]] | past-only + future-known 数值外生 | 全局内生 token + 跨变量交叉注意力 | 对不规则/异步外生稳健，交叉注意力 OOR 易过拟合[^src-slide] |
+| [[gcgnet\|GCGNet]] | 历史 + 可选未来数值外生 | VAE 粗预测 + 联合图对齐 GCN | 兼顾无未来外生场景，推理开销高于轻量线性模型[^src-slide] |
+| [[slide\|SLiDE]] | future-known + past-only + static | 共享 $\operatorname{MLP}_u$ 纯加性推力 + 共享线性 $W$ | 限制容量显著提升 OOR/迁移表现，但对缺失/错位敏感[^src-slide] |
+
+---
+
 ## 相关概念
 
+- [[slide]] — 共享线性动力学 + 纯加性外生推力，涵盖 future-known / past-only / static 实测对照
 - [[covariate-homogenization]] — 协变量同质化
 - [[unified-covariate-adaptation]] — UniCA 框架
 - [[multimodal-time-series-forecasting]] — 多模态时间序列预测
@@ -223,3 +240,5 @@ WorldTS 采用非同质化设计，不将异构输入转换为统一形态，而
 
 [^src-unca]: [[source-unica]]
 [^src-worldts]: [[source-worldts]]
+
+[^src-slide]: [[source-slide]]

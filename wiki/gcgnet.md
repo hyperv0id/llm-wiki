@@ -9,8 +9,8 @@ tags:
   - generative-model
   - iclr-2026
 created: 2026-07-13
-last_updated: 2026-07-18
-source_count: 1
+last_updated: 2026-11-24
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -25,7 +25,7 @@ Predict future endogenous series \(Y^{\mathrm{endo}}\) from historical endogenou
 
 ## Architecture
 
-Three modules (Figure 3 of the paper):[^src-gcgnet]
+GCGNet comprises three modules:[^src-gcgnet]
 
 | Module | Role |
 |--------|------|
@@ -43,13 +43,16 @@ On 12 real exogenous datasets (EPF markets, Chilean energy/hydro, Longyuan wind 
 
 Same lab line as [[kite|KITE]] (probabilistic FM + exogenous) and [[dag|DAG]] (dual correlation injection). GCGNet is **deterministic** graph-consistent generation rather than flow-matching density estimation; it stresses **joint graph alignment** over two-step attention fusion used by [[source-timexer|TimeXer]] / [[source-exotst|ExoTST]].[^src-gcgnet]
 
+- **同生态位对照（vs [[slide|SLiDE]], NeurIPS 2026）**：GCGNet 通过 VAE 粗预测配合联合图对齐与多层 GCN 精炼显式建模时间–通道相关；[[slide|SLiDE]] 则去掉图结构对齐与注意力，改用历史与未来共享的分块线性算子 $W$ 加纯加性外生推力，在 EPF-5、Favorita 等任务上取得更快的推理速度（接近 TSMixer）与平均排名 1.87 居首的表现，并在外生 OOR 偏移场景降低过拟合风险[^src-gcgnet][^src-slide]。
+
 ## Links
 
 - Source: [[source-gcgnet]]
 - Concept: [[joint-temporal-channel-correlation]]
 - Techniques: [[graph-structure-aligner]], [[graph-refiner]], [[variational-generator-exogenous]]
-- Related: [[source-timexer]], [[source-crosslinear]], [[crosslinear]], [[source-exost]], [[source-kite]], [[source-dag]], [[patchtst]]
+- Related: [[source-timexer]], [[source-crosslinear]], [[crosslinear]], [[source-exost]], [[source-kite]], [[source-dag]], [[patchtst]], [[slide]]
 
 ---
 
 [^src-gcgnet]: [[source-gcgnet]]
+[^src-slide]: [[source-slide]]

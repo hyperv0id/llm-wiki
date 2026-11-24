@@ -1,3 +1,10 @@
+## [2026-11-24] ingest | SLiDE: Structured Linear Dynamics for Forecasting with Exogenous Inputs（NeurIPS 2026）
+
+Tier 1 入库。问题：交叉注意力或深层 MLP 等柔性外生融合模型在测试期外生变量超出训练取值范围（OOR）或驱动机制切换时易过拟合伪相关。机制：以跨步共享 $\operatorname{MLP}_y,\operatorname{MLP}_u$ 嵌入观测与外生输入，强制历史滞后不变循环编码与未来前向滚动共用同一 $N=2$ 分块对角线性矩阵 $W$ 及纯加性外生推力（放弃状态相关控制项 $B(z,u)$），输出端改用分块非线性 $\operatorname{MLP}_{\hat{y}}$ 求和替代线性观测矩阵 $C$。证据：EPF-5、Favorita 与 Bouc-Wen 共 8 项任务 8 次进前二、平均排名 1.87 居首，推理接近 TSMixer，EPF-DE OOR 与跨驱动迁移分别降错约 20% 与 30%；将 $W$ 换为两层 ReLU MLP 后 Bouc-Wen 同分布精度更佳（0.035 vs 0.085）但迁移崩溃（0.741 vs 0.296）且 Favorita OOR 落后约 18%，实证线性转移专门服务于分布偏移泛化；编码改回普通 MLP 使均排跌至 2.47，$N=2\to 4$ 无差、$N=8$ 退化约 19%。缺口：有限维线性假设未覆盖连续谱，稳定性仅经验检验，对外生缺失/时间错位敏感且 OOR 样本偏小。
+创建的页面：[[slide]], [[source-slide]]
+更新的页面：[[koopman-linearization-for-forecasting]]（补 SLiDE 纯加性同槽位口径与三模型对照表，source_count 1→3）, [[k2vae]]（补机制对照，source_count 1→2）, [[mmckm]]（补简化特例对照，source_count 2→3）, [[intent-discriminator-koopman]]（补简化特例对照，source_count 1→2）, [[tide]]（补机制增量 $\Delta$，source_count 3→4）, [[gcgnet]]（补同生态位对照，source_count 1→2）, [[source-timexer]]（补同生态位对照，source_count 3→4）, [[heterogeneous-covariates]]（补 future-known/past-only/static 时序角色异构节，source_count 2→3）, [[index]]
+ingest 报告：[[ingest-reports/2026-11-24-slide|WHY 报告]]
+
 ## [2026-10-27] lint | Engram ingest 独立复核（2 新建 + 2 关联文件）
 
 对照 raw/engram-2601-07372.pdf 逐项核查：4 个 Stage 的维度链（$d_h=1280/16=80$、$d_{\mathrm{mem}}=16\times80$、$W^V/W^{K(b)}:[1280,2560]$、残差 $[T,2560]$）、参数记账（27B 档 5.79B 对论文 5.7B、40B 档 18.53B）、Table 1 的 27 项逐项差值与 Table 2 全部数字、Table 4 的 1.92%/2.78%、Table 6 的 23.43%、Figure 3/5/6 的关键数值，以及「无 top-k 检索、无 KV 压缩/量化、无 STE」三条纠正与 10 条边界，均与原文一致。修 5 处：source-summary 原为 0 处内联引用，补 8 处并加 [[engram]] 回链；参数反推「差在四舍五入」改为「比论文 5.7B 高 0.09B」；MMLU 冲突补 §1 亦写 +3.4；§7 谱系句改回论文自述的两处差别（评测口径、系统位置）。复跑 lint.py：severe 132 / warn 47 / info 1147，与修前持平。
