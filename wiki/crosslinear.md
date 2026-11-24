@@ -9,7 +9,7 @@ tags:
   - kdd-2025
 created: 2026-07-13
 last_updated: 2026-11-24
-source_count: 2
+source_count: 3
 confidence: high
 status: active
 ---
@@ -45,14 +45,16 @@ On 12 exogenous benchmarks (ECL, Weather, ETT, Traffic, EPF markets), CrossLinea
 - vs [[source-exollm|ExoLLM]]: LLM multi-grained text prompts; CrossLinear is purely numerical Linear.
 - vs [[source-gcgnet|GCGNet]]: GCGNet cites CrossLinear as a channel-then-temporal two-step baseline and proposes joint graph-consistent generation instead.[^src-crosslinear]
 - vs [[source-timeseed|TimeSeed]]: **同槽位互斥与场景分支** (ICML 2026) — CrossLinear applies 1D-conv cross-correlation residual fusion assuming complete endogenous history; TimeSeed targets extreme endogenous sparsity (4% or single point) by replacing variable-axis attention/conv with MovingAvg + RFFT band-split Linear aggregation to reconstruct complete endogenous history before linear forecasting (~0.19M params, 10.5 MB), though two-step imputation + PatchTST outperforms it on ETTm1 (0.041 vs 0.068) and TSFMs are untested.[^src-timeseed]
+- vs [[source-xlinear|XLinear]]: **同槽位互斥** (AAAI 2026) — Both sit in the $O(T)$ linear-complexity numerical exogenous camp; CrossLinear injects time-invariant dependencies via 1D-conv cross-correlation residual embedding plus a patch linear head, whereas XLinear replaces attention with a learnable global token driven by temporal and variate MLP+sigmoid gates, though XLinear trails TimeXer ($0.432$ vs $0.428$) and iTransformer on 862-variate Traffic Many-to-Many due to limited single-token denoising capacity.[^src-xlinear]
 
 ## Links
 
 - Source: [[source-crosslinear]]
 - Technique: [[cross-correlation-embedding]]
-- Related: [[source-timexer]], [[source-timeseed]], [[source-exost]], [[source-exollm]], [[source-exotst]], [[source-gcgnet]], [[channel-independence]], [[patch-based-tokenization]]
+- Related: [[source-timexer]], [[source-timeseed]], [[source-xlinear]], [[source-exost]], [[source-exollm]], [[source-exotst]], [[source-gcgnet]], [[channel-independence]], [[patch-based-tokenization]]
 
 ---
 
 [^src-crosslinear]: [[source-crosslinear]]
 [^src-timeseed]: [[source-timeseed]]
+[^src-xlinear]: [[source-xlinear]]

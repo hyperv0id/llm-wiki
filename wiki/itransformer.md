@@ -8,7 +8,7 @@ tags:
   - ICLR-2024
 created: 2026-05-30
 last_updated: 2026-11-24
-source_count: 3
+source_count: 4
 confidence: medium
 status: active
 ---
@@ -81,7 +81,9 @@ iTransformer 属于论文定义的第四类 Transformer 修改：仅改架构、
 - [[sifusion]] — SIFusion 中应用 granularity variates 做多粒度海冰预测
 - [[pir|PIR]] — 后处理修订插件以 iTransformer 为骨干；论文报告 PIR 的局部修订模块（逐变量投影 + 通道间注意力）与 iTransformer 结构相似，且在其上仍带来 48 个设置平均 MSE 降 3.47%[^src-pir]
 - [[timer-xl|Timer-XL]] — **同槽位互斥对照**：同出清华大学团队的多变量 Transformer 架构；iTransformer 将整条序列压为单个 variate token 并以 FFN 处理时间，Timer-XL 则保留 patch 级因果时序 token 并用 Kronecker 掩码与变量偏置 $(u,v)$ 联合建模时空依赖，支持变长滚动与协变量，代价是理论算力从 $\mathcal{O}(N^2)$ 升至 $\mathcal{O}(N^2 T^2)$[^src-timer-xl]
+- [[source-xlinear|XLinear]] — **复现口径与机制对照**（AAAI 2026）：将 $N\times N$ 变量间自注意力压缩为单全局 token 门控通道以实现 $O(Td)$ 线性级外生融合，在常规数据集占优，但在 862 维 Traffic Many-to-Many 上因单全局 token 容量受限而落后于 iTransformer 与 [[source-timexer|TimeXer]][^src-xlinear]
 
 [^src-itransformer]: [[source-itransformer]]
 [^src-pir]: [[source-pir]]
 [^src-timer-xl]: [[source-timer-xl]]
+[^src-xlinear]: [[source-xlinear]]

@@ -12,7 +12,7 @@ tags:
   - channel-independence
 created: 2026-07-13
 last_updated: 2026-11-24
-source_count: 2
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -70,6 +70,7 @@ Training uses mini-batch MSE with rolling (look-back, horizon) pairs; TiDE uses 
 TiDE sits between the [[ltsf-linear|LTSF-Linear / DLinear]] challenge to Transformers and the [[patchtst|PatchTST]] revival of attention via patching+CI. Relative to DLinear it adds non-linear residual capacity and first-class covariates; relative to PatchTST it trades attention for linear-time dense maps and stronger covariate highways.[^src-tide] Earlier residual exogenous work [[nbeatsx|NBEATSx]] (EPF, basis stacks + TCN exo encoder) is a short-horizon interpretable precursor; [[tft|TFT]] (2020) is an earlier attention multi-horizon baseline with static/known/observed covariates and quantiles. Later exogenous-aware models (e.g., TimeXer, ExoTST, KITE, DAG) often still cite TiDE as a strong MLP/covariate baseline for long-horizon forecasting.
 
 - **同槽位互斥对照（vs [[source-timeseed|TimeSeed]], ICML 2026）**：TiDE assumes complete look-back $y_{1:L}$ and projects covariates directly to multi-step horizons; under extreme endogenous sparsity (4% or single point with dense exogenous covariates), TimeSeed argues direct projection suffers scale and causality mismatch, replacing it with two-stage input-side history reconstruction via multi-scale upsampling + time/frequency exogenous linear aggregation before forecasting (though two-step imputation + PatchTST beats TimeSeed on ETTm1, 0.041 vs 0.068)[^src-timeseed].
+- **复现口径与机制对照（vs [[source-xlinear|XLinear]], AAAI 2026）**：同属纯 MLP 协变量/外生预测阵营，TiDE 采用通道独立（CI）残差块并通过 temporal decoder 直连已知未来协变量；XLinear 则引入可学习全局 token 与时间/变量双 MLP 门控从历史外生变量跨通道注入信号，以 $O(Td)$ 线性开销在多数常规外生基准占优，但在 862 维 Traffic Many-to-Many 上因单全局 token 容量受限落后于 TimeXer（$0.432$ vs $0.428$）与 [[itransformer|iTransformer]][^src-xlinear]。
 
 ## Limitations
 
@@ -81,10 +82,11 @@ TiDE sits between the [[ltsf-linear|LTSF-Linear / DLinear]] challenge to Transfo
 
 - Paper: [[source-tide]]
 - Technique: [[temporal-decoder]]
-- Related models: [[ltsf-linear]], [[patchtst]], [[nbeatsx]], [[tft]], [[informer]], [[autoformer]], [[fedformer]], [[deepar]], [[source-timeseed]]
+- Related models: [[ltsf-linear]], [[patchtst]], [[nbeatsx]], [[tft]], [[informer]], [[autoformer]], [[fedformer]], [[deepar]], [[source-timeseed]], [[source-xlinear]]
 - Concepts: [[lstf]], [[channel-independence]], [[direct-forecast]], [[instance-normalization]]
 
 ---
 
 [^src-tide]: [[source-tide]]
 [^src-timeseed]: [[source-timeseed]]
+[^src-xlinear]: [[source-xlinear]]

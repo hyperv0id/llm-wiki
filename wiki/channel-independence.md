@@ -7,8 +7,8 @@ tags:
   - channel-processing
   - multivariate
 created: 2026-04-28
-last_updated: 2026-11-02
-source_count: 18
+last_updated: 2026-11-24
+source_count: 19
 confidence: high
 status: active
 ---
@@ -66,6 +66,8 @@ CVPE (Cross-Variate Patch Embedding) 提出一种折中策略——仅在最轻�
 
 [[crosslinear|CrossLinear]] (KDD 2025) 给出外生 many-to-one 设定下的同类折中：用单层 1D 卷积的 [[cross-correlation-embedding|cross-correlation embedding]] 仅注入**时不变、直接**的 endo–exo 依赖，再以可学习残差混合回内生序列，后续仍走 CI 友好的 patch + linear head；复杂度保持 O(T)，并可即插提升 SparseTSF/RLinear/PatchTST 等 CI 骨干 [^src-crosslinear]。
 
+[[source-xlinear|XLinear]]（AAAI 2026）则在同处线性级开销的外生设定中给出另一种**复现与机制对照**折中：它同样不做 $N\times N$ 变量自注意力，但也不依赖完全 CI 或 1D 卷积嵌入，而是仅设置一个可学习全局 token 充当通道间瓶颈，先与内生序列沿时间轴做 `MLP + Sigmoid` 门控滤波，再沿变量轴与外生序列做门控聚合后直连预测；该单通道瓶颈在多数常规外生基准上以 $O(Td)$ 开销逼近或胜过注意力外生模型，但在 862 维 Traffic Many-to-Many 上因去噪容量不足而落后于 [[source-timexer|TimeXer]] 与 [[itransformer|iTransformer]][^src-xlinear]。
+
 ### CPiRi：CI 与 CD 的深度融合
 
 [[cpiri|CPiRi]] (ICLR 2026) 提出了一种更彻底的 CI-CD 融合方案——**时空解耦 + 排列不变正则化**[^src-cpiri]。其架构由三阶段组成：冻结局模型 (Sundial) 独立提取时间特征（CI 端）、可训练的空间模块通过 multi-head self-attention 学习内容驱动的跨通道关系（CD 端）、冻结局模型独立生成预测。关键创新在于训练策略：每次训练步随机打乱通道顺序，迫使空间模块基于时间特征的内容而非位置索引来推断通道间关系 [^src-cpiri]。
@@ -94,7 +96,7 @@ CPiRi 的通道打乱测试暴露了一个关键问题：大多数 CD 模型在�
 
 ## 在 VETime 零样本异常检测中的落地与边界
 
-[[vetime|VETime]]（arXiv:2602.16681）在多变量时序异常检测中采用 Channel-Independent（CI）架构，以规避在未知目标域中优化复杂噪声跨通道相关性的瓶颈（Appendix A）[^src-2602-16681-vetime]。
+[[vetime|VETime]]（arXiv:2602.16681）在多变量时序异常检测中采用 Channel-Independent（CI）架构，以规避在未知目标域中优化复杂噪声跨通道相关性的瓶颈[^src-2602-16681-vetime]。
 
 ### 机制设计
 1. **实例自适应 Gamma 校正**：各变量通道独立进行季节-趋势分解后，为增强视觉表征的通道区分度，引入变量特定的 Gamma 校正进行非线性强度映射。为严格遵循零样本无泄露约束，Gamma 参数在推理阶段仅根据当前输入序列实例的统计量动态计算，杜绝目标域全局先验泄露（Appendix A）[^src-2602-16681-vetime]。
@@ -117,6 +119,7 @@ CI 只规定逐序列处理，不规定超参在序列间共享多少。[[search
 - **Crossformer (全 CD)**：2D embedding + 两阶段注意力，全层建模跨维度依赖 [^src-crossformer-2023]
 - **CVPE 折中**：CI backbone + patch 级 CD 注入，保留鲁棒性同时增加跨变量容量 [^src-cvpe-2025]
 - **CrossLinear 折中**：CI 时序骨干 + 1D conv 外生交叉相关残差注入（外生 many-to-one）[^src-crosslinear]
+- **XLinear 折中**：时间/变量双 MLP 门控 + 单全局 token 通道瓶颈注入外生信号（复杂度 $O(Td)$），862 维高维仍落后于 TimeXer 与 iTransformer[^src-xlinear]
 - **Zeus**：CI + point tokenization + RevIN 的 tuning-free 多任务基础模型（ICML 2026），局限为未显式建模变量间相关 [^src-2607-01918]
 - **VETime**：CI 独立季-趋分解 + 实例自适应 Gamma 校正 + GCD 统一折叠周期的零样本多变量视觉增强架构，局限为缺少跨变量依赖建模且受制于固定画布物理容量（~10 变量）[^src-2602-16681-vetime]
 
@@ -146,6 +149,7 @@ CI 只规定逐序列处理，不规定超参在序列间共享多少。[[search
 - 相关：[[witran]] — 单通道评估的 RNN 周期模型（NeurIPS 2023）[^src-witran-jia-2023]
 - 相关：[[vetime]] — CI 架构在视觉增强零样本异常检测中的应用与容量边界分析[^src-2602-16681-vetime]
 - 相关：[[traceable-image-conversion]] — 包含 GCD 周期对齐的多变量复合热图转换技术[^src-2602-16681-vetime]
+- 相关：[[source-xlinear|XLinear]] — 单全局 token 门控注入外生变量的线性级折中方案（AAAI 2026）[^src-xlinear]
 
 [^src-simdiff]: [[source-simdiff]]
 [^src-patchtst]: [[source-patchtst]]
@@ -165,3 +169,4 @@ CI 只规定逐序列处理，不规定超参在序列间共享多少。[[search
 [^src-trace-neurips2025]: [[source-trace-neurips2025]]
 [^src-witran-jia-2023]: [[source-witran-jia-2023]]
 [^src-2602-16681-vetime]: [[source-2602-16681-vetime]]
+[^src-xlinear]: [[source-xlinear]]

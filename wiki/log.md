@@ -4675,3 +4675,11 @@ Tier 2 轻量化入库（核心切片未见具体会议年份水印，仓库 Ope
 创建的页面：[[source-tadiff]]
 更新的页面：[[multimodal-time-series-forecasting]]（补文本反事实与场景条件二维矩阵与循环评价提醒，source_count 24→27）, [[doflow]]（补无 SCM 文本反事实同槽位对照，source_count 1→2）, [[causal-counterfactual-recovery]]（补不可识别性口径对照，source_count 1→2）, [[source-whatif-tsf]]（补同生态位场景基准对照并转写 Unicode 下标，source_count 1→2）, [[diffusion-model]]（补 DDIM 归因初始隐态变体，source_count 29→30）, [[index]]
 ingest 报告：[[ingest-reports/2026-11-24-tadiff|WHY 报告]]
+
+
+
+## [2026-11-24] ingest | XLinear: A Lightweight and Accurate MLP-Based Model for Long-Term Time Series Forecasting with Exogenous Inputs
+Tier 2 轻量化入库（AAAI 2026；由 `RevIN`、共享线性嵌入、可学习全局 token 与时间/变量双层 `MLP + Sigmoid` 门控及单层 FC 头拼装，未为 `xlinear`、`TGM`、`VGM` 新建 `source_count: 1` 独立页）。针对 [[source-timexer|TimeXer]] 类注意力外生模型带来的二次计算与显存开销，XLinear 用可学习全局 token 充当通道间瓶颈，先沿时间轴做内生门控滤波、再沿变量轴做外生门控聚合后直接拼接预测，复杂度降至 $O(Td)$。7 个公开基准与 5 个农业/水文实景集上在多数 Many-to-One/Many-to-Many 设定取得最优或次优（Weather 上提速 $\ge 39.3\%$、显存降约 $43.7\%$）；消融证实去掉全局 token（GT）或外生通路（ES）均明显掉点（Weather-96 MSE $0.149 \to$ GT $0.153$ / ES $0.175$），证明主要涨点来自保留外生信息通路。缺口与负结果：862 维 Traffic Many-to-Many 上落后于 TimeXer（$0.432$ vs $0.428$）与 iTransformer，反映单全局 token 配单层门控在高维去噪上的容量不足；论文未对 TGM/VGM 顺序、门控激活或参数共享做细粒度组件消融，作者亦自述高维扩展性仍待提升。
+创建的页面：[[source-xlinear]]
+更新的页面：[[source-timexer]]（补同槽位互斥与 862 维 Traffic 对照，source_count 2→3）, [[crosslinear]]（补同槽位互斥对照，source_count 2→3）, [[itransformer]]（补复现口径与机制对照，source_count 3→4）, [[tide]]（补复现口径与机制对照，source_count 2→3）, [[channel-independence]]（补单全局 token 外生折中对照并清理 VETime 首段既有坐标告警，source_count 18→19）, [[index]]
+ingest 报告：[[ingest-reports/2026-11-24-xlinear|WHY 报告]]
