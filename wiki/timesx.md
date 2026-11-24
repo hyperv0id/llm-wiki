@@ -10,7 +10,7 @@ tags:
   - time-series-forecasting
 created: 2026-11-24
 last_updated: 2026-11-24
-source_count: 5
+source_count: 6
 confidence: medium
 status: active
 ---
@@ -58,12 +58,14 @@ flowchart LR
 - **跨槽位正交（vs [[in-context-learning|In-Context Learning]]）**：不同于直接用演示对提示基础模型生成预测的视觉或轨迹 ICL，TimesX 中的 `TextRev-ICL` 作用于预测后文本修订槽位，将历史修订案例与「保守不改」选项共同置于上下文中，以抑制免训练修订的方差放大[^src-timesx]。
 - **同生态位数据构建对照（vs [[doublecast|CAF-7M / DoubleCast]]）**：两者都针对「公开多模态文本噪音高、难证有效」的问题提出数据解法，但路线对立——CAF-7M 先由大模型读取历史与未来全窗生成解释文本再做经验 CRPS 效用筛选，存在训练/测试文本构造口径差异；TimesX 则全量采用真实时钟下严格早于预测起点的检索与核查事件，规避未来信息反推与筛选器自我验证偏置[^src-doublecast][^src-timesx]。
 - **严防泄露基准延续与实证复现对照（vs [[source-posttime|PostTime]]）**：PostTime（NeurIPS 2026）在严防泄露的刷新版 TimesX 基准（知识截断推后至 2025-01-30，拆分为 88 条 ID 与 11 条 OOD 变量）上开展后训练修订研究，以冻结 [[timesfm|TimesFM-2.5]] 预测为先验训练 4B 语言模型判别修正、维持或回退先验[^src-posttime]。实证上 PostTime 总体 nMAE 优于未修订先验及多数零样本 `REV`、`ENS` 基线，但在 11 条变量的 OOD 子集上，免训练大模型集成 `Gemini-3.1-Pro ENS`（$0.742$）仍与 PostTime（$0.746$）处于同一水平[^src-posttime]。
+- **同槽位防泄露路线互斥对照（vs [[fev-bench]]）**：两者均为还原真实部署排序的预测基准，但防泄露机制与覆盖对象互斥——TimesX 针对多模态文本增强场景，以模型知识截断（`cutoff >= 2024-07-01`）与四步限时核查强制阻断大模型预训练记忆[^src-timesx]；[[fev-bench]] 针对数值协变量与多变量预测（7 域 96 唯一集 / 100 任务），依赖模型方自报训练重叠并以 `Chronos-Bolt (Base)` 分数插补及 `Seasonal Naive` 填充崩溃任务，同时辅以 $B=1000$ 任务级配对 Bootstrap 95% 置信区间区分统计显著性[^src-fev-bench]。
 
 | 基准 | 数据真实性与采样 | 上下文槽位构成 | 防泄露与截断机制 | 核心诊断结论 |
 |---|---|---|---|---|
 | [[time-mmd\|Time-MMD]] | 真实 9 域（日/周/月）[^src-time-mmd] | 外生文本（报告+检索）[^src-time-mmd] | fact/prediction 拆分 + 2024-05 截断[^src-time-mmd] | 证明多模态可增益，但缺同域协变量槽位[^src-time-mmd] |
 | [[source-time-imm\|Time-IMM]] | 真实 9 亚类（异步不规则）[^src-time-imm] | 独立时间戳文本日志摘要[^src-time-imm] | 按事件发生时间戳保留异步先后[^src-time-imm] | 免除强网格对齐，验证门控抑噪融合[^src-time-imm] |
 | [[doublecast\|CAF-7M]] | 真实数值 + 合成解释文本[^src-doublecast] | 背景/情景/约束三段文本[^src-doublecast] | 经验 CRPS 效用筛选测试窗[^src-doublecast] | 验证文本须具备预测效用，但存在未来全窗反推[^src-doublecast] |
+| [[fev-bench]] | 真实 7 域 96 唯一集（100 任务）[^src-fev-bench] | 46 协变量（已知/历史/静态）+ 35 多变量[^src-fev-bench] | 自报重叠以 Chronos-Bolt (Base) 插补[^src-fev-bench] | 协变量拉动 TSFM 跃升，原生多变量增益微弱[^src-fev-bench] |
 | **TimesX** | 真实 19 域 190 变量（日/周）[^src-timesx] | 元信息 + 日历 + 同域协变量 + 核查事件[^src-timesx] | 4-Agent 时钟核查 + 2024-07-01 cutoff 隔离[^src-timesx] | 揭示合成基准排序反转，等权集成稳健胜过复杂修订代理[^src-timesx] |
 
 ## 证据
@@ -77,6 +79,7 @@ flowchart LR
 ## 相关页面
 
 - [[source-timesx]] — 论文源摘要
+- [[fev-bench]] — 面向协变量与多变量、采用自报泄露插补与配对 Bootstrap CI 的零样本基准（防泄露路线互斥对照）
 - [[multimodal-time-series-forecasting]] — 多模态时间序列预测基准全景对照
 - [[time-mmd]] — 前序 9 域外生文本基准（瓶颈接力 $\Delta$ 与事件替换复现对照）
 - [[source-time-imm]] — 异步不规则多模态基准（同槽位并行对照）
@@ -90,3 +93,4 @@ flowchart LR
 [^src-time-imm]: [[source-time-imm]]
 [^src-doublecast]: [[source-doublecast]]
 [^src-posttime]: [[source-posttime]]
+[^src-fev-bench]: [[source-fev-bench]]

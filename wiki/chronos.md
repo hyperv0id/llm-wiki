@@ -8,7 +8,7 @@ tags:
   - iclr2024
 created: 2026-04-29
 last_updated: 2026-11-24
-source_count: 11
+source_count: 12
 confidence: high
 status: active
 ---
@@ -89,7 +89,8 @@ Sundial 团队在 Table 8 中报告：使用相同 94B 预训练数据子集时�
 - [[moirai-moe|Moirai-MoE]] — ICML 2025 首个 MoE 时间序列基础模型。Moirai-MoE-S (11M activated) 在 Monash 29 数据集上聚合 MAE 0.65 超越 Chronos-S (~0.77)、Chronos-B (~0.71)，以 65× 更少激活参数（11M vs 710M Chronos-L）取得更优结果[^src-moirai-moe]。推理速度 273s vs Chronos-S 551s（受益于 patch size 16 vs Chronos 的 point-wise tokenization）[^src-moirai-moe]
 - [[tirex]] — **同槽位互斥对照与实证复现对齐**：[[tirex|TiRex]]（35M 纯 sLSTM + CPM 占位）与 Chronos-Bolt（Transformer 自回归）在相同预训练数据与增强下的受控对照显示，Chronos-Bolt 长程 CRPS 仍落后于 TiRex（约 0.41 vs 0.33），且 TiRex 推理速度较 Chronos-Bolt-Base 快 4 倍以上[^src-tirex]
 - [[doublecast]] — **文本条件化扩展与复现对齐**：[[doublecast|DoubleCast]]（ICML 2026）冻结 Chronos（T5-large）分词器与编码器，在每个解码块 `enc-dec cross-attn` 之后插入 `DualT5` 文本交叉注意力以接收冻结 Qwen3-14B 的文本表征；在经经验 CRPS 效用筛选的 CAF-7M 上稳定优于单模态 Chronos / Chronos-2，并在 GIFT-Eval 上几乎完整保留原始数值精度（但在超出训练步长上限的 MSPG $H=96$ 设定下仍落后于 Chronos）[^src-doublecast]
-- [[baguan-ts]] — **同槽位离散分箱输出与协变量 ICL 分化**：[[baguan-ts|Baguan-TS]]（ICML 2026）与 Chronos 同样采用连续区间离散分箱 + softmax 输出概率预测（Baguan-TS 在 $[-10,10]$ 划分 5,000 个分箱并从箱心与 CDF 导出均值和分位数），但 Chronos 依赖单变量自回归并需 ChronosX/UniCA 扩展协变量，Baguan-TS 则以 3D 轴分解与 Y-space 近邻检索在推理期实现免梯度多示例协变量 ICL，并在 `fev-bench-cov` 上将 Chronos 纳入基线对照[^src-baguan-ts]
+- [[baguan-ts]] — **同槽位离散分箱输出与协变量 ICL 分化**：[[baguan-ts|Baguan-TS]]（ICML 2026）与 Chronos 同样采用连续区间离散分箱 + softmax 输出概率预测（Baguan-TS 在 $[-10,10]$ 划分 5,000 个分箱并从箱心与 CDF 导出均值和分位数），但 Chronos 依赖单变量自回归并需 ChronosX/UniCA 扩展协变量，Baguan-TS 则以 3D 轴分解与 Y-space 近邻检索在推理期实现免梯度多示例协变量 ICL，并在 [[fev-bench|fev-bench-cov]] 上将 Chronos 纳入基线对照[^src-baguan-ts]
+- [[fev-bench]] — **实证复现对齐与协变量跃升证据**：在覆盖 7 域 96 唯一集（100 项任务）的 [[fev-bench]] 零样本基准上，Chronos-2 在 SQL 与 MASE 两项主指标均居首位；在 42 项动态协变量任务的受控开关消融中，接入动态协变量将 Chronos-2 的 SQL 技能分从 $40.9$ 提至 $47.0$，而在 35 项多变量任务上开启原生多变量模式仅从 $54.4$ 微升至 $55.0$（同时 `Chronos-Bolt (Base)` 被该基准指定为自报训练重叠泄露任务的分数插补锚点）[^src-fev-bench]
 
 ## DynaMix 对比
 
@@ -119,3 +120,4 @@ Sundial 团队在 Table 8 中报告：使用相同 94B 预训练数据子集时�
 [^src-tirex]: [[source-tirex]]
 [^src-doublecast]: [[source-doublecast]]
 [^src-baguan-ts]: [[source-baguan-ts]]
+[^src-fev-bench]: [[source-fev-bench]]

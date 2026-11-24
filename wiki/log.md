@@ -4784,3 +4784,10 @@ Tier 2 轻量化入库（NeurIPS 2025；在训练损失侧附加相邻滚动窗�
 创建的页面：[[source-alio]]
 更新的页面：[[direct-forecast]]（补 DF 前提归属与跨窗口一致性正则，source_count 8→9）, [[distdf]]（补同槽位目标改造互斥对照，source_count 4→5）, [[qdf]]（补同槽位目标改造互斥对照，source_count 2→3）, [[fredf]]（补跨槽位频域损失对象对照，source_count 4→5）, [[frequency-enhanced-direct-forecast]]（补跨槽位频域对齐对象对照，source_count 2→3）, [[patchtst]]（补官方 336 回看实证复现对齐，source_count 17→18）, [[index]]
 ingest 报告：[[ingest-reports/2026-11-24-alio|WHY 报告]]
+
+
+## [2026-11-24] ingest | fev-bench: A Realistic Benchmark for Time Series Forecasting
+Tier 1 入库（核心切片未带会议水印、引文含 2026 年工作，本仓库 OpenReview CCF-A 调研记录其录用于 NeurIPS 2026 E&D；未为 `fev-bench-mini` 单独建页）。针对现有预测基准领域偏窄、清洗时剥离真实协变量及排名缺少显著性检验的问题，fev-bench 构建覆盖 7 域 96 唯一集共 100 项任务的统一基准（含 46 项三类协变量任务与 35 项多变量任务，滚动窗口 20/10/1），以 MASE 与 9 分位点 SQL 汇总胜率 $W$ 与截断于 $[10^{-2}, 100]$ 的几何平均技能分 $S$，并做 $B=1000$ 任务级配对 Bootstrap 95% CI、以 `Chronos-Bolt (Base)` 插补自报重叠泄露及 `Seasonal Naive` 填充崩溃任务。实证上 Chronos-2 双指标第一而 TiRex 与 TimesFM-2.5 的 95% CI 大幅重叠（第二名统计不可分）；42 项动态协变量开关消融将 Chronos-2 与 TabPFN-TS 的 SQL 技能分分别提至 $47.0$（原 $40.9$）与 $42.5$（原 $34.1$），而 35 项原生多变量开关仅微升（Chronos-2 $54.4\to 55.0$、Toto-1.0 $54.1\to 54.7$），确认当前增益主要源自吃进协变量而非原生多变量交互。缺口：排除亚分钟级高频数据，非全盲测前瞻平台且依赖自报泄露，域/频任务分布不均并受单卡 A10G 24 GB 显存限制。
+创建的页面：[[fev-bench]], [[source-fev-bench]]
+更新的页面：[[probts]]（补瓶颈接力 Δ，source_count 1→2）, [[timesx]]（补同槽位防泄露互斥对照与表行，source_count 5→6）, [[tsfm-covariate-adaptation-comparison]]（补零样本验收尺节与二维矩阵并清理 2 条未引旧脚注，source_count 11→12）, [[baguan-ts]]（回链并将纯文本 `fev-bench-cov` 转为 `[[fev-bench|fev-bench-cov]]`，source_count 9→10）, [[chronos]]（补 Chronos-2 协变量跃升与 Chronos-Bolt 插补锚点，source_count 11→12）, [[tabpfn-ts]]（补 42 任务动态协变量开关增益对齐，source_count 2→3）, [[tirex]]（补与 TimesFM-2.5 的 95% CI 不可分实证对齐，source_count 5→6）, [[timesfm]]（补与 TiRex 95% CI 不可分实证对齐，source_count 14→15）, [[index]]
+ingest 报告：[[ingest-reports/2026-11-24-fev-bench|WHY 报告]]

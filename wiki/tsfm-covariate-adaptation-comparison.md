@@ -8,7 +8,7 @@ tags:
   - iclr-2026
 created: 2026-07-04
 last_updated: 2026-11-24
-source_count: 11
+source_count: 12
 confidence: high
 status: active
 ---
@@ -71,7 +71,19 @@ CoRA 的设计建立在三个相互增强的支柱上：
 
 DiTS 代表了与冻结适配路线不同的范式：它不使用现有 TSFM，而是从头构建 MM-DiT（多模态 Diffusion Transformer），将目标序列和协变量作为两个独立的 modality stream 通过 dual-stream attention 交互[^src-dits]。这避免了"适配"问题本身，但也放弃了利用预训练 TSFM 的优势。DiTS 的 token-level 细粒度条件控制是 CoRA 的 series-level adaLN 调制所不具备的能力[^src-dits]。
 
-[[baguan-ts|Baguan-TS]]（ICML 2026）则在「前置/后置适配器」与「双流从头生成」之外开辟了**序列原生多样例 ICL 路线**（与 [[unica|UniCA]] / [[cora-tsfm|CoRA]] 属同槽位互斥）：它跳过下游微调，在预训练期直接把查询序列、多元数值协变量与 Y-space 检索得到的近邻上下文编成四维张量，沿时间（RoPE）、变量、上下文三轴依次分解注意力[^src-baguan-ts]。在 `fev-bench-cov` 30 项含协变量任务上，Baguan-TS 点预测（SQL 0.7997）领先 [[tabpfn-ts|TabPFN-TS]]（0.8404）与 TimesFM-2.5（0.8276），但概率校准 WQL 仍逊于 TabPFN-TS（0.1724 vs 0.1643），且目前仅支持单目标与同质数值协变量[^src-baguan-ts]。
+[[baguan-ts|Baguan-TS]]（ICML 2026）则在「前置/后置适配器」与「双流从头生成」之外开辟了**序列原生多样例 ICL 路线**（与 [[unica|UniCA]] / [[cora-tsfm|CoRA]] 属同槽位互斥）：它跳过下游微调，在预训练期直接把查询序列、多元数值协变量与 Y-space 检索得到的近邻上下文编成四维张量，沿时间（RoPE）、变量、上下文三轴依次分解注意力[^src-baguan-ts]。在 [[fev-bench|fev-bench-cov]] 30 项含协变量任务上，Baguan-TS 点预测（SQL 0.7997）领先 [[tabpfn-ts|TabPFN-TS]]（0.8404）与 TimesFM-2.5（0.8276），但概率校准 WQL 仍逊于 TabPFN-TS（0.1724 vs 0.1643），且目前仅支持单目标与同质数值协变量[^src-baguan-ts]。
+
+## 零样本统一验收尺：fev-bench 的跨路线实证
+
+随着 [[fev-bench]]（7 域 96 唯一集 100 任务，含 46 项三类协变量任务与 35 项多变量任务）成为零样本协变量评测的统一验收尺，各条路线在严格不微调条件下的能力边界得以同台量化[^src-fev-bench]。在 42 项动态协变量任务的受控开关消融中，接入动态协变量将原生支持协变量的 Chronos-2（SQL 技能分 $40.9\to 47.0$）与表格化 ICL 模型 [[tabpfn-ts|TabPFN-TS]]（$34.1\to 42.5$）大幅拉升；相对地，在 35 项多变量任务上开启原生多变量自交互仅带来微弱提升（Chronos-2 $54.4\to 55.0$、Toto-1.0 $54.1\to 54.7$），说明当前基础模型在真实部署中的核心差距来自吃进协变量而非通道间自交互[^src-fev-bench]。配合 $B=1000$ 任务级配对 Bootstrap 95% 置信区间检验，原本缺乏协变量输入接口的单变量模型 [[tirex|TiRex]] 与 [[timesfm|TimesFM-2.5]] 在第二名位置上置信区间大幅重叠、统计不可分，进一步凸显下游协变量适配器或原生协变量联合预训练的必要性[^src-fev-bench]。
+
+| 路线定位 | 代表模型 / 方法 | 协变量输入与适应代价 | fev-bench 零样本实证定位 | 统计显著性与主要边界 |
+|---|---|---|---|---|
+| **冻结骨干 + 适配器** | [[cora-tsfm\|CoRA]] / [[unica\|UniCA]] / [[chronosx\|ChronosX]] | 需下游数据训练轻量适配器（支持异构文本/图像）[^src-cora][^src-unica][^src-chronosx] | 尚未整体纳入纯零样本排行榜，属有监督微调适配槽位 | 适配后可保护或调制主干，但失去纯零样本即插即用特性[^src-cora][^src-chronosx] |
+| **原生协变量 TSFM** | [[chronos\|Chronos-2]] | 预训练即纳入三类数值协变量，零样本直接推理[^src-fev-bench] | 全榜 SQL/MASE 双第一；42 动态协变量开关 $40.9\to 47.0$[^src-fev-bench] | 35 多变量开关仅 $54.4\to 55.0$；部分任务存在自报重叠插补[^src-fev-bench] |
+| **表格化零样本 ICL** | [[tabpfn-ts\|TabPFN-TS]] | 手工时间与傅里叶特征拼接协变量，免微调[^src-time-indexed-imputation] | 42 动态协变量开关 $34.1\to 42.5$；`fev-bench-cov` WQL 最优（$0.1643$）[^src-fev-bench][^src-baguan-ts] | 推理延迟偏高，受单卡 A10G 24 GB 显存与上下文规模约束[^src-fev-bench][^src-baguan-ts] |
+| **序列原生多样例 ICL** | [[baguan-ts\|Baguan-TS]] | 3D 轴分解 + Y-space 检索，免微调与人工特征[^src-baguan-ts] | `fev-bench-cov` 30 任务点预测领先 TabPFN-TS 与 TimesFM-2.5[^src-baguan-ts] | 概率校准 WQL 略逊 TabPFN-TS，仅限单目标数值协变量[^src-baguan-ts] |
+| **单变量零样本基线** | [[tirex\|TiRex]] / [[timesfm\|TimesFM-2.5]] | 原生不接受外生协变量（TimesFM 需外接 UniCA/TimesFMX）[^src-tirex][^src-timesfm] | 全榜与 Chronos-2 拉开差距，TiRex 与 TimesFM-2.5 95% CI 重叠[^src-fev-bench] | 无法直接利用已知/历史动态与静态协变量信息[^src-fev-bench] |
 
 ## 开放问题
 
@@ -103,15 +115,17 @@ DiTS 代表了与冻结适配路线不同的范式：它不使用现有 TSFM，�
 - [[ts-memory]] — TS-Memory (KDD 2026)：正交于协变量适配，通过参数记忆蒸馏将检索知识内化为轻量模块，推理 $O(1)$ 无检索[^src-ts-memory-time-series-foundation-models-kdd26]
 - [[source-timeseed]] — TimeSeed (ICML 2026)：极稀疏内生（4%/单点）+ 稠密外生输入侧历史重构对照，补出该设定漏测 TSFM 的评测缺口[^src-timeseed]
 - [[baguan-ts]] · [[source-baguan-ts]] — Baguan-TS (ICML 2026)：序列原生 3D 轴分解 + Y-space 近邻检索 ICL 路线（同槽位互斥于冻结适配器，免下游微调）[^src-baguan-ts]
+- [[fev-bench]] · [[source-fev-bench]] — 面向 7 域 100 任务（46 协变量 + 35 多变量）的零样本统一验收基准与 $B=1000$ 配对 Bootstrap 显著性协议[^src-fev-bench]
 
 [^src-cora]: [[source-cora]]
 [^src-unica]: [[source-unica]]
 [^src-dits]: [[source-dits]]
 [^src-timesfm]: [[source-timesfm]]
-[^src-chronos]: [[source-chronos]]
-[^src-sundial]: [[source-sundial]]
 [^src-chronosx]: [[source-chronosx]]
 [^src-time-mmd]: [[source-time-mmd]]
 [^src-ts-memory-time-series-foundation-models-kdd26]: [[source-ts-memory-time-series-foundation-models-kdd26]]
 [^src-timeseed]: [[source-timeseed]]
 [^src-baguan-ts]: [[source-baguan-ts]]
+[^src-fev-bench]: [[source-fev-bench]]
+[^src-time-indexed-imputation]: [[source-time-indexed-imputation]]
+[^src-tirex]: [[source-tirex]]

@@ -9,8 +9,8 @@ tags:
   - foundation-model
   - neurips-2024
 created: 2026-07-13
-last_updated: 2026-07-16
-source_count: 1
+last_updated: 2026-11-24
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -53,9 +53,14 @@ status: active
 - AR 在强季节性上可反超 NAR 点预测模型；RevIN 常缓解长程 AR 误差累积，但短程概率线更依赖均值缩放[^src-probts]。
 - TSFM 复现同样的 AR 长程劣势与复杂分布建模短板；领域专用概率模型（如 CSDI）在高非高斯性上仍不可被预定义分布头轻易替代[^src-probts]。
 
+## 与后续基准的关系
+
+- **瓶颈接力 $\Delta$（→ [[fev-bench]]）**：ProbTS 打通了无协变量场景下短程分布与长程点预测的对齐[^src-probts]；[[fev-bench]] 则进一步将评测瓶颈推至 7 域 96 唯一集（100 项任务）的现实外生协变量（46 项含 known/past dynamic 与 static 协变量）与 35 项多变量任务，并以 9 分位 SQL 几何平均技能分、$B=1000$ 任务级配对 Bootstrap 95% 置信区间及自报泄露分数插补补齐了统计显著性与泄露控制[^src-fev-bench]。
+
 ## 相关页面
 
 - [[source-probts]] — 源摘要
+- [[fev-bench]] — 面向协变量、多变量与统计显著性检验的后续零样本预测基准（瓶颈接力 $\Delta$）
 - [[ar-vs-nar-decoding]] — 解码方案轴
 - [[non-gaussianity]] — 分布复杂度指标
 - [[instance-normalization]] — RevIN
@@ -63,3 +68,4 @@ status: active
 - [[deepar]] / [[timegrad]] / [[csdi]] / [[patchtst]] / [[timesfm]] / [[chronos]]
 
 [^src-probts]: [[source-probts]]
+[^src-fev-bench]: [[source-fev-bench]]

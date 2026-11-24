@@ -158,6 +158,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-fedus-2022-switch-transformer]] — Switch Transformers: Scaling to Trillion Parameter Models with Simple and Efficient Sparsity：MoE 路由简化为 top-1 + 单一乘性辅助损失 $\alpha \cdot N\sum_e f_e P_e$，router 局部 float32 保 bfloat16 稳定训练；FLOP-matched 下 7 倍预训练加速、Switch-C 1571B/2048 expert、101 语言全增益（Fedus, Zoph & Shazeer, Google, JMLR 23 (2022)；PDF raw/switch-transformer-2101-03961.pdf）
 - [[source-feedback-guidance-diffusion-models-arxiv25]] — FBG: Feedback Guidance of Diffusion Models, 加性误差假设 + 马尔可夫后验追踪的状态相关动态引导尺度 (NeurIPS 2025)
 - [[source-fence]] — FENCE: Spatial-Temporal Feedback Diffusion Guidance for Controlled Traffic Imputation (AAAI 2026)
+- [[source-fev-bench]] — fev-bench: 7 域 96 唯一集 100 任务零样本基准（46 协变量 + 35 多变量），9 分位 SQL/MASE 与 $B=1000$ 配对 Bootstrap 95% CI，揭示 TSFM 涨点主要来自协变量而非原生多变量交互（Shchur* & Ansari* et al., NeurIPS 2026 E&D）
 - [[source-fgti]] — FGTI: Frequency-aware Generative Models for Multivariate Time Series Imputation, 高频/主频双频域条件 + time/attribute-frequency 跨域表示学习 + DDPM 条件扩散插补，命题 3.1 条件熵论证，KDD/Guangzhou/PhysioNet MCAR 10-40% 作者报告最优（NeurIPS 2024 官方 proceedings，PDF 内核实）
 - [[source-flashst]] — FlashST: A Simple and Universal Prompt-Tuning Framework for Traffic Prediction (ICML 2024), model-agnostic 时空 prompt-tuning + InfoNCE 均匀性损失，4 目标数据集全胜 13 基线，训练时间降 20%-80%
 - [[source-flightdiff]] — FlightDiff: Dual-Constraint Guided Two-Phase Diffusion Framework for Flight Prediction
@@ -543,6 +544,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[edm]] — EDM, Elucidating the Design Space of Diffusion-Based Generative Models (NeurIPS 2022)
 - [[elf]] — ELF (Embedded Language Flows), continuous diffusion LM via Flow Matching (MIT, 2026)
 - [[fedformer]] — FEDformer, frequency enhanced decomposed transformer (ICML 2022)
+- [[fev-bench]] — fev-bench，覆盖 7 域 96 唯一集 100 任务（46 协变量 + 35 多变量）的真实时序零样本预测基准，含任务级配对 Bootstrap 95% CI 与自报泄露插补（NeurIPS 2026 E&D）
 - [[flowts]] — FlowTS，首个 rectified flow 时间序列生成模型，30 步采样 SOTA (arXiv 2025)
 - [[fredf]] — FreDF, frequency-enhanced direct forecast training paradigm for multi-step TS (arXiv 2024)
 - [[freqflow-ts]] — FrèqFlow/SpectFlow, lightweight frequency-domain flow matching for time series forecasting (NeurIPS 2025)

@@ -10,7 +10,7 @@ tags:
   - icml-2026
 created: 2026-11-24
 last_updated: 2026-11-24
-source_count: 9
+source_count: 10
 confidence: medium
 status: active
 ---
@@ -94,7 +94,8 @@ Baguan-TS 在协变量基础模型与上下文学习谱系中占据独立路线[
 
 - **同槽位互斥（vs [[tabpfn-ts|TabPFN-TS]]）**：两者同为免梯度零样本时序 ICL，但接口与代价互斥——TabPFN-TS 依赖人工时间与傅里叶表格特征，单次前向推理较慢；Baguan-TS 改为序列原生 3D 轴分解配合 RBfcst 检索，单次前向约 $0.43\text{ s}$（约为 TabPFN-TS 延迟的 $1/10$）[^src-baguan-ts]。
 - **范式分化与同槽位互斥（vs [[unified-covariate-adaptation|UniCA]] / [[cora-tsfm|CoRA]] / [[chronosx|ChronosX]]）**：后者冻结单变量 TSFM 并在下游微调前置或后置协变量适配器（支持文本/图像等异构协变量）；Baguan-TS 跳过下游适配微调，在预训练期联合编码目标与同质多元数值协变量，将协变量利用转化为纯推理期 ICL[^src-baguan-ts][^src-unica][^src-cora][^src-chronosx]。
-- **实证复现对齐（vs [[timesfm|TimesFM]] / [[chronos|Chronos]] / [[tirex|TiRex]]）**：在 `fev-bench-cov` 基准 30 项含协变量任务中，Baguan-TS 的点预测（SQL $0.7997$、MASE）优于 TabPFN-TS（$0.8404$）与 TimesFM-2.5（$0.8276$），并在同场评测的 Chronos 与 TiRex 等基线上取得更低点误差；但在概率校准 WQL 上落后于 TabPFN-TS（$0.1724$ vs $0.1643$）[^src-baguan-ts]。
+- **实证复现对齐（vs [[timesfm|TimesFM]] / [[chronos|Chronos]] / [[tirex|TiRex]]）**：在 [[fev-bench|fev-bench-cov]] 基准 30 项含协变量任务中，Baguan-TS 的点预测（SQL $0.7997$、MASE）优于 TabPFN-TS（$0.8404$）与 TimesFM-2.5（$0.8276$），并在同场评测的 Chronos 与 TiRex 等基线上取得更低点误差；但在概率校准 WQL 上落后于 TabPFN-TS（$0.1724$ vs $0.1643$）[^src-baguan-ts]。
+- **评测基准回链与口径对照（vs [[fev-bench]]）**：Baguan-TS 主评测取自 [[fev-bench]] 的 30 项含协变量子集 `fev-bench-cov`[^src-baguan-ts]；在 [[fev-bench]] 原文完整的 100 项任务与 $B=1000$ 任务级配对 Bootstrap 95% 置信区间协议下，动态协变量开关在 42 项任务上将 Chronos-2（$40.9\to 47.0$）与 [[tabpfn-ts|TabPFN-TS]]（$34.1\to 42.5$）显著拉升，而 TiRex 与 TimesFM-2.5 的置信区间大幅重叠、统计不可分[^src-fev-bench]。
 - **跨槽位对照（vs [[retrieval-based-condition-augmentation|RCA]] / [[in-context-learning|ICL]]）**：不同于 RCA 通过时空条件过滤增强扩散条件输入，Baguan-TS 在归一化目标空间检索近邻组成 ICL 示范集[^src-craft][^src-baguan-ts]；而在 [[in-context-learning|时序 ICL 谱系]] 中，它补全了 [[tirex|TiRex]] 单序列隐状态延续之外的多示例跨样本示范路线[^src-tirex][^src-baguan-ts]。
 
 | 路线代表 | 协变量接入与骨干形态 | 上下文利用方式 | 下游参数更新 | 延迟与模态特点 |
@@ -106,15 +107,16 @@ Baguan-TS 在协变量基础模型与上下文学习谱系中占据独立路线[
 
 ## 证据
 
-论文在 `fev-bench-cov`（30 项含协变量任务）与 27 个自有能源数据集上报告了零样本对比与消融结果（均采用作者报告口径）[^src-baguan-ts]：
+论文在 [[fev-bench|fev-bench-cov]]（30 项含协变量任务）与 27 个自有能源数据集上报告了零样本对比与消融结果（均采用作者报告口径）[^src-baguan-ts]：
 
-1. **定位与主结论**：在 `fev-bench-cov` 上，Baguan-TS 在点预测指标（SQL $0.7997$、MASE）领先于 [[tabpfn-ts|TabPFN-TS]]（$0.8404$）与 [[timesfm|TimesFM-2.5]]（$0.8276$），在 27 个自有能源数据集上四项指标均居首位；但在 `fev-bench-cov` 概率校准指标 WQL 上落后于 TabPFN-TS（$0.1724$ vs $0.1643$）[^src-baguan-ts]。
+1. **定位与主结论**：在 [[fev-bench|fev-bench-cov]] 上，Baguan-TS 在点预测指标（SQL $0.7997$、MASE）领先于 [[tabpfn-ts|TabPFN-TS]]（$0.8404$）与 [[timesfm|TimesFM-2.5]]（$0.8276$），在 27 个自有能源数据集上四项指标均居首位；但在 [[fev-bench|fev-bench-cov]] 概率校准指标 WQL 上落后于 TabPFN-TS（$0.1724$ vs $0.1643$）[^src-baguan-ts]。
 2. **真实涨点归因**：消融中掉点最明显的是去掉 RBfcst 局部检索校准（entsoe-1H SQL 从 $0.3859$ 升至 $0.4284$，hermes 从 $0.6185$ 升至 $0.6607$），但改用特征空间（X-space）检索已达 $0.4005$，说明主涨点来自「局部近邻校准」本身而非论文主打的 Y-space 特征无关检索；2D（$0.8769$）与 3D（$0.8333$）双模式集成带来中等幅度改进（$0.7997$）[^src-baguan-ts]。
 3. **证据缺口与负结果**：当前仅支持单目标加多元协变量预测，无法联合预测多目标；context-overfitting 仅给出训练损失曲线而缺乏下游指标对比表，3D 轴分解结构亦从未做逐轴消融；此外，22.4M 参数量的具体结构明细未见于核心切片正文，全文亦未单设专门的 Limitations 章节[^src-baguan-ts]。
 
 ## 相关页面
 
 - [[source-baguan-ts]] — 论文源摘要
+- [[fev-bench]] — 协变量与多变量零样本统一基准（`fev-bench-cov` 来源）
 - [[tsfm-covariate-adaptation-comparison]] — TSFM 协变量适配与原生建模全景对比
 - [[unified-covariate-adaptation]] — 冻结骨干协变量适配器对照
 - [[tabpfn-ts]] — 表格化零样本时间序列 ICL 对照
@@ -131,3 +133,4 @@ Baguan-TS 在协变量基础模型与上下文学习谱系中占据独立路线[
 [^src-cora]: [[source-cora]]
 [^src-chronosx]: [[source-chronosx]]
 [^src-craft]: [[source-craft]]
+[^src-fev-bench]: [[source-fev-bench]]

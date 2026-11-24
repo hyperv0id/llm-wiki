@@ -10,7 +10,7 @@ tags:
   - in-context-learning
 created: 2026-06-08
 last_updated: 2026-11-24
-source_count: 2
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -46,10 +46,12 @@ TabPFN-TS 的哲学与 [[motm|MoTM]] **互逆**——用手工特征搭配高表
 - **vs [[nuwats|NuwaTS]]**：两者都做零样本插补，但 NuwaTS 走 PLM 重编程 + patch；基准中 **NuwaTS 在所有设定下显著落后于 TabPFN-TS**[^src-time-indexed-imputation]。
 - **基座 TabPFN**：Hollmann et al. 2025 的表格基础模型，prior-fitted network，靠合成先验 + in-context learning 实现零样本表格回归。
 - **vs [[zeus|Zeus]]**（范式层面对比，课程组织，非直接基准对照）：Zeus（ICML 2026）走掩码重建路线——以 MOTM 多目标掩码预训练 + 重建误差做零样本插补；TabPFN-TS 与 [[motm|MoTM]] 走时间索引 + in-context 回归路线。两者是不同范式。
-- **同槽位互斥与实证复现对齐（vs [[baguan-ts|Baguan-TS]]）**：两者同属无需梯度的零样本时序上下文学习，但在表征接口与延迟–校准权衡上互斥。TabPFN-TS 依靠人工时间与傅里叶特征将预测转为表格回归，而 Baguan-TS（ICML 2026）采用序列原生时间–变量–上下文 3D 轴分解并辅以 Y-space 近邻检索，单次前向约 $0.43\text{ s}$（约为 TabPFN-TS 延迟的 $1/10$）[^src-baguan-ts]。在 `fev-bench-cov` 30 项含协变量任务上，Baguan-TS 点预测（SQL $0.7997$）领先于 TabPFN-TS（$0.8404$），但概率校准指标 WQL 仍由 TabPFN-TS 占优（$0.1643$ vs $0.1724$）[^src-baguan-ts]。
+- **同槽位互斥与实证复现对齐（vs [[baguan-ts|Baguan-TS]]）**：两者同属无需梯度的零样本时序上下文学习，但在表征接口与延迟–校准权衡上互斥。TabPFN-TS 依靠人工时间与傅里叶特征将预测转为表格回归，而 Baguan-TS（ICML 2026）采用序列原生时间–变量–上下文 3D 轴分解并辅以 Y-space 近邻检索，单次前向约 $0.43\text{ s}$（约为 TabPFN-TS 延迟的 $1/10$）[^src-baguan-ts]。在 [[fev-bench|fev-bench-cov]] 30 项含协变量任务上，Baguan-TS 点预测（SQL $0.7997$）领先于 TabPFN-TS（$0.8404$），但概率校准指标 WQL 仍由 TabPFN-TS 占优（$0.1643$ vs $0.1724$）[^src-baguan-ts]。
+- **实证复现对齐（vs [[fev-bench]]）**：在 [[fev-bench]] 针对 42 项动态协变量任务的受控开关消融中，引入动态协变量将 TabPFN-TS 的 SQL 技能分从 $34.1$ 拉升至 $42.5$，实证了表格化 ICL 拼接外生协变量的实际增益（全基准在单卡 A10G 24 GB 显存下运行）[^src-fev-bench]。
 
 ## 关联页面
 
+- [[fev-bench]] — 面向协变量与多变量的零样本统一基准（动态协变量开关增益实证）
 - [[baguan-ts]] — 序列原生 3D ICL 对照（点预测与推理延迟占优，概率校准 WQL 逊于 TabPFN-TS）
 - [[time-indexed-foundation-model]] — TabPFN-TS 所属范式
 - [[motm]] — 互逆设计的时间索引模型（更快的替代）
@@ -60,3 +62,4 @@ TabPFN-TS 的哲学与 [[motm|MoTM]] **互逆**——用手工特征搭配高表
 
 [^src-time-indexed-imputation]: [[source-time-indexed-imputation]]
 [^src-baguan-ts]: [[source-baguan-ts]]
+[^src-fev-bench]: [[source-fev-bench]]
