@@ -8,8 +8,8 @@ tags:
   - time-series-forecasting
   - icml-2025
 created: 2026-07-28
-last_updated: 2026-11-02
-source_count: 4
+last_updated: 2026-11-24
+source_count: 5
 confidence: high
 status: active
 ---
@@ -72,8 +72,7 @@ flowchart LR
 
 | 设定 | 要点 |
 |------|------|
-| Few-shot 5% | ETTh1 MSE 0.442 vs Time-LLM 0.627（约 −29.5%）；Weather 相对 Time-LLM MSE −7.7%[^src-time-vlm] |
-| Few-shot 10% | 多数 ETT/Weather 仍优或紧贴；ECL/Traffic 上 Time-LLM 等可更好[^src-time-vlm] |
+| Few-shot 5% / 10% | 5% 上 ETTh1 MSE 0.442 vs Time-LLM 0.627（约 −29.5%），Weather 相对 Time-LLM MSE −7.7%；10% 上多数 ETT/Weather 仍优或紧贴，ECL/Traffic 上 Time-LLM 等可更好[^src-time-vlm] |
 | Zero-shot ETT 迁移 | 与 Time-LLM 互有胜负；如 ETTh1→ETTh2 MSE 0.338 vs 0.353[^src-time-vlm] |
 | M4 短程 | 加权 SMAPE 11.894 / MASE 1.592 / OWA **0.855**，优于 Time-LLM 0.859 等[^src-time-vlm] |
 | 全量长程 | ETT/Weather 竞争力强；ECL、Traffic 可落后专用单模态[^src-time-vlm] |
@@ -94,6 +93,7 @@ flowchart LR
 | [[constrained-text-fusion|CFA]] | 外生文本 **naive vs constrained** 大规模对照：无控 add/concat 常低于 unimodal；低秩残差 plug-in。与 Time-VLM 的门控融合同属「控制文本影响」，但 CFA 锚定 Time-MMD 外生文本而非内生 VLM 图文[^src-constrained-text-fusion] |
 | [[unica|UniCA]] / [[cora-tsfm|CoRA]] | TSFM **外生协变量适配**；Time-VLM 是 backbone+VLM 的端到端多模态预测器，非适配器框架[^src-time-vlm] |
 | [[vetime|VETime]] | 任务错位与对齐对照：专为预测设计的 Time-VLM 优先关注宏观趋势演化，缺乏密集体时间戳级判别能力；VETime 则构建 1D-2D 双向对齐（PTA）与多尺度对比学习，面向密集异常定位任务（§1）[^src-2602-16681-vetime] |
+| [[source-dmmv|$\mathrm{D_{MMV}}$]] | **同槽位互斥 + 实证复现对齐**（伪多模态路线分叉）：两者皆不引入外生文本/图像，但路线相反——Time-VLM 保留检索记忆（RAL）与统计提示（TAL）经冻结 VLM 交叉注意力融合；$\mathrm{D_{MMV}}$ 主动舍弃文本与检索，让仅微调归一化层的 MAE 专司周期分量，再以两趟半幅掩码回测生成残差交给线性模型预测趋势并标量门控混合。在 8 项长程预测基准（Illness 上 Time-VLM 缺结果未纳对比）中，无文本的 $\mathrm{D_{MMV}}$ 整体优于 Time-VLM（作者报告口径）[^src-dmmv] |
 
 ## 局限与任务边界
 
@@ -110,8 +110,10 @@ VETime（arXiv:2602.16681）在引言中分析指出，现有如 Time-VLM 等多
 - [[source-solar-vlm]] · [[st-vision-llm]] · [[vision-language-traffic-forecasting]]  
 - [[vot]] · [[time-mmd]] · [[source-time-llm]] · [[source-time-mmd]] · [[ts-vl-alignment]] · [[source-ts-vl-alignment]] · [[constrained-text-fusion]] · [[source-constrained-text-fusion]]
 - [[vetime]] · [[multimodal-time-series-anomaly-detection]] · [[source-2602-16681-vetime]]
+- [[source-dmmv]] — 伪多模态路线分叉（舍弃文本的周期/线性残差双视图分解）
 
 [^src-time-vlm]: [[source-time-vlm]]
 [^src-ts-vl-alignment]: [[source-ts-vl-alignment]]
 [^src-constrained-text-fusion]: [[source-constrained-text-fusion]]
 [^src-2602-16681-vetime]: [[source-2602-16681-vetime]]
+[^src-dmmv]: [[source-dmmv]]

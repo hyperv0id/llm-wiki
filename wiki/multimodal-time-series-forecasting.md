@@ -8,7 +8,7 @@ tags:
   - covariate
   - satellite-imagery
 created: 2026-04-29
-source_count: 21
+source_count: 22
 last_updated: 2026-11-24
 confidence: high
 status: active
@@ -45,9 +45,8 @@ status: active
 
 ### 2. 图像-时间序列预测
 
-- **FusionSF**：专为卫星场景设计
-- **MMSP 数据集**：多模态太阳能预测
-- **[[time-vlm|Time-VLM]]**（ICML 2025）：时序自生成图像 + 结构化文本 + 检索记忆，经冻结 VLM 桥接三模态（无外生新闻/卫星）[^src-time-vlm]
+- **外生真实图像**：如 **FusionSF**（卫星场景）、**MMSP 数据集**（太阳能预测）、[[most|MoST]]（卫星与交通多模态）与 [[pipe|PIPE]]（台风卫星图像）[^src-most][^src-pipe]。
+- **内生视觉视图（伪多模态）**：不引入外生图像或新闻，而是将数值序列折叠或渲染为二维图像以借用预训练视觉骨干或 VLM；该路线已分化为三模态检索对齐（[[time-vlm|Time-VLM]]）、网格自回归生成（[[st-vision-llm|ST-Vision-LLM]]）与周期–线性残差双视图分解（[[source-dmmv|$\mathrm{D_{MMV}}$]]）等路径[^src-time-vlm][^src-st-vision-llm][^src-dmmv]。
 
 ### 3. 时间序列基础模型方法
 
@@ -133,6 +132,17 @@ UniCA 在多模态场景下的表现：
 ## Time-VLM：VLM 桥接时序 / 视觉 / 文本
 
 **[[time-vlm|Time-VLM]]** (Zhong et al., ICML 2025, arXiv:2502.04395) 用冻结预训练 VLM（默认 ViLT；亦支持 CLIP / BLIP-2）统一 **时序 · 视觉 · 文本**：[[time-vlm|RAL]] 做 patch + local/global 检索记忆，[[time-vlm|VAL]] 将时序经 FFT/周期编码与多尺度卷积渲染为图像，[[time-vlm|TAL]] 生成统计与域描述 prompt；跨模态注意力 + 门控融合后预测。**不依赖外生文本/图像**，仅由原始时序自增强——相对 [[time-mmd|Time-MMD]]/[[vot|VoT]] 的外生文本路线，以及 UniCA/CoRA 的协变量适配路线，是一条 **内生多模态 + 检索** 路径[^src-time-vlm]。约 143.6M 参数（≈1/20 Time-LLM）；5% few-shot 上 ETTh1 相对 Time-LLM MSE 约 −29.5%；Weather 消融显示去 RAL +35.6% MSE、去 VAL +9.0%、去 TAL 仅 +2.1%（文本 token 稀疏）[^src-time-vlm]。
+
+## 伪多模态视觉视图：路线分叉与正交决策矩阵
+
+围绕「不引入外生语料、仅由时序自生成二维视觉表示」的伪多模态路径，现有工作在成像方式、是否保留文本/检索以及视觉分支的角色三条正交轴上分叉：VisionTS 将序列按周期折叠成图后由冻结 MAE 直接补全输出；[[source-dmmv|$\mathrm{D_{MMV}}$]]（NeurIPS 2025）指出这一做法偏爱周期整数倍段长而压制全局趋势，因此**瓶颈接力 $\Delta$** 地让仅解冻归一化层的 MAE 退居周期分解器，借助两趟半幅掩码回测生成残差并交给线性模型预测趋势，再由标量门控加权合并[^src-dmmv]。这与 [[time-vlm|Time-VLM]] 保留检索记忆与统计提示经冻结 VLM 融合形成**同槽位互斥**对照；面向长程预测的 $\mathrm{D_{MMV}}$ 也不追求异常检测方法 [[traceable-image-conversion|TIC]] 所要求的补丁级双向无损可逆[^src-time-vlm][^src-dmmv]。
+
+| 模型 | 外生模态 | 时序成像方式 | 文本与记忆角色 | 视觉骨干微调策略 | 分解与融合槽位 |
+|---|---|---|---|---|---|
+| **VisionTS** | 无 | FFT 周期折叠并缩放到 $224^2$ | 无 | 冻结 MAE 直接补全 | 单分支 MAE 直接输出预测[^src-dmmv] |
+| **[[source-dmmv\|$\mathrm{D_{MMV}}$]]** | 无 | FFT 周期折叠为三通道 $224^2$ 图 | 主动舍弃文本与检索 | 仅解冻 MAE 归一化层 | 两趟半幅掩码回测拆出趋势残差给 Linear，标量门控混合[^src-dmmv] |
+| **[[time-vlm\|Time-VLM]]** | 无 | 频域/周期编码接多尺度卷积成 $64^2$ 图 | RAL 检索记忆 + TAL 统计提示 | 冻结 VLM（ViLT/CLIP/BLIP-2） | 跨模态注意力 + 门控融合时序与 VLM 嵌入[^src-time-vlm] |
+| **[[st-vision-llm\|ST-Vision-LLM]]** | 无 | 时空网格矩阵渲染为灰度伪 RGB 图 | 数值 token 自回归生成 | SFT + GRPO 微调 Vision-LLM | 视觉编码器感知二维网格，自回归解码逐格输出[^src-st-vision-llm] |
 
 ## 对齐极限：独立预训练三模态近正交
 
@@ -256,6 +266,7 @@ UniCA 在多模态场景下的表现：
 - [[time-mmd]] — Time-MMD 多领域数值–文本时序数据集与 MM-TSFlib（NeurIPS 2024 D&B）
 - [[time-vlm]] — Time-VLM：冻结 VLM 桥接时序/视觉/文本 + RAL/VAL/TAL（ICML 2025）
 - [[source-time-vlm]] — Time-VLM 源摘要
+- [[source-dmmv]] — $\mathrm{D_{MMV}}$：舍弃文本的 MAE 周期–线性残差双视图分解门控（NeurIPS 2025）
 - [[ts-vl-alignment]] — 时序–视觉–语言对比对齐极限诊断（arXiv:2602.19367）
 - [[source-ts-vl-alignment]] — TS–VL Alignment 源摘要
 - [[constrained-text-fusion]] — Constrained Text Fusion / CFA：naive 常伤、低秩受控融合（KDD ’26 MILETS）
@@ -295,3 +306,4 @@ UniCA 在多模态场景下的表现：
 [^src-trace-neurips2025]: [[source-trace-neurips2025]]
 [^src-worldts]: [[source-worldts]]
 [^src-time-imm]: [[source-time-imm]]
+[^src-dmmv]: [[source-dmmv]]

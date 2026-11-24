@@ -125,6 +125,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-distdf]] — DistDF: Time-Series Forecasting Needs Joint-Distribution Wasserstein Alignment，Theorem 3.1 条件自相关偏差 + 联合分布 Wasserstein 上界（Lemma 3.3 / Theorem 3.4）+ 高斯 Bures–Wasserstein 闭式解与 MSE 混合，推理零开销、训练开销 <1 ms（Wang et al., ICLR 2026, arXiv:2510.24574v3；raw/2510.24574-distdf.txt）
 - [[source-dit]] — DiT: Scalable Diffusion Models with Transformers, ViT replaces U-Net backbone (Peebles & Xie, ICCV 2023)
 - [[source-dits]] — DiTS: Multimodal Diffusion Transformers Are Time Series Forecasters (arXiv 2026)
+- [[source-dmmv]] — DMMV：舍弃文本的伪多模态双视图分解（仅微调归一化层的 MAE 周期分支 + 两趟半幅掩码回测残差线性趋势分支 + 标量门控），8 项 LTSF 基准 6 项均值最优且整体优于 Time-VLM（Shen et al., NeurIPS 2025）
 - [[source-doflow]] — DoFlow: Flow-based Generative Models for Interventional and Counterfactual Forecasting on Time Series (ICLR 2026)
 - [[source-dpgnet]] — DPGNet: Dynamic Graph Prediction Network with AGL + ASL for spatiotemporal forecasting (ICLR 2026 under review)
 - [[source-dpm-solver]] — DPM-Solver: Fast ODE solver for diffusion models (NeurIPS 2022)

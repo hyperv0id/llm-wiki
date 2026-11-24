@@ -4639,3 +4639,10 @@ Tier 1 入库（ICLR 2025）。Timer-XL 将多变量与协变量的非重叠时�
 创建的页面：[[source-timer-xl]], [[timer-xl]]
 更新的页面：[[cross-dimension-dependency]]（增补展平二维因果注意力并建正交决策轴矩阵，source_count 5→7）, [[ar-vs-nar-decoding]]（矩阵增补多变量块自回归，source_count 5→6）, [[itransformer]]（补同槽位互斥对照，source_count 2→3）, [[patchtst]]（补多变量因果扩展对照，source_count 9→10）, [[cpiri]]（补 OOM 实证复现对齐与链接，source_count 1→2）, [[dits]]（补同槽位注意力消融对照，source_count 1→2）, [[timesfm]]（补单变量向多变量 AR 瓶颈接力对照，source_count 10→11）, [[index]]
 ingest 报告：[[ingest-reports/2026-11-24-timer-xl|WHY 报告]]
+
+
+## [2026-11-24] ingest | DMMV: Multi-Modal View Enhanced Large Vision Models for Long-Term Time Series Forecasting
+Tier 2 入库（NeurIPS 2025；主要贡献在诊断 VisionTS 偏爱周期整数倍段长而压制全局趋势的失效模式，以及两趟半幅掩码回测残差分解配合标量门控的双视图分工，无新底层算子）。$\mathrm{D_{MMV}\text{-A}}$ 通过右/左半幅掩码两趟回测拼出历史重建 $\hat{x}$，将残差 $\Delta x = x - \hat{x}$ 送入线性模型预测趋势，全图送入仅微调归一化层的 MAE 预测周期后门控混合；8 项标准长程预测基准获 6 项平均 MSE 最优且不带文本整体优于 [[time-vlm|Time-VLM]]，消融证实回测残差分解与归一化层微调贡献最大，而线性分支换为 [[patchtst|PatchTST]] 几乎不掉点。缺口：Time-VLM 缺 Illness 未纳对比，VisionTS 被重跑至 $T=336$ 口径不利，Illness 仅 966 步致部分分析受限，ETTm1/Illness 仍部分继承周期 $P$ 敏感性。
+创建的页面：[[source-dmmv]]
+更新的页面：[[multimodal-time-series-forecasting]]（图像-时序节与伪多模态二维决策矩阵，source_count 21→22）, [[time-vlm]]（谱系对照表补伪多模态路线分叉并合并 5%/10% few-shot 行使表宽合规，source_count 4→5）, [[patchtst]]（Connections 补数值分支消融跨槽位正交注记，source_count 10→11）, [[traceable-image-conversion]]（补周期折叠成像可逆性定位对照，source_count 1→2）, [[index]]
+ingest 报告：[[ingest-reports/2026-11-24-dmmv|WHY 报告]]

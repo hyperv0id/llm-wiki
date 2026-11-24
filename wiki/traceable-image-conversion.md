@@ -8,9 +8,9 @@ tags:
   - periodicity
   - multimodal
 created: 2026-11-02
-last_updated: 2026-11-02
-source_count: 1
-confidence: low
+last_updated: 2026-11-24
+source_count: 2
+confidence: medium
 status: active
 ---
 
@@ -58,6 +58,10 @@ TIC 与 [[timesnet|TimesNet]] 均采用将 1D 序列折叠为 2D 张量的思想
 - **周期提取与拓扑重组**：TimesNet 面向全任务（预测、分类等）的多周期建模，采用快速傅里叶变换（FFT）选取振幅最大的前 $k$ 个频点周期，将序列并行转换为多个不同尺寸的 2D 张量，再通过 TimesBlock 中的 2D-Inception 卷积在模型内部同时捕获周期内（intra-period）与周期间（inter-period）变化；而 TIC 面向无监督零样本异常检测及对接预训练冻结 ViT，采用自相关函数（ACF）动态估计单一主周期，并严格约束折叠宽度为 ViT patch 大小（16）的整数倍，确保每个视觉补丁封装严格连续的 1D 时间戳 [^src-2602-16681-vetime]。
 - **通道信息解耦与标准化**：TimesNet 在单通道或多变量原始数值上直接折叠；TIC 则引入季节-趋势分解构造 R（原始）、G（趋势）、B（残差）三通道流形，并引入「时间轴线性插值 + 周期轴复制填充」的解耦缩放策略，将任意长度序列标准化为固定 $(224, 224, 3)$ 图像，为下游 [[patch-level-temporal-alignment|PTA]] 模块的逆折叠重采样提供了完全可逆的双向索引 [^src-2602-16681-vetime]。
 
+### 与 DMMV 周期折叠成像的定位差异
+
+与面向密集点级异常定位的 TIC 不同，长程预测框架 [[source-dmmv|$\mathrm{D_{MMV}}$]] 沿用 VisionTS 的成像方式——按 FFT 主周期折叠单变量序列、复制三通道并双线性缩放到 $(224, 224, 3)$；由于预测输出只借助 MAE 的隔周掩码重建来分离周期成分（再与原序列相减得到趋势残差），它无需像 TIC 那样将折叠周期对齐 ViT 补丁尺寸并维持补丁级双向无损可逆映射 [^src-dmmv]。
+
 ## 多变量时序扩展适配（附录 A）
 
 在多变量时序场景下，TIC 包含以下配套扩展（附录 A）[^src-2602-16681-vetime]：
@@ -77,3 +81,4 @@ TIC 与 [[timesnet|TimesNet]] 均采用将 1D 序列折叠为 2D 张量的思想
 2. **周期性尖峰异常引发的模式混淆**：在 Power 数据集中，正常背景无尖峰，异常表现为周期性出现的尖峰脉冲。TIC 的周期折叠机制误将此类周期性脉冲编码为正常的背景纹理；时序分支正确识别了该异常（V3 达到 21.48% VUS-PR），但零样本路由器（变体 V4）错误赋予受骗的视觉表征较高权重，导致严重负迁移（VUS-PR 降至 11.54%，显著低于纯时序占优变体 V3 的 21.48% 与 Base 的 21.25%）[^src-2602-16681-vetime]。
 
 [^src-2602-16681-vetime]: [[source-2602-16681-vetime]]
+[^src-dmmv]: [[source-dmmv]]
