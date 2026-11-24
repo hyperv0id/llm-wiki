@@ -9,8 +9,8 @@ tags:
   - structural-causal-model
   - iclr
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-11-24
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -48,11 +48,19 @@ status: active
 
 (A1)–(A2) 与 Bijective Generation Mechanisms (BGM, Nasr-Esfahany et al. 2023) 的假设相呼应[^src-doflow]。但两者不同：BGM 额外要求观测分布匹配（(A4)）以获得**类级别**的模型无关可识别性；而 DoFlow 的 Proposition 4.3 与 Corollary 4.5 不假设 (A4)，转而依赖 CNF 特定的条件 (A3)，提供**模型特定的逐点恢复**[^src-doflow]。论文也给出一条替代路线：若额外加上 (A4) 观测匹配，则 DoFlow 落入 BGM 类，可直接援引 BGM 的反事实恢复结果[^src-doflow]。
 
+## 不可识别性边界对照（vs TADiff）
+
+上述反事实恢复定理的成立依赖已知因果 DAG、因果充分性以及 Assumption 4.1 (A1)–(A3)（结构方程对 $U_t$ 严格单调且编码潜变量与条件历史独立），由此保证溯因得到的 $Z_t^F$ 是真实外生噪声的双射并恢复唯一反事实轨迹[^src-doflow]。
+
+同处于「先将历史编码至隐态、再在反事实条件下解码」槽位的 [[source-tadiff|TADiff]]，则提供了**非结构化、不可识别的反事实扩散**对照口径：其前向归因逆过程仅通过条件感知 [[diffusion-model|DDIM]] 概率流从观测历史 $x_{h,0}$ 剥离历史文本条件 $c_h$ 得到终端隐态 $x_{h,T}$，既不构建变量间的结构方程或 DAG 单调性约束，也不保证 $x_{h,T}$ 与历史外生条件在分布上严格独立[^src-tadiff]。因此 TADiff 不满足外生噪声溯因可识别性与逐点恢复保证，亦无法产出唯一确定性反事实真值轨迹，而是改以自由文本条件支持与无真值对比微调（DTTC）作为替代[^src-tadiff]。
+
 ## 链接
 
 - [[doflow]] — DoFlow 主页
 - [[source-doflow]] — source summary
+- [[source-tadiff]] — 无 SCM 的文本条件反事实扩散（不可识别性口径对照）
 - [[continuous-normalizing-flow]] — CNF 可逆编码-解码基础
 - [[causal-time-series-forecasting]] — 因果时间序列预测范式（观测/干预/反事实）
 
 [^src-doflow]: [[source-doflow]]
+[^src-tadiff]: [[source-tadiff]]

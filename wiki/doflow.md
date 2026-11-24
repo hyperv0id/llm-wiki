@@ -12,8 +12,8 @@ tags:
   - anomaly-detection
   - iclr
 created: 2026-06-08
-last_updated: 2026-06-08
-source_count: 1
+last_updated: 2026-11-24
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -74,6 +74,8 @@ Via the change-of-variables / Liouville continuity equation, DoFlow assigns an e
 
 DoFlow is a causal generative forecaster, distinct from observational flow/diffusion forecasters such as [[tsflow|TSFlow]], [[flowts|FlowTS]], and [[sundial|Sundial]], which lack interventional/counterfactual capability[^src-doflow]. Its [[continuous-normalizing-flow|CNF]] backbone is the temporal extension of static causal normalizing flows; [[e2-cstp|E²-CSTP]] addresses causality in spatio-temporal prediction via a complementary confounder-blocking route.
 
+- **Same-slot counterfactual contrast (vs [[source-tadiff|TADiff]])**：Both DoFlow and [[source-tadiff|TADiff]] map factual history into a latent state and re-decode under an altered future condition to synthesize counterfactual trajectories[^src-doflow][^src-tadiff]. DoFlow imposes an explicit causal DAG/SCM with monotonic structural equations so the forward CNF encode step abducts exogenous noise $U_{i,t}$ with pointwise identifiability and a single deterministic trajectory; TADiff drops the SCM/DAG and instead inverts a conditional DDIM trajectory to strip historical textual conditions $c_h$ before denoising under free-form target text $c_f$ with contrastive DTTC fine-tuning, trading [[causal-counterfactual-recovery|identifiability]] and determinism for open-vocabulary textual conditioning (and degrading factual Traffic MSE from $0.24$ to $0.27$ when counterfactual fine-tuning is applied)[^src-doflow][^src-tadiff].
+
 ## Links
 
 - [[source-doflow]] — source summary
@@ -84,5 +86,7 @@ DoFlow is a causal generative forecaster, distinct from observational flow/diffu
 - [[probability-flow-ode]] — related deterministic ODE sampling with exact likelihood
 - [[normalizing-flow]] — invertible generative models
 - [[e2-cstp]] — causal spatio-temporal prediction (deconfounding route)
+- [[source-tadiff]] — same-slot counterfactual contrast via conditional DDIM attribution without SCM/DAG
 
 [^src-doflow]: [[source-doflow]]
+[^src-tadiff]: [[source-tadiff]]

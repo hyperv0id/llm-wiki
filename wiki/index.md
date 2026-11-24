@@ -382,6 +382,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-sundial]] — Sundial: A Family of Highly Capable Time Series Foundation Models, Flow Matching + TimeFlow Loss (ICML 2025)
 - [[source-swift]] — Swift: An Autoregressive Consistency Model for Efficient Weather Forecasting (arXiv 2025)
 - [[source-t1]] — T1: One-to-One Channel-Head Binding for Multivariate Time-Series Imputation, CNN-Transformer hybrid (ICLR 2026)
+- [[source-tadiff]] — TADiff：前向 DDIM 条件剥离归因初始化隐态 + 目标文本去噪 + DTTC 对比微调的反事实预测（核心切片未标会议年份；仓库调研记 ICML 2026）
 - [[source-tcp]] — TCP-Diffusion: 多模态扩散模型全球 TC 降水预测，ARP 机制 + 多编码器 + NWP 集成，ICML 2025
 - [[source-team]] — TEAM: Topological Evolution-aware Framework for Traffic Forecasting (PVLDB 2024)
 - [[source-tedm]] — TEDM: first EDM-based TS forecasting framework with O(H) sampling via diffusion-physical time alignment (ICLR 2026)

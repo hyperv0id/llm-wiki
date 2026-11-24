@@ -8,7 +8,7 @@ tags:
   - covariate
   - satellite-imagery
 created: 2026-04-29
-source_count: 24
+source_count: 27
 last_updated: 2026-11-24
 confidence: high
 status: active
@@ -170,6 +170,17 @@ UniCA 在多模态场景下的表现：
 | **[[doublecast\|DoubleCast & CAF-7M]]** | 文本未经预测效用验证 | 数据侧经验 CRPS 筛选 | 冻结 Qwen3-14B + 解码块内插 DualT5 交叉注意力[^src-doublecast] | 去文本 $+18.3\%$ CRPS；错配 $+26.5\%$[^src-doublecast] |
 | **[[time-llm\|Time-LLM]]** | 跨模态词表重编程错位 | 输入端前缀拼接 | 时序重编程为原型词缀送入冻结 LLM[^src-doublecast] | CAF 设定去文本反而降 $8.0\%$ CRPS[^src-doublecast] |
 
+## 文本反事实与场景条件预测：可识别性、条件构造与评价解耦
+
+在标准观测预测之外，反事实与场景条件预测研究「同一段历史在不同未来假设下如何分化」。现有路线在**因果约束与条件形式**及**评价指标与优化目标是否解耦**两条正交轴上形成明显取舍：[[doflow|DoFlow]] 通过已知 DAG 与节点级连续归一化流实现外生噪声溯因可识别，但只支持结构化变量干预[^src-doflow]；[[source-whatif-tsf|What If TSF（WIT）]] 与 [[source-tadiff|TADiff]] 转向自然语言文本条件，前者由专家手工构造最小编辑场景并仅评测方向准确率[^src-whatif-tsf]，后者则用前向 [[diffusion-model|DDIM]] 条件剥离归因初始化隐态并接 DTTC 对比微调输出连续轨迹，但真实数据反事实条件依靠启发式筛选构造，且评测指标 DTTC 与微调目标同源存在循环评价风险（去掉反事实微调后 Traffic 事实 MSE 反而由 $0.27$ 降至 $0.24$）[^src-tadiff]。
+
+| 路线代表 | 条件模态与构造 | 历史剥离与可识别性 | 输出形态 | 评测与监督解耦状态 |
+|---|---|---|---|---|
+| **[[doublecast\|DoubleCast]]** | 事实窗口解释文本（经验 CRPS 筛选） | 无反事实剥离，直接条件化预测[^src-doublecast] | 概率分布轨迹 | 测试集效用筛选器兼作被测强模型，存同构偏置[^src-doublecast] |
+| **[[doflow\|DoFlow]]** | 已知 DAG 上的结构化 $\text{do}(\cdot)$ 干预 | CNF 前向溯因外生噪声，满足逐点可识别[^src-doflow] | 单一确定性轨迹 | 合成 SCM 或已知干预真值直接对照[^src-doflow] |
+| **[[source-whatif-tsf\|What If TSF（WIT）]]** | 专家手工撰写的去标识化场景 $F_{pl}/F_{cf}$ | 去标识化隔离记忆，无数值反演机制[^src-whatif-tsf] | 三分类方向或短程点预测 | 长程/反事实仅测方向准确率，与生成损失无同源[^src-whatif-tsf] |
+| **[[source-tadiff\|TADiff]]** | 自由自然语言条件（真实集启发式构造） | 前向 DDIM 归因剥离历史文本，无 SCM 不可识别[^src-tadiff] | 连续多步轨迹 | 评测指标 DTTC 与无真值微调损失同源，存循环评价风险[^src-tadiff] |
+
 ## Cross-Modal Misalignment：缓解 vs 利用
 
 **[[cross-modal-misalignment|Cross-modal misalignment]]**（Cai, Liu et al., NeurIPS 2025, arXiv:2504.10143）在 CLIP 式 **MMCL** 下形式化 **selection bias**（文本省略语义）与 **perturbation bias**（选中语义被改写）：对比表示 **只 block-identify 无偏共享语义子集**，省略/扰动与模态噪声一律剔除。对多模态时序的含义：（1）外生文本若只描述部分动力学因子或含错误展望，对齐空间天然变窄，不能指望规模 alone 补回；（2）若目标是 OOD 稳健，可**有意**让文本省略/扰动环境敏感因子；（3）与 [[ts-vl-alignment|TS–VL]] 的几何上限、[[constrained-text-fusion|CFA]] 的任务侧约束融合形成「预训练可辨识 → 表示几何 → 预测融合」三层互补[^src-cross-modal-misalignment]。
@@ -300,6 +311,9 @@ UniCA 在多模态场景下的表现：
 - [[source-time-imm]] — Time-IMM 不规则异步多模态多变量时序基准（NeurIPS 2025 D&B）
 - [[doublecast]] · [[source-doublecast]] — CAF-7M 经验 CRPS 效用筛选语料与 Chronos DualT5 条件化基线（ICML 2026）
 - [[timesx]] · [[source-timesx]] — TimesX 19 域真实时钟无泄露多模态评测基准（cutoff 时间隔离 + 排序反转实证）
+- [[source-tadiff]] — TADiff：前向 DDIM 条件剥离归因 + DTTC 对比微调的文本反事实预测（含启发式条件与指标同源提醒）
+- [[doflow]] — DoFlow：已知因果 DAG 上的 CNF 溯因可识别反事实预测（结构化 SCM 对照）
+- [[source-whatif-tsf]] — What If TSF（WIT）：专家手工场景引导的多模态反事实方向基准
 
 ---
 
@@ -329,3 +343,6 @@ UniCA 在多模态场景下的表现：
 [^src-dmmv]: [[source-dmmv]]
 [^src-doublecast]: [[source-doublecast]]
 [^src-timesx]: [[source-timesx]]
+[^src-doflow]: [[source-doflow]]
+[^src-whatif-tsf]: [[source-whatif-tsf]]
+[^src-tadiff]: [[source-tadiff]]

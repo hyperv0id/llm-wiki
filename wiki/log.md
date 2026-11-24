@@ -4667,3 +4667,11 @@ Tier 2 轻量化入库（ICML 2026；全由 MovingAvg、RFFT 能量分带线性�
 创建的页面：[[source-timeseed]]
 更新的页面：[[tsfm-covariate-adaptation-comparison]]（补极稀疏内生输入侧历史重构对照列与漏测 TSFM 缺口并清理禁用 emoji，source_count 9→10）, [[source-timexer]]（补同槽位互斥与显存/速度对比，source_count 1→2）, [[crosslinear]]（补同槽位互斥与场景分支，source_count 1→2）, [[timemixer]]（补多尺度方向与选择同构反转并精简实验表至 $\le 5$ 行，source_count 3→4）, [[tide]]（补同槽位互斥对照，source_count 1→2）, [[direct-forecast]]（补稀疏内生下两阶段历史重构范式对照，source_count 5→6）, [[index]]
 ingest 报告：[[ingest-reports/2026-11-24-timeseed|WHY 报告]]
+
+
+
+## [2026-11-24] ingest | What if Tomorrow is the World Cup Final? Counterfactual Time Series Forecasting with Textual Conditions (TADiff)
+Tier 2 轻量化入库（核心切片未见具体会议年份水印，仓库 OpenReview CCF-A 调研记录其录用于 ICML 2026；底层沿用 DDIM 条件去噪与对比微调，未为 `tadiff`、`TA`、`DTTC` 新建独立页）。针对自然语言反事实条件无法写成固定离散干预且缺少真实反事实标签的问题，TADiff 先逆用条件感知前向 DDIM 概率流剥离历史文本条件 $c_h$ 得到固有初始隐态 $x_{h,T}$，再以目标文本 $c_f$ 引导去噪，并对无真值样本最大化与评测同源的解耦对比分数 DTTC。实验上在 Synth 与四项真实集上 DTTC 分数领先，但事实预测精度提升源于前向归因初始化——去掉反事实微调后 Traffic 事实 MSE 反而由 $0.27$ 改善至 $0.24$（MAE $0.35\to 0.31$）。缺口与矛盾：Weather 正文宣称最优 MSE 而 Table 1 实测 IATSF（$0.09$）低于 TADiff（$0.11$，MAE $0.12$ vs $0.15$）；真实集反事实条件靠启发式构造且 DTTC 评测与微调损失同源存循环评价风险；前向归因链使采样计算约翻倍，变长预测下模型类指标不可靠。
+创建的页面：[[source-tadiff]]
+更新的页面：[[multimodal-time-series-forecasting]]（补文本反事实与场景条件二维矩阵与循环评价提醒，source_count 24→27）, [[doflow]]（补无 SCM 文本反事实同槽位对照，source_count 1→2）, [[causal-counterfactual-recovery]]（补不可识别性口径对照，source_count 1→2）, [[source-whatif-tsf]]（补同生态位场景基准对照并转写 Unicode 下标，source_count 1→2）, [[diffusion-model]]（补 DDIM 归因初始隐态变体，source_count 29→30）, [[index]]
+ingest 报告：[[ingest-reports/2026-11-24-tadiff|WHY 报告]]

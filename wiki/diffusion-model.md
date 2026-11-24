@@ -7,8 +7,8 @@ tags:
   - vae
   - score-based
 created: 2026-04-28
-last_updated: 2026-11-22
-source_count: 29
+last_updated: 2026-11-24
+source_count: 30
 confidence: high
 status: active
 ---
@@ -147,28 +147,21 @@ Falck 等人（Microsoft Research, 2025）从 SNR 角度给出另一种频域解
 
 图像生成、音频合成、分子设计、逆问题求解（去模糊、超分辨率、修复）是扩散模型的主战场[^src-chan-2025-diffusion-tutorial]。时空预测上的两条代表路线：[[tcp-diffusion|TCP-Diffusion]] 用[[adjacent-residual-prediction|相邻残差]]替代绝对降水量作为扩散目标，作者报告在 TIGGE 上 ETS-6 0.412、ECMWF-IFS 0.302[^src-tcp]；[[craft|CRAFT]] 用 DDPM 主干叠加[[geographic-feature-alignment|地理特征对齐]]与[[retrieval-based-condition-augmentation|检索增强条件]]，实现零样本跨城市交通流生成[^src-craft]。
 
-## 前沿方向
+## 关键实现与前沿谱系对照
 
-- **非平稳时序**：[[nsdiff|NsDiff]] 把 DDPM 的固定单位方差假设推广为[[location-scale-noise-model|LSNM]]，让扩散过程建模时变不确定性[^src-nsdiff]。
-- **调度学习**：[[stats|StaTS]] 联合优化噪声调度与去噪过程——[[spectral-trajectory-scheduler|STS]] 学数据自适应调度，[[frequency-guided-denoiser|FGD]] 估计调度诱导的频谱失真来调制去噪强度[^src-stats]。
-- **动态引导**：条件信息不足时固定 CFG 尺度会漂向先验分布，[[feedback-diffusion-guidance|反馈扩散引导]]按后验似然调节引导强度[^src-fence]。
-- **基础模型与加速**：[[timedit|TimeDiT]] 把 DiT 与扩散采样统一为时序基础模型，用统一掩码覆盖预测/插补/异常检测/数据生成，推理时以物理信息朗之万采样注入 PDE 约束[^src-timedit]；[[swift|Swift]] 用一阶一致性模型替换 PF-ODE，天气预测的 NfE 从 39 降到 1[^src-swift]。
+扩散模型从早期离散马尔可夫链演进至连续时间统一视角与时序专用扩展，核心围绕**前向退化与初始隐态**、**目标参数化与连续路径**以及**采样求解器与引导调度**三条正交设计轴分化。在路径与采样轴上，[[ncsn|NCSN]] 与 [[ddpm|DDPM]] 由 [[score-based-sde|Score-Based SDE]] 统一为 VP/VE 随机微分方程及概率流 ODE[^src-sde]；[[ddim|DDIM]]（PF-ODE 一阶 Euler 离散化）、[[dpm-solver|DPM-Solver]]、[[edm|EDM]]（Heun 二阶与对数正态噪声）、[[flow-matching|Flow Matching]]（OT 路径推广）、[[instaflow|InstaFlow]]（reflow 蒸馏）、[[consistency-models|Consistency Models]] 与 [[shortcut-models|Shortcut Models]] 逐步将几十至上千步推理压缩到少步乃至单步[^src-ddpm][^src-ddim][^src-ddim-ode-spaces-ac-cn][^src-dpm-solver][^src-edm][^src-flow-matching][^src-instaflow][^src-consistency-models][^src-shortcut-models]。在主干与参数化轴上，[[dit|DiT]] 以 ViT + adaLN-Zero 取代 U-Net，[[jit|JiT]] 则论证流形假设下大 patch 像素空间须用 `x-prediction` 替代噪声预测[^src-dit][^src-back-to-basics-let-denoising-generative-models-denoise]。
 
-## 关键实现
+面向时间序列与物理动力学时，各分支进一步在噪声分布与条件控制上特化：[[erdm|ERDM]] 将 EDM 与渐进噪声滚动扩散结合用于动力学概率预测[^src-erdm]；[[nsdiff|NsDiff]] 引入[[location-scale-noise-model|位置—尺度噪声模型（LSNM）]]处理非平稳时变方差[^src-nsdiff]；[[stats|StaTS]] 联合学习[[spectral-trajectory-scheduler|频谱轨迹调度（STS）]]与[[frequency-guided-denoiser|频率引导去噪（FGD）]][^src-stats]；[[fence|FENCE]] 通过[[feedback-diffusion-guidance|反馈扩散引导]]按后验似然动态调节 CFG 尺度[^src-fence]；[[timedit|TimeDiT]] 以 DiT 统一多任务掩码并在推理期注入 PDE 约束朗之万采样，[[swift|Swift]] 以一阶一致性模型将天气预报 NfE 降至 $1$[^src-timedit][^src-swift]；而 [[source-tadiff|TADiff]] 沿用 [[ddim|DDIM]] 确定性概率流，将反向采样起点由标准高斯噪声替换为剥离历史文本条件 $c_h$ 后的前向归因隐态 $x_{h,T}$（增加一条前向链使采样计算约翻倍），在无显式 SCM 下实现自然语言反事实预测[^src-tadiff]。
 
-- **[[ddpm|DDPM]]**：2020 年 NeurIPS 论文，首次证明扩散模型可生成高质量图像，建立了与得分匹配的等价性[^src-ddpm]
-- **[[ddim|DDIM]]**：2021 年 ICLR 论文，从 ODE 视角揭示扩散模型的确定性结构——本质是概率流 ODE 的一阶 Euler 离散化，实现 10×–50× 加速采样、一致性生成和可逆编码[^src-ddim][^src-ddim-ode-spaces-ac-cn]
-- **[[ncsn|NCSN]]**：NCSN，DDPM 的重要前身，使用退火朗之万动力学采样
-- **[[score-based-sde|Score-Based SDE]]**：2021 年 ICLR 论文，用 SDE 统一了 NCSN (SMLD) 和 DDPM，引入 PC 采样和概率流 ODE[^src-sde]
-- **[[dpm-solver|DPM-Solver]]**：2022 年 NeurIPS，专用快速 ODE 求解器，利用半线性结构在约 10 步内生成高质量样本[^src-dpm-solver]
-- **[[consistency-models|Consistency Models]]**：2023 年 ICML，单步生成模型，通过学习 PF ODE 轨迹映射实现快速生成[^src-consistency-models]
-- **[[flow-matching|Flow Matching]]**：2023 年 NeurIPS，统一框架，将扩散模型视为 Flow Matching 的特例，支持 OT 等更优概率路径[^src-flow-matching]
-- **[[shortcut-models|Shortcut Models]]**：2025 年 arXiv，单阶段少步/单步生成模型，通过步长调节和自一致性实现高效推理[^src-shortcut-models]
-- **[[instaflow|InstaFlow]]**：ICLR 2024，首个成功将大规模 SD 蒸馏为一步模型的 reflow+distill 方法，证明 reflow 是蒸馏成功的必要前提[^src-instaflow]
-- **[[edm|EDM]]**：2022 年 NeurIPS 论文，系统梳理扩散模型设计空间，提出 Heun 二阶采样器、预处理技术和对数正态噪声分布[^src-edm]
-- **[[erdm|ERDM]]**：2025 年 NeurIPS，将 EDM 与 Rolling Diffusion 统一，渐进噪声 schedule + 混合 3D 架构用于复杂动力学概率预测[^src-erdm]
-- **[[dit|DiT]]**：2022 年 ICCV 2023 论文，用 ViT Transformer 替换 U-Net 作为扩散模型主干，提出 adaLN-Zero 条件注入和 Gflops-based scaling law，ImageNet 256 FID=2.27[^src-dit]
-- **[[jit|JiT]]**：2025 年 arXiv (MIT)，提出 x-prediction 在高维空间的必要性，使用标准 ViT + 大 patch 在像素空间实现有竞争力的生成[^src-back-to-basics-let-denoising-generative-models-denoise]
+| 代表路线 | 前向退化 / 初始隐态 | 路径参数化 / 主干 | 采样机制与步数 | 适用边界与主要代价 |
+|---|---|---|---|---|
+| **[[ddpm\|DDPM]] / [[ncsn\|NCSN]]** | 离散 VP 加噪 / 噪声扰动 $\mathcal{N}(0,I)$ | $\varepsilon$ 或得分匹配 / U-Net | 随机马尔可夫链 / 退火朗之万（$10^2\text{–}10^3$ 步） | 高质量生成但采样慢[^src-ddpm] |
+| **[[score-based-sde\|Score-Based SDE]] / [[ddim\|DDIM]]** | 连续 VP/VE SDE，起点 $\mathcal{N}(0,I)$ | 得分 / $\varepsilon$ 预测与 PF-ODE | PC 采样或 PF-ODE 一阶 Euler（10–50 步） | 实现确定性加速与可逆编码[^src-sde][^src-ddim][^src-ddim-ode-spaces-ac-cn] |
+| **[[dpm-solver\|DPM-Solver]] / [[edm\|EDM]] / [[erdm\|ERDM]]** | 高斯或渐进滚动噪声调度 | 半线性 ODE / 预处理 $x$ 混合（3D 主干） | 解析指数积分或 Heun 二阶（约 10–39 步） | 兼顾精度与动力学长程采样[^src-dpm-solver][^src-edm][^src-erdm] |
+| **[[flow-matching\|Flow Matching]] / [[instaflow\|InstaFlow]] / [[consistency-models\|CM]] / [[shortcut-models\|Shortcut]]** | OT 条件直线流或 PF-ODE 轨迹起点 | 速度场 / 轨迹映射 / 步长条件化 | 1–4 步确定性生成（reflow 或自洽训练） | 极速采样，需蒸馏或自洽目标[^src-flow-matching][^src-instaflow][^src-consistency-models][^src-shortcut-models] |
+| **[[dit\|DiT]] / [[jit\|JiT]] / [[timedit\|TimeDiT]]** | 高斯噪声或统一掩码输入 | ViT（adaLN-Zero / x-pred + PDE 引导） | 扩散或物理知情朗之万采样 | 扩展性佳（ImageNet 256 FID 1.82–2.27）[^src-dit][^src-back-to-basics-let-denoising-generative-models-denoise][^src-timedit] |
+| **[[nsdiff\|NsDiff]] / [[stats\|StaTS]] / [[fence\|FENCE]] / [[swift\|Swift]]** | LSNM 时变方差或自适应频谱调度 | 非平稳噪声 / FGD 去噪 / 动态 CFG / CM | 动态引导或 1-NFE 自回归一致性 | 适配非平稳、弱条件与高效气象预报[^src-nsdiff][^src-stats][^src-fence][^src-swift] |
+| **[[source-tadiff\|TADiff]]** | 剥离历史文本 $c_h$ 的前向 DDIM 归因隐态 $x_{h,T}$ | DDIM 条件去噪 + DTTC 对比微调 | 双向确定性概率流（前向归因 + 反向去噪） | 支持自由文本反事实但采样量约翻倍、无 SCM 可识别性[^src-tadiff] |
 
 ## 相关概念
 
@@ -197,6 +190,7 @@ Falck 等人（Microsoft Research, 2025）从 SNR 角度给出另一种频域解
 - [[probability-flow-ode]] — 概率流 ODE，确定性 ODE 采样与精确似然计算
 - [[source-diffusion-ts-st-survey|TS/ST 扩散综述]] — 首篇同时覆盖 time series 与 spatio-temporal 的 diffusion 综述（arXiv 2024，投 ACM CSUR），四维分类（模型类别/任务/数据模态/应用领域）汇总 60 个方法，提出 denoiser-as-prior 框架连接生成采样与 Plug-and-Play 信号恢复
 - [[source-diffusion-traffic-flow-inference|DP-TFI]] — 把 DDPM 当训练期数据增强器（而非主生成器）的早期城市计算案例：fine-grained urban traffic flow inference，用 relax matrix 放宽 superregion/subregion 流量守恒的硬约束
+- [[source-tadiff]] — 继承 DDIM 并将初始高斯噪声替换为条件剥离前向归因隐态的文本反事实预测
 
 ## 引用
 
@@ -229,3 +223,4 @@ Falck 等人（Microsoft Research, 2025）从 SNR 角度给出另一种频域解
 [^src-fence]: [[source-fence]]
 [^src-timedit]: [[source-timedit]]
 [^src-swift]: [[source-swift]]
+[^src-tadiff]: [[source-tadiff]]
