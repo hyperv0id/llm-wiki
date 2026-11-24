@@ -8,8 +8,8 @@ tags:
   - covariate
   - satellite-imagery
 created: 2026-04-29
-source_count: 20
-last_updated: 2026-10-13
+source_count: 21
+last_updated: 2026-11-24
 confidence: high
 status: active
 ---
@@ -81,6 +81,20 @@ UniCA 通过**协变量同质化**将不同模态转换为统一表示：
 - 配套 [[time-mmd|MM-TSFlib]]：20+ TSF 骨干 × 开源 LLM，分路建模 + 投影融合；>1000 实验约 95% 多模态更优，MSE 平均降 >15%（富文本域可达 ~40%）[^src-time-mmd]
 - 下游评测锚点：[[cora-tsfm|CoRA]] / [[unica|UniCA]] 文本协变量、[[source-gpt4mts|DP-GPT4MTS]]、[[vot|VoT]]、[[timi|TiMi]] 等[^src-time-mmd]
 
+### [[source-time-imm|Time-IMM]]
+
+- NeurIPS 2025 D&B 不规则多模态多变量时序基准（3 类成因：触发 / 约束 / 故障，共 9 亚类：GDELT、RepoHealth、MIMIC、FNSPID、ClusterTrace、StudentLife、ILINet、CESNET、EPA-Air），文本经大模型筛选压缩为五句摘要[^src-time-imm]
+- **瓶颈接力 $\Delta$（vs [[time-mmd|Time-MMD]]）**：[[time-mmd|Time-MMD]] 依赖规则日/周/月网格与二元起止时间戳对齐；Time-IMM 保留各通道与文本的独立时间戳，免除模态与通道间的强对齐假设[^src-time-imm]
+- 配套框架 **IMM-TSF**：常规模型用全局网格与掩码预对齐；时间融合对比高斯近因平均与时间编码交叉注意力；模态融合对比门控循环残差相加与固定权重交叉注意力相加（门控循环残差相加更能抑噪）；加文本平均降误差约 7%，强相关场景近 38%[^src-time-imm]
+
+### 多模态时序基准对照
+
+| 基准 | 模态组成 | 时间采样假设 | 模态对齐机制 | 文本处理方式 |
+|---|---|---|---|---|
+| **MMSP** | 数值 + 卫星云图 | 规则网格 | 时刻对齐 | 无文本 |
+| [[time-mmd\|Time-MMD]] | 数值 + 外生文本（9 域） | 规则（日/周/月） | 二元起止时间戳 + 防泄漏[^src-time-mmd] | LLM 拆分 fact/prediction 摘要[^src-time-mmd] |
+| [[source-time-imm\|Time-IMM]] | 数值 + 文本日志（3 类 9 亚类） | 不规则采样 + 通道异步 | 保留独立时间戳；全局网格掩码 / 高斯近因 / 时间编码交叉注意力[^src-time-imm] | LLM 筛选压缩为五句摘要[^src-time-imm] |
+
 ## 实验结果
 
 UniCA 在多模态场景下的表现：
@@ -138,9 +152,9 @@ UniCA 在多模态场景下的表现：
 |------|--------|------|-------|------|-----|------|------------|------|------|
 | 做法 | 生成式 FM | Non-Fusion（TiMi） | 适配 | 判别式 FM | LLM 推理+对齐 | 即插即用 | 任务专用 | 位置编码 | 原语瓶颈（TESS） |
 | 模态 | 文本 + 图像 + TS | 文本 + TS | 分类 + 图像 + 文本 | 图像 + 文本 + 位置 + TS | 文本 + TS | 文本 + TS | 环境 + TS | 卫星图像 + TS | 文本 + TS |
-| 零样本 | ✓ | ✗ | ✓ (via TSFM) | ✓ | ✗ | ✗ | ✗ | ✓ (跨洋区) | ✗ |
+| 零样本 | 是 | 否 | 是 (via TSFM) | 是 | 否 | 否 | 否 | 是 (跨洋区) | 否 |
 | 生成方式 | Flow Matching | N/A | N/A | N/A | LLM 生成 | N/A | N/A | N/A | N/A |
-| 概率预测 | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
+| 概率预测 | 是 | 否 | 否 | 否 | 否 | 否 | 否 | 否 | 否 |
 | 架构修改 | 需要 | **仅 FFN 替换** | 需要 (fusion module) | 需要 | 需要 (dual-branch) | **不需要** | 需要 | **仅位置编码** | 需 PatchTST prefix 注入 |
 
 ### 与 VoT 的区别
@@ -254,6 +268,7 @@ UniCA 在多模态场景下的表现：
 - [[source-cross-modal-misalignment]] — 源摘要
 - [[worldts]] — WorldTS 多模态协变量条件化潜空间预测（arXiv 2026）
 - [[latent-space-future-state-prediction]] — 潜空间未来状态预测技术（TimeAlign/LatentTSF/WorldTS）
+- [[source-time-imm]] — Time-IMM 不规则异步多模态多变量时序基准（NeurIPS 2025 D&B）
 
 ---
 
@@ -279,3 +294,4 @@ UniCA 在多模态场景下的表现：
 [^src-tess]: [[source-tess]]
 [^src-trace-neurips2025]: [[source-trace-neurips2025]]
 [^src-worldts]: [[source-worldts]]
+[^src-time-imm]: [[source-time-imm]]

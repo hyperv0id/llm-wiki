@@ -4619,3 +4619,10 @@ ingest 报告：[[ingest-reports/2026-11-20-2405-12981-cla|WHY 报告]]
 ## [2026-11-24] maintenance | 重构 DistDF 为 Tier 1 时序理论/损失类标杆范例页
 按最小信息原则与可读性规范重写 [[distdf]]：首段纯人话大义、剥离全部句中公式/章节坐标、将算法步骤改写为两阶段 `aligned` 损失计算流、明确与 [[fredf]] 的瓶颈接力 $\Delta$ 及与 [[qdf]] 的同槽位对照矩阵，并将占全文 48% 的 Table 1–3 与附录 Table 6–13 跑分大表压缩为 3 条定性实验判词（`scripts/lint.py --quality` 零告警）。
 更新的页面：[[distdf]]
+
+
+## [2026-11-24] ingest | Time-IMM: A Dataset and Benchmark for Irregular Multimodal Multivariate Time Series
+Tier 2 入库（NeurIPS 2025 D&B 基准工作，无新算子或理论）。针对真实多变量时序采样不均、通道异步与文本日志并存的场景，按触发、约束、故障三类成因构建九亚类数据集，文本经大模型筛选压缩为五句摘要；IMM-TSF 在时间融合（高斯近因平均 vs 时间编码交叉注意力）与模态融合（门控循环残差相加 vs 固定权重交叉注意力相加）上实证：加文本平均降误差约 7%、强相关场景近 38%，门控循环残差相加因抑噪更优，两种时间融合及不同规模冻结编码器间无明显差异。缺口：仅测已知查询时刻预测，缺复合不规则与非预测任务，未消融原始文本与微调编码器。
+创建的页面：[[source-time-imm]]
+更新的页面：[[multimodal-time-series-forecasting]]（数据集节补 Time-IMM 与基准对照表并清理禁用字符，source_count 20→21）, [[multimodal-semantic-understanding]]（融合策略与过滤表补 IMM-TSF 与五句摘要，source_count 6→7）, [[constrained-text-fusion]]（谱系表补异步基准抑噪实证对齐，source_count 4→5）, [[source-time-mmd]]（局限与谱系位置补瓶颈接力 Δ，source_count 2→3）, [[index]]
+ingest 报告：[[ingest-reports/2026-11-24-time-imm|WHY 报告]]

@@ -2,7 +2,7 @@
 title: Index
 type: concept
 created: 2026-04-26
-last_updated: 2026-11-20
+last_updated: 2026-11-24
 tags:
   - meta
 source_count: 0
@@ -390,6 +390,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-tft]] — TFT: Temporal Fusion Transformer for interpretable multi-horizon forecasting with static/known/observed inputs + quantile outputs (Lim et al., Google, arXiv:1912.09363)
 - [[source-tide]] — TiDE: Time-series Dense Encoder, residual MLP encoder–decoder for LTSF with covariates (Das et al., arXiv:2304.08424)
 - [[source-time-gated-multi-scale-flow-matching]] — TG-MSFM: Time-Gated Multi-Scale Flow Matching for Time-Series Imputation, 数据条件 FM ODE + visibility-masked attention + 时间门控多尺度速度头 + Heun/每步 DC 确定性插补，MSE 十基准全列最低 (ICLR 2026)
+- [[source-time-imm]] — Time-IMM: 3 类 9 亚类不规则异步多模态时序基准（触发/约束/故障）+ IMM-TSF 软融合评测框架，文本经 LLM 压缩为五句摘要；加文本平均降误差约 7%、强相关近 38%（NeurIPS 2025 D&B）
 - [[source-time-indexed-imputation]] — Are Time-Indexed Foundation Models the Future of Time Series Imputation? TabPFN-TS/MoTM zero-shot benchmark (TMLR 2026)
 - [[source-time-llm]] — Time-LLM: Time Series Forecasting by Reprogramming Large Language Models (ICLR 2024)
 - [[source-time-mmd]] — Time-MMD: 9-domain multimodal numeric–text TS dataset + MM-TSFlib; fine-grained alignment & contamination control (NeurIPS 2024 D&B, arXiv:2406.08627v4)
