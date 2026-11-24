@@ -8,8 +8,8 @@ tags:
   - downsampling
   - time-series
 created: 2026-04-28
-last_updated: 2026-10-25
-source_count: 2
+last_updated: 2026-11-24
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -85,9 +85,10 @@ x' = x + Conv1D(x)  // kernel size = 2×⌊w/2⌋+1
 | CycleNet | 可学习周期向量 | ~10k |
 | **Cross-Period Sparse** | **跨周期下采样** | **<1k** |
 
-## 同形不同用的对照
+## 同形不同用与后续演进对照
 
-[[witran|WITRAN]]（NeurIPS 2023）同样把序列按周期 $C$ 重排成 $w\times n$ 网格，但方向相反：SparseTSF 沿周期维下采样做**参数压缩**，WITRAN 保留完整网格、在其上做水平/垂直双向递推做**信息传递**，并要求 $H\bmod C=0$（$C\in\{12,24,48\}$）[^src-witran-jia-2023]。
+- **同形不同用（[[witran|WITRAN]], NeurIPS 2023）**：同样把序列按周期 $C$ 重排成 $w\times n$ 网格，但方向相反——SparseTSF 沿周期维下采样做**参数压缩**，WITRAN 保留完整网格、在其上做水平/垂直双向递推做**信息传递**，并要求 $H\bmod C=0$（$C\in\{12,24,48\}$）[^src-witran-jia-2023]。
+- **瓶颈接力 $\Delta$ 与复现对齐（[[source-dsr-tsf|DSR-TSF]], NeurIPS 2026）**：沿用跨周期分段重排与共享预测头骨架，针对固定步长 $w$ 在窗口间主导周期漂移时产生频谱错配的问题，在分段前先以 `rFFT` Top-$K$ 谱特征软路由 $R$ 条时域周期响应分支做残差修正，并对跨段共享头施加低秩约束[^src-dsr-tsf]；但核心消融中去掉低秩头约束的退化幅度略高于去掉谱动态路由，且其在 Traffic 上 Table 1 实测 DSR-TSF/MLP（$0.403$）劣于 SparseTSF/MLP（$0.396$）、Linear（$0.412$）仅持平而 MAE 落后（与 DSR-TSF 正文「仍有提升」的表述相左）[^src-dsr-tsf]。
 
 ## 超参数
 
@@ -101,3 +102,4 @@ x' = x + Conv1D(x)  // kernel size = 2×⌊w/2⌋+1
 
 [^src-witran-jia-2023]: [[source-witran-jia-2023]]
 [^src-sparsetsf]: [[source-sparsetsf]]
+[^src-dsr-tsf]: [[source-dsr-tsf]]

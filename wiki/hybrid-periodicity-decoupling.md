@@ -7,8 +7,8 @@ tags:
   - time-series
   - periodic-profile
 created: 2026-04-27
-last_updated: 2026-10-25
-source_count: 2
+last_updated: 2026-11-24
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -53,6 +53,8 @@ CycleNet 与 HyperD 同属「周期表 + 残差」路线，差别在表的粒度
 - **Dualformer**（2026）：双分支架构里按层分配频段，目标是通用 LTSF；它不构造周期剖面、也不从输入中减掉周期项。
 - **[[penguin|PENGUIN]]**（AISTATS 2026）：把相对位置惩罚按预定义周期折叠（$\min(u,P_S-u)$，$u=\lvert i-j\rvert \bmod P_S$），一组注意力绑定一个周期，周期以偏置表形式注入，而不是分解或重排数据[^src-penguin]；周期是超参，不由模型学习[^src-penguin]。
 - **PRNet**：以已知周期为基线预测人流的残差，与本文「减周期剖面」的残差步骤最接近。
+- **[[source-dsr-tsf|DSR-TSF]]**（NeurIPS 2026，**跨槽位正交**）：不同于 HyperD 依赖全训练集统计并查日/周墙钟周期表（$\tilde{P}_D, \tilde{P}_W$）做显式周期—残差剥离，DSR-TSF 不设全局周期表，而是针对单窗主导周期漂移，用 `rFFT` 主频特征软路由 $R$ 条可学习时域响应基对输入做隐式残差修正，再交由跨周期分段共享低秩头输出[^src-dsr-tsf]。
 
 [^src-hyperd-hybrid-periodicity-decoupling]: [[source-hyperd-hybrid-periodicity-decoupling]]
 [^src-penguin]: [[source-penguin]]
+[^src-dsr-tsf]: [[source-dsr-tsf]]

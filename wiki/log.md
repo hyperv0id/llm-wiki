@@ -4711,3 +4711,10 @@ Tier 1 入库（ICML 2026, PMLR 306；建立机制页与源摘要页，未为 RB
 创建的页面：[[baguan-ts]], [[source-baguan-ts]]
 更新的页面：[[tsfm-covariate-adaptation-comparison]]（增补序列原生多样例 ICL 路线及对比矩阵列，source_count 10→11）, [[unified-covariate-adaptation]]（补同槽位互斥对照并清理 5 处禁用 emoji，source_count 1→2）, [[timesfm]]（补 `fev-bench-cov` 复现对齐与范式对照，source_count 12→13）, [[chronos]]（补离散分箱概率输出与协变量 ICL 分化对照，source_count 10→11）, [[tirex]]（补同词异构 ICL 与单/多变量边界对照，source_count 4→5）, [[in-context-learning]]（补序列原生多元 ICL 章节与对比矩阵行，source_count 4→5）, [[retrieval-based-condition-augmentation]]（补 RBfcst 与 RCA 跨槽位检索对照，source_count 1→2）, [[tabpfn-ts]]（补同槽位互斥与 `fev-bench-cov` 复现对齐，source_count 1→2）, [[index]]
 ingest 报告：[[ingest-reports/2026-11-24-baguan-ts|WHY 报告]]
+
+
+## [2026-11-24] ingest | DSR-TSF: Spectrum-Driven Dynamic Routing for Efficient Long-Horizon Time Series Forecasting
+Tier 2 轻量化入库（NeurIPS 2026；在 [[sparsetsf|SparseTSF]]「周期分段 + 共享头」骨架前拼接 `rFFT` 谱条件软路由与 $R$ 条时域周期响应基残差，并对共享头施加低秩约束，未为 `dsr-tsf` 或其内部路由/低秩头新建 `source_count: 1` 独立页）。针对同变量在不同窗口主导周期漂移导致固定周期步长错配的问题，DSR-TSF 提取 `rFFT` Top-$K$ 对数幅值与归一化频率特征做含静态先验的温度 `softmax` 软路由，修正输入后再经低秩头预测。7 个标准 LTSF 数据集平均 MSE 相对 SparseTSF 降约 $2.37\%$（ETTh1 $0.393$ 逼近 MixLinear $0.395$）；消融中核尺寸对齐变体与 SparseTSF 持平（$0.433$ vs $0.432$）排除感受野解释，但去掉低秩头约束（$0.393\to 0.404$）掉点略重于改静态路由（$0.393\to 0.402$），4 个 ETT 集顺序一致，工程低秩头贡献不低于动态路由。缺口与矛盾：正文称 Traffic「仍有提升」，但 Table 1 实测 DSR-TSF/MLP（$0.403$）劣于 SparseTSF/MLP（$0.396$）、Linear（$0.412$）仅持平且 MAE 落后（$0.274$ vs $0.264$）；关键超参 $(K, R, \tau)$ 敏感性正文缺位。
+创建的页面：[[source-dsr-tsf]]
+更新的页面：[[sparsetsf]]（补瓶颈接力 Δ 与 Traffic 复现口径矛盾注记，source_count 3→4）, [[cross-period-sparse-forecasting]]（补瓶颈接力 Δ 与 Traffic 复现对照，source_count 2→3）, [[frequency-pathway-routing]]（补同构对比及对比矩阵行，source_count 2→3）, [[mixture-of-experts]]（补谱条件软路由前置残差特例与二维矩阵行，source_count 22→23）, [[cyclenet]]（补跨槽位正交对照，source_count 2→3）, [[hybrid-periodicity-decoupling]]（补跨槽位正交对照，source_count 2→3）, [[index]]
+ingest 报告：[[ingest-reports/2026-11-24-dsr-tsf|WHY 报告]]

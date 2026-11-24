@@ -9,7 +9,7 @@ tags:
   - adaptive-computation
 created: 2026-09-16
 last_updated: 2026-11-24
-source_count: 2
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -52,8 +52,9 @@ $$\hat{Y}=\sum_{k=1}^{|\tilde{I}|}\alpha_k\cdot\hat{Y}^{(\tilde{I}_k)},\qquad \s
 | [[sparse-balanced-mixture-of-experts-st\|MAGE 稀疏专家]] | 图学习专家 | 每节点 top-$K$ + 符号 SGD 负载均衡 | 有（显式平衡） |
 | [[memory-augmented-gating\|TESTAM 记忆门控]] | 元节点库 | 记忆库检索式门控 | 无 |
 | [[source-horai\|HORAI]]（**架构特例**） | 输入低/中高频双带 + FFN 时频分支 | 输入端按 $\alpha=0.05$ 静态二分并固定配对文本/折线图；解码端以门控 $g$ 混合时域 MLP 与 `FFT` 频域 MLP 后进 Top-$K$ MoE[^src-horai] | 无显式频率均衡损失 |
+| [[source-dsr-tsf\|DSR-TSF]]（**同构对比**） | $R$ 条可学习时域周期响应基 | 窗级 `rFFT` Top-$K$ 谱特征 + 静态先验温度 `softmax` 全选加权[^src-dsr-tsf] | 无负载均衡损失 |
 
-共同点是把"用哪个子模块"变成输入相关的决策；AdaFre 的特点是把选择维度固定为时间频率，并与空间侧同频率的谱嵌入绑定[^src-adafre]。相对 AdaFre 按节点稀疏路由多频带，[[source-horai|HORAI]] 在输入侧采用静态二值频带–模态配对（Band–Modality 互换消融中 Social Good 误差从 $0.819$ 恶化至 $1.237$，差于删模态的 $1.058$，证实固定配对先验是核心增益来源，此处属跨槽位架构特例对照），仅在解码器 FFN 内部保留输入相关的时频门控权重 $g$[^src-horai]。
+共同点是把"用哪个子模块"变成输入相关的决策；AdaFre 的特点是把选择维度固定为时间频率，并与空间侧同频率的谱嵌入绑定[^src-adafre]。相对 AdaFre 按节点稀疏路由多频带，[[source-horai|HORAI]] 在输入侧采用静态二值频带–模态配对（Band–Modality 互换消融中 Social Good 误差从 $0.819$ 恶化至 $1.237$，差于删模态的 $1.058$，证实固定配对先验是核心增益来源，此处属跨槽位架构特例对照），仅在解码器 FFN 内部保留输入相关的时频门控权重 $g$[^src-horai]。同为频谱特征条件路由的 [[source-dsr-tsf|DSR-TSF]] 则构成了轻量单变量侧的**同构对比**：它同样提取 `rFFT` 频谱信号驱动门控，但选通对象是时域周期响应基而非独立频带，且对全部分支做含静态先验的软加权全选、不设均衡损失（核心消融显示其下游低秩头约束的贡献略高于动态路由）[^src-dsr-tsf]。
 
 ## 使用边界
 
@@ -70,6 +71,8 @@ $$\hat{Y}=\sum_{k=1}^{|\tilde{I}|}\alpha_k\cdot\hat{Y}^{(\tilde{I}_k)},\qquad \s
 - [[mixture-of-experts]] — 更一般的路由/专家框架
 - [[source-adafre]] — 源文件摘要
 - [[source-horai]] — 静态频带–模态分工与解码端时频门控 MoE 架构特例对照
+- [[source-dsr-tsf]] — 窗级 `rFFT` 特征软路由时域响应基（同构对比）
 
 [^src-adafre]: [[source-adafre]]
 [^src-horai]: [[source-horai]]
+[^src-dsr-tsf]: [[source-dsr-tsf]]

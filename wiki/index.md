@@ -132,6 +132,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-doublecast]] — Overcoming the Modality Gap in Context-Aided Forecasting (CAF-7M & DoubleCast)：经验 CRPS 效用筛选语料（743 万训练窗 / 904 验证测试窗）+ 冻结 Chronos 解码块 DualT5 文本交叉注意力基线（Zheng*, Marcotte* et al., ICML 2026）
 - [[source-dpgnet]] — DPGNet: Dynamic Graph Prediction Network with AGL + ASL for spatiotemporal forecasting (ICLR 2026 under review)
 - [[source-dpm-solver]] — DPM-Solver: Fast ODE solver for diffusion models (NeurIPS 2022)
+- [[source-dsr-tsf]] — DSR-TSF: 对周期漂移做窗级 `rFFT` Top-$K$ 谱条件软路由多分支时域响应残差 + 低秩跨段共享头，7 集平均 MSE 较 SparseTSF 降约 2.37%，但消融中去低秩头退化略重于去动态路由，且 Traffic 正文与 Table 1 存在定性矛盾（Wang et al., NeurIPS 2026）
 - [[source-dst-mamba]] — DST-Mamba: Decomposed Spatio-Temporal Mamba for Long-Term Traffic Prediction (AAAI 2025)
 - [[source-dualformer]] — Dualformer: time-frequency dual domain learning for long-term forecasting
 - [[source-dutytte]] — DutyTTE: Deciphering Uncertainty in Origin-Destination Travel Time Estimation，noisy top-k MoE（C=8/k=4）驱动的 OD 通行时间区间预测
