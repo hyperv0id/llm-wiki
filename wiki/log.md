@@ -4739,3 +4739,11 @@ Tier 2 轻量化入库（ICML 2026, PMLR 306；按三阶段串行重组日历周
 创建的页面：[[source-pesd-tsf]]
 更新的页面：[[itransformer]]（补同构退化特例与 Mobility 显存/耗时对照，source_count 4→5）, [[patchtst]]（补瓶颈接力 Δ 与消融归因，source_count 14→15）, [[cross-dimension-dependency]]（二维矩阵收录前段 CI 后段 GAP 协同，source_count 7→8）, [[channel-independence]]（补跨槽位正交串行分工，source_count 19→20）, [[timer-xl]]（补高维同槽位互斥对照，source_count 6→7）, [[hybrid-periodicity-decoupling]]（补前置日历乘性门控跨槽位正交对照，source_count 3→4）, [[index]]
 ingest 报告：[[ingest-reports/2026-11-24-pesd-tsf|WHY 报告]]
+
+
+
+## [2026-11-24] ingest | Rethinking Post-Training Recipes for Multimodal Time-Series Forecasting (PostTime)
+Tier 2 轻量化入库（NeurIPS 2026；基于冻结 [[timesfm|TimesFM-2.5]] 数值先验、仅预测期有效轨迹筛选、`CoT-SFT` 与 `GRPO` 既有积木的后训练配方改进，未为 `posttime` 或 `ImpRatio` 新建 `source_count: 1` 独立页）。针对时序基础模型忽略外部事件而通用 LLM 不擅长直接做数值外推的问题，PostTime 训练 4B 小模型基于文本上下文判断修正、维持或回退 TimesFM-2.5 先验，并对 5 次采样全败（$0/5$）的难例构造直接回退先验的目标 $(\tau_{\text{fb}}, \tilde{y})$。在严防泄露刷新版 [[timesx|TimesX]]（cutoff 2025-01-30，88 ID / 11 OOD）上总体 nMAE 优于 TimesFM-2.5 先验及多数零样本 `REV`/`ENS` 基线；消融揭示直接用 SFT 拟合真实 horizon 退化最重（$0.881/1.266$ 劣于先验 $0.788/0.729$），采样暴露历史观测亦退回先验（$0.789/0.748$），主精度提升源自 Stage-1 `CoT-SFT` 配方，Stage-2 GRPO 仅微调 OOD nMAE（$0.772\to 0.746$）与 ID（$0.739\to 0.738$），`ImpRatio` 支撑主要在训练动力学方差（近零奖励组 $28\%\to 4.7\%$）。缺口：OOD 仅 11 变量且 `Gemini-3.1-Pro ENS`（$0.742$）与 PostTime（$0.746$）同级；仅测文本与强 TimesFM-2.5 先验（未测弱先验）；Top-3 筛选利用真实未来误差存隐式后见偏差风险；约 $1.9\text{ s}$ 推理耗时见附录核心切片未核。
+创建的页面：[[source-posttime]]
+更新的页面：[[timesx]]（补严防泄露刷新版基准延续与复现对照，source_count 4→5）, [[post-hoc-forecast-revision]]（补文本上下文 LLM 预测后修订特例，source_count 2→3）, [[timesfm]]（补下游后修订强先验依赖与未测弱先验边界，source_count 13→14）, [[grpo-for-forecasting]]（补固定尺度 NRMSE vs ImpRatio 同槽位互斥对照，source_count 1→2）, [[in-context-learning]]（补从 TextRev-ICL 到权重内化的瓶颈接力 Δ 及对照表行，source_count 5→6）, [[multimodal-time-series-forecasting]]（补预测后文本修订二维对照矩阵并收录，source_count 28→29）, [[index]]
+ingest 报告：[[ingest-reports/2026-11-24-posttime|WHY 报告]]

@@ -10,7 +10,7 @@ tags:
   - time-series-forecasting
 created: 2026-11-24
 last_updated: 2026-11-24
-source_count: 4
+source_count: 5
 confidence: medium
 status: active
 ---
@@ -57,6 +57,7 @@ flowchart LR
 - **实证复现对齐（vs [[timesfm|TimesFM]]）**：TimesX 重测指出，[[timesfm|TimesFM]] 在合成基准 CiK 上被系统性低估并排在 LLM 与 `CodeRev` 之后，而在真实数值、真实时钟上下文且无截断泄露的评测中转为稳健领先于 Gemini 与 `CodeRev`[^src-timesx]。
 - **跨槽位正交（vs [[in-context-learning|In-Context Learning]]）**：不同于直接用演示对提示基础模型生成预测的视觉或轨迹 ICL，TimesX 中的 `TextRev-ICL` 作用于预测后文本修订槽位，将历史修订案例与「保守不改」选项共同置于上下文中，以抑制免训练修订的方差放大[^src-timesx]。
 - **同生态位数据构建对照（vs [[doublecast|CAF-7M / DoubleCast]]）**：两者都针对「公开多模态文本噪音高、难证有效」的问题提出数据解法，但路线对立——CAF-7M 先由大模型读取历史与未来全窗生成解释文本再做经验 CRPS 效用筛选，存在训练/测试文本构造口径差异；TimesX 则全量采用真实时钟下严格早于预测起点的检索与核查事件，规避未来信息反推与筛选器自我验证偏置[^src-doublecast][^src-timesx]。
+- **严防泄露基准延续与实证复现对照（vs [[source-posttime|PostTime]]）**：PostTime（NeurIPS 2026）在严防泄露的刷新版 TimesX 基准（知识截断推后至 2025-01-30，拆分为 88 条 ID 与 11 条 OOD 变量）上开展后训练修订研究，以冻结 [[timesfm|TimesFM-2.5]] 预测为先验训练 4B 语言模型判别修正、维持或回退先验[^src-posttime]。实证上 PostTime 总体 nMAE 优于未修订先验及多数零样本 `REV`、`ENS` 基线，但在 11 条变量的 OOD 子集上，免训练大模型集成 `Gemini-3.1-Pro ENS`（$0.742$）仍与 PostTime（$0.746$）处于同一水平[^src-posttime]。
 
 | 基准 | 数据真实性与采样 | 上下文槽位构成 | 防泄露与截断机制 | 核心诊断结论 |
 |---|---|---|---|---|
@@ -82,8 +83,10 @@ flowchart LR
 - [[timesfm]] — 被测专用时序基础模型（排序反转实证对照）
 - [[in-context-learning]] — 上下文学习（`TextRev-ICL` 历史示例与保守回退）
 - [[doublecast]] — CAF-7M 经验 CRPS 效用筛选语料（数据构建对照）
+- [[source-posttime]] — 基于刷新版 TimesX（cutoff 2025-01-30，88 ID / 11 OOD）的后训练修订方法与复现对照
 
 [^src-timesx]: [[source-timesx]]
 [^src-time-mmd]: [[source-time-mmd]]
 [^src-time-imm]: [[source-time-imm]]
 [^src-doublecast]: [[source-doublecast]]
+[^src-posttime]: [[source-posttime]]

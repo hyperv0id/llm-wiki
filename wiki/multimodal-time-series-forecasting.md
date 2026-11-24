@@ -8,7 +8,7 @@ tags:
   - covariate
   - satellite-imagery
 created: 2026-04-29
-source_count: 28
+source_count: 29
 last_updated: 2026-11-24
 confidence: high
 status: active
@@ -181,6 +181,17 @@ UniCA 在多模态场景下的表现：
 | **[[doublecast\|DoubleCast & CAF-7M]]** | 文本未经预测效用验证 | 数据侧经验 CRPS 筛选 | 冻结 Qwen3-14B + 解码块内插 DualT5 交叉注意力[^src-doublecast] | 去文本 $+18.3\%$ CRPS；错配 $+26.5\%$[^src-doublecast] |
 | **[[time-llm\|Time-LLM]]** | 跨模态词表重编程错位 | 输入端前缀拼接 | 时序重编程为原型词缀送入冻结 LLM[^src-doublecast] | CAF 设定去文本反而降 $8.0\%$ CRPS[^src-doublecast] |
 
+## 预测后文本修订：免训练代理 vs 后训练内化（二维对照矩阵）
+
+与在骨干编码/解码层融合文本不同，[[post-hoc-forecast-revision|预测后修订]]路线保留冻结数值预测先验，只在输出端利用外部文本决定如何修正预测。围绕**修订判别是否内化进参数**与**保守回退/方差抑制机制**两条正交轴，[[timesx|TimesX]] 的免训练代理与 [[source-posttime|PostTime]]（NeurIPS 2026）构成清晰的**瓶颈接力 $\Delta$**：`TextRev` 直接修订易放大尾部误差；`TextRev-ICL` 靠推理上下文补入历史示例与「保守不改」选项控方差；PostTime 则进一步通过隐藏真实 horizon 的仅预测期有效轨迹筛选、`0/5` 难例显式回退先验的 `CoT-SFT`（贡献主精度增益）及先验误差校准 `ImpRatio` 的 `GRPO` 微调将判别能力写入 4B 模型权重，但在 11 条 OOD 变量上仍与大模型免训练集成 `Gemini-3.1-Pro ENS` 处于同一水平[^src-timesx][^src-posttime]。
+
+| 路线代表 | 介入槽位与先验依赖 | 参数更新与训练配方 | 防退化与方差抑制机制 | 实证取舍与边界 |
+|---|---|---|---|---|
+| **[[timesx\|TimesX (TextRev / CodeRev)]]** | 预测后输出端修订 | 免训练提示推理 | 无显式回退控制 | 易放大尾部误差，总体劣于等权均值集成 `AvgEns`[^src-timesx] |
+| **[[timesx\|TimesX (TextRev-ICL)]]** | 预测后输出端修订 | 免训练上下文学习（历史示例） | 显式注入「保守不改」回退选项 | 稳定超越 `AvgEns`，依赖大模型推理上下文成本[^src-timesx] |
+| **[[source-posttime\|PostTime]]** | 冻结 [[timesfm\|TimesFM-2.5]] 先验后修订 | `CoT-SFT`（仅预测期筛选）+ `GRPO`（ImpRatio） | $0/5$ 失败难例构造回退样本 $(\tau_{\text{fb}}, \tilde{y})$ + 截断线性比 | 4B 权重内化且胜过 `TimesFM-2.5`/多数 `REV`/`ENS`，主增益源自 SFT；11 OOD 变量下与 `Gemini-3.1-Pro ENS` 同级，未测弱先验[^src-posttime] |
+| **[[doublecast\|DoubleCast]]** | 冻结 [[chronos\|Chronos]] 解码块内插交叉注意力 | 训练 DualT5 文本交叉注意力 | CAF-7M 经验 CRPS 效用筛选文本 | 属于特征层融合对照；错配文本致 CRPS 恶化 $26.5\%$[^src-doublecast] |
+
 ## 文本反事实与场景条件预测：可识别性、条件构造与评价解耦
 
 在标准观测预测之外，反事实与场景条件预测研究「同一段历史在不同未来假设下如何分化」。现有路线在**因果约束与条件形式**及**评价指标与优化目标是否解耦**两条正交轴上形成明显取舍：[[doflow|DoFlow]] 通过已知 DAG 与节点级连续归一化流实现外生噪声溯因可识别，但只支持结构化变量干预[^src-doflow]；[[source-whatif-tsf|What If TSF（WIT）]] 与 [[source-tadiff|TADiff]] 转向自然语言文本条件，前者由专家手工构造最小编辑场景并仅评测方向准确率[^src-whatif-tsf]，后者则用前向 [[diffusion-model|DDIM]] 条件剥离归因初始化隐态并接 DTTC 对比微调输出连续轨迹，但真实数据反事实条件依靠启发式筛选构造，且评测指标 DTTC 与微调目标同源存在循环评价风险（去掉反事实微调后 Traffic 事实 MSE 反而由 $0.27$ 降至 $0.24$）[^src-tadiff]。
@@ -322,6 +333,7 @@ UniCA 在多模态场景下的表现：
 - [[source-time-imm]] — Time-IMM 不规则异步多模态多变量时序基准（NeurIPS 2025 D&B）
 - [[doublecast]] · [[source-doublecast]] — CAF-7M 经验 CRPS 效用筛选语料与 Chronos DualT5 条件化基线（ICML 2026）
 - [[timesx]] · [[source-timesx]] — TimesX 19 域真实时钟无泄露多模态评测基准（cutoff 时间隔离 + 排序反转实证）
+- [[source-posttime]] — PostTime：基于 TimesFM-2.5 先验的预测后文本修订后训练配方（CoT-SFT 仅预测期筛选回退 + GRPO ImpRatio，NeurIPS 2026）
 - [[source-tadiff]] — TADiff：前向 DDIM 条件剥离归因 + DTTC 对比微调的文本反事实预测（含启发式条件与指标同源提醒）
 - [[doflow]] — DoFlow：已知因果 DAG 上的 CNF 溯因可识别反事实预测（结构化 SCM 对照）
 - [[source-whatif-tsf]] — What If TSF（WIT）：专家手工场景引导的多模态反事实方向基准
@@ -359,3 +371,4 @@ UniCA 在多模态场景下的表现：
 [^src-whatif-tsf]: [[source-whatif-tsf]]
 [^src-tadiff]: [[source-tadiff]]
 [^src-horai]: [[source-horai]]
+[^src-posttime]: [[source-posttime]]

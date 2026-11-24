@@ -291,6 +291,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-pir]] — PIR: Improving Time Series Forecasting via Instance-aware Post-hoc Revision，模型无关预测后识别-修订框架，误差估计识别失败实例 + 局部/全局上下文修订（NeurIPS 2025）
 - [[source-pn-train]] — PN-Train: perturbation-based pattern neuron detector + optimizer for urban time series forecasting, identifies and fine-tunes <10% neurons to boost low-frequency pattern accuracy, ICLR 2025
 - [[source-position-interpolation-2306-15595]] — Position Interpolation (PI)：把 RoPE 位置下标按 $s=L'/L$ 压回预训练区间扩窗，LLaMA 7B/13B 经 Pile 1000 步微调把 2048 扩到 32768、33B 到 16384、65B 到 8192，passkey 有效窗口 200 步后达标（Meta，arXiv:2306.15595v2）
+- [[source-posttime]] — PostTime：以冻结 TimesFM-2.5 为先验锚点，经仅预测期轨迹筛选 + 0/5 难例回退 `CoT-SFT` 与 `GRPO` ImpRatio 将文本预测后修订内化入 4B LLM 权重；主增益源自 Stage-1 SFT 配方、RL 仅微调 OOD 0.772→0.746，11 变量 OOD 上与 Gemini-3.1-Pro ENS（0.742）同级（NeurIPS 2026）
 - [[source-prdim]] — PRDIM: Missing Pattern Recognized Diffusion Imputation Model for Missing Not At Random (arXiv 2026)
 - [[source-predicting-the-future-by-retrieving-the-past-aaai2026]] — PFRP: Predicting the Future by Retrieving the Past, 检索增强单变量 TSF，GMB + PCL + K-medoids + 双门控 + 动态融合，AAAI 2026
 - [[source-pristi]] — PriSTI: A Conditional Diffusion Framework for Spatiotemporal Imputation (arXiv 2023 / ICDE 2023)

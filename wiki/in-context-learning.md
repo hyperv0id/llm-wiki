@@ -8,7 +8,7 @@ tags:
   - prompting
 created: 2026-06-09
 last_updated: 2026-11-24
-source_count: 5
+source_count: 6
 confidence: medium
 status: active
 ---
@@ -35,6 +35,8 @@ status: active
 
 在多模态预测后修订（post-forecasting revision）槽位上，[[timesx|TimesX]] 的 `TextRev-ICL` 与上述直接条件化主干的用法呈**跨槽位正交**关系[^src-timesx]。免训练的直接文本修订代理（`TextRev`）容易放大预测方差与尾部误差，整体弱于简单的等权集成 `AvgEns`；`TextRev-ICL` 则在推理上下文中为大语言模型提供历史修订示例，并显式加入「保守不改」的回退选项，从而抑制过度修订并超越等权集成表现[^src-timesx]。
 
+进一步沿这一分支形成**瓶颈接力 $\Delta$**：[[source-posttime|PostTime]]（NeurIPS 2026）将 `TextRev-ICL` 依赖推理期历史示例的免训练策略内化进 4B 小模型权重——先固定 [[timesfm|TimesFM-2.5]] 数值先验 $\tilde{y}$，经「隐藏真实 horizon 的仅预测期有效轨迹筛选 + $0/5$ 难例回退先验」`CoT-SFT` 与 `GRPO` 两阶段后训练，使模型不靠演示示例即可判别修正、维持或回退先验[^src-posttime]。相对免训练大模型集成，其代价是需两阶段训练与 5 采样筛选，且在 11 条 OOD 变量上仍与 `Gemini-3.1-Pro ENS`（$0.742$ vs $0.746$）处于同一水平[^src-posttime]。
+
 ## 序列原生多元时序与检索校准 ICL
 
 针对 [[tabpfn-ts|TabPFN-TS]] 需手工构造表格特征且延迟较高、而 [[tirex|TiRex]] 仅依托单序列 `sLSTM` 隐状态做「同词异构」上下文条件化的局面，[[baguan-ts|Baguan-TS]]（ICML 2026）在含协变量预测中引入了序列原生多示例 ICL[^src-baguan-ts]。它直接把目标历史、多元协变量与从归一化目标空间检索到的 $C$ 个近邻历史–未来片段（RBfcst）组织为四维张量 $[C{+}1, S, M{+}1, D]$，沿时间（带 RoPE）、变量、上下文三轴依次分解做自注意力；训练期还通过将上下文片段原样复制进 query 并施加自检索辅助损失（context overfitting），抑制高容量 ICL 模型输出坍缩为平滑均值[^src-baguan-ts]。
@@ -45,6 +47,7 @@ status: active
 | [[trace-as-state\|Trace as State]] | 同题第二遍推理输入端 | 同一道题的首轮推理轨迹文本 | 推理冻结 | 仅保留轨迹状态代理，隔离首轮答案[^src-trace-as-state] |
 | [[tirex\|TiRex]] | 单序列预测（隐状态递推） | 单条历史观测窗口与末尾缺失占位 | 推理冻结（需 CPM 预训练） | `sLSTM` 递推状态连续延续[^src-tirex] |
 | [[timesx\|TimesX (TextRev-ICL)]] | 预测后文本修订槽位 | 历史修订示例 + 四类真实时钟上下文 | 推理免训练 | 显式「保守不改」回退选项以抑制修订方差[^src-timesx] |
+| [[source-posttime\|PostTime]] | 预测后文本修订槽位（权重内化） | 隐藏历史预测期有效轨迹 + 0/5 难例回退采样 | 两阶段后训练（`CoT-SFT` + `GRPO`） | 先验锚定 + 0/5 难例显式回退至 TimesFM 先验[^src-posttime] |
 | [[baguan-ts\|Baguan-TS]] | 序列原生主干预测（单目标+多元协变量） | 归一化目标空间检索的 $C$ 条近邻历史–未来片段（RBfcst） | 推理冻结（原生 3D 预训练） | 训练期上下文过拟合自检索辅助损失防均值坍缩[^src-baguan-ts] |
 
 ## 与相关范式的关系
@@ -52,6 +55,7 @@ status: active
 - [[baguan-ts]] — 序列原生 3D 轴分解与目标空间近邻检索驱动的多示例协变量 ICL（区别于 TiRex 单序列隐状态条件化与 TabPFN-TS 表格特征转换）
 
 - [[timesx]] — `TextRev-ICL` 在预测后文本修订槽位引入历史修订示例与保守回退（跨槽位正交）
+- [[source-posttime]] — 从 `TextRev-ICL` 免训练上下文修订到 `CoT-SFT` + `GRPO` 权重内化的瓶颈接力 $\Delta$（NeurIPS 2026）
 - [[tirex]] — 以单序列历史窗口与连续块掩码驱动零样本预测（同词异构的时序上下文条件化）
 - [[weather-prompt]] — WeatherGFM 用以指定 ICL 任务的三类视觉提示格式
 - [[mixed-modal-masked-image-modeling]] — 支撑视觉 ICL 的统一掩码重建目标
@@ -66,3 +70,4 @@ status: active
 [^src-tirex]: [[source-tirex]]
 [^src-timesx]: [[source-timesx]]
 [^src-baguan-ts]: [[source-baguan-ts]]
+[^src-posttime]: [[source-posttime]]
