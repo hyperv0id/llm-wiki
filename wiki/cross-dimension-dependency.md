@@ -7,8 +7,8 @@ tags:
   - cross-dimension
   - dependency
 created: 2026-05-30
-last_updated: 2026-05-31
-source_count: 5
+last_updated: 2026-11-24
+source_count: 7
 confidence: medium
 status: active
 ---
@@ -48,7 +48,21 @@ Cross-dimension dependency（跨维度依赖）是多变量时间序列 (MTS) �
 
 ### CPiRi：时空解耦的排列不变框架
 
-[[cpiri|CPiRi]] (ICLR 2026) 代表了 CI-CD 融合的新范式——通过时空解耦架构将 CI 和 CD 分配到不同组件，而非在单个组件内折中 [^src-cpiri]。冻结局模型承担 CI 角色（逐通道独立提取时间特征），可训练的空间模块承担 CD 角色（通过 multi-head self-attention 学习内容驱动的跨通道交互）。训练时通过随机通道打乱迫使空间模块学习内容驱动的排列不变关系推理，而 CD 模型因依赖固定位置编码而在此测试中崩溃（Informer 错误率增加 >400%）[^src-cpiri]。这种解耦设计同时实现了 O(T² + C²) 的计算复杂度，比耦合方法的 O((T×C)²) 更具扩展性 [^src-cpiri]。
+[[cpiri|CPiRi]] (ICLR 2026) 代表了 CI-CD 融合的新范式——通过时空解耦架构将 CI 和 CD 分配到不同组件，而非在单个组件内折中 [^src-cpiri]。冻结局模型承担 CI 角色（逐通道独立提取时间特征），可训练的空间模块承担 CD 角色（通过 multi-head self-attention 学习内容驱动的跨通道交互）。训练时通过随机通道打乱迫使空间模块学习内容驱动的排列不变关系推理，而 CD 模型因依赖固定位置编码而在此测试中崩溃（Informer 错误率增加 >400%）[^src-cpiri]。这种解耦设计同时实现了 $O(T^2 + C^2)$ 的计算复杂度，比耦合方法的 $O((T\times C)^2)$ 更具扩展性 [^src-cpiri]。
+
+### Timer-XL：展平二维因果时空注意力
+
+[[timer-xl|Timer-XL]]（ICLR 2025）与 [[itransformer|iTransformer]]、[[cpiri|CPiRi]] 构成**同槽位互斥**与**瓶颈接力 $\Delta$**对照：它将所有变量的非重叠时间块按时间优先展平为 $NT$ 个 token，在单流因果解码器内用时序 RoPE、变量轴置换等变标量偏置 $(u, v)$ 与 Kronecker 积掩码 $M = C \otimes T$ 同时建模跨时间与跨维度依赖（并借变量图 $C$ 兼容协变量输入）[^src-timer-xl]。这保留了 patch 级因果时序、避免了 iTransformer 将整条历史压成单 token 的信息损失，但理论计算复杂度升至 $\mathcal{O}(N^2 T^2)$；[[cpiri|CPiRi]] 在 8,600 通道 LargeST CA 上实测 Timer-XL 发生 OOM，反向印证了超高维下时空解耦的必要性[^src-cpiri]。
+
+## 正交设计决策轴对照
+
+| 代表方法 | Token 粒度 | 跨维度交互方式 | 时序建模与因果性 | 变量置换对称性 | 注意力理论复杂度 |
+|---|---|---|---|---|---|
+| [[patchtst\|PatchTST]] | 单变量 Patch | 无（通道独立 CI） | 双向编码器，注意力逐通道独立[^src-patchtst] | 平凡等变（无跨通道） | $\mathcal{O}(N T^2)$ |
+| [[crossformer\|Crossformer]] | DSW 2D Patch | 显式跨维度 Router 注意力 | 双向两阶段编码器[^src-crossformer-2023] | 否（依赖位置编码） | $\mathcal{O}(T^2 + D^2 L_{\text{seg}})$ |
+| [[itransformer\|iTransformer]] | 整序列 Variate Token | 变量维自注意力 | FFN 隐式映射时间[^src-itransformer] | 等变（无位置编码） | $\mathcal{O}(N^2)$ |
+| [[timer-xl\|Timer-XL]] | 多变量展平 Patch | 单流统一注意力 + 偏置 $(u,v)$ + 图掩码 $C$ | 因果解码器（$M = C \otimes T$）[^src-timer-xl] | 等变（双偏置 $u,v$） | $\mathcal{O}(N^2 T^2)$ |
+| [[cpiri\|CPiRi]] | 时空解耦通道表示 | 冻结时序编码 + 排列不变空间注意力 | 冻结编码器提取时间[^src-cpiri] | 等变（通道打乱正则） | $\mathcal{O}(T^2 + N^2)$ |
 
 ## 与 Cross-Time Dependency 的关系
 
@@ -68,6 +82,7 @@ MTS 预测需要同时建模两种依赖 [^src-crossformer-2023]：
 - [[channel-independence]] — CI 策略（不建模跨维度依赖）
 - [[cvpe]] — CI + CD 折中方案
 - [[cpiri]] — CI+CD 时空解耦融合框架 (ICLR 2026)
+- [[timer-xl]] — 多变量展平因果解码器（同槽位单流耦合对照，ICLR 2025）
 - [[two-stage-attention]] — Crossformer 的两阶段注意力
 - [[router-mechanism-for-cross-dimension]] — 降低跨维度注意力复杂度的路由机制
 - [[itransformer]] — 反转范式：attention 作用于 variate token 维度
@@ -78,3 +93,5 @@ MTS 预测需要同时建模两种依赖 [^src-crossformer-2023]：
 [^src-cvpe-2025]: [[source-cvpe-2025]]
 [^src-itransformer]: [[source-itransformer]]
 [^src-cpiri]: [[source-cpiri]]
+[^src-patchtst]: [[source-patchtst]]
+[^src-timer-xl]: [[source-timer-xl]]

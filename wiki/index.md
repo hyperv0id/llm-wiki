@@ -400,6 +400,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-timedit]] — TimeDiT: General-purpose Diffusion Transformers for Time Series Foundation Model (KDD 2025)
 - [[source-timegrad]] — TimeGrad: autoregressive denoising diffusion for probabilistic time series forecasting (ICML 2021)
 - [[source-timemixer]] — TimeMixer: decomposable multiscale mixing for time series forecasting (ICLR 2024)
+- [[source-timer-xl]] — Timer-XL: 统一长上下文时间序列预测解码器（TimeAttention = 时序 RoPE + 变量偏置 u,v + Kronecker 因果掩码 M=C⊗T），ICLR 2025（清华大学）
 - [[source-timesfm]] — TimesFM: Decoder-Only Foundation Model for Time-Series Forecasting (ICLR 2024)
 - [[source-timesnet]] — TimesNet: temporal 2D-variation modeling for general time series analysis (ICLR 2023)
 - [[source-timexer]] — TimeXer: patch-wise self-attention + variate-wise cross-attention 融合内生 patch 与外生 variate token，NeurIPS 2024 (Tsinghua)
@@ -670,6 +671,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[timedit]] — TimeDiT, general-purpose diffusion transformer for time series foundation model (KDD 2025)
 - [[timegrad]] — TimeGrad, first diffusion model for multivariate probabilistic time series forecasting (ICML 2021)
 - [[timemixer]] — TimeMixer, fully MLP-based multiscale mixing for long-term and short-term forecasting (ICLR 2024)
+- [[timer-xl]] — Timer-XL，多变量长上下文因果解码器（TimeAttention = 时序 RoPE + 变量偏置 u,v + Kronecker 因果掩码），统一单/多变量与协变量预测（ICLR 2025）
 - [[timesfm]] — TimesFM, decoder-only foundation model for time-series forecasting (ICLR 2024)
 - [[timesnet]] — TimesNet, task-general time series foundation model (ICLR 2023)
 - [[timi]] — TiMi: LLM + MMoE 插件引导时序预测

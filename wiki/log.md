@@ -4632,3 +4632,10 @@ Tier 1 入库（NeurIPS 2025）。TiRex 以 35M 纯 sLSTM 残差解码块（彻�
 创建的页面：[[source-tirex]], [[tirex]]
 更新的页面：[[zeus]]（补 GIFT-Eval 97 vs 81 项实证复现对齐，source_count 1→2）, [[timesfm]]（补同槽位互斥对照并清理式坐标告警，source_count 9→10）, [[chronos]]（补同数据重训 Chronos-Bolt 对照，source_count 8→9）, [[ar-vs-nar-decoding]]（矩阵增补 CPM 占位延续并精简长列表为演进分析，source_count 4→5）, [[patchtst]]（补长程零样本超越对照，source_count 8→9）, [[in-context-learning]]（补时序上下文条件化同词异构辨析并清理坐标告警，source_count 2→3）, [[index]]
 ingest 报告：[[ingest-reports/2026-11-24-tirex|WHY 报告]]
+
+
+## [2026-11-24] ingest | Timer-XL: Long-Context Transformers for Unified Time Series Forecasting
+Tier 1 入库（ICLR 2025）。Timer-XL 将多变量与协变量的非重叠时间块按时间优先展平为统一上下文，在因果解码器注意力中以时序 RoPE 与头级双标量偏置 $(u,v)$ 保变量置换等变，并用变量图 $C$ 与下三角时序掩码 $T$ 的 Kronecker 积 $M=C\otimes T$ 统一单/多变量、协变量及零样本预测；FlashAttention 将显存压至 $\mathcal{O}(NT)$，高维多变量较 Timer 降错约 $6\%\text{–}13\%$，ERA5-MS 与 EPF 消融证实显式跨变量、因果解码与外生因果掩码均必要。缺口：月/年超长单变量增益放缓或退化、理论算力仍为 $\mathcal{O}(N^2 T^2)$（已被 CPiRi 在 8,600 通道上实测 OOM 印证）、正文缺 $(u,v)$ 与 RoPE 独立消融。
+创建的页面：[[source-timer-xl]], [[timer-xl]]
+更新的页面：[[cross-dimension-dependency]]（增补展平二维因果注意力并建正交决策轴矩阵，source_count 5→7）, [[ar-vs-nar-decoding]]（矩阵增补多变量块自回归，source_count 5→6）, [[itransformer]]（补同槽位互斥对照，source_count 2→3）, [[patchtst]]（补多变量因果扩展对照，source_count 9→10）, [[cpiri]]（补 OOM 实证复现对齐与链接，source_count 1→2）, [[dits]]（补同槽位注意力消融对照，source_count 1→2）, [[timesfm]]（补单变量向多变量 AR 瓶颈接力对照，source_count 10→11）, [[index]]
+ingest 报告：[[ingest-reports/2026-11-24-timer-xl|WHY 报告]]

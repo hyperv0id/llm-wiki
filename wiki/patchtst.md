@@ -11,7 +11,7 @@ tags:
   - ICLR-2023
 created: 2026-05-30
 last_updated: 2026-11-24
-source_count: 9
+source_count: 10
 confidence: medium
 status: active
 ---
@@ -109,6 +109,7 @@ PatchTST 是 LSTF 领域的关键转折点 [^src-patchtst]：
 - **后处理插件**：[[pir|PIR]]（Liu et al., NeurIPS 2025）以 PatchTST 为 channel-independent 骨干测试后处理修订，论文报告 48 个实验设置平均 MSE 降低 8.99%（Table 1）[^src-pir]
 - **与 [[zeus|Zeus]] 的对照**：点预测上 Zeus（ICML 2026）零样本在多数数据集上超过 full-shot PatchTST（Zeus 表 1）；异常检测（UCR Anomaly Archive，adjusted F1）PatchTST 0.877 vs Zeus 0.900（实证结果，Zeus 表 9）[^src-2607-01918]
 - **与 [[tirex|TiRex]] 的对照**：在 GiftEval-ZS（81 项设置）长程概率预测上，35M 纯 sLSTM 模型 TiRex（NeurIPS 2025）首次零样本超越监督训练的 PatchTST（实证对照）[^src-tirex]
+- **多变量因果扩展**：[[timer-xl|Timer-XL]]（ICLR 2025）——**瓶颈接力 $\Delta$**，针对 PatchTST 的 Encoder-only 固定输出头与通道独立局限，改为因果 Decoder-only 并按 $M = C \otimes T$ 展平跨变量与协变量时间块，支持变长滚动并在零样本与跨站预测上超越 PatchTST[^src-timer-xl]
 - **核心概念**：[[patch-based-tokenization]], [[channel-independence]], [[instance-normalization]], [[lstf]]
 - **自监督/预训练**：[[mae|MAE]], [[videomae]], [[timesfm|TimesFM]], [[chronos]]
 
@@ -121,3 +122,4 @@ PatchTST 是 LSTF 领域的关键转折点 [^src-patchtst]：
 [^src-2607-01918]: [[source-2607-01918]]
 [^src-witran-jia-2023]: [[source-witran-jia-2023]]
 [^src-tirex]: [[source-tirex]]
+[^src-timer-xl]: [[source-timer-xl]]

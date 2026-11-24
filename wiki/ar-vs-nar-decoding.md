@@ -9,7 +9,7 @@ tags:
   - foundation-model
 created: 2026-07-13
 last_updated: 2026-11-24
-source_count: 5
+source_count: 6
 confidence: medium
 status: active
 ---
@@ -25,6 +25,7 @@ status: active
 | 方案 | 状态演化与编码 | 误差与不确定性传递 | 代表模型 |
 |------|------|------|------|
 | **Autoregressive (AR)** | $h_t = f_\phi(x_{t-1}, c_t, h_{t-1})$，逐步回喂 | 可捕获递推与强季节性；回喂点估计切断分布传递并累积长程误差 | [[deepar\|DeepAR]]、[[timegrad\|TimeGrad]]、[[timesfm\|TimesFM]]、[[chronos\|Chronos]] |
+| **多变量块自回归（Multivariate Next Token）** | 展平 $NT$ 块与 $M=C\otimes T$ 因果掩码同步回看全变量历史 | 支持变长滚动与外生协变量；理论算力 $\mathcal{O}(N^2 T^2)$，超高维易 OOM | [[timer-xl\|Timer-XL]]（瓶颈接力 $\Delta$：从单变量 AR 扩至多变量/协变量） |
 | **Non-autoregressive (NAR)** | $h_{t+1:t+T} = f_\phi(x_{t-L:t}, c_{t-L:t+T})$ 一次生成 | 并行无逐步反馈；长程概率需依赖全局结构或迭代去噪 | [[patchtst\|PatchTST]]、[[csdi\|CSDI]]、[[manf\|MANF]]、MOIRAI |
 | **占位式状态延续（CPM + 循环）** | 历史因果递推 $h_t$，未来窗拼缺失占位 $M=1$ 推进 | 免除点估计回喂，保留隐状态与分位数不确定性连续传递；依赖纯 sLSTM 状态记忆 | [[tirex\|TiRex]]（瓶颈接力 $\Delta$：缓解 AR 回喂失真与长程退化） |
 
@@ -32,7 +33,7 @@ status: active
 
 长程点预测早期路线（如 Informer、Autoformer、[[patchtst|PatchTST]]、iTransformer）几乎一致转向 NAR，以一次性前向规避长 horizon 误差累积[^src-probts]。在精确似然流上，[[manf|MANF]] 以 NAR 结合条件 RealNVP 替代自回归流，在加倍预测长度与缺失噪声压力下减小 CRPS/MSE 衰减并提速[^src-maf]；视觉集合预测的 [[detr|DETR]] 也以并行 object queries 取代自回归解码作为跨领域对照锚点[^src-detr]。
 
-然而在短程概率与零样本基础模型中，AR 与 NAR 的张力并未消失：[[deepar|DeepAR]] 与 [[timegrad|TimeGrad]] 等 AR 路线在短程与强季节场景仍具竞争力，而 [[timesfm|TimesFM]]、[[chronos|Chronos]] 等基础模型同样延续 AR 分块或逐点回喂[^src-probts][^src-deepar]。针对「既保留因果状态追踪、又避免回喂点估计切断不确定性」的缺口，[[tirex|TiRex]] 用纯 `sLSTM` 替代注意力，并在预训练随机遮蔽连续未来块、推理时以缺失占位块延续状态，实证表明去掉多块延续而退化为自回归滚动会令长程 CRPS 明显恶化[^src-tirex]。
+然而在短程概率与零样本基础模型中，AR 与 NAR 的张力并未消失：[[deepar|DeepAR]] 与 [[timegrad|TimeGrad]] 等 AR 路线在短程与强季节场景仍具竞争力，而 [[timesfm|TimesFM]]、[[chronos|Chronos]] 等基础模型同样延续 AR 分块或逐点回喂[^src-probts][^src-deepar]。针对单变量 AR 基础模型丢失跨变量耦合、Encoder-only 难做变长滚动的缺口，[[timer-xl|Timer-XL]] 将自回归块预测扩展到展平的多变量与协变量上下文（$M = C \otimes T$），在维持变长滚动能力的同时实现跨通道预测[^src-timer-xl]。针对「既保留因果状态追踪、又避免回喂点估计切断不确定性」的缺口，[[tirex|TiRex]] 用纯 `sLSTM` 替代注意力，并在预训练随机遮蔽连续未来块、推理时以缺失占位块延续状态，实证表明去掉多块延续而退化为自回归滚动会令长程 CRPS 明显恶化[^src-tirex]。
 
 ## ProbTS 实证规律
 
@@ -56,6 +57,7 @@ status: active
 - [[deepar]] — 全局共享 AR-RNN + 参数化似然
 - [[csdi]] — NAR 条件扩散（插补/预测）
 - [[timesfm]] / [[chronos]] — AR 系基础模型
+- [[timer-xl]] — 多变量展平块自回归（瓶颈接力 $\Delta$：从单变量 AR 扩展到跨变量与协变量预测）
 - [[tirex]] — 纯 sLSTM + 连续块掩码（CPM）占位延续解码（瓶颈接力 $\Delta$：免去点估计回喂）
 - [[instance-normalization]]
 - [[generative-time-series-forecasting]]
@@ -68,3 +70,4 @@ status: active
 [^src-deepar]: [[source-deepar]]
 [^src-detr]: [[source-detr]]
 [^src-tirex]: [[source-tirex]]
+[^src-timer-xl]: [[source-timer-xl]]

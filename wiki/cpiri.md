@@ -8,8 +8,8 @@ tags:
   - channel-processing
   - architecture
 created: 2026-05-31
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-11-24
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -44,7 +44,7 @@ CPiRi achieves three rare properties simultaneously [^src-cpiri]:
 
 1. **Permutation invariance at scale**: Near-zero degradation under channel shuffling (∆WAPE < 0.25%) while most CD models exceed 100% error increase
 2. **Inductive generalization to unseen channels**: Trained on only 25-50% of channels, generalizes to the full set without retraining, with marginal accuracy loss (~2%)
-3. **Practical efficiency**: O(T² + C²) complexity via decoupling vs coupled approaches' O((T×C)²); runs on 8GB GPU for 8,600 channels where Timer-XL hits OOM
+3. **Practical efficiency**: O(T² + C²) complexity via decoupling vs coupled approaches' O((T×C)²); runs on 8GB GPU for 8,600 channels where [[timer-xl|Timer-XL]] hits OOM
 
 ## Relationship to Other Approaches
 
@@ -79,5 +79,7 @@ iTransformer achieves CPI through its inverted architecture (attention on variat
 - [[itransformer|iTransformer]]
 - [[patchtst|PatchTST]]
 - [[mtgnn|MTGNN]]
+- [[timer-xl|Timer-XL]] — **瓶颈接力 $\Delta$ / 实证复现对齐**：Timer-XL 采用 $\mathcal{O}(N^2 T^2)$ 展平因果注意力（FlashAttention 显存 $\mathcal{O}(NT)$）[^src-timer-xl]；CPiRi 将其时空耦合拆解为 $\mathcal{O}(T^2 + C^2)$，在 8,600 通道 CA 基准上避免了 Timer-XL 的 OOM[^src-cpiri]
 
 [^src-cpiri]: [[source-cpiri]]
+[^src-timer-xl]: [[source-timer-xl]]
