@@ -10,8 +10,8 @@ tags:
   - self-supervised
   - ICLR-2023
 created: 2026-05-30
-last_updated: 2026-10-25
-source_count: 8
+last_updated: 2026-11-24
+source_count: 9
 confidence: medium
 status: active
 ---
@@ -108,6 +108,7 @@ PatchTST 是 LSTF 领域的关键转折点 [^src-patchtst]：
 - **多模态改造**：[[tess|TESS]]（arXiv:2603.12664v2）直接以 PatchTST 为 backbone，输入前拼接 4 个离散时序原语（mean shift/volatility/shape/lag）类别 embedding 并附加门控 BCE 监督，四数据集全面超过原版 PatchTST（Bitcoin MSE 2.2726 vs 3.2456）；[[timi|TiMi]] 则用 MMoE 替换 FFN——两者同为 PatchTST 的多模态改造样板[^src-tess]
 - **后处理插件**：[[pir|PIR]]（Liu et al., NeurIPS 2025）以 PatchTST 为 channel-independent 骨干测试后处理修订，论文报告 48 个实验设置平均 MSE 降低 8.99%（Table 1）[^src-pir]
 - **与 [[zeus|Zeus]] 的对照**：点预测上 Zeus（ICML 2026）零样本在多数数据集上超过 full-shot PatchTST（Zeus 表 1）；异常检测（UCR Anomaly Archive，adjusted F1）PatchTST 0.877 vs Zeus 0.900（实证结果，Zeus 表 9）[^src-2607-01918]
+- **与 [[tirex|TiRex]] 的对照**：在 GiftEval-ZS（81 项设置）长程概率预测上，35M 纯 sLSTM 模型 TiRex（NeurIPS 2025）首次零样本超越监督训练的 PatchTST（实证对照）[^src-tirex]
 - **核心概念**：[[patch-based-tokenization]], [[channel-independence]], [[instance-normalization]], [[lstf]]
 - **自监督/预训练**：[[mae|MAE]], [[videomae]], [[timesfm|TimesFM]], [[chronos]]
 
@@ -119,3 +120,4 @@ PatchTST 是 LSTF 领域的关键转折点 [^src-patchtst]：
 [^src-pir]: [[source-pir]]
 [^src-2607-01918]: [[source-2607-01918]]
 [^src-witran-jia-2023]: [[source-witran-jia-2023]]
+[^src-tirex]: [[source-tirex]]

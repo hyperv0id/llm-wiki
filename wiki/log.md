@@ -4626,3 +4626,9 @@ Tier 2 入库（NeurIPS 2025 D&B 基准工作，无新算子或理论）。针�
 创建的页面：[[source-time-imm]]
 更新的页面：[[multimodal-time-series-forecasting]]（数据集节补 Time-IMM 与基准对照表并清理禁用字符，source_count 20→21）, [[multimodal-semantic-understanding]]（融合策略与过滤表补 IMM-TSF 与五句摘要，source_count 6→7）, [[constrained-text-fusion]]（谱系表补异步基准抑噪实证对齐，source_count 4→5）, [[source-time-mmd]]（局限与谱系位置补瓶颈接力 Δ，source_count 2→3）, [[index]]
 ingest 报告：[[ingest-reports/2026-11-24-time-imm|WHY 报告]]
+
+## [2026-11-24] ingest | TiRex: Zero-Shot Forecasting Across Long and Short Horizons with Enhanced In-Context Learning
+Tier 1 入库（NeurIPS 2025）。TiRex 以 35M 纯 sLSTM 残差解码块（彻底删去 mLSTM 与注意力）配合连续块掩码（CPM）预训练及未来占位延续，免去逐窗自回归点估计回喂；在 GiftEval-ZS（剔除重叠后的 81 项）与 Chronos-ZS（27 集）概率指标及排名居首，长程首次零样本超越监督 PatchTST/TFT，推理较 Chronos-Bolt-Base 快 4 倍以上、TimesFM-2.0 快 11 倍以上；消融证实纯 sLSTM 与多块占位均关键。缺口：仅支持单变量、GiftEval-ZS 排除 16/97 项、超参未精调、深度与宽度细节仅见附录。
+创建的页面：[[source-tirex]], [[tirex]]
+更新的页面：[[zeus]]（补 GIFT-Eval 97 vs 81 项实证复现对齐，source_count 1→2）, [[timesfm]]（补同槽位互斥对照并清理式坐标告警，source_count 9→10）, [[chronos]]（补同数据重训 Chronos-Bolt 对照，source_count 8→9）, [[ar-vs-nar-decoding]]（矩阵增补 CPM 占位延续并精简长列表为演进分析，source_count 4→5）, [[patchtst]]（补长程零样本超越对照，source_count 8→9）, [[in-context-learning]]（补时序上下文条件化同词异构辨析并清理坐标告警，source_count 2→3）, [[index]]
+ingest 报告：[[ingest-reports/2026-11-24-tirex|WHY 报告]]

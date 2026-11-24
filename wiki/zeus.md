@@ -9,8 +9,8 @@ tags:
   - multi-scale
   - icml-2026
 created: 2026-08-06
-last_updated: 2026-10-26
-source_count: 1
+last_updated: 2026-11-24
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -83,7 +83,7 @@ ETTh1/ETTh2/ETTm1/ETTm2、ECL、Weather，horizon {96, 192, 336, 720}，context 
 
 ### 概率预测（论文表 2）
 
-GIFT-Eval：23 数据集、144,000 序列、177M 点，97 任务（55 短期/21 中期/21 长期）[^src-2607-01918]。Zeus 的 MASE 0.693、CRPS 0.480，在表列出的零样本预训练模型中均最低；对照（MASE/CRPS）：Chronos-2 0.698/0.485、TimesFM2.5 0.705/0.490、Xihe 0.701/0.488、TiRex 0.716/0.488、FlowState 0.726/0.502、Moirai2 0.728/0.516、Kairos 0.742/0.548、Toto 0.750/0.517、Sundial 0.750/0.559；监督 PatchTST 0.849/0.587、DLinear 1.061/0.846、Seasonal Naive 1.000/1.000[^src-2607-01918]。
+GIFT-Eval：23 数据集、144,000 序列、177M 点，97 任务（55 短期/21 中期/21 长期）[^src-2607-01918]。Zeus 的 MASE 0.693、CRPS 0.480，在表列出的零样本预训练模型中均最低；对照（MASE/CRPS）：Chronos-2 0.698/0.485、TimesFM2.5 0.705/0.490、Xihe 0.701/0.488、[[tirex|TiRex]] 0.716/0.488、FlowState 0.726/0.502、Moirai2 0.728/0.516、Kairos 0.742/0.548、Toto 0.750/0.517、Sundial 0.750/0.559；监督 PatchTST 0.849/0.587、DLinear 1.061/0.846、Seasonal Naive 1.000/1.000[^src-2607-01918]。需要注意**实证复现对齐口径**：[[tirex|TiRex]] 原文因剔除 16 项重叠设置而仅在 81 项 GiftEval-ZS 子集上报告排名第一[^src-tirex]，而 Zeus 论文则在完整 97 项集合上报告自身领先[^src-2607-01918]。
 
 ### 插补（论文表 3/8）
 
@@ -119,8 +119,9 @@ UEA 26 个等长数据集[^src-2607-01918]。tuning-free 设置下 1-NN 平均�
 - [[channel-independence]] — 多变量处理策略
 - [[instance-normalization]] — RevIN 去尺度变化
 - [[time-moe]] — 效率实测对比对象 Time-MoE
-- [[timesfm]] / [[chronos]] / [[sundial]] — 概率预测对照的 TSFM
+- [[timesfm]] / [[chronos]] / [[sundial]] / [[tirex]] — 概率预测对照的 TSFM（其中 TiRex 为纯 sLSTM + CPM 路线，与 Zeus 的多尺度掩码重建形成同槽位架构与 97/81 项 GIFT-Eval 口径对照）
 - [[patchtst]] / [[timesnet]] — 监督对照方法
 - [[tabpfn-ts]] / [[time-indexed-foundation-model]] — 与掩码重建不同的插补范式（时间索引 + in-context 回归），Zeus 走掩码重建路线
 
 [^src-2607-01918]: [[source-2607-01918]]
+[^src-tirex]: [[source-tirex]]

@@ -7,8 +7,8 @@ tags:
   - decoder-only
   - iclr2024
 created: 2026-04-29
-last_updated: 2026-08-19
-source_count: 9
+last_updated: 2026-11-24
+source_count: 10
 confidence: high
 status: active
 ---
@@ -63,6 +63,7 @@ TimesFM 可以通过 UniCA 框架适配到协变量感知预测任务：
 - [[probts|ProbTS]] — 将 TimesFM 作为 **AR 解码基础模型** 纳入零样本分析：短 horizon 有竞争力，长 horizon 相对 MOIRAI 等 NAR 基础模型劣势扩大（误差累积）[^src-probts]
 - [[moirai-moe|Moirai-MoE]] — ICML 2025 的 MoE 时间序列基础模型。在 10 个零样本数据集上，Moirai-MoE-B (86M activated) 在 CRPS 总评（Avg all: 0.478）上超越 TimesFM (0.488)，排除 Electricity/Solar 含泄露数据集后 Avg non-leak 两者持平（0.439 vs 0.439）。Moirai-MoE-S (11M) 则在 Solar、Power、ETT2、Traffic 上 CRPS 优于 TimesFM，但总体 Avg 不及[^src-moirai-moe]
 - [[ts-memory]] — TS-Memory (KDD 2026)：以 TimesFM 为冻结 backbone 验证参数记忆蒸馏，ETTm2 上 MSE 降 16.0%、Weather 降 7.6%[^src-ts-memory-time-series-foundation-models-kdd26]
+- [[tirex]] — **同槽位互斥对照**：TiRex (NeurIPS 2025) 用 35M 纯 sLSTM + 连续块掩码（CPM）替换 Transformer 注意力与自回归点估计回喂，在 GiftEval-ZS（81 项设置）与 Chronos-ZS 上排名居首，且推理速度较 TimesFM-2.0 快 11 倍以上[^src-tirex]
 
 ## DynaMix 对比
 
@@ -75,7 +76,7 @@ TimesFM 可以通过 UniCA 框架适配到协变量感知预测任务：
 
 ## TimesFMX（协变量适配）
 
-[[chronosx|ChronosX]] 将同一 IIB/OIB 式适配推广到 patch 输入与点预测骨干，得到 **TimesFMX**：协变量与目标同步 patch 后进注入块；OIB 在点预测 \(\hat z_t\) 上加残差（式 6）。合成/真实评测中 TimesFMX 相对零样本 TimesFM 明显受益，但真实集聚合 WQL 通常仍落后 ChronosX[^src-chronosx]。
+[[chronosx|ChronosX]] 将同一 IIB/OIB 式适配推广到 patch 输入与点预测骨干，得到 **TimesFMX**：协变量与目标同步 patch 后进注入块；OIB 在点预测 $\hat z_t$ 上加残差。合成/真实评测中 TimesFMX 相对零样本 TimesFM 明显受益，但真实集聚合 WQL 通常仍落后 ChronosX[^src-chronosx]。
 
 ---
 
@@ -90,3 +91,4 @@ TimesFM 可以通过 UniCA 框架适配到协变量感知预测任务：
 [^src-moirai-moe]: [[source-moirai-moe]]
 [^src-chronosx]: [[source-chronosx]]
 [^src-ts-memory-time-series-foundation-models-kdd26]: [[source-ts-memory-time-series-foundation-models-kdd26]]
+[^src-tirex]: [[source-tirex]]

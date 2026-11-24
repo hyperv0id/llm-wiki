@@ -405,6 +405,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-timexer]] — TimeXer: patch-wise self-attention + variate-wise cross-attention 融合内生 patch 与外生 variate token，NeurIPS 2024 (Tsinghua)
 - [[source-timi]] — TiMi: LLM + MMoE 路由引导时序预测（arXiv:2602.21693）
 - [[source-tips]] — TIPS: transformer with inductive prior synthesis for financial forecasting
+- [[source-tirex]] — TiRex: 纯 sLSTM + 连续块掩码（CPM）零样本长短程概率预测基础模型（35M 参数，NeurIPS 2025）
 - [[source-tosea-looped-transformer]] — Tosea.ai 博客：looped transformer 科普 + Huginn 复述 + 2026-09 关于 OpenAI Astra 使用 recurrent depth 的报道与可监督性争论（二手，confidence low）
 - [[source-tpllm]] — TPLLM: A Traffic Prediction Framework Based on Pretrained Large Language Models (arXiv 2024), 冻结 GPT-2 + LoRA Q/K (0.95% 参数), PeMS04/08 few-shot 退化幅度最小
 - [[source-tqn]] — TQNet: Temporal Query Network for efficient multivariate forecasting (ICML 2025)
@@ -673,6 +674,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[timesnet]] — TimesNet, task-general time series foundation model (ICLR 2023)
 - [[timi]] — TiMi: LLM + MMoE 插件引导时序预测
 - [[tips]] — TIPS, Transformer with Inductive Prior Synthesis for financial forecasting
+- [[tirex]] — TiRex：纯 sLSTM 残差解码块 + 连续块掩码（CPM）占位延续的零样本概率时序基础模型（35M 参数，NeurIPS 2025）
 - [[tqn]] — TQNet, Temporal Query Network for efficient multivariate forecasting (ICML 2025)
 - [[trace]] — TRACE, first multimodal time-series retriever with channel-level alignment + dual-level hard negative mining (NeurIPS 2025)
 - [[trafficstream]] — TrafficStream, first CSTF framework with historical data replay + parameter smoothing (IJCAI 2021)

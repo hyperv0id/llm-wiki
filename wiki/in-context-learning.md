@@ -7,8 +7,8 @@ tags:
   - few-shot
   - prompting
 created: 2026-06-09
-last_updated: 2026-09-13
-source_count: 2
+last_updated: 2026-11-24
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -23,12 +23,17 @@ status: active
 
 ## 同题跨遍反馈与少样本演示
 
-[[trace-as-state|Trace as State]] 的已评估实现同样冻结模型，但提供给第二遍的文本来自模型对**同一道题**的首轮推理，而不是其他题目的 input–output 演示。作者把这些可能有错的轨迹当作 textual state proxy，比较 `[T,x,q]` 与 `[x,T,q]`；单独返回的首轮可见答案不放入 `T`（§3、Appendix C）。[^src-trace-as-state]
+[[trace-as-state|Trace as State]] 的已评估实现同样冻结模型，但提供给第二遍的文本来自模型对**同一道题**的首轮推理，而不是其他题目的 input–output 演示。作者把这些可能有错的轨迹当作 textual state proxy，比较 `[T,x,q]` 与 `[x,T,q]`；单独返回的首轮可见答案不放入 `T`[^src-trace-as-state]。
 
 [INFERENCE] 这里适合沿“推理时用上下文携带信息”的维度建立联系，而不宜把所有文本反馈都称作 few-shot demonstration。是否需要训练、文本来自哪里、文本何时能参与原文表示，是三个应分别说明的设计选择。[^src-weathergfm][^src-trace-as-state]
 
+## 时序上下文条件化与隐状态延续
+
+在单变量时序预测语境下，[[tirex|TiRex]] 也使用「上下文学习（in-context learning）」一词，但其机制属于**同词异构用法**：不构造多条示例的输入–输出演示对，而是依靠纯 `sLSTM` 解码器追踪单条历史窗口中的循环状态，并在预训练中结合连续块掩码（CPM）及幅值调制、截断、周期尖峰三项增强，使模型在推理期只需凭单序列历史上下文与末尾缺失占位即可零样本泛化至长短不同预测窗[^src-tirex]。
+
 ## 与相关范式的关系
 
+- [[tirex]] — 以单序列历史窗口与连续块掩码驱动零样本预测（同词异构的时序上下文条件化）
 - [[weather-prompt]] — WeatherGFM 用以指定 ICL 任务的三类视觉提示格式
 - [[mixed-modal-masked-image-modeling]] — 支撑视觉 ICL 的统一掩码重建目标
 - [[historical-in-context-learning]] — 检索历史范例作为 in-context 指导的具体技术变体
@@ -39,3 +44,4 @@ status: active
 
 [^src-weathergfm]: [[source-weathergfm]]
 [^src-trace-as-state]: [[source-trace-as-state]]
+[^src-tirex]: [[source-tirex]]

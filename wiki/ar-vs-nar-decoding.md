@@ -8,8 +8,8 @@ tags:
   - decoding
   - foundation-model
 created: 2026-07-13
-last_updated: 2026-08-30
-source_count: 4
+last_updated: 2026-11-24
+source_count: 5
 confidence: medium
 status: active
 ---
@@ -18,23 +18,21 @@ status: active
 
 **AR vs NAR decoding** 是 [[probts|ProbTS]] 显式区分的核心方法决策之一：给定历史 $x_{t-L:t}$ 与协变量，模型如何产生多步未来 $x_{t+1:t+T}$[^src-probts]。
 
-## 形式化
+## 形式化与决策轴对照
 
-设编码器 $f_\phi$ 产生隐状态 $h$，预测头 $p_\theta$ 输出点估计或条件分布采样[^src-probts]：
+设编码器 $f_\phi$ 产生隐状态 $h$，预测头 $p_\theta$ 输出点估计或条件分布采样[^src-probts]；在此之上，[[tirex|TiRex]] 引入「连续块掩码占位（CPM）」作为第三种折中方案：用因果循环状态读入历史，再把未来预测窗整体置为缺失占位进行非自回归延续[^src-tirex]。
 
-| 方案 | 编码 | 特点 |
-|------|------|------|
-| **Autoregressive (AR)** | $h_t = f_\phi(x_{t-1}, c_t, h_{t-1})$，逐步滚动 | 可利用已生成值捕获递推结构；误差沿 horizon 累积 |
-| **Non-autoregressive (NAR)** | $h_{t+1:t+T} = f_\phi(x_{t-L:t}, c_{t-L:t+T})$ 一次生成 | 并行、无逐步反馈；需在单次前向中建模整段依赖 |
+| 方案 | 状态演化与编码 | 误差与不确定性传递 | 代表模型 |
+|------|------|------|------|
+| **Autoregressive (AR)** | $h_t = f_\phi(x_{t-1}, c_t, h_{t-1})$，逐步回喂 | 可捕获递推与强季节性；回喂点估计切断分布传递并累积长程误差 | [[deepar\|DeepAR]]、[[timegrad\|TimeGrad]]、[[timesfm\|TimesFM]]、[[chronos\|Chronos]] |
+| **Non-autoregressive (NAR)** | $h_{t+1:t+T} = f_\phi(x_{t-L:t}, c_{t-L:t+T})$ 一次生成 | 并行无逐步反馈；长程概率需依赖全局结构或迭代去噪 | [[patchtst\|PatchTST]]、[[csdi\|CSDI]]、[[manf\|MANF]]、MOIRAI |
+| **占位式状态延续（CPM + 循环）** | 历史因果递推 $h_t$，未来窗拼缺失占位 $M=1$ 推进 | 免除点估计回喂，保留隐状态与分位数不确定性连续传递；依赖纯 sLSTM 状态记忆 | [[tirex\|TiRex]]（瓶颈接力 $\Delta$：缓解 AR 回喂失真与长程退化） |
 
-## 研究线偏好
+## 路线演进与取舍
 
-- **长程点预测线**（Informer / Autoformer / [[patchtst|PatchTST]] / iTransformer / LTSF-Linear 等）几乎清一色采用 NAR，以规避长 horizon 误差累积[^src-probts]。
-- **短程概率线**（[[deepar|DeepAR]] / [[timegrad|TimeGrad]] / 归一化流等 vs [[csdi|CSDI]] / 部分扩散方法）在 AR 与 NAR 之间更均衡[^src-probts][^src-deepar]。
-- **时间序列基础模型**同样分裂：Lag-Llama / [[timesfm|TimesFM]] / Timer / [[chronos|Chronos]] 偏 AR；MOIRAI / UniTS / ForecastPFN / TTM 偏 NAR[^src-probts]。
+长程点预测早期路线（如 Informer、Autoformer、[[patchtst|PatchTST]]、iTransformer）几乎一致转向 NAR，以一次性前向规避长 horizon 误差累积[^src-probts]。在精确似然流上，[[manf|MANF]] 以 NAR 结合条件 RealNVP 替代自回归流，在加倍预测长度与缺失噪声压力下减小 CRPS/MSE 衰减并提速[^src-maf]；视觉集合预测的 [[detr|DETR]] 也以并行 object queries 取代自回归解码作为跨领域对照锚点[^src-detr]。
 
-- **[[manf|MANF]]（arXiv 2022）** 给出早期 **NAR + 精确似然流** 证据：相对 LSTM-MAF / Transformer-MAF，加倍预测长度与缺失噪声下 CRPS/MSE 衰减更小，并显著加速训练/测试，支持“one-shot 生成可抑制 AR 误差累积”的论断[^src-maf]。
-- **计算机视觉中的平行锚点**：[[detr|DETR]] 是非自回归并行解码在集合预测领域的代表例子——论文自述其与以往 recurrent（RNN 自回归）检测器的区别正在于二部匹配损失与 Transformer 并行解码的结合：N 个 learned object queries 在 decoder 各层并行解码整个目标集合（Sec 1, Sec 3.2）[^src-detr]。
+然而在短程概率与零样本基础模型中，AR 与 NAR 的张力并未消失：[[deepar|DeepAR]] 与 [[timegrad|TimeGrad]] 等 AR 路线在短程与强季节场景仍具竞争力，而 [[timesfm|TimesFM]]、[[chronos|Chronos]] 等基础模型同样延续 AR 分块或逐点回喂[^src-probts][^src-deepar]。针对「既保留因果状态追踪、又避免回喂点估计切断不确定性」的缺口，[[tirex|TiRex]] 用纯 `sLSTM` 替代注意力，并在预训练随机遮蔽连续未来块、推理时以缺失占位块延续状态，实证表明去掉多块延续而退化为自回归滚动会令长程 CRPS 明显恶化[^src-tirex]。
 
 ## ProbTS 实证规律
 
@@ -58,6 +56,7 @@ status: active
 - [[deepar]] — 全局共享 AR-RNN + 参数化似然
 - [[csdi]] — NAR 条件扩散（插补/预测）
 - [[timesfm]] / [[chronos]] — AR 系基础模型
+- [[tirex]] — 纯 sLSTM + 连续块掩码（CPM）占位延续解码（瓶颈接力 $\Delta$：免去点估计回喂）
 - [[instance-normalization]]
 - [[generative-time-series-forecasting]]
 - [[manf]] — NAR + 条件 RealNVP
@@ -68,3 +67,4 @@ status: active
 [^src-maf]: [[source-maf]]
 [^src-deepar]: [[source-deepar]]
 [^src-detr]: [[source-detr]]
+[^src-tirex]: [[source-tirex]]
