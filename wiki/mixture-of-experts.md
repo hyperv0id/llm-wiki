@@ -7,7 +7,7 @@ tags:
   - scalability
 created: 2026-04-29
 last_updated: 2026-11-24
-source_count: 21
+source_count: 22
 references:
   - [[source-fast-long-horizon-forecasting]]
   - [[source-2602-01219-mita]]
@@ -120,6 +120,10 @@ FaST 首次将 MoE 应用于大规模长视野时空图预测：
 
 [[source-cometnet|CometNet]]（AAAI 2026）将 MoE 用作**非参数离线母题库的在线检索路由**，是标准可学习参数 MoE 的架构特例：它先对全训练集经 `MovingAvg + FFT + DTW` 聚类抽取 $K$ 个跨尺度代表性母题原型作为固定专家库，再以短回看窗（$L=96$）的线性编码为 query，对 $K$ 个母题做 Dense MoE `softmax` 内容门控加权，并叠加窗口在母题生命周期中的相对位置信号送入多尺度滤波与 `Linear` 预测头[^src-cometnet]。在固定 $L=96$ 的 8 个标准 LTSF 基准上 CometNet 取得 7 项最低平均 MSE/MAE（862 维 Traffic 逊于 TimeMixer++ 排第二），且 ETT 消融表明去掉 MoE 门控路由是仅次于去掉整个母题引导的最大掉点源；但母题库绑定训练集，建库成本与跨数据集迁移能力仍缺充分评测[^src-cometnet]。
 
+## 架构特例：时频混合专家（HORAI）
+
+[[source-horai|HORAI]] 在多模态自回归解码器中将标准 FFN 替换为时频路由混合专家：先以输入相关的门控权重 $g$ 将隐藏状态 $H$ 经时域 MLP 与对 $\text{FFT}(H)$ 做频域 MLP 的输出加权混合，再接入 Top-$K$ 稀疏专家加权[^src-horai]。与 [[time-moe|Time-MoE]]、[[moirai-moe|Moirai-MoE]] 的同槽位差异在于专家输入先经时频双分支混合，但其消融表明主增益仍源于输入端「低频配文本 + 中高频配折线图」的固定配对先验与 10 亿+点多域预训练，去掉频域路由或 MoE-FFN 退化幅度次于破坏频带–模态配对[^src-horai]。
+
 ## 核心设计决策二维矩阵
 
 | 路线代表 | 专家形态与构建方式 | 插入位置 | 门控信号与稀疏度 | 辅助约束 / 额外信号 |
@@ -130,6 +134,7 @@ FaST 首次将 MoE 应用于大规模长视野时空图预测：
 | [[most\|MoST]] / [[trajar\|TrajAR]] | 空间邻域交叉注意力或属性/趋势双类专家 | 空间交互层或轨迹编码器 | Top-1 / Top-$K_r$ 或指标直选[^src-most][^src-trajar] | 负载均衡损失或离散属性硬分工 |
 | MoBA / [[mita-attention\|MiTA]] | 上下文 KV 块或形变 fast-weight 集 | Self-Attention 内部 | Query-Key 块均值或 landmark top-$k$[^src-2602-01219-mita] | 常开共享专家覆盖全局上下文 |
 | [[source-cometnet\|CometNet]]（**架构特例**） | 离线 `FFT + DTW` 聚类抽取 $K$ 个非参数母题原型 | 局部短回看窗的窗外记忆模块 | Dense MoE 内容相似度 `softmax` 门控[^src-cometnet] | 融合窗口在母题生命周期的相对相位信号 |
+| [[source-horai\|HORAI]]（**架构特例**） | 时域 MLP + `FFT` 频域 MLP 前置混合的 FFN 专家 | 多模态自回归解码器 FFN | 时频门控 $g$ 混合后接 Top-$K$ 稀疏路由[^src-horai] | 依赖输入侧静态频带–模态分工先验 |
 
 ## 相关工作
 - [[mage|MAGE]] (NeurIPS 2025) 在**图结构生成层面**引入 sparse-balanced MoE——每个专家对应一种独特的空间拓扑假设（自适应图），每节点 Top-K 稀疏激活 + 符号 SGD 负载均衡 $\beta k$。与标准 MoE（如 Mixtral 的 FFN 级路由）不同，MAGE 的 MoE 作用于图学习而非特征变换，用差分图 $A^{(k)}=\mathrm{Softmax}(E_1)\mathrm{Softmax}(E_2^{\top})-\lambda\,\mathrm{Softmax}(E_3)\mathrm{Softmax}(E_4^{\top})$ 增强多样性[^src-mage]。参见 [[sparse-balanced-mixture-of-experts-st]] 了解其稀疏平衡机制的技术细节。
@@ -201,6 +206,7 @@ MoE 把容量放在参数上、每次前向只激活一部分；[[recurrent-dept
 - [[implicit-functional-routing]] — dense ResNet 的隐形 router：执行全 dense，功能贡献按输入变化
 - [[implicit-residual-experts]] — Möbius interaction 作为事后专家支撑，质量集中但决策不稀疏
 - [[source-cometnet]] — 离线 `FFT+DTW` 母题原型作稠密专家 + 生命周期相位路由（架构特例）
+- [[source-horai]] — 时频门控前置的解码器 Top-$K$ MoE 架构特例（HORAI）
 
 ## 相关分析
 
@@ -231,3 +237,4 @@ MoE 把容量放在参数上、每次前向只激活一部分；[[recurrent-dept
 [^src-mistral-2024-mixtral]: [[source-mistral-2024-mixtral]]
 [^src-dai-2024-deepseekmoe]: [[source-dai-2024-deepseekmoe]]
 [^src-cometnet]: [[source-cometnet]]
+[^src-horai]: [[source-horai]]

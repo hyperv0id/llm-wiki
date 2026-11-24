@@ -9,7 +9,7 @@ tags:
   - neurips-2024
 created: 2026-07-28
 last_updated: 2026-11-24
-source_count: 8
+source_count: 9
 confidence: high
 status: active
 ---
@@ -75,6 +75,7 @@ Time-MMD 是**数据与评测基础设施**，不是预测模型。下游常引�
 | [[worldts|WorldTS]]（arXiv 2026） | 用其中 8 域（VoT 协议，horizon 12）做文本协变量预测；16 组数据集-指标对比中 14 组第一，Health 增益最大（MSE −8.9%、MAE −9.1%）[^src-worldts] |
 | [[doublecast|CAF-7M / DoubleCast]]（ICML 2026） | **瓶颈接力 Δ**：Time-MMD 靠时间戳对齐与 fact/prediction 拆分防泄漏；CAF-7M 补上「经验 CRPS 效用验证」筛选维度，DoubleCast 在 Time-MMD 上实现 7/9 域胜出[^src-doublecast] |
 | [[timesx|TimesX]] | **瓶颈接力 Δ + 实证复现对齐**：扩展至 19 域 190 变量并补入同域协变量摘要与已知节假日槽位及模型 cutoff 隔离；同数值同提示词下将 Time-MMD 文本事件替换为 TimesX 核查事件，几何均值 MASE 从 0.906 降至 0.840[^src-timesx] |
+| [[source-horai\|HORAI]] | **下游评测域对照**：九域用于检验真实外部文本零样本预测与 Band–Modality 互换消融（9 域中 5 域最优，Environment 与 Traffic 逊于 Aurora，Social Good 互换频带从 0.819 恶化至 1.237 且差于删模态 1.058）[^src-horai] |
 
 释放元数据：数值（起止、目标、协变量）+ 文本（起止、fact/prediction 内容与来源）。GitHub: `https://github.com/AdityaLab/Time-MMD`[^src-time-mmd]。
 
@@ -96,6 +97,7 @@ Time-MMD 是**数据与评测基础设施**，不是预测模型。下游常引�
 - [[worldts]] · [[source-worldts]] · [[latent-space-future-state-prediction]] — 潜空间未来状态预测路线，8 域文本协变量评测
 - [[doublecast]] · [[source-doublecast]] — CAF-7M 经验 CRPS 效用验证与 DoubleCast（7/9 域胜出）
 - [[timesx]] · [[source-timesx]] — 19 域 4 类上下文与模型 cutoff 隔离基准（瓶颈接力 $\Delta$ 与同数值事件替换对齐）
+- [[source-horai]] — HORAI 九域真实外部文本零样本与 Band–Modality 互换消融对照
 [^src-time-mmd]: [[source-time-mmd]]
 [^src-constrained-text-fusion]: [[source-constrained-text-fusion]]
 [^src-cross-modal-misalignment]: [[source-cross-modal-misalignment]]
@@ -104,3 +106,4 @@ Time-MMD 是**数据与评测基础设施**，不是预测模型。下游常引�
 [^src-worldts]: [[source-worldts]]
 [^src-doublecast]: [[source-doublecast]]
 [^src-timesx]: [[source-timesx]]
+[^src-horai]: [[source-horai]]

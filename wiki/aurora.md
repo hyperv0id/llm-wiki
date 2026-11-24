@@ -10,7 +10,7 @@ tags:
   - arxiv-2026
 created: 2026-05-03
 last_updated: 2026-11-24
-source_count: 6
+source_count: 7
 confidence: high
 status: active
 ---
@@ -84,6 +84,12 @@ Aurora 在 Cross-domain Multimodal Time Series Corpus（>10 亿时间点，ERA5/
 - **架构路线差异**：Aurora 从头预训练生成式多模态基础模型（ViT/BERT 语义质心蒸馏 + 模态引导自注意力 + 原型引导 Flow Matching）[^src-aurora]；[[doublecast|DoubleCast]] 则冻结单模态 [[chronos|Chronos]]（T5-large）与 Qwen3-14B 编码器，仅在解码块中插入 `DualT5` 文本交叉注意力适配器做判别式/自回归条件化[^src-doublecast]。
 - **干扰文本退化对照**：DoubleCast 喂入随机错配他窗文本后 CRPS 恶化 $26.5\%$，而 Aurora 在乱序文本扰动下的退化幅度为 $9.2\%$，反映出 DoubleCast 的预测改善更紧密地依托正确对齐文本的注入[^src-doublecast]。
 
+### 与 HORAI 的对比（同槽位互斥 + 实证复现对齐）
+
+同为在 10 亿+时间点多模态语料上从头预训练的基础模型，两者在对齐接口与解码范式上形成**同槽位互斥**与**实证复现对齐**：
+- **同槽位互斥**：Aurora 先将 ViT/BERT 特征经 $K$ 个可学习语义质心蒸馏后以模态引导自注意力注入时序，再经原型引导 Flow Matching 生成概率分布[^src-aurora]；[[source-horai|HORAI]] 则在输入侧按固定比例 $\alpha=0.05$ 做 `FFT` 切分，用 `Flow-Attention` 将低频对齐 `Qwen-0.5B` 文本、中高频对齐 `ViT-Base` 折线图，经 Sigmoid 门控融合后接时频 MoE 自回归点预测，以放弃概率输出并引入阈值 $\alpha$ 与专家数 $K$ 超参为代价换取显式频带分工[^src-horai]。
+- **实证复现对齐与模态边界**：在 [[time-mmd|Time-MMD]] 九域零样本测试中，HORAI 取得 5 域最优，但在 Environment 与 Traffic 上仍落后于 Aurora[^src-horai]。模态真实性上，两者预训练均含数值自生成视图与大模型文本重编码，仅 HORAI 的预训练语料 MM-TS 额外混入过滤后的 GDELT 真实新闻[^src-aurora][^src-horai]。
+
 ## 实验
 
 在 5 个基准上评估：TimeMMD、TSFM-Bench、ProbTS、TFB 和 EPF，作者报告单模态和多模态场景均取得 SOTA[^src-aurora]：
@@ -116,6 +122,7 @@ Aurora 在 Cross-domain Multimodal Time Series Corpus（>10 亿时间点，ERA5/
 - [[multimodal-time-series-anomaly-detection]] — 多模态时序异常检测概念
 - [[source-2602-16681-vetime]] — VETime 论文源摘要
 - [[doublecast]] · [[source-doublecast]] — 冻结 Chronos + DualT5 文本交叉注意力对照（ICML 2026）
+- [[source-horai]] — HORAI 源摘要（频带分工对齐 + 时频 MoE 自回归多模态 TSFM，同槽位互斥与 Time-MMD 实证对齐）
 
 [^src-aurora]: [[source-aurora]]
 [^src-simdiff]: [[source-simdiff]]
@@ -123,3 +130,4 @@ Aurora 在 Cross-domain Multimodal Time Series Corpus（>10 亿时间点，ERA5/
 [^src-event-driven-ts-forecasting]: [[source-event-driven-ts-forecasting]]
 [^src-2602-16681-vetime]: [[source-2602-16681-vetime]]
 [^src-doublecast]: [[source-doublecast]]
+[^src-horai]: [[source-horai]]

@@ -4690,3 +4690,10 @@ Tier 2 轻量化入库（AAAI 2026；由离线 `MovingAvg + FFT + DTW` 聚类抽
 创建的页面：[[source-cometnet]]
 更新的页面：[[gtr]]（补同槽位互斥对照，source_count 5→6）, [[contextual-pattern-bank]]（补非参数母题库同构对照，source_count 1→2）, [[patchtst]]（补窗外母题外推瓶颈接力 Δ，source_count 11→12）, [[mixture-of-experts]]（补离线母题原型 MoE 架构特例与设计决策二维矩阵，同步修正 source_count 18→21）, [[lookback-horizon-scaling]]（补绕开长回看约束路线对照并清理既有首段/句中坐标告警，source_count 1→2）, [[index]]
 ingest 报告：[[ingest-reports/2026-11-24-cometnet|WHY 报告]]
+
+
+## [2026-11-24] ingest | Empowering Time Series Analysis with Large-Scale Multimodal Pretraining (HORAI)
+Tier 2 轻量化入库（核心切片未带会议水印、仅引文含 2026 年条目，本仓库 OpenReview CCF-A 调研记录其录用于 NeurIPS 2026 Poster；内部由 `FFT` 二值切分、`Flow-Attention`、Sigmoid 门控与时频 MoE-FFN 等既有模块拼装，未为 `horai`、`Time-Frequency MoE`、`MM-TS` 新建 `source_count: 1` 独立页）。针对多模态时序预训练中频带动态表达差异，HORAI 在 10 亿+点、6 域 MM-TS 语料上按 $\alpha=0.05$ 切分低频（`Flow-Attention` 对齐 `Qwen-0.5B` 文本）与中高频（对齐 `ViT-Base` 折线图），门控融合后经时频 MoE 自回归解码。模态真实性边界：预训练折线图由数值历史渲染、内生文本由 GPT-4o 读同窗生成（均属输入重编码），仅 GDELT 过滤新闻与下游 Time-MMD/FNSPID 为真实外部文本。实验上 Time-MMD 九域零样本仅 5 域第一（Agriculture 逊于 Chronos-2、Environment/Traffic 逊于 Aurora、Social Good 逊于 TimesFM），5 集异常检测 15 指标 12 项第一；Band–Modality 互换（中高频配文本、低频配图像）在 Social Good 上由 $0.819$ 恶化至 $1.237$，差于直接删模态的 $1.058$，证实涨点主要来自「低频配文本 + 中高频配折线图」固定配对先验与大语料预训练，且缺更大规模多模态骨干与主文效率对照。
+创建的页面：[[source-horai]]
+更新的页面：[[aurora]]（补同槽位互斥与 Time-MMD 复现对照，source_count 6→7）, [[time-vlm]]（谱系表补瓶颈接力 Δ，source_count 5→6）, [[time-mmd]]（谱系位置补九域评测与互换消融对照，source_count 8→9）, [[multimodal-time-series-forecasting]]（补多模态基础模型与模态边界二维矩阵，source_count 27→28）, [[frequency-pathway-routing]]（路由表补静态频带分工与时频门控特例，source_count 1→2）, [[mixture-of-experts]]（补解码器时频 MoE 架构特例与二维矩阵，source_count 21→22）, [[index]]
+ingest 报告：[[ingest-reports/2026-11-24-horai|WHY 报告]]

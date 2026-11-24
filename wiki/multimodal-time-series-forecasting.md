@@ -8,7 +8,7 @@ tags:
   - covariate
   - satellite-imagery
 created: 2026-04-29
-source_count: 27
+source_count: 28
 last_updated: 2026-11-24
 confidence: high
 status: active
@@ -123,6 +123,17 @@ UniCA 在多模态场景下的表现：
 ## Aurora：多模态时间序列基础模型
 
 **[[aurora|Aurora]]** (arXiv 2026) 是首个多模态时间序列基础模型，支持文本、图像和数值时间序列的多模态输入和零样本推理[^src-aurora]。与 UniCA（适配现有 TSFMs）、MoST（判别式 ST 预测）和 VoT（LLM 推理式）不同，Aurora 是**生成式**多模态基础模型，通过 Modality-Guided Self-Attention 和 Prototype-Guided Flow Matching 实现概率预测[^src-aurora]。
+
+### 多模态基础模型与模态真实性边界（二维对照矩阵）
+
+围绕大规模多模态时序预训练，各路线在**外部模态真实性**与**跨模态对齐接口**两条正交轴上分叉：[[aurora|Aurora]] 与 [[source-horai|HORAI]] 均基于十亿级时间点语料预训练，但数值渲染折线图/折叠图与大模型内生文本均属输入重编码，仅 HORAI 的预训练语料 MM-TS 混入过滤 GDELT 新闻及下游 [[time-mmd|Time-MMD]] / FNSPID 真实外部文本[^src-aurora][^src-horai]。与 [[aurora|Aurora]] 构成**同槽位互斥 + 实证复现对齐**，HORAI 改为以 `FFT` 频带切分作对齐接口（低频对齐 `Qwen-0.5B` 文本、中高频对齐 `ViT-Base` 折线图）接门控融合与时频 MoE 自回归点预测；在 Time-MMD 九域零样本中 HORAI 取得 5 域第一（Environment/Traffic 仍逊于 Aurora），Band–Modality 互换消融劣于直接删模态证实主要涨点来自固定频带–模态配对先验与多域大语料预训练[^src-horai]。
+
+| 路线代表 | 预训练语料与模态真实性边界 | 跨模态对齐接口 | 解码形态与概率支持 | 关键对照/消融结论 |
+|---|---|---|---|---|
+| **[[most\|MoST]]** | 交通卫星图 + POI + 坐标 + 时序（真实外生多模态） | SNR 自适应模态选择 + 空间 MoE 邻域路由[^src-most] | 判别式跨城零样本时空预测，无概率输出 | 面向城市路网，模态可任意缺失组合[^src-most] |
+| **[[aurora\|Aurora]]** | >10 亿点；折叠图与 GPT-4 文本属输入重编码 | ViT/BERT 语义质心蒸馏 + 模态引导自注意力[^src-aurora] | 原型引导 Flow Matching 概率生成 | Time-MMD 零样本优于 Sundial/VisionTS；乱序文本退化 $9.2\%$[^src-aurora][^src-doublecast] |
+| **[[source-horai\|HORAI]]** | MM-TS（>10 亿点，6 域）；渲染折图与 GPT-4o 内生文本属重编码，仅 GDELT 过滤新闻及下游 Time-MMD/FNSPID 为真文本 | 无参数 `FFT` 频带二分（低频对齐 `Qwen-0.5B`、中高频对齐 `ViT-Base`）+ Sigmoid 门控[^src-horai] | 时频 MoE 因果自回归点预测，无概率输出 | 9 域零样本 5 域第一（Environment/Traffic 逊于 Aurora）；互换配对劣于删模态（Social Good 0.819→1.237 vs 1.058），缺大骨干效率对照[^src-horai] |
+| **[[doublecast\|DoubleCast]]** | CAF-7M 经验 CRPS 效用筛选文本（全窗 Llama 反推） | 冻结 [[chronos\|Chronos]] 解码块内插 DualT5 文本交叉注意力[^src-doublecast] | 自回归概率预测（CRPS） | Time-MMD 7/9 域胜出；错配文本 CRPS 恶化 $26.5\%$[^src-doublecast] |
 
 ## TaTS：文本作为辅助变量
 
@@ -314,6 +325,7 @@ UniCA 在多模态场景下的表现：
 - [[source-tadiff]] — TADiff：前向 DDIM 条件剥离归因 + DTTC 对比微调的文本反事实预测（含启发式条件与指标同源提醒）
 - [[doflow]] — DoFlow：已知因果 DAG 上的 CNF 溯因可识别反事实预测（结构化 SCM 对照）
 - [[source-whatif-tsf]] — What If TSF（WIT）：专家手工场景引导的多模态反事实方向基准
+- [[source-horai]] — HORAI：FFT 频带切分对齐（低频–文本 / 中高频–折线图）+ 时频 MoE 自回归，含重编码模态边界与互换消融实证
 
 ---
 
@@ -346,3 +358,4 @@ UniCA 在多模态场景下的表现：
 [^src-doflow]: [[source-doflow]]
 [^src-whatif-tsf]: [[source-whatif-tsf]]
 [^src-tadiff]: [[source-tadiff]]
+[^src-horai]: [[source-horai]]

@@ -9,7 +9,7 @@ tags:
   - icml-2025
 created: 2026-07-28
 last_updated: 2026-11-24
-source_count: 5
+source_count: 6
 confidence: high
 status: active
 ---
@@ -94,6 +94,7 @@ flowchart LR
 | [[unica|UniCA]] / [[cora-tsfm|CoRA]] | TSFM **外生协变量适配**；Time-VLM 是 backbone+VLM 的端到端多模态预测器，非适配器框架[^src-time-vlm] |
 | [[vetime|VETime]] | 任务错位与对齐对照：专为预测设计的 Time-VLM 优先关注宏观趋势演化，缺乏密集体时间戳级判别能力；VETime 则构建 1D-2D 双向对齐（PTA）与多尺度对比学习，面向密集异常定位任务（§1）[^src-2602-16681-vetime] |
 | [[source-dmmv|$\mathrm{D_{MMV}}$]] | **同槽位互斥 + 实证复现对齐**（伪多模态路线分叉）：两者皆不引入外生文本/图像，但路线相反——Time-VLM 保留检索记忆（RAL）与统计提示（TAL）经冻结 VLM 交叉注意力融合；$\mathrm{D_{MMV}}$ 主动舍弃文本与检索，让仅微调归一化层的 MAE 专司周期分量，再以两趟半幅掩码回测生成残差交给线性模型预测趋势并标量门控混合。在 8 项长程预测基准（Illness 上 Time-VLM 缺结果未纳对比）中，无文本的 $\mathrm{D_{MMV}}$ 整体优于 Time-VLM（作者报告口径）[^src-dmmv] |
+| [[source-horai\|HORAI]] | **瓶颈接力 $\Delta$**：两者门控残差融合形式相似，但 Time-VLM 冻结 ViLT 等 VLM 并借 RAL 检索记忆做微调/少样本，HORAI 缩减为 `Qwen-0.5B` + `ViT-Base` 轻编码器并在 10 亿+点语料上全量预训练，同时用 `FFT` 将低频对齐文本、中高频对齐渲染折线图[^src-time-vlm][^src-horai] |
 
 ## 局限与任务边界
 
@@ -111,9 +112,11 @@ VETime（arXiv:2602.16681）在引言中分析指出，现有如 Time-VLM 等多
 - [[vot]] · [[time-mmd]] · [[source-time-llm]] · [[source-time-mmd]] · [[ts-vl-alignment]] · [[source-ts-vl-alignment]] · [[constrained-text-fusion]] · [[source-constrained-text-fusion]]
 - [[vetime]] · [[multimodal-time-series-anomaly-detection]] · [[source-2602-16681-vetime]]
 - [[source-dmmv]] — 伪多模态路线分叉（舍弃文本的周期/线性残差双视图分解）
+- [[source-horai]] — 轻编码器全量预训练与频带分工对齐对照（瓶颈接力 $\Delta$）
 
 [^src-time-vlm]: [[source-time-vlm]]
 [^src-ts-vl-alignment]: [[source-ts-vl-alignment]]
 [^src-constrained-text-fusion]: [[source-constrained-text-fusion]]
 [^src-2602-16681-vetime]: [[source-2602-16681-vetime]]
 [^src-dmmv]: [[source-dmmv]]
+[^src-horai]: [[source-horai]]

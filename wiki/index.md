@@ -198,6 +198,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-hephestus]] — HEPHAESTUS: Hierarchical Periodic Heterogeneous Adaptive Spatio-Temporal Unified System for Traffic Forecasting (ICLR 2026 under review)
 - [[source-heterogeneous-moe-routing]] — TODO
 - [[source-hifinet]] — HiFiNet: Hierarchical Frequency-Decomposition GNN for Road Network Representation Learning (AAAI 2026)
+- [[source-horai]] — HORAI: 10 亿+点 MM-TS 多模态预训练，FFT 频带切分（低频对齐文本、中高频对齐折线图）+ 门控融合 + 时频 MoE 自回归解码；9 域零样本 5 域第一，互换消融劣于删模态（切片未带会议水印，仅引文含 2026 年条目）
 - [[source-how-llm-understand-st]] — STG-LLM: How Can Large Language Models Understand Spatial-Temporal Data (arXiv 2024), STG-Tokenizer 节点即 token + STG-Adapter 冻结 GPT2 1.70% 参数, PEMS07 MAE 19.82
 - [[source-hyperd-hybrid-periodicity-decoupling]] — "HyperD: Hybrid Periodic Decoupling Framework for Traffic Forecasting" (Shao et al., AAAI 2026)：日/周可学习周期表 + 频域残差支 + 频段对齐损失；含二手摘要差异更正
 - [[source-improved-meanflows]] — Improved Mean Flows (iMF): On the Challenges of Fastforward Generative Models, MeanFlow 同团队后续：目标等价改写为 v-loss 再参数化并修正 JVP 输入、CFG 尺度改为条件变量、in-context conditioning，ImageNet-256 从头训练 1-NFE FID 1.72（Geng, Lu, Wu, Shechtman, Kolter, He; CMU/MIT/Adobe/THU, arXiv 2025 v2）
