@@ -7,8 +7,8 @@ tags:
   - ode
   - sampling
 created: 2026-06-22
-last_updated: 2026-06-22
-source_count: 3
+last_updated: 2026-11-24
+source_count: 4
 confidence: high
 status: active
 ---
@@ -74,8 +74,13 @@ DDIM 开启了 ODE 加速采样的研究方向：
 
 从 DDIM → DPM-Solver → Rectified Flow → Consistency Models，构成了一条清晰的**ODE 精度提升 → 轨迹拉直 → 单步化**的演化路径。
 
+### 时序残差预测中的截断采样特例
+
+在长程时间序列预测中，[[source-volarm|VolaRM]]（NeurIPS 2026）将条件 DDIM 采样**截断至 $T=8$ 步**，用于精修经概率基准 $(\mu,\sigma)$ 白化标准化后的残差 $r_0 = \operatorname{clip}((Y-\mu)/(\sigma+\varepsilon))$[^src-volarm]。消融实验显示去掉白化后性能大幅恶化、去掉扩散只留基准接近不白化档，表明该场景下主要精度增益源于「基准 $(\mu,\sigma)$ + 白化残差坐标变换」，8 步截断 DDIM 主要承担轻量级残差精修角色[^src-volarm]。
+
 ## 引用
 
 [^src-ddim]: [[source-ddim]]
 [^src-ddim-ode-spaces-ac-cn]: [[source-ddim-ode-spaces-ac-cn]]
 [^src-dpm-solver]: [[source-dpm-solver]]
+[^src-volarm]: [[source-volarm]]

@@ -13,7 +13,7 @@ tags:
   - icml-2025
 created: 2026-06-08
 last_updated: 2026-11-24
-source_count: 2
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -101,7 +101,9 @@ $$\mathcal{L} = \mathcal{L}_{ELBO} + \mathcal{L}_{Rec},\quad \mathcal{L}_{Rec}=\
 - [[tsflow|TSFlow]] — 流匹配路线概率预测
 - [[mmckm|MMCKM]] — 另一种 Koopman 时间序列模型（交通流，含控制输入）
 - [[slide|SLiDE]] — **复现与机制对照（NeurIPS 2026）**：K²VAE 面向无外生变量的长期概率预测（eDMD + KalmanNet + VAE 一步生成）；SLiDE 放弃变分建模与 Kalman 滤波，转向确定性点预测与未来已知外生驱动，在历史编码与未来滚动间共享单一分块线性算子 $W$ 并以纯加性推力注入外生变量，换取 OOR 与跨驱动偏移下的低过拟合自由度[^src-k2vae][^src-slide]
+- [[source-volarm|VolaRM]] — **同槽位机制对照（NeurIPS 2026）**：两者同样采用「确定性/基准预测 + 残差概率精修」两阶段分工；K²VAE 在测量空间用 Koopman 算子生成有偏基准并以 KalmanNet + VAE 一步解码精修残差，VolaRM 则在原空间用局部多项式与季节锚点估计位置—尺度基准 $(\mu,\sigma)$ 并对白化标准化残差做 8 步截断 [[ddim|DDIM]] 去噪（VolaRM 主表未与 K²VAE 同台对比）[^src-volarm]
 - [[reparameterization-trick]]、[[elbo]] — VAE 数学基础
 
 [^src-k2vae]: [[source-k2vae]]
 [^src-slide]: [[source-slide]]
+[^src-volarm]: [[source-volarm]]

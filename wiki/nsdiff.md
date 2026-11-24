@@ -9,8 +9,8 @@ tags:
   - non-stationary
   - icml-2025
 created: 2026-06-08
-last_updated: 2026-08-19
-source_count: 4
+last_updated: 2026-11-24
+source_count: 5
 confidence: high
 status: active
 ---
@@ -56,6 +56,7 @@ NsDiff 从两个维度突破了传统 DDPM 在时序预测中的限制：
 - **[[timegrad|TimeGrad]]**：首个时序扩散模型，但使用 $\mathcal{N}(0,I)$ 去噪起点，NsDiff 以 LSNM 取代了该限制[^src-nsdiff]
 - **TMDM**：最近的 SOTA（ICLR 2024），使用 $\mathcal{N}(f_\phi(X), I)$ 去噪起点——是 NsDiff 在 $g_\psi(X)=I$ 时的特例[^src-nsdiff]
 - **[[generative-time-series-forecasting|生成式时序预测]]**：NsDiff 是该范式下当前最强的扩散基线[^src-nsdiff]
+- **[[source-volarm|VolaRM]]**（NeurIPS 2026，**同槽位互斥**）：同样借助 [[location-scale-noise-model|LSNM]] 的位置—尺度思想处理非平稳方差，但路径相反——NsDiff 将 $f_\phi(X), g_\psi(X)$ 直接嵌入扩散前向与反向噪声调度，VolaRM 则先由局部多项式与季节锚点基准分支预测 $(\mu,\sigma)$，将残差白化标准化为 $(Y-\mu)/(\sigma+\varepsilon)$ 后再交由标准高斯加噪的 8 步截断 [[ddim|DDIM]] 去噪（VolaRM 主表未与 NsDiff 同台对比）[^src-volarm]
 
 ## 局限性
 
@@ -69,6 +70,7 @@ NsDiff 从两个维度突破了传统 DDPM 在时序预测中的限制：
 [^src-nsdiff]: [[source-nsdiff]]
 [^src-stats]: [[source-stats]]
 [^src-middir]: [[source-middir]]
+[^src-volarm]: [[source-volarm]]
 
 ## 与 SARAF 的关系
 

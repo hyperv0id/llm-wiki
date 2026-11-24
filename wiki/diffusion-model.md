@@ -8,7 +8,7 @@ tags:
   - score-based
 created: 2026-04-28
 last_updated: 2026-11-24
-source_count: 30
+source_count: 31
 confidence: high
 status: active
 ---
@@ -151,7 +151,7 @@ Falck 等人（Microsoft Research, 2025）从 SNR 角度给出另一种频域解
 
 扩散模型从早期离散马尔可夫链演进至连续时间统一视角与时序专用扩展，核心围绕**前向退化与初始隐态**、**目标参数化与连续路径**以及**采样求解器与引导调度**三条正交设计轴分化。在路径与采样轴上，[[ncsn|NCSN]] 与 [[ddpm|DDPM]] 由 [[score-based-sde|Score-Based SDE]] 统一为 VP/VE 随机微分方程及概率流 ODE[^src-sde]；[[ddim|DDIM]]（PF-ODE 一阶 Euler 离散化）、[[dpm-solver|DPM-Solver]]、[[edm|EDM]]（Heun 二阶与对数正态噪声）、[[flow-matching|Flow Matching]]（OT 路径推广）、[[instaflow|InstaFlow]]（reflow 蒸馏）、[[consistency-models|Consistency Models]] 与 [[shortcut-models|Shortcut Models]] 逐步将几十至上千步推理压缩到少步乃至单步[^src-ddpm][^src-ddim][^src-ddim-ode-spaces-ac-cn][^src-dpm-solver][^src-edm][^src-flow-matching][^src-instaflow][^src-consistency-models][^src-shortcut-models]。在主干与参数化轴上，[[dit|DiT]] 以 ViT + adaLN-Zero 取代 U-Net，[[jit|JiT]] 则论证流形假设下大 patch 像素空间须用 `x-prediction` 替代噪声预测[^src-dit][^src-back-to-basics-let-denoising-generative-models-denoise]。
 
-面向时间序列与物理动力学时，各分支进一步在噪声分布与条件控制上特化：[[erdm|ERDM]] 将 EDM 与渐进噪声滚动扩散结合用于动力学概率预测[^src-erdm]；[[nsdiff|NsDiff]] 引入[[location-scale-noise-model|位置—尺度噪声模型（LSNM）]]处理非平稳时变方差[^src-nsdiff]；[[stats|StaTS]] 联合学习[[spectral-trajectory-scheduler|频谱轨迹调度（STS）]]与[[frequency-guided-denoiser|频率引导去噪（FGD）]][^src-stats]；[[fence|FENCE]] 通过[[feedback-diffusion-guidance|反馈扩散引导]]按后验似然动态调节 CFG 尺度[^src-fence]；[[timedit|TimeDiT]] 以 DiT 统一多任务掩码并在推理期注入 PDE 约束朗之万采样，[[swift|Swift]] 以一阶一致性模型将天气预报 NfE 降至 $1$[^src-timedit][^src-swift]；而 [[source-tadiff|TADiff]] 沿用 [[ddim|DDIM]] 确定性概率流，将反向采样起点由标准高斯噪声替换为剥离历史文本条件 $c_h$ 后的前向归因隐态 $x_{h,T}$（增加一条前向链使采样计算约翻倍），在无显式 SCM 下实现自然语言反事实预测[^src-tadiff]。
+面向时间序列与物理动力学时，各分支进一步在噪声分布与条件控制上特化：[[erdm|ERDM]] 将 EDM 与渐进噪声滚动扩散结合用于动力学概率预测[^src-erdm]；[[nsdiff|NsDiff]] 引入[[location-scale-noise-model|位置—尺度噪声模型（LSNM）]]处理非平稳时变方差[^src-nsdiff]；[[source-volarm|VolaRM]] 则将 LSNM 的 $(\mu,\sigma)$ 尺度注入从噪声调度迁至标准化白化残差坐标 $(Y-\mu)/(\sigma+\varepsilon)$，配合 8 步截断 [[ddim|DDIM]] 与接缝连续正则做长程预测[^src-volarm]；[[stats|StaTS]] 联合学习[[spectral-trajectory-scheduler|频谱轨迹调度（STS）]]与[[frequency-guided-denoiser|频率引导去噪（FGD）]][^src-stats]；[[fence|FENCE]] 通过[[feedback-diffusion-guidance|反馈扩散引导]]按后验似然动态调节 CFG 尺度[^src-fence]；[[timedit|TimeDiT]] 以 DiT 统一多任务掩码并在推理期注入 PDE 约束朗之万采样，[[swift|Swift]] 以一阶一致性模型将天气预报 NfE 降至 $1$[^src-timedit][^src-swift]；而 [[source-tadiff|TADiff]] 沿用 [[ddim|DDIM]] 确定性概率流，将反向采样起点由标准高斯噪声替换为剥离历史文本条件 $c_h$ 后的前向归因隐态 $x_{h,T}$（增加一条前向链使采样计算约翻倍），在无显式 SCM 下实现自然语言反事实预测[^src-tadiff]。
 
 | 代表路线 | 前向退化 / 初始隐态 | 路径参数化 / 主干 | 采样机制与步数 | 适用边界与主要代价 |
 |---|---|---|---|---|
@@ -161,6 +161,7 @@ Falck 等人（Microsoft Research, 2025）从 SNR 角度给出另一种频域解
 | **[[flow-matching\|Flow Matching]] / [[instaflow\|InstaFlow]] / [[consistency-models\|CM]] / [[shortcut-models\|Shortcut]]** | OT 条件直线流或 PF-ODE 轨迹起点 | 速度场 / 轨迹映射 / 步长条件化 | 1–4 步确定性生成（reflow 或自洽训练） | 极速采样，需蒸馏或自洽目标[^src-flow-matching][^src-instaflow][^src-consistency-models][^src-shortcut-models] |
 | **[[dit\|DiT]] / [[jit\|JiT]] / [[timedit\|TimeDiT]]** | 高斯噪声或统一掩码输入 | ViT（adaLN-Zero / x-pred + PDE 引导） | 扩散或物理知情朗之万采样 | 扩展性佳（ImageNet 256 FID 1.82–2.27）[^src-dit][^src-back-to-basics-let-denoising-generative-models-denoise][^src-timedit] |
 | **[[nsdiff\|NsDiff]] / [[stats\|StaTS]] / [[fence\|FENCE]] / [[swift\|Swift]]** | LSNM 时变方差或自适应频谱调度 | 非平稳噪声 / FGD 去噪 / 动态 CFG / CM | 动态引导或 1-NFE 自回归一致性 | 适配非平稳、弱条件与高效气象预报[^src-nsdiff][^src-stats][^src-fence][^src-swift] |
+| **[[source-volarm\|VolaRM]]** | 标准高斯加噪于 $(\mu,\sigma)$ 白化残差坐标 | 局部多项式/季节锚点 + 条件截断去噪 | 8 步截断 [[ddim\|DDIM]] | 收益主源于基准与白化坐标，$\sigma$ 误差放大风险；缺同槽位概率基线同台[^src-volarm] |
 | **[[source-tadiff\|TADiff]]** | 剥离历史文本 $c_h$ 的前向 DDIM 归因隐态 $x_{h,T}$ | DDIM 条件去噪 + DTTC 对比微调 | 双向确定性概率流（前向归因 + 反向去噪） | 支持自由文本反事实但采样量约翻倍、无 SCM 可识别性[^src-tadiff] |
 
 ## 相关概念
@@ -191,6 +192,7 @@ Falck 等人（Microsoft Research, 2025）从 SNR 角度给出另一种频域解
 - [[source-diffusion-ts-st-survey|TS/ST 扩散综述]] — 首篇同时覆盖 time series 与 spatio-temporal 的 diffusion 综述（arXiv 2024，投 ACM CSUR），四维分类（模型类别/任务/数据模态/应用领域）汇总 60 个方法，提出 denoiser-as-prior 框架连接生成采样与 Plug-and-Play 信号恢复
 - [[source-diffusion-traffic-flow-inference|DP-TFI]] — 把 DDPM 当训练期数据增强器（而非主生成器）的早期城市计算案例：fine-grained urban traffic flow inference，用 relax matrix 放宽 superregion/subregion 流量守恒的硬约束
 - [[source-tadiff]] — 继承 DDIM 并将初始高斯噪声替换为条件剥离前向归因隐态的文本反事实预测
+- [[source-volarm]] — 将 LSNM 的 $(\mu,\sigma)$ 从噪声调度迁至白化残差坐标，配合 8 步截断 DDIM 与接缝连续正则做长程预测
 
 ## 引用
 
@@ -224,3 +226,4 @@ Falck 等人（Microsoft Research, 2025）从 SNR 角度给出另一种频域解
 [^src-timedit]: [[source-timedit]]
 [^src-swift]: [[source-swift]]
 [^src-tadiff]: [[source-tadiff]]
+[^src-volarm]: [[source-volarm]]

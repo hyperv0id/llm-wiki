@@ -4769,3 +4769,10 @@ Tier 2 轻量化入库（AAAI 2026, arXiv:2505.15312；由可学习调制小波�
 创建的页面：[[source-sonnet]]
 更新的页面：[[source-timexer]]（补同槽位互斥对照，source_count 4→5）, [[itransformer]]（补同槽位互斥与 MVCA 替换归因，source_count 6→7）, [[crosslinear]]（补同槽位对比与漏测指针，source_count 3→4）, [[koopman-linearization-for-forecasting]]（二维矩阵与正文补酉谱一步演化特例，source_count 3→4）, [[frequency-pathway-routing]]（对照表与正文补跨槽位正交，source_count 3→4）, [[fedformer]]（补内部替换异常退化复现疑点，source_count 3→4）, [[index]]
 ingest 报告：[[ingest-reports/2026-11-24-sonnet|WHY 报告]]
+
+
+## [2026-11-24] ingest | VolaRM: Volatility-Whitened Probabilistic Residual Modeling for Long-Term Time Series Forecasting
+Tier 2 轻量化入库（NeurIPS 2026；由局部多项式+季节锚点概率基准 $(\mu,\sigma)$、标准化白化残差 8 步截断 DDIM 与接缝连续正则组成，未为 `volarm` 或 `seam token` 新建 `source_count: 1` 独立页）。针对原始空间直接扩散易被高波动通道主导且残差精修易在历史—未来接缝处跳变的问题，VolaRM 先估计 $(\mu,\sigma)$ 基准并将残差白化为 $(Y-\mu)/(\sigma+\varepsilon)$ 后做 8 步截断 DDIM 去噪与门控还原。主表在 8 个 LTSF 数据集上 7 集最优（相对 iTransformer/Pathformer 降约 4%–12.7%，相对 TimeDART 降约 3.4%），但 Traffic 落后 TimeDART（0.404 vs 0.388）。消融显示去掉波动率白化掉点最狠（ETTm1 0.275→0.397、Weather 0.144→0.172、ECL 0.130→0.161），去掉扩散只留基准亦接近不白化档，表明主收益源于「基准 $(\mu,\sigma)$ + 白化残差坐标变换」，而固定 $\sigma$、去边界条件或 $\mathcal{L}_{\text{seam}}$ 仅约 0.01 量级。缺口：主表缺 NsDiff/K²VAE/CSDI/TimeGrad 同台对照，逐集窗口 $L$ 细节置附录 B 且 Table 1/2 存在口径差异（0.400 vs 0.359），ETTm1 某消融变体出现 MSE 恶化而 MAE 更优的矛盾。
+创建的页面：[[source-volarm]]
+更新的页面：[[nsdiff]]（补同槽位互斥对照，source_count 4→5）, [[location-scale-noise-model]]（补白化残差坐标同构对接并规范首段，source_count 1→2）, [[k2vae]]（补两阶段机制对照，source_count 2→3）, [[ddim]]（补 8 步截断条件采样特例，source_count 3→4）, [[instance-normalization]]（补预测端局部白化对照，source_count 11→12）, [[diffusion-model]]（谱系对照表增补条目，source_count 30→31）, [[index]]
+ingest 报告：[[ingest-reports/2026-11-24-volarm|WHY 报告]]

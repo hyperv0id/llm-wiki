@@ -6,7 +6,7 @@ tags:
   - normalization
   - distribution-shift
 last_updated: 2026-11-24
-source_count: 11
+source_count: 12
 confidence: high
 status: active
 ---
@@ -80,6 +80,10 @@ RevIN 已被多种主流模型采用：iTransformer、PatchTST、SparseTSF 等[^
 
 [[timebridge|TimeBridge]]（ICML 2025）构成了对全局 RevIN 的**特例演进**对照：RevIN 在序列入口整窗剥离统计量并在末端恢复，而 TimeBridge 指出非平稳趋势仅在单变量短程时间片内诱发伪相关、在跨变量之间却承载长期协整，因此将去平稳下沉至 patch 级平滑作差且**仅作用于变量内注意力的 $Q,K$**，$V$ 与压缩后的跨变量阶段保留原始非平稳性，从而省去末端反归一化[^src-timebridge]。
 
+### 预测端局部白化残差对照：VolaRM 的 $(\mu,\sigma)$ 标准化
+
+[[source-volarm|VolaRM]]（NeurIPS 2026）则在预测端而非输入端实现异方差尺度标准化：先以局部多项式外推与历史周期插值融合生成概率基准 $(\mu,\sigma)$，再将真实未来相对基准的残差做逐点白化标准化 $r_0 = \operatorname{clip}((Y-\mu)/(\sigma+\varepsilon))$ 送入 8 步截断 [[ddim|DDIM]] 去噪，最后经门控还原 $\hat{Y} = \mu + g\odot\sigma\odot\hat{r}_0$[^src-volarm]。与 RevIN 在入口处沿整段输入窗口剥离并恢复统计量相比，该做法能逐预测步适配时变波动率，但也引入了 $\sigma$ 估计误差直接放大或扭曲白化坐标的风险[^src-volarm]。
+
 ## 相关页面
 
 - [[unica|UniCA]] — 统一的协变量适应框架，被设计为RevIN的广义扩展，可处理异构协变量（分类/图像/文本）而不仅是数值序列的分布漂移[^src-unica]
@@ -91,6 +95,7 @@ RevIN 已被多种主流模型采用：iTransformer、PatchTST、SparseTSF 等[^
 - [[ar-vs-nar-decoding]] — 与归一化交互的解码方案轴
 - [[zeus|Zeus]] — 论文自述在 point tokenization 前用 RevIN 去尺度变化 (ICML 2026)[^src-2607-01918]
 - [[timebridge|TimeBridge]] — 特例演进（patch 级去趋势仅作用于变量内 $Q/K$，保留 $V$ 与跨变量非平稳性，省去末端反归一化）[^src-timebridge]
+- [[source-volarm|VolaRM]] — 预测端可学习 $(\mu,\sigma)$ 局部白化残差坐标对照（NeurIPS 2026）[^src-volarm]
 
 ## 引用
 
@@ -105,3 +110,4 @@ RevIN 已被多种主流模型采用：iTransformer、PatchTST、SparseTSF 等[^
 [^src-2606-27282-ltsf-linear-models]: [[source-2606-27282-ltsf-linear-models]]
 [^src-2607-01918]: [[source-2607-01918]]
 [^src-timebridge]: [[source-timebridge]]
+[^src-volarm]: [[source-volarm]]
