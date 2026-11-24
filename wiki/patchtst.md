@@ -11,7 +11,7 @@ tags:
   - ICLR-2023
 created: 2026-05-30
 last_updated: 2026-11-24
-source_count: 12
+source_count: 13
 confidence: medium
 status: active
 ---
@@ -112,6 +112,7 @@ PatchTST 是 LSTF 领域的关键转折点 [^src-patchtst]：
 - **多变量因果扩展**：[[timer-xl|Timer-XL]]（ICLR 2025）——**瓶颈接力 $\Delta$**，针对 PatchTST 的 Encoder-only 固定输出头与通道独立局限，改为因果 Decoder-only 并按 $M = C \otimes T$ 展平跨变量与协变量时间块，支持变长滚动并在零样本与跨站预测上超越 PatchTST[^src-timer-xl]
 - **跨槽位正交（视觉-数值分解框架中的数值主干消融）**：[[source-dmmv|$\mathrm{D_{MMV}}$]]（NeurIPS 2025）在其「MAE 周期分支 + 线性趋势残差门控」消融中，将线性数值分支替换为 PatchTST，整体精度几乎不变（仅 ETTm1 略微改善），表明该双视图框架的增益源自回测残差分解与归一化层微调分工，而非数值主干本身的复杂度[^src-dmmv]
 - **窗外母题外推（瓶颈接力 $\Delta$）**：[[source-cometnet|CometNet]]（AAAI 2026）针对 PatchTST 在固定短回看窗（$L=96$）内仅做局部 patch 编码、无法捕捉跨数千步重现规律的视野瓶颈，在预测前从全训练集离线以 `MovingAvg + FFT + DTW` 聚类抽取 $K$ 个跨尺度母题原型，在线以 Dense MoE 内容门控匹配母题并注入生命周期相对相位信号；在 8 个标准 LTSF 基准（$L=96$）中 7 项平均 MSE/MAE 优于包括 PatchTST 在内的基线（但 862 维 Traffic 排第二，且引入离线建库开销与数据集绑定约束）[^src-cometnet]
+- **前置 token 压缩插件（跨槽位正交）**：[[source-timebase|TimeBase]]（ICML 2025）在 PatchTST 完成序列切分后、送入 Transformer 编码器前接入正交约束低秩基提取投影（将输入分段压缩为默认 $R=6$ 个时间基），可削减 PatchTST $77.7\%\text{–}93.0\%$ 的 MACs 且整体精度大体持平，但在 ETTh1/ETTh2（$H=720$）与 Weather（$H=336$）等设置上 MSE 轻微退回，且引入主周期 $P$ 先验[^src-timebase]
 - **核心概念**：[[patch-based-tokenization]], [[channel-independence]], [[instance-normalization]], [[lstf]]
 - **自监督/预训练**：[[mae|MAE]], [[videomae]], [[timesfm|TimesFM]], [[chronos]]
 
@@ -127,3 +128,4 @@ PatchTST 是 LSTF 领域的关键转折点 [^src-patchtst]：
 [^src-timer-xl]: [[source-timer-xl]]
 [^src-dmmv]: [[source-dmmv]]
 [^src-cometnet]: [[source-cometnet]]
+[^src-timebase]: [[source-timebase]]

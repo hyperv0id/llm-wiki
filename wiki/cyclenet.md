@@ -6,8 +6,8 @@ tags:
   - periodicity-modeling
   - neurips-2024
 created: 2026-04-28
-last_updated: 2026-05-31
-source_count: 1
+last_updated: 2026-11-24
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -52,6 +52,7 @@ RCF 技术可作为即插即用模块，显著提升现有模型（如 PatchTST�
 - **与 DLinear**：CycleNet/Linear 与 DLinear 使用相同的单层线性骨干，但 RCF 技术带来显著性能提升[^src-cyclenet]
 - **与 Autoformer/FEDformer**：RCF 本质上是一种季节性-趋势分解方法，但显式建模全局周期模式[^src-cyclenet]
 - **与 SparseTSF**：两者都利用周期信息，但 RCF 使用可学习周期而非跨周期稀疏预测[^src-cyclenet]
+- **与 [[source-timebase|TimeBase]]（同槽位对照）**：两者均走轻量周期线性预测路线，但 CycleNet 维护按绝对相位 $t\bmod W$ 查表滚转的全局可学习周期表 $Q$ 做残差剥离与加回，TimeBase 则不做相位查表，而是按周期 $P$ 切段后经正交正则线性层提取 $R=6$ 个时间基直接重构未来分段（参数降至 $0.39\text{K}$ 量级）；两者均依赖周期先验且采用通道独立假设[^src-timebase]
 
 ## 局限性
 
@@ -61,3 +62,4 @@ RCF 技术可作为即插即用模块，显著提升现有模型（如 PatchTST�
 ## 引用
 
 [^src-cyclenet]: [[source-cyclenet]]
+[^src-timebase]: [[source-timebase]]

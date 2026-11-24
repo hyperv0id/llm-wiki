@@ -9,8 +9,8 @@ tags:
   - tpami-2026
   - icml-2024
 created: 2026-04-28
-last_updated: 2026-08-06
-source_count: 2
+last_updated: 2026-11-24
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -56,6 +56,9 @@ SparseTSF 是 IEEE TPAMI 2026 接收的极轻量级时序预测模型，由华�
 | FITS | ~10k | 频域 + 低通滤波 |
 | **SparseTSF** | **<1k** | **跨周期稀疏预测** |
 | CycleNet | ~10k | 可学习周期参数 |
+| [[source-timebase\|TimeBase]] | 0.39k（ECL 720→720） | 段级低秩正交基 |
+
+- **同槽位互斥（[[source-timebase|TimeBase]], ICML 2025）**：两者均按主周期切分历史以避开 $O(LH)$ 点级映射，但 SparseTSF 将序列下采样为周期内子序列并共享单一线性/MLP 头，TimeBase 则改为通过正交正则线性层提取 $R=6$ 个可学习时间基再线性重构未来分段（需周期 $P$ 先验，正文缺组件级独立消融表）[^src-timebase]。
 
 ## 在 PIR 后处理中的表现
 
@@ -65,3 +68,4 @@ SparseTSF 是 IEEE TPAMI 2026 接收的极轻量级时序预测模型，由华�
 
 [^src-sparsetsf]: [[source-sparsetsf]]
 [^src-pir]: [[source-pir]]
+[^src-timebase]: [[source-timebase]]

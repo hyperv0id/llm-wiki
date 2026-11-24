@@ -6,8 +6,8 @@ tags:
   - computational-complexity
   - scalability
 created: 2026-04-29
-last_updated: 2026-08-30
-source_count: 8
+last_updated: 2026-11-24
+source_count: 9
 references:
   - [[source-fast-long-horizon-forecasting]]
 confidence: high
@@ -73,6 +73,7 @@ FaST 提出两个核心技术：
 - **图传播 + 统一时空线性注意力 ([[stgformer|STGformer]], arXiv 2024)**: SGC 式图传播保留 0..k 阶输出，空间/时间共享同一组 QKV 并线性化为分解内积（O(N+T)），单层替代堆叠注意力；论文报告 8600 节点 CA 图批量推理较 STAEformer 100× 加速、99.8% GPU 内存降，该设置下 FLOPs 比值约 0.00131（T=12、d=32、K=3、L=3，Sec IV-D）[^src-stgformer]
 - **随机投影** (RPMixer): MLPs 融合空间特征
 - **空间标识** (STID): 消除空间交互
+- **通道独立参考** ([[source-timebase|TimeBase]]): 段级正交低秩映射（$0.39\text{K}$ 参数），8,600 维 CA 纯时间算力对照（无空间建模）[^src-timebase]
 
 局限：过度简化交互、引入噪声、丢失空间语义
 
@@ -121,6 +122,7 @@ XTraffic 数据集（2024）：基于加州 2023 年交通数据，包含时间�
 - [[stg-attention]] — STG-Attention 机制页
 - [[virtual-nodes-traffic]] — 虚拟节点图改写：以消息传递路径缩短缓解 over-squashing 的长期预测 (arXiv 2025)
 - [[graph-node-clustering]] — 图节点聚类方案全景：拓扑/特征/可学习三类聚类与静态 vs 动态取舍 (analysis)
+- [[source-timebase]] — 通道独立段级低秩正交基预测，8,600 维 CA 大规模多变量纯时间极低算力对照参考 (ICML 2025)
 
 [^src-incident-guided-st-forecasting]: [[source-incident-guided-st-forecasting]]
 [^src-most]: [[source-most]]
@@ -130,3 +132,4 @@ XTraffic 数据集（2024）：基于加州 2023 年交通数据，包含时间�
 [^src-lets-group]: [[source-lets-group]]
 [^src-stgformer]: [[source-stgformer]]
 [^src-virtual-nodes]: [[source-virtual-nodes]]
+[^src-timebase]: [[source-timebase]]

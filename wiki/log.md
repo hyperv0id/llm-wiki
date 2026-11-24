@@ -4697,3 +4697,10 @@ Tier 2 轻量化入库（核心切片未带会议水印、仅引文含 2026 年�
 创建的页面：[[source-horai]]
 更新的页面：[[aurora]]（补同槽位互斥与 Time-MMD 复现对照，source_count 6→7）, [[time-vlm]]（谱系表补瓶颈接力 Δ，source_count 5→6）, [[time-mmd]]（谱系位置补九域评测与互换消融对照，source_count 8→9）, [[multimodal-time-series-forecasting]]（补多模态基础模型与模态边界二维矩阵，source_count 27→28）, [[frequency-pathway-routing]]（路由表补静态频带分工与时频门控特例，source_count 1→2）, [[mixture-of-experts]]（补解码器时频 MoE 架构特例与二维矩阵，source_count 21→22）, [[index]]
 ingest 报告：[[ingest-reports/2026-11-24-horai|WHY 报告]]
+
+
+## [2026-11-24] ingest | TimeBase: The Power of Minimalism in Efficient Long-term Time Series Forecasting
+Tier 2 轻量化入库（ICML 2025, PMLR 267；由周期分段重排、正交正则约束 `Linear(P → R)` 与 `Linear(R → N')` 构成，未为 `timebase` 或 `BasisExtract` 新建 `source_count: 1` 独立页）。针对长时预测模型参数冗余与一维周期序列低秩特性的失配，TimeBase 按主周期 $P$ 切分历史为 $N$ 个不重叠段并提取 $R=6$ 个正交时间基再映射未来分段，将参数降至百参数级（ECL $720\to 720$ 仅 $0.39\text{K}$、CPU 延迟 $0.98\text{ ms}$），并可前置嵌入 PatchTST 削减 $77.7\%\text{–}93.0\%$ MACs；在 17 个常规集取得 16 个 Top-2（ETTh2 例外），主定位为极低算力逼近或持平强基线。证据缺口：正文仅给出基底数 $R$ 消融（$R=2$ 退化、$R\ge 4$ 趋稳）与正交权重曲线，缺乏去掉段级分解或正交正则的独立组件级消融表；PatchTST 插件在 ETTh1/ETTh2（$H=720$）与 Weather（$H=336$）上 MSE 轻微退回，且依赖周期 $P$ 先验、通道独立不建模跨变量依赖。
+创建的页面：[[source-timebase]]
+更新的页面：[[sparsetsf]]（补同槽位互斥对照，source_count 2→3）, [[cyclenet]]（补同槽位对照，source_count 1→2）, [[patchtst]]（补跨槽位前置压缩宿主关系，source_count 12→13）, [[ltsf-linear]]（补瓶颈接力 Δ，source_count 4→5）, [[large-scale-spatial-temporal-graph]]（补 8,600 维 CA 纯时间算力对照参考，source_count 8→9）, [[index]]
+ingest 报告：[[ingest-reports/2026-11-24-timebase|WHY 报告]]

@@ -401,6 +401,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-time-mmd]] — Time-MMD: 9-domain multimodal numeric–text TS dataset + MM-TSFlib; fine-grained alignment & contamination control (NeurIPS 2024 D&B, arXiv:2406.08627v4)
 - [[source-time-moe]] — Time-MoE: 论文称首个稀疏 MoE 时序基础模型，decoder-only + 逐点 token 化 + 多分辨率预测头，2.4B 参数，Time-300B (309B pts)，ICLR 2025
 - [[source-time-vlm]] — Time-VLM: frozen VLM bridges temporal/visual/textual via RAL+VAL+TAL; few/zero-shot strong (ICML 2025, arXiv:2502.04395)
+- [[source-timebase]] — TimeBase: 按主周期切段提取正交约束低秩时间基（$R=6$，$0.39\text{K}$ 参数）线性重构未来并作 PatchTST 前置 token 压缩插件，17 常规集 16 项 Top-2、PatchTST MACs 降 $77.7\%\text{–}93.0\%$（ICML 2025, PMLR 267）
 - [[source-timecap]] — TimeCAP: contextualize, augment, and predict time series events with LLM agents (AAAI 2025 Oral)
 - [[source-timedit]] — TimeDiT: General-purpose Diffusion Transformers for Time Series Foundation Model (KDD 2025)
 - [[source-timegrad]] — TimeGrad: autoregressive denoising diffusion for probabilistic time series forecasting (ICML 2021)
