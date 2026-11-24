@@ -9,8 +9,8 @@ tags:
   - quadratic-form
   - iclr-2026
 created: 2026-07-13
-last_updated: 2026-11-09
-source_count: 2
+last_updated: 2026-11-24
+source_count: 3
 confidence: medium
 status: active
 ---
@@ -48,14 +48,17 @@ See [[quadratic-form-weighted-objective]] for the technique-level formulation an
 
 QDF stays in the likelihood family but *learns* $\Sigma$ for generalization, rather than fixing a Fourier/PCA transform or switching to OT.[^src-qdf] DistDF, by contrast, abandons the likelihood form altogether and matches the joint distribution $W_p(\mathbb{P}_{x,y},\mathbb{P}_{x,\hat y})$ under a Gaussian Bures–Wasserstein metric.[^src-distdf]
 
+- **同槽位目标改造互斥对照（QDF vs [[source-alio|AliO]]）**：两者同为不改 DF 骨干、推理零额外开销的训练目标改造——QDF 在单窗口内通过双层元学习自适应 $T\times T$ 协方差矩阵 $\Sigma$ 修正二次型似然中的步间依赖与异构权重[^src-qdf]；[[source-alio|AliO]]（NeurIPS 2025）则保留逐点 MSE 并在相邻滚动窗口的重叠未来段施加时域与 `FFT` 复频域一致性对齐及单向 stop-gradient Regression Pulling，训练每步需双倍前向与重叠窗 FFT，且常规 MSE 增益集中在初始一致性极差的 ILI（17.4%），ECL/Weather 基本持平[^src-alio]。
+
 ## Links
 
 - Source: [[source-qdf]]
 - Concepts: [[label-autocorrelation]], [[heterogeneous-task-weights]], [[direct-forecast]], [[autocorrelation-bias]]
 - Technique: [[quadratic-form-weighted-objective]]
-- Related: [[fredf]], [[source-fredf]], [[distdf]], [[source-distdf]], [[joint-distribution-wasserstein-alignment]], [[bures-wasserstein]], [[tqn|TQNet]], [[itransformer]]
+- Related: [[fredf]], [[source-fredf]], [[distdf]], [[source-distdf]], [[source-alio]], [[joint-distribution-wasserstein-alignment]], [[bures-wasserstein]], [[tqn|TQNet]], [[itransformer]]
 
 ---
 
 [^src-qdf]: [[source-qdf]]
 [^src-distdf]: [[source-distdf]]
+[^src-alio]: [[source-alio]]

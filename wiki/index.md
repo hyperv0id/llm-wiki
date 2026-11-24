@@ -41,6 +41,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-afe-tfnet]] — AFE-TFNet: adaptive feature extraction time-frequency network for wave height
 - [[source-ainslie-2023-gqa]] — GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints，$H$ 个 query head 分 $G$ 组各共享一份 K/V（$G=1$ 即 MQA、$G=H$ 即 MHA），MHA checkpoint 经组内 mean pooling 加 5% 继续预训练即可转换；T5-XXL 上 GQA-8 平均 47.1 对 MHA-XXL 47.2、每样本 0.28 s 对 1.51 s（Ainslie et al., Google Research, EMNLP 2023, arXiv:2305.13245v3）
 - [[source-alibi]] — ALiBi: attention with linear biases enables input length extrapolation (ICLR 2022)
+- [[source-alio]] — AliO: 相邻滚动窗口重叠未来段时域/FFT 复频域一致性正则 + 单向 stop-gradient Regression Pulling，7 骨干显著压低 TAM（表 1 最高 70.5%），MSE 降错集中在初始一致性极差的 ILI（17.4%）而 ECL/Weather 基本持平，缺组件级独立消融（NeurIPS 2025）
 - [[source-allspark]] — AllSpark: multimodal spatio-temporal general intelligence model with 10 modalities via LaRF (Shao et al., 2024)
 - [[source-alphaflow]] — AlphaFlow: Understanding and Improving MeanFlow Models, MeanFlow 损失分解为轨迹流匹配 + 轨迹一致性、梯度冲突实证、α 统一目标族与课程退火 (arXiv 2025, Snap Research)
 - [[source-armd]] — ARMD: Auto-Regressive Moving Diffusion Models for Time Series Forecasting, ARMA-inspired sliding-window diffusion (AAAI 2025)

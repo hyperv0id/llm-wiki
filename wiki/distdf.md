@@ -11,7 +11,7 @@ tags:
   - iclr-2026
 created: 2026-11-09
 last_updated: 2026-11-24
-source_count: 4
+source_count: 5
 confidence: high
 status: active
 ---
@@ -74,6 +74,7 @@ $$\begin{aligned}
 | [[qdf\|QDF]] | MSE 等价于固定 $\Sigma=I$，忽略步间依赖与异构权重 | 双层元学习二次型似然 $\lVert Y-\hat{Y}\rVert_{\Sigma^{-1}}^2$ | $\Sigma^{-1}$ 非对角元显式建模条件依赖，对角元赋[[heterogeneous-task-weights\|异构任务权重]] | 双层优化 + $T\times T$ Cholesky 参数化[^src-qdf] |
 
 - **跨槽位正交（DistDF vs [[source-renf|ReNF]]）**：两者同以 DF 下未来步条件独立引起的误差与方差为切入点，但作用槽位正交——DistDF 不改骨干，在损失侧以联合分布 [[bures-wasserstein|BW]] 散度混合 MSE 对齐条件分布[^src-distdf]；ReNF 则在架构侧用由短到长逐段拼接（BDO）引入递进约束并配高衰减 EMA 早停，损失仅沿用 TimeBridge 的 $1/n$ 短程加权时频 MAE[^src-renf]。
+- **同槽位互斥对照（DistDF vs [[source-alio|AliO]]）**：两者同为不改预测骨干、推理零开销的 DF 训练目标改进——DistDF 在单窗口 batch 内用联合分布 [[bures-wasserstein|BW]] 散度混合 MSE 对齐历史与未来的条件分布矩[^src-distdf]；[[source-alio|AliO]]（NeurIPS 2025）则通过训练期相邻滑窗双前向，在时域与 `FFT` 复频域对齐跨窗口重叠预测之间的一致性并辅以单向 stop-gradient Regression Pulling，代价是训练每步双倍前向与重叠窗 FFT，且常规 MSE 增益主要集中在初始一致性极差的 ILI，ECL/Weather 基本持平[^src-alio]。
 
 ## 证据
 
@@ -92,8 +93,10 @@ $$\begin{aligned}
 - [[fredf]] · [[frequency-enhanced-direct-forecast]] — 频域边缘去相关的前序路线
 - [[qdf]] · [[quadratic-form-weighted-objective]] — 可学习协方差二次型似然的同槽位对照
 - [[source-renf]] — 由短到长逐段拼接（BDO）与 EMA 架构侧改良的跨槽位正交对照
+- [[source-alio]] — 跨窗口重叠预测时频一致性正则与 Regression Pulling（同槽位互斥对照）
 
 [^src-distdf]: [[source-distdf]]
 [^src-fredf]: [[source-fredf]]
 [^src-qdf]: [[source-qdf]]
 [^src-renf]: [[source-renf]]
+[^src-alio]: [[source-alio]]

@@ -4776,3 +4776,11 @@ Tier 2 轻量化入库（NeurIPS 2026；由局部多项式+季节锚点概率基
 创建的页面：[[source-volarm]]
 更新的页面：[[nsdiff]]（补同槽位互斥对照，source_count 4→5）, [[location-scale-noise-model]]（补白化残差坐标同构对接并规范首段，source_count 1→2）, [[k2vae]]（补两阶段机制对照，source_count 2→3）, [[ddim]]（补 8 步截断条件采样特例，source_count 3→4）, [[instance-normalization]]（补预测端局部白化对照，source_count 11→12）, [[diffusion-model]]（谱系对照表增补条目，source_count 30→31）, [[index]]
 ingest 报告：[[ingest-reports/2026-11-24-volarm|WHY 报告]]
+
+
+
+## [2026-11-24] ingest | AliO: Output Alignment Matters in Long-Term Time Series Forecasting
+Tier 2 轻量化入库（NeurIPS 2025；在训练损失侧附加相邻滚动窗口重叠未来段的时域与 `FFT` 复频域一致性对齐及单向 stop-gradient Regression Pulling，推理零额外开销，未为 `alio` 或 `output-alignment` 新建 `source_count: 1` 独立页）。针对直接多步预测（DF）对相邻滚动窗口在重叠未来步给出相互矛盾预测的问题，AliO 在不改预测骨干的前提下，于训练期同步前向相邻窗口（默认 $l=1, N=2$）并仅回传距真值更远一侧的梯度，以防两路向错误均值坍缩。在 7 类 CI/CD 骨干 $\times$ 8 个数据集上显著压低重叠差异指标 TAM（正文表 1 最高降 70.5%），但常规 MSE 在 ECL/Weather 等数据集基本持平，大幅降错集中在初始一致性极差的 ILI（降 17.4%）。缺口与代价：正文仅给出 $\lambda_T, \lambda_F$ 与 $(l, N)$ 网格敏感性，缺乏「去掉单向 stop-gradient Regression Pulling / 去掉频域对齐」的独立组件消融表；摘要（TAM 最高降 58.2%、MSE 最高降 27.5%）与正文表 1（70.5% / 11.5% / ILI 17.4%）存在口径差异；训练期每步需双前向与重叠窗 FFT，作者自述高波动数据集慎用一致性正则。
+创建的页面：[[source-alio]]
+更新的页面：[[direct-forecast]]（补 DF 前提归属与跨窗口一致性正则，source_count 8→9）, [[distdf]]（补同槽位目标改造互斥对照，source_count 4→5）, [[qdf]]（补同槽位目标改造互斥对照，source_count 2→3）, [[fredf]]（补跨槽位频域损失对象对照，source_count 4→5）, [[frequency-enhanced-direct-forecast]]（补跨槽位频域对齐对象对照，source_count 2→3）, [[patchtst]]（补官方 336 回看实证复现对齐，source_count 17→18）, [[index]]
+ingest 报告：[[ingest-reports/2026-11-24-alio|WHY 报告]]

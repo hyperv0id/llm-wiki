@@ -11,7 +11,7 @@ tags:
   - ICLR-2023
 created: 2026-05-30
 last_updated: 2026-11-24
-source_count: 17
+source_count: 18
 confidence: medium
 status: active
 ---
@@ -117,6 +117,7 @@ PatchTST 是 LSTF 领域的关键转折点 [^src-patchtst]：
 - **去趋势注意力与多尺度下采样（瓶颈接力 $\Delta$）**：[[source-pesd-tsf|PESD-TSF]]（ICML 2026）沿用通道独立时间注意力骨架，先用日历周期乘性门控调制输入，再将注意力 $Q,K$ 替换为 $3\times 1$ 平滑卷积去趋势后的稳态分量（$V$ 保留原始趋势），并接双分支多尺度下采样与池化跨变量注意力；ETTh1（$H=720$）消融表明其主要精度增益源自多尺度层级与串行顺序，而非后端跨变量协同[^src-pesd-tsf]
 - **纯时间 MLP 逐段拼接对比（实证复现对齐）**：[[source-renf|ReNF]] 在 8 个标准 LTSF 基准的同台实证对比中纳入 PatchTST 等基线（作者报告 ReNF 在其中 6 个数据集取得最优 MSE/MAE）；不同于 PatchTST 采用通道独立（CI）与 patch token 注意力[^src-patchtst]，ReNF 以纯时间维深度 MLP 堆叠与由短到长逐段拼接（BDO）实现预测，并沿用 [[timebridge|TimeBridge]] 的 $1/n$ 短程加权时频 MAE 与 EMA 早停[^src-renf]。
 - **非对称去平稳与跨变量协同（瓶颈接力 $\Delta$）**：[[timebridge|TimeBridge]]（ICML 2025）沿用 PatchTST 的分块与变量内通道独立时间注意力骨架，但将同质 $Q/K/V$ 改为「$Q,K$ 取 patch 级平滑去趋势稳态分量、$V$ 保留未去趋势原始表示」以消除短期伪相关并省去反归一化，随后经 MLP 压缩至 $M$ 个时间槽并补入保留非平稳性的跨变量注意力；在 9 个标准 LTSF 基准中 8 项最优，但在 ETTh2 上仍逊于 ModernTCN（$0.341$ vs $0.322$）与 PatchTST[^src-timebridge]。
+- **跨窗口一致性正则对照（实证复现对齐）**：[[source-alio|AliO]]（NeurIPS 2025）在 7 类 CI/CD 骨干上验证相邻滚动窗口重叠输出一致性损失，其中 PatchTST 沿用官方 $L=336$ 回看配置参与主表复现对齐；接入 AliO 可大幅压低跨窗口重叠差异 TAM，但常规 MSE 在 ECL/Weather 基本持平、主要在初始一致性极差的 ILI 上降低（17.4%），且论文缺独立组件消融表[^src-alio]。
 - **核心概念**：[[patch-based-tokenization]], [[channel-independence]], [[instance-normalization]], [[lstf]]
 - **自监督/预训练**：[[mae|MAE]], [[videomae]], [[timesfm|TimesFM]], [[chronos]]
 
@@ -137,3 +138,4 @@ PatchTST 是 LSTF 领域的关键转折点 [^src-patchtst]：
 [^src-pesd-tsf]: [[source-pesd-tsf]]
 [^src-renf]: [[source-renf]]
 [^src-timebridge]: [[source-timebridge]]
+[^src-alio]: [[source-alio]]
