@@ -8,7 +8,7 @@ tags:
   - multivariate
 created: 2026-04-28
 last_updated: 2026-11-24
-source_count: 21
+source_count: 22
 confidence: high
 status: active
 ---
@@ -67,6 +67,8 @@ CVPE (Cross-Variate Patch Embedding) 提出一种折中策略——仅在最轻�
 [[crosslinear|CrossLinear]] (KDD 2025) 给出外生 many-to-one 设定下的同类折中：用单层 1D 卷积的 [[cross-correlation-embedding|cross-correlation embedding]] 仅注入**时不变、直接**的 endo–exo 依赖，再以可学习残差混合回内生序列，后续仍走 CI 友好的 patch + linear head；复杂度保持 O(T)，并可即插提升 SparseTSF/RLinear/PatchTST 等 CI 骨干 [^src-crosslinear]。
 
 [[source-xlinear|XLinear]]（AAAI 2026）则在同处线性级开销的外生设定中给出另一种**复现与机制对照**折中：它同样不做 $N\times N$ 变量自注意力，但也不依赖完全 CI 或 1D 卷积嵌入，而是仅设置一个可学习全局 token 充当通道间瓶颈，先与内生序列沿时间轴做 `MLP + Sigmoid` 门控滤波，再沿变量轴与外生序列做门控聚合后直连预测；该单通道瓶颈在多数常规外生基准上以 $O(Td)$ 开销逼近或胜过注意力外生模型，但在 862 维 Traffic Many-to-Many 上因去噪容量不足而落后于 [[source-timexer|TimeXer]] 与 [[itransformer|iTransformer]][^src-xlinear]。
+
+[[source-cats|CATS]]（ICML 2024）从**内部构造虚拟外生通道**提供另一种演进折中：它在保留通道独立 2 层 MLP 预测器主体的同时，从原始多变量序列（OTS）经 8 类异构卷积、线性与嵌入构造器生成虚拟辅助外生序列（ATS），把跨序列交互搬运至辅助通道并行预测，再以 OTS 残差捷径、连续性平滑损失与通道/时间稀疏门控过滤噪声[^src-cats]。消融呈强弱耦合反转：在强耦合合成集 Multi 上移除通道+时间稀疏退化最重（158%），而在弱耦合真实集 ETTh2 上移除 OTS shortcut 退化最重（110%，其余仅 103%–105%），表明其可通过稀疏门控按场景退回纯单变量 MLP[^src-cats]。
 
 ### CPiRi：CI 与 CD 的深度融合
 
@@ -128,6 +130,7 @@ CI 只规定逐序列处理，不规定超参在序列间共享多少。[[search
 - **CVPE 折中**：CI backbone + patch 级 CD 注入，保留鲁棒性同时增加跨变量容量 [^src-cvpe-2025]
 - **CrossLinear 折中**：CI 时序骨干 + 1D conv 外生交叉相关残差注入（外生 many-to-one）[^src-crosslinear]
 - **XLinear 折中**：时间/变量双 MLP 门控 + 单全局 token 通道瓶颈注入外生信号（复杂度 $O(Td)$），862 维高维仍落后于 TimeXer 与 iTransformer[^src-xlinear]
+- **CATS 折中**：保留 CI 共享 2 层 MLP 预测器 + 8 类异构构造器生成内部虚拟辅助外生序列（ATS）及 OTS 残差捷径，靠通道/时间稀疏门控按耦合强弱退回单变量[^src-cats]
 - **Zeus**：CI + point tokenization + RevIN 的 tuning-free 多任务基础模型（ICML 2026），局限为未显式建模变量间相关 [^src-2607-01918]
 - **VETime**：CI 独立季-趋分解 + 实例自适应 Gamma 校正 + GCD 统一折叠周期的零样本多变量视觉增强架构，局限为缺少跨变量依赖建模且受制于固定画布物理容量（~10 变量）[^src-2602-16681-vetime]
 
@@ -160,6 +163,7 @@ CI 只规定逐序列处理，不规定超参在序列间共享多少。[[search
 - 相关：[[source-xlinear|XLinear]] — 单全局 token 门控注入外生变量的线性级折中方案（AAAI 2026）[^src-xlinear]
 - 相关：[[source-pesd-tsf|PESD-TSF]] — 跨槽位正交（前段保持 CI 去趋势时间注意力，后段经时间 GAP 引入变量维协同，ICML 2026）[^src-pesd-tsf]
 - 相关：[[timebridge|TimeBridge]] — 跨槽位正交（变量内 CI 去趋势稳态 $Q/K$ 注意力，压缩后切换跨变量非平稳注意力，ICML 2025）[^src-timebridge]
+- 相关：[[source-cats|CATS]] — 演进与折衷（以内部构造的虚拟辅助外生序列 + 稀疏门控补回跨序列信息，ICML 2024）[^src-cats]
 
 [^src-simdiff]: [[source-simdiff]]
 [^src-patchtst]: [[source-patchtst]]
@@ -182,3 +186,4 @@ CI 只规定逐序列处理，不规定超参在序列间共享多少。[[search
 [^src-xlinear]: [[source-xlinear]]
 [^src-pesd-tsf]: [[source-pesd-tsf]]
 [^src-timebridge]: [[source-timebridge]]
+[^src-cats]: [[source-cats]]

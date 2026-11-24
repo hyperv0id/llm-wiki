@@ -10,7 +10,7 @@ tags:
   - transformer-critique
 created: 2026-05-30
 last_updated: 2026-11-24
-source_count: 6
+source_count: 7
 confidence: medium
 status: active
 ---
@@ -80,6 +80,7 @@ The paper argues that long-term forecasting depends primarily on capturing **tre
 - 后续统一与重估：Toner & Darlow 证明 DLinear、NLinear 及相关变体功能上等价于增强特征上的无约束线性回归，闭式 OLS 可匹敌或超过 SGD 训练的同款模型；[[searchcast]]（arXiv:2606.27282）沿此把模型固定为 Ridge、把预算花在预处理搜索上，8 个 benchmark 中 7 个取得线性类最优平均 MSE（ETTh2 与 FITS 打平 0.334 vs 0.333），并在 6/8 上超过非线性基线，论文据此主张线性基线的弱势反映预处理欠调而非容量不足[^src-2606-27282-ltsf-linear-models]
 - 瓶颈接力 $\Delta$（段级低秩基压缩）：[[source-timebase|TimeBase]]（ICML 2025）去掉 DLinear 的 MovingAvg 分解，按主周期 $P$ 将历史序列重排为 $N$ 个不重叠段，以正交正则线性层提取 $R=6$ 个时间基后再线性重构未来分段，将 $O(LH)$ 点级全连接压缩至 $O(NR)$ 段级低秩映射（ECL $720\to 720$ 仅 $0.39\text{K}$ 参数、$0.98\text{ ms}$ CPU 延迟），以极低开销逼近或持平强基线；代价是依赖周期 $P$ 先验且通道独立不建模跨变量依赖[^src-timebase]
 - 演进对照（极低参数因子化）：[[source-mixlinear|MixLinear]]（ICLR 2026）将 $O(LH)$ 点级稠密线性层压缩至 0.1K（45–176 参数）因子化表示——先按步长下采样，再把时域 2D 分段双线性分解与频域秩-2 复投影相加；在 8 基准上 MSE 与 SparseTSF/FITS 同量级，但主表只报 MSE 不报 MAE 且低维与高维集对时频两支依赖明显分化[^src-mixlinear]
+- 复现口径对照与插件宿主：[[source-cats|CATS]]（ICML 2024）可作外围包装接入 DLinear 与 [[autoformer|Autoformer]] 等骨干，将内部构造的 8 类虚拟辅助外生序列（ATS）、OTS 残差捷径与通道/时间稀疏门控注入原预测器，作者报告其显著改善 DLinear；同时在标准基准对比中，CATS 固定输入长度 $L_I=720$（配可学习时间稀疏截断），而包括 DLinear 在内的基线从 $\{96,192,336,720\}$ 调优，两者输入窗口口径存在差异[^src-cats]
 
 [^src-zeng-2022-are-transformers-effective]: [[source-zeng-2022-are-transformers-effective]]
 [^src-rstib]: [[source-rstib-mlp]]
@@ -87,3 +88,4 @@ The paper argues that long-term forecasting depends primarily on capturing **tre
 [^src-2606-27282-ltsf-linear-models]: [[source-2606-27282-ltsf-linear-models]]
 [^src-timebase]: [[source-timebase]]
 [^src-mixlinear]: [[source-mixlinear]]
+[^src-cats]: [[source-cats]]

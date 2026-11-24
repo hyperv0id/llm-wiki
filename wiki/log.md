@@ -4798,3 +4798,10 @@ Tier 1 入库（核心切片未带会议水印、引文含 2026 年工作，本�
 创建的页面：[[fev-bench]], [[source-fev-bench]]
 更新的页面：[[probts]]（补瓶颈接力 Δ，source_count 1→2）, [[timesx]]（补同槽位防泄露互斥对照与表行，source_count 5→6）, [[tsfm-covariate-adaptation-comparison]]（补零样本验收尺节与二维矩阵并清理 2 条未引旧脚注，source_count 11→12）, [[baguan-ts]]（回链并将纯文本 `fev-bench-cov` 转为 `[[fev-bench|fev-bench-cov]]`，source_count 9→10）, [[chronos]]（补 Chronos-2 协变量跃升与 Chronos-Bolt 插补锚点，source_count 11→12）, [[tabpfn-ts]]（补 42 任务动态协变量开关增益对齐，source_count 2→3）, [[tirex]]（补与 TimesFM-2.5 的 95% CI 不可分实证对齐，source_count 5→6）, [[timesfm]]（补与 TiRex 95% CI 不可分实证对齐，source_count 14→15）, [[index]]
 ingest 报告：[[ingest-reports/2026-11-24-fev-bench|WHY 报告]]
+
+
+## [2026-11-24] ingest | CATS: Enhancing Multivariate Time Series Forecasting by Constructing Auxiliary Time Series as Exogenous Variables
+Tier 2 轻量化入库（ICML 2024, PMLR 235；基于八类异构 `Conv1d`/线性/嵌入构造器生成虚拟辅助外生序列 ATS、共享 2 层 MLP、OTS 残差捷径、连续性平滑损失与通道/时间稀疏截断既有积木重组，未为 `cats`、`ATS`、`OTS shortcut` 新建 `source_count: 1` 独立页）。针对纯多变量模型易受跨序列伪相关污染而通道独立（CI）骨干丢失跨通道交互的问题，CATS 将跨序列交互搬运至内部自造的 ATS 辅助通道上与原序列并行预测。实验在 9 个标准集（36 设定）取 28/36 最优，但平均相对 Repeat MSE 仅略优 ARM（43.9% vs 44.9%，PatchTST 55.4%），拉开差距集中在自建强耦合合成集 Multi20–200（56%–63% vs ARM 64%–78%）；消融呈强弱耦合反转——Multi 上去通道+时间稀疏最狠（158%）、去构造器异质性次之（146%）、去连续性损失（142%），ETTh2 反而是去 OTS shortcut 最狠（110% vs 其余 103%–105%），且配 Mean pooling 亦有效表明增益不在 MLP 容量。缺口：ATS 数量预先固定无法训练中自动扩展；本质无真实外部外生数据源；CATS 固定 $L_I=720$ 配时间截断而基线按 $\{96,192,336,720\}$ 调优，缺等算力对照且主表只报平均 MSE/MAE。
+创建的页面：[[source-cats]]
+更新的页面：[[source-timexer]]（补真实外部外生 vs 内部自造 ATS 同槽位互斥，source_count 5→6）, [[crosslinear]]（补同槽位互斥对照与 Links，source_count 4→5）, [[channel-independence]]（补 CI/CD 演进折衷与强弱耦合反转消融，source_count 21→22）, [[patchtst]]（补同槽位对比与窗口口径差异，source_count 18→19）, [[ltsf-linear]]（补 DLinear 插件宿主增益与输入口径对照，source_count 6→7）, [[index]]
+ingest 报告：[[ingest-reports/2026-11-24-cats|WHY 报告]]

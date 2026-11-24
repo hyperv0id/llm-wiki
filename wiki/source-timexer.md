@@ -8,7 +8,7 @@ tags:
   - 2024
 created: 2026-07-07
 last_updated: 2026-11-24
-source_count: 5
+source_count: 6
 confidence: medium
 status: active
 ---
@@ -69,9 +69,11 @@ TimeXer 的核心洞见在于：内生变量和外生变量需要不同粒度的
 - [[source-xlinear|XLinear]] — **同槽位互斥**（AAAI 2026）：沿用 TimeXer 的可学习全局 token 桥梁设计，但将 patch 自注意力与交叉注意力全部替换为时间/变量双层 `MLP + Sigmoid` 门控，复杂度降至 $O(Td)$（Weather 上提速 $\ge 39.3\%$、降显存约 $43.7\%$），多数设置逼近或胜过 TimeXer，但在 862 维 Traffic Many-to-Many 上落后于 TimeXer（$0.432$ vs $0.428$）[^src-xlinear]
 - [[slide|SLiDE]] — **同生态位对照**（NeurIPS 2026）：去掉 TimeXer 的内生 patch 自注意力与外生交叉注意力，改用历史编码与未来滚动共享的分块线性转移阵 $W$ 加纯加性外生推力 $\operatorname{MLP}_u(u_\tau)$；推理速度明显快于 TimeXer（接近 TSMixer），在 EPF-5、Favorita 与 Bouc-Wen 8 项任务中平均排名 1.87 居首，并在 EPF-DE OOR 上相对降错约 20%[^src-slide]
 - [[source-sonnet|Sonnet]] — **同槽位互斥**（AAAI 2026）：TimeXer 采用内生 patch token + 可学习全局 token 与外生 variate token 做时域交叉注意力；Sonnet 改用可学习调制小波抽取 $K$ 频带特征，沿变量轴做 `FFT` 互谱相干注意力（MVCA）替代点积，再接酉约束 Koopman 一步演化；需注意 Sonnet 主表按预测窗末单点 $\hat{y}_{t+H}$ 评测（整窗对比推至附录），且在 6 外生短跨度 ETT 集上偏弱[^src-sonnet]
+- [[source-cats|CATS]] — **同槽位互斥**（ICML 2024）：TimeXer 面向真实外部外生变量，通过内生 patch token 与外生 variate token 做交叉注意力融合[^src-timexer]；CATS 在无真实外部外生数据源时，从原始多变量序列内部以 8 类异构卷积、线性与嵌入构造器生成虚拟辅助外生序列（ATS），接共享 2 层 MLP、OTS 残差捷径与通道/时间稀疏门控抑制伪相关，缺真实外部外生输入且 ATS 数量预先固定[^src-cats]
 
 [^src-timexer]: [[source-timexer]]
 [^src-timeseed]: [[source-timeseed]]
 [^src-xlinear]: [[source-xlinear]]
 [^src-slide]: [[source-slide]]
 [^src-sonnet]: [[source-sonnet]]
+[^src-cats]: [[source-cats]]

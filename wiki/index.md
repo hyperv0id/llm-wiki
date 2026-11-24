@@ -61,6 +61,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-bluuuuue-reparameterization-trick]] — 数学直觉系列（二）：VAE与重参数化——将不可逆的随机采样重构为可微的确定性变换 (bluuuuue, 小红书)
 - [[source-bluuuuue-scaling-factor-intuition]] — 数学直觉系列（一）：缩放因子1/√dₖ——注意力机制的数值稳定性条件 (bluuuuue, 小红书)
 - [[source-cast]] — CaST: Causal Spatio-Temporal Neural Network for STG Forecasting, SCM + back-door adjustment (temporal OoD) + front-door adjustment with Hodge-Laplacian (dynamic spatial causation), NeurIPS 2023
+- [[source-cats]] — CATS: 8 类异构卷积/线性/嵌入构造器从原序列自造虚拟辅助外生序列（ATS）+ 共享 2 层 MLP + OTS shortcut + 连续性损失与双维稀疏截断，9 集平均相对 MSE 仅略优 ARM（43.9% vs 44.9%）而主差距集中在强耦合合成集（ICML 2024, PMLR 235）
 - [[source-causal-llm]] — Causal-LLM: Spatiotemporal Foundation Model with Predictive and Interpretable Capabilities
 - [[source-causalx]] — CausalX: causally-interpretable plug-and-play multi-modal ST forecasting, multi-source causal constraints (Granger/do-calculus/TDMI/VAE) + diffusion graph refinement, ICML 2026
 - [[source-cbsa]] — CBSA: Towards Interpretable and Efficient Attention (NeurIPS 2025)

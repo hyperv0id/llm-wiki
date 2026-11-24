@@ -9,7 +9,7 @@ tags:
   - kdd-2025
 created: 2026-07-13
 last_updated: 2026-11-24
-source_count: 4
+source_count: 5
 confidence: high
 status: active
 ---
@@ -47,12 +47,13 @@ On 12 exogenous benchmarks (ECL, Weather, ETT, Traffic, EPF markets), CrossLinea
 - vs [[source-timeseed|TimeSeed]]: **同槽位互斥与场景分支** (ICML 2026) — CrossLinear applies 1D-conv cross-correlation residual fusion assuming complete endogenous history; TimeSeed targets extreme endogenous sparsity (4% or single point) by replacing variable-axis attention/conv with MovingAvg + RFFT band-split Linear aggregation to reconstruct complete endogenous history before linear forecasting (~0.19M params, 10.5 MB), though two-step imputation + PatchTST outperforms it on ETTm1 (0.041 vs 0.068) and TSFMs are untested.[^src-timeseed]
 - vs [[source-xlinear|XLinear]]: **同槽位互斥** (AAAI 2026) — Both sit in the $O(T)$ linear-complexity numerical exogenous camp; CrossLinear injects time-invariant dependencies via 1D-conv cross-correlation residual embedding plus a patch linear head, whereas XLinear replaces attention with a learnable global token driven by temporal and variate MLP+sigmoid gates, though XLinear trails TimeXer ($0.432$ vs $0.428$) and iTransformer on 862-variate Traffic Many-to-Many due to limited single-token denoising capacity.[^src-xlinear]
 - vs [[source-sonnet|Sonnet]]: **同槽位对比与漏测指针** (AAAI 2026) — 同属外生条件时间序列预测，CrossLinear 用单层 1D 卷积跨相关嵌入注入时不变直接依赖（复杂度 $O(T)$）；Sonnet 改以 $K$ 个可学习调制小波、变量轴 `FFT` 互谱相干注意力（MVCA）与每次前向 `QR` 分解的酉约束 Koopman 一步演化解码窗末单点 $\hat{y}_{t+H}$。Sonnet 主文漏测 CrossLinear 等同期外生线性强基线，且缺实测显存与耗时对比。[^src-sonnet]
+- vs [[source-cats|CATS]]: **同槽位互斥** (ICML 2024) — CrossLinear 面向有真实外部外生变量的多对一预测，用单层 1D 卷积跨相关残差嵌入注入时不变直接依赖（复杂度 $O(T)$）；CATS 则在无真实外部外生数据源时，从原始多变量序列内部经 8 类异构构造器生成虚拟辅助外生序列（ATS），再与原序列共享 2 层 MLP 并配合 OTS 残差捷径、连续性平滑损失与通道/时间稀疏门控抑制伪相关，评测固定 $L_I=720$ 配时间截断且主要领先集中于自建强耦合合成集。[^src-cats]
 
 ## Links
 
 - Source: [[source-crosslinear]]
 - Technique: [[cross-correlation-embedding]]
-- Related: [[source-timexer]], [[source-timeseed]], [[source-xlinear]], [[source-sonnet]], [[source-exost]], [[source-exollm]], [[source-exotst]], [[source-gcgnet]], [[channel-independence]], [[patch-based-tokenization]]
+- Related: [[source-timexer]], [[source-timeseed]], [[source-xlinear]], [[source-sonnet]], [[source-cats]], [[source-exost]], [[source-exollm]], [[source-exotst]], [[source-gcgnet]], [[channel-independence]], [[patch-based-tokenization]]
 
 ---
 
@@ -60,3 +61,4 @@ On 12 exogenous benchmarks (ECL, Weather, ETT, Traffic, EPF markets), CrossLinea
 [^src-timeseed]: [[source-timeseed]]
 [^src-xlinear]: [[source-xlinear]]
 [^src-sonnet]: [[source-sonnet]]
+[^src-cats]: [[source-cats]]
