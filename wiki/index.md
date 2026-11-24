@@ -349,6 +349,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-snr-t-bias]] — Elucidating the SNR-t Bias of Diffusion Probabilistic Models (Yu et al., CVPR 2026, AMAP Alibaba + LZU)
 - [[source-soft-shape]] — SoftShape: Learning Soft Sparse Shapes for Efficient Time-Series Classification（ICML 2025），shape 级 MoE（k=1、专家数=类别数）+ Inception 共享专家 + 变异系数负载均衡
 - [[source-solar-vlm]] — Solar-VLM: multimodal vision-language framework fusing satellite imagery, text weather reports, and time series with GAT + cross-site attention for solar power spatiotemporal prediction (arXiv 2026)
+- [[source-sonnet]] — Sonnet: 可学习调制小波 + 变量轴 `FFT` 互谱相干注意力（MVCA）+ `QR` 酉约束 Koopman 一步频谱演化，主表按窗末单点 $\hat{y}_{t+H}$ 评测（12 集 47 项 34 项最优），MVCA 替换增益来自谱相干打分替代点积，小波与酉约束消融推至附录且 6 外生 ETT 偏弱（Shu & Lampos, AAAI 2026, arXiv:2505.15312）
 - [[source-sparsetsf]] — SparseTSF: lightweight LTSF with <1k parameters via sparse modeling (TPAMI 2026 & ICML 2024 Oral)
 - [[source-spectral-bias-learning-dynamics]] — An Analytical Theory of Spectral Bias in the Learning Dynamics of Diffusion Models (NeurIPS 2025, Harvard)
 - [[source-srsnet]] — SRSNet / SRS: Selective Representation Space, adaptive patch selection + reassembly plugin for LTSF (NeurIPS 2025, arXiv:2510.14510)

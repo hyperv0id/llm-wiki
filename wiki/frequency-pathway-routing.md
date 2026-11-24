@@ -9,7 +9,7 @@ tags:
   - adaptive-computation
 created: 2026-09-16
 last_updated: 2026-11-24
-source_count: 3
+source_count: 4
 confidence: medium
 status: active
 ---
@@ -53,8 +53,9 @@ $$\hat{Y}=\sum_{k=1}^{|\tilde{I}|}\alpha_k\cdot\hat{Y}^{(\tilde{I}_k)},\qquad \s
 | [[memory-augmented-gating\|TESTAM 记忆门控]] | 元节点库 | 记忆库检索式门控 | 无 |
 | [[source-horai\|HORAI]]（**架构特例**） | 输入低/中高频双带 + FFN 时频分支 | 输入端按 $\alpha=0.05$ 静态二分并固定配对文本/折线图；解码端以门控 $g$ 混合时域 MLP 与 `FFT` 频域 MLP 后进 Top-$K$ MoE[^src-horai] | 无显式频率均衡损失 |
 | [[source-dsr-tsf\|DSR-TSF]]（**同构对比**） | $R$ 条可学习时域周期响应基 | 窗级 `rFFT` Top-$K$ 谱特征 + 静态先验温度 `softmax` 全选加权[^src-dsr-tsf] | 无负载均衡损失 |
+| [[source-sonnet\|Sonnet]]（**跨槽位正交**） | $K$ 个可学习调制小波频带原子 | 沿变量轴做 `FFT` 互谱相干打分并用 `softmax` 全原子加权（非稀疏路由）[^src-sonnet] | 无（频带数 $K$ 固定） |
 
-共同点是把"用哪个子模块"变成输入相关的决策；AdaFre 的特点是把选择维度固定为时间频率，并与空间侧同频率的谱嵌入绑定[^src-adafre]。相对 AdaFre 按节点稀疏路由多频带，[[source-horai|HORAI]] 在输入侧采用静态二值频带–模态配对（Band–Modality 互换消融中 Social Good 误差从 $0.819$ 恶化至 $1.237$，差于删模态的 $1.058$，证实固定配对先验是核心增益来源，此处属跨槽位架构特例对照），仅在解码器 FFN 内部保留输入相关的时频门控权重 $g$[^src-horai]。同为频谱特征条件路由的 [[source-dsr-tsf|DSR-TSF]] 则构成了轻量单变量侧的**同构对比**：它同样提取 `rFFT` 频谱信号驱动门控，但选通对象是时域周期响应基而非独立频带，且对全部分支做含静态先验的软加权全选、不设均衡损失（核心消融显示其下游低秩头约束的贡献略高于动态路由）[^src-dsr-tsf]。
+共同点是把"用哪个子模块"变成输入相关的决策；AdaFre 的特点是把选择维度固定为时间频率，并与空间侧同频率的谱嵌入绑定[^src-adafre]。相对 AdaFre 按节点稀疏路由多频带，[[source-horai|HORAI]] 在输入侧采用静态二值频带–模态配对（Band–Modality 互换消融中 Social Good 误差从 $0.819$ 恶化至 $1.237$，差于删模态的 $1.058$，证实固定配对先验是核心增益来源，此处属跨槽位架构特例对照），仅在解码器 FFN 内部保留输入相关的时频门控权重 $g$[^src-horai]。同为频谱特征条件路由的 [[source-dsr-tsf|DSR-TSF]] 则构成了轻量单变量侧的**同构对比**：它同样提取 `rFFT` 频谱信号驱动门控，但选通对象是时域周期响应基而非独立频带，且对全部分支做含静态先验的软加权全选、不设均衡损失（核心消融显示其下游低秩头约束的贡献略高于动态路由）[^src-dsr-tsf]。此外，[[source-sonnet|Sonnet]] 构成了**跨槽位正交**对照：它同样构造多频带表示（$K$ 个可学习调制小波原子），但不做节点级稀疏 Top-$K$ 频带选择，而是令 $K$ 个频带充当注意力头、沿变量轴计算 `FFT` 归一化互谱相干后以 `softmax` 加权外生特征并接酉 Koopman 一步演化；其替换试验表明增益主由「变量轴频谱相干打分替代点积」驱动，而小波原子与酉约束的独立消融在 AAAI 正文缺位[^src-sonnet]。
 
 ## 使用边界
 
@@ -72,7 +73,9 @@ $$\hat{Y}=\sum_{k=1}^{|\tilde{I}|}\alpha_k\cdot\hat{Y}^{(\tilde{I}_k)},\qquad \s
 - [[source-adafre]] — 源文件摘要
 - [[source-horai]] — 静态频带–模态分工与解码端时频门控 MoE 架构特例对照
 - [[source-dsr-tsf]] — 窗级 `rFFT` 特征软路由时域响应基（同构对比）
+- [[source-sonnet]] — 可学习调制小波与变量轴 `FFT` 频谱相干加权（跨槽位正交）
 
 [^src-adafre]: [[source-adafre]]
 [^src-horai]: [[source-horai]]
 [^src-dsr-tsf]: [[source-dsr-tsf]]
+[^src-sonnet]: [[source-sonnet]]

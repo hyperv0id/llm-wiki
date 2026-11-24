@@ -4762,3 +4762,10 @@ Tier 1 入库（ICML 2025, PMLR 267；建立独立机制页与源摘要页，未
 创建的页面：[[timebridge]], [[source-timebridge]]
 更新的页面：[[source-pesd-tsf]]（补 `IntAttention` 继承关系与瓶颈接力 Δ，source_count 1→2）, [[source-renf]]（补时频 MAE 损失复用与 Traffic 0.357 vs 0.365 / FLOPs 复现对照，source_count 1→2）, [[itransformer]]（补同槽位互斥对照，source_count 5→6）, [[patchtst]]（补瓶颈接力 Δ，source_count 16→17）, [[timemixer]]（补同槽位互斥与复现口径对照，source_count 6→7）, [[channel-independence]]（补跨槽位正交阶段分工，source_count 20→21）, [[instance-normalization]]（补特例演进对照，source_count 10→11）, [[dataset-stationarity-estimation]]（补跨槽位正交对照，source_count 1→2）, [[index]]
 ingest 报告：[[ingest-reports/2026-11-24-timebridge|WHY 报告]]
+
+
+## [2026-11-24] ingest | Sonnet: Spectral Operator Neural Network for Multivariable Time Series Forecasting
+Tier 2 轻量化入库（AAAI 2026, arXiv:2505.15312；由可学习调制小波、变量轴 `FFT` 互谱相干注意力 MVCA 与 `QR` 酉约束 Koopman 一步演化组合而成，未为 `sonnet` 或 `MVCA` 新建 `source_count: 1` 独立页）。针对外生变量预测价值随频时动态变化、常规点积注意力易受幅度起伏与非平稳共漂误导的问题，Sonnet 先以 $K$ 个调制小波抽取频带原子特征，再沿变量轴计算互谱相干打分加权外生信息，随后经酉参数化 Koopman 算子 $\mathcal{K}=UDU^\dagger$ 一次性推进频谱演化并由三层 1D 卷积解码窗末单点 $\hat{y}_{t+H}$。主表（单点 $\hat{y}_{t+H}$ 口径，整窗对比推至 arXiv 附录 E.8）在 12 集 47 项任务取得 34 项最优（较 DeformTime 平均降 MAE $2.2\%$）；MVCA 替换 PatchTST/Samformer/iTransformer 点积在 ILI 上平均降 MAE $10.7\%$，但删去原注意力不掉点甚至个别步长更好，表明涨点在频谱相干打分替代点积而非注意力容量。缺口与负结果：可学习小波与酉约束 Koopman 的独立消融推至 arXiv 附录 E.3（AAAI 正文无法判断哪一子模块掉点最狠）；在 6 外生短跨度 ETT 集上偏弱（ETTh2 $H=720$ $0.4335$ vs $0.3640$）；内部替换 FEDformer MAE 异常升至约 $6$（作者报告存疑）；漏测 [[crosslinear|CrossLinear]] 且缺实测显存与耗时对比。
+创建的页面：[[source-sonnet]]
+更新的页面：[[source-timexer]]（补同槽位互斥对照，source_count 4→5）, [[itransformer]]（补同槽位互斥与 MVCA 替换归因，source_count 6→7）, [[crosslinear]]（补同槽位对比与漏测指针，source_count 3→4）, [[koopman-linearization-for-forecasting]]（二维矩阵与正文补酉谱一步演化特例，source_count 3→4）, [[frequency-pathway-routing]]（对照表与正文补跨槽位正交，source_count 3→4）, [[fedformer]]（补内部替换异常退化复现疑点，source_count 3→4）, [[index]]
+ingest 报告：[[ingest-reports/2026-11-24-sonnet|WHY 报告]]

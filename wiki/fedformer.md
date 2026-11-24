@@ -11,8 +11,8 @@ tags:
   - ICML-2022
   - alibaba
 created: 2026-04-28
-last_updated: 2026-05-30
-source_count: 3
+last_updated: 2026-11-24
+source_count: 4
 confidence: high
 status: active
 ---
@@ -108,7 +108,9 @@ Random mode selection consistently outperforms fixed low-frequency selection acr
 - **[[ltsf-linear|LTSF-Linear]]** — Zeng et al. (2022) showed that FEDformer is the most competitive Transformer on ETTh1 due to its frequency-based time series inductive bias. However, LTSF-Linear still outperforms FEDformer on most benchmarks by 20%–50%. FEDformer's performance drops 73.28% when input order is shuffled on ETTh1, indicating some temporal information extraction via frequency processing[^src-zeng-2022-are-transformers-effective].
 
 - [[diffusion-frequency-domain-theory]] — 频域理论统一视角（问题演化叙事）
+- **[[source-sonnet|Sonnet]]**（AAAI 2026，**复现口径疑点**）— Sonnet 在内部模块替换消融中将自身主干替换为 FEDformer 后报告 MAE 异常升至约 $6$（其余替换基线在 $1.5\text{–}2.7$）；鉴于 Sonnet 主表按窗末单点 $\hat{y}_{t+H}$ 评测且该退化幅度显著偏离常规基准，作者报告的这一替换结果存疑，不宜作为 FEDformer 在常规全窗设定下的性能判据[^src-sonnet]。
 
 [^src-fedformer]: [[source-fedformer]]
 [^src-zhou-informer-2021]: [[source-zhou-informer-2021]]
 [^src-zeng-2022-are-transformers-effective]: [[source-zeng-2022-are-transformers-effective]]
+[^src-sonnet]: [[source-sonnet]]

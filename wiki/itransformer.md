@@ -8,7 +8,7 @@ tags:
   - ICLR-2024
 created: 2026-05-30
 last_updated: 2026-11-24
-source_count: 6
+source_count: 7
 confidence: medium
 status: active
 ---
@@ -84,6 +84,7 @@ iTransformer 属于论文定义的第四类 Transformer 修改：仅改架构、
 - [[source-xlinear|XLinear]] — **复现口径与机制对照**（AAAI 2026）：将 $N\times N$ 变量间自注意力压缩为单全局 token 门控通道以实现 $O(Td)$ 线性级外生融合，在常规数据集占优，但在 862 维 Traffic Many-to-Many 上因单全局 token 容量受限而落后于 iTransformer 与 [[source-timexer|TimeXer]][^src-xlinear]
 - [[source-pesd-tsf|PESD-TSF]] — **同构退化特例**（ICML 2026）：前端经日历周期乘性门控、去趋势稳态时间注意力与双分支下采样后，在变量交互模块先沿时间维做全局平均池化（GAP）再执行变量维自注意力，可视作 iTransformer 整序列线性投影的池化压缩特例；在 5,826 维 Mobility 上将显存与耗时由 iTransformer 的 $19.30\text{ GB}$ / $30.76\text{ s/epoch}$ 降至 $8.37\text{ GB}$ / $15.56\text{ s/epoch}$，代价是抹平时间分辨率且仅捕获时不变协同（且该数据集未报告预测精度）[^src-pesd-tsf]
 - [[timebridge|TimeBridge]] — **同槽位互斥对照**（ICML 2025）：iTransformer 将整条变量序列压为单个 variate token 做全局跨变量自注意力；TimeBridge 则先执行变量内 $Q/K$ 去趋势稳态时间注意力，再经 MLP 将时间块压缩至 $M$ 个槽位并在各槽位上保留非平稳性执行跨变量注意力（复杂度 $\mathcal{O}(C^2 M)$），在保留局部时间槽分辨率的同时捕获长期协整，但在高维 Traffic（$862$ 维）上计算开销显著上升[^src-timebridge]
+- [[source-sonnet|Sonnet]] — **同槽位互斥对照**（AAAI 2026）：iTransformer 将整条变量序列压为单个 variate token 做点积自注意力；Sonnet 保留完整时间长度分辨率 $L$，在 $K$ 个可学习调制小波频带上沿变量轴做 `FFT` 互谱相干打分（MVCA）替代点积。将 MVCA 替换 iTransformer、[[patchtst|PatchTST]] 与 Samformer 点积在 ILI 上平均降 MAE $10.7\%$，但删去原注意力不掉点甚至个别步长更好，说明涨点源自频谱相干打分替代点积而非注意力容量；且 Sonnet 主表按预测窗末单点 $\hat{y}_{t+H}$ 评测[^src-sonnet]
 
 [^src-itransformer]: [[source-itransformer]]
 [^src-pir]: [[source-pir]]
@@ -91,3 +92,4 @@ iTransformer 属于论文定义的第四类 Transformer 修改：仅改架构、
 [^src-xlinear]: [[source-xlinear]]
 [^src-pesd-tsf]: [[source-pesd-tsf]]
 [^src-timebridge]: [[source-timebridge]]
+[^src-sonnet]: [[source-sonnet]]

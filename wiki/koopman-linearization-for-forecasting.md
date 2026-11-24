@@ -9,7 +9,7 @@ tags:
   - forecasting
 created: 2026-06-08
 last_updated: 2026-11-24
-source_count: 3
+source_count: 4
 confidence: high
 status: active
 ---
@@ -36,6 +36,7 @@ $$\psi(x_{k+1}) = \psi(f(x_k)) = \mathcal{K}\circ\psi(x_k)$$
 
 - **DMD / eDMD (Dynamic Mode Decomposition / extended DMD)**：通过矩阵计算（伪逆）从观测数据拟合线性算子。K²VAE 用 **one-step eDMD** 拟合局部算子 $K_{loc}=X_{fore}(X_{back})^{\dagger}$，并加全局可学习项 $K_{glo}$ 兜底数值不稳定[^src-k2vae]。
 - **神经网络测量函数**：用 MLP 等学习 $\psi$（及其逆 $\psi^{-1}$ 作为解码器），数据驱动地构造测量空间。
+- **酉谱参数化一步演化**：[[source-sonnet|Sonnet]] 对复矩阵 $S\in\mathbb{C}^{K\times K}$ 每次前向做 `QR` 分解得酉矩阵 $U$，构造 $\mathcal{K}=UDU^\dagger$（$D=\operatorname{diag}(e^{ip_k})$）端到端一次性演化整段频谱特征以规避逐步递归误差；但每次前向需执行 `QR` 分解且 AAAI 正文将可学习小波与酉约束的独立消融推至附录[^src-sonnet]。
 
 ## 关键性质与代表模型
 
@@ -47,10 +48,12 @@ $$\psi(x_{k+1}) = \psi(f(x_k)) = \mathcal{K}\circ\psi(x_k)$$
 | [[k2vae\|K²VAE]] | one-step eDMD $K_{loc} + K_{glo}$ | 无外生变量；KalmanNet 注入非线性残差[^src-k2vae] | 双 MLP 逆映射解码 | 长期概率分布预测（VAE 一步生成） |
 | [[mmckm\|MMCKM]] | 5 模态参数有界 Koopman MoE | CrossAttention 状态耦合控制 $B_z u_t$[^src-mmckm] | 线性 / MLP 解码 | history-free 微观交通轨迹预测 |
 | [[slide\|SLiDE]] | 历史编码与未来滚动共享 $N=2$ 分块 $W$ | 纯加性外生推力 $\operatorname{MLP}_u(u_\tau)$[^src-slide] | $N=2$ 分块 $\operatorname{MLP}_{\hat{y}}$ 求和（非 $C$） | 外生条件确定性点预测（侧重 OOR 与迁移） |
+| [[source-sonnet\|Sonnet]] | `QR` 分解酉参数化 $\mathcal{K}=UDU^\dagger$ | 小波嵌入后沿变量轴 `FFT` 互谱相干注意力（MVCA）[^src-sonnet] | $[5,3,3]$ 三层 1D 卷积 + 线性头 | 窗末单点 $\hat{y}_{t+H}$ 确定性预测（外生变量） |
 
 ## 关联页面
 
 - [[slide]] — 编码与滚动共享线性算子 $W$ + 纯加性外生驱动的轻量预测架构
+- [[source-sonnet]] — 可学习小波 + 变量轴 `FFT` 频谱相干 + 酉约束 Koopman 一步频谱演化（特例对照）
 - [[k2vae]] — Koopman 线性化 + Kalman 精炼的概率预测
 - [[mmckm]]、[[micro-macro-coupled-koopman-modeling]] — 微观/宏观双尺度 Koopman 交通模型
 - [[kalmannet-uncertainty-modeling]] — 在 Koopman 线性系统上做 Kalman 精炼
@@ -59,4 +62,5 @@ $$\psi(x_{k+1}) = \psi(f(x_k)) = \mathcal{K}\circ\psi(x_k)$$
 [^src-k2vae]: [[source-k2vae]]
 [^src-mmckm]: [[source-mmckm]]
 [^src-slide]: [[source-slide]]
+[^src-sonnet]: [[source-sonnet]]
 
