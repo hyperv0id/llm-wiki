@@ -4683,3 +4683,10 @@ Tier 2 轻量化入库（AAAI 2026；由 `RevIN`、共享线性嵌入、可学�
 创建的页面：[[source-xlinear]]
 更新的页面：[[source-timexer]]（补同槽位互斥与 862 维 Traffic 对照，source_count 2→3）, [[crosslinear]]（补同槽位互斥对照，source_count 2→3）, [[itransformer]]（补复现口径与机制对照，source_count 3→4）, [[tide]]（补复现口径与机制对照，source_count 2→3）, [[channel-independence]]（补单全局 token 外生折中对照并清理 VETime 首段既有坐标告警，source_count 18→19）, [[index]]
 ingest 报告：[[ingest-reports/2026-11-24-xlinear|WHY 报告]]
+
+
+## [2026-11-24] ingest | CometNet: Contextual Motif-guided Long-term Time Series Forecasting
+Tier 2 轻量化入库（AAAI 2026；由离线 `MovingAvg + FFT + DTW` 聚类抽取与在线 Dense MoE 内容门控、生命周期相对相位信号及多尺度滤波 `Linear` 头拼装而成，未为 `cometnet` 或 `k-DFH` 新建 `source_count: 1` 独立页）。针对固定回看窗与滑窗训练无法捕捉跨数千步重现规律的瓶颈，CometNet 先在训练前从全训练集抽取 $K$ 个跨尺度代表性母题原型，在线预测时以短回看窗（$L=96$）做内容门控检索并注入窗口在母题生命周期中的相对相位。固定 $L=96$ 的 8 个标准 LTSF 基准上 7 项平均 MSE/MAE 最优；消融（仅覆盖 4 个低维 ETT 的 $H=720$）显示去掉母题引导掉点最狠（ETTh1 MSE $0.391\to 0.544$），其次为去 MoE 门控路由（$0.476$）与多尺度发现（$0.447$），ETTh2 上生命周期相位重要性高于多尺度发现（$0.292$ vs $0.331$）。缺口与负结果：862 维 Traffic 上平均 MSE/MAE 逊于 TimeMixer++ 排第二，高维集依赖未在正文展开的频域哈希分组并行加速，离线构库成本、$K$ 上限与跨数据集迁移能力均缺充分评测。
+创建的页面：[[source-cometnet]]
+更新的页面：[[gtr]]（补同槽位互斥对照，source_count 5→6）, [[contextual-pattern-bank]]（补非参数母题库同构对照，source_count 1→2）, [[patchtst]]（补窗外母题外推瓶颈接力 Δ，source_count 11→12）, [[mixture-of-experts]]（补离线母题原型 MoE 架构特例与设计决策二维矩阵，同步修正 source_count 18→21）, [[lookback-horizon-scaling]]（补绕开长回看约束路线对照并清理既有首段/句中坐标告警，source_count 1→2）, [[index]]
+ingest 报告：[[ingest-reports/2026-11-24-cometnet|WHY 报告]]

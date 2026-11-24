@@ -8,8 +8,8 @@ tags:
   - prompt-based-guidance
   - pattern-memory
 created: 2026-06-08
-last_updated: 2026-07-22
-source_count: 1
+last_updated: 2026-11-24
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -75,6 +75,13 @@ Unlike [[eac|EAC]]'s expand-and-compress prompt pool, STBP's pattern bank[^src-s
 2. Employs **structured multi-component design** ($\mathbf{P}_\tau^{(0)}, \mathbf{P}_\tau^{(1)}, \mathbf{P}_\tau^{(2)}$) that jointly models node relevance and heterogeneity through gating and attention mechanisms
 3. Provides richer interaction with the backbone (gating + attention keys vs. EAC's simpler feature addition)
 
+## Isomorphic Comparison with Non-Parametric Motif Banks
+
+**Isomorphic comparison（同构对照）with [[source-cometnet|CometNet]] (AAAI 2026)**: Both Contextual Pattern Bank and CometNet store reusable temporal patterns outside the local window and inject them via gating, while differing in memory parameterization and transfer scope[^src-stbp][^src-cometnet]:
+
+- **Parametric vs. Non-parametric Extraction**: Contextual Pattern Bank learns purely parametric matrices $\mathbf{P}_\tau$ end-to-end and expands them via concatenation for continual spatio-temporal adaptation without data replay[^src-stbp]. By contrast, CometNet extracts $K$ discrete cross-scale medoid motifs offline via `MovingAvg + FFT + DTW` clustering from the training series and matches short lookback queries via online Dense MoE content gating combined with relative lifecycle phase[^src-cometnet].
+- **Transferability Trade-off**: STBP targets incremental node expansion with a frozen backbone[^src-stbp], whereas CometNet's offline motif bank is tied to a specific dataset's training series and lacks cross-dataset transfer and build-cost evaluations[^src-cometnet].
+
 ## Related Pages
 
 - [[stbp]] — The STBP framework that introduces this technique
@@ -83,5 +90,7 @@ Unlike [[eac|EAC]]'s expand-and-compress prompt pool, STBP's pattern bank[^src-s
 - [[pecpm]] — PECPM, pattern-matching-based pattern bank
 - [[trafficstream]] — TrafficStream, replay-based CSTF
 - [[dlga-dual-stream-linear-graph-attention]] — DLGA, which receives the pattern bank as prompt keys
+- [[source-cometnet]] — Non-parametric offline DTW motif bank with MoE content gating (isomorphic comparison)
 
 [^src-stbp]: [[source-stbp]]
+[^src-cometnet]: [[source-cometnet]]

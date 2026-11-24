@@ -9,8 +9,8 @@ tags:
   - multivariate
   - iclr-2026
 created: 2026-05-31
-last_updated: 2026-08-19
-source_count: 5
+last_updated: 2026-11-24
+source_count: 6
 confidence: medium
 status: active
 ---
@@ -85,6 +85,7 @@ GTR 模块仅 40.1K 参数、4.50M MACs。完整系统（GTR + MLP）0.98M 参�
 - **[[pfrp|PFRP]]**（AAAI 2026）同为检索增强的单变量时序预测框架，但 PFRP 通过 PCL 编码 + K-medoids 聚类构建固定大小 Global Memory Bank，按特征余弦相似度检索历史模式片段而非按绝对时间位置检索周期参数矩阵。PFRP 引入 confidence gate 和 output gate 调制检索结果，再与局部预测动态融合。[^src-predicting-the-future-by-retrieving-the-past-aaai2026]
 - **[[saraf|SARAF]]**（KDD 2026）同为检索增强预测框架，但 SARAF 检索历史窗口段并通过平稳性控制的多样性选择和自适应 Gaussian 聚合处理非平稳性，而非按绝对时间位置检索周期参数矩阵；SARAF 还引入时间对齐奖励和多维度时间正则性匹配。[^src-stationarity-aware-retrieval-augmented-forecasting-kdd26]
 - **[[ts-memory|TS-Memory]]**（KDD 2026）同为即插即用的检索增强预测方法，但 TS-Memory 将 kNN 检索蒸馏为参数化记忆模块，推理时无需检索；GTR 的检索为可学习参数矩阵按绝对位置检索，推理时仍含检索操作但 $O(1)$[^src-ts-memory-time-series-foundation-models-kdd26]。
+- **[[source-cometnet|CometNet]]**（AAAI 2026）与 GTR 构成**同槽位互斥**对照：两者均在固定短回看窗（$L=96$）下借助全局记忆突破视野限制，但检索键与记忆构建方式截然不同——GTR 维护可学习全局周期参数矩阵 $Q$ 按**绝对周期相位**检索，假定单一固定周期且全通道共享；CometNet 在训练前以 `MovingAvg + FFT + DTW` 聚类离线抽取 $K$ 个离散跨尺度母题原型，在线通过 Dense MoE **内容相似度门控**检索并融合窗口在母题生命周期中的相对相位信号，摆脱固定单一周期假设，但受限于离线建库开销且母题库绑定训练集不可直接跨库迁移[^src-cometnet]。
 
 ## 关键参数
 
@@ -101,3 +102,4 @@ GTR 模块仅 40.1K 参数、4.50M MACs。完整系统（GTR + MLP）0.98M 参�
 [^src-predicting-the-future-by-retrieving-the-past-aaai2026]: [[source-predicting-the-future-by-retrieving-the-past-aaai2026]]
 [^src-stationarity-aware-retrieval-augmented-forecasting-kdd26]: [[source-stationarity-aware-retrieval-augmented-forecasting-kdd26]]
 [^src-ts-memory-time-series-foundation-models-kdd26]: [[source-ts-memory-time-series-foundation-models-kdd26]]
+[^src-cometnet]: [[source-cometnet]]

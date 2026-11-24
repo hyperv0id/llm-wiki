@@ -82,6 +82,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-clmtr]] — CLMTR: Contrastive Learning for Multi-modal Trajectory Representation
 - [[source-cofill-spatiotemporal-imputation]] — CoFILL: Spatiotemporal Data Imputation by Conditional Diffusion (arXiv 2025)
 - [[source-cogencast]] — CoGenCast: A Coupled Autoregressive–Flow Generative Framework for Time Series Forecasting, LLM + FM encoder-decoder hybrid (ICML 2026)
+- [[source-cometnet]] — CometNet: 离线 MovingAvg+FFT+DTW 聚类抽取 $K$ 个上下文母题 + 在线 Dense MoE 内容门控与生命周期相对相位路由，$L=96$ 固定回看 8 基准 7 项平均 MSE/MAE 最优、862 维 Traffic 逊于 TimeMixer++ 排第二（AAAI 2026, arXiv:2511.08049）
 - [[source-conformer]] — ConFormer: Conditional Transformer for accident-informed traffic forecasting (KDD 2026)
 - [[source-consistency-models]] — Consistency Models: one-step generation (ICML 2023)
 - [[source-constrained-text-fusion]] — Constrained Text Fusion / CFA: naive add/concat often hurts vs unimodal; low-rank plug-in (KDD ’26 MILETS, arXiv:2603.22372)
