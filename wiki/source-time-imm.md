@@ -10,7 +10,7 @@ tags:
   - neurips-2025
 created: 2026-11-24
 last_updated: 2026-11-24
-source_count: 1
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -25,7 +25,7 @@ status: active
 
 Time-IMM 按不规则性的生成成因分为**触发**、**约束**与**故障**三类共九个亚类数据集，涵盖 GDELT、RepoHealth、MIMIC、FNSPID、ClusterTrace、StudentLife、ILINet、CESNET 与 EPA-Air[^src-time-imm]。为压缩文本长度并剔除冗余表述，原始文本日志统一由大语言模型筛选并提炼为五句摘要[^src-time-imm]。
 
-在基准演进谱系上，Time-IMM 与 [[time-mmd|Time-MMD]] 构成清晰的**瓶颈接力 $\Delta$**：[[time-mmd|Time-MMD]] 构建了多领域数值–文本基准并控制了未来信息泄漏，但仍假设规则的日、周、月网格与强时间对齐；Time-IMM 则进一步放宽到非均匀采样与通道异步场景，免除了模态与通道间的强对齐前提[^src-time-imm]。
+在基准演进谱系上，Time-IMM 与 [[time-mmd|Time-MMD]] 构成清晰的**瓶颈接力 $\Delta$**：[[time-mmd|Time-MMD]] 构建了多领域数值–文本基准并控制了未来信息泄漏，但仍假设规则的日、周、月网格与强时间对齐；Time-IMM 则进一步放宽到非均匀采样与通道异步场景，免除了模态与通道间的强对齐前提[^src-time-imm]。同时，与同样补齐 [[time-mmd|Time-MMD]] 的 [[timesx|TimesX]] 形成**同槽位基准对照**：Time-IMM 拓展了非均匀异步日志维度，而 TimesX 聚焦规则日/周频序列的四类真实时钟上下文与严格模型 cutoff 时间隔离[^src-time-imm][^src-timesx]。
 
 ## 评测框架与算子拆解（IMM-TSF）
 
@@ -43,5 +43,7 @@ Time-IMM 按不规则性的生成成因分为**触发**、**约束**与**故障*
 - [[time-mmd]] — 前序规则网格数值–文本基准（瓶颈接力 $\Delta$）
 - [[multimodal-semantic-understanding]] — 模态对齐、门控融合与文本冗余过滤分析
 - [[constrained-text-fusion]] — 文本受控注入与噪声抑制的跨源实证对齐
+- [[timesx]] — 规则日/周频四类上下文与模型 cutoff 隔离基准（同槽位并行对照）
 
 [^src-time-imm]: [[source-time-imm]]
+[^src-timesx]: [[source-timesx]]

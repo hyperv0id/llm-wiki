@@ -8,7 +8,7 @@ tags:
   - iclr2024
 created: 2026-04-29
 last_updated: 2026-11-24
-source_count: 11
+source_count: 12
 confidence: high
 status: active
 ---
@@ -65,6 +65,7 @@ TimesFM 可以通过 UniCA 框架适配到协变量感知预测任务：
 - [[ts-memory]] — TS-Memory (KDD 2026)：以 TimesFM 为冻结 backbone 验证参数记忆蒸馏，ETTm2 上 MSE 降 16.0%、Weather 降 7.6%[^src-ts-memory-time-series-foundation-models-kdd26]
 - [[tirex]] — **同槽位互斥对照**：TiRex (NeurIPS 2025) 用 35M 纯 sLSTM + 连续块掩码（CPM）替换 Transformer 注意力与自回归点估计回喂，在 GiftEval-ZS（81 项设置）与 Chronos-ZS 上排名居首，且推理速度较 TimesFM-2.0 快 11 倍以上[^src-tirex]
 - [[timer-xl]] — **瓶颈接力 $\Delta$**：针对 TimesFM / 原版 Timer 等单变量自回归基础模型丢失跨通道交互的局限，Timer-XL 将非重叠时间块展平至 $NT$ 维上下文并引入 Kronecker 因果图掩码与置换等变偏置 $(u, v)$，统一单/多变量与协变量长上下文预测[^src-timer-xl]
+- [[timesx]] — **实证复现对齐**：在合成基准 CiK 上，TimesFM 排名落后于通用 LLM 与代码修订代理 `CodeRev`；而在 [[timesx|TimesX]] 的 19 域真实数值、真实时钟上下文且严格隔离 2024-07-01 模型知识截断的评测中，TimesFM 转为稳健领先于 Gemini 与 `CodeRev`[^src-timesx]
 
 ## DynaMix 对比
 
@@ -94,3 +95,4 @@ TimesFM 可以通过 UniCA 框架适配到协变量感知预测任务：
 [^src-ts-memory-time-series-foundation-models-kdd26]: [[source-ts-memory-time-series-foundation-models-kdd26]]
 [^src-tirex]: [[source-tirex]]
 [^src-timer-xl]: [[source-timer-xl]]
+[^src-timesx]: [[source-timesx]]

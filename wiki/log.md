@@ -4653,3 +4653,10 @@ Tier 1 入库（ICML 2026，PMLR 306）。针对「多模态时序预测常弱�
 创建的页面：[[source-doublecast]], [[doublecast]]
 更新的页面：[[multimodal-time-series-forecasting]]（补 CAF-7M 基准行与归因二维矩阵，source_count 22→23）, [[constrained-text-fusion]]（补归因对立对照，source_count 5→6）, [[time-mmd]]（补经验效用筛选瓶颈接力 Δ 并压缩九域表行数，source_count 6→7）, [[chronos]]（补 DualT5 条件化扩展与 GIFT-Eval/MSPG 对照，source_count 9→10）, [[aurora]]（补同生态位路线与干扰文本退化对照并清理表内符号，source_count 5→6）, [[circular-dependency-in-multimodal-fusion]]（补测试集筛选循环偏置案例，source_count 1→2）, [[index]]
 ingest 报告：[[ingest-reports/2026-11-24-doublecast|WHY 报告]]
+
+
+## [2026-11-24] ingest | Rethinking Multimodal Time-Series Forecasting Evaluation（TimesX）
+Tier 1 入库（提取核心切片未带会议水印与机构名，本仓库 OpenReview CCF-A 调研记录其录用于 ICML 2026）。针对现有合成或无知识截断隔离的多模态时序基准会反转模型排序、高估 LLM 并低估 TSFM 的问题，TimesX 构建 19 域 190 变量（日/周频，2018-01 至 2025-10，$L=96,H=12$，含 2024-07-01 起算无泄露主评测集）真实基准，自动采集并核查严格早于预测起点的四类上下文（元信息、已知节假日、同域协变量统计摘要与四步限时检索核查时间戳事件，50 条人工抽检精确率 94%）。真实无泄露评测下排序从 `CodeRev > Gemini > TimesFM` 反转为 `TimesFM > Gemini > CodeRev`；越过 2024-06 cutoff 后两类大模型 MASE 恶化约 13%–15% 而时序基础模型波动不足 2%；同数值替换 `Time-MMD` 文本事件即可将几何均值 MASE 从 0.906 降至 0.840；四类上下文齐备较纯元信息提升约 16%，且协变量与事件必须成对配合才有效；三类免训练修订代理均弱于简单等权集成 `AvgEns`，`TextRev-ICL` 加入历史示例与保守不改回退后可超越集成。缺口：仅覆盖日/周频英文单变量，依赖同域变量领先信号假设，核查流水线约 0.7 美元/变量/三月块。
+创建的页面：[[source-timesx]], [[timesx]]
+更新的页面：[[multimodal-time-series-forecasting]]（补 TimesX 基准行与要点，source_count 23→24）, [[time-mmd]]（补瓶颈接力 Δ 与事件替换复现对齐，source_count 7→8）, [[timesfm]]（补排序反转实证对齐，source_count 11→12）, [[in-context-learning]]（补 TextRev-ICL 跨槽位正交节与二维设计矩阵，source_count 3→4）, [[source-time-imm]]（补同槽位基准对照，source_count 1→2）, [[doublecast]]（补同生态位数据构建对照，source_count 6→7）, [[index]]
+ingest 报告：[[ingest-reports/2026-11-24-timesx|WHY 报告]]

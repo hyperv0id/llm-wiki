@@ -10,7 +10,7 @@ tags:
   - icml-2026
 created: 2026-11-24
 last_updated: 2026-11-24
-source_count: 6
+source_count: 7
 confidence: medium
 status: active
 ---
@@ -76,6 +76,7 @@ P(\hat{z}_{P+1:P+H}) &= \operatorname{Softmax}\!\left(Y^{(N)} W_{\mathrm{head}}\
 - **条件化扩展与复现对齐（vs [[chronos|Chronos]] / [[time-llm|Time-LLM]]）**：DoubleCast 是 [[chronos|Chronos]]（T5-large）的解码器文本条件化扩展，在 GIFT-Eval 上几乎完整保留了原单模态 Chronos 的数值零样本精度；相对于 [[time-llm|Time-LLM]] 的输入端前缀重编程拼接，DoubleCast 的增量改动（$\Delta$）在于把文本注入后移至解码块内部的第二路交叉注意力[^src-chronos][^src-doublecast]。
 - **同生态位对照（vs [[aurora|Aurora]]）**：两者均面向通用零样本概率预测，但路径相反——[[aurora|Aurora]] 从头预训练生成式多模态基础模型（跨模态语义质心蒸馏 + 模态引导自注意力 + 原型引导 Flow Matching），而 DoubleCast 采用冻结单模态骨干配轻量判别式/自回归解码块适配[^src-aurora][^src-doublecast]。在错配或乱序文本干扰测试下，DoubleCast 的 CRPS 恶化幅度显著高于 Aurora（$26.5\%$ 对 $9.2\%$），说明其预测性能更紧密地依赖有效对齐文本的注入[^src-doublecast]。
 - **同构评估风险（vs [[circular-dependency-in-multimodal-fusion|循环依赖评估陷阱]]）**：与统计融合中分类器用自身置信度评估融合权重类似，CAF-7M 使用 GPT-5.2 作为筛选器挑选「文本降低 CRPS」的测试窗，随后又在同一测试集上评估 GPT-5.2 本身，形成直接的自我验证偏置（$4$ 个筛选模型的一致率仅 $43.5\%\text{–}54.0\%$，而 GPT-5.2 在自筛测试集上排名第一）[^src-gmf][^src-doublecast]。
+- **同生态位数据构建对照（vs [[timesx|TimesX]]）**：两者均回应「公开语料文本未必有助于预测」的问题，但构建路线截然相反——CAF-7M 先由大模型读取历史与未来全窗生成解释文本，再按经验 CRPS 效用筛选测试窗，存在未来窗反推特征与训练/测试文本口径错配；[[timesx|TimesX]] 则坚持全量真实时钟下的检索与多 Agent 交叉核查新闻事件，并以模型 cutoff 时间隔离防范预训练泄露[^src-doublecast][^src-timesx]。
 
 | 维度 | [[constrained-text-fusion\|CFA]] | [[aurora\|Aurora]] | **DoubleCast & CAF-7M** |
 |---|---|---|---|
@@ -101,6 +102,7 @@ P(\hat{z}_{P+1:P+H}) &= \operatorname{Softmax}\!\left(Y^{(N)} W_{\mathrm{head}}\
 - [[aurora]] — Aurora 生成式多模态基础模型（同生态位路线对照）
 - [[circular-dependency-in-multimodal-fusion]] — 循环依赖评估陷阱（测试集筛选器的自我验证偏置）
 - [[time-llm]] — Time-LLM（输入端前缀重编程与去文本反证对照）
+- [[timesx]] — TimesX（真实时钟多 Agent 核查与模型 cutoff 防泄露数据构建对照）
 
 [^src-doublecast]: [[source-doublecast]]
 [^src-constrained-text-fusion]: [[source-constrained-text-fusion]]
@@ -108,3 +110,4 @@ P(\hat{z}_{P+1:P+H}) &= \operatorname{Softmax}\!\left(Y^{(N)} W_{\mathrm{head}}\
 [^src-chronos]: [[source-chronos]]
 [^src-aurora]: [[source-aurora]]
 [^src-gmf]: [[source-gmf]]
+[^src-timesx]: [[source-timesx]]

@@ -8,7 +8,7 @@ tags:
   - covariate
   - satellite-imagery
 created: 2026-04-29
-source_count: 23
+source_count: 24
 last_updated: 2026-11-24
 confidence: high
 status: active
@@ -86,6 +86,11 @@ UniCA 通过**协变量同质化**将不同模态转换为统一表示：
 - **瓶颈接力 $\Delta$（vs [[time-mmd|Time-MMD]]）**：[[time-mmd|Time-MMD]] 依赖规则日/周/月网格与二元起止时间戳对齐；Time-IMM 保留各通道与文本的独立时间戳，免除模态与通道间的强对齐假设[^src-time-imm]
 - 配套框架 **IMM-TSF**：常规模型用全局网格与掩码预对齐；时间融合对比高斯近因平均与时间编码交叉注意力；模态融合对比门控循环残差相加与固定权重交叉注意力相加（门控循环残差相加更能抑噪）；加文本平均降误差约 7%，强相关场景近 38%[^src-time-imm]
 
+### [[timesx|TimesX]]
+
+- **规模与防泄露设计**：覆盖 19 域 × 10 变量共 190 条真实单变量序列（日/周频，2018-01 至 2025-10），配套 2024-07-01 起算无泄露主评测集，自动构造严格早于预测起点的四类上下文（元信息、已知节假日、同域协变量统计摘要与四步核查时间戳事件）[^src-timesx]
+- **评测诊断与集成结论**：揭示合成或无知识截断隔离基准会反转模型排序并高估 LLM；无泄露设定下 TSFM 稳健领先且简单等权集成 `AvgEns` 优于三类复杂免训练修订代理，`TextRev-ICL` 补入历史示例与保守回退后可超越集成[^src-timesx]
+
 ### 多模态时序基准对照
 
 | 基准 | 模态组成 | 时间采样假设 | 模态对齐机制 | 文本处理方式 |
@@ -94,6 +99,7 @@ UniCA 通过**协变量同质化**将不同模态转换为统一表示：
 | [[time-mmd\|Time-MMD]] | 数值 + 外生文本（9 域） | 规则（日/周/月） | 二元起止时间戳 + 防泄漏[^src-time-mmd] | LLM 拆分 fact/prediction 摘要[^src-time-mmd] |
 | [[source-time-imm\|Time-IMM]] | 数值 + 文本日志（3 类 9 亚类） | 不规则采样 + 通道异步 | 保留独立时间戳；全局网格掩码 / 高斯近因 / 时间编码交叉注意力[^src-time-imm] | LLM 筛选压缩为五句摘要[^src-time-imm] |
 | [[doublecast\|CAF-7M]] | 数值 + 解释文本（65 集 11 域） | 规则窗口（743 万训 / 904 测） | 实例级整窗文本条件化；缺窗内时间步索引[^src-doublecast] | Llama-3.3-70B 读全窗反推 + 经验 CRPS 效用筛选测试窗[^src-doublecast] |
+| [[timesx\|TimesX]] | 数值 + 四类上下文（19 域 190 变量） | 规则（日/周，2018-01–2025-10） | 严格 $t < \text{origin}$ 时钟对齐 + 2024-07-01 模型 cutoff 隔离[^src-timesx] | 同域统计摘要 + 四步限时多源交叉核查（94% 时间戳精确率）[^src-timesx] |
 
 ## 实验结果
 
@@ -293,6 +299,7 @@ UniCA 在多模态场景下的表现：
 - [[latent-space-future-state-prediction]] — 潜空间未来状态预测技术（TimeAlign/LatentTSF/WorldTS）
 - [[source-time-imm]] — Time-IMM 不规则异步多模态多变量时序基准（NeurIPS 2025 D&B）
 - [[doublecast]] · [[source-doublecast]] — CAF-7M 经验 CRPS 效用筛选语料与 Chronos DualT5 条件化基线（ICML 2026）
+- [[timesx]] · [[source-timesx]] — TimesX 19 域真实时钟无泄露多模态评测基准（cutoff 时间隔离 + 排序反转实证）
 
 ---
 
@@ -321,3 +328,4 @@ UniCA 在多模态场景下的表现：
 [^src-time-imm]: [[source-time-imm]]
 [^src-dmmv]: [[source-dmmv]]
 [^src-doublecast]: [[source-doublecast]]
+[^src-timesx]: [[source-timesx]]

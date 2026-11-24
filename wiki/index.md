@@ -405,6 +405,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-timer-xl]] — Timer-XL: 统一长上下文时间序列预测解码器（TimeAttention = 时序 RoPE + 变量偏置 u,v + Kronecker 因果掩码 M=C⊗T），ICLR 2025（清华大学）
 - [[source-timesfm]] — TimesFM: Decoder-Only Foundation Model for Time-Series Forecasting (ICLR 2024)
 - [[source-timesnet]] — TimesNet: temporal 2D-variation modeling for general time series analysis (ICLR 2023)
+- [[source-timesx]] — TimesX: 19 域 190 变量真实时钟无泄露多模态时序基准 + 4-Agent 事件核查，实证合成/无 cutoff 基准反转 TSFM 与 LLM 排序（提取核心切片未带会议水印；仓库调研记 ICML 2026）
 - [[source-timexer]] — TimeXer: patch-wise self-attention + variate-wise cross-attention 融合内生 patch 与外生 variate token，NeurIPS 2024 (Tsinghua)
 - [[source-timi]] — TiMi: LLM + MMoE 路由引导时序预测（arXiv:2602.21693）
 - [[source-tips]] — TIPS: transformer with inductive prior synthesis for financial forecasting
@@ -677,6 +678,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[timer-xl]] — Timer-XL，多变量长上下文因果解码器（TimeAttention = 时序 RoPE + 变量偏置 u,v + Kronecker 因果掩码），统一单/多变量与协变量预测（ICLR 2025）
 - [[timesfm]] — TimesFM, decoder-only foundation model for time-series forecasting (ICLR 2024)
 - [[timesnet]] — TimesNet, task-general time series foundation model (ICLR 2023)
+- [[timesx]] — TimesX，19 域 190 变量真实时钟无泄露多模态时序评测基准与四类上下文构造管线，揭示合成基准排序反转与 cutoff 泄露
 - [[timi]] — TiMi: LLM + MMoE 插件引导时序预测
 - [[tips]] — TIPS, Transformer with Inductive Prior Synthesis for financial forecasting
 - [[tirex]] — TiRex：纯 sLSTM 残差解码块 + 连续块掩码（CPM）占位延续的零样本概率时序基础模型（35M 参数，NeurIPS 2025）
