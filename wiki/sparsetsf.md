@@ -10,7 +10,7 @@ tags:
   - icml-2024
 created: 2026-04-28
 last_updated: 2026-11-24
-source_count: 4
+source_count: 5
 confidence: medium
 status: active
 ---
@@ -60,6 +60,7 @@ SparseTSF 是 IEEE TPAMI 2026 接收的极轻量级时序预测模型，由华�
 
 - **同槽位互斥（[[source-timebase|TimeBase]], ICML 2025）**：两者均按主周期切分历史以避开 $O(LH)$ 点级映射，但 SparseTSF 将序列下采样为周期内子序列并共享单一线性/MLP 头，TimeBase 则改为通过正交正则线性层提取 $R=6$ 个可学习时间基再线性重构未来分段（需周期 $P$ 先验，正文缺组件级独立消融表）[^src-timebase]。
 - **瓶颈接力 $\Delta$ 与复现对齐（[[source-dsr-tsf|DSR-TSF]], NeurIPS 2026）**：DSR-TSF 保留 SparseTSF「周期分段 + 共享头」骨架，针对同一变量在不同窗口主导周期漂移导致固定周期错配的问题，前置 `rFFT` 谱条件软路由与 $R$ 条时域响应基残差修正，并对共享头施加低秩约束（ETTh1/Linear 参数 $0.45\text{K}\to 0.90\text{K}$）；消融表明低秩头约束的退化贡献（ETTh1 $0.393\to 0.404$）略重于改静态路由（$0.393\to 0.402$），且存在复现口径矛盾——DSR-TSF 正文称 Traffic 仍有提升，而 Table 1 实测其 MLP 版（$0.403$）劣于 SparseTSF/MLP（$0.396$）、Linear 版（$0.412$）仅持平且 MAE 落后（$0.274$ vs $0.264$）[^src-dsr-tsf]。
+- **瓶颈接力 $\Delta$ 与复现对齐（[[source-mixlinear|MixLinear]], ICLR 2026）**：MixLinear 沿用按步长下采样骨架，将单共享线性头拓展为「时域 2D 分段双线性分解 + 频域秩-2 复投影」双支相加（全模型仅 45–176 参数、0.25–2.05 ms 延迟），在 Exchange 上相对 SparseTSF 显著降错且提速约 3.2 倍；但消融显示其低维集主要靠时域双线性、高维集才靠频域秩-2 投影，且主表只报 MSE 不报 MAE[^src-mixlinear]。
 
 ## 在 PIR 后处理中的表现
 
@@ -71,3 +72,4 @@ SparseTSF 是 IEEE TPAMI 2026 接收的极轻量级时序预测模型，由华�
 [^src-pir]: [[source-pir]]
 [^src-timebase]: [[source-timebase]]
 [^src-dsr-tsf]: [[source-dsr-tsf]]
+[^src-mixlinear]: [[source-mixlinear]]

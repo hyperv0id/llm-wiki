@@ -248,6 +248,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-minimax-2025-01]] — MiniMax-01: Scaling Foundation Models with Lightning Attention：456B/45.9B MoE，7 lightning + 1 softmax 的 transnormer 混合 80 层，训练 1M 外推 4M 上下文，RULER 1M 0.910（MiniMax, arXiv:2501.08313；PDF raw/minimax-01-2501-08313.pdf）
 - [[source-minitraffic]] — MiniTraffic: mini-sized contrastive learning pre-trained model for fine-grained traffic tasks, ICML 2026
 - [[source-mistral-2024-mixtral]] — Mixtral of Experts：Mistral 7B 架构每层 FFN 换 8 专家 MoE，router Top-2 softmax、论文未提及辅助均衡损失，47B 总参/13B 激活、32k 上下文；多数基准持平或超 Llama 2 70B（MMLU 70.6 vs 69.9、MATH 28.4 vs 13.8），路由按句法而非主题分工、连续 token 同专家率层 15 达 61.6–67.0%（Jiang et al., Mistral AI, arXiv:2401.04088v1；PDF raw/mixtral-2401-04088.pdf）
+- [[source-mixlinear]] — MixLinear：下采样后并联时域 2D 分段双线性分解与频域秩-2 复投影（45–176 参数），低维靠时域、高维靠频域分化，主表缺 MAE 与 iTransformer/TimeMixer/TimeBase 对照（ICLR 2026）
 - [[source-mmckm]] — MMCKM: Micro-Macro Coupled Koopman Modeling for Traffic Flow Prediction (ICLR 2026)
 - [[source-moba-mixture-of-block-attention]] — MoBA: Mixture of Block Attention for Long-Context LLMs（Moonshot AI，arXiv:2502.13189），块稀疏 MoE attention：8K 缩放验证 loss 差 1e-3 内、Llama-8B-1M RULER 0.7818 vs 0.7849、attention 层 1M prefill 6.5× / 10M 16× 加速，自述部署于 Kimi
 - [[source-module-embedding-theorem-towers-algebras]] — Module Embedding Theorem via Towers of Algebras: Markov towers 进路推广 Jones-Penneys 嵌入定理至任意循环模，arXiv 2018

@@ -1,3 +1,10 @@
+## [2026-11-24] ingest | MixLinear: Extreme Low Resource Multivariate Time Series Forecasting with 0.1K Parameters（ICLR 2026）
+
+Tier 2 轻量化入库（不建独立实体页）。问题：百参数级极轻量模型难以兼顾局部时域形态与全局周期趋势。机制：输入按步长 $\pi$ 下采样作隐式低通滤波，再将「二维分段时域双线性分解」与「频域秩 $n_z=2$ 复数矩阵投影」双支直接相加，全模型仅 45–176 参数。证据：8 基准上 MSE 与 SparseTSF、FITS 同量级，Exchange 相对 SparseTSF 显著降错且提速约 3.2 倍；消融呈明显维度分化，低维 ETTh1/h2 去时域支掉点最重（0.425→0.474、ETTh1 去频域支仅 0.425→0.423），高维 ECL/Traffic 去频域支掉点最重（Traffic 0.452→0.528）。缺口：主表只报 MSE 不报 MAE，RPD 仅对标 SparseTSF，缺 iTransformer/TimeMixer/TimeBase 同生态位基线，参数削减存在 81% vs 11%–81% 口径出入。
+创建的页面：[[source-mixlinear]]
+更新的页面：[[sparsetsf]]（加宽骨架与 Exchange 提速对照，source_count 4→5）, [[source-sparsetsf]]（瓶颈接力 Δ 与口径对照，source_count 1→2）, [[source-timebase]]（0.1K 同槽位互斥对照，source_count 1→2）, [[cyclenet]]（同槽位互斥对照，source_count 3→4）, [[ltsf-linear]]（0.1K 因子化演进对照，source_count 5→6）, [[source-frets]]（跨槽位正交对照，source_count 1→2）, [[index]]
+ingest 报告：[[ingest-reports/2026-11-24-mixlinear|WHY 报告]]
+
 ## [2026-11-24] ingest | SLiDE: Structured Linear Dynamics for Forecasting with Exogenous Inputs（NeurIPS 2026）
 
 Tier 1 入库。问题：交叉注意力或深层 MLP 等柔性外生融合模型在测试期外生变量超出训练取值范围（OOR）或驱动机制切换时易过拟合伪相关。机制：以跨步共享 $\operatorname{MLP}_y,\operatorname{MLP}_u$ 嵌入观测与外生输入，强制历史滞后不变循环编码与未来前向滚动共用同一 $N=2$ 分块对角线性矩阵 $W$ 及纯加性外生推力（放弃状态相关控制项 $B(z,u)$），输出端改用分块非线性 $\operatorname{MLP}_{\hat{y}}$ 求和替代线性观测矩阵 $C$。证据：EPF-5、Favorita 与 Bouc-Wen 共 8 项任务 8 次进前二、平均排名 1.87 居首，推理接近 TSMixer，EPF-DE OOR 与跨驱动迁移分别降错约 20% 与 30%；将 $W$ 换为两层 ReLU MLP 后 Bouc-Wen 同分布精度更佳（0.035 vs 0.085）但迁移崩溃（0.741 vs 0.296）且 Favorita OOR 落后约 18%，实证线性转移专门服务于分布偏移泛化；编码改回普通 MLP 使均排跌至 2.47，$N=2\to 4$ 无差、$N=8$ 退化约 19%。缺口：有限维线性假设未覆盖连续谱，稳定性仅经验检验，对外生缺失/时间错位敏感且 OOR 样本偏小。

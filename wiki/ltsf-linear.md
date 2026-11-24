@@ -10,7 +10,7 @@ tags:
   - transformer-critique
 created: 2026-05-30
 last_updated: 2026-11-24
-source_count: 5
+source_count: 6
 confidence: medium
 status: active
 ---
@@ -79,9 +79,11 @@ The paper argues that long-term forecasting depends primarily on capturing **tre
 - Superseded in capacity (not replaced) by [[tide|TiDE]]: TiDE keeps a global linear residual so DLinear-style maps remain a subclass, while residual MLPs and a [[temporal-decoder|temporal decoder]] add non-linearity and first-class covariates that pure LTSF-Linear cannot model[^src-tide]
 - 后续统一与重估：Toner & Darlow 证明 DLinear、NLinear 及相关变体功能上等价于增强特征上的无约束线性回归，闭式 OLS 可匹敌或超过 SGD 训练的同款模型；[[searchcast]]（arXiv:2606.27282）沿此把模型固定为 Ridge、把预算花在预处理搜索上，8 个 benchmark 中 7 个取得线性类最优平均 MSE（ETTh2 与 FITS 打平 0.334 vs 0.333），并在 6/8 上超过非线性基线，论文据此主张线性基线的弱势反映预处理欠调而非容量不足[^src-2606-27282-ltsf-linear-models]
 - 瓶颈接力 $\Delta$（段级低秩基压缩）：[[source-timebase|TimeBase]]（ICML 2025）去掉 DLinear 的 MovingAvg 分解，按主周期 $P$ 将历史序列重排为 $N$ 个不重叠段，以正交正则线性层提取 $R=6$ 个时间基后再线性重构未来分段，将 $O(LH)$ 点级全连接压缩至 $O(NR)$ 段级低秩映射（ECL $720\to 720$ 仅 $0.39\text{K}$ 参数、$0.98\text{ ms}$ CPU 延迟），以极低开销逼近或持平强基线；代价是依赖周期 $P$ 先验且通道独立不建模跨变量依赖[^src-timebase]
+- 演进对照（极低参数因子化）：[[source-mixlinear|MixLinear]]（ICLR 2026）将 $O(LH)$ 点级稠密线性层压缩至 0.1K（45–176 参数）因子化表示——先按步长下采样，再把时域 2D 分段双线性分解与频域秩-2 复投影相加；在 8 基准上 MSE 与 SparseTSF/FITS 同量级，但主表只报 MSE 不报 MAE 且低维与高维集对时频两支依赖明显分化[^src-mixlinear]
 
 [^src-zeng-2022-are-transformers-effective]: [[source-zeng-2022-are-transformers-effective]]
 [^src-rstib]: [[source-rstib-mlp]]
 [^src-tide]: [[source-tide]]
 [^src-2606-27282-ltsf-linear-models]: [[source-2606-27282-ltsf-linear-models]]
 [^src-timebase]: [[source-timebase]]
+[^src-mixlinear]: [[source-mixlinear]]
