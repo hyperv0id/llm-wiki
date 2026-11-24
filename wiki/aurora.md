@@ -9,8 +9,8 @@ tags:
   - zero-shot
   - arxiv-2026
 created: 2026-05-03
-last_updated: 2026-11-02
-source_count: 5
+last_updated: 2026-11-24
+source_count: 6
 confidence: high
 status: active
 ---
@@ -50,9 +50,9 @@ Aurora 在 Cross-domain Multimodal Time Series Corpus（>10 亿时间点，ERA5/
 | 类型 | 多模态基础模型 | 单模态扩散模型 | 多模态 ST 基础模型 | 单模态基础模型 | 单模态基础模型 |
 | 模态 | 文本 + 图像 + 数值 | 仅数值 | 图像 + 文本 + 位置 + TS | 仅数值 | 仅数值 |
 | 生成方式 | Flow Matching | Diffusion (DDPM) | 判别式 | 自回归 | 自回归 |
-| 零样本 | ✓ | ✗ | ✓ | ✓ | ✓ |
-| 跨域泛化 | ✓ | ✗ | ✓ (跨城市) | ✓ (跨数据集) | ✓ (跨数据集) |
-| 概率预测 | ✓ (生成式) | ✓ (扩散式) | ✗ | ✗ | ✗ |
+| 零样本 | 是 | 否 | 是 | 是 | 是 |
+| 跨域泛化 | 是 | 否 | 是 (跨城市) | 是 (跨数据集) | 是 (跨数据集) |
+| 概率预测 | 是 (生成式) | 是 (扩散式) | 否 | 否 | 否 |
 
 ### 与 SimDiff 的对比
 
@@ -77,6 +77,12 @@ Aurora 在 Cross-domain Multimodal Time Series Corpus（>10 亿时间点，ERA5/
 同为探索多模态时序基础模型的代表，两者在任务导向与跨模态对齐上展现出不同的设计路线：
 - **任务错位（Task Misalignment）**：VETime 论文指出，Aurora 专为通用多模态时序预测设计，依赖原型引导流匹配与模态引导注意力捕获宏观演变趋势；但预测任务关注未来宏观分布，缺乏密集体时间戳级（timestamp-level）判别能力，且预测-残差范式在零样本面对未知多样异常时难以泛化（§1）[^src-2602-16681-vetime]。
 - **跨模态交互与对齐粒度**：Aurora 在编码阶段通过可学习语义质心交叉注意力将视觉与文本知识蒸馏为少量精华 token 注入时序自注意力；而面向异常检测的 [[vetime|VETime]] 强调可逆共享时间轴，通过可追溯图像转换（TIC）和补丁级时序对齐（PTA）将冻结 ViT 的 2D 视觉补丁精确对齐回 1D 时间轴，并结合多尺度窗口对比学习与任务自适应门控，实现点异常与长上下文异常的密集定位（§1, §3.2）[^src-2602-16681-vetime]。
+
+### 与 DoubleCast 的对比（同生态位并发对照：原生生成式预训练 vs 冻结骨干解码器适配）
+
+同面向零样本概率多模态时序预测，两者在骨干构建与文本依赖特性上路线不同：
+- **架构路线差异**：Aurora 从头预训练生成式多模态基础模型（ViT/BERT 语义质心蒸馏 + 模态引导自注意力 + 原型引导 Flow Matching）[^src-aurora]；[[doublecast|DoubleCast]] 则冻结单模态 [[chronos|Chronos]]（T5-large）与 Qwen3-14B 编码器，仅在解码块中插入 `DualT5` 文本交叉注意力适配器做判别式/自回归条件化[^src-doublecast]。
+- **干扰文本退化对照**：DoubleCast 喂入随机错配他窗文本后 CRPS 恶化 $26.5\%$，而 Aurora 在乱序文本扰动下的退化幅度为 $9.2\%$，反映出 DoubleCast 的预测改善更紧密地依托正确对齐文本的注入[^src-doublecast]。
 
 ## 实验
 
@@ -109,9 +115,11 @@ Aurora 在 Cross-domain Multimodal Time Series Corpus（>10 亿时间点，ERA5/
 - [[vetime]] — 视觉增强零样本时序异常检测基础模型（对比多模态预测路线）
 - [[multimodal-time-series-anomaly-detection]] — 多模态时序异常检测概念
 - [[source-2602-16681-vetime]] — VETime 论文源摘要
+- [[doublecast]] · [[source-doublecast]] — 冻结 Chronos + DualT5 文本交叉注意力对照（ICML 2026）
 
 [^src-aurora]: [[source-aurora]]
 [^src-simdiff]: [[source-simdiff]]
 [^src-most]: [[source-most]]
 [^src-event-driven-ts-forecasting]: [[source-event-driven-ts-forecasting]]
 [^src-2602-16681-vetime]: [[source-2602-16681-vetime]]
+[^src-doublecast]: [[source-doublecast]]

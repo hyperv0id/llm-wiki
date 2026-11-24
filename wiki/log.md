@@ -4646,3 +4646,10 @@ Tier 2 入库（NeurIPS 2025；主要贡献在诊断 VisionTS 偏爱周期整数
 创建的页面：[[source-dmmv]]
 更新的页面：[[multimodal-time-series-forecasting]]（图像-时序节与伪多模态二维决策矩阵，source_count 21→22）, [[time-vlm]]（谱系对照表补伪多模态路线分叉并合并 5%/10% few-shot 行使表宽合规，source_count 4→5）, [[patchtst]]（Connections 补数值分支消融跨槽位正交注记，source_count 10→11）, [[traceable-image-conversion]]（补周期折叠成像可逆性定位对照，source_count 1→2）, [[index]]
 ingest 报告：[[ingest-reports/2026-11-24-dmmv|WHY 报告]]
+
+
+## [2026-11-24] ingest | Overcoming the Modality Gap in Context-Aided Forecasting (CAF-7M & DoubleCast)
+Tier 1 入库（ICML 2026，PMLR 306）。针对「多模态时序预测常弱于单模态」的根因争论，论文把问题定位在现有语料文本从未被证明对预测有用：用 Llama-3.3-70B 读全窗生成解释文本后，按有/无文本经验 CRPS 下降筛选出 904 条验证测试窗（65 集/11 域，另有 743 万未过滤训练窗）构成 CAF-7M；配套基线 DoubleCast 冻结 Chronos（T5-large）编码器与 Qwen3-14B 文本编码器，在解码块中串行插入 DualT5 文本交叉注意力适配器。CAF-7M 零样本稳定优于 Chronos/Chronos-2，CGTSF 多数设定领先 ChatTime，GIFT-Eval 几乎保留原精度；真实涨点归因于数据筛选而非架构创新（无训练侧组件消融，推理去文本/错配文本分别恶化 CRPS 18.3%/26.5%，而 Time-LLM 去文本反降 8.0%）。缺口：MSPG 超步长迁移落后 Chronos、Time-MMD 仅 7/9 域胜出、743 万训练窗未过滤、GPT-5.2 既作筛选器又作被测对象存在自我验证偏置（4 模型一致率 43.5%–54.0%），且缺窗内局部时间索引。
+创建的页面：[[source-doublecast]], [[doublecast]]
+更新的页面：[[multimodal-time-series-forecasting]]（补 CAF-7M 基准行与归因二维矩阵，source_count 22→23）, [[constrained-text-fusion]]（补归因对立对照，source_count 5→6）, [[time-mmd]]（补经验效用筛选瓶颈接力 Δ 并压缩九域表行数，source_count 6→7）, [[chronos]]（补 DualT5 条件化扩展与 GIFT-Eval/MSPG 对照，source_count 9→10）, [[aurora]]（补同生态位路线与干扰文本退化对照并清理表内符号，source_count 5→6）, [[circular-dependency-in-multimodal-fusion]]（补测试集筛选循环偏置案例，source_count 1→2）, [[index]]
+ingest 报告：[[ingest-reports/2026-11-24-doublecast|WHY 报告]]

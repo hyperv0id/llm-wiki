@@ -8,7 +8,7 @@ tags:
   - iclr2024
 created: 2026-04-29
 last_updated: 2026-11-24
-source_count: 9
+source_count: 10
 confidence: high
 status: active
 ---
@@ -88,6 +88,7 @@ Sundial 团队在 Table 8 中报告：使用相同 94B 预训练数据子集时�
 - [[ts-memory]] — TS-Memory：即插即用记忆适配器，以 ChronosBolt 为冻结 backbone 验证，平均 MSE 降 5.8%[^src-ts-memory-time-series-foundation-models-kdd26]
 - [[moirai-moe|Moirai-MoE]] — ICML 2025 首个 MoE 时间序列基础模型。Moirai-MoE-S (11M activated) 在 Monash 29 数据集上聚合 MAE 0.65 超越 Chronos-S (~0.77)、Chronos-B (~0.71)，以 65× 更少激活参数（11M vs 710M Chronos-L）取得更优结果[^src-moirai-moe]。推理速度 273s vs Chronos-S 551s（受益于 patch size 16 vs Chronos 的 point-wise tokenization）[^src-moirai-moe]
 - [[tirex]] — **同槽位互斥对照与实证复现对齐**：[[tirex|TiRex]]（35M 纯 sLSTM + CPM 占位）与 Chronos-Bolt（Transformer 自回归）在相同预训练数据与增强下的受控对照显示，Chronos-Bolt 长程 CRPS 仍落后于 TiRex（约 0.41 vs 0.33），且 TiRex 推理速度较 Chronos-Bolt-Base 快 4 倍以上[^src-tirex]
+- [[doublecast]] — **文本条件化扩展与复现对齐**：[[doublecast|DoubleCast]]（ICML 2026）冻结 Chronos（T5-large）分词器与编码器，在每个解码块 `enc-dec cross-attn` 之后插入 `DualT5` 文本交叉注意力以接收冻结 Qwen3-14B 的文本表征；在经经验 CRPS 效用筛选的 CAF-7M 上稳定优于单模态 Chronos / Chronos-2，并在 GIFT-Eval 上几乎完整保留原始数值精度（但在超出训练步长上限的 MSPG $H=96$ 设定下仍落后于 Chronos）[^src-doublecast]
 
 ## DynaMix 对比
 
@@ -115,3 +116,4 @@ Sundial 团队在 Table 8 中报告：使用相同 94B 预训练数据子集时�
 [^src-ts-memory-time-series-foundation-models-kdd26]: [[source-ts-memory-time-series-foundation-models-kdd26]]
 [^src-moirai-moe]: [[source-moirai-moe]]
 [^src-tirex]: [[source-tirex]]
+[^src-doublecast]: [[source-doublecast]]

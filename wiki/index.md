@@ -127,6 +127,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[source-dits]] — DiTS: Multimodal Diffusion Transformers Are Time Series Forecasters (arXiv 2026)
 - [[source-dmmv]] — DMMV：舍弃文本的伪多模态双视图分解（仅微调归一化层的 MAE 周期分支 + 两趟半幅掩码回测残差线性趋势分支 + 标量门控），8 项 LTSF 基准 6 项均值最优且整体优于 Time-VLM（Shen et al., NeurIPS 2025）
 - [[source-doflow]] — DoFlow: Flow-based Generative Models for Interventional and Counterfactual Forecasting on Time Series (ICLR 2026)
+- [[source-doublecast]] — Overcoming the Modality Gap in Context-Aided Forecasting (CAF-7M & DoubleCast)：经验 CRPS 效用筛选语料（743 万训练窗 / 904 验证测试窗）+ 冻结 Chronos 解码块 DualT5 文本交叉注意力基线（Zheng*, Marcotte* et al., ICML 2026）
 - [[source-dpgnet]] — DPGNet: Dynamic Graph Prediction Network with AGL + ASL for spatiotemporal forecasting (ICLR 2026 under review)
 - [[source-dpm-solver]] — DPM-Solver: Fast ODE solver for diffusion models (NeurIPS 2022)
 - [[source-dst-mamba]] — DST-Mamba: Decomposed Spatio-Temporal Mamba for Long-Term Traffic Prediction (AAAI 2025)
@@ -510,6 +511,7 @@ All wiki pages, organized by type. 维护约定：按 frontmatter `type` 分五�
 - [[distdf]] — DistDF，DF 的分布感知训练目标：联合分布 Wasserstein（高斯下 Bures–Wasserstein）对齐条件分布 + MSE 混合，绕开似然因式分解；<1 ms 训练开销、推理零开销（ICLR 2026）
 - [[dits]] — DiTS, MM-DiT dual-stream flow matching forecaster for covariate-aware time series (arXiv 2026)
 - [[doflow]] — DoFlow, flow-based generative model on a causal DAG with per-node time-conditioned CNFs unifying observational/interventional/counterfactual forecasting + likelihood anomaly detection (ICLR 2026)
+- [[doublecast]] — DoubleCast & CAF-7M：先生成再经验 CRPS 效用筛选的多模态语料（743 万训 / 904 验）与冻结 Chronos 解码器 DualT5 文本交叉注意力基线（ICML 2026）
 - [[dpgnet]] — DPGNet, dynamic graph prediction network with plug-and-play AGL + multi-scale ASL for spatiotemporal forecasting (ICLR 2026, under review)
 - [[dpm-solver]] — DPM-Solver, fast ODE solver for diffusion model (NeurIPS 2022)
 - [[dst-mamba]] — DST-Mamba, decomposed spatio-temporal Mamba for long-term traffic prediction (AAAI 2025)

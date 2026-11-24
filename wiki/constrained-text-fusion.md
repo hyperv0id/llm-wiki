@@ -10,7 +10,7 @@ tags:
   - kdd-2026
 created: 2026-07-28
 last_updated: 2026-11-24
-source_count: 5
+source_count: 6
 confidence: high
 status: active
 ---
@@ -64,6 +64,7 @@ CFA：\(W_{\mathrm{down}}:D\to D/r\)，ReLU∘LN，\(W_{\mathrm{up}}\) 回 \(D\)
 | [[cross-modal-misalignment|Cross-modal misalignment]] | 预训练 MMCL：省略/扰动语义进不了对比表示；CFA 是**任务侧**再过滤，理论层解释“为何文本容量应压低”[^src-cross-modal-misalignment] |
 | [[worldts|WorldTS]] | 下游采用：把 CFA 从文本协变量扩展到文本+图像，注入位置从 encoder 各层改为潜状态空间残差，与历史状态融合共同条件化未来状态预测[^src-worldts] |
 | [[source-time-imm\|Time-IMM]] / IMM-TSF | **实证对齐**：在采样不均、通道异步的基准上复现了受控抑噪偏好——门控循环残差相加优于固定权重交叉注意力相加，且收益依赖文本相关性[^src-time-imm] |
+| [[doublecast\|DoubleCast & CAF-7M]] | **归因对立与跨槽位正交**：同以「多模态常败给单模态」为起点，CFA 归因于融合容量缺乏约束引入噪声并主张低秩残差；DoubleCast 归因于原始文本未经预测效用验证，主张先做经验 CRPS 筛选再在解码块插全秩 DualT5 文本交叉注意力[^src-doublecast] |
 
 ## 局限
 仅文本；理论浅；未系统扩 vision/tabular；部分 constrained 仍可能偶发低于 unimodal，故 CFA 强调更强过滤[^src-constrained-text-fusion]。原文未覆盖视觉模态；[[worldts|WorldTS]] 随后把 CFA 用于图像协变量[^src-worldts]。
@@ -74,9 +75,11 @@ CFA：\(W_{\mathrm{down}}:D\to D/r\)，ReLU∘LN，\(W_{\mathrm{up}}\) 回 \(D\)
 - [[time-mmd]] · [[multimodal-time-series-forecasting]] · [[non-fusion-guidance]] · [[timi]] · [[vot]] · [[time-vlm]] · [[ts-vl-alignment]] · [[tats]] · [[cross-modal-misalignment]] · [[source-cross-modal-misalignment]] · [[tess]]
 - [[worldts]] · [[latent-space-future-state-prediction]] — CFA 的下游采用：潜状态空间残差注入
 - [[source-time-imm]] — 异步不规则基准下门控循环残差抑噪的实证对齐
+- [[doublecast]] · [[source-doublecast]] — 数据侧 CRPS 效用筛选与归因对立对照
 
 [^src-constrained-text-fusion]: [[source-constrained-text-fusion]]
 [^src-cross-modal-misalignment]: [[source-cross-modal-misalignment]]
 [^src-tess]: [[source-tess]]
 [^src-worldts]: [[source-worldts]]
 [^src-time-imm]: [[source-time-imm]]
+[^src-doublecast]: [[source-doublecast]]

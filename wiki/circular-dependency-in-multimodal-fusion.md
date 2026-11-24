@@ -7,8 +7,8 @@ tags:
   - trustworthy-ai
   - uncertainty-quantification
 created: 2026-07-18
-last_updated: 2026-07-18
-source_count: 1
+last_updated: 2026-11-24
+source_count: 2
 confidence: medium
 status: active
 ---
@@ -45,4 +45,9 @@ GMF 提出的解决方案是将可靠性评估从**内在统计度量**转向**�
 - **校准方法**：通过 temperature scaling、conformal prediction 等后处理修复分类器校准
 - **外部验证**：引入独立的质量评估模型
 
+## 基准构建中的同构偏置
+
+循环依赖不仅发生在模型推理期的融合权重分配中，也会出现在多模态数据集的效用筛选环节：在 [[doublecast|CAF-7M]] 构建评估集时，作者以 GPT-5.2 作为筛选器判断哪些窗口的文本能经验性降低 CRPS，随后又在该已过滤测试集上对 GPT-5.2 本身进行评测[^src-doublecast]。$4$ 个候选筛选模型对有效窗口的一致率仅 $43.5\%\text{–}54.0\%$，而充当验证器的 GPT-5.2 在该测试集上排名第一，提示评估基准与被测强模型之间存在同构的自我验证偏置[^src-doublecast]。
+
 [^src-gmf]: [[source-gmf]]
+[^src-doublecast]: [[source-doublecast]]

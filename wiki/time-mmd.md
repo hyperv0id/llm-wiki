@@ -8,8 +8,8 @@ tags:
   - text-numeric-alignment
   - neurips-2024
 created: 2026-07-28
-last_updated: 2026-10-13
-source_count: 6
+last_updated: 2026-11-24
+source_count: 7
 confidence: high
 status: active
 ---
@@ -28,17 +28,11 @@ status: active
 
 ## 九大领域（数值侧）
 
-| 领域 | 目标变量（示例） | 频率 | 样本规模量级 | 跨度 |
-|------|------------------|------|--------------|------|
-| Agriculture | Retail Broiler Composite | 月 | ~496 | 1983–Present |
-| Climate | Drought Level（多维） | 月 | ~496 | 1983–Present |
-| Economy | International Trade Balance | 月 | ~423 | 1989–Present |
-| Energy | Gasoline Prices | 周 | ~1479 | 1996–Present |
-| Environment | Air Quality Index | 日 | ~11102 | 1982–2023 |
-| Health | Influenza patients proportion（US；另含 Africa） | 周 | ~1389 | 1997–Present |
-| Security | Disaster and Emergency Grants | 月 | ~297 | 1999–Present |
-| Social Good | Unemployment Rate | 月 | ~900 | 1950–Present |
-| Traffic | Travel Volume | 月 | ~531 | 1980–Present |
+| 频率 | 覆盖领域与目标变量示例（样本规模量级 / 时间跨度） |
+|------|------------------------------------------------|
+| 日 | Environment：Air Quality Index（~11102 / 1982–2023） |
+| 周 | Energy：Gasoline Prices（~1479 / 1996–Present）；Health：Influenza patients proportion（US，另含 Africa；~1389 / 1997–Present） |
+| 月 | Agriculture：Retail Broiler Composite（~496 / 1983–Present）；Climate：Drought Level 多维（~496 / 1983–Present）；Economy：International Trade Balance（~423 / 1989–Present）；Security：Disaster and Emergency Grants（~297 / 1999–Present）；Social Good：Unemployment Rate（~900 / 1950–Present）；Traffic：Travel Volume（~531 / 1980–Present） |
 
 主任务强调**目标变量的单变量预测**并构造对齐文本；部分集提供协变量维以启发后续工作。Health 同时含 US / Africa，用于公平与代表性讨论（Africa 周期更弱、报告更少）[^src-time-mmd]。
 
@@ -79,6 +73,7 @@ Time-MMD 是**数据与评测基础设施**，不是预测模型。下游常引�
 | [[pir|PIR]]（Post-forecasting Identification and Revision，Liu et al., NeurIPS 2025） | Energy / Health 子集上验证对齐文本描述作为外生信息的后处理修订（周频，Lin=24）[^src-pir] |
 | [[trace|TRACE]] | Health/Energy/Environment 子集预测验证，TRACE 独立编码器 SOTA |
 | [[worldts|WorldTS]]（arXiv 2026） | 用其中 8 域（VoT 协议，horizon 12）做文本协变量预测；16 组数据集-指标对比中 14 组第一，Health 增益最大（MSE −8.9%、MAE −9.1%）[^src-worldts] |
+| [[doublecast|CAF-7M / DoubleCast]]（ICML 2026） | **瓶颈接力 Δ**：Time-MMD 靠时间戳对齐与 fact/prediction 拆分防泄漏；CAF-7M 补上「经验 CRPS 效用验证」筛选维度，DoubleCast 在 Time-MMD 上实现 7/9 域胜出[^src-doublecast] |
 
 释放元数据：数值（起止、目标、协变量）+ 文本（起止、fact/prediction 内容与来源）。GitHub: `https://github.com/AdityaLab/Time-MMD`[^src-time-mmd]。
 
@@ -98,9 +93,11 @@ Time-MMD 是**数据与评测基础设施**，不是预测模型。下游常引�
 - [[tsfm-covariate-adaptation-comparison]] · [[covariate-homogenization]]
 
 - [[worldts]] · [[source-worldts]] · [[latent-space-future-state-prediction]] — 潜空间未来状态预测路线，8 域文本协变量评测
+- [[doublecast]] · [[source-doublecast]] — CAF-7M 经验 CRPS 效用验证与 DoubleCast（7/9 域胜出）
 [^src-time-mmd]: [[source-time-mmd]]
 [^src-constrained-text-fusion]: [[source-constrained-text-fusion]]
 [^src-cross-modal-misalignment]: [[source-cross-modal-misalignment]]
 [^src-pir]: [[source-pir]]
 [^src-trace-neurips2025]: [[source-trace-neurips2025]]
 [^src-worldts]: [[source-worldts]]
+[^src-doublecast]: [[source-doublecast]]

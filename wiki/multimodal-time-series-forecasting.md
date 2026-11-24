@@ -8,7 +8,7 @@ tags:
   - covariate
   - satellite-imagery
 created: 2026-04-29
-source_count: 22
+source_count: 23
 last_updated: 2026-11-24
 confidence: high
 status: active
@@ -93,6 +93,7 @@ UniCA 通过**协变量同质化**将不同模态转换为统一表示：
 | **MMSP** | 数值 + 卫星云图 | 规则网格 | 时刻对齐 | 无文本 |
 | [[time-mmd\|Time-MMD]] | 数值 + 外生文本（9 域） | 规则（日/周/月） | 二元起止时间戳 + 防泄漏[^src-time-mmd] | LLM 拆分 fact/prediction 摘要[^src-time-mmd] |
 | [[source-time-imm\|Time-IMM]] | 数值 + 文本日志（3 类 9 亚类） | 不规则采样 + 通道异步 | 保留独立时间戳；全局网格掩码 / 高斯近因 / 时间编码交叉注意力[^src-time-imm] | LLM 筛选压缩为五句摘要[^src-time-imm] |
+| [[doublecast\|CAF-7M]] | 数值 + 解释文本（65 集 11 域） | 规则窗口（743 万训 / 904 测） | 实例级整窗文本条件化；缺窗内时间步索引[^src-doublecast] | Llama-3.3-70B 读全窗反推 + 经验 CRPS 效用筛选测试窗[^src-doublecast] |
 
 ## 实验结果
 
@@ -151,6 +152,17 @@ UniCA 在多模态场景下的表现：
 ## Constrained Text Fusion：Naive 常伤、约束才稳
 
 **[[constrained-text-fusion|CFA]]**（arXiv:2603.22372）：Time-MMD 九域 >20K 设定，naive add/concat 常差于 unimodal；Gating/FiLM/正交/低秩 CFA 更好（9/9 域、13/14 骨干，+0.61% 参）。相对 [[tats|TaTS]] 拼接与 [[timi|TiMi]] MoE 路由，CFA 是特征侧受控注入[^src-constrained-text-fusion]。
+
+## 文本融合失效归因：容量约束 vs 数据效用验证
+
+围绕「多模态时序预测常败给单模态」这一现象，既有研究在**融合架构侧**与**数据效用侧**两条正交轴上分叉：[[constrained-text-fusion|CFA]] 与 [[aurora|Aurora]] 分别通过低秩残差约束或模态引导蒸馏过滤融合噪声，而 [[doublecast|DoubleCast & CAF-7M]] 将根因归为「既有语料中的文本从未被证明对预测有用」，在 [[time-mmd|Time-MMD]] 的防泄漏对齐之上补入经验 CRPS 效用筛选，并仅以冻结 [[chronos|Chronos]] 解码块内插 DualT5 文本交叉注意力作为低成本载体[^src-constrained-text-fusion][^src-aurora][^src-doublecast][^src-time-mmd]。
+
+| 路线代表 | 失效归因重点 | 核心干预槽位 | 文本编码与注入方式 | 干扰/去文本响应 |
+|---|---|---|---|---|
+| **[[constrained-text-fusion\|CFA]]** | 无控融合引入高秩噪声 | 编码器融合层容量限制 | 冻结文本编码器 + 低秩残差注入[^src-constrained-text-fusion] | 面对无关文本增益稳健[^src-constrained-text-fusion] |
+| **[[aurora\|Aurora]]** | 缺跨模态预训练表征 | 原生多模态生成式预训练 | BERT 质心蒸馏 + 模态引导自注意力 + Flow Matching[^src-aurora] | 乱序文本下退化 $9.2\%$[^src-doublecast] |
+| **[[doublecast\|DoubleCast & CAF-7M]]** | 文本未经预测效用验证 | 数据侧经验 CRPS 筛选 | 冻结 Qwen3-14B + 解码块内插 DualT5 交叉注意力[^src-doublecast] | 去文本 $+18.3\%$ CRPS；错配 $+26.5\%$[^src-doublecast] |
+| **[[time-llm\|Time-LLM]]** | 跨模态词表重编程错位 | 输入端前缀拼接 | 时序重编程为原型词缀送入冻结 LLM[^src-doublecast] | CAF 设定去文本反而降 $8.0\%$ CRPS[^src-doublecast] |
 
 ## Cross-Modal Misalignment：缓解 vs 利用
 
@@ -280,6 +292,7 @@ UniCA 在多模态场景下的表现：
 - [[worldts]] — WorldTS 多模态协变量条件化潜空间预测（arXiv 2026）
 - [[latent-space-future-state-prediction]] — 潜空间未来状态预测技术（TimeAlign/LatentTSF/WorldTS）
 - [[source-time-imm]] — Time-IMM 不规则异步多模态多变量时序基准（NeurIPS 2025 D&B）
+- [[doublecast]] · [[source-doublecast]] — CAF-7M 经验 CRPS 效用筛选语料与 Chronos DualT5 条件化基线（ICML 2026）
 
 ---
 
@@ -307,3 +320,4 @@ UniCA 在多模态场景下的表现：
 [^src-worldts]: [[source-worldts]]
 [^src-time-imm]: [[source-time-imm]]
 [^src-dmmv]: [[source-dmmv]]
+[^src-doublecast]: [[source-doublecast]]
