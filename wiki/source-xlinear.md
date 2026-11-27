@@ -8,7 +8,7 @@ tags:
   - mlp
   - aaai-2026
 created: 2026-11-24
-last_updated: 2026-11-24
+last_updated: 2026-11-27
 source_count: 1
 confidence: medium
 status: active
@@ -16,30 +16,33 @@ status: active
 
 # XLinear: A Lightweight and Accurate MLP-Based Model for Long-Term Time Series Forecasting with Exogenous Inputs
 
-**来源**：Xinyang Chen、Huidong Jin、Yu Huang、Zaiwen Feng（华中农业大学信息学院；CSIRO）；AAAI 2026[^src-xlinear]。
+真实预测里常见不对等因果：便宜的外生变量（气象、水质）单向驱动内生目标（湖温、作物产量），而主流模型要么对称地全对全建模，要么用注意力融合外生信息并付出二次开销，逐通道独立的线性模型则丢掉跨变量信息。XLinear 给每个内生变量配一个可学习全局 token：内生序列先带它沿时间轴门控滤波，token 再沿变量轴吸收外生信息，最后拼接送入线性预测头，全程无注意力。作者报告其在 7 个公开基准与 5 个真实外生数据集上多数最优或次优，训练开销显著更低[^src-xlinear]。
 
-[[source-timexer|TimeXer]] 用分块自注意力与变量级交叉注意力融合外生变量，但注意力矩阵带来二次计算与显存开销。XLinear 把跨变量信息压缩进一个可学习的全局摘要向量：先让内生序列带着该向量沿时间轴做一次门控滤波，再让该向量沿变量轴吸收外生序列信息，最后直接拼接两者通过线性层输出预测，全程不引入注意力，将复杂度压至线性级[^src-xlinear]。
+## 核心做法
 
-## 去黑话算子配方与路线差异
+全流程只由 RevIN 归一化、线性嵌入与「两层 MLP + Sigmoid 逐元素门控」一种标准算子组合构成，未引入新底层算子；论文把同一门控沿时间轴与变量轴各部署一次，称时间门控模块（TGM）与变量门控模块（VGM）[^src-xlinear]：
 
-模型全程由常规归一化、线性投影与两层门控 MLP 组成，未引入改变数学结构的新底层算子[^src-xlinear]：
-
-- **归一化与线性嵌入**：用 `RevIN` 归一化内生序列 $X \in \mathbb{R}^{T\times M}$ 与外生序列 $E \in \mathbb{R}^{T\times C}$，经共享线性层映射至隐维 $d$，整体保持 $O(Td)$ 线性复杂度[^src-xlinear]。
-- **时间与变量双门控交互**：时间门控模块（TGM）将内生特征与可学习全局 token $X_{\text{glob}}$ 拼接，经 $\sigma(W_2\phi(W_1 X_{\text{endo\_tok}}))\odot X_{\text{endo\_tok}}$ 逐时间步门控滤波；变量门控模块（VGM）再将全局 token 沿变量维与外生特征拼接并做同构的 `MLP + Sigmoid` 门控聚合，最后把吸收外生信息的全局 token 与内生特征沿时间维拼接，接单层线性头（FC）直连预测[^src-xlinear]。
-- **有向关系对照**：与 [[source-timexer|TimeXer]] 属**同槽位互斥**——同样以全局 token 桥接内生与外生，但把 patch 自注意力与交叉注意力全部替换为双 MLP 门控以换取线性开销；与 [[crosslinear|CrossLinear]] 同处 $O(T)$ 线性外生阵营并属**同槽位互斥**（1D 卷积跨相关残差嵌入 vs 全局 token 双门控）；相对 [[itransformer|iTransformer]] 则将 $N\times N$ 变量注意力塌缩为单全局 token 通道，并与 [[tide|TiDE]]、[[channel-independence|Channel Independence]] 共同构成外生轻量化对照[^src-xlinear]。
+- **时间门控**：全局 token 与内生嵌入沿时间维拼接，门控筛选关键时序特征并写入 token[^src-xlinear]。
+- **变量门控**：token 再与外生嵌入沿变量维拼接，同构门控把外生信息压进 token[^src-xlinear]。
+- **预测头**：单个全连接层把「增强后内生序列 + 全局 token」的拼接直接映射为多步预测，各通道独立输出[^src-xlinear]。
 
 ## 证据
 
-1. **定位与主结论**：7 公开与 5 农业/水文集多数最优或次优，Weather 快 $\ge 39.3\%$、显存低约 $43.7\%$[^src-xlinear]。
-2. **真实涨点归因**：去全局 token（GT）或外生通路（ES）均掉点（Weather-96：$0.149\to$ GT $0.153$/ES $0.175$），主要涨点来自外生通路；未做 TGM/VGM 顺序、门控激活或参数共享消融[^src-xlinear]。
-3. **证据缺口与负结果**：862 维 Traffic Many-to-Many 落后 TimeXer（$0.432$ vs $0.428$）与 iTransformer，单 token 门控去噪容量不足，高维扩展性待提升[^src-xlinear]。
+1. **定位与主结论**：7 公开基准加 5 农业水文外生数据集多数最优或次优，训练开销显著低于注意力类基线（作者报告至少快 39.3%）[^src-xlinear]。
+2. **真实涨点归因**：消融中仅留纯时序通路（ES）掉点最狠，仅留全局 token（GT）反优于纯时序，涨点主要来自外生信息通路；未消融门控激活与模块顺序[^src-xlinear]。
+3. **证据缺口与负结果**：862 变量 Traffic 落后 iTransformer 与 TimeXer，高维下单 token 容量不足；基线对比集中于 lookback-96 口径[^src-xlinear]。
+
+## 局限
+
+论文自述：高维场景使 VGM 输入维数膨胀，作者将压缩 VGM 输入维数列为后续工作[^src-xlinear]。
 
 ## 相关页面
 
-- [[source-timexer]] — 注意力外生融合桥梁（同槽位互斥）
-- [[crosslinear]] — 1D 卷积跨相关线性外生预测（同槽位互斥）
-- [[itransformer]] — 变量维 $N\times N$ 自注意力（复现与高维容量对照）
-- [[tide]] — 通道独立残差 MLP 协变量预测（复现与机制对照）
-- [[channel-independence]] — 通道独立 vs 单全局 token 外生混合折中对照
+- **同槽位互斥** → [[source-timexer|TimeXer]]：同用全局 token 桥接内生与外生，但对方靠 patch 自注意力 + 变量级交叉注意力，XLinear 以双 MLP 门控换线性开销。
+- **同槽位互斥** → [[crosslinear|CrossLinear]]：同属线性复杂度外生预测，但对方以 1D 卷积跨相关残差嵌入建模变量关系，无全局 token 通道。
+- **同槽位互斥** → [[itransformer|iTransformer]]：对方在变量维开 $N\times N$ 注意力，在 862 变量的 Traffic 上优于 XLinear，是其容量上界对照。
+- **同构/特例** → [[tide|TiDE]]、[[channel-independence|Channel Independence]]：同为无注意力轻量路线，TiDE 用残差 MLP 编解码器吸收协变量；XLinear 预测头逐通道独立输出，与 Channel Independence 仅在输出端一致。
+
+出处：Chen et al., *XLinear*（AAAI 2026），代码公开于 GitHub[^src-xlinear]。
 
 [^src-xlinear]: [[source-xlinear]]
