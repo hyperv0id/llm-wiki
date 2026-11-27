@@ -10,7 +10,7 @@ tags:
   - probabilistic-forecasting
   - neurips-2025
 created: 2026-11-24
-last_updated: 2026-11-24
+last_updated: 2026-11-27
 source_count: 6
 confidence: medium
 status: active
@@ -47,7 +47,7 @@ flowchart LR
 
 ## 数据流与维度
 
-> **维度符号**：$L$ 序列总时间步数（上下文上限 $2048$）；$m_{\text{in}}=m_{\text{out}}=32$ 分别为输入与输出分块长度；$P$ 分块总数（推理时等于历史块数加未来占位块数）；$d$ 解码器隐藏维；$N$ 解码块层数（$N$ 与 $d$ 的具体数值在正文未展开，仅见论文附录）；$|Q|=9$ 为分位数数量（$Q=\{0.1,\dots,0.9\}$）[^src-tirex]。
+> **维度符号**：$L$ 序列总时间步数（上下文上限 $2048$）；$m_{\text{in}}=m_{\text{out}}=32$ 分别为输入与输出分块长度；$P$ 分块总数（推理时等于历史块数加未来占位块数）；$P_{\text{eval}}$ 训练期非缺失评估分块数；$d$ 解码器隐藏维；$N$ 解码块层数；$|Q|=9$ 为分位数数量（$Q=\{0.1,\dots,0.9\}$）[^src-tirex]。
 
 ### Stage 1 · 单序列归一化与掩码分块编码
 
@@ -82,10 +82,10 @@ $$\begin{aligned}
 在单变量零样本时序基础模型谱系中，TiRex 与代表性近邻形成三类明确的结构与实证对照[^src-tirex]：
 
 - **同槽位互斥对照与实证复现对齐（vs [[timesfm|TimesFM]] / [[chronos|Chronos-Bolt]]）**：在序列主干与多步展开两个槽位上，TiRex 用纯 sLSTM 与 CPM 占位延续替换了 Transformer 注意力和自回归点估计回喂，参数量从 200M/500M 压缩至 35M[^src-tirex][^src-timesfm][^src-chronos]。论文在相同预训练数据与相同增强下重新训练 Chronos-Bolt 作为受控对照，验证了纯架构与解码机制带来的长程优势[^src-tirex]。
-- **实证复现对齐（vs [[zeus|Zeus]]）**：TiRex 原文在剔除 16 个重叠设置的 81 项 GiftEval-ZS 上报告排名第一[^src-tirex]；而后续 [[zeus|Zeus]] 在完整 97 项 GIFT-Eval 上同台评测，报告 Zeus 取得 MASE 0.693 / CRPS 0.480、优于 TiRex 的 0.716 / 0.488，两份报告评测子集覆盖范围不同[^src-2607-01918]。
+- **实证复现对齐（vs [[zeus|Zeus]]）**：TiRex 原文在剔除 16 个重叠设置的 81 项 GiftEval-ZS 上报告排名第一[^src-tirex]；而后续 [[zeus|Zeus]] 在完整 97 项 GIFT-Eval 上同台评测，报告 Zeus 的点预测与概率指标均优于 TiRex，两份报告的评测子集覆盖口径不同[^src-2607-01918]。
 - **跨槽位架构差分（vs 混合 xLSTM）**：TiRex 在循环算子选择上彻底剔除 mLSTM、只保留纯 sLSTM；消融表明一旦反向改为纯 mLSTM，长程预测性能会急剧退化，而只要混入 1 层 sLSTM 即可大幅恢复[^src-tirex]。
 - **同词异构与多变量能力对照（vs [[baguan-ts|Baguan-TS]]）**：TiRex 仅支持单变量输入，其「上下文学习」实为依靠纯 `sLSTM` 隐状态追踪单条历史窗口；[[baguan-ts|Baguan-TS]]（ICML 2026）则构建多示例跨样本 ICL，以时间–变量–上下文 3D 轴分解与 Y-space 近邻检索支持单目标加多元协变量预测，并在 [[fev-bench|fev-bench-cov]] 上将 TiRex 纳入同台对照[^src-baguan-ts]。
-- **实证复现对齐（vs [[fev-bench]]）**：TiRex 原文在剔除重叠的 81 项 GiftEval-ZS 上报告第一[^src-tirex]；而在涵盖 7 域 100 任务（含 46 项协变量与 35 项多变量任务）并引入 $B=1000$ 任务级配对 Bootstrap 95% 置信区间的 [[fev-bench]] 上，Chronos-2 居于 SQL 与 MASE 双项首位，TiRex 与 [[timesfm|TimesFM-2.5]] 的 95% 置信区间大幅重叠、第二名在统计上不可区分[^src-fev-bench]。
+- **复现对齐（vs [[fev-bench]]）**：在涵盖 7 域 100 任务（含 46 项协变量与 35 项多变量任务）并引入 $B=1000$ 任务级配对 Bootstrap 95% 置信区间的 [[fev-bench]] 上，Chronos-2 居于 SQL 与 MASE 双项首位，TiRex 与 [[timesfm|TimesFM-2.5]] 的 95% 置信区间大幅重叠、第二名在统计上不可区分[^src-fev-bench]。
 
 | 模型 | 主干算子 | 多步预测展开 | 输出形式 | 代表参数规模 |
 |---|---|---|---|---|
@@ -96,23 +96,18 @@ $$\begin{aligned}
 
 ## 证据
 
-论文在 GiftEval-ZS（剔除重叠后的 81 项设置）与 Chronos-ZS（27 个数据集）上报告了零样本概率预测与消融结果（均采用作者报告口径）[^src-tirex]：
+论文在 GiftEval-ZS（剔除重叠后的子集）与 Chronos-ZS（27 个数据集）上报告了零样本概率预测与消融结果（均采用作者报告口径）[^src-tirex]：
 
 1. **定位与主结论**：35M 参数的 TiRex 在 GiftEval-ZS 与 Chronos-ZS 的概率指标（CRPS 与 WQL）及综合排名均位列第一，在长程零样本预测上首次超越监督训练的 [[patchtst|PatchTST]] 与 [[tft|TFT]]；推理速度较 Chronos-Bolt-Base 快 4 倍以上、较 TimesFM-2.0 快 11 倍以上[^src-tirex]。
-2. **真实涨点归因**：消融验证收益同时来自纯 sLSTM 与 CPM 多块机制——取消多块连续推理退化为自回归会使 GiftEval-ZS 长程 CRPS 从约 $0.33$ 恶化至约 $0.37$，改用末尾朴素掩码会损害短程与 Chronos-ZS（约 $0.59$ 恶化至约 $0.65$）；主干换成纯 mLSTM（约 $0.43$）或 Transformer（约 $0.34$）长程均落后，同数据同增强重训的 Chronos-Bolt 长程仍落后（约 $0.41$）；数据增强整体有效，但去掉幅值调制虽使 Chronos-ZS 从约 $0.59$ 退化至约 $0.62$，在 GiftEval-ZS 上却略有微升[^src-tirex]。
-3. **证据缺口与负结果**：第一，模型仅支持单变量输入，不具备跨通道联合建模能力；第二，GiftEval-ZS 主评测排除了 97 项中的 16 项重叠设置（实测 81 项），与完整 97 项评测口径不可混比；第三，超参数未经过精细调优，且解码块深度 $N$ 与隐藏维度 $d$ 等结构尺寸在正文中未给出具体数值[^src-tirex][^src-2607-01918]。
+2. **真实涨点归因**：消融验证收益同时来自纯 sLSTM 与 CPM 多块机制——取消多块连续推理退化为自回归会明显损害长程，改用末尾朴素掩码则拖累短程与 Chronos-ZS；主干换成纯 mLSTM 或 Transformer 后长程均落后，同数据同增强重训的 Chronos-Bolt 长程仍落后；数据增强整体有效，但去掉幅值调制虽使 Chronos-ZS 掉点，在 GiftEval-ZS 上却略有微升[^src-tirex]。
+3. **证据缺口与负结果**：第一，模型仅支持单变量输入，不具备跨通道联合建模能力；第二，主评测按零样本防重叠口径剔除了部分 GIFT-Eval 设置，与完整基准口径不可混比；第三，超参数未经过精细调优[^src-tirex][^src-2607-01918]。
 
 ## 相关页面
 
 - [[source-tirex]] — 论文源摘要
-- [[timesfm]] — Transformer decoder-only 时序基础模型对照
-- [[chronos]] — 离散化与 Chronos-Bolt 自回归基础模型对照
-- [[zeus]] — 完整 97 项 GIFT-Eval 上的同台对照基础模型
-- [[ar-vs-nar-decoding]] — 自回归、非自回归与占位式状态延续解码取舍
-- [[in-context-learning]] — 单序列上下文条件化与少样本演示的边界辨析
-- [[patchtst]] / [[tft]] — 长程零样本评测中超越的监督基线
-- [[baguan-ts]] — 序列原生多示例协变量 ICL 对照（跨样本检索 vs 单序列 sLSTM 隐状态延续）
-- [[fev-bench]] — 含协变量与配对 Bootstrap 95% CI 的零样本基准（与 TimesFM-2.5 第二名统计不可分）
+- [[ar-vs-nar-decoding]] — 特例关系：CPM 占位延续构成自回归与非自回归之外的第三条多步解码路线
+- [[in-context-learning]] — 跨槽位正交：单序列隐状态延续与跨样本上下文条件化分属不同设计轴
+- [[patchtst]] / [[tft]] — 同槽位互斥：长程零样本评测中对照的监督预测基线（其余近邻模型与基准的详细关系见上文「与既有工作的关系」）
 
 [^src-tirex]: [[source-tirex]]
 [^src-timesfm]: [[source-timesfm]]
