@@ -7,40 +7,39 @@ tags:
   - hyperparameter-search
   - preprocessing
 created: 2026-10-24
-last_updated: 2026-11-24
-source_count: 2
+last_updated: 2026-11-27
+source_count: 1
 confidence: medium
 status: active
 ---
 
 # How Good Can Linear Models Be for Time-Series Forecasting?
 
-> [!note] 出处口径
-> arXiv:2606.27282v2（2026-06-29），PDF 首页仅印 "Preprint."，无 venue 信息。ICLR 2027 投稿（OpenReview xJaVGhG9Bc）著录来自用户，未在 PDF 内核实。源文件 `raw/2606.27282-ltsf-linear-models.pdf`，转换文本 `raw/2606.27282-ltsf-linear-models.txt`。
+长程预测默认"更大架构换更高精度"，线性模型被当作最弱对照。作者认为这印象来自评测惯例：所有模型固定同一套预处理，Transformer 能靠学到的参数部分吸收糟糕的回看窗或弱归一化，线性模型不能。Ridge 固定为模型后，预算全投向逐数据集、逐序列调预处理；这个无非线性的模型在八个 benchmark 的六个上追平或超过 PatchTST 等非线性基线[^src-2606-27282-ltsf-linear-models]。
 
-## 核心论点
+## 核心做法
 
-论文反对"更大架构解锁精度"的领域趋势（从专用 Transformer 到 foundation model），主张大部分精度差距可通过调预处理而非扩模型在远低成本下弥合。因果解释：固定一套预处理超参的评测惯例系统性不利于低容量模型——百万参数 Transformer 能部分吸收糟糕的 lookback 或归一化选择，线性模型不能，导致线性方法"看起来比实际弱"[^src-2606-27282-ltsf-linear-models]。
+论文沿用既有结论：DLinear、NLinear 等线性变体在闭式岭回归下即可匹敌 SGD 训练版本，因此不再改造模型结构，自由度全给四条预处理轴。**回看长度**贡献最大：默认 $L=96$ 在两个相反方向同时出错，对平稳数据集少给一个数量级历史，对非平稳数据集又超量。**尾部局部归一化**只算窗口最近一小段的统计量，全窗口归一化几乎从不被选中；**增广**在时域或频域加噪；**分组共享粒度**指超参在 horizon 与序列两维共享到多细，最优粒度是数据集属性。搜索空间见 [[searchcast|SearchCast]]。
 
-## 方法
+## 证据
 
-以 Toner & Darlow 统一结论（DLinear/NLinear 等变体等价于增强特征上的无约束线性回归）为起点，模型固定为闭式解 Ridge 回归、逐 variate 独立（channel-independent），预算全部投向四条预处理轴：context length $L \in [32, 2048]$（log）、local normalization（尾部分数 $r \in [0.001, 1]$）、augmentation（时/频域加噪 $\sigma \in [0.001, 0.5]$）、正则 $\alpha$ 内层 21 点网格；通过 $(g_h, g_s)$ 分组搜索在"全局共享"与"逐 horizon 逐序列"两极端间连续移动[^src-2606-27282-ltsf-linear-models]。详见 [[searchcast]]。
+1. **主结论**：线性类内 7/8 最优，对 PatchTST 等非线性基线 6/8 最优[^src-2606-27282-ltsf-linear-models]。
+2. **涨点归因**：贡献最大的是回看长度——只扫 $L$ 时 ETT/Weather 误差降三到五成，ETTm2 中等长度饱和[^src-2606-27282-ltsf-linear-models]。
+3. **证据缺口**：在 Electricity、Traffic 输给 PatchTST，且非线性基线未联合重调[^src-2606-27282-ltsf-linear-models]。
 
-## 关键证据
+## 局限
 
-8 个 benchmark 上：线性类内 7/8 数据集平均 MSE 最优（ETTh2 与 FITS 打平 0.334 vs 0.333），对 OLS 降幅 ETTm2 4.8%、ETTh1 4.3%、Exchange 14.8%；对非线性基线（PatchTST/iTransformer/TimeMixer/TimesNet/Autoformer）6/8 平均最优，两处失利均输给 PatchTST 且集中于最大两数据集（Electricity 0.159 平、Traffic 0.404 vs 0.391）[^src-2606-27282-ltsf-linear-models]。三项诊断发现：最优 lookback 与 horizon 的幂律指数从 +0.46（ETTm2）到 −0.19（Exchange/Traffic）；局部归一化在 62–100% 单元被选中且最优尾部分数 0.3%–30%，全窗口归一化几乎从未被选中；跨序列超参共享的最优程度因数据集而异[^src-2606-27282-ltsf-linear-models]。
+论文自述的适用边界：结论限于标准数值长程 benchmark，回看长度标度、局部性与通道异质性只按该场景读；只报点估计 MSE，很小的差距应视为平手；逐序列搜索成本随通道数增长，故取较粗分组；把同一搜索用于更深模型属后续工作[^src-2606-27282-ltsf-linear-models]。
 
-## 局限（论文自述，Appendix D）
+## 相关页面
 
-仅限标准数值长程 benchmark；点估计 MSE 下小差距应视作平手；非线性基线取原论文数字而非联合重调；per-series 搜索随通道数增长；结论仅针对 Ridge + 搜索式预处理[^src-2606-27282-ltsf-linear-models]。计算成本仅有定性口径（单 trial "a few milliseconds on a GPU"、训练 "orders of magnitude cheaper"），无具体墙钟/FLOPs 数字；SearchCast 正文发布链接为占位符 "(URL)"[^src-2606-27282-ltsf-linear-models]。
+- **派生页**：方法主结果 → [[searchcast|SearchCast]]，本页只留结论，机制与搜索网格落在该页。
+- **派生页**：回看长度轴结论 → [[lookback-horizon-scaling]]，该页展开幂律规律与跨路线对照。
+- **派生页**：归一化轴结论 → [[trailing-fraction-local-normalization]]，承载尾部比例 $r$ 的机制与选择频率。
+- **派生页**：共享粒度轴机制 → [[grouped-hyperparameter-search]]，承载 $(g_h, g_s)$ 网格的组织方式。
 
-## 落点
+---
 
-- 方法与主结果 → [[searchcast]]
-- lookback–horizon 幂律与长程自相关证据 → [[lookback-horizon-scaling]]
-- 尾部比例局部归一化 → [[trailing-fraction-local-normalization]]
-- 分组超参搜索 → [[grouped-hyperparameter-search]]
-- 跨源视角张力对照 → [[source-pih|PIH]]（固定离散粗网格 + 变分信息瓶颈/Mamba 分块滤波试图统一推长 MEW，与本文闭式 Ridge 逐序列步长搜索 $L^*$ 且可呈负斜率形成视角对照；PIH 缺 Exchange 集与显著性检验，且短窗 $L=96$ 落后 PatchTST）[^src-pih]
+arXiv:2606.27282v2（2026-06-29，Preprint）
 
 [^src-2606-27282-ltsf-linear-models]: [[source-2606-27282-ltsf-linear-models]]
-[^src-pih]: [[source-pih]]
