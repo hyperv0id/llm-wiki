@@ -9,7 +9,7 @@ tags:
   - foundation-model
   - neurips-2026
 created: 2026-11-24
-last_updated: 2026-11-24
+last_updated: 2026-11-27
 source_count: 4
 confidence: high
 status: active
@@ -17,7 +17,7 @@ status: active
 
 # fev-bench
 
-**fev-bench** 是一套面向真实世界时间序列预测的统一零样本评测基准[^src-fev-bench]。现有公开基准往往领域覆盖偏窄、丢弃了真实业务场景普遍携带的外生协变量（如 M5 与 Rossmann 等零售与运营数据中的促销、价格和日历信息），且仅凭均值或平均排名对比模型，缺乏统计显著性检验，难以区分真实能力提升与任务抽样噪声[^src-fev-bench]。针对这些失真，fev-bench 将评测规模扩充至 7 大领域、96 个唯一数据集共 100 项任务，把已知动态、历史动态和静态三类协变量与多变量任务纳入统一评测流程，并辅以任务级配对 Bootstrap 95% 置信区间与自报泄露分数插补来保证排序可信度[^src-fev-bench]。该基准的核心实证发现表明：当代时间序列基础模型拉开差距的关键在于吃进外生协变量，而仅靠原生多变量交互带来的增益十分有限[^src-fev-bench]。
+**fev-bench** 是一套面向真实世界时间序列预测的统一零样本评测基准[^src-fev-bench]。现有公开基准往往领域覆盖偏窄、丢弃了真实业务场景普遍携带的外生协变量（如 M5 与 Rossmann 等零售与运营数据中的促销、价格和日历信息），且仅凭均值或平均排名对比模型，缺乏统计显著性检验，难以区分真实能力提升与任务抽样噪声[^src-fev-bench]。针对这些失真，fev-bench 将评测规模扩充至 7 大领域、96 个唯一数据集共 100 项任务，把已知动态、历史动态和静态三类协变量与多变量任务纳入统一评测流程，并辅以任务级配对 Bootstrap 95% 置信区间与自报泄露分数插补来保证排序可信度[^src-fev-bench]。该基准的核心实证发现表明：当代时间序列基础模型的性能差异主要来自对外生协变量的利用，而仅靠原生多变量交互带来的增益十分有限[^src-fev-bench]。
 
 ## 问题定位：协变量缺失与排序失真
 
@@ -37,7 +37,7 @@ fev-bench 的任务池与统计聚合协议围绕「协变量完备性」和「�
 
 ```mermaid
 flowchart LR
-    T["任务池 (7 域 / 96 唯一集 / 100 任务)<br/>46 协变量任务 + 35 多变量任务"] --> R["单卡 A10G (24 GB) 零样本推理<br/>滚动窗口 20/10/1"]
+    T["任务池 (7 域 / 96 唯一集 / 100 任务)<br/>46 协变量任务 + 35 多变量任务"] --> R["零样本推理<br/>滚动窗口 20/10/1"]
     R --> I["异常与泄露处理<br/>自报泄露 → Chronos-Bolt (Base) 插补<br/>运行崩溃 → Seasonal Naive 填充"]
     I --> M["单任务指标计算<br/>9 分位 SQL / MASE (+ WQL/WAPE)"]
     M --> A["跨任务统计聚合<br/>胜率 W + 截断几何平均技能分 S<br/>B=1000 配对 Bootstrap 95% CI"]
@@ -48,9 +48,11 @@ flowchart LR
 在时间序列评测谱系与协变量基础模型研究中，fev-bench 承担「协变量与多变量零样本验收尺」的角色：
 
 - **瓶颈接力 $\Delta$（vs [[probts|ProbTS]]）**：[[probts|ProbTS]]（NeurIPS 2024）打通了无协变量场景下短程概率预测（CRPS）与长程点预测（MASE）的统一评估，并利用趋势、季节性与非高斯性解释 AR/NAR 模型分化[^src-probts]；fev-bench 则把评估瓶颈接力推进到现实外生协变量（已知动态、历史动态、静态）与多变量交互，补充了任务级配对 Bootstrap 置信区间与自报泄露插补机制[^src-fev-bench]。
-- **同槽位防泄露路线互斥（vs [[timesx|TimesX]]）**：两者都针对预训练泄露扭曲评测排序的问题提出对策，但路线互斥——[[timesx|TimesX]] 面向多模态真实时钟事件，采用模型知识截断日期（`cutoff >= 2024-07-01`）与四步在线核查做严格时间隔离[^src-timesx]；fev-bench 面向常规数值协变量预测，采用「模型方自报训练重叠 + 基线分数插补」的务实协议，未设立强制前瞻盲测时间窗[^src-fev-bench]。
-- **零样本协变量验收与子集复现（vs [[tsfm-covariate-adaptation-comparison|TSFM 协变量适配对比]] 与 [[baguan-ts|Baguan-TS]]）**：为前置/后置协变量适配器与原生 ICL 模型提供了统一量化坐标系；[[baguan-ts|Baguan-TS]] 即取其中 30 项含协变量任务组成 `fev-bench-cov` 子集，与 [[tabpfn-ts|TabPFN-TS]]、[[timesfm|TimesFM-2.5]]、[[chronos|Chronos]] 及 [[tirex|TiRex]] 同台对比点精度与概率校准[^src-baguan-ts]。
-- **跨模型实证对齐（vs [[chronos|Chronos]] / [[tabpfn-ts|TabPFN-TS]] / [[tirex|TiRex]] / [[timesfm|TimesFM]]）**：统一评测揭示动态协变量是拉升 Chronos-2 与 TabPFN-TS 表现的核心杠杆，同时也用 95% CI 显式暴露出 TiRex 与 TimesFM-2.5 在第二梯队上的统计不可分性[^src-fev-bench]。
+- **同槽位互斥（vs [[timesx|TimesX]]）**：两者都针对预训练泄露扭曲评测排序的问题提出对策，但路线互斥——[[timesx|TimesX]] 面向多模态真实时钟事件，采用模型知识截断日期（`cutoff >= 2024-07-01`）与四步在线核查做严格时间隔离[^src-timesx]；fev-bench 面向常规数值协变量预测，采用「模型方自报训练重叠 + 基线分数插补」的务实协议，未设立强制前瞻盲测时间窗[^src-fev-bench]。
+- **跨槽位正交（vs [[tsfm-covariate-adaptation-comparison|TSFM 协变量适配对比]]）**：为前置/后置协变量适配器与原生 ICL 模型提供了统一量化坐标系[^src-fev-bench]。
+- **复现对齐（vs [[baguan-ts|Baguan-TS]]）**：[[baguan-ts|Baguan-TS]] 取其中 30 项含协变量任务组成 `fev-bench-cov` 子集，与主流基础模型同台对比点精度与概率校准[^src-baguan-ts]。
+- **跨槽位正交（vs [[chronos|Chronos]]、[[tabpfn-ts|TabPFN-TS]]）**：协变量开关消融显示动态协变量是拉升这两个模型表现的核心杠杆[^src-fev-bench]。
+- **复现对齐（vs [[tirex|TiRex]]、[[timesfm|TimesFM]]）**：95% 置信区间显式暴露出两者在第二梯队上的统计不可分性[^src-fev-bench]。
 
 | 基准 | 任务与模态覆盖 | 协变量 / 多变量支持 | 防泄露机制 | 排序聚合与显著性 |
 |---|---|---|---|---|
@@ -64,17 +66,12 @@ flowchart LR
 论文在 100 项主任务及 42 项动态协变量开关、35 项多变量开关受控消融上报告了如下实证结果（均采用论文报告口径）[^src-fev-bench]：
 
 1. **定位与主结论**：Chronos-2 在 SQL 与 MASE 两项主指标上双项居首；而 **[[tirex|TiRex]] 与 [[timesfm|TimesFM-2.5]] 的 95% 置信区间大幅重叠，第二名在统计上不可区分**；按领域或频率重新加权、或剔除 10 个自报泄露任务后，头部主排序保持稳定[^src-fev-bench]。
-2. **真实涨点归因**：在 42 项动态协变量任务上引入协变量，将 Chronos-2 的 SQL 技能分从 $40.9$ 提至 $47.0$、[[tabpfn-ts|TabPFN-TS]] 从 $34.1$ 提至 $42.5$；而在 35 项多变量任务上开启原生多变量模式，Chronos-2 仅从 $54.4$ 微升至 $55.0$、Toto-1.0 从 $54.1$ 微升至 $54.7$，证实当前增益主源在于协变量而非原生多变量自交互[^src-fev-bench]。
+2. **真实涨点归因**：动态协变量开关消融是涨点主故事——在 42 项动态协变量任务上引入协变量，使 Chronos-2 与 [[tabpfn-ts|TabPFN-TS]] 的 SQL 技能分大幅上升；而在 35 项多变量任务上开启原生多变量模式仅带来量级小得多的边际改善，证实当前增益主源在于协变量而非原生多变量自交互[^src-fev-bench]。
 3. **证据缺口与负结果**：基准排除了亚分钟级高频序列；属于静态公开基准而非完全盲测的前瞻平台，泄露检测依赖模型方自报；各领域与采样频率下的任务分布并不均衡，且全部模型运行均受单卡 A10G 24 GB 显存限制[^src-fev-bench]。
 
 ## 相关页面
 
-- [[source-fev-bench]] — 论文源摘要
-- [[probts]] — 前序统一点/分布预测基准（瓶颈接力 $\Delta$）
-- [[timesx]] — 严格时间截断防泄露的多模态评测基准（防泄露路线互斥）
-- [[tsfm-covariate-adaptation-comparison]] — TSFM 协变量适配与原生路线全景对比
-- [[baguan-ts]] — 基于 `fev-bench-cov` 30 项子集验证的序列原生协变量 ICL 模型
-- [[chronos]] / [[tabpfn-ts]] / [[tirex]] / [[timesfm]] — fev-bench 主排行与消融中的核心被测模型
+- [[source-fev-bench]] — 论文源摘要（其余跨工作关系见上文「与既有工作的关系」）
 
 [^src-fev-bench]: [[source-fev-bench]]
 [^src-probts]: [[source-probts]]
