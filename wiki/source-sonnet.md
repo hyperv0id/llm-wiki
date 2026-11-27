@@ -9,7 +9,7 @@ tags:
   - koopman-operator
   - aaai-2026
 created: 2026-11-24
-last_updated: 2026-11-24
+last_updated: 2026-11-27
 source_count: 1
 confidence: medium
 status: active
@@ -17,32 +17,31 @@ status: active
 
 # Sonnet: Spectral Operator Neural Network for Multivariable Time Series Forecasting
 
-**来源**：Yuxuan Shu、Vasileios Lampos（University College London）；AAAI 2026（arXiv:2505.15312，代码 `ClaudiaShu/Sonnet`）[^src-sonnet]。
+主流注意力模型沿时间维嵌入各变量、以点积打跨变量关联分，但外生信号的预测价值随频率与时间变化，点积易被幅度起伏带偏[^src-sonnet]。论文改在频域筛选关联：可学习小波拆出多频带，以变量间的归一化互谱相干作注意力权重，再用酉矩阵参数化的 Koopman 算子一步前推全部频谱、规避逐步递归误差累积[^src-sonnet]。作者报告 47 项任务 34 项最优，对最强基线平均降 MAE 2.2%[^src-sonnet]。
 
-在包含外生变量的多元时间序列预测中，各外生信号的预测价值会随频率和时间动态变化，常规时域点积注意力容易被局部幅度起伏或非平稳共漂误导。Sonnet 先利用可学习调制小波抽取多频带时频特征，再沿变量轴做傅里叶变换并计算归一化互谱相干作为注意力权重来筛选跨变量关联；随后通过正交分解约束为酉矩阵的 Koopman 算子一次性推进整段频谱演化，最后用三层一维卷积与线性头输出预测窗口末端的单点目标值[^src-sonnet]。
+## 核心做法
 
-## 去黑话算子配方与路线差异
-
-模型未引入改变复杂度的底层新算子，而是将可学习小波嵌入、变量维互谱相干注意力（MVCA）与酉约束 Koopman 一步演化串行拼接[^src-sonnet]：
-
-- **可学习小波嵌入**：以调制核 $M_k = \exp(-w_\alpha t^2)\cos(w_\beta t + w_\gamma t^2)$ 将输入投影为 $K$ 个频带原子特征 $P\in\mathbb{R}^{K\times L\times d}$，并以 $K$ 个小波原子充当 $K$ 个注意力头；该设计保留完整时间长度 $L$，同时带来 $K$ 倍特征存储放大且频带数 $K$ 固定[^src-sonnet]。
-- **变量轴频谱相干注意力（MVCA）**：沿变量维对 $Q_h, K_h$ 执行 `FFT`，计算互谱 $P_{qk} = Q_f\odot K_f^*$ 与归一化频谱相干 $|P_{qk}|^2/(P_{qq}P_{kk}+\epsilon)$，沿频带取均值后经 `softmax` 加权 $V_h$，从而用变量轴频谱相干打分替代常规时域或通道点积[^src-sonnet]。
-- **酉约束 Koopman 一步演化与解码**：对复矩阵 $S\in\mathbb{C}^{K\times K}$ 在每次前向传播中执行 `QR` 分解得到酉矩阵 $U$，构造 $\mathcal{K}=UDU^\dagger$（其中 $D=\operatorname{diag}(e^{ip_k})$）对特征张量做一次性前向频谱演化（非逐波步递归，规避步进累积误差），最后经 $[5,3,3]$ 三层 1D 卷积与线性头输出窗末单点 $\hat{y}_{t+H}$（该主表评测口径与常规全窗模型不同，整窗轨迹对比推至 arXiv 附录 E.8）[^src-sonnet]。
-- **有向关系对照**：相对 [[source-timexer|TimeXer]] 属**同槽位互斥**（patch 与 variate 双粒度时域交叉注意力 vs 变量轴 `FFT` 频谱相干注意力）；相对 [[itransformer|iTransformer]] 属**同槽位互斥**（整序列压缩为 variate token 做点积 vs 保留完整时间长度 $L$ 的变量轴频谱相干）；相对 [[crosslinear|CrossLinear]] 属**同槽位对比**（1D 卷积注入时不变跨相关 vs 可学习小波与互谱相干）；相对 [[koopman-linearization-for-forecasting|Koopman 线性化]] 中 eDMD 局部拟合属**特例对照**（端到端可微酉谱参数化一步推进）；与 [[frequency-pathway-routing|Frequency Pathway Routing]] 属**跨槽位正交**（节点级稀疏 Top-$K$ 频带路由 vs 全原子频谱相干加权）；并与 [[fedformer|FEDformer]] 存在**复现口径疑点对照**[^src-sonnet]。
+- **多频带小波嵌入**：可学习调制小波（可学习滤波器组）把输入拆成多频带特征，保留完整时间长度，每频带即一个注意力头[^src-sonnet]。
+- **变量轴频谱相干注意力（MVCA）**：沿变量维对 query/key 做 FFT，以归一化互谱相干为注意力权重替换点积，可即插即用替换朴素注意力[^src-sonnet]。
+- **一步谱演化与解码**：可学习复矩阵经正交分解约束为酉矩阵、配相位对角阵构成 Koopman 算子，一步前推频谱而非逐步递归；逆小波重建后经一维卷积输出窗末单点目标[^src-sonnet]。
 
 ## 证据
 
-1. **定位与主结论**：主表预测窗末单点 $\hat{y}_{t+H}$（整窗推至 arXiv 附录 E.8），12 集 47 项任务 34 项最优（较 DeformTime 降 MAE $2.2\%$），优势在多外生天气与 ILI 场景[^src-sonnet]。
-2. **真实涨点归因**：MVCA 替换 [[patchtst|PatchTST]]、Samformer、[[itransformer|iTransformer]] 点积在 ILI 平均降 MAE $10.7\%$（PatchTST 降 $15.1\%$），但去原注意力不掉点甚至个别步长更好，涨点在频谱相干打分而非注意力容量；小波与酉 Koopman 独立消融推至 arXiv 附录 E.3，正文无法判别谁掉点最狠[^src-sonnet]。
-3. **证据缺口与负结果**：6 外生短跨度 ETT 偏弱（ETTh2 $H=720$ $0.4335$ vs $0.3640$）；内部替换 [[fedformer|FEDformer]] MAE 异常升至约 $6$（作者报告存疑）；漏测 [[crosslinear|CrossLinear]] 且缺显存耗时实测[^src-sonnet]。
+1. **定位与主结论**：作者报告 47 项任务 34 项最优，对最强基线平均降 MAE 2.2%（统计显著），优势在外生信息丰富的天气与流感任务[^src-sonnet]。
+2. **真实涨点归因**：MVCA 换入基线后流感任务平均降 MAE 10.7%，删除注意力却几乎不掉点——涨点来自频谱相干打分而非注意力容量；小波与 Koopman 独立消融未进正文，无法判别谁贡献最大[^src-sonnet]。
+3. **证据缺口与负结果**：外生变量少、跨度短的 ETT 不敌基线；FEDformer 频域注意力模块替换时退化最重（作者归因只建模季节性）[^src-sonnet]。
+
+## 局限
+
+论文自述适合外生变量多、训练跨度长的场景；ETT 类数据仅 6 个外生变量、2 年跨度，可探索的依赖与历史上下文不足，表现较弱[^src-sonnet]。
 
 ## 相关页面
 
-- [[source-timexer]] — patch/variate 交叉注意力 vs 变量轴 `FFT` 频谱相干（同槽位互斥）
-- [[itransformer]] — 整序列 variate token 点积 vs 保留长度 $L$ 的变量轴频谱相干（同槽位互斥）
-- [[crosslinear]] — 1D 卷积时不变跨相关 vs 小波与频谱相干（同槽位对比与漏测指针）
-- [[koopman-linearization-for-forecasting]] — eDMD 局部拟合 vs 酉矩阵 $UDU^\dagger$ 一步谱演化（特例对照）
-- [[frequency-pathway-routing]] — 稀疏 Top-$K$ 频带路由 vs 全原子频谱相干加权（跨槽位正交）
-- [[fedformer]] — 作者报告内部替换异常退化注记（复现口径疑点）
+- [[source-timexer|TimeXer]] 与 [[itransformer|iTransformer]] — 同槽位互斥：两者沿时间维嵌入协变量做点积注意力，Sonnet 改在变量轴以频谱相干打分[^src-sonnet]。
+- [[koopman-linearization-for-forecasting]] — 特例关系：该页的 eDMD 逐段局部拟合动态，对应 Sonnet 端到端可微的酉谱参数化一步推进[^src-sonnet]。
+- [[frequency-pathway-routing]] — 跨槽位正交：该法做节点级稀疏频带路由，Sonnet 对全部频带原子做相干加权，分别面向图结构与序列预测[^src-sonnet]。
+- [[fedformer]] — 复现口径对照：论文注意力替换实验报告 FEDformer 频域注意力模块的异常退化，跨模型移植频域注意力时可对照[^src-sonnet]。
+
+> Yuxuan Shu, Vasileios Lampos. *Sonnet: Spectral Operator Neural Network for Multivariable Time Series Forecasting*. AAAI 2026, arXiv:2505.15312. 代码：`ClaudiaShu/Sonnet`。
 
 [^src-sonnet]: [[source-sonnet]]
