@@ -8,9 +8,9 @@ tags:
   - text-numeric-alignment
   - neurips-2024
 created: 2026-07-28
-last_updated: 2026-11-24
-source_count: 3
-confidence: high
+last_updated: 2026-11-27
+source_count: 1
+confidence: medium
 status: active
 ---
 
@@ -32,13 +32,11 @@ status: active
 
 ## 局限与谱系位置
 
-局限包括：文本仅为英语；融合框架是投影加权 first-cut 而非最优架构；未纳入图像/音频；其它 TSA 任务仍需额外 curation。展望覆盖多模态插补、异常检测与多模态基础模型。作为**数据与评测基础设施**，Time-MMD 已成为 [[cora-tsfm|CoRA]]、[[unica|UniCA]]、[[source-gpt4mts|DP-GPT4MTS]]、[[vot|VoT]]、[[timi|TiMi]]、TaTS 等文本协变量/多模态工作的公共参照；实体细节见 [[time-mmd]][^src-time-mmd]。[[pir|PIR]]（Post-forecasting Identification and Revision，Liu et al., NeurIPS 2025）在 Energy / Health 子集（周频，1996/1997–2024-05）上用对齐文本描述作为外生信息，验证其后处理修订框架在文本协变量场景下的泛化性[^src-pir]。随后的 [[source-time-imm|Time-IMM]]（NeurIPS 2025 D&B）则形成**瓶颈接力 $\Delta$**：针对真实时序采样不均与通道异步场景，放宽 Time-MMD 的规则网格与强时间对齐假设，按触发、约束、故障三类九亚类构建异步数值–文本基准[^src-time-imm]。
+局限包括：文本仅为英语；融合框架是投影加权 first-cut 而非最优架构；未纳入图像/音频；其它 TSA 任务仍需额外 curation。展望覆盖多模态插补、异常检测与多模态基础模型；跨论文谱系对照与后续数据集演进见 [[time-mmd]] 与 [[multimodal-time-series-forecasting]][^src-time-mmd]。
 
 ## 相关页面
 
-- [[time-mmd]] — 数据集实体
-- [[multimodal-time-series-forecasting]] · [[source-cora]] · [[cora-tsfm]] · [[source-gpt4mts]] · [[source-from-news-to-forecast]] · [[source-event-driven-ts-forecasting]] · [[vot]] · [[tsfm-covariate-adaptation-comparison]] · [[source-time-imm]]
+- [[time-mmd]] — 数据集实体与跨源对照页
+- [[multimodal-time-series-forecasting]] — 多模态时间序列预测聚合页
 
 [^src-time-mmd]: [[source-time-mmd]]
-[^src-pir]: [[source-pir]]
-[^src-time-imm]: [[source-time-imm]]
