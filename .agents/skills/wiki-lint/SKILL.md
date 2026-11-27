@@ -28,6 +28,7 @@ python scripts/lint.py
 - 事实性论断句没有 `[^src-*]`。
 - 有 `[^src-*]` 引用但页脚无定义；定义指向的 `source-*` 页不存在。
 - `source_count` 与正文唯一引用数不一致（分别报少报与多报）。
+- `source-summary` 违反一源一页（`status != superseded` 时 `source_count != 1`，或引用了非本源的 `[^src-*]`）。
 - `source_count: 1` 却含概括性陈述（「大致上」「一般来说」）。
 
 ### 公式
