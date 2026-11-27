@@ -9,7 +9,7 @@ tags:
   - data-curation
   - icml-2026
 created: 2026-11-24
-last_updated: 2026-11-24
+last_updated: 2026-11-27
 source_count: 7
 confidence: medium
 status: active
@@ -35,7 +35,7 @@ $$\mathbb{E}_{z^\star} L\big(p(\cdot \mid z_{1:P}, x),\, z^\star\big) < \mathbb{
 
 与 [[time-llm|Time-LLM]] 将时序重编程后在输入端与文本前缀拼接的做法不同，DoubleCast 保留原始数值编码通路不变，而是在解码器每一层的时序编解码交叉注意力之后紧接着查询同一份冻结文本隐状态，再通过离散分位数预测头输出概率分布[^src-doublecast]。该设计的隐含假设是文本信息在实例级对齐并作用于整段未来预测窗，缺乏文本内部与具体未来时间步的细粒度索引绑定；作者自述这会导致诸如「第 1–2 天短暂中断」等局部时间定位信号在跨层平均交互中被平滑抹平[^src-doublecast]。
 
-> **维度符号**：$L_z$ 历史时序离散 token 长度；$H_z$ 解码器目标预测步长；$L_{\mathrm{txt}}$ 文本 token 长度；$d$ Chronos 解码器隐状态维；$d_{\mathrm{ff}}$ 解码器前馈网络中间维；$h_x$ 冻结 Qwen3-14B 隐状态维；$V$ 离散分位数词表大小。以下均按单样本 $[\text{序列长度}, \text{特征维}]$ 书写；各注意力子层中线性投影与多头切分展平记号、以及 T5 标准的预归一化位置依据标准实现标注为本页推断`[INFERENCE]`[^src-doublecast]。
+> **维度符号**：$L_z$（即历史窗长度 $P$）为历史时序离散 token 长度；$H_z$ 为解码器目标预测步长；$L_{\mathrm{txt}}$ 文本 token 长度；$d$ Chronos 解码器隐状态维；$d_{\mathrm{ff}}$ 解码器前馈网络中间维；$h_x$ 冻结 Qwen3-14B 隐状态维；$V$ 离散分位数词表大小；$N$ 解码块层数。以下均按单样本 $[\text{序列长度}, \text{特征维}]$ 书写；各注意力子层中的线性投影与多头切分展平记号，以及 T5 的预归一化位置，均按标准实现推断，统一标注 `[INFERENCE]`[^src-doublecast]。
 
 ### Stage 1 · 冻结双路编码（数值历史与条件文本）
 
@@ -66,17 +66,10 @@ Y^{(l)} &= U_3 + \operatorname{FFN}\!\left(\operatorname{LN}(U_3)\right) && \tex
 ### Stage 3 · 离散分位数预测输出
 
 $$\begin{aligned}
-P(\hat{z}_{P+1:P+H}) &= \operatorname{Softmax}\!\left(Y^{(N)} W_{\mathrm{head}}\right) && \text{// } [H_z, \bcancel{d}]\times[\bcancel{d}, V] \xrightarrow{\operatorname{softmax}\text{ 沿 } V} [H_z, V]\ \text{——输出各未来步在分位数词表上的概率分布 [INFERENCE]}
+P(\hat{z}_{L_z+1:L_z+H_z}) &= \operatorname{Softmax}\!\left(Y^{(N)} W_{\mathrm{head}}\right) && \text{// } [H_z, \bcancel{d}]\times[\bcancel{d}, V] \xrightarrow{\operatorname{softmax}\text{ 沿 } V} [H_z, V]\ \text{——输出各未来步在分位数词表上的概率分布 [INFERENCE]}
 \end{aligned}$$
 
-## 与既有工作的关系
-
-- **同失效现象的归因对立（vs [[constrained-text-fusion|CFA]]）**：两者都从「多模态时序预测常弱于单模态」这一现象出发，但给出了相互正交的诊断与解法。[[constrained-text-fusion|CFA]] 认为失效源于无控融合引入高秩噪声，因而用低秩瓶颈适配器把文本压入低维子空间；DoubleCast 与 CAF-7M 则认为根因在于未经验证的文本本身缺乏预测信号，因此把工作重心放在数据侧的经验 CRPS 筛选上，在模型侧直接采用全秩文本交叉注意力注入[^src-constrained-text-fusion][^src-doublecast]。
-- **瓶颈接力 $\Delta$（[[time-mmd|Time-MMD]] $\to$ CAF-7M）**：[[time-mmd|Time-MMD]] 解决了外生文本与目标变量的时间戳对齐以及 fact/prediction 防泄漏拆分，但默认对齐且无泄漏的文本就对预测有益；CAF-7M 在此基础上补上了「有/无文本经验 CRPS 效用验证」这道筛选门槛[^src-time-mmd][^src-doublecast]。
-- **条件化扩展与复现对齐（vs [[chronos|Chronos]] / [[time-llm|Time-LLM]]）**：DoubleCast 是 [[chronos|Chronos]]（T5-large）的解码器文本条件化扩展，在 GIFT-Eval 上几乎完整保留了原单模态 Chronos 的数值零样本精度；相对于 [[time-llm|Time-LLM]] 的输入端前缀重编程拼接，DoubleCast 的增量改动（$\Delta$）在于把文本注入后移至解码块内部的第二路交叉注意力[^src-chronos][^src-doublecast]。
-- **同生态位对照（vs [[aurora|Aurora]]）**：两者均面向通用零样本概率预测，但路径相反——[[aurora|Aurora]] 从头预训练生成式多模态基础模型（跨模态语义质心蒸馏 + 模态引导自注意力 + 原型引导 Flow Matching），而 DoubleCast 采用冻结单模态骨干配轻量判别式/自回归解码块适配[^src-aurora][^src-doublecast]。在错配或乱序文本干扰测试下，DoubleCast 的 CRPS 恶化幅度显著高于 Aurora（$26.5\%$ 对 $9.2\%$），说明其预测性能更紧密地依赖有效对齐文本的注入[^src-doublecast]。
-- **同构评估风险（vs [[circular-dependency-in-multimodal-fusion|循环依赖评估陷阱]]）**：与统计融合中分类器用自身置信度评估融合权重类似，CAF-7M 使用 GPT-5.2 作为筛选器挑选「文本降低 CRPS」的测试窗，随后又在同一测试集上评估 GPT-5.2 本身，形成直接的自我验证偏置（$4$ 个筛选模型的一致率仅 $43.5\%\text{–}54.0\%$，而 GPT-5.2 在自筛测试集上排名第一）[^src-gmf][^src-doublecast]。
-- **同生态位数据构建对照（vs [[timesx|TimesX]]）**：两者均回应「公开语料文本未必有助于预测」的问题，但构建路线截然相反——CAF-7M 先由大模型读取历史与未来全窗生成解释文本，再按经验 CRPS 效用筛选测试窗，存在未来窗反推特征与训练/测试文本口径错配；[[timesx|TimesX]] 则坚持全量真实时钟下的检索与多 Agent 交叉核查新闻事件，并以模型 cutoff 时间隔离防范预训练泄露[^src-doublecast][^src-timesx]。
+## 设计决策对照
 
 | 维度 | [[constrained-text-fusion\|CFA]] | [[aurora\|Aurora]] | **DoubleCast & CAF-7M** |
 |---|---|---|---|
@@ -86,23 +79,21 @@ P(\hat{z}_{P+1:P+H}) &= \operatorname{Softmax}\!\left(Y^{(N)} W_{\mathrm{head}}\
 
 ## 证据
 
-论文在 CAF-7M、CGTSF、[[time-mmd|Time-MMD]] 与 GIFT-Eval 上报告了零样本与推理消融结果（均采用作者报告口径）[^src-doublecast]：
+以下均为作者报告口径[^src-doublecast]：
 
-1. **定位与主结论**：经经验效用验证的半合成文本使 DoubleCast 在 CAF-7M 零样本测试集上稳定优于同源单模态 [[chronos|Chronos]] 与 Chronos-2；迁移至真实文本集 CGTSF 时在多数设定下领先 ChatTime，同时在纯数值基准 GIFT-Eval 上几乎完整保留了 Chronos 的原始精度。
-2. **真实涨点归因**：**训练侧没有进行模型组件消融**（作者明确声明架构创新不是核心主张），整体增益主要归因于数据侧的「先生成再经验 CRPS 效用验证」筛选流程（accepted 与 rejected 子集对照）。推理期文本消融显示，DoubleCast 去掉文本后 CRPS 恶化 $18.3\%$、胜率下降 $34.7\%$；喂入随机错配他窗文本后 CRPS 恶化 $26.5\%$（HARD 子集恶化 $25.2\%$）、胜率下降 $37.6\%$。形成反证的是，Time-LLM 在相同框架下移除文本后 CRPS 反而改善 $8.0\%$，表明其并未真正学会利用文本信号。
-3. **证据缺口与负结果**：第一，零样本迁移至预测步长超出训练上限的 MSPG（$H=96 > 64$，上下文需分两次喂入）时落后于 Chronos，且在 [[time-mmd|Time-MMD]] 上仅在 $7/9$ 个领域胜出；第二，CAF-7M 的 $743$ 万条训练窗因验证成本过高未做 CRPS 过滤，形成训练与测试文本质量口径错配，且前瞻合成文本较真实外生新闻更干净；第三，测试集由 GPT-5.2 过滤且 $4$ 个模型筛选一致率仅 $43.5\%\text{–}54.0\%$，GPT-5.2 排名第一存在自我验证偏置。
+1. **定位与主结论**：经经验效用验证的半合成文本使 DoubleCast 在 CAF-7M 零样本测试集上稳定优于同源单模态 [[chronos|Chronos]] 与 Chronos-2；迁移至真实文本集 CGTSF 时在多数设定下领先 ChatTime，同时在纯数值基准 GIFT-Eval 上几乎完整保留 Chronos 的原始精度[^src-doublecast]。
+2. **真实涨点归因**：**训练侧没有进行模型组件消融**（作者明确声明架构创新不是核心主张），整体增益主要归因于数据侧的「先生成再经验 CRPS 效用验证」筛选流程；推理期去文本使 CRPS 恶化 $18.3\%$、错配文本恶化 $26.5\%$，形成反证的是 Time-LLM 在相同框架下去文本反而改善 $8.0\%$，表明其并未真正学会利用文本信号[^src-doublecast]。
+3. **证据缺口与负结果**：零样本迁移至预测步长超出训练上限的 MSPG（$H=96 > 64$）时落后于 Chronos，[[time-mmd|Time-MMD]] 上仅 $7/9$ 个领域胜出；$743$ 万训练窗因验证成本过高未做 CRPS 过滤，形成训练与测试文本质量口径错配；测试集由 GPT-5.2 自筛自评（$4$ 个筛选模型一致率仅 $43.5\%\text{–}54.0\%$），与 [[circular-dependency-in-multimodal-fusion|循环依赖评估陷阱]] 同构[^src-gmf][^src-doublecast]。
 
 ## 相关页面
 
-- [[source-doublecast]] — 论文源摘要
-- [[multimodal-time-series-forecasting]] — 多模态时间序列预测概念与方法谱系
-- [[constrained-text-fusion]] — CFA 受控文本融合（同失效现象的架构侧归因对立）
-- [[time-mmd]] — Time-MMD 多领域数值–文本基准（瓶颈接力对照）
-- [[chronos]] — Chronos 单模态时序基础模型（DoubleCast 的数值编码骨干）
-- [[aurora]] — Aurora 生成式多模态基础模型（同生态位路线对照）
-- [[circular-dependency-in-multimodal-fusion]] — 循环依赖评估陷阱（测试集筛选器的自我验证偏置）
-- [[time-llm]] — Time-LLM（输入端前缀重编程与去文本反证对照）
-- [[timesx]] — TimesX（真实时钟多 Agent 核查与模型 cutoff 防泄露数据构建对照）
+- 同构/特例：[[source-doublecast]] — 本方法的一手源摘要页
+- 同槽位互斥：[[constrained-text-fusion|CFA]]、[[time-llm|Time-LLM]] — 同为多模态时序融合方案：CFA 在融合层用低秩瓶颈限容、Time-LLM 在输入端做前缀重编程拼接，本文改为数据侧效用筛选加解码块内全秩注入
+- 瓶颈接力 $\Delta$：[[time-mmd|Time-MMD]] — 在对齐与防泄漏拆分之后补上「对齐无泄漏不等于对预测有益」的效用验证门槛
+- 复现对齐：[[chronos|Chronos]] — 冻结其分词器与编码器作数值骨干，GIFT-Eval 上复现原零样本精度[^src-chronos][^src-doublecast]
+- 同槽位互斥：[[aurora|Aurora]] — 同为零样本概率预测但路线相反：从头生成式预训练对冻结骨干适配，错配文本下 CRPS 退化 $9.2\%$ 对 $26.5\%$[^src-aurora][^src-doublecast]
+- 同构：[[circular-dependency-in-multimodal-fusion|循环依赖评估陷阱]] — GPT-5.2 自筛自测的自我验证偏置
+- 同槽位互斥：[[timesx|TimesX]] — 数据构建路线对照：未来窗反推生成对真实时钟检索核查加 cutoff 防泄露[^src-timesx][^src-doublecast]
 
 [^src-doublecast]: [[source-doublecast]]
 [^src-constrained-text-fusion]: [[source-constrained-text-fusion]]

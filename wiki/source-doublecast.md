@@ -8,7 +8,7 @@ tags:
   - data-curation
   - icml-2026
 created: 2026-11-24
-last_updated: 2026-11-24
+last_updated: 2026-11-27
 source_count: 1
 confidence: medium
 status: active
@@ -16,18 +16,31 @@ status: active
 
 # Overcoming the Modality Gap in Context-Aided Forecasting
 
-- **来源**：Zheng\*、Marcotte\*、Ashok、Williams、Sun、Drouin、Zantedeschi（ServiceNow AI Research / McGill / DIRO-UdeM / Mila），ICML 2026（PMLR 306，Seoul）[^src-doublecast]。
-- **核心问题与数据建构**：针对多模态时序预测常弱于纯数值单模态的失效现象，作者提出根因不在融合架构，而在现有语料中的文本从未被经验验证对预测有用[^src-doublecast]。**CAF-7M** 采用「先生成再检验」流程：先由 Llama-3.3-70B 读取完整历史与未来窗口反推 Background/Scenario/Constraint 解释文本，再由强上下文模型在有/无文本下分别预测，仅保留文本使 CRPS 明显下降的窗口作为经验证测试集（覆盖 $65$ 个真实数据集/$11$ 域，$743$ 万训练窗与 $904$ 条验证测试窗，按 $\mathrm{MASE}>1.5$ 分 HARD $490$ / EASY $414$）[^src-doublecast]。
-- **去黑话配方（DoubleCast）**：以冻结的 [[chronos|Chronos]]（T5-large）分词器与编码器为数值主干，冻结 Qwen3-14B 取倒数第二层词元级文本隐状态；在 Chronos 解码器各块内按序执行掩码自注意力、时序编解码交叉注意力、新增 `DualT5` 文本交叉注意力适配器与前馈网络，经离散分位数头输出分布[^src-doublecast]。因缺乏文本内细粒度时间索引绑定，局部时段信号易被平滑[^src-doublecast]。
+多模态时序预测反复出现融合文本后反而不及纯数值单模态的现象[^src-doublecast]。论文诊断根因多半不在融合架构，而在现有数据集的文本从未被验证是否真含超越数值历史的预测信息[^src-doublecast]。解法是先生成、再验证：大模型对照历史与未来窗口反推解释文本，用有/无文本预测对比筛掉无增益窗口，得到 700 万窗口的 CAF-7M 语料；配套的 DoubleCast 在冻结 Chronos 解码块中插入文本交叉注意力，证明这类文本可被真正吸收并迁移到真实数据[^src-doublecast]。
+
+## 核心做法
+
+**数据侧（CAF-7M）**：Llama-3.3-70B 对照完整历史与未来窗口反推 Background/Scenario/Constraint 解释文本；强预测模型再做有/无文本两次预测，仅保留文本明显降低 CRPS 的窗口进入验证测试集（904 条，分 HARD/EASY），覆盖 65 个数据集、11 个领域；约 743 万训练窗未筛[^src-doublecast]。
+
+**模型侧（DoubleCast）**：复用冻结的 [[chronos|Chronos]]（T5-large）分词器与编码器作数值主干，文本侧取冻结 Qwen3-14B 倒数第二层词元隐状态；每个解码块内在掩码自注意力与时序交叉注意力之后串行插入可训练的文本交叉注意力适配器，经离散分位数头输出分布[^src-doublecast]。
 
 ## 证据
 
-1. **主结论**：CAF-7M 零样本优于 Chronos/Chronos-2，CGTSF 多数领先 ChatTime，GIFT-Eval 保原精度[^src-doublecast]。
-2. **归因**：无训练架构消融；推理去文本/错配使 CRPS 恶化 $18.3\%/26.5\%$，Time-LLM 反降 $8.0\%$[^src-doublecast]。
-3. **缺口**：MSPG（$H=96>64$）与 [[time-mmd|Time-MMD]]（$7/9$ 域）存限；训练窗未过滤；GPT-5.2 存在自证偏置[^src-doublecast]。
+1. **定位与主结论**：CAF-7M 训练的 DoubleCast 在验证集上仅次于筛选器自身 GPT-5.2；零样本迁移到真实文本基准 CGTSF 多数优于 Chronos 与 ChatTime，GIFT-Eval 保持原精度[^src-doublecast]。
+2. **真实涨点归因**：无架构消融；涨点归数据筛选，去文本 CRPS 恶化 $18.3\%$、错配 $26.5\%$，Time-LLM 反改善 $8.0\%$[^src-doublecast]。
+3. **证据缺口与负结果**：超长视界基准 MSPG 上超训练上限后零样本落后；Time-MMD 上 7/9 域胜出；GPT-5.2 自筛自评存在偏置[^src-doublecast]。
+
+## 局限
+
+论文自述：筛选偏向验证器可利用的模式，文本多样性受限；上下文由未来窗反推，较部署真实文本更干净，存在生态效度差距；文本时间引用缺细粒度绑定，局部信号可能被弥散[^src-doublecast]。
 
 ## 相关页面
 
-- [[doublecast]] · [[multimodal-time-series-forecasting]] · [[constrained-text-fusion]] · [[time-mmd]] · [[chronos]] · [[aurora]] · [[circular-dependency-in-multimodal-fusion]]
+- 同构/特例：[[doublecast]] — 本方法的机制与数据流页
+- 同槽位互斥：[[constrained-text-fusion|CFA]]、[[time-llm|Time-LLM]] — 同为多模态时序融合方案：CFA 在融合层用低秩瓶颈限容、Time-LLM 在输入端前缀拼接，本文改为数据侧效用筛选加解码块内注入
+- 瓶颈接力 $\Delta$：[[time-mmd|Time-MMD]] — 在对齐与防泄漏拆分之后补上「文本是否对预测有益」的效用验证门槛
+- 复现对齐：[[chronos|Chronos]] — 冻结其分词器与编码器作数值骨干，GIFT-Eval 上复现原零样本精度
+
+出处：Zheng\*、Marcotte\* 等（ServiceNow AI Research / McGill / DIRO-UdeM / Mila），ICML 2026。
 
 [^src-doublecast]: [[source-doublecast]]
