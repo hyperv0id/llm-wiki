@@ -9,39 +9,35 @@ tags:
   - frequency-domain
   - neurips-2025
 created: 2026-11-24
-last_updated: 2026-11-24
+last_updated: 2026-11-27
 source_count: 1
 confidence: medium
 status: active
 ---
-
 # AliO: Output Alignment Matters in Long-Term Time Series Forecasting
 
-- **作者/机构**：Kwangryeol Park、Jaeho Kim（UNIST / Korea Univ.）；Seulki Lee（UNIST）[^src-alio]
-- **出处**：NeurIPS 2025[^src-alio]
-- **分级**：Tier 2（轻量化入库，未为 `alio` 或 `output-alignment` 新建 `source_count: 1` 独立页）
+直接多步预测一次前向输出整段未来，但历史窗口只平移一格，两路预测在重叠的时间点上就常互相矛盾：同一段曲线被整体推移。这种不一致不进入 MSE，却让按预测调配资源的人反复改计划。AliO 在训练期让两个相邻窗口一起前向，对重叠片段施加时域与复频域一致性约束，并把距真值更远的一侧单向拉向更近的一侧；不改骨干、不加推理开销，不一致度大幅下降而回归误差多数持平[^src-alio]。
 
-直接多步预测（DF）模型对仅错开一个时间步的两个相邻历史窗口分别前向预测时，对重叠的未来时间点往往给出互相矛盾的数值。AliO 不修改任何预测骨干结构，仅在训练期同步前向两个相邻滚动窗口，对未来重叠片段同时施加时域与频域一致性对齐损失，并借助单向梯度截断（stop-gradient Regression Pulling）将距真值更远的一侧拉向更近的一侧，避免两路预测一起向错误均值坍缩[^src-alio]。
+## 核心做法
 
-## 去黑话算子配方与路线差异
-
-模型未引入改变推理复杂度的新网络算子，仅在训练损失侧附加跨窗口时频对齐与单向门控[^src-alio]：
-
-- **滑窗双前向与重叠对齐**：取错开步长 $l$（默认 $l=1, N=2$）的相邻历史窗口各前向一次，截取未来重叠片段，在时域计算 MSE/MAE 一致性损失 $\mathcal{L}_T$，并经 `FFT` 转换后计算复频域一致性损失 $\mathcal{L}_F$（ComplexMSE）[^src-alio]。
-- **单向 stop-gradient Regression Pulling**：逐点比较两路重叠输出与真实标签的误差距离，通过索引门控固定仅回传距离真值更远那一侧的梯度；总目标为 $\mathcal{L}_{\text{total}} = \mathcal{L}_{\text{MSE}} + \lambda_T\mathcal{L}_T + \lambda_F\mathcal{L}_F$[^src-alio]。训练期每步需双倍前向传播与重叠窗 `FFT`，推理阶段保持单次前向、零额外开销[^src-alio]。
-- **有向关系对照**：归属 [[direct-forecast|Direct Forecast（DF）]] 前提设定（仅一次输出整段未来步才存在跨窗口重叠预测不一致）；相对 [[distdf|DistDF]] 与 [[qdf|QDF]] 属**同槽位互斥**（均不改骨干且推理零开销，但 AliO 对齐跨窗口预测间一致性，DistDF/QDF 对齐条件分布矩或可学习协方差二次型似然）；相对 [[fredf|FreDF]] 属**跨槽位正交**（同用可微频域损失但对齐对象不同：AliO 对齐跨窗口「预测↔预测」重叠复频谱，FreDF 对齐单窗口「预测↔标签」频域幅度）；对 [[patchtst|PatchTST]] 属**实证复现对齐**（沿用官方 $L=336$ 回看配置）[^src-alio]。
+- **双前向**：错开一步的两段历史各前向一次，截出落在同一批未来点上的重叠片段。
+- **时频域对齐**：重叠片段在时域逐点取均方距离，再各做一次 `FFT`、在复频谱上取距离。时域项压波形偏移，频域项补幅度与相位——只压时域时，峰谷错位而形状看似相同。
+- **单向拉齐**：逐点比较两路与真值的误差，用 stop-gradient 冻结距真值更近的一侧，仅让更远的一侧回传梯度并向更近侧拉齐；对称回传会让两路收敛到折中的错误均值。
+- **开销**：训练每步两次前向加一次重叠窗 `FFT`，推理沿用单次前向[^src-alio]。
 
 ## 证据
 
-1. **定位与主结论**：属「滚窗重叠一致性正则化」——跨 7 骨干显著降 TAM（表 1 最高 70.5%），常规 MSE 在 ECL/Weather 基本持平，大幅降错集中于初始一致性极差的 ILI（降 17.4%）[^src-alio]。
-2. **消融缺口**：正文仅测 $\lambda_T, \lambda_F$ 与 $(l, N)$ 敏感性（$\lambda_T$ 增至 5 时 TAM 与 MSE 同向改善），**缺「去 Regression Pulling / 去频域对齐」独立组件消融表**[^src-alio]。
-3. **口径与代价**：摘要（TAM 降 58.2%、MSE 最高降 27.5%）与正文表 1（70.5%、11.5%/ILI 17.4%）口径不一；训练需双前向与重叠窗 `FFT`；高波动集慎用[^src-alio]。
+1. **定位与主结论**：跨多种骨干，相邻窗口的不一致度普遍大幅下降，回归误差多数持平，仅原本一致性极差的 ILI（流感样病例基准）降幅明显[^src-alio]。
+2. **真实涨点归因**：只做时域与频域权重的敏感性分析，缺单独去掉单向梯度截断或频域项的组件消融[^src-alio]。
+3. **证据缺口与负结果**：收益集中在初始一致性差的数据，高波动数据集收益有限甚至可能推高误差[^src-alio]。
 
 ## 相关页面
 
-- [[direct-forecast]] — 前提归属（一次输出整段未来步才存在跨窗口重叠预测不一致）
-- [[distdf]] · [[qdf]] — 同槽位互斥（即插即用训练目标：跨窗口输出一致性 vs 条件分布/协方差似然对齐）
-- [[fredf]] — 跨槽位正交（频域损失对齐对象：跨窗口预测↔预测复频谱 vs 单窗口预测↔标签幅度）
-- [[patchtst]] — 实证复现对齐（沿用官方 $L=336$ 回看配置）
+- [[direct-forecast|Direct Forecast（DF）]] — 瓶颈接力 $\Delta$：DF 一次输出整段未来从而暴露跨窗口重叠不一致瓶颈，AliO 在该前提下接力对齐。
+- [[distdf|DistDF]] — 同槽位互斥：它对齐未来各步条件分布矩，AliO 对齐跨窗口预测。
+- [[qdf|QDF]] — 同槽位互斥：它学协方差型加权损失校正自相关偏差，AliO 压相邻窗口分歧。
+- [[fredf|FreDF]] — 跨槽位正交：同用可微频域损失，它对「预测↔标签」，AliO 对「预测↔预测」。
+
+NeurIPS 2025（UNIST）[^src-alio]
 
 [^src-alio]: [[source-alio]]
