@@ -9,7 +9,7 @@ tags:
   - linear-models
   - icml-2026
 created: 2026-11-24
-last_updated: 2026-11-24
+last_updated: 2026-11-27
 source_count: 1
 confidence: medium
 status: active
@@ -17,32 +17,33 @@ status: active
 
 # TimeSeed: Effective Time Series Forecasting with Sparse Endogenous Variables
 
-**来源**：Zhaowang Wu、Kaixin Deng、Hua Yan（四川大学电子信息学院；北海道大学信息科学研究科）；ICML 2026（PMLR 306）[^src-timeseed]。
+长时预测与既有外生融合方法默认目标变量（内生变量）历史完整，当内生序列稀疏到约 4% 观测点甚至单点时，从外生直接映射未来会出现尺度与变量耦合错配而明显退化。TimeSeed 把「稀疏直接外推」改写成两阶段：先用稠密外生序列重建完整的内生历史上下文，再做常规长时预测；论文报告其在极端稀疏设定下整体优于十一类基线与「先插补再预测」管线[^src-timeseed]。
 
-现有基于外生变量的时序预测模型默认内生历史观测完整；当内生变量极度稀疏（仅剩 4% 观测点甚至单点）时，外生向内生的直接映射会出现严重的尺度与因果失配，导致强基线普遍退化。为此，TimeSeed 将「直接从极稀疏样本外推未来」改写为「先借助稠密外生序列重建完整的内生历史上下文，再执行常规长时预测」[^src-timeseed]。
+## 核心做法
 
-## 去黑话算子配方与路线差异
+稠密外生序列先经移动平均分解为周期项与趋势项，配合极稀疏内生观测重建历史上下文后，经沿时间轴的线性头直接预测未来[^src-timeseed]：
 
-模型完全由标准算子组合而成，未引入改变复杂度阶数的新底层算子[^src-timeseed]：
-
-- **时序分解**：用 `MovingAvg` 将稠密外生序列拆分为趋势项与周期项[^src-timeseed]。
-- **时域与频域聚合**：时域分支对周期项切 patch 后依次沿变量轴与周期轴做 Linear 交互；频域分支对趋势项做 `RFFT`，按幅值能量划分为高能（Top-$K$）与低能两组，各沿变量轴接频域 Linear 压缩为单变量频谱，相加后经 `iRFFT` 还原趋势上下文[^src-timeseed]。
-- **多尺度历史重建与预测**：对极稀疏内生序列 $S$ 分别上采样 $2^q$（$q=1..3$）并过 MLP 专家，经 `Dense + Gumbel-Softmax` 软/硬选出单一最优分辨率重建历史，与时频外生上下文相加后再过时间轴 Linear 输出预测[^src-timeseed]。
-- **有向关系对照**：相对 [[source-timexer|TimeXer]] 的 patch-to-variate 交叉注意力与 [[crosslinear|CrossLinear]] 的 1D 卷积嵌入，TimeSeed 属**同槽位互斥与场景分支**，以沿变量轴的纯线性聚合换取 10.5 MB 显存（vs TimeXer 14.69 MB）、约 30% 训练加速与约 0.19M 参数量，代价是放弃变量的注意力自适应选择；相对 [[timemixer|TimeMixer]] 的 `AvgPool` 下采样多预测器求和，TimeSeed 构成**同构反转**（改为多倍率上采样 + Gumbel 单尺度选择）；相对 [[direct-forecast|Direct Forecast]] 与 [[tide|TiDE]] 则形成输入侧两阶段历史重构对直接多步映射的范式对照[^src-timeseed]。
+- **分块线性时域聚合**（Time Domain Aggregator）：周期项切 patch 后先沿变量轴线性聚合、再做跨周期线性交互[^src-timeseed]。
+- **高低能分组频域聚合**（Frequency Domain Aggregator）：趋势项做实数 FFT，按能量分高低两组分别沿变量轴频域线性压缩后逆变换合并[^src-timeseed]。
+- **多倍率上采样单选重建**（Adaptive Scale Reconstructor）：将极稀疏内生观测按多倍率上采样送入小 MLP 专家，以 Gumbel-Softmax 选出与观测密度匹配的单一尺度表征[^src-timeseed]。
 
 ## 证据
 
-1. **定位与主结论**：4%/单点稀疏下，7 项 LTSF 与 PhysioNet 整体优于 11 基线及两步插补管线，10.5 MB 显存与速度占优[^src-timeseed]。
-2. **真实涨点归因**：单模块移除使 MSE 恶化 5.31%–12.30%，但频域高能分带最弱（5.31%）；主涨点来自历史重构改写直接预测（ETTh2/ETTm2 降 MSE 27.4%、MAE 14.2%），Gumbel 负责匹配局部尺度[^src-timeseed]。
-3. **证据缺口与负结果**：ETTm1 上两步「插补+PatchTST」（0.041）胜过 TimeSeed（0.068）；漏测 TSFM；对外生数量/长度敏感（减外生掉 15.32%），零样本冷启动待探索[^src-timeseed]。
+1. **定位与主结论**：极端稀疏下七个长时基准与 PhysioNet 整体最优，平均 MSE 降约一到两成，纯线性开销显著低于注意力基线[^src-timeseed]。
+2. **真实涨点归因**：两阶段历史重建范式本身贡献最大（较直接预测降约四分之一），移除单模块仅恶化约半成到一成、频域高能分带最小[^src-timeseed]。
+3. **证据缺口**：ETTm1 上「插补+PatchTST」反占优；未对比时序基础模型；外生变少或历史变短明显掉点[^src-timeseed]。
+
+## 局限
+
+论文自述仍需至少少量内生观测点，内生完全缺失（零观测点）场景留作未来工作[^src-timeseed]。
 
 ## 相关页面
 
-- [[source-timexer]] — 稠密内生下的注意力外生融合基线（同槽位互斥与场景分支）
-- [[crosslinear]] — 1D 卷积外生交叉相关线性基线（同槽位互斥）
-- [[timemixer]] — AvgPool 下采样多尺度混合（多尺度方向与选择同构反转）
-- [[tide]] — 残差 MLP 协变量直接预测（同槽位互斥）
-- [[direct-forecast]] — 直接多步预测范式（两阶段历史重构对照）
-- [[tsfm-covariate-adaptation-comparison]] — 协变量适配全景矩阵（输入侧历史重构定位与漏测 TSFM 缺口）
+- [[source-timexer|TimeXer]] — 同槽位互斥：TimeXer 用注意力且默认内生完整，TimeSeed 以纯线性面向稀疏内生场景。
+- [[timemixer|TimeMixer]] — 同构/特例：TimeMixer 多倍率下采样求和，TimeSeed 多倍率上采样后单选最优尺度。
+- [[direct-forecast]] — 瓶颈接力 $\Delta$：历史重建前级用于消除直接多步映射在稀疏输入下的尺度失配瓶颈。
+- [[tsfm-covariate-adaptation-comparison]] — 跨槽位正交：协变量适配全景矩阵中的「输入侧历史重构」支线。
+
+出版信息：ICML 2026（PMLR 306）；Zhaowang Wu、Kaixin Deng、Hua Yan。
 
 [^src-timeseed]: [[source-timeseed]]
