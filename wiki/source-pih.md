@@ -9,7 +9,7 @@ tags:
   - mamba
   - transformer
 created: 2026-11-24
-last_updated: 2026-11-24
+last_updated: 2026-11-27
 source_count: 1
 confidence: medium
 status: active
@@ -17,32 +17,25 @@ status: active
 
 # PIH: Enhancing the Maximum Effective Window for Long-Term Time Series Forecasting
 
-- **作者/机构**：Jiahui Zhang、Zhengyang Zhou、Wenjie Du、Yang Wang（中国科学技术大学 / 中科大苏州高等研究院；代码 `forever-ly/PIH`）[^src-pih]
-- **出处**：核心切片未见明确会议标识（仅 checklist 为 AAAI 模板；本仓库 OpenReview CCF-A 调研记录其录用于 NeurIPS 2025 Poster，未在切片正文核实）[^src-pih]
-- **分级**：Tier 2（轻量化入库，未为 `pih`、`maximum-effective-window`、`IBF`、`HTM` 新建 `source_count: 1` 独立页）
+直觉上回看窗越长可用的历史越充分，但 Transformer 时序模型拉长窗口后误差常不降反升：长历史夹带的噪声冗余会摊薄注意力并诱发过拟合。论文将「再加长窗口也不再改善误差的临界长度」定义为最大有效窗口（MEW），并用两个可插拔模块从信息滤波与架构分工两端推长它。挂到 [[patchtst|PatchTST]] 后的完整模型，作者报告取得 SOTA 且算力开销反而更低[^src-pih]。
 
-直觉上回看窗口越长，模型掌握的历史信息越充分，但现有时序 Transformer 拉长回看窗口后预测误差往往不降反升，因为多出来的历史夹杂冗余与噪声，不仅摊薄注意力权重，也诱发过拟合。论文将「继续加长回看窗口不再改善 MSE 的临界长度」定义为最大有效窗口（MEW），把变分信息瓶颈门控加噪滤波（IBF）与「Mamba 长程滤波加分块短序列 Transformer」（HTM）串联挂载到 [[patchtst|PatchTST]] 构成 PIH，试图在压降显存与算力的同时把有效回看窗口向外推长[^src-pih]。
+## 核心做法
 
-## 去黑话算子配方与图谱关系
-
-PIH 将与骨干解耦的变分滤波模块（IBF）与混合序列模块（HTM）串入 patch 化流程[^src-pih]：
-
-- **变分信息瓶颈滤波（IBF）**：在 Patch Embedding 之后，先经 `MLP + Sigmoid` 评估各 patch 的重要度，再由 `Gumbel-Sigmoid` 采样伯努利掩码 $\lambda_i$，按掩码注入同均值方差的高斯噪声 $z^{\text{noise}}=\lambda z + (1-\lambda)\epsilon$ 抑制冗余历史，训练目标在 MSE 上叠加变分压缩上界惩罚项联合优化，从而避免对长历史子序列做组合枚举[^src-pih]。
-- **混合架构切分（HTM）**：前向流程为 `Patch Embedding → Mamba → Dropout → IBF → 切块 → Transformer`；切块支持按步长模 $K$ 间隔抽稀或连续分段，将自注意力输入长度从 $L/P$ 压至 $L/(PK)$，把长程依赖交由 [[mamba|Mamba]] 线性滤波、分段局部交互交由 Transformer 承担，在 $L=1024$ 下相对 PatchTST 将显存与耗时降为 $1/2\text{–}1/3$[^src-pih]。
-- **图谱关系**：对 [[patchtst|PatchTST]] 属**瓶颈接力 $\Delta$**（$L=1024$ 下降低算力并小幅推长 MEW，但短窗 $L=96$ 反而落后）；对 [[information-bottleneck-principle|信息瓶颈原理]] 属**同构实现**（以序列级 `Gumbel-Sigmoid` 噪声掩码落地上界压缩）；对 [[mamba|Mamba]] 属**跨槽位正交混合**（Mamba 担纲长程滤波、分块 Transformer 处理短上下文）；与 [[lookback-horizon-scaling|Lookback–Horizon Scaling]] 及 [[source-2606-27282-ltsf-linear-models|SearchCast]] 形成**视角对照与张力**（SearchCast 按单序列、单步长搜索最优 $L^*$ 且幂律斜率可负，PIH 则依赖离散粗网格以架构滤波统一推长 MEW）[^src-pih]。
+PIH（Patch-IBF-HTM）在 PatchTST 的 patch 化流程中串入两个与骨干解耦、可移植的模块[^src-pih]。变分信息瓶颈滤波（IBF）以 `MLP + Sigmoid` 给各 patch 打重要度分，经 `Gumbel-Sigmoid` 采出可微的伯努利掩码，对判冗余的 patch 段注入同均值方差的高斯噪声以切断信息流动；训练目标为预测误差叠加一项压缩惩罚的变分上界，绕开指数级子序列枚举[^src-pih]。Transformer-Mamba 混合切分（HTM）先以 [[mamba|Mamba]] 做长程选择性滤波，再按 interval（交错分组，保全局趋势）或 block（连续分段，保局部形态）把滤波后序列缩成多组短段，交 Transformer 处理局部依赖[^src-pih]。
 
 ## 证据
 
-1. **定位与主结论**：$L=1024$ 下整体优于 PatchTST、Bi-Mamba 与 DLinear 且显存耗时降为 PatchTST 的 $1/2\text{–}1/3$，但短窗 $L=96$ 落后 PatchTST[^src-pih]。
-2. **消融真相与 MEW 边界**：正文唯一消融仅给柱/折线图无数值表，无法量化拆出单个组件的精确掉点量级；对 PatchTST 的 MEW 扩张较温和（ETTh1/ECL $512\to 1024$、ETTm1 $1024\to 1440$，Traffic/ETTh2 持平或触顶、Weather 拉长后 MSE 微升）[^src-pih]。
-3. **跨源张力与缺口**：与 SearchCast「最优 $L^*$ 可呈负斜率」张力对照；缺 Exchange、统计显著性与 LLM/TSFM 基线，MEW 依赖离散粗网格[^src-pih]。
+1. **主结论**：$L=1024$ 下在 7 数据集整体优于 PatchTST、DLinear、S-Mamba 等，开销约为其 $1/2$–$1/3$；PatchTST 延窗至 1024 误差回升，PIH 单调改善[^src-pih]。
+2. **归因**：消融仅给图无数值表——两模块各自有效、组合最优，单组件掉点无法量化；MEW 在 5/7 数据集推长、余者触顶，$\beta$ 与采样温度敏感[^src-pih]。
+3. **缺口**：短窗 $L=96$ 反落后 PatchTST；MEW 受离散粗网格分辨率截断；缺 LLM 类与 Exchange 基线[^src-pih]。
 
 ## 相关页面
 
-- [[patchtst]] — 宿主对照与瓶颈接力 $\Delta$（$L=1024$ 降耗并温和扩窗，短窗 $L=96$ 落后）
-- [[lookback-horizon-scaling]] — 视角张力对照（统一架构推长 MEW vs 逐序列步长异质幂律 $L^*$）
-- [[source-2606-27282-ltsf-linear-models]] — SearchCast 口径对照（离散粗网格滤波 vs 闭式 Ridge 搜索）
-- [[information-bottleneck-principle]] — 同构实现（序列版 `Gumbel-Sigmoid` 噪声掩码变分上界）
-- [[mamba]] — 跨槽位正交混合（Mamba 长程滤波 + 分块短序列 Transformer）
+- [[patchtst|PatchTST]] — 瓶颈接力 $\Delta$：PIH 以其为宿主压降算力并温和推长 MEW，但短窗 $L=96$ 反而落后宿主。
+- [[mamba|Mamba]] — 跨槽位正交：Mamba 负责长程选择性滤波，Transformer 负责短段局部注意力，两者混合优于任一单独使用。
+- [[information-bottleneck-principle|信息瓶颈原理]] — 同构实现：把压缩—充分性的变分上界落成序列级可微噪声掩码。
+- [[lookback-horizon-scaling]] 与 [[source-2606-27282-ltsf-linear-models|SearchCast]] — 同槽位互斥：同在「回看窗长度如何定」槽位，PIH 以统一架构推长 MEW，SearchCast/LHS 按序列与步长搜索异质最优窗（幂律斜率可负），两视角互为张力。
+
+出处：Jiahui Zhang 等，中国科学技术大学；NeurIPS 2025 Poster。
 
 [^src-pih]: [[source-pih]]
