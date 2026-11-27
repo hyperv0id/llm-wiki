@@ -8,8 +8,8 @@ tags:
   - spatiotemporal
   - 2026
 created: 2026-07-07
-last_updated: 2026-11-24
-source_count: 2
+last_updated: 2026-11-27
+source_count: 1
 confidence: medium
 status: active
 ---
@@ -37,18 +37,9 @@ WIT 包含 5,352 个样本，覆盖政治（总统批准率等）、社会（移
 
 WIT 的未来场景由专家手工构建，对强推理 LLM 可扩展为自主生成场景，但需解决幻觉控制和评估分离。部分 LLM（Llama-3）在数值预测中违反基本值域约束，暗示 LLM 对时序语义理解仍需深入。少样本提示和多步推理是未来方向。[^src-whatif-tsf]
 
-## 同生态位场景基准对照（vs TADiff）
-
-WIT 与 [[source-tadiff|TADiff]] 同处「同一历史在不同未来文本假设下如何分化预测」的场景反事实赛道，但在条件构建方式与评测解耦上分属两极（同生态位场景基准对照）[^src-whatif-tsf][^src-tadiff]：
-
-- **条件构造与输出口径**：WIT 由人类专家手工撰写 5,352 条去标识化场景并设计最小编辑对立反事实 $F_{cf}$，在长视界与反事实任务上主动放弃数值 MSE、只评估三分类方向准确率[^src-whatif-tsf]；TADiff 面向连续多步轨迹输出，在缺少真实反事实标签的真实数据集（ETTm1、Traffic、Exchange、Weather）上借助外部/统计文本与嵌入相似度启发式筛选构造反事实文本[^src-tadiff]。
-- **评测独立性**：WIT 通过知识截止与去标识化隔离 LLM 记忆化偏置，且评估与模型训练损失无耦合[^src-whatif-tsf]；TADiff 用于评价无真值反事实一致性的 DTTC 分数与其反事实对比微调损失直接同源，存在循环评价风险[^src-tadiff]。
-
 ## 交叉链接
 
 - [[source-terra]] — Terra 大规模多模态地球时空数据集
-- [[multimodal-time-series-forecasting]] — 多模态时序预测综述
-- [[source-tadiff]] — 同生态位文本反事实预测方法（启发式构造条件 + DTTC 评价对照）
+- [[multimodal-time-series-forecasting]] — 多模态时序预测综述（含反事实场景路线对照）
 
 [^src-whatif-tsf]: [[source-whatif-tsf]]
-[^src-tadiff]: [[source-tadiff]]

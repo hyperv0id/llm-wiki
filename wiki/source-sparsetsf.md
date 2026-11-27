@@ -9,8 +9,8 @@ tags:
   - periodicity
   - tpami-2026
 created: 2026-04-28
-last_updated: 2026-11-24
-source_count: 2
+last_updated: 2026-11-27
+source_count: 1
 confidence: medium
 status: active
 ---
@@ -65,7 +65,6 @@ SparseTSF 的核心创新是 **Cross-Period Sparse Forecasting（跨周期稀疏
 - **与 CycleNet 的关联**：两者都利用周期先验进行轻量化设计，但 CycleNet 使用可学习周期参数，SparseTSF 使用跨周期稀疏预测
 - **与 TQNet 的关联**：同属林伟伟团队（华南理工大学），都发表于 2024-2025 年，都关注轻量化建模
 - **与 FITS 的对比**：FITS 是首个将模型参数量降至 10k 级别的里程碑工作，SparseTSF 将其进一步降至 1k 级别
-- **与 [[source-mixlinear|MixLinear]] 的关联（瓶颈接力 $\Delta$ 与复现对齐）**：MixLinear（ICLR 2026）沿用按步长下采样骨架，将单共享线性头拓展为时域 2D 分段双线性与频域秩-2 复投影双支相加（45–176 参数），在 Exchange 上相对 SparseTSF 显著降错并提速约 3.2 倍，但主表只报 MSE 不报 MAE[^src-mixlinear]
 
 ## 局限性
 
@@ -74,4 +73,3 @@ SparseTSF 的核心创新是 **Cross-Period Sparse Forecasting（跨周期稀疏
 - 高维多变量场景下 MLP 版本参数量仍高于 Linear 版本
 
 [^src-sparsetsf]: [[source-sparsetsf]]
-[^src-mixlinear]: [[source-mixlinear]]

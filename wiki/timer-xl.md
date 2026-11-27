@@ -9,7 +9,7 @@ tags:
   - multivariate-forecasting
   - iclr-2025
 created: 2026-11-24
-last_updated: 2026-11-24
+last_updated: 2026-11-27
 source_count: 7
 confidence: medium
 status: active
@@ -67,13 +67,13 @@ $$\begin{aligned}
 
 ## 与既有工作的关系
 
-Timer-XL 在长上下文时序基础模型与多变量 Transformer 谱系中处于清晰的架构交汇点：
+Timer-XL 在长上下文时序基础模型与多变量 Transformer 谱系中处于架构交汇点：
 
-- **瓶颈接力 $\Delta$（vs 原版 Timer 与 [[patchtst|PatchTST]]）**：相对一维通道独立的原版 Timer，Timer-XL 把上下文容量从 $T$ 扩展到 $NT$ 并引入跨变量交互与双轴位置编码；相对 Encoder-only 的 [[patchtst|PatchTST]] 与 UniTST，改为因果 Decoder-only 以支持变长自回归滚动预测[^src-timer-xl][^src-patchtst]。
-- **同槽位互斥对照（vs [[itransformer|iTransformer]]）**：同出清华大学团队的 [[itransformer|iTransformer]] 将整条序列压为 1 个 variate token、用 FFN 隐式处理时间，Timer-XL 则保留 patch 级因果时序依赖，用更高的 $\mathcal{O}(N^2 T^2)$ 联合注意力开销换取时间维上的细粒度因果建模与变长滚动能力[^src-timer-xl][^src-itransformer]。
-- **实证复现对齐与瓶颈接力 $\Delta$（vs [[cpiri|CPiRi]] 与 [[dits|DiTS]]）**：后续工作验证了展平单流注意力的扩展边界。[[cpiri|CPiRi]]（ICLR 2026）在 8,600 通道的 LargeST CA 基准上实测报告 Timer-XL 发生显存溢出（OOM），而采用时空解耦与通道打乱后复杂度降至 $\mathcal{O}(T^2 + N^2)$ 并可在 8GB 显存运行[^src-cpiri]；[[dits|DiTS]]（arXiv 2026）在协变量注意力消融中报告双流联合 variate attention 优于 Timer-XL 式展平单流注意力[^src-dits]。
+- **瓶颈接力 $\Delta$（vs 原版 Timer 与 [[patchtst|PatchTST]]）**：相对一维通道独立的原版 Timer，Timer-XL 把上下文容量从 $T$ 扩展到 $NT$ 并引入跨变量交互与双轴位置编码；相对 Encoder-only 的 [[patchtst|PatchTST]] 及同类 patch 编码器基线（如 UniTST），改为因果 Decoder-only 以支持变长自回归滚动预测[^src-timer-xl][^src-patchtst]。
+- **同槽位互斥（vs [[itransformer|iTransformer]]）**：同出清华大学团队的 [[itransformer|iTransformer]] 将整条序列压为 1 个 variate token、用 FFN 隐式处理时间，Timer-XL 则保留 patch 级因果时序依赖，用更高的 $\mathcal{O}(N^2 T^2)$ 联合注意力开销换取时间维上的细粒度因果建模与变长滚动能力[^src-timer-xl][^src-itransformer]。
+- **复现对齐与瓶颈接力 $\Delta$（vs [[cpiri|CPiRi]] 与 [[dits|DiTS]]）**：后续工作验证了展平单流注意力的扩展边界。[[cpiri|CPiRi]]（ICLR 2026）在 8,600 通道的 LargeST CA 基准上实测报告 Timer-XL 发生显存溢出（OOM），而采用时空解耦与通道打乱后复杂度降至 $\mathcal{O}(T^2 + N^2)$ 并可在 8GB 显存运行[^src-cpiri]；[[dits|DiTS]]（arXiv 2026）在协变量注意力消融中报告双流联合 variate attention 优于 Timer-XL 式展平单流注意力[^src-dits]。
 - **跨槽位正交（vs [[trace|TRACE]]）**：多模态检索器 [[trace|TRACE]]（NeurIPS 2025）将检索对压缩为软提示前置于冻结的 Timer-XL 上下文，实验表明包括 Timer-XL 在内的 decoder-only 基础模型对检索模态丰富度（数值加文本优于纯数值）比 encoder-only 模型更敏感[^src-trace-neurips2025]。
-- **同槽位互斥（vs [[source-pesd-tsf|PESD-TSF]]）**：面对高维多变量长序列下的显存瓶颈，Timer-XL 选择将全部变量与时间块展平做联合因果时空注意力（依赖 FlashAttention 压显存但 8,600 通道仍触发 OOM），而 PESD-TSF（ICML 2026）则在通道独立阶段完成去趋势时间注意力与多尺度下采样后，先沿时间维做全局平均池化（GAP）再执行变量维自注意力；该解耦设计在 5,826 维 Mobility 上保持 $8.37\text{ GB}$ 单卡显存可行，代价是抹平时间分辨率且失去 patch 级跨变量因果交互（且未在 Mobility 上报告预测精度）[^src-pesd-tsf][^src-cpiri]。
+- **同槽位互斥（vs [[source-pesd-tsf|PESD-TSF]]）**：面对高维多变量长序列下的显存瓶颈，Timer-XL 将全部变量与时间块展平做联合因果时空注意力（8,600 通道仍触发 OOM），而 PESD-TSF（ICML 2026）在通道独立去趋势时间注意力与减采样后先沿时间维全局平均池化再做变量自注意力，在 5,826 维场景保持单卡显存可行，代价是抹平时间分辨率且失去 patch 级跨变量因果交互[^src-pesd-tsf][^src-cpiri]。
 
 | 架构代表 | 令牌粒度 | 跨变量交互方式 | 时序方向与解码 | 注意力理论复杂度 |
 |---|---|---|---|---|
@@ -86,23 +86,18 @@ Timer-XL 在长上下文时序基础模型与多变量 Transformer 谱系中处�
 
 论文在长上下文单变量（ERA5-S）、多变量（ERA5-MS、GTWSF、滚动预测）、协变量（EPF）与零样本迁移设置下报告了实证结果（均采用作者报告口径）[^src-timer-xl]：
 
-1. **定位与主结论**：在长上下文单变量、多变量与带外生协变量基准上整体优于同代基线；在 ECL、Traffic 等高维多变量数据集上较原版 Timer 降低误差约 $6\%\text{–}13\%$，跨站与跨时段零样本泛化亦优于 Timer 与 [[patchtst|PatchTST]]；工程实现依靠 FlashAttention 将注意力显存占用压至 $\mathcal{O}(NT)$[^src-timer-xl]。
+1. **定位与主结论**：在长上下文单变量、多变量与带外生协变量基准上整体优于同代基线；在 ECL、Traffic 等高维多变量数据集上较原版 Timer 降低误差约 $6\%\text{–}13\%$，跨站与跨时段零样本泛化亦优于 Timer 与 [[patchtst|PatchTST]][^src-timer-xl]。
 2. **真实涨点归因**：ERA5-MS 上的 $2\times 2$ 结构消融证实「显式跨变量建模」与「因果 Decoder-only」二者缺一不可；EPF 上将下三角时序掩码 $T$ 替换为全 $1$ 非因果掩码后精度下降，表明外生协变量内部同样需维持因果约束；将预训练上下文窗口从 $1440$ 扩至 $2880$ 能稳定提升零样本预测表现[^src-timer-xl]。
 3. **证据缺口与负结果**：第一，在月度或年度等超长单变量序列上，拉长上下文的精度增益放缓甚至退化（论文归因于噪声与优化难度）；第二，理论计算量仍为 $\mathcal{O}(N^2 T^2)$ 且依赖充足样本，后续 [[cpiri|CPiRi]] 在 8,600 通道上的实测复现已确认该展平架构会触发 OOM[^src-timer-xl][^src-cpiri]；第三，正文未单独剥离 RoPE 与变量偏置 $(u, v)$ 的贡献，位置编码消融仅置于附录[^src-timer-xl]。
 
 ## 相关页面
 
 - [[source-timer-xl]] — 论文源摘要
-- [[cross-dimension-dependency]] — 跨维度依赖建模谱系对照
-- [[ar-vs-nar-decoding]] — 自回归与非自回归多步解码取舍
-- [[channel-independence]] — 通道独立策略与 CI/CD 折中路线
-- [[itransformer]] — 同组另一条跨变量架构路线（variate token）
-- [[patchtst]] — Encoder-only 通道独立长程预测基线
-- [[cpiri]] — 高维场景下针对展平耦合复杂度 OOM 的解耦对照
-- [[dits]] — 双流流匹配协变量注意力的同槽位消融对照
-- [[trace]] — 检索增强软提示注入冻结 Timer-XL 的正交插件
-- [[source-pesd-tsf|PESD-TSF]] — 同槽位互斥（高维先时间 GAP 聚合再变量解耦 vs 展平联合时空注意力，ICML 2026）
-- [[rope]] · [[flash-attention]] — 时序相对位置编码与线性显存实现基础
+- [[channel-independence]] — 同槽位互斥：通道独立与本页统一展平路线的取舍对照
+- [[cross-dimension-dependency]] — 跨维度依赖聚合矩阵收录（统一展平 + 因果注意力支线）
+- [[ar-vs-nar-decoding]] — 跨槽位正交：自回归逐块滚动与一次输出非自回归解码取舍
+- [[rope]] — 跨槽位正交：时序轴相对旋转位置编码组件
+- [[flash-attention]] — 跨槽位正交：分块片上线性显存注意力实现（其余近邻模型对照见上文「与既有工作的关系」）
 
 [^src-timer-xl]: [[source-timer-xl]]
 [^src-patchtst]: [[source-patchtst]]

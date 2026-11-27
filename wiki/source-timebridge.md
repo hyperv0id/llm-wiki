@@ -9,7 +9,7 @@ tags:
   - cointegration
   - icml-2025
 created: 2026-11-24
-last_updated: 2026-11-24
+last_updated: 2026-11-27
 source_count: 1
 confidence: medium
 status: active
@@ -17,26 +17,27 @@ status: active
 
 # TimeBridge: Non-Stationarity Matters for Long-term Time Series Forecasting
 
-- **作者/机构**：Peiyuan Liu\*、Beiliang Wu\*、Yifan Hu\*、Naiqi Li、Tao Dai、Jigang Bao、Shu-tao Xia（清华大学深圳国际研究生院 / 深圳大学）[^src-timebridge]
-- **出处**：ICML 2025（PMLR 267）[^src-timebridge]
-- **分级**：Tier 1（建立机制页 [[timebridge]]，未为内部组件建独立页）
+多变量时序预测里，非平稳性有两副相反的面孔：在单变量的短程窗口内，它让无关的随机波动被误读成相关，诱发伪回归；在跨变量的长期尺度上，它又是变量共同漂移、协同变动（协整）关系的载体。既有方法把非平稳性当单一对象处置——要么在入口处全局抹平，要么原样保留——两头都会伤到一边。[[timebridge|TimeBridge]] 的核心巧思是按作用域分工：变量内的时间建模去掉非平稳性以压住伪相关，跨变量的长期建模保留它以承载协整[^src-timebridge]。
 
-现有预测方法对待非平稳性常走两个极端：用 RevIN 等手段全局去平稳会抹平跨变量共同趋势，全量保留又会在单变量短程窗内诱发伪相关。[[timebridge|TimeBridge]] 将非平稳性按作用域正交拆解：先在变量内用去趋势稳态分量做时间注意力以抑制短程伪相关、同时保留原始值免去反归一化，再压缩时间维后于保留非平稳性的前提下做跨变量注意力以捕获长期协整[^src-timebridge]。
+## 核心做法
 
-## 去黑话算子配方与图谱关系
-
-模型由标准算子按两阶段串行构成：先将输入 $X\in\mathbb{R}^{C\times I}$ 切分为 patch $P\in\mathbb{R}^{C\times N\times D}$（$N=I/S$），以 `Pad + AvgPool` 作平滑差得 $P'$；变量内时间注意力（Integrated Attention）令 $Q,K$ 取稳态 $P'$、$V$ 取未去趋势 $P$；随后 MLP 将块数 $N$ 压至 $M$，在同时间槽跨变量切片上直接计算非平稳注意力（Cointegrated Attention），经 `Flatten + Linear` 输出 $\hat{Y}\in\mathbb{R}^{C\times O}$[^src-timebridge]。相对 [[patchtst|PatchTST]] 属瓶颈接力 $\Delta$（加入 $Q/K/V$ 非对称去趋势与跨变量协作）；相对 [[itransformer|iTransformer]] 属同槽位互斥（$M$ 压缩时间槽交互 vs 单全局 variate token）；其非对称 $Q/K$ 注意力被 [[source-pesd-tsf|PESD-TSF]] 直接继承，时频加权 MAE 损失被 [[source-renf|ReNF]] 沿用[^src-timebridge]。
+前向流程由标准算子两阶段串行。先把每条变量序列切成互不重叠的 patch 并线性嵌入；变量内阶段做通道独立的时间注意力，但查询与键取自「减去滑动平均趋势」后的稳态分量，值向量保留原始 patch——输出因此天然保持原趋势尺度、无需反归一化，同时抑制短程伪相关（论文称 Integrated Attention）。随后用前馈网络沿时间块轴压缩 patch 数，在保留非平稳性的前提下，对同一时间槽的跨变量切片直接做注意力以捕获长期协整（论文称 Cointegrated Attention），最后展平线性映射出预测[^src-timebridge]。
 
 ## 证据
 
-1. **主结论与归因**：9 项 LTSF 8 项最优（较 [[timemixer|TimeMixer]] 降 MSE $13.66\%$），PeMS 亦领先；最大掉点来自放反去平稳域（Traffic $0.360\to 0.381$）或颠倒阶段（$0.360\to 0.396$），单独去趋势贡献仅 $0.001\text{–}0.02$[^src-timebridge]。
-2. **缺口与负结果**：ETTh2 输 ModernTCN（$0.341$ vs $0.322$）与 PatchTST，金融 ARR 升但波动/回撤更差；缺正文协整定理、固定 $L=720$ 口径且无 Limitations 节[^src-timebridge]。
+1. **定位与主结论**：论文报告 9 个长期基准中 8 项最优，较 TimeMixer 平均降低 MSE $13.66\%$，短程交通与两大股指金融任务亦占优，属真实精度超越而非低开销逼近[^src-timebridge]。
+2. **真实涨点归因**：消融中掉点最狠的是放反去平稳/留平稳作用域与颠倒两阶段顺序，单独移除去趋势算子影响很小——收益来自作用域分工加阶段顺序的主故事，而非平滑算子本身[^src-timebridge]。
+3. **证据缺口与负结果**：ETTh2 上落后于 ModernTCN 与 PatchTST，金融任务收益上升但波动与回撤更差；协整假说缺正文形式化证明[^src-timebridge]。
 
 ## 相关页面
 
-- [[timebridge]] — 模型机制页（含分阶段维度流）
-- [[patchtst]] · [[itransformer]] · [[timemixer]] — 核心基线与架构对照
-- [[channel-independence]] · [[instance-normalization]] · [[dataset-stationarity-estimation]] — 通道与非平稳性处理谱系
-- [[source-pesd-tsf]] · [[source-renf]] — 后续承接与损失/效率对照
+- [[timebridge]] — 本模型机制页，含分阶段维度流与消融判词
+- [[patchtst]] — 瓶颈接力 $\Delta$：继承其 patch 化通道独立时间注意力骨架，关键改动是 $Q/K/V$ 非对称去趋势分工并补入跨变量协作
+- [[itransformer]] — 同槽位互斥：对方把整条变量序列压成单一 variate token 交互，本模型在压缩后的 $M$ 个时间槽上逐槽交互、保留更多局部时间分辨率
+- [[source-pesd-tsf]]、[[source-renf]] — 下游瓶颈接力与复现对齐：前者直接继承非对称去趋势注意力，后者沿用其时频加权 MAE 损失并重跑对照
+
+---
+
+作者 Peiyuan Liu、Beiliang Wu、Yifan Hu 等（清华大学深圳国际研究生院、深圳大学），ICML 2025（PMLR 267）。
 
 [^src-timebridge]: [[source-timebridge]]

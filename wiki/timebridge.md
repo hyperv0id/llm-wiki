@@ -9,7 +9,7 @@ tags:
   - cointegration
   - icml-2025
 created: 2026-11-24
-last_updated: 2026-11-24
+last_updated: 2026-11-27
 source_count: 6
 confidence: medium
 status: active
@@ -100,16 +100,16 @@ H_{\text{out}} &= \operatorname{Flatten}(H_{\text{coint}}) && \text{// } [C, M, 
 - **同槽位互斥与复现口径对照（vs [[timemixer|TimeMixer]]）**：TimeMixer 以纯 MLP 多尺度季节/趋势混合处理非平稳性；在 TimeBridge 的标准长时基准下，TimeBridge 较 TimeMixer 平均降低 MSE $13.66\%$，但在 PeMS04 MAE 上略逊于 TimeMixer[^src-timebridge][^src-timemixer]。
 - **跨槽位正交（vs [[channel-independence|Channel Independence]]）**：仅在变量内阶段保留通道独立以避免短程伪相关，压缩后切换至通道依赖以学习长期协整[^src-timebridge]。
 - **特例演进（vs [[instance-normalization|RevIN]] 与 Non-stationary Transformers）**：将序列入口整窗去平稳改为 patch 级平滑作差且仅限变量内 $Q,K$，省去末端反归一化；相对 Non-stationary Transformers 的统计量调制注意力，改为直接基于 $Q,K,V$ 内容分工[^src-timebridge]。
-- **下游瓶颈接力与正交对照（[[source-pesd-tsf|PESD-TSF]]、[[source-renf|ReNF]]）**：PESD-TSF 直接继承其 `IntAttention` 非对称 $Q/K$ 去趋势机制，后端改用双分支下采样与时间 GAP 以扩展至 $5{,}826$ 维[^src-pesd-tsf]；ReNF 在结构上走纯时间 MLP 逐段拼接（BDO）与 EMA 早停，损失侧则整段沿用 TimeBridge 的 $1/n$ 短程加权时频 MAE，且实证对照显示 Traffic 上 TimeBridge MSE 更优（$0.357$ vs $0.365$）、参数更少（$12.4\text{M}$ vs $21.5\text{M}$），但 ReNF 的 FLOPs 约为其 $1/20$（$22.8$ vs $479.2$）[^src-renf]。
+- **下游瓶颈接力与正交对照（[[source-pesd-tsf|PESD-TSF]]、[[source-renf|ReNF]]）**：PESD-TSF 直接继承其非对称 $Q/K$ 去趋势机制（论文称 Integrated Attention），后端改用双分支下采样与时间 GAP 以扩展至 $5{,}826$ 维[^src-pesd-tsf]；ReNF 在结构上走纯时间 MLP 逐段拼接（BDO）与 EMA 早停，损失侧则整段沿用 TimeBridge 的 $1/n$ 短程加权时频 MAE，且实证对照显示 Traffic 上 TimeBridge MSE 更优（$0.357$ vs $0.365$）、参数更少（$12.4\text{M}$ vs $21.5\text{M}$），但 ReNF 的 FLOPs 约为其 $1/20$（$22.8$ vs $479.2$）[^src-renf]。
 - **跨槽位正交（vs [[dataset-stationarity-estimation|Dataset-Level Stationarity Estimation]]）**：后者在检索管线外侧量化序列平稳度以调度超参，TimeBridge 则在模型前向内部按作用域分层处置非平稳信号[^src-timebridge]。
 
 ## 证据
 
-论文在长时预测（9 个 LTSF 基准）、短时交通（PeMS）与金融投资组合三类任务上报告了实证结果（均采用作者报告口径）[^src-timebridge]：
+论文在长时预测（9 个 LTSF 基准）、短时交通（PeMS）与金融投资组合三类任务上报告了实证结果[^src-timebridge]：
 
 1. **定位与主结论**：TimeBridge 在 9 个标准 LTSF 基准中取得 8 项最优（较 TimeMixer 平均降 MSE $13.66\%$、较 ModernTCN 降 $5.56\%$），在 PeMS 交通预测上亦保持领先；但在金融任务上虽然提升了年化收益率（ARR），却伴随更高的收益波动率与最大回撤[^src-timebridge]。
-2. **真实涨点归因**：消融实验显示，退化幅度最大的改动是把去平稳与留平稳的作用域放反（变量内留非平稳 + 跨变量去趋势使 Traffic MSE 从 $0.360$ 升至 $0.381$）以及颠倒两阶段先后顺序（先跨变量再变量内压缩使 Traffic MSE 升至 $0.396$）；单独移除去趋势算子仅带来 $0.001\text{–}0.02$ 量级变化，说明核心收益源于「分层作用域正交分工 + 先时间后跨变量顺序」而非单个平滑算子[^src-timebridge]。
-3. **证据缺口与负结果**：在 ETTh2 上 TimeBridge 落后于 ModernTCN（$0.341$ vs $0.322$）与 PatchTST，PeMS04 的 MAE 亦略逊于 TimeMixer；协整假说在正文缺乏形式化定理证明（仅附录通过 OLS 残差与 ADF 检验定性佐证）；主实验使用固定回看长度 $L=720$ 对比基线调优后的 $L$ 口径，且全文未设专门的 Limitations 章节[^src-timebridge]。
+2. **真实涨点归因**：消融实验显示，退化幅度最大的改动是把去平稳与留平稳的作用域放反（变量内留非平稳 + 跨变量去趋势，使 Traffic MSE 从 $0.360$ 升至 $0.381$），其次是颠倒两阶段先后顺序；单独移除去趋势算子仅带来微小变化，说明核心收益源于「分层作用域正交分工 + 先时间后跨变量顺序」而非单个平滑算子[^src-timebridge]。
+3. **证据缺口与负结果**：在 ETTh2 上 TimeBridge 落后于 ModernTCN 与 PatchTST，PeMS04 的 MAE 亦略逊于 TimeMixer；协整假说在正文缺乏形式化定理证明；主实验以固定回看长度对比基线各自调优的口径[^src-timebridge]。
 
 ## 相关页面
 
@@ -120,7 +120,7 @@ H_{\text{out}} &= \operatorname{Flatten}(H_{\text{coint}}) && \text{// } [C, M, 
 - [[channel-independence]] — 跨槽位正交（仅变量内阶段保持 CI）
 - [[instance-normalization]] — 特例演进（全局 RevIN → 局部 $Q,K$ 去趋势）
 - [[dataset-stationarity-estimation]] — 跨槽位正交（外部平稳性度量 vs 内部作用域分层）
-- [[source-pesd-tsf]] — 下游继承（复用 `IntAttention` 非对称去趋势注意力）
+- [[source-pesd-tsf]] — 下游继承（复用非对称 $Q/K$ 去趋势注意力）
 - [[source-renf]] — 下游复现与正交对照（沿用时频 MAE 损失与 Traffic 效率对比）
 
 [^src-timebridge]: [[source-timebridge]]

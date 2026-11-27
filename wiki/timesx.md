@@ -9,7 +9,7 @@ tags:
   - temporal-leakage
   - time-series-forecasting
 created: 2026-11-24
-last_updated: 2026-11-24
+last_updated: 2026-11-27
 source_count: 6
 confidence: medium
 status: active
@@ -21,9 +21,9 @@ status: active
 
 ## 问题定位：合成偏差与截断泄露
 
-既有文本增强时序评测存在两类结构性失真，导致模型优劣判断失准[^src-timesx]。其一，以 CiK 为代表的合成基准同时构造数值序列与配套文本且缺乏严格的时间截断隔离，评测排序表现为代码修订代理高于通用大模型，通用大模型又高于专用时序基础模型 `TimesFM`；一旦切换为真实数值与真实外部事件，三者排序随之反转，专用时序基础模型转为领先于通用大模型，而代码修订代理反而拖累预测表现[^src-timesx]。
+既有文本增强时序评测存在两类结构性失真，导致模型优劣判断失准[^src-timesx]。其一，以 CiK（Context is Key，采用合成序列与配套文本的既有评测集）为代表的合成基准同时构造数值序列与配套文本且缺乏严格的时间截断隔离，评测排序表现为代码修订代理高于通用大模型，通用大模型又高于专用时序基础模型 [[timesfm|TimesFM]]；一旦切换为真实数值与真实外部事件，三者排序随之反转，专用时序基础模型转为领先于通用大模型，而代码修订代理反而拉低预测表现[^src-timesx]。
 
-其二，时间泄露会人为抬高大语言模型的纸面成绩[^src-timesx]。跨越 2024 年 6 月知识截断点前后进行对比评测时，Gemini-2.0-Flash 与 DeepSeek-V3 在无泄露区间上的 MASE 误差恶化约 13% 至 15%，而两类时序基础模型的同期波动不足 2%，证明大语言模型在旧时间段上的领先相当程度上源于预训练语料记忆而非在线时序推理[^src-timesx]。
+其二，时间泄露会人为抬高大语言模型的纸面成绩[^src-timesx]。跨越 2024 年 6 月知识截断点前后进行对比评测时，Gemini-2.0-Flash 与 DeepSeek-V3 在无泄露区间上的 MASE 误差恶化约 12% 至 15%，而两类时序基础模型的同期波动不足 2%，支持大语言模型在旧时间段上的领先相当程度上源于预训练语料记忆而非在线时序推理的解释[^src-timesx]。
 
 ## 四类上下文管线与时间隔离机制
 
@@ -52,17 +52,17 @@ flowchart LR
 
 ## 与既有工作的关系
 
-- **瓶颈接力 $\Delta$ 与实证复现对齐（vs [[time-mmd|Time-MMD]]）**：[[time-mmd|Time-MMD]] 开创了 9 域细粒度数值–文本基准并拆分事实与展望段、将截断推至 2024-05；TimesX 进一步扩展至 19 域 190 变量，新增同域协变量摘要与已知节假日两类上下文槽位，并以多 Agent 核查与模型 cutoff 隔离压低泄露风险[^src-time-mmd][^src-timesx]。在完全保持数值序列与提示词不变的前提下，仅将 Time-MMD 文本事件替换为 TimesX 核查事件，几何均值 MASE 即从 0.906 降至 0.840[^src-timesx]。
-- **同槽位基准对照（vs [[source-time-imm|Time-IMM]]）**：两者均沿不同方向补齐多模态时序评测缺口——[[source-time-imm|Time-IMM]] 保留异步通道与不规则采样下的独立时间戳日志，TimesX 则聚焦规则日/周频序列的四类真实时钟上下文完整度与 LLM cutoff 防泄露评测[^src-time-imm][^src-timesx]。
-- **实证复现对齐（vs [[timesfm|TimesFM]]）**：TimesX 重测指出，[[timesfm|TimesFM]] 在合成基准 CiK 上被系统性低估并排在 LLM 与 `CodeRev` 之后，而在真实数值、真实时钟上下文且无截断泄露的评测中转为稳健领先于 Gemini 与 `CodeRev`[^src-timesx]。
+- **瓶颈接力 $\Delta$ 与复现对齐（vs [[time-mmd|Time-MMD]]）**：[[time-mmd|Time-MMD]] 建立了 9 域细粒度数值–文本基准并拆分事实与展望段、将截断推至 2024-05；TimesX 进一步扩展至 19 域 190 变量，新增同域协变量摘要与已知节假日两类上下文槽位，并以多 Agent 核查与模型 cutoff 隔离压低泄露风险[^src-time-mmd][^src-timesx]。在完全保持数值序列与提示词不变的前提下，仅将 Time-MMD 文本事件替换为 TimesX 核查事件，几何均值 MASE 相对下降约 7%[^src-timesx]。
+- **跨槽位正交（vs [[source-time-imm|Time-IMM]]）**：两者沿不同维度补齐多模态时序评测缺口——[[source-time-imm|Time-IMM]] 保留异步通道与不规则采样下的独立时间戳日志，TimesX 则聚焦规则日/周频序列的四类真实时钟上下文完整度与 LLM cutoff 防泄露评测[^src-time-imm][^src-timesx]。
+- **复现对齐（vs [[timesfm|TimesFM]]）**：TimesX 重测指出，[[timesfm|TimesFM]] 在合成基准 CiK 上被系统性低估并排在 LLM 与 `CodeRev` 之后，而在真实数值、真实时钟上下文且无截断泄露的评测中转为稳健领先于 Gemini 与 `CodeRev`[^src-timesx]。
 - **跨槽位正交（vs [[in-context-learning|In-Context Learning]]）**：不同于直接用演示对提示基础模型生成预测的视觉或轨迹 ICL，TimesX 中的 `TextRev-ICL` 作用于预测后文本修订槽位，将历史修订案例与「保守不改」选项共同置于上下文中，以抑制免训练修订的方差放大[^src-timesx]。
-- **同生态位数据构建对照（vs [[doublecast|CAF-7M / DoubleCast]]）**：两者都针对「公开多模态文本噪音高、难证有效」的问题提出数据解法，但路线对立——CAF-7M 先由大模型读取历史与未来全窗生成解释文本再做经验 CRPS 效用筛选，存在训练/测试文本构造口径差异；TimesX 则全量采用真实时钟下严格早于预测起点的检索与核查事件，规避未来信息反推与筛选器自我验证偏置[^src-doublecast][^src-timesx]。
-- **严防泄露基准延续与实证复现对照（vs [[source-posttime|PostTime]]）**：PostTime（NeurIPS 2026）在严防泄露的刷新版 TimesX 基准（知识截断推后至 2025-01-30，拆分为 88 条 ID 与 11 条 OOD 变量）上开展后训练修订研究，以冻结 [[timesfm|TimesFM-2.5]] 预测为先验训练 4B 语言模型判别修正、维持或回退先验[^src-posttime]。实证上 PostTime 总体 nMAE 优于未修订先验及多数零样本 `REV`、`ENS` 基线，但在 11 条变量的 OOD 子集上，免训练大模型集成 `Gemini-3.1-Pro ENS`（$0.742$）仍与 PostTime（$0.746$）处于同一水平[^src-posttime]。
-- **同槽位防泄露路线互斥对照（vs [[fev-bench]]）**：两者均为还原真实部署排序的预测基准，但防泄露机制与覆盖对象互斥——TimesX 针对多模态文本增强场景，以模型知识截断（`cutoff >= 2024-07-01`）与四步限时核查强制阻断大模型预训练记忆[^src-timesx]；[[fev-bench]] 针对数值协变量与多变量预测（7 域 96 唯一集 / 100 任务），依赖模型方自报训练重叠并以 `Chronos-Bolt (Base)` 分数插补及 `Seasonal Naive` 填充崩溃任务，同时辅以 $B=1000$ 任务级配对 Bootstrap 95% 置信区间区分统计显著性[^src-fev-bench]。
+- **同槽位互斥（vs [[doublecast|CAF-7M / DoubleCast]]）**：两者都针对「公开多模态文本噪音高、难证有效」的问题提出数据解法，但路线对立——CAF-7M 先由大模型读取历史与未来全窗生成解释文本再做经验 CRPS 效用筛选，存在训练/测试文本构造口径差异；TimesX 则全量采用真实时钟下严格早于预测起点的检索与核查事件，规避未来信息反推与筛选器自我验证偏置[^src-doublecast][^src-timesx]。
+- **复现对齐（vs [[source-posttime|PostTime]]）**：PostTime（NeurIPS 2026）在严防泄露的刷新版 TimesX 基准（知识截断推后至 2025-01-30，拆分为 88 条 ID 与 11 条 OOD 变量）上开展后训练修订研究，以冻结 [[timesfm|TimesFM-2.5]] 预测为先验训练 4B 语言模型判别修正、维持或回退先验[^src-posttime]。实证上 PostTime 总体 nMAE 优于未修订先验及多数零样本 `REV`、`ENS` 基线，但在 11 条变量的 OOD 子集上，免训练大模型集成仍与 PostTime 处于同一水平[^src-posttime]。
+- **同槽位互斥（vs [[fev-bench]]）**：两者均为还原真实部署排序的预测基准，但防泄露机制与覆盖对象互斥——TimesX 针对多模态文本增强场景，以模型知识截断（`cutoff >= 2024-07-01`）与四步限时核查强制阻断大模型预训练记忆[^src-timesx]；[[fev-bench]] 针对数值协变量与多变量预测（7 域 96 唯一集 / 100 任务），依赖模型方自报训练重叠并以 `Chronos-Bolt (Base)` 分数插补及 `Seasonal Naive` 填充崩溃任务，同时辅以 $B=1000$ 任务级配对 Bootstrap 95% 置信区间区分统计显著性[^src-fev-bench]。
 
 | 基准 | 数据真实性与采样 | 上下文槽位构成 | 防泄露与截断机制 | 核心诊断结论 |
 |---|---|---|---|---|
-| [[time-mmd\|Time-MMD]] | 真实 9 域（日/周/月）[^src-time-mmd] | 外生文本（报告+检索）[^src-time-mmd] | fact/prediction 拆分 + 2024-05 截断[^src-time-mmd] | 证明多模态可增益，但缺同域协变量槽位[^src-time-mmd] |
+| [[time-mmd\|Time-MMD]] | 真实 9 域（日/周/月）[^src-time-mmd] | 外生文本（报告+检索）[^src-time-mmd] | fact/prediction 拆分 + 2024-05 截断[^src-time-mmd] | 表明多模态可增益，但缺同域协变量槽位[^src-time-mmd] |
 | [[source-time-imm\|Time-IMM]] | 真实 9 亚类（异步不规则）[^src-time-imm] | 独立时间戳文本日志摘要[^src-time-imm] | 按事件发生时间戳保留异步先后[^src-time-imm] | 免除强网格对齐，验证门控抑噪融合[^src-time-imm] |
 | [[doublecast\|CAF-7M]] | 真实数值 + 合成解释文本[^src-doublecast] | 背景/情景/约束三段文本[^src-doublecast] | 经验 CRPS 效用筛选测试窗[^src-doublecast] | 验证文本须具备预测效用，但存在未来全窗反推[^src-doublecast] |
 | [[fev-bench]] | 真实 7 域 96 唯一集（100 任务）[^src-fev-bench] | 46 协变量（已知/历史/静态）+ 35 多变量[^src-fev-bench] | 自报重叠以 Chronos-Bolt (Base) 插补[^src-fev-bench] | 协变量拉动 TSFM 跃升，原生多变量增益微弱[^src-fev-bench] |
@@ -73,20 +73,13 @@ flowchart LR
 论文在 19 域 190 变量及 Time-MMD 对照集上报告了截断隔离与组件消融结果（作者报告口径）[^src-timesx]：
 
 1. **定位与主结论**：在真实无泄露评测下，专用时序基础模型稳健领先通用大模型及免训练代码修订代理，打破了合成基准上「大模型与代码修订优于时序基础模型」的排序假象；同时，简单的等权均值集成 `AvgEns` 在总体表现上稳健优于 `TextRev`、`CodeRev` 与 `FuncRev` 三类复杂修订代理[^src-timesx]。
-2. **真实涨点归因**：四类上下文齐备较仅保留静态元信息整体提升约 16%，且同域协变量摘要与新闻事件单独加入时几乎不带来增益，二者必须成对配合才产生有效提升；免训练修订代理落败的主因是修订过程放大预测方差与尾部极端误差，为 `TextRev` 补入历史修订示例与保守不改回退（`TextRev-ICL`）并控制预测稳定性后即可超越 `AvgEns`[^src-timesx]。
+2. **真实涨点归因**：四类上下文齐备较仅保留静态元信息整体提升约 16%，且同域协变量摘要与新闻事件单独加入时几乎不带来增益，二者必须成对配合才产生有效提升；免训练修订代理劣于集成的主因是修订过程放大预测方差与尾部极端误差，为 `TextRev` 补入历史修订示例与保守不改回退（`TextRev-ICL`）并控制预测稳定性后即可超越 `AvgEns`[^src-timesx]。
 3. **证据缺口与负结果**：数据仅覆盖日频与周频英文单变量序列，月/季频及多语种尚未覆盖；事件核查受检索质量与生成成本制约（约 0.7 美元/变量/三月块），且基准隐含「同域其余变量存在可迁移领先信号」的域内关联前提[^src-timesx]。
 
 ## 相关页面
 
 - [[source-timesx]] — 论文源摘要
-- [[fev-bench]] — 面向协变量与多变量、采用自报泄露插补与配对 Bootstrap CI 的零样本基准（防泄露路线互斥对照）
-- [[multimodal-time-series-forecasting]] — 多模态时间序列预测基准全景对照
-- [[time-mmd]] — 前序 9 域外生文本基准（瓶颈接力 $\Delta$ 与事件替换复现对照）
-- [[source-time-imm]] — 异步不规则多模态基准（同槽位并行对照）
-- [[timesfm]] — 被测专用时序基础模型（排序反转实证对照）
-- [[in-context-learning]] — 上下文学习（`TextRev-ICL` 历史示例与保守回退）
-- [[doublecast]] — CAF-7M 经验 CRPS 效用筛选语料（数据构建对照）
-- [[source-posttime]] — 基于刷新版 TimesX（cutoff 2025-01-30，88 ID / 11 OOD）的后训练修订方法与复现对照
+- [[multimodal-time-series-forecasting]] — 多模态时间序列预测基准全景对照（其余跨工作关系见上文「与既有工作的关系」）
 
 [^src-timesx]: [[source-timesx]]
 [^src-time-mmd]: [[source-time-mmd]]

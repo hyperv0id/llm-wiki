@@ -9,8 +9,8 @@ tags:
   - energy-compaction
   - global-view
 created: 2026-04-28
-last_updated: 2026-11-24
-source_count: 2
+last_updated: 2026-11-27
+source_count: 1
 confidence: medium
 status: active
 ---
@@ -45,9 +45,4 @@ Extensive experiments on 13 real-world benchmarks (7 short-term, 6 long-term) de
 
 FreTS's primary contribution is demonstrating that simple MLPs, when moved to the frequency domain, can match or outperform sophisticated Transformer architectures (including [[informer|Informer]] as a key baseline, outperforming it by >20% MAE/RMSE) — a finding with significant practical implications for deployment-constrained settings. The dual-learner design (channel + temporal) is elegant and the theoretical grounding (global convolution equivalence, energy compaction) is rigorous. However, FreTS does not adaptively select frequency components—it uses all frequencies uniformly, unlike FEDformer's random selection or Dualformer's hierarchical sampling. The fixed architecture may struggle on datasets where different frequency bands carry vastly different predictive value. Performance on the Electricity and Traffic datasets, while still strong, shows less dramatic gains than on Weather and Exchange. The paper also does not explore very long lookback windows beyond 96 steps, leaving open questions about scalability.
 
-## 相关页面
-
-- [[source-mixlinear]] — 跨槽位正交（FreTS 在全频谱施加复数 MLP 与通道学习器，MixLinear 则对下采样序列并联时域 2D 分段双线性与频域秩-2 复投影，参数压至 45–176 个）[^src-mixlinear]
-
 [^src-frets]: [[source-frets]]
-[^src-mixlinear]: [[source-mixlinear]]

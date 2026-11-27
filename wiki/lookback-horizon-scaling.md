@@ -7,7 +7,7 @@ tags:
   - context-length
   - ltsf
 created: 2026-10-24
-last_updated: 2026-11-24
+last_updated: 2026-11-27
 source_count: 3
 confidence: medium
 status: active
@@ -15,7 +15,7 @@ status: active
 
 # Lookback–Horizon Scaling
 
-**Lookback–horizon scaling** 指 benchmark 上"最优回看长度 $L^*$ 如何随预测长度 $H$ 变化"的经验规律。arXiv:2606.27282 逐 (series, horizon) 搜索测得 $L^*$ 并拟合幂律 $L^* = a \cdot H^{b}$：指数 $b$ 跨正负且跨越一个数量级，直接挑战"更长 horizon 需要更长历史"的惯例[^src-2606-27282-ltsf-linear-models]。
+长程预测里有一个几乎没人验证的默认做法：回看窗口取固定的几十步，预测多长都用同一个。SearchCast 把回看长度当作可搜索的超参，逐序列、逐预测长度地搜出最优值后拟合幂律，发现最优回看对预测长度的依赖没有统一方向——幂律指数从明显为正跨到明显为负，等于说"更长的预测需要更长的历史"这条惯例在相当一部分数据上根本不成立。这条规律本身也成了诊断工具：指数符号反映序列有多平稳[^src-2606-27282-ltsf-linear-models]。
 
 ## 逐数据集指数
 
@@ -26,48 +26,44 @@ status: active
 | ETTh2 | +0.11 | Exchange | −0.19 |
 | ETTh1 | 0.09 | Traffic | −0.19 |
 
-ETTm2 是唯一强符合"长 horizon 要长历史"直觉的数据集（但次线性）；ETTm1/ETTh2 处于弱正区（$b \approx 0.1\text{–}0.2$）；Weather/Electricity 近乎平坦（$|b| < 0.1$，稳定在约 $10^3$ 步）；Exchange/Traffic 为负——长 horizon 反而偏好短 context，与"远端历史主动误导模型"的非平稳性一致[^src-2606-27282-ltsf-linear-models]。
+只有 ETTm2 强符合"长 horizon 要长历史"的直觉（且次线性）；ETTm1/ETTh2 在弱正区；Weather/Electricity 近乎平坦，稳定在约 $10^3$ 步；Exchange/Traffic 为负——长 horizon 反而偏好短 context，与远端历史主动误导模型的非平稳性一致[^src-2606-27282-ltsf-linear-models]。
 
-> [!note] 正文与图的口径差异
-> 正文把 ETTm1 归入 $b \approx 0.1\text{–}0.2$ 的弱正区，但对应图示标注 ETTm1 $= 0.23$、ETTh1 $= 0.09$。两处并列报告，本文页面以图上数字为准。
+**推论**：社区默认的 $L = 96$ 在两个相反方向上同时犯错——对 Weather/Electricity 少给约一个数量级的历史，对 Exchange/Traffic 的长 horizon 则过量，最优值跌破 96[^src-2606-27282-ltsf-linear-models]。
 
-**推论**：社区默认 $L = 96$ "在两个相反方向上同时犯错"——对 Weather/Electricity 少给约一个数量级的历史，对 Exchange/Traffic 的长 horizon 则过量（最优值跌破 96）[^src-2606-27282-ltsf-linear-models]。
+## 只变回看长度的收益分层
 
-## 只变 $L$ 的收益分层（universal default，$H=720$，中位 MSE）
+作者用一套固定预处理（universal default）只扫 $L$、在最长 horizon 上测误差，把数据集分成三档：
 
 | Regime | 数据集 | $L: 96 \to 2000$ |
 |---|---|---|
-| strong | ETTh1 / ETTh2 / Weather | 总降幅 36%–53%（ETTh1 −39%、ETTh2 −53%、Weather −36%） |
-| plateau | ETTm2 | −16%，大部分降幅在 $L \approx 192\text{–}336$ 达成 |
+| strong | ETTh1 / ETTh2 / Weather | 总降幅 36%–53% |
+| plateau | ETTm2 | 约 16%，大部分在中等长度达成 |
 | flat | ETTm1 | 几乎无改善 |
 
-两条配套结论表明：固定 $L=96$ 时 strong regime "在任何其他预处理被调优之前就已放弃大部分可达精度"；将 $L$ 固定为短值后重跑完整预处理搜索无法找回长 context 收益——收益源于 context length 本身[^src-2606-27282-ltsf-linear-models]。属于哪个 regime 无法从数据集元信息预判，必须实测[^src-2606-27282-ltsf-linear-models]。
+两条配套结论：固定短 $L$ 在 strong regime 上"在任何其他预处理被调之前就已放弃大部分可达精度"；把 $L$ 钉死后再跑完整预处理搜索也找不回这部分收益，说明增益源自回看长度本身。数据集属于哪一档无法从元信息预判，只能实测[^src-2606-27282-ltsf-linear-models]。
 
-## 长程信号真实性
+## 长程线性信号的可检出性
 
-对 lag $k = 720$、经 harmonic 去季节化的序列，六个标准 benchmark 仍保留 0.39–0.73 的跨通道平均 Pearson 相关（ETTm2 0.725、Exchange 0.532、ETTh2 0.526、ETTm1 0.435、Weather 0.428、ETTh1 0.387），95% bootstrap CI 远离 0[^src-2606-27282-ltsf-linear-models]。表明长 context 捕获了真实的远端线性信息，而非仅重复表征周期——否则 trend-seasonal 分解或频域算子即可低成本复现[^src-2606-27282-ltsf-linear-models]。ETTm1/ETTm2 去季节化后的相关反而高于原始相关：强日周期掩盖了更慢的结构[^src-2606-27282-ltsf-linear-models]。
+对 lag 720、经 harmonic 去季节化的序列，六个标准 benchmark 仍保留 0.39–0.73 的跨通道平均 Pearson 相关，bootstrap 置信区间远离 0[^src-2606-27282-ltsf-linear-models]。长 context 因此捕获的是真实的远端线性信息，而不只是重复表征一个周期——后者用 trend-seasonal 分解或频域算子即可廉价复现。ETTm1/ETTm2 去季节化后的相关反而高于原始相关，说明强日周期掩盖了更慢的结构[^src-2606-27282-ltsf-linear-models]。
 
-权重可视化展现微观机制：Exchange 的权重几乎全在近期 lag；Traffic 在 168、336… 处有周周期带；Weather 与 ETTm 的最大权重常在数百步前——长 $L^*$ 的价值主要是"取到少数相位对齐的观测"，而非利用全部历史[^src-2606-27282-ltsf-linear-models]。
+权重可视化给出微观对应：Exchange 的权重几乎全压在近期 lag，Traffic 在 168、336 等周周期位置成带，Weather 与 ETTm 的最大权重常在数百步之前。长 $L^*$ 的价值主要是"取到少数相位对齐的观测"，而非把全部历史都用上[^src-2606-27282-ltsf-linear-models]。
 
 ## per-series 分歧
 
-Weather 是唯一 per-series 指数紧密聚在中位数附近的数据集；ETTh2、Electricity、Traffic 的 per-series 指数跨越 0——同一数据集内部分通道偏好随 horizon 增长 context、部分偏好缩短[^src-2606-27282-ltsf-linear-models]。
+Weather 是唯一 per-series 指数紧密聚在中位数附近的数据集；ETTh2、Electricity、Traffic 的 per-series 指数跨越 0——同一数据集里，部分通道偏好随 horizon 增长 context，部分偏好缩短[^src-2606-27282-ltsf-linear-models]。
 
-## 与既有论断的关系
+## 与其他路线的关系
 
-- [[lstf]] 既有论断："Transformer 随回看窗口增长性能不提升、LTSF-Linear 显著提升"（Zeng et al. 2022）；PatchTST 是唯一随 lookback 增大持续降 MSE 的 Transformer。本页补充：即便在线性模型内部，最优 $L$ 也不是常数，而是 series-specific 且对 horizon 非单调[^src-2606-27282-ltsf-linear-models]。
-- 该结论口径在 Ridge + 搜索式预处理下测得（论文自述局限），推广到其他模型类属 future work[^src-2606-27282-ltsf-linear-models]。
-- **绕开长回看约束的外置记忆路线**：[[source-cometnet|CometNet]]（AAAI 2026）与直接拉长输入回看长度 $L$ 形成路线对照——它保持固定短回看窗（$L=96$），改在训练前通过 `MovingAvg + FFT + DTW` 聚类从全训练序列离线抽取 $K$ 个跨尺度母题原型，在线以 Dense MoE 内容门控与生命周期相对相位信号补足长程上下文，在固定 $L=96$ 的 8 个基准上取得 7 项平均 MSE/MAE 最优（862 维 Traffic 逊于 TimeMixer++ 排第二），但母题库绑定训练集，缺乏与搜索长 $L^*$ 线性基线的对照及跨库迁移评测[^src-cometnet]。
-- **架构滤波外推 MEW 的视角张力对照**：[[source-pih|PIH]] 将「继续拉长回看窗口不再改善 MSE 的临界长度」定义为最大有效窗口（MEW），试图以变分信息瓶颈门控加噪（IBF）与 Mamba 分块混合（HTM）统一外推有效回看上限；这与本页「按单序列、单步长搜索最优 $L^*$ 且斜率 $b$ 可为负（Exchange/Traffic 为 $-0.19$）」形成直接视角对照——PIH 的 MEW 取整依赖离散粗网格、缺 Exchange 与统计显著性检验，且实测对 PatchTST 仅在 ETTh1/ECL（$512\to 1024$）与 ETTm1（$1024\to 1440$）温和扩窗，Traffic/ETTh2 基本持平或触顶、Weather 拉长后 MSE 仍微升[^src-pih]。
+- **实证细化（瓶颈接力 $\Delta$）**：[[lstf]] 既有论断认为「Transformer 随回看窗口增长性能不提升」，PatchTST 是例外。本页在线性模型内部进一步细化：最优 $L$ 也不是常数，而是因序列而异且对预测步长非单调[^src-2606-27282-ltsf-linear-models]。
+- **同槽位互斥（长程上下文获取）**：[[source-cometnet|CometNet]] 保持固定短回看窗，改为训练前离线抽取跨尺度母题原型、在线用内容门控检索补足长程上下文；它换了「记忆」载体，本页调节回看长度本身[^src-cometnet]。
+- **同槽位互斥（长程上下文获取）**：[[source-pih|PIH]] 将「继续拉长回看不再改善 MSE 的临界长度」定义为最大有效窗口（MEW），用变分信息瓶颈门控与 Mamba 分块滤波统一外推该上限；PIH 按数据集求单一 MEW，而本页逐序列、逐步长搜索 $L^*$ 且允许负斜率[^src-pih]。
 
 ## 关联页面
 
-- [[searchcast]] — 测得该规律的管线
-- [[source-2606-27282-ltsf-linear-models]] — 源摘要
-- [[source-cometnet]] — 固定短回看窗 + 离线母题库检索的绕行路线对照
-- [[source-pih]] — 架构滤波外推 MEW 与本页逐序列-步长幂律 $L^*$ 的视角张力对照
-- [[ltsf-linear]] / [[patchtst]] — lookback 敏感性的既有对照
-- [[lstf]] — LSTF 问题设定
+- [[searchcast]] — 本源派生：产出该规律的线性预测管线
+- [[source-2606-27282-ltsf-linear-models]] — 本源摘要
+- [[trailing-fraction-local-normalization]] — 跨槽位正交：同一预处理搜索中的归一化轴
+- [[grouped-hyperparameter-search]] — 跨槽位正交：逐序列搜索的分组组织方式
 
 [^src-2606-27282-ltsf-linear-models]: [[source-2606-27282-ltsf-linear-models]]
 [^src-cometnet]: [[source-cometnet]]

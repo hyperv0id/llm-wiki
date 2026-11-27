@@ -9,7 +9,7 @@ tags:
   - retrieval-augmented
   - icml-2026
 created: 2026-11-24
-last_updated: 2026-11-24
+last_updated: 2026-11-27
 source_count: 10
 confidence: medium
 status: active
@@ -24,9 +24,9 @@ Baguan-TS 是一套面向含协变量时间序列预测的序列原生上下文�
 围绕零样本时间序列预测与协变量利用，既有工作沿两条互不兼容的路线演进[^src-baguan-ts]：
 
 - **表格化 ICL 路线**：以 [[tabpfn-ts|TabPFN-TS]] 为代表，先手工构建归一化时间索引与预定义傅里叶基函数，再调用表格基础模型 TabPFN 做无梯度回归，虽具备天然协变量拼接与不确定性输出能力，但依赖特征工程且推理延迟偏高[^src-time-indexed-imputation][^src-baguan-ts]。
-- **端到端序列 TSFM 路线**：以 [[timesfm|TimesFM]]、[[chronos|Chronos]] 与 [[tirex|TiRex]] 为代表，直接消费原始数值或离散分箱序列，但在预训练后通常缺乏多示例上下文演示接口[^src-timesfm][^src-chronos][^src-tirex]；若要在下游接入外生协变量，往往需冻结骨干并额外训练前置或后置适配器（如 [[unified-covariate-adaptation|UniCA]]、[[cora-tsfm|CoRA]]、[[chronosx|ChronosX]]），从而失去纯零样本即插即用特性[^src-unica][^src-cora][^src-chronosx]。
+- **端到端序列 TSFM 路线**：以 [[timesfm|TimesFM]]、[[chronos|Chronos]] 为代表，直接消费原始数值或离散分箱序列，但在预训练后通常缺乏多示例上下文演示接口[^src-timesfm][^src-chronos][^src-tirex]；若要在下游接入外生协变量，往往需冻结骨干并额外训练前置或后置适配器（如 [[unified-covariate-adaptation|UniCA]]、[[cora-tsfm|CoRA]] 等），从而失去纯零样本即插即用特性[^src-unica][^src-cora][^src-chronosx]。
 
-即便直接把「上下文样例 × 时间 × 变量」拼接成序列原生三维结构，也面临两项障碍：全维度联合注意力的计算量随三轴乘积呈二次爆炸，且高容量上下文模型在训练中容易把输出平均化为平滑均值[^src-baguan-ts]。Baguan-TS 分别以三轴正交分解注意力、目标空间近邻检索校准（RBfcst）与上下文过拟合辅助目标来应对这两项障碍[^src-baguan-ts]。
+即便直接把「上下文样例 × 时间 × 变量」拼接成序列原生三维结构，也面临两项障碍：全维度联合注意力的计算量随三轴乘积呈平方级增长，且高容量上下文模型在训练中容易把输出平均化为平滑均值[^src-baguan-ts]。Baguan-TS 分别以三轴正交分解注意力、目标空间近邻检索校准（RBfcst）与上下文过拟合辅助目标来应对这两项障碍[^src-baguan-ts]。
 
 ## 机制拆解
 
@@ -54,7 +54,7 @@ flowchart LR
 
 ## 数据流与维度
 
-> **维度符号**：$C$ 检索得到的上下文样例数（含查询样例共 $C{+}1$）；$S$ 单条序列切分后的时间 patch 数（含历史与未来未知占位，推理期 2D 模式塌缩为 $S=1$）；$M$ 外生协变量通道数（含单目标通道共 $M{+}1$）；$D$ 隐层通道维；$K=5000$ 离散分箱数（均匀覆盖 $[-10,10]$ 区间）。序列原始时间长度、patch 长度 $P$、3D 块堆叠层数 $L$、未来段 patch 数 $S_{\text{fut}}$ 及头/投影中间形状在核心切片中未展开，均按标准算子推断标注 `[INFERENCE]`[^src-baguan-ts]。
+> **维度符号**：$C$ 检索得到的上下文样例数（含查询样例共 $C{+}1$）；$S$ 单条序列切分后的时间 patch 数（含历史与未来未知占位，推理期 2D 模式塌缩为 $S=1$）；$M$ 外生协变量通道数（含单目标通道共 $M{+}1$）；$D$ 隐层通道维；$K=5000$ 离散分箱数（均匀覆盖 $[-10,10]$ 区间）。序列原始时间长度、patch 长度 $P$、3D 块堆叠层数 $L$、未来段 patch 数 $S_{\text{fut}}$ 及头/投影中间形状为论文未给出的实现细节，均按标准算子推断标注 `[INFERENCE]`[^src-baguan-ts]。
 
 ### Stage 1 · 归一化、Y-space 近邻检索与四维张量编码
 
@@ -83,7 +83,7 @@ H^{(l)} &= \operatorname{Attn}_{C+1}\!\left(\tilde{H}_{\text{var}}^{(l)}\right) 
 
 $$\begin{aligned}
 Z_{\text{qry}} &= \operatorname{Slice}_{\text{qry, target, fut}}\!\left(H^{(L)}\right) && \text{// } [C{+}1, S, M{+}1, D] \xrightarrow{\text{切片查询目标未来段 [INFERENCE]}} [S_{\text{fut}}, D]\ \text{——抽取待预测目标未来隐状态}\\
-Z_{\text{qry}}^{(2\mathrm{D})} &= \operatorname{Baguan2D}\!\left(H^{(0)}_{S\to 1}\right) && \text{// } [C{+}1, 1, M{+}1, D] \xrightarrow{\text{塌缩时间维的 2D 前向 [INFERENCE]}} [S_{\text{fut}}, D]\ \text{——提供跨样本宏观统计分支}\\
+Z_{\text{qry}}^{(2\mathrm{D})} &= \operatorname{Forward}_{S{=}1}\!\left(H^{(0)}_{S\to 1}\right) && \text{// } [C{+}1, 1, M{+}1, D] \xrightarrow{\text{塌缩时间维的同一主干前向 [INFERENCE]}} [S_{\text{fut}}, D]\ \text{——提供跨样本宏观统计分支}\\
 p &= \operatorname{Ensemble}_{2\mathrm{D}/3\mathrm{D}}\!\left(\operatorname{softmax}(\operatorname{MLP}(Z_{\text{qry}}))\right) && \text{// } [S_{\text{fut}}, \bcancel{D}] \xrightarrow{\text{MLP 映至 } K{=}5000 \text{ 分箱并集成 [INFERENCE]}} [S_{\text{fut}}, K]\ \text{——输出 } [-10,10] \text{ 离散概率分布}\\
 \hat{y},\, \hat{y}_q &= \sum_{k=1}^{K} p_k b_k,\; \operatorname{CDF}^{-1}(p, q) && \text{// } [S_{\text{fut}}, K] \xrightarrow{\text{沿 } K \text{ 维期望与逆 CDF 采样 [INFERENCE]}} [S_{\text{fut}}, 1]\ \text{——导出点预测与任意分位数并反归一化}
 \end{aligned}$$
@@ -92,37 +92,35 @@ p &= \operatorname{Ensemble}_{2\mathrm{D}/3\mathrm{D}}\!\left(\operatorname{soft
 
 Baguan-TS 在协变量基础模型与上下文学习谱系中占据独立路线[^src-baguan-ts]：
 
-- **同槽位互斥（vs [[tabpfn-ts|TabPFN-TS]]）**：两者同为免梯度零样本时序 ICL，但接口与代价互斥——TabPFN-TS 依赖人工时间与傅里叶表格特征，单次前向推理较慢；Baguan-TS 改为序列原生 3D 轴分解配合 RBfcst 检索，单次前向约 $0.43\text{ s}$（约为 TabPFN-TS 延迟的 $1/10$）[^src-baguan-ts]。
-- **范式分化与同槽位互斥（vs [[unified-covariate-adaptation|UniCA]] / [[cora-tsfm|CoRA]] / [[chronosx|ChronosX]]）**：后者冻结单变量 TSFM 并在下游微调前置或后置协变量适配器（支持文本/图像等异构协变量）；Baguan-TS 跳过下游适配微调，在预训练期联合编码目标与同质多元数值协变量，将协变量利用转化为纯推理期 ICL[^src-baguan-ts][^src-unica][^src-cora][^src-chronosx]。
-- **实证复现对齐（vs [[timesfm|TimesFM]] / [[chronos|Chronos]] / [[tirex|TiRex]]）**：在 [[fev-bench|fev-bench-cov]] 基准 30 项含协变量任务中，Baguan-TS 的点预测（SQL $0.7997$、MASE）优于 TabPFN-TS（$0.8404$）与 TimesFM-2.5（$0.8276$），并在同场评测的 Chronos 与 TiRex 等基线上取得更低点误差；但在概率校准 WQL 上落后于 TabPFN-TS（$0.1724$ vs $0.1643$）[^src-baguan-ts]。
-- **评测基准回链与口径对照（vs [[fev-bench]]）**：Baguan-TS 主评测取自 [[fev-bench]] 的 30 项含协变量子集 `fev-bench-cov`[^src-baguan-ts]；在 [[fev-bench]] 原文完整的 100 项任务与 $B=1000$ 任务级配对 Bootstrap 95% 置信区间协议下，动态协变量开关在 42 项任务上将 Chronos-2（$40.9\to 47.0$）与 [[tabpfn-ts|TabPFN-TS]]（$34.1\to 42.5$）显著拉升，而 TiRex 与 TimesFM-2.5 的置信区间大幅重叠、统计不可分[^src-fev-bench]。
-- **跨槽位对照（vs [[retrieval-based-condition-augmentation|RCA]] / [[in-context-learning|ICL]]）**：不同于 RCA 通过时空条件过滤增强扩散条件输入，Baguan-TS 在归一化目标空间检索近邻组成 ICL 示范集[^src-craft][^src-baguan-ts]；而在 [[in-context-learning|时序 ICL 谱系]] 中，它补全了 [[tirex|TiRex]] 单序列隐状态延续之外的多示例跨样本示范路线[^src-tirex][^src-baguan-ts]。
+- **同槽位互斥（vs [[tabpfn-ts|TabPFN-TS]]）**：两者同为免梯度零样本时序 ICL，但接口与代价互斥——TabPFN-TS 依赖人工时间与傅里叶表格特征，单次前向推理较慢；Baguan-TS 改为序列原生 3D 轴分解配合 RBfcst 检索，单次前向延迟约为 TabPFN-TS 的 $1/10$[^src-baguan-ts]。
+- **范式分化与同槽位互斥（vs [[unified-covariate-adaptation|UniCA]] / [[cora-tsfm|CoRA]] 等）**：后者冻结单变量 TSFM 并在下游微调前置或后置协变量适配器（支持文本/图像等异构协变量）；Baguan-TS 跳过下游适配微调，在预训练期联合编码目标与同质多元数值协变量，将协变量利用转化为纯推理期 ICL[^src-baguan-ts][^src-unica][^src-cora][^src-chronosx]。
+- **实证复现对齐（vs [[timesfm|TimesFM]] / [[chronos|Chronos]]）**：在同一含协变量公开基准的 30 项任务上，Baguan-TS 点预测优于 TimesFM-2.5，并在 Chronos 与 TiRex 等端到端基线上取得更低点误差；但概率校准 WQL 落后于 TabPFN-TS（见下文「证据」）[^src-baguan-ts]。
+- **评测基准回链与复现口径对照（vs [[fev-bench]]）**：Baguan-TS 主评测取自 [[fev-bench]] 的 30 项含协变量子集 `fev-bench-cov`[^src-baguan-ts]；在 fev-bench 原文完整任务集与任务级配对 Bootstrap 置信区间协议下，动态协变量开关显著拉升 Chronos-2 与 [[tabpfn-ts|TabPFN-TS]]，而 TiRex 与 TimesFM-2.5 的置信区间大幅重叠、统计不可分[^src-fev-bench]。
+- **跨槽位正交（vs [[retrieval-based-condition-augmentation|RCA]]）**：同为检索增强机制但分属不同设计轴——RCA 在预训练语料构造期做时空条件过滤以增强扩散条件输入，Baguan-TS 在推理期于归一化目标空间检索近邻示范[^src-craft][^src-baguan-ts]。
+- **同构/特例（vs [[in-context-learning|ICL]] 谱系）**：在时序上下文学习谱系中，Baguan-TS 补全了 [[tirex|TiRex]] 单序列隐状态延续之外的多示例跨样本示范路线[^src-tirex][^src-baguan-ts]。
 
 | 路线代表 | 协变量接入与骨干形态 | 上下文利用方式 | 下游参数更新 | 延迟与模态特点 |
 |---|---|---|---|---|
-| **Baguan-TS** | 序列原生四维联合预训练（3D 轴分解） | Y-space 检索 $C$ 条近邻示范 + 轴间注意力 | 免微调（纯 ICL） | 单次 $0.43\text{ s}$ / 集成 $3.67\text{ s}$；仅同质数值协变量[^src-baguan-ts] |
+| **Baguan-TS** | 序列原生四维联合预训练（3D 轴分解） | Y-space 检索 $C$ 条近邻示范 + 轴间注意力 | 免微调（纯 ICL） | 单次前向约为 TabPFN-TS 延迟的 1/10；仅同质数值协变量[^src-baguan-ts] |
 | [[tabpfn-ts\|TabPFN-TS]] | 手工时间+傅里叶表格特征喂入 TabPFN | 表格点对 prompt 回归 | 免微调（纯 ICL） | 延迟约 Baguan-TS 10 倍；WQL 校准占优[^src-time-indexed-imputation][^src-baguan-ts] |
 | [[unified-covariate-adaptation\|UniCA]] / [[cora-tsfm\|CoRA]] | 冻结单变量 TSFM + 前置/后置轻量适配器 | 需在下游数据适配训练融合模块 | 需下游训练适配器 | 可扩展至文本/图像等异构协变量[^src-unica][^src-cora] |
-| [[timesfm\|TimesFM]] / [[tirex\|TiRex]] | 单变量序列化骨干（自回归 / sLSTM 占位） | 单条历史窗口条件化（无跨样本示范） | 原生仅单变量零样本 | TiRex 35M 推理极快但不建模外生协变量[^src-timesfm][^src-tirex] |
+| [[timesfm\|TimesFM]] / [[tirex\|TiRex]] | 单变量序列化骨干（自回归解码 / sLSTM 缺失掩码递推） | 单条历史窗口条件化（无跨样本示范） | 原生仅单变量零样本 | TiRex 35M 推理极快但不建模外生协变量[^src-timesfm][^src-tirex] |
 
 ## 证据
 
 论文在 [[fev-bench|fev-bench-cov]]（30 项含协变量任务）与 27 个自有能源数据集上报告了零样本对比与消融结果（均采用作者报告口径）[^src-baguan-ts]：
 
-1. **定位与主结论**：在 [[fev-bench|fev-bench-cov]] 上，Baguan-TS 在点预测指标（SQL $0.7997$、MASE）领先于 [[tabpfn-ts|TabPFN-TS]]（$0.8404$）与 [[timesfm|TimesFM-2.5]]（$0.8276$），在 27 个自有能源数据集上四项指标均居首位；但在 [[fev-bench|fev-bench-cov]] 概率校准指标 WQL 上落后于 TabPFN-TS（$0.1724$ vs $0.1643$）[^src-baguan-ts]。
-2. **真实涨点归因**：消融中掉点最明显的是去掉 RBfcst 局部检索校准（entsoe-1H SQL 从 $0.3859$ 升至 $0.4284$，hermes 从 $0.6185$ 升至 $0.6607$），但改用特征空间（X-space）检索已达 $0.4005$，说明主涨点来自「局部近邻校准」本身而非论文主打的 Y-space 特征无关检索；2D（$0.8769$）与 3D（$0.8333$）双模式集成带来中等幅度改进（$0.7997$）[^src-baguan-ts]。
-3. **证据缺口与负结果**：当前仅支持单目标加多元协变量预测，无法联合预测多目标；context-overfitting 仅给出训练损失曲线而缺乏下游指标对比表，3D 轴分解结构亦从未做逐轴消融；此外，22.4M 参数量的具体结构明细未见于核心切片正文，全文亦未单设专门的 Limitations 章节[^src-baguan-ts]。
+1. **定位与主结论**：论文报告 Baguan-TS 在 fev-bench-cov 上取得最高点预测胜率，归一化分位数损失 SQL（Scaled Quantile Loss）较同属免梯度 ICL 路线的 [[tabpfn-ts|TabPFN-TS]] 降低约 4.8%，并在 27 个自有能源数据集上四项指标均居首；但加权分位数损失 WQL（Weighted Quantile Loss）概率校准落后于 TabPFN-TS，是主要未赢面[^src-baguan-ts]。
+2. **真实涨点归因**：消融中拿掉 RBfcst 局部检索校准掉点最狠，但改用协变量特征空间（X-space）检索也能拿回大半收益——主涨点来自「近邻示范局部校准」机制本身，而非 Y-space 实现的特殊性；时间轴塌缩的 2D 模式单独最弱，2D/3D 集成再添一层增益[^src-baguan-ts]。
+3. **证据缺口与负结果**：仅支持单目标加多元协变量场景；context-overfitting 只有训练动态与合成玩具证据、缺下游指标消融表；3D 轴分解结构未做逐轴消融；论文亦未设 Limitations 章节[^src-baguan-ts]。
 
 ## 相关页面
 
 - [[source-baguan-ts]] — 论文源摘要
-- [[fev-bench]] — 协变量与多变量零样本统一基准（`fev-bench-cov` 来源）
-- [[tsfm-covariate-adaptation-comparison]] — TSFM 协变量适配与原生建模全景对比
-- [[unified-covariate-adaptation]] — 冻结骨干协变量适配器对照
-- [[tabpfn-ts]] — 表格化零样本时间序列 ICL 对照
-- [[timesfm]] / [[chronos]] / [[tirex]] — 端到端序列 TSFM 零样本基线对照
-- [[in-context-learning]] — 多示例演示、单序列隐状态与表格 ICL 概念谱系
-- [[retrieval-based-condition-augmentation]] — 检索增强条件构造（RCA）与 RBfcst 机制对照
+- [[tabpfn-ts]] — 同槽位互斥：同为免梯度零样本时序 ICL，但以手工表格特征工程换取协变量接入与校准优势
+- [[unified-covariate-adaptation]] / [[cora-tsfm]] — 同槽位互斥：冻结单变量骨干、下游训练适配器的协变量路线，与本文纯推理期 ICL 相对
+- [[in-context-learning]] — 同构/特例：通用上下文学习范式在原始波形上的多示例特化实例
+- [[retrieval-based-condition-augmentation]] — 跨槽位正交：同为检索机制，但 RCA 在预训练语料构造期过滤条件，RBfcst 在推理期做目标空间局部校准
 
 [^src-baguan-ts]: [[source-baguan-ts]]
 [^src-time-indexed-imputation]: [[source-time-indexed-imputation]]

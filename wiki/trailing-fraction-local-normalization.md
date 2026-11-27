@@ -7,7 +7,7 @@ tags:
   - distribution-shift
   - preprocessing
 created: 2026-10-24
-last_updated: 2026-10-24
+last_updated: 2026-11-27
 source_count: 1
 confidence: medium
 status: active
@@ -15,27 +15,26 @@ status: active
 
 # 尾部比例局部归一化（Trailing-Fraction Local Normalization）
 
-arXiv:2606.27282 在预处理搜索中采用的归一化方案：local normalization 仅在输入窗口**最近 $r \cdot L$ 步**计算统计量（mean/std 或 median/IQR），$r \in (0, 1]$ 为 local ratio，在 $[0.001, 1.0]$ 上按 log 搜索（§3.2）[^src-2606-27282-ltsf-linear-models]。$r < 1$ 把统计量限制在尾部区间，使模型适配最近的分布状态（distributional regime）（§3.2）[^src-2606-27282-ltsf-linear-models]。
+标准做法是用训练集全局统计量、或至少整个输入窗口的统计量来做归一化。问题在于：当序列在回看尺度上本身就不平稳时，一个覆盖全窗口的均值方差会把若干个不同的分布状态混成一团，模型拿到的是一个谁都不代表的尺度。尾部比例局部归一化只取窗口最近 $r \cdot L$ 步来估计尺度，$r \in (0, 1]$ 为 local ratio，按 log 在 $[0.001, 1]$ 上搜索，让统计量贴合最近的分布状态[^src-2606-27282-ltsf-linear-models]。
 
-$r = 1$ 退化为前作 full-window instance normalization（RevIN 式）；配套设计：局部归一化下窗口均值已为零、截距失去信息，改为把 per-window scale $\sigma$ 作为附加特征替代截距，让回归学习 volatility-dependent shift，$\sigma$ 系数为 0 即恢复纯 instance normalization（§3.2）[^src-2606-27282-ltsf-linear-models]。
+配套设计是截距的处理。局部归一化后窗口均值为零，截距不再携带信息，于是把每窗口的 scale $\sigma$ 作为附加特征拼进输入，替代截距的位置，让回归自己学一个随波动率变化的偏移；$\sigma$ 的系数为零时即退化为纯 instance normalization[^src-2606-27282-ltsf-linear-models]。
 
-## 搜索结论（§5.4、Fig. 7）
+## 搜索结论
 
-- **local 普适占优**：ETTh1、ETTm2、Weather、Exchange 上，local 在 62–100% 的 dataset–horizon 单元被搜索选中[^src-2606-27282-ltsf-linear-models]。
-- **最优尾部很短**：最优 $\log_{10} r$ 几乎总为负、集中在 $[-2.5, -0.5]$，即尾部分数 0.3%–30%；**full-window 归一化（$r=1$）几乎从不被选中**[^src-2606-27282-ltsf-linear-models]。
-- **最强的数据集**：ETTm2 与 Exchange 多数单元 $\log_{10} r \approx -2$——仅 lookback 最后几个百分点决定 scale。论文归因：序列在 $L$ 尺度上非平稳，全窗口统计量会模糊本应保持区分的 regime[^src-2606-27282-ltsf-linear-models]。
-- **robust 变体全败**：median/IQR 版本在所有测试设置下均劣于 mean/std，因此主表仅用 local standardization、仅搜 $r$[^src-2606-27282-ltsf-linear-models]。
-- **per-series 分歧**（§5.5、Fig. 7）：Weather 上 local ratio 逐通道发散（OT $\log_{10} r \approx -2$ vs LULL 接近 0），正则强度也出现通道间大缺口（OT $\log_{10}\alpha \approx 1\text{–}2$ vs 其他通道 $\approx 4$）——Weather 的 per-series 收益来自 $r$ 与 $\alpha$ 而非 lookback[^src-2606-27282-ltsf-linear-models]。
+- **local 普适占优**：在 ETTh1、ETTm2、Weather、Exchange 上，local 归一化在 62–100% 的 dataset–horizon 单元被搜索选中[^src-2606-27282-ltsf-linear-models]。
+- **最优尾部很短**：最优 $\log_{10} r$ 几乎总为负，集中在 $[-2.5, -0.5]$，即尾部分数 0.3%–30%；full-window 归一化（$r = 1$）几乎从不被选中[^src-2606-27282-ltsf-linear-models]。
+- **最强的数据集**：ETTm2 与 Exchange 多数单元 $\log_{10} r \approx -2$，仅回看的最后几个百分点决定尺度。论文的归因是这些序列在回看尺度上非平稳，全窗口统计量会模糊本应保持区分的 regime[^src-2606-27282-ltsf-linear-models]。
+- **robust 变体劣于标准归一化**：median/IQR 版本在所有测试设置下都劣于 mean/std，说明在这些基准上尾部波动与大偏差本身携带有用的尺度信息；主表因此只用 local standardization，只搜 $r$[^src-2606-27282-ltsf-linear-models]。
+- **per-series 分歧**：Weather 上 local ratio 与正则强度 $\alpha$ 均呈现明显的逐通道发散，表明该数据集的 per-series 收益主要来自 $r$ 与 $\alpha$，而不是 lookback[^src-2606-27282-ltsf-linear-models]。
 
-## 与 RevIN 的关系
+## 结论口径
 
-[[instance-normalization|RevIN]] 对整个输入窗口归一化均值与方差以对冲分布漂移；本技术的搜索证据表明，在 Ridge 测试床上全窗口统计几乎从不是最优——短至 0.3% 的尾部分数统计量在强非平稳序列上更优[^src-2606-27282-ltsf-linear-models]。该结论口径为：Ridge + 四轴联合搜索、四个数据集（ETTh1/ETTm2/Weather/Exchange）上的超参选择频率，非跨模型类的对照实验（§5.4、Appendix D）[^src-2606-27282-ltsf-linear-models]。
+上述搜索结论来自 Ridge 加四轴联合搜索在四个数据集（ETTh1、ETTm2、Weather、Exchange）上的超参选择频率，尚非跨模型类的对照实验[^src-2606-27282-ltsf-linear-models]。
 
 ## 关联页面
 
-- [[instance-normalization]] — $r=1$ 的特例与被挑战的默认做法
-- [[searchcast]] — 使用该技术的管线
-- [[grouped-hyperparameter-search]] — $r$ 的搜索载体
-- [[source-2606-27282-ltsf-linear-models]] — 源摘要
+- [[instance-normalization]] — 同槽位互斥 / 退化特例：$r=1$ 即退化为全窗口实例归一化（如 RevIN），两者在同一归一化槽位选择不同统计范围，但在 Ridge 测试床上短至 0.3% 的尾部分数在强非平稳序列上更优。
+- [[searchcast]] — 跨槽位正交：采用该归一化轴的线性预测管线。
+- [[grouped-hyperparameter-search]] — 跨槽位正交：前者决定归一化尾部分数 $r$，后者决定跨步长与跨序列的搜索分组方式。
 
 [^src-2606-27282-ltsf-linear-models]: [[source-2606-27282-ltsf-linear-models]]

@@ -9,7 +9,7 @@ tags:
   - ood-generalization
   - neurips-2026
 created: 2026-11-24
-last_updated: 2026-11-24
+last_updated: 2026-11-27
 source_count: 6
 confidence: medium
 status: active
@@ -79,10 +79,10 @@ $$\begin{aligned}
 SLiDE 在 [[koopman-linearization-for-forecasting|Koopman 线性化预测]] 与外生协变量预测两条谱系中形成以下明确位置：
 
 - **同槽位互斥（vs [[koopman-linearization-for-forecasting|一般 Koopman 控制形式]]）**：库内既有 Koopman 预测模型均引入了与状态或外部流耦合的控制项 $B(z,u)$ 或残差精炼网络；SLiDE 是目前唯一仅用纯加性外生推力、且强制编码与滚动共享同一线性矩阵 $W$ 的预测口径[^src-slide][^src-k2vae][^src-mmckm]。
-- **简化特例关系（vs [[mmckm|MMCKM]] / [[intent-discriminator-koopman|Intent Discriminator]]）**：MMCKM 在交通微观层面采用由 5 模态参数有界 Koopman 算子组成的 MoE 家族，并经 CrossAttention 注入宏观流控制 $B_z u_t$；SLiDE 可视为该状态相关多模态 Koopman 族的线性加性简化特例——以单枚固定 $W$ 与纯加性输入换取分布偏移下的低过拟合自由度[^src-slide][^src-mmckm]。
-- **复现与机制对照（vs [[k2vae|K²VAE]]）**：K²VAE 面向无外生变量的长期概率预测，结合 one-step eDMD 局部算子、全局 $K_{glo}$ 与 KalmanNet 不确定性建模执行 VAE 一步生成；SLiDE 则放弃概率变分与 Kalman 滤波，专注于未来已知外生输入下的确定性点预测与 OOR 稳健性[^src-slide][^src-k2vae]。
-- **机制增量 $\Delta$（vs [[tide|TiDE]]）**：TiDE 将历史目标与全部协变量展平送入 dense residual MLP 编码，再经 [[temporal-decoder|Temporal Decoder]] 逐预测步并入未来协变量；SLiDE 把时序演化抽离为共享分块线性循环递推 $W$，外生信号仅以加性推力进入潜状态演化[^src-slide][^src-tide]。
-- **同生态位直接对照（vs [[source-timexer|TimeXer]] / [[gcgnet|GCGNet]]）**：TimeXer 用 patch-wise 自注意力和 variate-wise 交叉注意力融合外生变量，GCGNet 用 VAE 粗预测配合联合图对齐与 GCN 精炼；SLiDE 去掉注意力与图精炼，在同生态位外生基准上以更低计算开销取得更高平均排名，且面向 [[heterogeneous-covariates|异构时间角色协变量]]（future-known、past-only 与 static）给出实测对比[^src-slide][^src-timexer][^src-gcgnet]。
+- **同构/特例（vs [[mmckm|MMCKM]] / [[intent-discriminator-koopman|Intent Discriminator]]）**：MMCKM 在交通微观层面采用由 5 模态参数有界 Koopman 算子组成的 MoE 家族，并经 CrossAttention 注入宏观流控制 $B_z u_t$；SLiDE 可视为该状态相关多模态 Koopman 族的线性加性简化特例——以单枚固定 $W$ 与纯加性输入换取分布偏移下的低过拟合自由度[^src-slide][^src-mmckm]。
+- **跨槽位正交（vs [[k2vae|K²VAE]]）**：K²VAE 面向无外生变量的长期概率预测，结合 one-step eDMD 局部算子、全局 $K_{glo}$ 与 KalmanNet 不确定性建模执行 VAE 一步生成；SLiDE 则放弃概率变分与 Kalman 滤波，专注于未来已知外生输入下的确定性点预测与 OOR 稳健性[^src-slide][^src-k2vae]。
+- **同槽位互斥（vs [[tide|TiDE]]）**：TiDE 将历史目标与全部协变量展平送入 dense residual MLP 编码，再经 [[temporal-decoder|Temporal Decoder]] 逐预测步并入未来协变量；SLiDE 把时序演化抽离为共享分块线性循环递推 $W$，外生信号仅以加性推力进入潜状态演化[^src-slide][^src-tide]。
+- **同槽位互斥（vs [[source-timexer|TimeXer]] / [[gcgnet|GCGNet]]）**：TimeXer 用 patch-wise 自注意力和 variate-wise 交叉注意力融合外生变量，GCGNet 用 VAE 粗预测配合联合图对齐与 GCN 精炼；SLiDE 去掉注意力与图精炼，在同生态位外生基准上以更低计算开销取得更高平均排名，且面向 [[heterogeneous-covariates|异构时间角色协变量]]（future-known、past-only 与 static）给出实测对比[^src-slide][^src-timexer][^src-gcgnet]。
 
 | 模型 | 状态转移形式 | 外生 / 控制注入 | 编码与滚动是否共享动力学 | 输出解码与预测性质 |
 |---|---|---|---|---|
@@ -97,21 +97,15 @@ SLiDE 在 [[koopman-linearization-for-forecasting|Koopman 线性化预测]] 与�
 
 论文在 EPF-5、Favorita 与 Bouc-Wen 基准及消融设置上报告了以下实证结果（均为作者报告口径）[^src-slide]：
 
-1. **定位与主结论**：在 EPF-5、Favorita 与 Bouc-Wen 共 8 项任务（涵盖 11 项真实世界指标）中，SLiDE 有 8 次进入前二、平均排名 1.87 居首，推理速度接近纯 MLP 模型 TSMixer 且明显快于 [[source-timexer|TimeXer]] 与 [[gcgnet|GCGNet]]；在分布外设置下，EPF-DE OOR 子集与跨驱动迁移任务误差分别降低约 20% 与 30%[^src-slide]。
-2. **真实涨点归因（Ablation）**：泛化增益主要来源于共享线性递推对容量的约束。非线性替换消融最具诊断意义：将线性转移 $W$ 替换为两层 ReLU MLP 后，Bouc-Wen 合成系统**同分布（in-range）精度反而更佳（0.035 vs 0.085），但跨驱动迁移（transfer）立即崩溃（0.741 vs 0.296）**，且 Favorita OOR 落后约 18% RMSLE——实证线性转移假设专门服务于分布偏移泛化而非同分布精度；若将滞后不变线性循环编码器换回普通 MLP 编码器，平均排名从 1.87 退化至 2.47（EPF-DE OOR 退化尤重）；分块数 $N=2\to 4$ 性能无明显变化，$N=8$ 则退化约 19%[^src-slide]。
-3. **证据缺口与负结果**：论文自述方法依赖近似有限维潜线性假设，尚未覆盖连续谱动力学，循环稳定性仅通过 $W$ 特征值作经验检验而无理论保障；外生变量缺失或时间错位会经加性通道直接带入未来滚动；此外 OOR 验证子集样本量偏小、仅测试有限偏移场景，且未检验概率校准指标[^src-slide]。
+1. **定位与主结论**：论文报告 SLiDE 在电力价格 5 个市场、零售与合成非线性系统共 8 项任务上平均排名 1.87 居首（11 个指标实例中 8 次进入前二），推理开销接近 TSMixer 且明显低于 [[source-timexer|TimeXer]] 与 [[gcgnet|GCGNet]]；优势集中在偏移设置——EPF-DE 越界子集较最强基线降错约 20%，跨驱动迁移较次优降错约 30%[^src-slide]。
+2. **真实涨点归因（Ablation）**：掉点最狠的是线性转移约束——将线性转移 $W$ 替换为两层 ReLU MLP 后，Bouc-Wen 同分布精度反而更好，但跨驱动迁移大幅劣化、Favorita 越界子集落后约 18% RMSLE，说明线性递推专门服务分布偏移泛化而非同分布精度；换成普通 MLP 编码器则全面退化（平均排名 1.87 → 2.47）；「编码与滚动共享算子」这一核心约束本身未被单独消融[^src-slide]。
+3. **证据缺口与负结果**：偏移评估仅覆盖每数据集样本量有限的越界子集与单一合成迁移（论文自述）；合成同分布 multisine 任务上系统辨识系基线一度领先，但其整体平均排名最靠前也仅 5.8，未构成同生态位威胁；论文未报告概率校准类指标[^src-slide]。
 
 ## 相关页面
 
 - [[source-slide]] — 论文源摘要
-- [[koopman-linearization-for-forecasting]] — Koopman 线性化预测范式（同槽位对比）
-- [[mmckm]] · [[intent-discriminator-koopman]] — 状态相关多模态 Koopman 算子（简化特例对比）
-- [[k2vae]] — eDMD + KalmanNet 概率预测对照
-- [[tide]] — 残差 MLP 协变量预测基线
-- [[gcgnet]] — 联合图对齐外生预测基线
-- [[source-timexer]] — 双粒度交叉注意力外生基线
-- [[heterogeneous-covariates]] — future-known / past-only / static 协变量类型与挑战
-- [[ood-generalization]] — 时序分布外泛化语境
+- [[heterogeneous-covariates]] — 跨槽位正交：future-known / past-only / static 异构时间角色协变量设定
+- [[ood-generalization]] — 跨槽位正交：时序分布外泛化与偏移评估语境（其余 Koopman 与外生基线的详细关系见上文「与既有工作的关系」）
 
 [^src-slide]: [[source-slide]]
 [^src-k2vae]: [[source-k2vae]]
